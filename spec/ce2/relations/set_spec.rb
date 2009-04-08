@@ -23,7 +23,11 @@ module Relations
     end
 
     describe "#insert" do
-      it "executes an insert statement against the database for the given Tuple"
+      it "calls Origin.insert with the Set's #global_name and #field_values_by_attribute_name" do
+        tuple = Answer.new(:body => "Brown Rice", :correct => true)
+        mock(Origin).insert(set.global_name, tuple.field_values_by_attribute_name)
+        set.insert(tuple)
+      end
     end
 
     describe "#tuples" do

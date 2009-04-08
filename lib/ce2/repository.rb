@@ -1,8 +1,14 @@
 class Repository
   attr_accessor :connection
 
+  def insert(table_name, attributes)
+    connection.from(table_name).insert(attributes)
+  end
+
+
   def create_schema
     create_table :answers do
+      column :id, :string
       column :name, :string
       column :body, :string
       column :explanation, :string

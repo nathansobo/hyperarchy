@@ -3,14 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ce2/tuple.rb" afterPath="$PROJECT_DIR$/lib/ce2/tuple.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ce2/attribute.rb" afterPath="$PROJECT_DIR$/lib/ce2/attribute.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/ce2/relations/set_spec.rb" afterPath="$PROJECT_DIR$/spec/ce2/relations/set_spec.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/ce2/tuple_spec.rb" afterPath="$PROJECT_DIR$/spec/ce2/tuple_spec.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ce2.iws" afterPath="$PROJECT_DIR$/ce2.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ce2/field.rb" afterPath="$PROJECT_DIR$/lib/ce2/field.rb" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spec/ce2/field_spec.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ce2/repository.rb" afterPath="$PROJECT_DIR$/lib/ce2/repository.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ce2/relations/set.rb" afterPath="$PROJECT_DIR$/lib/ce2/relations/set.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ce2/models/answer.rb" afterPath="$PROJECT_DIR$/lib/ce2/models/answer.rb" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spec/ce2/repository_spec.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ce2.rb" afterPath="$PROJECT_DIR$/lib/ce2.rb" />
     </list>
     <ignored path=".idea/workspace.xml" />
     <ignored path="ce2.iws" />
@@ -64,72 +63,70 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="set_spec.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spec/ce2/relations/set_spec.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="27" column="67" selection-start="905" selection-end="905" vertical-scroll-proportion="0.0">
+              <folding>
+                <marker date="1239220210000" expanded="true" signature="106:1116" placeholder="do ... end" />
+                <marker date="1239220210000" expanded="true" signature="142:176" placeholder="do ... end" />
+                <marker date="1239220210000" expanded="true" signature="669:964" placeholder="do ... end" />
+                <marker date="1239220210000" expanded="true" signature="989:1110" placeholder="do ... end" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ce2_spec_suite.rb" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/spec/ce2/ce2_spec_suite.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="4" column="0" selection-start="87" selection-end="87" vertical-scroll-proportion="0.082073435">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="set.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/ce2/relations/set.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="18" column="69" selection-start="501" selection-end="501" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="repository_spec.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spec/ce2/repository_spec.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="16" column="58" selection-start="643" selection-end="643" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ce2.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/ce2.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="15" column="0" selection-start="426" selection-end="426" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="repository.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/ce2/repository.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="4" column="49" selection-start="132" selection-end="132" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="field_spec.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/spec/ce2/field_spec.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="20" selection-start="109" selection-end="109" vertical-scroll-proportion="0.0">
+            <state line="0" column="0" selection-start="0" selection-end="70" vertical-scroll-proportion="0.0">
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="field.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/ce2/field.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="43" selection-start="203" selection-end="203" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="attribute.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/ce2/attribute.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="9" selection-start="59" selection-end="59" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tuple_spec.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spec/ce2/tuple_spec.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="53" selection-start="1180" selection-end="1180" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ce2_spec_suite.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spec/ce2/ce2_spec_suite.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="0" selection-start="87" selection-end="87" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="set_spec.rb" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/spec/ce2/relations/set_spec.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="0" selection-start="761" selection-end="761" vertical-scroll-proportion="0.55399567">
-              <folding>
-                <marker date="1239219811000" expanded="true" signature="106:912" placeholder="do ... end" />
-                <marker date="1239219811000" expanded="true" signature="142:176" placeholder="do ... end" />
-                <marker date="1239219811000" expanded="true" signature="669:760" placeholder="do ... end" />
-                <marker date="1239219811000" expanded="true" signature="785:906" placeholder="do ... end" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tuple.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/ce2/tuple.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="37" selection-start="301" selection-end="301" vertical-scroll-proportion="0.0">
-              <folding>
-                <marker date="1239219721000" expanded="true" signature="946:1001" placeholder=" ... end" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -210,6 +207,32 @@
         </PATH_ELEMENT>
         <PATH_ELEMENT>
           <option name="myItemId" value="ce2" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="ce2" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="ce2" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewModuleNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="ce2" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="spec" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="ce2" />
+          <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="relations" />
           <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
         </PATH_ELEMENT>
       </PATH>
@@ -400,7 +423,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="2560" height="1574" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
@@ -414,7 +437,7 @@
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32960895" sideWeight="0.5" order="8" side_tool="false" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32960895" sideWeight="0.5" order="2" side_tool="false" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32960895" sideWeight="0.5" order="2" side_tool="false" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="4" side_tool="false" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" />
@@ -451,20 +474,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lib/ce2/relations.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="0" selection-start="177" selection-end="177" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/ce2/models.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="28" selection-start="221" selection-end="221" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/spec/ce2/ce2_spec_helper.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="5" column="3" selection-start="127" selection-end="127" vertical-scroll-proportion="0.0">
@@ -486,13 +495,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/ce2.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="49" selection-start="137" selection-end="137" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/ce2/models/answer.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="3" column="30" selection-start="112" selection-end="112" vertical-scroll-proportion="0.0">
@@ -507,46 +509,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/ce2/relations/set.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="31" selection-start="400" selection-end="400" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/ce2/tuple.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="37" selection-start="301" selection-end="301" vertical-scroll-proportion="0.0">
-          <folding>
-            <marker date="1239219721000" expanded="true" signature="946:1001" placeholder=" ... end" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spec/ce2/field_spec.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="20" selection-start="109" selection-end="109" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/ce2/field.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="8" column="43" selection-start="203" selection-end="203" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spec/ce2/tuple_spec.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="53" selection-start="1180" selection-end="1180" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spec/ce2/ce2_spec_suite.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="0" selection-start="87" selection-end="87" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -558,15 +523,73 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ce2/tuple.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="12" selection-start="1100" selection-end="1100" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1239220416000" expanded="true" signature="1155:1210" placeholder=" ... end" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/ce2/tuple_spec.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="62" column="0" selection-start="2152" selection-end="2152" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/ce2/field_spec.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="70" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ce2.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="0" selection-start="426" selection-end="426" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ce2/repository.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="49" selection-start="132" selection-end="132" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/ce2/repository_spec.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="58" selection-start="643" selection-end="643" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/ce2/relations/set.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="18" column="69" selection-start="501" selection-end="501" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/spec/ce2/relations/set_spec.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="0" selection-start="761" selection-end="761" vertical-scroll-proportion="0.55399567">
+        <state line="27" column="67" selection-start="905" selection-end="905" vertical-scroll-proportion="0.0">
           <folding>
-            <marker date="1239219811000" expanded="true" signature="106:912" placeholder="do ... end" />
-            <marker date="1239219811000" expanded="true" signature="142:176" placeholder="do ... end" />
-            <marker date="1239219811000" expanded="true" signature="669:760" placeholder="do ... end" />
-            <marker date="1239219811000" expanded="true" signature="785:906" placeholder="do ... end" />
+            <marker date="1239220210000" expanded="true" signature="106:1116" placeholder="do ... end" />
+            <marker date="1239220210000" expanded="true" signature="142:176" placeholder="do ... end" />
+            <marker date="1239220210000" expanded="true" signature="669:964" placeholder="do ... end" />
+            <marker date="1239220210000" expanded="true" signature="989:1110" placeholder="do ... end" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/ce2/ce2_spec_suite.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="0" selection-start="87" selection-end="87" vertical-scroll-proportion="0.082073435">
+          <folding />
         </state>
       </provider>
     </entry>

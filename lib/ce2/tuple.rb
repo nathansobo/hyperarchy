@@ -41,6 +41,13 @@ class Tuple
     end
   end
 
+  def field_values_by_attribute_name
+    fields_by_attribute.inject({}) do |result, attribute_field_pair|
+      result[attribute_field_pair[0].name] = attribute_field_pair[1].value
+      result
+    end
+  end
+
   def set_field_value(attribute, value)
     fields_by_attribute[attribute].value = value
   end

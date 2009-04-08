@@ -14,5 +14,9 @@ module Relations
     def attributes
       attributes_by_name.values
     end
+
+    def insert(tuple)
+      Origin.insert(global_name, tuple.field_values_by_attribute_name)
+    end
   end
 end
