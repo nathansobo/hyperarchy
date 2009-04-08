@@ -1,4 +1,4 @@
-class Group < June::Tuple
+class Group < Tuple
   attribute :name, :string
   attribute :description, :string
 

@@ -1,4 +1,4 @@
-class QuestionSet < June::Tuple
+class QuestionSet < Tuple
   attribute :name, :string
   attribute :info, :string
   attribute :explanation, :string

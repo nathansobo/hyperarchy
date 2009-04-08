@@ -1,4 +1,4 @@
-class Question < June::Tuple
+class Question < Tuple
   attribute :stimulus, :string
   attribute :position, :integer
   attribute :supporting_statements, :string

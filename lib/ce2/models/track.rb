@@ -1,4 +1,4 @@
-class Track < June::Tuple
+class Track < Tuple
   attribute :name, :string
   attribute :maximum_users, :integer
   attribute :group_id, :string

@@ -1,4 +1,4 @@
-class Subtrack < June::Tuple
+class Subtrack < Tuple
   attribute :answer_mode_timeout, :integer
   attribute :review_mode_timeout, :integer
   attribute :published_at, :datetime
