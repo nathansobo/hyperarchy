@@ -30,6 +30,18 @@ module Relations
       end
     end
 
+    describe "#create" do
+      it "instantiates an instance of #tuple_class with the given attributes and #inserts it" do
+        mock(set).insert(anything) do |tuple|
+          tuple.class.should == set.tuple_class
+          tuple.body.should == "Brown Rice"
+          tuple.correct.should == true
+        end
+
+        set.create(:body => "Brown Rice", :correct => true)
+      end
+    end
+
     describe "#tuples" do
       it "executes a select all SQL query against the database and returns Tuples corresponding to its result"
     end

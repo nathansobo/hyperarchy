@@ -7,8 +7,8 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/ce2/tuple_spec.rb" afterPath="$PROJECT_DIR$/spec/ce2/tuple_spec.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ce2.iws" afterPath="$PROJECT_DIR$/ce2.iws" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ce2/repository.rb" afterPath="$PROJECT_DIR$/lib/ce2/repository.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ce2/relations/set.rb" afterPath="$PROJECT_DIR$/lib/ce2/relations/set.rb" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/spec/ce2/repository_spec.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ce2/relations/set.rb" afterPath="$PROJECT_DIR$/lib/ce2/relations/set.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/ce2.rb" afterPath="$PROJECT_DIR$/lib/ce2.rb" />
     </list>
     <ignored path=".idea/workspace.xml" />
@@ -66,12 +66,12 @@
       <file leaf-file-name="set_spec.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/spec/ce2/relations/set_spec.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="67" selection-start="905" selection-end="905" vertical-scroll-proportion="0.0">
+            <state line="40" column="8" selection-start="1287" selection-end="1287" vertical-scroll-proportion="0.0">
               <folding>
-                <marker date="1239220210000" expanded="true" signature="106:1116" placeholder="do ... end" />
-                <marker date="1239220210000" expanded="true" signature="142:176" placeholder="do ... end" />
-                <marker date="1239220210000" expanded="true" signature="669:964" placeholder="do ... end" />
-                <marker date="1239220210000" expanded="true" signature="989:1110" placeholder="do ... end" />
+                <marker date="1239221896000" expanded="true" signature="106:1508" placeholder="do ... end" />
+                <marker date="1239221896000" expanded="true" signature="142:176" placeholder="do ... end" />
+                <marker date="1239221896000" expanded="true" signature="669:964" placeholder="do ... end" />
+                <marker date="1239221896000" expanded="true" signature="1381:1502" placeholder="do ... end" />
               </folding>
             </state>
           </provider>
@@ -89,8 +89,28 @@
       <file leaf-file-name="set.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/ce2/relations/set.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="18" column="69" selection-start="501" selection-end="501" vertical-scroll-proportion="0.0">
+            <state line="19" column="7" selection-start="510" selection-end="510" vertical-scroll-proportion="0.0">
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tuple_spec.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spec/ce2/tuple_spec.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="41" column="32" selection-start="1455" selection-end="1455" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tuple.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/ce2/tuple.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="27" column="0" selection-start="597" selection-end="597" vertical-scroll-proportion="0.0">
+              <folding>
+                <marker date="1239222155000" expanded="true" signature="1174:1229" placeholder=" ... end" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -423,7 +443,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="22" width="2560" height="1574" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Dataflow to this" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
@@ -437,7 +457,7 @@
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32960895" sideWeight="0.5" order="8" side_tool="false" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32960895" sideWeight="0.5" order="2" side_tool="false" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32960895" sideWeight="0.5" order="2" side_tool="false" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="4" side_tool="false" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" />
@@ -523,22 +543,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/ce2/tuple.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="12" selection-start="1100" selection-end="1100" vertical-scroll-proportion="0.0">
-          <folding>
-            <marker date="1239220416000" expanded="true" signature="1155:1210" placeholder=" ... end" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/spec/ce2/tuple_spec.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="62" column="0" selection-start="2152" selection-end="2152" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/spec/ce2/field_spec.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="70" vertical-scroll-proportion="0.0">
@@ -567,22 +571,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/spec/ce2/relations/set_spec.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="8" selection-start="1287" selection-end="1287" vertical-scroll-proportion="0.0">
+          <folding>
+            <marker date="1239221896000" expanded="true" signature="106:1508" placeholder="do ... end" />
+            <marker date="1239221896000" expanded="true" signature="142:176" placeholder="do ... end" />
+            <marker date="1239221896000" expanded="true" signature="669:964" placeholder="do ... end" />
+            <marker date="1239221896000" expanded="true" signature="1381:1502" placeholder="do ... end" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/ce2/relations/set.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="69" selection-start="501" selection-end="501" vertical-scroll-proportion="0.0">
+        <state line="19" column="7" selection-start="510" selection-end="510" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/spec/ce2/relations/set_spec.rb">
+    <entry file="file://$PROJECT_DIR$/lib/ce2/tuple.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="67" selection-start="905" selection-end="905" vertical-scroll-proportion="0.0">
+        <state line="27" column="0" selection-start="597" selection-end="597" vertical-scroll-proportion="0.0">
           <folding>
-            <marker date="1239220210000" expanded="true" signature="106:1116" placeholder="do ... end" />
-            <marker date="1239220210000" expanded="true" signature="142:176" placeholder="do ... end" />
-            <marker date="1239220210000" expanded="true" signature="669:964" placeholder="do ... end" />
-            <marker date="1239220210000" expanded="true" signature="989:1110" placeholder="do ... end" />
+            <marker date="1239222155000" expanded="true" signature="1174:1229" placeholder=" ... end" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/spec/ce2/tuple_spec.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="41" column="32" selection-start="1455" selection-end="1455" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>

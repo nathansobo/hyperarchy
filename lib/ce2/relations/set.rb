@@ -18,5 +18,9 @@ module Relations
     def insert(tuple)
       Origin.insert(global_name, tuple.field_values_by_attribute_name)
     end
+
+    def create(field_values)
+      insert(tuple_class.new(field_values))
+    end
   end
 end

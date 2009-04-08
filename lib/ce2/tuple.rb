@@ -25,18 +25,20 @@ class Tuple
     def basename
       name.split("::").last
     end
+
+    delegate :create, :to => :set
   end
 
   attr_reader :fields_by_attribute
 
 
-  def initialize(attribute_values = {})
+  def initialize(field_values = {})
     initialize_fields
-    update(attribute_values)
+    update(field_values)
   end
 
-  def update(attribute_values)
-    attribute_values.each do |attribute_name, value|
+  def update(field_values)
+    field_values.each do |attribute_name, value|
       set_field_value(set.attributes_by_name[attribute_name], value)
     end
   end
