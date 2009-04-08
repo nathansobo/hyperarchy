@@ -1,9 +1,9 @@
 class Tuple
   class << self
     attr_accessor :set
-
     def inherited(subclass)
       subclass.set = Domain.new_set(subclass.basename.underscore.pluralize.to_sym, subclass)
+      subclass.attribute(:id, :string)
     end
 
     def attribute(name, type)
@@ -22,6 +22,12 @@ class Tuple
       end
     end
 
+    def unsafe_new(field_values = {})
+      tuple = allocate
+      tuple.unsafe_initialize(field_values)
+      tuple
+    end
+
     def basename
       name.split("::").last
     end
@@ -33,6 +39,10 @@ class Tuple
 
 
   def initialize(field_values = {})
+    unsafe_initialize(field_values.merge(:id => Guid.new.to_s))
+  end
+
+  def unsafe_initialize(field_values)
     initialize_fields
     update(field_values)
   end

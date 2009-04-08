@@ -17,4 +17,20 @@ describe Repository do
       retrieved_record[:correct].should == record[:correct]
     end
   end
+
+  describe "#read" do
+    it "instantiates instances of the given class with the attributes of every record returned by the given query" do
+      Origin.connection[:answers] << { :id => "1", :body => "Quinoa" }
+      Origin.connection[:answers] << { :id => "2", :body => "Barley" }
+
+      tuples = Origin.read(Answer, "select id, body from answers;")
+      tuples.size.should == 2
+
+      tuple_1 = tuples.find {|t| t.id == "1"}
+      tuple_1.body.should == "Quinoa"
+
+      tuple_2 = tuples.find {|t| t.id == "2"}
+      tuple_2.body.should == "Barley"
+    end
+  end
 end

@@ -11,6 +11,12 @@ describe Tuple do
         Domain.sets_by_name[:answers].should == Answer.set
         Domain.sets_by_name[:answers].tuple_class.should == Answer
       end
+
+      it "defines an :id Attribute on the subclass" do
+        Answer.id.class.should == Attribute
+        Answer.id.name.should == :id
+        Answer.id.type.should == :string
+      end
     end
 
     describe ".attribute" do
@@ -42,6 +48,14 @@ describe Tuple do
         Answer.create(attributes)
       end
     end
+
+    describe ".unsafe_new" do
+      it "instantiates a Tuple with the given field values without overriding the value of :id" do
+        tuple = Answer.unsafe_new(:id => "foo", :body => "Rice")
+        tuple.id.should == "foo"
+        tuple.body.should == "Rice"
+      end
+    end
   end
 
   describe "instance methods" do
@@ -62,6 +76,10 @@ describe Tuple do
       it "assigns the Field values in the given hash" do
         tuple.get_field_value(Answer.body).should == "Quinoa"
         tuple.get_field_value(Answer.correct).should == true
+      end
+
+      it "assigns #id to a new guid" do
+        tuple.id.should_not be_nil
       end
     end
 

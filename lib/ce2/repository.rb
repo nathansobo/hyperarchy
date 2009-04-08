@@ -5,6 +5,11 @@ class Repository
     connection.from(table_name).insert(attributes)
   end
 
+  def read(tuple_class, query)
+    connection[query].map do |field_values|
+      tuple_class.unsafe_new(field_values)
+    end
+  end
 
   def create_schema
     create_table :answers do
@@ -21,5 +26,9 @@ class Repository
 
   def create_table(name, &definition)
     connection.create_table(name, &definition)
+  end
+
+  def clear
+    connection[:answers].delete
   end
 end

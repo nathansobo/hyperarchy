@@ -4,7 +4,7 @@ module Relations
 
     def initialize(global_name, tuple_class)
       @global_name, @tuple_class = global_name, tuple_class
-      @attributes_by_name = {}
+      @attributes_by_name = SequencedHash.new
     end
 
     def define_attribute(name, type)
@@ -20,7 +20,22 @@ module Relations
     end
 
     def create(field_values)
-      insert(tuple_class.new(field_values))
+      tuple = tuple_class.new(field_values)
+      insert(tuple)
+      tuple
     end
+
+    def tuples
+      Origin.read(tuple_class, to_sql)
+    end
+
+    def to_sql
+      "select #{columns_sql} from #{global_name};"
+    end
+
+    def columns_sql
+      attributes.map {|a| a.name}.join(", ")
+    end
+
   end
 end

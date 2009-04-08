@@ -4,6 +4,7 @@ require "guid"
 require "active_support/core_ext/module/delegation"
 require "active_support/core_ext/object/metaclass"
 require "sequel/extensions/inflector"
+require "collections/sequenced_hash"
 
 dir = File.dirname(__FILE__)
 require "#{dir}/ce2/domain"

@@ -3,5 +3,8 @@ require "spec"
 
 Spec::Runner.configure do |config|
   config.mock_with :rr
-end
 
+  config.before do
+    Origin.clear
+  end
+end
