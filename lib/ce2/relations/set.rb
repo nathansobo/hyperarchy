@@ -10,5 +10,9 @@ module Relations
     def define_attribute(name, type)
       attributes_by_name[name] = Attribute.new(self, name, type)
     end
+
+    def attributes
+      attributes_by_name.values
+    end
   end
 end

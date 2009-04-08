@@ -22,6 +22,40 @@ describe Tuple do
       it "defines a class method that refers to the Attribute defined on .set" do
         Answer.body.should == Answer.set.attributes_by_name[:body]
       end
+
+      it "defines named instance methods that call #set_field_value and #get_field_value" do
+        tuple = Answer.new
+
+        mock.proxy(tuple).set_field_value(Answer.body, "Barley")
+        tuple.body = "Barley"
+        mock.proxy(tuple).get_field_value(Answer.body)
+        tuple.body.should  == "Barley"
+      end
+    end
+  end
+
+  describe "#initialize" do
+    it "assigns #fields_by_attribute to a hash with a Field object for every attribute declared in the set" do
+      tuple = Answer.new
+      Answer.set.attributes.each do |attribute|
+        field = tuple.fields_by_attribute[attribute]
+        field.attribute.should == attribute
+        field.tuple.should == tuple
+      end
+    end
+
+    it "assigns the Field values in the given hash" do
+      tuple = Answer.new(:body => "Quinoa", :correct => true)
+      tuple.get_field_value(Answer.body).should == "Quinoa"
+      tuple.get_field_value(Answer.correct).should == true
+    end
+  end
+
+  describe "#set_field_value and #get_field_value" do
+    specify "set and get a Field value" do
+      tuple = Answer.new
+      tuple.set_field_value(Answer.body, "Quinoa")
+      tuple.get_field_value(Answer.body).should == "Quinoa" 
     end
   end
 end

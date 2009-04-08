@@ -4,4 +4,8 @@ class Attribute
   def initialize(set, name, type)
     @set, @name, @type = set, name, type
   end
+
+  def convert_value(value)
+    value
+  end
 end

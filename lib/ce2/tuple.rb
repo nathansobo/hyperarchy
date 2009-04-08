@@ -7,7 +7,15 @@ class Tuple
     end
 
     def attribute(name, type)
-      set.define_attribute(name, type)
+      attribute = set.define_attribute(name, type)
+
+      define_method("#{name}=".to_sym) do |value|
+        set_field_value(attribute, value)
+      end
+
+      define_method(name) do
+        get_field_value(attribute)
+      end
 
       metaclass.send(:define_method, name) do
         set.attributes_by_name[name]
@@ -19,9 +27,36 @@ class Tuple
     end
   end
 
+  attr_reader :fields_by_attribute
 
 
-  def initialize(attributes)
-    
+  def initialize(attribute_values = {})
+    initialize_fields
+    update(attribute_values)
+  end
+
+  def update(attribute_values)
+    attribute_values.each do |attribute_name, value|
+      set_field_value(set.attributes_by_name[attribute_name], value)
+    end
+  end
+
+  def set_field_value(attribute, value)
+    fields_by_attribute[attribute].value = value
+  end
+
+  def get_field_value(attribute)
+    fields_by_attribute[attribute].value
+  end
+
+  def initialize_fields
+    @fields_by_attribute = {}
+    set.attributes.each do |attribute|
+      fields_by_attribute[attribute] = Field.new(self, attribute)
+    end
+  end
+
+  def set
+    self.class.set
   end
 end
