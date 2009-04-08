@@ -28,7 +28,8 @@ class Repository
     connection.create_table(name, &definition)
   end
 
-  def clear
-    connection[:answers].delete
+  #TODO: test
+  def clear_table(name)
+    connection[name].delete
   end
 end

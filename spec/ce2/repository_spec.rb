@@ -24,7 +24,6 @@ describe Repository do
       Origin.connection[:answers] << { :id => "2", :body => "Barley" }
 
       tuples = Origin.read(Answer, "select id, body from answers;")
-      tuples.size.should == 2
 
       tuple_1 = tuples.find {|t| t.id == "1"}
       tuple_1.body.should == "Quinoa"

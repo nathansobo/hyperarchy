@@ -1,7 +1,8 @@
 module Relations
   class Set
     attr_reader :global_name, :tuple_class, :attributes_by_name
-
+    attr_accessor :declared_fixtures
+    
     def initialize(global_name, tuple_class)
       @global_name, @tuple_class = global_name, tuple_class
       @attributes_by_name = SequencedHash.new
@@ -36,6 +37,16 @@ module Relations
     def columns_sql
       attributes.map {|a| a.name}.join(", ")
     end
+    
+    def load_fixtures
+      declared_fixtures.each do |id, field_values|
+        insert(tuple_class.unsafe_new(field_values.merge(:id => id.to_s)))
+      end
+    end
 
+    #TODO: test
+    def clear_table
+      Origin.clear_table(global_name)
+    end
   end
 end

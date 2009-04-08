@@ -32,6 +32,10 @@ class Tuple
       name.split("::").last
     end
 
+    def fixtures(declared_fixtures)
+      set.declared_fixtures = declared_fixtures
+    end
+
     delegate :create, :to => :set
   end
 
