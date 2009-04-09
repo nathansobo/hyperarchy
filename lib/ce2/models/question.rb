@@ -12,6 +12,6 @@ class Question < Tuple
   attribute :published_at, :datetime
   attribute :spr, :boolean
 
-  belongs_to :qusetion_set
-  has_many :answers
+#  belongs_to :qusetion_set
+#  has_many :answers
 end

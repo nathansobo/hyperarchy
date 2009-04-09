@@ -55,7 +55,7 @@ module Relations
         tuple_2_id = set.create(:body => "White Rice", :correct => false).id
         tuple_3_id = set.create(:body => "Pearled Barley", :correct => false).id
 
-        mock.proxy(Origin).read(set.tuple_class, "select id, body, question_id, correct from answers;")
+        mock.proxy(Origin).read(set.tuple_class, "select answers.id, answers.body, answers.question_id, answers.correct from answers;")
 
         tuples = set.tuples
 
@@ -75,7 +75,7 @@ module Relations
 
     describe "#to_sql" do
       it "returns a select statement for only the columns declared as Attributes on the Set" do
-        columns = set.attributes.map {|a| a.name }.join(", ")
+        columns = set.attributes.map {|a| a.to_sql }.join(", ")
         set.to_sql.should == "select #{columns} from #{set.global_name};"
       end
     end

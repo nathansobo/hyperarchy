@@ -8,4 +8,8 @@ class Attribute
   def convert_value(value)
     value
   end
+
+  def to_sql
+    "#{set.global_name}.#{name}"
+  end
 end

@@ -31,14 +31,16 @@ module Relations
     end
 
     def to_sql
-      "select #{columns_sql} from #{global_name};"
+      build_sql_query.to_sql
     end
 
-    def columns_sql
-      attributes.map {|a| a.name}.join(", ")
+    def build_sql_query(query=SqlQuery.new)
+      query.add_from_set(self)
+      query
     end
-    
+
     def load_fixtures
+      return unless declared_fixtures
       declared_fixtures.each do |id, field_values|
         insert(tuple_class.unsafe_new(field_values.merge(:id => id.to_s)))
       end

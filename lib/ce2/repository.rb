@@ -22,6 +22,20 @@ class Repository
       column :position, :integer
       column :deleted_at, :datetime
     end
+    create_table :questions do
+      column :stimulus, :string
+      column :position, :integer
+      column :supporting_statements, :string
+      column :image, :string
+      column :question_set_id, :string
+      column :explanation, :string
+      column :name, :string
+      column :source_info, :string
+      column :experience_points, :integer
+      column :deleted_at, :datetime
+      column :published_at, :datetime
+      column :spr, :boolean
+    end
   end
 
   def create_table(name, &definition)
