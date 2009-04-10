@@ -8,6 +8,8 @@ class QuestionSet < Tuple
   attribute :deleted_at, :datetime
   attribute :published_at, :datetime
 
-#  belongs_to :subtrack
-#  has_many :questions
+  # has_many :questions
+  relates_to_many :questions do
+    Question.where(Question.question_set_id.eq(id))
+  end
 end
