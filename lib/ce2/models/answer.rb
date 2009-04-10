@@ -3,5 +3,8 @@ class Answer < Tuple
   attribute :question_id, :string
   attribute :correct, :boolean
 
-#  belongs_to :question
+  #  belongs_to :question
+  relates_to_one :question do
+    Question.where(Question.id.eq(question_id))
+  end
 end

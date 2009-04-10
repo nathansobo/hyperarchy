@@ -12,6 +12,10 @@ module Relations
       SetProjection.new(self, projected_set)
     end
 
+    def find(id)
+      where(tuple_class.id.eq(id)).tuples.first
+    end
+
     def tuples
       Origin.read(tuple_class, to_sql)
     end

@@ -22,6 +22,18 @@ class Tuple
       end
     end
 
+    def relates_to_many(relation_name, &definition)
+      relation_definitions[relation_name] = definition
+      attr_reader relation_name
+    end
+
+    def relates_to_one(relation_name, &definition)
+      relation_definitions[relation_name] = definition
+      define_method relation_name do
+        instance_variable_get("@#{relation_name}").tuples.first
+      end
+    end
+
     def unsafe_new(field_values = {})
       tuple = allocate
       tuple.unsafe_initialize(field_values)
@@ -36,7 +48,11 @@ class Tuple
       set.declared_fixtures = declared_fixtures
     end
 
-    delegate :create, :to => :set
+    def relation_definitions
+      @relation_definitions ||= SequencedHash.new
+    end
+
+    delegate :create, :where, :project, :join, :find, :to => :set
   end
 
   attr_reader :fields_by_attribute
@@ -49,6 +65,7 @@ class Tuple
   def unsafe_initialize(field_values)
     initialize_fields
     update(field_values)
+    initialize_relations
   end
 
   def update(field_values)
@@ -79,7 +96,17 @@ class Tuple
     end
   end
 
+  def initialize_relations
+    self.class.relation_definitions.each do |relation_name, definition|
+      instance_variable_set("@#{relation_name}", instance_eval(&definition))
+    end
+  end
+
   def set
     self.class.set
+  end
+
+  def ==(other)
+    other.class == self.class && id == other.id
   end
 end

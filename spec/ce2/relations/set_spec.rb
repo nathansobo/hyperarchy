@@ -49,6 +49,12 @@ module Relations
       end
     end
 
+    describe "#find" do
+      it "returns the first Tuple in a Selection where id is equal to the given id" do
+        Answer.set.find("grain_quinoa").should == Answer.set.where(Answer.id.eq("grain_quinoa")).tuples.first
+      end
+    end
+
     describe "#tuples" do
       it "executes a select all SQL query against the database and returns Tuples corresponding to its results" do
         tuple_1_id = set.create(:body => "Quinoa", :correct => true).id

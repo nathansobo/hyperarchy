@@ -12,6 +12,10 @@ class Question < Tuple
   attribute :published_at, :datetime
   attribute :spr, :boolean
 
+  relates_to_many :answers do
+    Answer.where(Answer.question_id.eq(id))
+  end
+
 #  belongs_to :qusetion_set
 #  has_many :answers
 end

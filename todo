@@ -1,0 +1,2 @@
+write relates to one in terms of a "limit" relation which limits the size of its result set to 1
+relates to 1 generates a #{relation_name}_relation method that gives direct access to its limit relation object

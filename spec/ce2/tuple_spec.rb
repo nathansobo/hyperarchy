@@ -38,6 +38,24 @@ describe Tuple do
         tuple.body.should  == "Barley"
       end
     end
+
+    describe ".relates_to_many" do
+      it "defines a method that returns the Relation defined in the given block" do
+        question = Question.find("grain")
+        answers_relation = question.answers
+        answers_relation.tuples.should_not be_empty
+        answers_relation.tuples.each do |answer|
+          answer.question_id.should == question.id
+        end
+      end
+    end
+
+    describe ".relates_to_one" do
+      it "defines a method that returns the first Tuple from the Relation defined in the given block" do
+        answer = Answer.find("grain_quinoa")
+        answer.question.should == Question.find("grain")
+      end
+    end
   end
 
   describe "class methods" do
@@ -99,6 +117,28 @@ describe Tuple do
         tuple = Answer.new
         tuple.set_field_value(Answer.body, "Quinoa")
         tuple.get_field_value(Answer.body).should == "Quinoa"
+      end
+    end
+
+    describe "#==" do
+      context "for Tuples of the same class" do
+        context "for Tuples with the same id" do
+          it "returns true" do
+            Answer.find("grain_quinoa").should == Answer.unsafe_new(:id => "grain_quinoa")
+          end
+        end
+
+        context "for Tuples with different ids" do
+          it "returns false" do
+            Answer.find("grain_quinoa").should_not == Answer.unsafe_new(:id => "grain_barley")
+          end
+        end
+      end
+
+      context "for Tuples of different classes" do
+        it "returns false" do
+          Answer.find("grain_quinoa").should_not == Question.unsafe_new(:id => "grain_quinoa")
+        end
       end
     end
   end
