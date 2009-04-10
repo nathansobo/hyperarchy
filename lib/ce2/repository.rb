@@ -23,6 +23,7 @@ class Repository
       column :deleted_at, :datetime
     end
     create_table :questions do
+      column :id, :string
       column :stimulus, :string
       column :position, :integer
       column :supporting_statements, :string
@@ -35,6 +36,17 @@ class Repository
       column :deleted_at, :datetime
       column :published_at, :datetime
       column :spr, :boolean
+    end
+    create_table :question_sets do
+      column :id, :string
+      column :name, :string
+      column :info, :string
+      column :explanation, :string
+      column :position, :integer
+      column :subtrack_id, :string
+      column :fixed_info_width, :boolean
+      column :deleted_at, :datetime
+      column :published_at, :datetime
     end
   end
 

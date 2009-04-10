@@ -1,9 +1,17 @@
 module Relations
-  class Selection
+  class Selection < Relation
     attr_reader :operand, :predicate
 
     def initialize(operand, predicate)
       @operand, @predicate = operand, predicate
+    end
+
+    def tuples
+      Origin.read(tuple_class, to_sql)
+    end
+
+    def tuple_class
+      operand.tuple_class
     end
 
     def to_sql

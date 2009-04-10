@@ -50,7 +50,7 @@ module Relations
     end
 
     describe "#tuples" do
-      it "executes a select all SQL query against the database and returns Tuples corresponding to its result" do
+      it "executes a select all SQL query against the database and returns Tuples corresponding to its results" do
         tuple_1_id = set.create(:body => "Quinoa", :correct => true).id
         tuple_2_id = set.create(:body => "White Rice", :correct => false).id
         tuple_3_id = set.create(:body => "Pearled Barley", :correct => false).id

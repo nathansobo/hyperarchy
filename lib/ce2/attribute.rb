@@ -12,4 +12,8 @@ class Attribute
   def to_sql
     "#{set.global_name}.#{name}"
   end
+
+  def eq(right_operand)
+    Predicates::Eq.new(self, right_operand)
+  end
 end

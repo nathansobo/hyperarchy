@@ -10,17 +10,45 @@ Spec::Runner.configure do |config|
   end
 end
 
-Answer.fixtures({
+Answer.fixtures(
   :grain_quinoa => {
     :body => "Quinoa",
-    :correct => true
+    :correct => true,
+    :question_id => "grain"
   },
   :grain_barley => {
     :body => "Barley",
-    :correct => false
+    :correct => false,
+    :question_id => "grain"
   },
   :grain_millet => {
     :body => "Millet",
-    :correct => false
+    :correct => false,
+   :question_id => "grain"
+  },
+  :vegetable_daikon => {
+    :body => "Daikon",
+    :correct => false,
+    :question_id => "vegetable"
+  },
+  :vegetable_kale => {
+    :body => "Kale",
+    :correct => true,
+    :question_id => "vegetable"
   }
-})
+)
+
+Question.fixtures(
+  :grain => {
+    :stimulus => "What's your favorite grain?",
+    :question_set_id => "foods"
+  },
+  :vegetable => {
+   :stimulus => "What's your favorite vegetable?",
+   :question_set_id => "foods"
+  }
+)
+
+QuestionSet.fixtures(
+  :foods => {}
+)

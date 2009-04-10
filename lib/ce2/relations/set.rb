@@ -1,5 +1,5 @@
 module Relations
-  class Set
+  class Set < Relation
     attr_reader :global_name, :tuple_class, :attributes_by_name
     attr_accessor :declared_fixtures
     

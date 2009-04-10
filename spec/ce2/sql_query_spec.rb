@@ -25,7 +25,7 @@ describe SqlQuery do
       end
 
       it "generates a select with a where clause having all conditions and'ed together" do
-        query.to_sql.should == %{select #{query.projected_attributes_sql} from answers where answers.correct = true and answers.body = "Peaches";}
+        query.to_sql.should == %{select #{query.projected_attributes_sql} from answers where answers.correct = "t" and answers.body = "Peaches";}
       end
     end
   end

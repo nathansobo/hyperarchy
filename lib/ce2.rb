@@ -7,8 +7,7 @@ require "sequel/extensions/inflector"
 require "collections/sequenced_hash"
 
 dir = File.dirname(__FILE__)
-require "#{dir}/ce2/object"
-require "#{dir}/ce2/string"
+require "#{dir}/ce2/core_extensions"
 
 require "#{dir}/ce2/domain"
 require "#{dir}/ce2/relations"
