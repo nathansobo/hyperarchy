@@ -10,6 +10,39 @@ Spec::Runner.configure do |config|
   end
 end
 
+Group.fixtures(
+  :dating => {}
+)
+
+Track.fixtures(
+  :personality => {
+    :group_id => "dating"
+  }
+)
+
+Subtrack.fixtures(
+  :favorites => {
+    :track_id => "personality"
+  }
+)
+
+QuestionSet.fixtures(
+  :foods => {
+    :subtrack_id => "favorites"
+  }
+)
+
+Question.fixtures(
+  :grain => {
+    :stimulus => "What's your favorite grain?",
+    :question_set_id => "foods"
+  },
+  :vegetable => {
+   :stimulus => "What's your favorite vegetable?",
+   :question_set_id => "foods"
+  }
+)
+
 Answer.fixtures(
   :grain_quinoa => {
     :body => "Quinoa",
@@ -36,19 +69,4 @@ Answer.fixtures(
     :correct => true,
     :question_id => "vegetable"
   }
-)
-
-Question.fixtures(
-  :grain => {
-    :stimulus => "What's your favorite grain?",
-    :question_set_id => "foods"
-  },
-  :vegetable => {
-   :stimulus => "What's your favorite vegetable?",
-   :question_set_id => "foods"
-  }
-)
-
-QuestionSet.fixtures(
-  :foods => {}
 )

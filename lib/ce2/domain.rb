@@ -4,7 +4,7 @@ class Domain
       @instance ||= new
     end
 
-    delegate :new_set, :sets_by_name, :load_fixtures, :clear_tables, :to => :instance
+    delegate :new_set, :sets_by_name, :load_fixtures, :clear_tables, :create_schema, :to => :instance
   end
 
   attr_reader :sets_by_name
@@ -14,6 +14,11 @@ class Domain
 
   def new_set(name, tuple_class)
     sets_by_name[name] = Relations::Set.new(name, tuple_class)
+  end
+
+  #TODO: test
+  def create_schema
+    sets.each {|set| set.create_table}
   end
 
   #TODO: test

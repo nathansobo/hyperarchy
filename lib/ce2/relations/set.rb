@@ -46,5 +46,15 @@ module Relations
     def clear_table
       Origin.clear_table(global_name)
     end
+
+    #TODO: test
+    def create_table
+      attributes_to_become_columns = attributes
+      Origin.create_table(global_name) do
+        attributes_to_become_columns.each do |attribute|
+          column attribute.name, attribute.type
+        end
+      end
+    end
   end
 end

@@ -21,4 +21,4 @@ require "#{dir}/ce2/sql_query"
 
 Origin = Repository.new
 Origin.connection = Sequel.sqlite
-Origin.create_schema
+Domain.create_schema
