@@ -11,6 +11,16 @@ module Relations
       @composite_projection = SetProjection.new(composite_join, Answer.set)
     end
 
+    describe "#tuples" do
+      it "executes an appropriate SQL query against the database and returns Tuples corresponding to its results" do
+        tuples = projection.tuples
+        tuples.should_not be_empty
+        tuples.each do |tuple|
+          tuple.class.should == Question 
+        end
+      end
+    end
+
     describe "#to_sql" do
       context "when the composed relation contains only one SetProjection" do
         it "generates a query that selects the attributes of #projected_set and includes all joined tables in its from clause" do

@@ -9,6 +9,10 @@ module Relations
       build_sql_query.to_sql
     end
 
+    def tuple_class
+      projected_set.tuple_class
+    end
+
     def build_sql_query(query=SqlQuery.new)
       query.projected_set = projected_set unless query.projected_set
       operand.build_sql_query(query)

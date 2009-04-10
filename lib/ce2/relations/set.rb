@@ -26,10 +26,6 @@ module Relations
       tuple
     end
 
-    def tuples
-      Origin.read(tuple_class, to_sql)
-    end
-
     def to_sql
       build_sql_query.to_sql
     end

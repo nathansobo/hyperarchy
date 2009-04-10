@@ -12,6 +12,10 @@ module Relations
       SetProjection.new(self, projected_set)
     end
 
+    def tuples
+      Origin.read(tuple_class, to_sql)
+    end
+
     class PartiallyConstructedInnerJoin
       attr_reader :left_operand, :right_operand
       def initialize(left_operand, right_operand)

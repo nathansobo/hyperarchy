@@ -6,10 +6,6 @@ module Relations
       @operand, @predicate = operand, predicate
     end
 
-    def tuples
-      Origin.read(tuple_class, to_sql)
-    end
-
     def tuple_class
       operand.tuple_class
     end
