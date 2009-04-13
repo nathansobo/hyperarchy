@@ -1,7 +1,7 @@
 class Attribute
   class << self
     def from_wire_representation(representation)
-      set = Domain.sets_by_name[representation["set"].to_sym]
+      set = GlobalDomain.sets_by_name[representation["set"].to_sym]
       set.attributes_by_name[representation["name"].to_sym]
     end
   end

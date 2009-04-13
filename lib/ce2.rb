@@ -11,6 +11,7 @@ dir = File.dirname(__FILE__)
 require "#{dir}/ce2/core_extensions"
 
 require "#{dir}/ce2/domain"
+require "#{dir}/ce2/global_domain"
 require "#{dir}/ce2/relations"
 require "#{dir}/ce2/predicates"
 require "#{dir}/ce2/attribute"
@@ -26,4 +27,4 @@ end
 
 Origin = Repository.new
 Origin.connection = Sequel.sqlite
-Domain.create_schema
+GlobalDomain.create_schema

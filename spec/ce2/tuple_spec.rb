@@ -8,8 +8,8 @@ describe Tuple do
       end
 
       it "adds its assigned .set to Domain #sets_by_name" do
-        Domain.sets_by_name[:answers].should == Answer.set
-        Domain.sets_by_name[:answers].tuple_class.should == Answer
+        GlobalDomain.sets_by_name[:answers].should == Answer.set
+        GlobalDomain.sets_by_name[:answers].tuple_class.should == Answer
       end
 
       it "defines an :id Attribute on the subclass" do

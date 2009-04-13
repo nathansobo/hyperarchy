@@ -2,7 +2,7 @@ class Tuple
   class << self
     attr_accessor :set
     def inherited(subclass)
-      subclass.set = Domain.new_set(subclass.basename.underscore.pluralize.to_sym, subclass)
+      subclass.set = GlobalDomain.new_set(subclass.basename.underscore.pluralize.to_sym, subclass)
       subclass.attribute(:id, :string)
     end
 
@@ -57,6 +57,7 @@ class Tuple
     delegate :create, :where, :project, :join, :find, :attributes_by_name, :to => :set
   end
 
+  include Domain
   attr_reader :fields_by_attribute, :relations_by_name
 
 
@@ -115,26 +116,6 @@ class Tuple
 
   def ==(other)
     other.class == self.class && id == other.id
-  end
-
-  def build_relation_from_wire_representation(representation)
-    Relations::Relation.from_wire_representation(representation, self)
-  end
-
-  def fetch(relation_wire_representations)
-    snapshot = {}
-    relation_wire_representations.each do |representation|
-      add_to_relational_snapshot(snapshot, build_relation_from_wire_representation(representation))
-    end
-    snapshot
-  end
-
-  def add_to_relational_snapshot(snapshot, relation)
-    set_name = relation.tuple_class.set.global_name.to_s
-    snapshot[set_name] ||= {}
-    relation.tuple_wire_representations.each do |representation|
-      snapshot[set_name][representation["id"]] = representation
-    end
   end
 
   def resolve_named_relation(name)

@@ -5,8 +5,8 @@ Spec::Runner.configure do |config|
   config.mock_with :rr
 
   config.before do
-    Domain.clear_tables
-    Domain.load_fixtures
+    GlobalDomain.clear_tables
+    GlobalDomain.load_fixtures
   end
 end
 
