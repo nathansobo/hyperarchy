@@ -76,17 +76,12 @@ describe Tuple do
     end
   end
 
-  describe "instance methods" do
+  describe "remote query functionality" do
     def tuple
-      @tuple ||= Answer.new(:body => "Quinoa", :correct => true)
+      @tuple ||= Group.find("dating")
     end
 
     describe "#build_relation_from_wire_representation" do
-      def tuple
-        @tuple ||= Group.find("dating")
-      end
-
-
       it "delegates to Relation#from_wire_representation with self as the subdomain" do
         representation = {
           "type" => "set",
@@ -95,6 +90,62 @@ describe Tuple do
         mock(Relations::Relation).from_wire_representation(representation, tuple)
         tuple.build_relation_from_wire_representation(representation)
       end
+    end
+
+    describe "#fetch" do
+      it "populates a relational snapshot with the contents of an array of wire representations of relations" do
+        questions_relation_representation = {
+          "type" => "selection",
+          "operand" => {
+            "type" => "set",
+            "name" => "questions"
+          },
+          "predicate" => {
+            "type" => "eq",
+            "left_operand" => {
+              "type" => "attribute",
+              "set" => "questions",
+              "name" => "id"
+            },
+            "right_operand" => {
+              "type" => "scalar",
+              "value" => "grain"
+            }
+          }
+        }
+
+        answers_relation_representation = {
+          "type" => "selection",
+          "operand" => {
+            "type" => "set",
+            "name" => "answers"
+          },
+          "predicate" => {
+            "type" => "eq",
+            "left_operand" => {
+              "type" => "attribute",
+              "set" => "answers",
+              "name" => "question_id"
+            },
+            "right_operand" => {
+              "type" => "scalar",
+              "value" => "grain"
+            }
+          }
+        }
+
+        snapshot = tuple.fetch([questions_relation_representation, answers_relation_representation])
+        questions_snapshot_fragment = snapshot["questions"]
+        questions_snapshot_fragment.size.should == 1
+        questions_snapshot_fragment["grain"].should == Question.find("grain").wire_representation
+      end
+    end
+  end
+
+
+  describe "instance methods" do
+    def tuple
+      @tuple ||= Answer.new(:body => "Quinoa", :correct => true)
     end
 
     describe "#initialize" do
@@ -113,6 +164,12 @@ describe Tuple do
 
       it "assigns #id to a new guid" do
         tuple.id.should_not be_nil
+      end
+    end
+
+    describe "#wire_representation" do
+      it "returns #fields_by_attribute_name with string-valued keys" do
+        tuple.wire_representation.should == tuple.field_values_by_attribute_name.stringify_keys
       end
     end
 

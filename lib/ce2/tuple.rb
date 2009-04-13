@@ -83,6 +83,10 @@ class Tuple
     end
   end
 
+  def wire_representation
+    field_values_by_attribute_name.stringify_keys
+  end
+
   def set_field_value(attribute, value)
     fields_by_attribute[attribute].value = value
   end
@@ -115,6 +119,22 @@ class Tuple
 
   def build_relation_from_wire_representation(representation)
     Relations::Relation.from_wire_representation(representation, self)
+  end
+
+  def fetch(relation_wire_representations)
+    snapshot = {}
+    relation_wire_representations.each do |representation|
+      add_to_relational_snapshot(snapshot, build_relation_from_wire_representation(representation))
+    end
+    snapshot
+  end
+
+  def add_to_relational_snapshot(snapshot, relation)
+    set_name = relation.tuple_class.set.global_name.to_s
+    snapshot[set_name] ||= {}
+    relation.tuple_wire_representations.each do |representation|
+      snapshot[set_name][representation["id"]] = representation
+    end
   end
 
   def resolve_named_relation(name)

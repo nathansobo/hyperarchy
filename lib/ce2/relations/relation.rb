@@ -21,16 +21,19 @@ module Relations
     end
 
     def join(right_operand)
-      PartiallyConstructedInnerJoin.new(self, right_operand)
+      PartiallyConstructedInnerJoin.new(self, normalize_to_relation(right_operand))
     end
 
-    def project(projected_set_or_tuple_class)
-      if projected_set_or_tuple_class.instance_of?(Class)
-        projected_set = projected_set_or_tuple_class.set
+    def project(projected_set)
+      SetProjection.new(self, normalize_to_relation(projected_set))
+    end
+
+    def normalize_to_relation(relation_or_tuple_class)
+      if relation_or_tuple_class.instance_of?(Class)
+        relation_or_tuple_class.set
       else
-        projected_set = projected_set_or_tuple_class
+        relation_or_tuple_class
       end
-      SetProjection.new(self, projected_set)
     end
 
     def find(id)
@@ -39,6 +42,10 @@ module Relations
 
     def tuples
       Origin.read(tuple_class, to_sql)
+    end
+
+    def tuple_wire_representations
+      tuples.map {|tuple| tuple.wire_representation}
     end
 
     class PartiallyConstructedInnerJoin

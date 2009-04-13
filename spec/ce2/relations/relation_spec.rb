@@ -127,13 +127,26 @@ module Relations
       end
 
       describe "#join, #on" do
-        it "returns an InnerJoin with self as #left_operand and the given Relation as #right_operand, then the Predicate passed to .on as its #predicate" do
-          predicate = Answer.question_id.eq(Question.id)
-          join = Question.set.join(Answer.set).on(predicate)
-          join.class.should == InnerJoin
-          join.left_operand.should == Question.set
-          join.right_operand.should == Answer.set
-          join.predicate.should == predicate
+        context "when passed a Set" do
+          it "returns an InnerJoin with self as #left_operand and the given Relation as #right_operand, then the Predicate passed to .on as its #predicate" do
+            predicate = Answer.question_id.eq(Question.id)
+            join = Question.set.join(Answer.set).on(predicate)
+            join.class.should == InnerJoin
+            join.left_operand.should == Question.set
+            join.right_operand.should == Answer.set
+            join.predicate.should == predicate
+          end
+        end
+
+        context "when passed a subclass of Tuple" do
+          it "returns an InnerJoin with self as #left_operand and the #set of the given Tuple subclass as #right_operand, then the Predicate passed to .on as its #predicate" do
+            predicate = Answer.question_id.eq(Question.id)
+            join = Question.set.join(Answer).on(predicate)
+            join.class.should == InnerJoin
+            join.left_operand.should == Question.set
+            join.right_operand.should == Answer.set
+            join.predicate.should == predicate
+          end
         end
       end
 
@@ -156,6 +169,12 @@ module Relations
             projection.operand.should == join
             projection.projected_set.should == Answer.set
           end
+        end
+      end
+
+      describe "#tuple_wire_representations" do
+        it "returns the #wire_representation of all its #tuples" do
+          Answer.set.tuple_wire_representations.should == Answer.set.tuples.map {|t| t.wire_representation}
         end
       end
     end
