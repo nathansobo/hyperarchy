@@ -52,7 +52,7 @@ class Tuple
       @relation_definitions ||= SequencedHash.new
     end
 
-    delegate :create, :where, :project, :join, :find, :to => :set
+    delegate :create, :where, :project, :join, :find, :attributes_by_name, :to => :set
   end
 
   attr_reader :fields_by_attribute

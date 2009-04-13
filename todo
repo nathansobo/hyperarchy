@@ -1,2 +1,7 @@
 write relates to one in terms of a "limit" relation which limits the size of its result set to 1
 relates to 1 generates a #{relation_name}_relation method that gives direct access to its limit relation object
+has many, et al
+attributes can't have the same name as class methods on Tuple or they shadow them... how can this be circumvented?
+  either disallow attributes with those names
+  alias the existing methods to something else (could break other code)
+  change the api
