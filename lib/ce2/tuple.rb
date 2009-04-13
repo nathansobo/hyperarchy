@@ -114,11 +114,12 @@ class Tuple
   end
 
   def build_relation_from_wire_representation(representation)
-    case representation["type"]
-    when "set"
-      relation = relations_by_name[representation["name"].to_sym]
-      raise "No relation with name #{representation["name"]} found on #{inspect}" unless relation
-      relation
-    end
+    Relations::Relation.from_wire_representation(representation, self)
+  end
+
+  def resolve_named_relation(name)
+    relation = relations_by_name[name.to_sym]
+    raise "No relation with name #{name} found on #{inspect}" unless relation
+    relation
   end
 end

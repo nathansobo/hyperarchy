@@ -1,5 +1,14 @@
 module Relations
   class Selection < Relation
+    class << self
+      def from_wire_representation(representation, subdomain)
+        operand = Relation.from_wire_representation(representation["operand"], subdomain)
+        predicate = Predicates::Predicate.from_wire_representation(representation["predicate"])
+        new(operand, predicate)
+      end
+    end
+
+
     attr_reader :operand, :predicate
 
     def initialize(operand, predicate)

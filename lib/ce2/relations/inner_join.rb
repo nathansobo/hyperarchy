@@ -1,5 +1,14 @@
 module Relations
   class InnerJoin < Relation
+    class << self
+      def from_wire_representation(representation, subdomain)
+        left_operand = Relation.from_wire_representation(representation["left_operand"], subdomain)
+        right_operand = Relation.from_wire_representation(representation["right_operand"], subdomain)
+        predicate = Predicates::Predicate.from_wire_representation(representation["predicate"])
+        new(left_operand, right_operand, predicate)
+      end
+    end
+
     attr_reader :left_operand, :right_operand, :predicate
     def initialize(left_operand, right_operand, predicate)
       @left_operand, @right_operand, @predicate = left_operand, right_operand, predicate

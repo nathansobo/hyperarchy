@@ -86,30 +86,14 @@ describe Tuple do
         @tuple ||= Group.find("dating")
       end
 
-      context "when 'type' is 'set'" do
-        context "when its 'name' is a relation on the Tuple" do
-          it "returns the relation with that global name" do
 
-            tuple.questions.should_not be_nil
-            relation = tuple.build_relation_from_wire_representation({
-              "type" => "set",
-              "name" => "questions"
-            })
-            relation.should == tuple.questions
-          end
-        end
-
-        context "when its 'name' is not a relation on the Tuple" do
-          it "raises an exception" do
-            lambda do
-              tuple.build_relation_from_wire_representation({
-                "type" => "set",
-                "name" => "monkeys"
-              })
-
-            end.should raise_error
-          end
-        end
+      it "delegates to Relation#from_wire_representation with self as the subdomain" do
+        representation = {
+          "type" => "set",
+          "name" => "questions"
+        }
+        mock(Relations::Relation).from_wire_representation(representation, tuple)
+        tuple.build_relation_from_wire_representation(representation)
       end
     end
 
