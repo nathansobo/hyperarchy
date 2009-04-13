@@ -24,13 +24,15 @@ class Tuple
 
     def relates_to_many(relation_name, &definition)
       relation_definitions[relation_name] = definition
-      attr_reader relation_name
+      define_method(relation_name) do
+        relations_by_name[relation_name]
+      end
     end
 
     def relates_to_one(relation_name, &definition)
       relation_definitions[relation_name] = definition
       define_method relation_name do
-        instance_variable_get("@#{relation_name}").tuples.first
+        relations_by_name[relation_name].tuples.first
       end
     end
 
@@ -55,7 +57,7 @@ class Tuple
     delegate :create, :where, :project, :join, :find, :attributes_by_name, :to => :set
   end
 
-  attr_reader :fields_by_attribute
+  attr_reader :fields_by_attribute, :relations_by_name
 
 
   def initialize(field_values = {})
@@ -97,8 +99,9 @@ class Tuple
   end
 
   def initialize_relations
+    @relations_by_name = {}
     self.class.relation_definitions.each do |relation_name, definition|
-      instance_variable_set("@#{relation_name}", instance_eval(&definition))
+      relations_by_name[relation_name] = instance_eval(&definition)
     end
   end
 
@@ -108,5 +111,14 @@ class Tuple
 
   def ==(other)
     other.class == self.class && id == other.id
+  end
+
+  def build_relation_from_wire_representation(representation)
+    case representation["type"]
+    when "set"
+      relation = relations_by_name[representation["name"].to_sym]
+      raise "No relation with name #{representation["name"]} found on #{inspect}" unless relation
+      relation
+    end
   end
 end

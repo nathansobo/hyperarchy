@@ -6,7 +6,6 @@ attributes can't have the same name as class methods on Tuple or they shadow the
   alias the existing methods to something else (could break other code)
   change the api
 
-
 wire representations of attributes ultimately need to be evaluated in the context of a subdomain, because users might refer
 to forbidden attributes that are projected away. but right now its useless for them to refer to an attribute of a set they
 can't see, so we can use the global sets for resolving attributes

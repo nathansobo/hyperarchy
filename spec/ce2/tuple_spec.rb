@@ -77,9 +77,40 @@ describe Tuple do
   end
 
   describe "instance methods" do
-    attr_reader :tuple
-    before do
-      @tuple = Answer.new(:body => "Quinoa", :correct => true)
+    def tuple
+      @tuple ||= Answer.new(:body => "Quinoa", :correct => true)
+    end
+
+    describe "#build_relation_from_wire_representation" do
+      def tuple
+        @tuple ||= Group.find("dating")
+      end
+
+      context "when 'type' is 'set'" do
+        context "when its 'name' is a relation on the Tuple" do
+          it "returns the relation with that global name" do
+
+            tuple.questions.should_not be_nil
+            relation = tuple.build_relation_from_wire_representation({
+              "type" => "set",
+              "name" => "questions"
+            })
+            relation.should == tuple.questions
+          end
+        end
+
+        context "when its 'name' is not a relation on the Tuple" do
+          it "raises an exception" do
+            lambda do
+              tuple.build_relation_from_wire_representation({
+                "type" => "set",
+                "name" => "monkeys"
+              })
+
+            end.should raise_error
+          end
+        end
+      end
     end
 
     describe "#initialize" do
