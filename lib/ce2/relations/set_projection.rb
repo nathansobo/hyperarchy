@@ -1,5 +1,13 @@
 module Relations
   class SetProjection < Relation
+    class << self
+      def from_wire_representation(representation, subdomain)
+        operand = Relation.from_wire_representation(representation["operand"], subdomain)
+        projected_set = subdomain.resolve_named_relation(representation["projected_set"]).tuple_class.set
+        new(operand, projected_set)
+      end
+    end
+
     attr_reader :operand, :projected_set
     def initialize(operand, projected_set)
       @operand, @projected_set = operand, projected_set

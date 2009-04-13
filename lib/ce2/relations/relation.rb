@@ -10,8 +10,9 @@ module Relations
           Selection.from_wire_representation(representation, subdomain)
         when "inner_join"
           InnerJoin.from_wire_representation(representation, subdomain)
+        when "set_projection"
+          SetProjection.from_wire_representation(representation, subdomain)
         end
-
       end
     end
 
@@ -23,7 +24,12 @@ module Relations
       PartiallyConstructedInnerJoin.new(self, right_operand)
     end
 
-    def project(projected_set)
+    def project(projected_set_or_tuple_class)
+      if projected_set_or_tuple_class.instance_of?(Class)
+        projected_set = projected_set_or_tuple_class.set
+      else
+        projected_set = projected_set_or_tuple_class
+      end
       SetProjection.new(self, projected_set)
     end
 

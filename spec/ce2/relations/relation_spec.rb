@@ -76,6 +76,42 @@ module Relations
             Relation.from_wire_representation(representation, subdomain)
           end
         end
+
+        context "when the given representation's type is 'set_projection'" do
+          it "delegates to SetProjection.from_wire_representation" do
+            representation = {
+              "type" => "set_projection",
+              "projected_set" => "answers",
+              "operand" => {
+                "type" => "inner_join",
+                "left_operand" => {
+                  "type" => "set",
+                  "name" => "questions"
+                },
+                "right_operand" => {
+                  "type" => "set",
+                  "name" => "answers"
+                },
+                "predicate" => {
+                  "type" => "eq",
+                  "left_operand" => {
+                    "type" => "attribute",
+                    "set" => "questions",
+                    "name" => "id"
+                  },
+                  "right_operand" => {
+                    "type" => "attribute",
+                    "set" => "answers",
+                    "name" => "question_id"
+                  }
+                }
+              }
+            }
+
+            mock(SetProjection).from_wire_representation(representation, subdomain)
+            Relation.from_wire_representation(representation, subdomain)
+          end
+        end
       end
     end
 
@@ -102,12 +138,24 @@ module Relations
       end
 
       describe "#project" do
-        it "returns a SetProjection with self as #operand and the given Set as its #projected_set" do
-          join = Question.set.join(Answer.set).on(Answer.question_id.eq(Question.id))
-          projection = join.project(Answer.set)
-          projection.class.should == SetProjection
-          projection.operand.should == join
-          projection.projected_set.should == Answer.set
+        context "when passed a Set" do
+          it "returns a SetProjection with self as #operand and the given Set as its #projected_set" do
+            join = Question.set.join(Answer.set).on(Answer.question_id.eq(Question.id))
+            projection = join.project(Answer.set)
+            projection.class.should == SetProjection
+            projection.operand.should == join
+            projection.projected_set.should == Answer.set
+          end
+        end
+
+        context "when passed a subclass of Tuple" do
+          it "returns a SetProjection with self as #operand and the #set of the given Tuple subclass as its #projected_set" do
+            join = Question.set.join(Answer.set).on(Answer.question_id.eq(Question.id))
+            projection = join.project(Answer)
+            projection.class.should == SetProjection
+            projection.operand.should == join
+            projection.projected_set.should == Answer.set
+          end
         end
       end
     end
