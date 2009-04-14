@@ -6,3 +6,10 @@ javascript/vendor/june:
   revision: 1849fb9d09adf02395f6f4edd012b508c9a6a7f2
   branch: master
   remote: braid/javascript/vendor/june
+javascript/vendor/disco: 
+  squashed: true
+  url: git://github.com/grockit/disco.git
+  type: git
+  revision: 8699d8a762f25820bd979447cb4d6d6bdf3f3e08
+  branch: master
+  remote: braid/javascript/vendor/disco
