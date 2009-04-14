@@ -1,0 +1,8 @@
+--- 
+vendor/foundation: 
+  squashed: true
+  url: git://github.com/grockit/foundation.git
+  type: git
+  revision: f2a9d5c5fc94c19358bdc7a966f4962326925098
+  branch: master
+  remote: braid/vendor/foundation

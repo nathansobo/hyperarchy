@@ -1,4 +1,11 @@
 --- 
+javascript/vendor/prez: 
+  squashed: true
+  url: git://github.com/grockit/prez.git
+  type: git
+  revision: b86e3b43ae1e13f0aed1340dbeca12827fe3b222
+  branch: master
+  remote: braid/javascript/vendor/prez
 javascript/vendor/june: 
   squashed: true
   type: git
