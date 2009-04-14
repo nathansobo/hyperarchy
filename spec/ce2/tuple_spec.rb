@@ -74,6 +74,17 @@ describe Tuple do
         tuple.body.should == "Rice"
       end
     end
+
+    describe "#each" do
+      specify "are forwarded to #tuples of #set" do
+        tuples = []
+        stub(Answer.set).tuples { tuples }
+
+        block = lambda {}
+        mock(tuples).each(&block)
+        Answer.each(&block)
+      end
+    end
   end
 
   describe "remote query functionality" do

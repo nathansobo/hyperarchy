@@ -177,6 +177,17 @@ module Relations
           Answer.set.tuple_wire_representations.should == Answer.set.tuples.map {|t| t.wire_representation}
         end
       end
+
+      describe "#each" do
+        specify "delegates to #tuples of #set" do
+          tuples = []
+          stub(Answer.set).tuples { tuples }
+
+          block = lambda {}
+          mock(tuples).each(&block)
+          Answer.set.each(&block)
+        end
+      end
     end
   end
 end

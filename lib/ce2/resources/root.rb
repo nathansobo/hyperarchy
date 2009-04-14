@@ -27,6 +27,12 @@ module Resources
           title "CE2"
           script :type => "text/javascript", :language => "javascript", :src => "/all.js"
         end
+
+        body do
+          Group.each do |group|
+            p group.name
+          end
+        end
       end
     end
   end

@@ -1,6 +1,5 @@
 module Relations
   class Relation
-
     class << self
       def from_wire_representation(representation, subdomain)
         case representation["type"]
@@ -15,6 +14,7 @@ module Relations
         end
       end
     end
+    include ForwardsArrayMethodsToTuples
 
     def where(predicate)
       Selection.new(self, predicate)

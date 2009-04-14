@@ -1,5 +1,7 @@
 class Tuple
   class << self
+    include ForwardsArrayMethodsToTuples
+
     attr_accessor :set
     def inherited(subclass)
       subclass.set = GlobalDomain.new_set(subclass.basename.underscore.pluralize.to_sym, subclass)
@@ -54,7 +56,7 @@ class Tuple
       @relation_definitions ||= SequencedHash.new
     end
 
-    delegate :create, :where, :project, :join, :find, :attributes_by_name, :to => :set
+    delegate :create, :where, :project, :join, :find, :attributes_by_name, :tuples, :to => :set
   end
 
   include Domain

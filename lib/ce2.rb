@@ -16,6 +16,7 @@ CE2_ROOT = File.expand_path("#{dir}/..")
 require "#{dir}/ce2/core_extensions"
 require "#{dir}/ce2/domain"
 require "#{dir}/ce2/global_domain"
+require "#{dir}/ce2/forwards_array_methods_to_tuples"
 require "#{dir}/ce2/relations"
 require "#{dir}/ce2/predicates"
 require "#{dir}/ce2/attribute"
