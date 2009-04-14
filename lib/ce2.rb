@@ -1,6 +1,7 @@
 require "rubygems"
 require "sequel"
 require "guid"
+require "thin"
 require "active_support/core_ext/module/delegation"
 require "active_support/core_ext/object/metaclass"
 require "active_support/core_ext/hash/keys"
@@ -20,6 +21,9 @@ require "#{dir}/ce2/repository"
 require "#{dir}/ce2/tuple"
 require "#{dir}/ce2/models"
 require "#{dir}/ce2/sql_query"
+require "#{dir}/ce2/server"
+require "#{dir}/ce2/dispatcher"
+require "#{dir}/ce2/resources"
 
 class Hash
   include ActiveSupport::CoreExtensions::Hash::Keys

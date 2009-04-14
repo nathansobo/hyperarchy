@@ -135,6 +135,7 @@ describe Tuple do
         }
 
         snapshot = tuple.fetch([questions_relation_representation, answers_relation_representation])
+
         questions_snapshot_fragment = snapshot["questions"]
         questions_snapshot_fragment.size.should == 1
         questions_snapshot_fragment["grain"].should == Question.find("grain").wire_representation
