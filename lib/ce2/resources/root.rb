@@ -25,7 +25,7 @@ module Resources
       html do
         head do
           title "CE2"
-          script :type => "text/javascript", :language => "javascript", :src => "/all_javascript.js"
+          script :type => "text/javascript", :language => "javascript", :src => "/all.js"
         end
       end
     end

@@ -17,8 +17,8 @@ class Server
       :root         => CE2_ROOT,
       :asset_root   => "public",
       :load_path    => ["javascript/**/*"],
-      :source_files => ["javascript/ce2.js"]
+      :source_files => ["javascript/lib/ce2.js"]
     )
-
+    secretary.concatenation.save_to("public/all.js")
   end
 end
