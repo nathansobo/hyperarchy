@@ -16,9 +16,18 @@ module Resources
     end
 
     def content
-      js_include_tag "/javascript/vendor/june.js"
-      js_include_tag "/javascript/vendor/disco.js"
-      js_include_tag "/javascript/ce2.js"
+      View.new.to_pretty
+    end
+  end
+
+  class View < Erector::Widget
+    def render
+      html do
+        head do
+          title "CE2"
+          script :type => "text/javascript", :language => "javascript", :src => "/all_javascript.js"
+        end
+      end
     end
   end
 end
