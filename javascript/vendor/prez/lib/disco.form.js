@@ -11,7 +11,7 @@ Disco.Form = {
   configuration: {},
   
   methods: {
-    after_initialize: function() {
+    initialize: function() {
       if(this.model) {
         this.load();
       }

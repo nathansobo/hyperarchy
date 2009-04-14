@@ -26,12 +26,12 @@ module("Prez", function(c) { with(c) {
 
     merged_template.methods = merged_template.methods || {};
 
-    merged_template.methods.after_initialize = function() {
-      if(layout.methods && layout.methods.after_initialize) {
-        layout.methods.after_initialize.call(this);
+    merged_template.methods.initialize = function() {
+      if(layout.methods && layout.methods.initialize) {
+        layout.methods.initialize.call(this);
       }
-      if(template.methods && template.methods.after_initialize) {
-        template.methods.after_initialize.call(this);
+      if(template.methods && template.methods.initialize) {
+        template.methods.initialize.call(this);
       }
     };
 

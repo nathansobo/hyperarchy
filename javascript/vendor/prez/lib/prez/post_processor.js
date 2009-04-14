@@ -47,8 +47,8 @@ module("Prez", function(c) { with(c) {
       if (initial_attributes) {
         $.extend(current_view, initial_attributes);
       }
-      if (current_view.after_initialize) {
-        current_view.after_initialize();
+      if (current_view.initialize) {
+        current_view.initialize();
       }
       this.view_stack.pop();
     });

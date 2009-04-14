@@ -84,10 +84,10 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe(".inherit", function() {
-      var layout, template, merged_template, after_initialize_calls;
+      var layout, template, merged_template, initialize_calls;
       
       before(function() {
-        after_initialize_calls = [];
+        initialize_calls = [];
         layout = {
           content: function(builder, initial_attributes) {
             with(builder) {
@@ -102,8 +102,8 @@ Screw.Unit(function(c) { with(c) {
             return 'world';
           },
           methods: {
-            after_initialize: function() {
-              after_initialize_calls.push([this, 'layout']);
+            initialize: function() {
+              initialize_calls.push([this, 'layout']);
             },
             method_one: function() {}
           },
@@ -118,8 +118,8 @@ Screw.Unit(function(c) { with(c) {
             return 'mars';
           },
           methods: {
-            after_initialize: function() {
-              after_initialize_calls.push([this, 'template']);
+            initialize: function() {
+              initialize_calls.push([this, 'template']);
             },
             method_two: function() {}
           },
@@ -151,10 +151,10 @@ Screw.Unit(function(c) { with(c) {
           expect(merged_template.configuration.config_two).to(equal, template.configuration.config_two);
         });
         
-        it("combines the after_initialize methods of the layout and inheriting template, executing the layout's method first", function() {
-          expect(merged_template.methods.after_initialize).to_not(equal, undefined);
+        it("combines the initialize methods of the layout and inheriting template, executing the layout's method first", function() {
+          expect(merged_template.methods.initialize).to_not(equal, undefined);
           var view = Prez.build(merged_template);
-          expect(after_initialize_calls).to(equal, [[view, 'layout'], [view, 'template']]);
+          expect(initialize_calls).to(equal, [[view, 'layout'], [view, 'template']]);
         });
         
         var it_does_not_raise_for_undefined = function(missing_definition) {
@@ -172,9 +172,9 @@ Screw.Unit(function(c) { with(c) {
         };
         
         it_does_not_raise_for_undefined('layout.methods');
-        it_does_not_raise_for_undefined('layout.methods.after_initialize');
+        it_does_not_raise_for_undefined('layout.methods.initialize');
         it_does_not_raise_for_undefined('template.methods');
-        it_does_not_raise_for_undefined('template.methods.after_initialize');
+        it_does_not_raise_for_undefined('template.methods.initialize');
       });
       
       describe("when applied to a subview", function() {
@@ -298,8 +298,8 @@ Screw.Unit(function(c) { with(c) {
               return "bar";
             },
 
-            after_initialize: function() {
-              this.after_initialize_called = true;
+            initialize: function() {
+              this.initialize_called = true;
             }
           },
           
@@ -325,8 +325,8 @@ Screw.Unit(function(c) { with(c) {
           expect(view.configuration).to(equal, template.configuration);
         });
 
-        it("calls after_initialize on the created view if the method exists", function() {
-          expect(view.after_initialize_called).to(be_true);
+        it("calls initialize on the created view if the method exists", function() {
+          expect(view.initialize_called).to(be_true);
         });
       });
       
@@ -339,7 +339,7 @@ Screw.Unit(function(c) { with(c) {
           },
           
           methods: {
-            after_initialize: function() {
+            initialize: function() {
               variables_at_time_of_call.foo = this.foo;
               variables_at_time_of_call.baz = this.baz;
             }
@@ -354,7 +354,7 @@ Screw.Unit(function(c) { with(c) {
           variables_at_time_of_call = {};
         });
         
-        it("assigns the attributes on the view before after_initialize is called", function() {
+        it("assigns the attributes on the view before initialize is called", function() {
           var view = Prez.build(template, variables);
           expect(view.foo).to(equal, variables.foo);
           expect(view.baz).to(equal, variables.baz);
@@ -387,7 +387,7 @@ Screw.Unit(function(c) { with(c) {
             return "bar"
           },
 
-          after_initialize: function() {
+          initialize: function() {
             initialization_order.push(this);
             initial_attributes_of_template_1_during_after_intialize['bar'] = this.bar;
             initial_attributes_of_template_1_during_after_intialize['bing'] = this.bing;
@@ -405,7 +405,7 @@ Screw.Unit(function(c) { with(c) {
             return "bop"
           },
 
-          after_initialize: function() {
+          initialize: function() {
             initialization_order.push(this);
           }
         }
@@ -440,7 +440,7 @@ Screw.Unit(function(c) { with(c) {
           expect(initialization_order).to(equal, [view.subview.subview, view.subview]);
         });
         
-        it('assigns the elements of the initial_attributes hash to the view before after_initialize is called', function() {
+        it('assigns the elements of the initial_attributes hash to the view before initialize is called', function() {
           expect(initial_attributes_of_template_1_during_after_intialize.bar).to(equal, 'baz')
           expect(initial_attributes_of_template_1_during_after_intialize.bing).to(equal, 'bop')
           expect(view.subview.bar).to(equal, 'baz');
@@ -499,7 +499,7 @@ Screw.Unit(function(c) { with(c) {
             return "bar"
           },
 
-          after_initialize: function() {
+          initialize: function() {
             initialization_order.push(this);
             initial_attributes_of_template_1_during_after_intialize['bar'] = this.bar;
             initial_attributes_of_template_1_during_after_intialize['bing'] = this.bing;
@@ -517,7 +517,7 @@ Screw.Unit(function(c) { with(c) {
             return "bop"
           },
 
-          after_initialize: function() {
+          initialize: function() {
             initialization_order.push(this);
           }
         }

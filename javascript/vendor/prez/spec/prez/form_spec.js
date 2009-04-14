@@ -538,7 +538,7 @@ Screw.Unit(function() {
       });
     });
 
-    describe("#after_initialize", function() {
+    describe("#initialize", function() {
       describe("when initial_attributes includes a model", function() {
         before(function() {
           render_form_and_assign_element({
