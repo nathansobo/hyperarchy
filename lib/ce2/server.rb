@@ -4,12 +4,18 @@ class Server
   end
 
   def start(options)
+    load_fixtures
     compile_public_assets
 
     port = options.delete(:port) || 8080
     Thin::Server.start(port) do
       run Dispatcher.instance
     end
+  end
+
+  def load_fixtures
+    require "#{CE2_ROOT}/spec/ce2/fixtures"
+    GlobalDomain.load_fixtures
   end
 
   def compile_public_assets

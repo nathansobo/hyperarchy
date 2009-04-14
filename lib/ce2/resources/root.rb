@@ -16,24 +16,7 @@ module Resources
     end
 
     def content
-      View.new.to_pretty
-    end
-  end
-
-  class View < Erector::Widget
-    def render
-      html do
-        head do
-          title "CE2"
-          script :type => "text/javascript", :language => "javascript", :src => "/all.js"
-        end
-
-        body do
-          Group.each do |group|
-            p group.name
-          end
-        end
-      end
+      Views::Root.new.to_pretty
     end
   end
 end

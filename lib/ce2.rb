@@ -28,6 +28,7 @@ require "#{dir}/ce2/sql_query"
 require "#{dir}/ce2/server"
 require "#{dir}/ce2/dispatcher"
 require "#{dir}/ce2/resources"
+require "#{dir}/ce2/views"
 
 class Hash
   include ActiveSupport::CoreExtensions::Hash::Keys
