@@ -1,0 +1,9 @@
+Legend:
++ == In progress
+* == Done
+
+TODO:
+[ ] integrate into mmol
+[ ] performance testing
+[ ] domain object / global domain
+[ ] remote repository proxy

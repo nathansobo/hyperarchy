@@ -1,0 +1,8 @@
+--- 
+vendor/screw_unit_server: 
+  squashed: true
+  url: git://github.com/grockit/screw-unit-server.git
+  type: git
+  revision: 02075fa0e1632dff77a66e8771cbe0ee9379c409
+  branch: master
+  remote: braid/vendor/screw-unit-server

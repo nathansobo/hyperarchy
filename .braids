@@ -1,0 +1,8 @@
+--- 
+javascript/vendor/june: 
+  squashed: true
+  url: git@github.com:grockit/june.git
+  type: git
+  revision: 1849fb9d09adf02395f6f4edd012b508c9a6a7f2
+  branch: master
+  remote: braid/javascript/vendor/june
