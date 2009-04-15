@@ -7,6 +7,12 @@ module("Views", function(c) { with(c) {
     methods: {
       initialize: function() {
         this.remote_domain = June.remote("/domain");
+
+        Group.on_create(function(group) {
+          
+        });
+
+        this.remote_domain.pull(Group);
       }
     }
   });
