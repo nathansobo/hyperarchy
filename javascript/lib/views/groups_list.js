@@ -5,7 +5,9 @@ module("Views", function(c) { with(c) {
     }},
 
     methods: {
-      
+      initialize: function() {
+        this.remote_domain = June.remote("/domain");
+      }
     }
   });
 }});
