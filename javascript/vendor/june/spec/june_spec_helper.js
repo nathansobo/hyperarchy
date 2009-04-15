@@ -1,32 +1,34 @@
 //require("/vendor/jquery-1.2.6");
 require("/vendor/foundation");
-require("/june");
-require("/june/string");
-require("/june/subscription_node");
-require("/june/subscription");
-require("/june/relation_methods");
-require("/june/subscriber_methods");
-require("/june/subscribable");
-require("/june/tuple_supervisor");
-require("/june/tuple_methods");
-require("/june/domain");
-require("/june/set");
-require("/june/inner_join");
-require("/june/selection");
-require("/june/composite_tuple");
-require("/june/set_configuration");
-require("/june/attribute");
-require("/june/field");
-require("/june/set_projection");
-require("/june/predicates/predicate_methods");
-require("/june/predicates/equal_to");
-require("/june/predicates/not_equal_to");
+require("/vendor/json");
+
+require("/lib/june/string");
+require("/lib/june/subscription_node");
+require("/lib/june/subscription");
+require("/lib/june/subscriber_methods");
+require("/lib/june/subscribable");
+require("/lib/june/tuple_supervisor");
+require("/lib/june/domain");
+require("/lib/june/remote_domain");
+require("/lib/june/tuple_methods");
+require("/lib/june/composite_tuple");
+require("/lib/june/attribute");
+require("/lib/june/field");
+require("/lib/june/relations/relation_methods");
+require("/lib/june/relations/set");
+require("/lib/june/relations/set_configuration");
+require("/lib/june/relations/selection");
+require("/lib/june/relations/inner_join");
+require("/lib/june/relations/set_projection");
+require("/lib/june/predicates/binary_predicate_methods");
+require("/lib/june/predicates/predicate_methods");
+require("/lib/june/predicates/equal_to");
+require("/lib/june/predicates/not_equal_to");
+require("/lib/june");
 
 Screw.Unit(function(c) { with(c) {
   before(function() {
-    FixtureDomain = new June.Domain();
-
-    FixtureDomain.define_set("User", function(c) { with(c) {
+    June.define_set("User", function(c) { with(c) {
       attributes({
         'id': 'string',
         'first_name': 'string',
@@ -56,7 +58,7 @@ Screw.Unit(function(c) { with(c) {
       });
     }});
 
-    FixtureDomain.define_set("Pet", function(c) { with(c) {
+    June.define_set("Pet", function(c) { with(c) {
       attributes({
         'id': 'string',
         'name': 'string',
@@ -69,7 +71,7 @@ Screw.Unit(function(c) { with(c) {
       belongs_to("owner_2", {target_set_name: "User", foreign_key_name: "owner_id"});
     }});
 
-    FixtureDomain.define_set("Species", function(c) { with(c) {
+    June.define_set("Species", function(c) { with(c) {
       attributes({
         'id': 'string',
         'name': 'string'
@@ -96,7 +98,7 @@ Screw.Unit(function(c) { with(c) {
 
 
   after(function() {
-    FixtureDomain = undefined;
+    June.GlobalDomain = new June.Domain();
     User = undefined;
     Pet = undefined;
     Species = undefined;

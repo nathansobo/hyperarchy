@@ -3,7 +3,6 @@ Legend:
 * == Done
 
 TODO:
+[ ] remove inflector extensions on string prototype and use Inflector.X directly instead in library code
 [ ] integrate into mmol
 [ ] performance testing
-[ ] domain object / global domain
-[ ] remote repository proxy

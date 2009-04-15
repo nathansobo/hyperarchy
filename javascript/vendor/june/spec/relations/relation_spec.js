@@ -2,8 +2,18 @@ require("/specs/june_spec_helper");
 
 Screw.Unit(function(c) { with(c) {
   describe("All relations", function() {
+    describe("#where", function() {
+      it("builds a Selection", function() {
+        var predicate = User.id.eq("bob");
+        var selection = User.where(predicate)
+        expect(selection.constructor).to(equal, June.Relations.Selection);
+        expect(selection.operand).to(equal, User);
+        expect(selection.predicate).to(equal, predicate);
+      });
+    });
+
     describe("#join(:left).on(:right)", function() {
-      it("builds an InnerJoin ", function() {
+      it("builds an InnerJoin", function() {
         var predicate = Pet.owner_id.eq(User.id);
         var inner_join = User.join(Pet).on(predicate);
         expect(inner_join.left_operand).to(equal, User);
@@ -12,13 +22,14 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#where", function() {
-      it("builds a Selection", function() {
-        var predicate = User.id.eq("bob");
-        var selection = User.where(predicate)
-        expect(selection.constructor).to(equal, June.Selection);
-        expect(selection.operand).to(equal, User);
-        expect(selection.predicate).to(equal, predicate);
+    describe("#project", function() {
+      it("builds a SetProjection", function() {
+        var predicate = Pet.owner_id.eq(User.id);
+        var inner_join = User.join(Pet).on(predicate);
+        var projection = inner_join.project(Pet);
+
+        expect(projection.operand).to(equal, inner_join);
+        expect(projection.projected_set).to(equal, Pet);
       });
     });
 

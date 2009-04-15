@@ -1,14 +1,14 @@
 require("/specs/june_spec_helper");
 
 Screw.Unit(function(c) { with(c) {
-  describe("InnerJoin", function() {
+  describe("Relations.InnerJoin", function() {
     var join, left_operand, right_operand, predicate, tuple;
 
     before(function() {
       left_operand = User;
       right_operand = Pet;
       predicate = new June.Predicates.EqualTo(User.id, Pet.owner_id);
-      join = new June.InnerJoin(left_operand, right_operand, predicate);
+      join = new June.Relations.InnerJoin(left_operand, right_operand, predicate);
     });
 
     describe("#tuples", function() {
@@ -21,6 +21,34 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+    describe("#wire_representation", function() {
+      it("returns the JSON representation of the InnerJoin", function() {
+        expect(join.wire_representation()).to(equal, {
+          type: "inner_join",
+          left_operand: {
+            type: "set",
+            name: "users"
+          },
+          right_operand: {
+            type: "set",
+            name: "pets"
+          },
+          predicate: {
+            type: "eq",
+            left_operand: {
+              type: "attribute",
+              set: "users",
+              name: "id"
+            },
+            right_operand: {
+              type: "attribute",
+              set: "pets",
+              name: "owner_id"
+            }
+          }
+        });
+      });
+    });
 
     // TODO: test contains
     // TODO: test has_subscribers

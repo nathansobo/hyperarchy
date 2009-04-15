@@ -1,8 +1,8 @@
 module("June", function(c) { with(c) {
   constructor("Domain", function() {
     def('define_set', function(name, definition) {
-      var set = new June.Set(name, definition);
-      this[name] = set;
+      var set = new June.Relations.Set(name, definition);
+      this[set.global_name] = set;
       window[name] = set;
     });
 

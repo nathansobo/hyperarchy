@@ -47,5 +47,42 @@ Screw.Unit(function(c) { with(c) {
         });
       });
     });
+
+    describe("#wire_representation", function() {
+      context("when both the operands are scalar", function() {
+        it("returns the JSON representation of the Predicate and both its operands", function() {
+          predicate = new June.Predicates.NotEqualTo(1, 2);
+          expect(predicate.wire_representation()).to(equal, {
+            type: "neq",
+            left_operand: {
+              type: "scalar",
+              value: 1
+            },
+            right_operand: {
+              type: "scalar",
+              value: 2
+            }
+          });
+        });
+      });
+
+      context("when one of the operands is an attribute", function() {
+        it("returns the JSON representation of the Predicate and both its operands", function() {
+          predicate = new June.Predicates.NotEqualTo(User.first_name, "Nathan");
+          expect(predicate.wire_representation()).to(equal, {
+            type: "neq",
+            left_operand: {
+              type: "attribute",
+              set: "users",
+              name: "first_name"
+            },
+            right_operand: {
+              type: "scalar",
+              value: "Nathan"
+            }
+          });
+        });
+      });
+    });
   });
 }});

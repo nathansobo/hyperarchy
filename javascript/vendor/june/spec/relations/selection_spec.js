@@ -1,13 +1,13 @@
 require("/specs/june_spec_helper");
 
 Screw.Unit(function(c) { with(c) {
-  describe("Selection", function() {
+  describe("Relations.Selection", function() {
     var selection, operand, predicate;
 
     before(function() {
       operand = User;
       predicate = new June.Predicates.EqualTo(User.age, 21);
-      selection = new June.Selection(operand, predicate);
+      selection = new June.Relations.Selection(operand, predicate);
     });
 
     describe("#tuples", function() {
@@ -24,6 +24,30 @@ Screw.Unit(function(c) { with(c) {
 
         expect(expected_tuples).to_not(be_empty);
         expect(selection.tuples()).to(equal, expected_tuples);
+      });
+    });
+
+    describe("#wire_representation", function() {
+      it("returns the JSON representation of the Selection", function() {
+        expect(selection.wire_representation()).to(equal, {
+          type: "selection",
+          operand: {
+            type: "set",
+            name: "users"
+          },
+          predicate: {
+            type: "eq",
+            left_operand: {
+              type: "attribute",
+              set: "users",
+              name: "age"
+            },
+            right_operand: {
+              type: "scalar",
+              value: 21
+            }
+          }
+        });
       });
     });
 
