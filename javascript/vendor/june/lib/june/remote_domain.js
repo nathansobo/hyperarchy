@@ -4,9 +4,9 @@ module("June", function(c) { with(c) {
       this.url = url;
     });
 
-    def("pull", function() {
-      var snapshot = this.fetch.apply(this, arguments);
-      June.GlobalDomain.update(snapshot);
+    def("pull", function(relations, callback) {
+      var snapshot = this.fetch(relations);
+      June.GlobalDomain.update(snapshot, callback);
     });
 
     def("fetch", function() {

@@ -21,9 +21,10 @@ Screw.Unit(function(c) { with(c) {
           return snapshot;
         });
 
+        var callback = function() {}
         mock(June.GlobalDomain, "update");
-        remote.pull(User);
-        expect(June.GlobalDomain.update).to(have_been_called, with_args(snapshot));
+        remote.pull([User], callback);
+        expect(June.GlobalDomain.update).to(have_been_called, with_args(snapshot, callback));
       });
     });
 
