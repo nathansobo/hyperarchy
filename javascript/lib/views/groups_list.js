@@ -7,12 +7,18 @@ module("Views", function(c) { with(c) {
     methods: {
       initialize: function() {
         this.remote_domain = June.remote("/domain");
-
-        Group.on_create(function(group) {
-          
+        var self = this;
+        this.remote_domain.pull([Group], function() {
+          self.render_groups();
         });
+      },
 
-        this.remote_domain.pull(Group);
+      render_groups: function() {
+        Group.each(function(group) {
+          this.find("#groups_list").append(Disco.build(function(b) { with(b)
+            
+          }}));
+        });
       }
     }
   });
