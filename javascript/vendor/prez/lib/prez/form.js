@@ -1,9 +1,9 @@
-Disco.Form = {
+Prez.Form = {
   content: function(builder, initial_attributes) {
     var self = this;
     with(builder) {
       form(function() {
-        self.form_content(new Disco.Form.Builder(builder, self.configuration), initial_attributes);
+        self.form_content(new Prez.Form.Builder(builder, self.configuration), initial_attributes);
       });
     }
   },
@@ -52,15 +52,15 @@ Disco.Form = {
       }
     }
   }
-}
+};
 
-Disco.Form.Builder = function(builder, configuration) {
+Prez.Form.Builder = function(builder, configuration) {
   this.doc = builder.doc;
   this.configuration = configuration;
-}
+};
 
-$.extend(Disco.Form.Builder.prototype, new Disco());
-$.extend(Disco.Form.Builder.prototype, {
+$.extend(Prez.Form.Builder.prototype, new Prez.Builder());
+$.extend(Prez.Form.Builder.prototype, {
   label_for: function() {
     var attribute = arguments[0];
     var label_text = attribute.titleize();
@@ -108,7 +108,7 @@ $.extend(Disco.Form.Builder.prototype, {
       $.extend(html_attributes, arguments[1]);
     }
 
-    this.doc.push(new Disco.PostProcessorInstruction('register_form_field', [attribute]));
+    this.doc.push(new Prez.PostProcessorInstruction('register_form_field', [attribute]));
     return this.input(html_attributes);
   },
   
@@ -133,7 +133,7 @@ $.extend(Disco.Form.Builder.prototype, {
       array_args.push(fn);
     }
 
-    this.doc.push(new Disco.PostProcessorInstruction('register_form_field', [attribute]));
+    this.doc.push(new Prez.PostProcessorInstruction('register_form_field', [attribute]));
     return this.tag_with_array_args('select', array_args);
   },
   
@@ -172,22 +172,22 @@ $.extend(Disco.Form.Builder.prototype, {
   }
 });
 
-$.extend(Disco.PostProcessor.prototype, {
+$.extend(Prez.PostProcessor.prototype, {
   register_form_field: function(attribute) {
     var form_field = this.next_element();
     var current_view = this.current_view();
     if (!current_view.form_fields) current_view.form_fields = [];
-    current_view.form_fields.push(new Disco.Form.FieldDefinition(attribute, form_field, current_view));
+    current_view.form_fields.push(new Prez.Form.FieldDefinition(attribute, form_field, current_view));
   }
 });
 
-Disco.Form.FieldDefinition = function(attribute, form_field, current_view) {
+Prez.Form.FieldDefinition = function(attribute, form_field, current_view) {
   this.attribute = attribute;
   this.form_field = form_field;
   this.current_view = current_view;
 };
 
-$.extend(Disco.Form.FieldDefinition.prototype, {
+$.extend(Prez.Form.FieldDefinition.prototype, {
   load: function(model) {
     var value = model[this.attribute] || '';
     this.form_field.val(value);

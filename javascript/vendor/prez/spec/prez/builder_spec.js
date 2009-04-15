@@ -1,3 +1,5 @@
+require("/specs/spec_helper");
+
 Screw.Unit(function(c) { with(c) {
   describe("Prez.Builder", function() {
     var builder;

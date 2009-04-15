@@ -6,6 +6,8 @@
 //= require "prez/close_tag"
 //= require "prez/self_closing_tag"
 //= require "prez/text"
+//= require "prez/form"
+//= require "prez/string"
 //= require "prez/post_processor_instruction"
 
 module("Prez", function(c) { with(c) {

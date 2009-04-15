@@ -1,6 +1,7 @@
-/*
-Screw.Unit(function() {
-  describe("Disco.Form", function() {
+require("/specs/spec_helper");
+
+Screw.Unit(function(c) { with(c) {
+  describe("Prez.Form", function() {
     var view, model, element;
 
     before(function() {
@@ -25,12 +26,12 @@ Screw.Unit(function() {
         methods: methods
       }
 
-      var template = Disco.inherit(Disco.Form, inheriting_template);
+      var template = Prez.inherit(Prez.Form, inheriting_template);
 
       if (preload_model) {
-        view = Disco.build(template, { model: preload_model });
+        view = Prez.build(template, { model: preload_model });
       } else {
-        view = Disco.build(template);
+        view = Prez.build(template);
       }
 
       if(element_selector) {
@@ -51,8 +52,8 @@ Screw.Unit(function() {
             });
           });
 
-          it("a Disco.Form.Builder object is returned", function() {
-            expect(returned_object instanceof Disco.Form.Builder).to(equal, true);
+          it("a Prez.Form.Builder object is returned", function() {
+            expect(returned_object instanceof Prez.Form.Builder).to(equal, true);
           });
         });
       };
@@ -750,6 +751,4 @@ Screw.Unit(function() {
       });
     });
   });
-});
-
-*/
+}});

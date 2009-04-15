@@ -6,7 +6,16 @@ Group.fixtures(
 
 Track.fixtures(
   :personality => {
-    :group_id => "dating"
+    :group_id => "dating",
+    :name => "Personality"
+  },
+  :education => {
+    :group_id => "dating",
+    :name => "Education"
+  },
+  :profession => {
+    :group_id => "dating",
+    :name => "Profession"
   }
 )
 
