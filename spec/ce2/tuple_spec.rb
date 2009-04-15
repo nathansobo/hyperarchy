@@ -152,6 +152,19 @@ describe Tuple do
         questions_snapshot_fragment["grain"].should == Question.find("grain").wire_representation
       end
     end
+
+    describe "#get" do
+      it "parses the 'relations' paramater from a JSON string into an array of wire representations and performs a #fetch with it, returning the resulting snapshot as a JSON string" do
+        relations = [{ "type" => "set", "name" => "answers"}]
+
+        snapshot = nil
+        mock.proxy(GlobalDomain.instance).fetch(relations) {|result| snapshot = result}
+
+        response = tuple.get({"relations" => relations.to_json})
+
+        response.should == [200, { 'Content-Type' => 'application/json'}, snapshot.to_json]
+      end
+    end
   end
 
 

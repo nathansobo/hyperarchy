@@ -26,6 +26,10 @@ module("June", function(c) { with(c) {
       });
 
       def("wire_representation", function() {
+
+        console.debug(this.predicate.wire_representation);
+
+
         return {
           type: "selection",
           operand: this.operand.wire_representation(),

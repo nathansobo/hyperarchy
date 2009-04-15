@@ -17,6 +17,11 @@ class GlobalDomain
     sets_by_name[name] = Relations::Set.new(name, tuple_class)
   end
 
+  def locate(path_fragment)
+    sets_by_name[path_fragment.to_sym]
+  end
+
+
   #TODO: test
   def create_schema
     sets.each {|set| set.create_table}

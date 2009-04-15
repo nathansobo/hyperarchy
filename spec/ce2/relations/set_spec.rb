@@ -85,5 +85,11 @@ module Relations
         set.to_sql.should == "select #{columns} from #{set.global_name};"
       end
     end
+
+    describe "#locate" do
+      it "returns the Tuple with the given :id" do
+        Answer.set.locate("quinoa").should == Answer.set.find("quinoa")
+      end
+    end
   end
 end

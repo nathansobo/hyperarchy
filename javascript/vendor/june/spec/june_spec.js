@@ -16,5 +16,12 @@ Screw.Unit(function(c) { with(c) {
         expect(June.GlobalDomain.define_set).to(have_been_called, with_args("Foo", definition));
       });
     });
+
+    describe(".remote", function() {
+      it("builds a new June.RemoteDomain with the given url", function() {
+        var remote = June.remote("/domain");
+        expect(remote.url).to(equal, "/domain");
+      });
+    });
   });
 }});

@@ -2,4 +2,5 @@
 //= require <june>
 //= require <prez>
 
+//= require "models"
 //= require "views"

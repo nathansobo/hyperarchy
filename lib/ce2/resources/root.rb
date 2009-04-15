@@ -7,7 +7,7 @@ module Resources
       end
     end
 
-    def get
+    def get(params)
       [200, headers, content]
     end
 

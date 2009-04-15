@@ -1,6 +1,13 @@
 class Server
-  def self.start(options)
-    new.start(options)
+  class << self
+    attr_reader :instance
+
+    def start(options)
+      @instance = new
+      instance.start(options)
+    end
+
+    delegate :load_fixtures, :compile_public_assets, :to => :instance
   end
 
   def start(options)

@@ -1,4 +1,9 @@
 module Domain
+  def get(params)
+    relation_wire_representations = JSON.parse(params["relations"])
+    [200, { 'Content-Type' => 'application/json' }, fetch(relation_wire_representations).to_json]
+  end
+
   def fetch(relation_wire_representations)
     snapshot = {}
     relation_wire_representations.each do |representation|

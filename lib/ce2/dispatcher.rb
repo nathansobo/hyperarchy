@@ -14,9 +14,12 @@ class Dispatcher
   end
 
   def call(env)
+    # This is here so a new all.js gets generated on each request. It would probably be better to not concatenate in development
+    Server.compile_public_assets
+
     request = Rack::Request.new(env)
     if resource = locate_resource(request.path_info)
-      resource.send(request.request_method.downcase)
+      resource.send(request.request_method.downcase, request.params)
     else
       public_directory.call(env)
     end

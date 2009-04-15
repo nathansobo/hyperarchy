@@ -35,6 +35,10 @@ module Relations
       query
     end
 
+    def locate(path_fragment)
+      find(path_fragment)
+    end
+
     def load_fixtures
       return unless declared_fixtures
       declared_fixtures.each do |id, field_values|

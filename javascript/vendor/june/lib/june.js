@@ -2,6 +2,10 @@
 //= require <jquery-1.2.6>
 //= require <json>
 
+//= require "june/subscribable"
+//= require "june/subscriber_methods"
+//= require "june/tuple_methods"
+//= require "june/tuple_supervisor"
 //= require "june/predicates"
 //= require "june/relations"
 //= require "june/attribute"
@@ -10,12 +14,8 @@
 //= require "june/remote_domain"
 //= require "june/field"
 //= require "june/string"
-//= require "june/subscribable"
-//= require "june/subscriber_methods"
 //= require "june/subscription"
 //= require "june/subscription_node"
-//= require "june/tuple_methods"
-//= require "june/tuple_supervisor"
 
 module("June", function(c) { with(c) {
   def('remove', function(array, element) {
@@ -42,6 +42,10 @@ module("June", function(c) { with(c) {
   def('GlobalDomain', new June.Domain());
 
   def("define_set", function(name, definition) {
-    this.GlobalDomain.define_set(name, definition);
+    return this.GlobalDomain.define_set(name, definition);
+  });
+
+  def("remote", function(url) {
+    return new June.RemoteDomain(url); 
   });
 }});

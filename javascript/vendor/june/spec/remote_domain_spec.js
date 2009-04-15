@@ -17,14 +17,16 @@ Screw.Unit(function(c) { with(c) {
             }
           }
         };
-        mock(remote, "fetch", function() {
-          return snapshot;
-        });
 
-        var callback = function() {}
+        mock(remote, "fetch");
+        var pull_callback = function() {};
+        remote.pull([User], pull_callback);
+        expect(remote.fetch).to(have_been_called, once)
+        var fetch_callback = remote.fetch.most_recent_args[1];
+
         mock(June.GlobalDomain, "update");
-        remote.pull([User], callback);
-        expect(June.GlobalDomain.update).to(have_been_called, with_args(snapshot, callback));
+        fetch_callback(snapshot);
+        expect(June.GlobalDomain.update).to(have_been_called, with_args(snapshot, pull_callback));
       });
     });
 
@@ -45,16 +47,18 @@ Screw.Unit(function(c) { with(c) {
         var users = User.where(User.age.eq(21));
         var pets = users.join(Pet).on(Pet.owner_id.eq(User.id)).project(User);
 
-        var snapshot = remote.fetch(users, pets);
-        expect(snapshot).to(equal, mock_server_response);
+        var fetch_callback = mock_function("fetch callback");
+        remote.fetch([users, pets], fetch_callback);
 
         expect(jQuery.ajax).to(have_been_called, once);
         var ajax_hash = jQuery.ajax.most_recent_args[0]
 
         expect(ajax_hash.url).to(equal, remote.url);
         expect(ajax_hash.type).to(equal, "GET");
-        expect(ajax_hash.data.relations).to(equal, [users.wire_representation(), pets.wire_representation()]);
+        expect(ajax_hash.data.relations).to(equal, JSON.stringify([users.wire_representation(), pets.wire_representation()]));
 
+        ajax_hash.success(JSON.stringify(mock_server_response));
+        expect(fetch_callback).to(have_been_called, with_args(mock_server_response));
       });
     });
   });
