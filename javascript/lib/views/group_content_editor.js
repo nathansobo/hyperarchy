@@ -13,16 +13,15 @@ module("Views", function(c) { with(c) {
           });
         });
 
-        div({'id': "edit_track_form", 'class': "edit_form"}, function() {
-          
-        });
+        console.debug(Views.EditTrackForm);
+        
+        subview("edit_track_form", Views.EditTrackForm);
       });
     }},
 
     methods: {
       initialize: function() {
         this.tracks_list = this.find("#tracks_list");
-        this.edit_track_form = this.find("#edit_track_form");
       },
 
       edit_group: function(group) {
@@ -37,6 +36,8 @@ module("Views", function(c) { with(c) {
 
       populate_tracks: function(group) {
         var self = this;
+
+        this.tracks_list.html("");
         group.tracks.each(function() {
           var track = this;
           var track_div = Prez.build(function(b) {
@@ -52,7 +53,14 @@ module("Views", function(c) { with(c) {
       },
 
       edit_track: function(track) {
+        console.debug(this.edit_track_form);
+        this.edit_track_form.foo();
+
+        this.edit_track_form.model = track;
+        this.edit_track_form.load();
         this.edit_track_form.show();
+        
+
       }
 
 

@@ -1,11 +1,6 @@
 Prez.Form = {
   content: function(builder, initial_attributes) {
-    var self = this;
-    with(builder) {
-      form(function() {
-        self.form_content(new Prez.Form.Builder(builder, self.configuration), initial_attributes);
-      });
-    }
+    this.form_content(new Prez.Form.Builder(builder, this.configuration), initial_attributes);
   },
   
   configuration: {},
@@ -18,13 +13,18 @@ Prez.Form = {
     },
     
     load: function() {
+      console.debug("load");
+      
       var self = this;
 
       if(this.before_load) {
         this.before_load();
       }
 
+
       if(this.form_fields) {
+        console.debug("form fields");
+
         $.each(this.form_fields, function(i, form_field) {
           form_field.load(self.model);
         });
@@ -189,11 +189,11 @@ Prez.Form.FieldDefinition = function(attribute, form_field, current_view) {
 
 $.extend(Prez.Form.FieldDefinition.prototype, {
   load: function(model) {
-    var value = model[this.attribute] || '';
+    var value = model[this.attribute].call(model) || '';
     this.form_field.val(value);
   },
   
   save: function(model) {
-    model[this.attribute] = this.form_field.val();
+    model[this.attribute].call(model, this.form_field.val());
   }
 });

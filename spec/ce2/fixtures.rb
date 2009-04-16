@@ -1,6 +1,9 @@
 Group.fixtures(
   :dating => {
     :name => "Dating Quiz"  
+  },
+  :gmat => {
+    :name => "GMAT"  
   }
 )
 
