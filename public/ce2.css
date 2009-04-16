@@ -2,8 +2,13 @@ body {
   margin: 20px;
 }
 
+p {
+  margin-bottom: 10px;
+}
+
 #navigator {
   width: 100%;
+  margin-bottom: 20px;
 }
 
 #navigator th {
@@ -17,4 +22,8 @@ body {
 
 li.menu_item {
   cursor: pointer;
+}
+
+.edit_form {
+  display: none;
 }

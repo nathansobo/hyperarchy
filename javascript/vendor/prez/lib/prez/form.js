@@ -13,8 +13,6 @@ Prez.Form = {
     },
     
     load: function() {
-      console.debug("load");
-      
       var self = this;
 
       if(this.before_load) {
@@ -23,8 +21,6 @@ Prez.Form = {
 
 
       if(this.form_fields) {
-        console.debug("form fields");
-
         $.each(this.form_fields, function(i, form_field) {
           form_field.load(self.model);
         });
