@@ -4,7 +4,9 @@ module Views
       html do
         head do
           title page_title
+          link :rel => "stylesheet", :type => "text/css", :href => "http://yui.yahooapis.com/2.7.0/build/reset/reset-min.css"
           link :rel => "stylesheet", :type => "text/css", :href => "ce2.css"
+
           script :type => "text/javascript", :language => "javascript", :src => "/all.js"
           if page_specific_javascript
             script :type => "text/javascript", :language => "javascript" do

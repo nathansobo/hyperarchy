@@ -28,14 +28,14 @@ module("June", function(c) { with(c) {
   def("map", function(array, fn) {
     var results = [];
     this.each(array, function(){
-      results.push(fn.call(this));
+      results.push(fn.call(this, this));
     });
     return results;
   });
   
   def('each', function(array, fn) {
     for(var i = 0; i < array.length; i++) {
-      fn.call(array[i]);
+      fn.call(array[i], array[i]);
     }
   });
 

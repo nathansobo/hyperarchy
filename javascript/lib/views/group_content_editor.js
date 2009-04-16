@@ -6,8 +6,11 @@ module("Views", function(c) { with(c) {
         table({'id': "navigator"}, function() {
           tbody(function() {
             tr(function() {
+              th("Tracks");
+            })
+            tr(function() {
               td(function() {
-                div({'id': "tracks_list"});
+                ul({'id': "tracks_list"});
               });
             });
           });
@@ -40,15 +43,15 @@ module("Views", function(c) { with(c) {
         this.tracks_list.html("");
         group.tracks.each(function() {
           var track = this;
-          var track_div = Prez.build(function(b) {
-            b.div(track.name());
+          var track_li = Prez.build(function(b) {
+            b.li(track.name(), {'class': "menu_item"});
           });
-          track_div.click(function() {
+          track_li.click(function() {
             self.edit_track(track);
           });
           
-          console.debug(track_div.html());
-          self.tracks_list.append(track_div);
+          console.debug(track_li.html());
+          self.tracks_list.append(track_li);
         });
       },
 

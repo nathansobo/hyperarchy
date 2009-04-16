@@ -19,17 +19,6 @@ module("Views", function(c) { with(c) {
       },
 
       render_groups: function() {
-        var view = this;
-        
-        Group.each(function() {
-          var group = this;
-          var group_li = Prez.build(function(b) {
-            b.li(group.name(), {'class': "group"});
-          });
-          
-          group_li.click(function() { view.group_selected(group) });
-          view.ul_node.append(group_li);
-        });
       },
 
       group_selected: function(group) {

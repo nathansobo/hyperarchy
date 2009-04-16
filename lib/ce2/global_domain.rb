@@ -21,7 +21,6 @@ class GlobalDomain
     sets_by_name[path_fragment.to_sym]
   end
 
-
   #TODO: test
   def create_schema
     sets.each {|set| set.create_table}

@@ -1,4 +1,5 @@
 class Subtrack < Tuple
+  attribute :name, :string
   attribute :answer_mode_timeout, :integer
   attribute :review_mode_timeout, :integer
   attribute :published_at, :datetime

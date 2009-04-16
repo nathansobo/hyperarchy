@@ -9,4 +9,5 @@ June.define_set("Track", function(c) { with(c) {
   });
 
   belongs_to("group");
+  has_many("subtracks");
 }});

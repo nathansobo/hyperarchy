@@ -1,3 +1,20 @@
-.edit_form {
-  display: none;
+body {
+  margin: 20px;
+}
+
+#navigator {
+  width: 100%;
+}
+
+#navigator th {
+  background-color: lightblue;
+  width: 20%;
+}
+
+#navigator td {
+  vertical-align: top;
+}
+
+li.menu_item {
+  cursor: pointer;
 }

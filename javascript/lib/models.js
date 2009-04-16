@@ -1,2 +1,5 @@
 //= require "models/group"
 //= require "models/track"
+//= require "models/subtrack"
+//= require "models/question_set"
+//= require "models/question"

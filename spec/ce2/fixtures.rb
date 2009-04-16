@@ -24,22 +24,26 @@ Track.fixtures(
 
 Subtrack.fixtures(
   :favorites => {
-    :track_id => "personality"
+    :track_id => "personality",
+    :name => "Favorites"
   }
 )
 
 QuestionSet.fixtures(
   :foods => {
+    :name => "Foods",
     :subtrack_id => "favorites"
   }
 )
 
 Question.fixtures(
   :grain => {
+    :name => "Fav. Grain",
     :stimulus => "What's your favorite grain?",
     :question_set_id => "foods"
   },
   :vegetable => {
+   :name => "Fav. Vegetable",
    :stimulus => "What's your favorite vegetable?",
    :question_set_id => "foods"
   }
