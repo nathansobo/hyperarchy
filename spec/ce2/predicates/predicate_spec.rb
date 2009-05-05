@@ -1,4 +1,4 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../ce2_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../hyperarchy_spec_helper")
 
 module Predicates
   describe Predicate do

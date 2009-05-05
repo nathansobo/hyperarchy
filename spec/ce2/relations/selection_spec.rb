@@ -1,4 +1,4 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../ce2_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../hyperarchy_spec_helper")
 
 module Relations
   describe Selection do
@@ -6,32 +6,32 @@ module Relations
     describe "class methods" do
       describe ".from_wire_representation" do
         it "builds a Selection with an #operand resolved in the given subdomain" do
-          subdomain = Group.find("dating")
+          subdomain = User.find("nathan")
           selection = Selection.from_wire_representation({
             "type" => "selection",
             "operand" => {
               "type" => "set",
-              "name" => "answers"
+              "name" => "candidates"
             },
             "predicate" => {
               "type" => "eq",
               "left_operand" => {
                 "type" => "attribute",
-                "set" => "answers",
-                "name" => "correct"
+                "set" => "candidates",
+                "name" => "election_id"
               },
               "right_operand" => {
                 "type" => "scalar",
-                "value" => true
+                "value" => "grain"
               }
             }
           }, subdomain)
 
           selection.class.should == Relations::Selection
-          selection.operand.should == subdomain.answers
+          selection.operand.should == subdomain.candidates
           selection.predicate.class.should == Predicates::Eq
-          selection.predicate.left_operand.should == Answer.correct
-          selection.predicate.right_operand.should == true
+          selection.predicate.left_operand.should == Candidate.election_id
+          selection.predicate.right_operand.should == "grain"
         end
       end
     end
@@ -39,21 +39,21 @@ module Relations
     describe "instance methods" do
       attr_reader :operand, :predicate, :selection, :predicate_2, :composite_selection
       before do
-        @operand = Answer.set
-        @predicate = Predicates::Eq.new(Answer.correct, false)
+        @operand = Candidate.set
+        @predicate = Predicates::Eq.new(Candidate.election_id, "grain")
         @selection = Selection.new(operand, predicate)
-        @predicate_2 = Predicates::Eq.new(Answer.body, "Barley")
+        @predicate_2 = Predicates::Eq.new(Candidate.body, "Barley")
         @composite_selection = Selection.new(selection, predicate_2)
       end
 
       describe "#tuples" do
         context "when #operand is a Set" do
           it "executes an appropriate SQL query against the database and returns Tuples corresponding to its results" do
-            Answer.set.tuples.detect {|t| t.correct == true}.should_not be_nil
+            Candidate.set.tuples.detect {|t| t.election_id == "grain"}.should_not be_nil
             tuples = selection.tuples
             tuples.should_not be_empty
             tuples.each do |tuple|
-              tuple.correct.should be_false
+              tuple.election_id.should == "grain"
             end
           end
         end
@@ -62,8 +62,8 @@ module Relations
           it "executes an appropriate SQL query against the database and returns Tuples corresponding to its results" do
             tuple = composite_selection.tuples.first
             tuple.should_not be_nil
-            tuple.correct.should be_false
-            tuple.body.should == 'Barley'
+            tuple.election_id.should == "grain"
+            tuple.body.should == "Barley"
           end
         end
       end

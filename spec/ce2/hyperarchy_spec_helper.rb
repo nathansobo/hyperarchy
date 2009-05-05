@@ -1,5 +1,5 @@
 dir = File.dirname(__FILE__)
-require "#{dir}/../../lib/ce2"
+require "#{dir}/../../lib/hyperarchy"
 require "spec"
 require "#{dir}/fixtures"
 
@@ -10,4 +10,8 @@ Spec::Runner.configure do |config|
     GlobalDomain.clear_tables
     GlobalDomain.load_fixtures
   end
+end
+
+at_exit do
+  Spec::Runner.run
 end

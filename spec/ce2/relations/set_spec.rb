@@ -1,11 +1,11 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../ce2_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../hyperarchy_spec_helper")
 
 module Relations
   describe Set do
 
     attr_reader :set
     before do
-      @set = Answer.set
+      @set = Candidate.set
     end
 
     describe "#initialize" do
@@ -30,7 +30,7 @@ module Relations
 
     describe "#insert" do
       it "calls Origin.insert with the Set's #global_name and #field_values_by_attribute_name" do
-        tuple = Answer.new(:body => "Brown Rice", :correct => true)
+        tuple = Candidate.new(:body => "Brown Rice", :election_id => "grain")
         mock(Origin).insert(set.global_name, tuple.field_values_by_attribute_name)
         set.insert(tuple)
       end
@@ -41,41 +41,41 @@ module Relations
         mock(set).insert(anything) do |tuple|
           tuple.class.should == set.tuple_class
           tuple.body.should == "Brown Rice"
-          tuple.correct.should == true
+          tuple.election_id.should == "grain"
         end
 
-        tuple = set.create(:body => "Brown Rice", :correct => true)
+        tuple = set.create(:body => "Brown Rice", :election_id => "grain")
         tuple.body.should == "Brown Rice"
       end
     end
 
     describe "#find" do
       it "returns the first Tuple in a Selection where id is equal to the given id" do
-        Answer.set.find("grain_quinoa").should == Answer.set.where(Answer.id.eq("grain_quinoa")).tuples.first
+        Candidate.set.find("grain_quinoa").should == Candidate.set.where(Candidate.id.eq("grain_quinoa")).tuples.first
       end
     end
 
     describe "#tuples" do
       it "executes a select all SQL query against the database and returns Tuples corresponding to its results" do
-        tuple_1_id = set.create(:body => "Quinoa", :correct => true).id
-        tuple_2_id = set.create(:body => "White Rice", :correct => false).id
-        tuple_3_id = set.create(:body => "Pearled Barley", :correct => false).id
+        tuple_1_id = set.create(:body => "Quinoa", :election_id => "grain").id
+        tuple_2_id = set.create(:body => "White Rice", :election_id => "grain").id
+        tuple_3_id = set.create(:body => "Pearled Barley", :election_id => "grain").id
 
-        mock.proxy(Origin).read(set.tuple_class, "select answers.id, answers.body, answers.question_id, answers.correct from answers;")
+        mock.proxy(Origin).read(set.tuple_class, "select candidates.id, candidates.body, candidates.election_id from candidates;")
 
         tuples = set.tuples
 
         retrieved_tuple_1 = tuples.find {|t| t.id == tuple_1_id }
         retrieved_tuple_1.body.should == "Quinoa"
-        retrieved_tuple_1.correct.should == true
+        retrieved_tuple_1.election_id.should == "grain"
 
         retrieved_tuple_2 = tuples.find {|t| t.id == tuple_2_id }
         retrieved_tuple_2.body.should == "White Rice"
-        retrieved_tuple_2.correct.should == false
+        retrieved_tuple_2.election_id.should == "grain"
 
         retrieved_tuple_3 = tuples.find {|t| t.id == tuple_3_id }
         retrieved_tuple_3.body.should == "Pearled Barley"
-        retrieved_tuple_3.correct.should == false
+        retrieved_tuple_3.election_id.should == "grain"
       end
     end
 
@@ -88,7 +88,7 @@ module Relations
 
     describe "#locate" do
       it "returns the Tuple with the given :id" do
-        Answer.set.locate("quinoa").should == Answer.set.find("quinoa")
+        Candidate.set.locate("quinoa").should == Candidate.set.find("quinoa")
       end
     end
   end

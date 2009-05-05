@@ -1,4 +1,4 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../ce2_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../hyperarchy_spec_helper")
 
 module Relations
   describe Relation do
@@ -6,16 +6,16 @@ module Relations
       describe "#from_wire_representation" do
         attr_reader :subdomain
         before do
-          @subdomain = Group.find("dating")
+          @subdomain = User.find("nathan")
         end
 
         context "when the given representation's type is 'set'" do
           it "resolves the name of the set in the given subdomain" do
             relation = Relation.from_wire_representation({
               "type" => "set",
-              "name" => "subtracks"
+              "name" => "candidates"
             }, subdomain)
-            relation.should == subdomain.subtracks
+            relation.should == subdomain.candidates
           end
         end
 
@@ -118,10 +118,10 @@ module Relations
     describe "instance methods" do
       describe "#where" do
         it "returns a Selection with self as #operand and the given Predicate as #predicate" do
-          predicate = Answer.id.eq("grain_quinoa")
-          selection = Answer.set.where(predicate)
+          predicate = Candidate.id.eq("grain_quinoa")
+          selection = Candidate.set.where(predicate)
           selection.class.should == Selection
-          selection.operand.should == Answer.set
+          selection.operand.should == Candidate.set
           selection.predicate.should == predicate
         end
       end
@@ -129,22 +129,22 @@ module Relations
       describe "#join, #on" do
         context "when passed a Set" do
           it "returns an InnerJoin with self as #left_operand and the given Relation as #right_operand, then the Predicate passed to .on as its #predicate" do
-            predicate = Answer.question_id.eq(Question.id)
-            join = Question.set.join(Answer.set).on(predicate)
+            predicate = Candidate.election_id.eq(Election.id)
+            join = Election.set.join(Candidate.set).on(predicate)
             join.class.should == InnerJoin
-            join.left_operand.should == Question.set
-            join.right_operand.should == Answer.set
+            join.left_operand.should == Election.set
+            join.right_operand.should == Candidate.set
             join.predicate.should == predicate
           end
         end
 
         context "when passed a subclass of Tuple" do
           it "returns an InnerJoin with self as #left_operand and the #set of the given Tuple subclass as #right_operand, then the Predicate passed to .on as its #predicate" do
-            predicate = Answer.question_id.eq(Question.id)
-            join = Question.set.join(Answer).on(predicate)
+            predicate = Candidate.election_id.eq(Election.id)
+            join = Election.set.join(Candidate).on(predicate)
             join.class.should == InnerJoin
-            join.left_operand.should == Question.set
-            join.right_operand.should == Answer.set
+            join.left_operand.should == Election.set
+            join.right_operand.should == Candidate.set
             join.predicate.should == predicate
           end
         end
@@ -153,39 +153,39 @@ module Relations
       describe "#project" do
         context "when passed a Set" do
           it "returns a SetProjection with self as #operand and the given Set as its #projected_set" do
-            join = Question.set.join(Answer.set).on(Answer.question_id.eq(Question.id))
-            projection = join.project(Answer.set)
+            join = Election.set.join(Candidate.set).on(Candidate.election_id.eq(Election.id))
+            projection = join.project(Candidate.set)
             projection.class.should == SetProjection
             projection.operand.should == join
-            projection.projected_set.should == Answer.set
+            projection.projected_set.should == Candidate.set
           end
         end
 
         context "when passed a subclass of Tuple" do
           it "returns a SetProjection with self as #operand and the #set of the given Tuple subclass as its #projected_set" do
-            join = Question.set.join(Answer.set).on(Answer.question_id.eq(Question.id))
-            projection = join.project(Answer)
+            join = Election.set.join(Candidate.set).on(Candidate.election_id.eq(Election.id))
+            projection = join.project(Candidate)
             projection.class.should == SetProjection
             projection.operand.should == join
-            projection.projected_set.should == Answer.set
+            projection.projected_set.should == Candidate.set
           end
         end
       end
 
       describe "#tuple_wire_representations" do
         it "returns the #wire_representation of all its #tuples" do
-          Answer.set.tuple_wire_representations.should == Answer.set.tuples.map {|t| t.wire_representation}
+          Candidate.set.tuple_wire_representations.should == Candidate.set.tuples.map {|t| t.wire_representation}
         end
       end
 
       describe "#each" do
         specify "delegates to #tuples of #set" do
           tuples = []
-          stub(Answer.set).tuples { tuples }
+          stub(Candidate.set).tuples { tuples }
 
           block = lambda {}
           mock(tuples).each(&block)
-          Answer.set.each(&block)
+          Candidate.set.each(&block)
         end
       end
     end

@@ -1,9 +1,9 @@
-require File.expand_path("#{File.dirname(__FILE__)}/ce2_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/hyperarchy_spec_helper")
 
 describe Field do
   attr_reader :field
   before do
-    @field = Answer.new.fields_by_attribute[Answer.body]
+    @field = Candidate.new.fields_by_attribute[Candidate.body]
   end
 
   describe "#value=" do

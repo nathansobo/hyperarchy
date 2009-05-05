@@ -21,16 +21,16 @@ class Server
   end
 
   def load_fixtures
-    require "#{CE2_ROOT}/spec/ce2/fixtures"
+    require "#{HYPERARCHY_ROOT}/spec/hyperarchy/fixtures"
     GlobalDomain.load_fixtures
   end
 
   def compile_public_assets
     secretary = Sprockets::Secretary.new(
-      :root         => CE2_ROOT,
+      :root         => HYPERARCHY_ROOT,
       :asset_root   => "public",
       :load_path    => ["javascript/**/*"],
-      :source_files => ["javascript/lib/ce2.js"]
+      :source_files => ["javascript/lib/hyperarchy.js"]
     )
     secretary.concatenation.save_to("public/all.js")
   end

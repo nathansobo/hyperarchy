@@ -1,4 +1,4 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../ce2_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../hyperarchy_spec_helper")
 
 module Predicates
   describe Eq do
@@ -37,15 +37,15 @@ module Predicates
           def left_operand_representation
             {
               "type" => "attribute",
-              "set" => "answers",
-              "name" => "correct"
+              "set" => "candidates",
+              "name" => "body"
             }
           end
 
           it "returns an Eq predicate with the indicated attribute as one of its operands" do
             eq = Eq.from_wire_representation(wire_representation)
             eq.class.should == Eq
-            eq.left_operand.should == Answer.correct
+            eq.left_operand.should == Candidate.body
             eq.right_operand.should == 2
           end
         end
@@ -55,7 +55,7 @@ module Predicates
     describe "instance methods" do
       describe "#to_sql" do
         it "returns the left_operand.to_sql = right_operand.to_sql" do
-          Eq.new(Answer.correct, false).to_sql.should == %{answers.correct = "f"}
+          Eq.new(Candidate.election_id, "grain").to_sql.should == %{candidates.election_id = "grain"}
         end
       end
     end
