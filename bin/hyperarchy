@@ -2,6 +2,6 @@
 
 dir = File.dirname(__FILE__)
 $LOAD_PATH.push("#{dir}/../lib/")
-require "ce2"
+require "#{dir}/../config/environment"
 
 Server.start(:port => 9090)

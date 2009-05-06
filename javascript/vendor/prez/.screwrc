@@ -1,5 +1,0 @@
-ScrewUnit.configure do
-  port 8080
-  code_under_test_path "."
-  specs_path "spec"
-end
