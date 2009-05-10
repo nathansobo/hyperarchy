@@ -15,6 +15,14 @@ ModuleSystem = {
     return module;
   },
 
+  extend: function(superconstructor, subconstructor) {
+    var original_subconstructor_prototype = subconstructor.prototype;
+    subconstructor.prototype = new superconstructor();
+    subconstructor.prototype.constructor = subconstructor;
+    this.mixin(subconstructor.prototype, original_subconstructor_prototype);
+    return subconstructor;
+  },
+
   mixin: function(target, module) {
     for (var prop in module) {
       if (target[prop] == "prototype") continue;

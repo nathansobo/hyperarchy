@@ -62,6 +62,11 @@ Screw.Unit(function(c) { with(c) {
           });
         });
       });
+
+      describe("inheritance", function() {
+        
+      });
+
     });
 
     describe(".module", function() {
@@ -161,6 +166,89 @@ Screw.Unit(function(c) { with(c) {
             expect(Foo.Bar.Baz.baz).to(equal, "baz");
           });
         });
+      });
+    });
+
+    describe(".extend", function() {
+      var object;
+
+      before(function() {
+        Super = function() {};
+        ModuleSystem.mixin(Super.prototype, {
+          not_overridden_function: function() {
+            return "not_overridden_function";
+          },
+
+          overridden_function: function() {
+            return "overridden_function superconstructor version";
+          },
+
+          not_overridden_property: "not_overridden_property"
+        });
+
+        Sub = function() {};
+        ModuleSystem.mixin(Sub.prototype, {
+          overridden_function: function() {
+            return "overridden_function";
+          },
+
+          overridden_function: function() {
+            return "overridden_function subconstructor version";
+          },
+
+          in_sub_only: function() {
+            return "in_sub_only";
+          }
+        });
+
+        ModuleSystem.extend(Super, Sub);
+
+        object = new Sub();
+      });
+
+      after(function() {
+        delete window['Super'];
+        delete window['Sub'];
+      });
+
+
+      describe("functions in superconstructor prototype that are not overridden in subconstructor prototype", function() {
+        they("are inherited by objects created by the subconstructor", function() {
+          expect(object.not_overridden_function()).to(equal, "not_overridden_function");
+        });
+      });
+
+      describe("properties in superconstructor prototype that are not overridden in subconstructor", function() {
+        they("are inherited by objects created by the subconstructor", function() {
+          expect(object.not_overridden_property).to(equal, "not_overridden_property");
+        });
+      });
+
+      describe("functions in superconstructor prototype that are overridden in subconstructor prototype", function() {
+        they("are overridden for objects created by the subconstructor", function() {
+          expect(object.overridden_function()).to(equal, "overridden_function subconstructor version");
+        });
+      });
+    });
+
+    describe(".mixin", function() {
+      it("adds all the properties in the second module to the first, overwriting any with the same name", function() {
+        var a = {
+          foo: "foo",
+          bar: "bar"
+        }
+
+        var b =  {
+          bar: "bar2",
+          baz: "baz"
+        }
+
+        var result = ModuleSystem.mixin(a, b);
+        expect(result).to(equal, a);
+
+        expect(a.foo).to(equal, "foo");
+        expect(a.bar).to(equal, "bar2");
+        expect(a.baz).to(equal, "baz");
       });
     });
   });
