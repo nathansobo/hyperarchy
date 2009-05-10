@@ -183,6 +183,7 @@ Screw.Unit(function(c) { with(c) {
             return "overridden_function superconstructor version";
           },
 
+          overridden_property: "overridden_property superconstructor version",
           not_overridden_property: "not_overridden_property"
         });
 
@@ -196,9 +197,13 @@ Screw.Unit(function(c) { with(c) {
             return "overridden_function subconstructor version";
           },
 
-          in_sub_only: function() {
-            return "in_sub_only";
-          }
+          overridden_property: "overridden_property subconstructor version",
+
+          sub_only_function: function() {
+            return "sub_only_function";
+          },
+
+          sub_only_property: "sub_only_property"
         });
 
         ModuleSystem.extend(Super, Sub);
@@ -212,21 +217,17 @@ Screw.Unit(function(c) { with(c) {
       });
 
 
-      describe("functions in superconstructor prototype that are not overridden in subconstructor prototype", function() {
+      describe("functions and properties on the superconstructor prototype that are not overridden in the subconstructor prototype", function() {
         they("are inherited by objects created by the subconstructor", function() {
           expect(object.not_overridden_function()).to(equal, "not_overridden_function");
-        });
-      });
-
-      describe("properties in superconstructor prototype that are not overridden in subconstructor", function() {
-        they("are inherited by objects created by the subconstructor", function() {
           expect(object.not_overridden_property).to(equal, "not_overridden_property");
         });
       });
 
-      describe("functions in superconstructor prototype that are overridden in subconstructor prototype", function() {
+      describe("functions and properties on the superconstructor prototype that are overridden in the subconstructor prototype", function() {
         they("are overridden for objects created by the subconstructor", function() {
           expect(object.overridden_function()).to(equal, "overridden_function subconstructor version");
+          expect(object.overridden_property).to(equal, "overridden_property subconstructor version");
         });
       });
     });
