@@ -5,7 +5,11 @@ ModuleSystem = {
     var containing_module = this.create_module_containing_constructor(args.qualified_constructor_name);
 
     constructor = function() {}
-    this.mixin(constructor.prototype, args.prototype_properties);
+
+    for(var i = 0; i < args.mixin_modules.length; i++) {
+      this.mixin(constructor.prototype, args.mixin_modules[i]);
+    }
+
     if (args.superconstructor) this.extend(args.superconstructor, constructor);
 
     return containing_module[constructor_basename] = constructor;
@@ -58,14 +62,10 @@ ModuleSystem = {
 
     for(var i = 0; i < args.length; i++) {
       var current_arg = args[i];
-      if (i == args.length - 1) {
-        constructor_arguments.prototype_properties = current_arg;
+      if (typeof current_arg == "function") {
+        constructor_arguments.superconstructor = current_arg;
       } else {
-        if (typeof current_arg == "function") {
-          constructor_arguments.superconstructor = current_arg;
-        } else {
-          constructor_arguments.mixin_modules.push(current_arg);
-        }
+        constructor_arguments.mixin_modules.push(current_arg);
       }
     }
     return constructor_arguments;

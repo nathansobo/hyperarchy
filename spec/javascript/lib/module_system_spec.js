@@ -70,13 +70,33 @@ Screw.Unit(function(c) { with(c) {
           delete window["Super"];
         });
 
-        it("makes constructor being defined extend from the given superconstructor", function() {
+        it("extends the constructor being defined from the given superconstructor", function() {
           mock(ModuleSystem, 'extend');
           ModuleSystem.constructor("Foo", Super, {});
           expect(ModuleSystem.extend).to(have_been_called, with_args(Super, Foo));
         });
       });
 
+      context("when given modules as arguments following the name", function() {
+        before(function() {
+          ModuleSystem.module("Bar", {});
+          ModuleSystem.module("Baz", {});
+        });
+
+        after(function() {
+          delete window["Bar"];
+          delete window["Baz"];
+        });
+
+        it("mixes the given module into the constructor's prototype", function() {
+          mock(ModuleSystem, "mixin");
+          ModuleSystem.constructor("Foo", Bar, Baz, {});
+
+          expect(ModuleSystem.mixin).to(have_been_called, thrice);
+          expect(ModuleSystem.mixin.call_args[0]).to(equal, [Foo.prototype, Bar]);
+          expect(ModuleSystem.mixin.call_args[1]).to(equal, [Foo.prototype, Baz]);
+        });
+      });
     });
 
     describe(".module", function() {
