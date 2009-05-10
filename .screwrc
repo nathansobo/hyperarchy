@@ -1,0 +1,6 @@
+ScrewUnit.configure do
+  port 8080
+  code_under_test_path "public/javascript"
+  specs_path "spec/javascript"
+  sprockets_enabled true
+end
