@@ -1,12 +1,14 @@
 ModuleSystem = {
-  constructor: function(qualified_constructor_name, prototype_properties) {
-    var constructor_name = qualified_constructor_name.split(".").pop();
-    var containing_module = this.create_module_containing_constructor(qualified_constructor_name);
+  constructor: function() {
+    var args = this.extract_constructor_arguments(arguments);
+    var constructor_basename = args.qualified_constructor_name.split(".").pop();
+    var containing_module = this.create_module_containing_constructor(args.qualified_constructor_name);
 
-    constructor = function() {
-    }
-    this.mixin(constructor.prototype, prototype_properties);
-    return containing_module[constructor_name] = constructor;
+    constructor = function() {}
+    this.mixin(constructor.prototype, args.prototype_properties);
+    if (args.superconstructor) this.extend(args.superconstructor, constructor);
+
+    return containing_module[constructor_basename] = constructor;
   },
 
   module: function(qualified_module_name, properties) {
@@ -45,5 +47,27 @@ ModuleSystem = {
       current_module = current_module[path_fragment];
     }
     return current_module;
+  },
+
+  extract_constructor_arguments: function(args) {
+    var args = Array.prototype.slice.call(args, 0);
+    var constructor_arguments = {
+      qualified_constructor_name: args.shift(),
+      mixin_modules: []
+    };
+
+    for(var i = 0; i < args.length; i++) {
+      var current_arg = args[i];
+      if (i == args.length - 1) {
+        constructor_arguments.prototype_properties = current_arg;
+      } else {
+        if (typeof current_arg == "function") {
+          constructor_arguments.superconstructor = current_arg;
+        } else {
+          constructor_arguments.mixin_modules.push(current_arg);
+        }
+      }
+    }
+    return constructor_arguments;
   }
 }

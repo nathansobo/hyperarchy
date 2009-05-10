@@ -3,68 +3,78 @@
 Screw.Unit(function(c) { with(c) {
   describe("ModuleSystem", function() {
     describe(".constructor", function() {
-      describe("naming and prototype property definition", function() {
-        after(function() {
-          delete window['Foo'];
-        });
+      after(function() {
+        delete window['Foo'];
+      });
 
-        context("when given a top-level name and a properties hash", function() {
-          it("creates a constructor with that name, defining the given properties on its prototype", function() {
+      context("when given a top-level name and a properties hash", function() {
+        it("creates a constructor with that name, defining the given properties on its prototype", function() {
+          expect(window['Foo']).to(be_undefined);
+
+          ModuleSystem.constructor("Foo", {
+            foo: "foo",
+            bar: "bar"
+          });
+
+          expect(Foo).to_not(be_undefined);
+          expect(Foo.prototype.foo).to(equal, "foo");
+          expect(Foo.prototype.bar).to(equal, "bar");
+        });
+      });
+
+      context("when given a qualified name and a properties hash", function() {
+        context("when no modules along the given path exist", function() {
+          it("creates all modules along the path and creates the constructor at its terminus whose prototype has the given properties", function() {
             expect(window['Foo']).to(be_undefined);
 
-            ModuleSystem.constructor("Foo", {
+            ModuleSystem.constructor("Foo.Bar.Baz", {
               foo: "foo",
               bar: "bar"
             });
 
             expect(Foo).to_not(be_undefined);
-            expect(Foo.prototype.foo).to(equal, "foo");
-            expect(Foo.prototype.bar).to(equal, "bar");
+            expect(Foo.Bar).to_not(be_undefined);
+            expect(Foo.Bar.Baz).to_not(be_undefined);
+            expect(Foo.Bar.Baz.prototype.foo).to(equal, "foo");
+            expect(Foo.Bar.Baz.prototype.bar).to(equal, "bar");
           });
         });
 
-        context("when given a qualified name and a properties hash", function() {
-          context("when no modules along the given path exist", function() {
-            it("creates all modules along the path and creates the constructor at its terminus whose prototype has the given properties", function() {
-              expect(window['Foo']).to(be_undefined);
-
-              ModuleSystem.constructor("Foo.Bar.Baz", {
-                foo: "foo",
-                bar: "bar"
-              });
-
-              expect(Foo).to_not(be_undefined);
-              expect(Foo.Bar).to_not(be_undefined);
-              expect(Foo.Bar.Baz).to_not(be_undefined);
-              expect(Foo.Bar.Baz.prototype.foo).to(equal, "foo");
-              expect(Foo.Bar.Baz.prototype.bar).to(equal, "bar");
+        context("when modules along the given path exists, but not the terminus", function() {
+          before(function() {
+            ModuleSystem.module("Foo", {
+              foo: "foo"
             });
           });
 
-          context("when modules along the given path exists, but not the terminus", function() {
-            before(function() {
-              ModuleSystem.module("Foo", {
-                foo: "foo"
-              });
+          it("creates any module that does not yet exist, but leaves existing modules intact", function() {
+            ModuleSystem.constructor("Foo.Bar.Baz", {
+              foo: "foo",
+              bar: "bar"
             });
 
-            it("creates any module that does not yet exist, but leaves existing modules intact", function() {
-              ModuleSystem.constructor("Foo.Bar.Baz", {
-                foo: "foo",
-                bar: "bar"
-              });
-
-              expect(Foo.foo).to_not(be_undefined);
-              expect(Foo.Bar.Baz).to_not(be_undefined);
-              expect(Foo.Bar.Baz.prototype.foo).to(equal, "foo");
-              expect(Foo.Bar.Baz.prototype.bar).to(equal, "bar");
-            });
+            expect(Foo.foo).to_not(be_undefined);
+            expect(Foo.Bar.Baz).to_not(be_undefined);
+            expect(Foo.Bar.Baz.prototype.foo).to(equal, "foo");
+            expect(Foo.Bar.Baz.prototype.bar).to(equal, "bar");
           });
         });
       });
 
-      describe("inheritance", function() {
-        
+      context("when given a superconstructor as its second argument", function() {
+        before(function() {
+          ModuleSystem.constructor("Super", {});
+        });
+
+        after(function() {
+          delete window["Super"];
+        });
+
+        it("makes constructor being defined extend from the given superconstructor", function() {
+          mock(ModuleSystem, 'extend');
+          ModuleSystem.constructor("Foo", Super, {});
+          expect(ModuleSystem.extend).to(have_been_called, with_args(Super, Foo));
+        });
       });
 
     });
