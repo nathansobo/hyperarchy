@@ -11,8 +11,7 @@ ModuleSystem = {
     var args = this.extract_constructor_arguments(arguments);
     var constructor_basename = args.qualified_constructor_name.split(".").pop();
     var containing_module = this.create_module_containing_constructor(args.qualified_constructor_name);
-
-    constructor = function() {
+    var constructor = function() {
       if (this.initialize) this.initialize.apply(this, arguments);
     }
 
