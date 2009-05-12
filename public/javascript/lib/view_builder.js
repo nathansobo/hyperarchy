@@ -5,6 +5,14 @@ constructor("ViewBuilder", {
     this.instructions = [];
   },
 
+  to_html: function() {
+    var html = "";
+    Util.each(this.instructions, function(instruction) {
+      html += instruction.to_html();
+    });
+    return html;
+  },
+
   tag: function(name) {
     var args = this.parse_tag_arguments(arguments);
     if (args.text && args.body) throw new Error("Tags cannot have both text and body content");
@@ -28,7 +36,7 @@ constructor("ViewBuilder", {
   },
 
   parse_tag_arguments: function(args) {
-    var args = Array.prototype.slice.call(args, 0);
+    var args = Util.to_array(args);
     var tag_arguments = {
       name: args.shift()
     }
@@ -38,16 +46,29 @@ constructor("ViewBuilder", {
       if (typeof arg == "function") tag_arguments.body = arg;
     })
     return tag_arguments;
-  },
-
-  to_html: function() {
-    var html = "";
-    Util.each(this.instructions, function(instruction) {
-      html += instruction.to_html();
-    });
-    return html;
   }
 });
+
+ViewBuilder.generate_tag_methods = function() {
+  var supported_tags = [
+    'a', 'acronym', 'address', 'area', 'b', 'base', 'bdo', 'big', 'blockquote', 'body',
+    'br', 'button', 'caption', 'cite', 'code', 'dd', 'del', 'div', 'dl', 'dt', 'em',
+    'fieldset', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'html', 'i',
+    'img', 'iframe', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'map',
+    'meta', 'noframes', 'noscript', 'ol', 'optgroup', 'option', 'p', 'param', 'pre',
+    'samp', 'script', 'select', 'small', 'span', 'strong', 'style', 'sub', 'sup',
+    'table', 'tbody', 'td', 'textarea', 'th', 'thead', 'title', 'tr', 'tt', 'ul', 'var'
+  ];
+
+  Util.each(supported_tags, function(tag_name) {
+    ViewBuilder.prototype[tag_name] = function() {
+      var tag_args = [tag_name].concat(Util.to_array(arguments));
+      this.tag.apply(this, tag_args);
+    }
+  });
+};
+ViewBuilder.generate_tag_methods();
+
 
 
 constructor("ViewBuilder.OpenTag", {

@@ -7,6 +7,14 @@ Screw.Unit(function(c) { with(c) {
       builder = new ViewBuilder();
     });
 
+    describe("auto-generated tag methods", function() {
+      they("call through to tag with their name as a first argument (this is one example of many tags)", function() {
+        mock(builder, 'tag');
+        builder.a({'href': "/the_moon"}, "Go to the moon");
+        expect(builder.tag).to(have_been_called, with_args("a", {'href': "/the_moon"}, "Go to the moon"));
+      });
+    });
+
     describe("#tag", function() {
       context("when called with only the name of the tag", function() {
         context("if the tag is self-closing", function() {

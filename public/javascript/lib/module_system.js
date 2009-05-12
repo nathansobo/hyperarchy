@@ -63,7 +63,7 @@ ModuleSystem = {
   },
 
   extract_constructor_arguments: function(args) {
-    var args = Array.prototype.slice.call(args, 0);
+    var args = Util.to_array(args);
     var constructor_arguments = {
       qualified_constructor_name: args.shift(),
       mixin_modules: []
