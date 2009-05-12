@@ -1,10 +1,20 @@
+function constructor() {
+  ModuleSystem.constructor.apply(ModuleSystem, arguments);
+}
+
+function module() {
+  ModuleSystem.module.apply(ModuleSystem, arguments);
+}
+
 ModuleSystem = {
   constructor: function() {
     var args = this.extract_constructor_arguments(arguments);
     var constructor_basename = args.qualified_constructor_name.split(".").pop();
     var containing_module = this.create_module_containing_constructor(args.qualified_constructor_name);
 
-    constructor = function() {}
+    constructor = function() {
+      if (this.initialize) this.initialize.apply(this, arguments);
+    }
 
     for(var i = 0; i < args.mixin_modules.length; i++) {
       this.mixin(constructor.prototype, args.mixin_modules[i]);

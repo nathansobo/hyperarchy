@@ -97,6 +97,19 @@ Screw.Unit(function(c) { with(c) {
           expect(ModuleSystem.mixin.call_args[1]).to(equal, [Foo.prototype, Baz]);
         });
       });
+
+      context("when an #initialize method is defined on the prototype", function() {
+        before(function() {
+          ModuleSystem.constructor("Foo", {
+            initialize: mock_function("initialize method")
+          });
+        });
+
+        it("causes the constructor to invoke #initialize with its arguments", function() {
+          new Foo("foo", "bar");
+          expect(Foo.prototype.initialize).to(have_been_called, with_args("foo", "bar"));
+        });
+      });
     });
 
     describe(".module", function() {
