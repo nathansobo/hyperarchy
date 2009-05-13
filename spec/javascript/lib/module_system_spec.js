@@ -110,6 +110,35 @@ Screw.Unit(function(c) { with(c) {
           expect(Foo.prototype.initialize).to(have_been_called, with_args("foo", "bar"));
         });
       });
+
+      context("when an #eigenprops property is defined on the prototype", function() {
+        it("defines those properties on the constructor itself", function() {
+          ModuleSystem.constructor("Foo", {
+            eigenprops: {
+              foo: "foo"
+            }
+          });
+
+          expect(Foo.foo).to(equal, "foo");
+        });
+
+        context("when there is an #initialize eigenprop", function() {
+          it("invokes the initializer after the constructor is fully assembled", function() {
+            ModuleSystem.constructor("Foo", {
+              eigenprops: {
+                initialize: function() {
+                  if (!this.prototype.foo) throw new Error("prototype should be assembled");
+                  this.eigen_initialize_called = true;
+                }
+              },
+              
+              foo: "foo"
+            });
+
+            expect(Foo.eigen_initialize_called).to(be_true);
+          });
+        });
+      });
     });
 
     describe(".module", function() {

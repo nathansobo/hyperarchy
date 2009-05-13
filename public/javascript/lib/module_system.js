@@ -20,6 +20,10 @@ ModuleSystem = {
     }
 
     if (args.superconstructor) this.extend(args.superconstructor, constructor);
+    if (constructor.prototype.eigenprops) {
+      this.mixin(constructor, constructor.prototype.eigenprops);
+      if (constructor.initialize) constructor.initialize();
+    }
 
     return containing_module[constructor_basename] = constructor;
   },
