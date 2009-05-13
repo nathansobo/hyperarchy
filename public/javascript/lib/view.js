@@ -1,0 +1,5 @@
+//= require "view/builder"
+//= require "view/open_tag"
+//= require "view/self_closing_tag"
+//= require "view/close_tag"
+//= require "view/text_node"

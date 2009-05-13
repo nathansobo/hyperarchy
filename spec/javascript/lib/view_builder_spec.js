@@ -1,10 +1,10 @@
 //= require "../hyperarchy_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("ViewBuilder", function() {
+  describe("View.Builder", function() {
     var builder;
     before(function() {
-      builder = new ViewBuilder();
+      builder = new View.Builder();
     });
 
     describe("auto-generated tag methods", function() {
@@ -22,12 +22,24 @@ Screw.Unit(function(c) { with(c) {
             builder.tag("br");
             expect(builder.to_html(), "<br/>");
           });
+
+          it("returns the SelfClosingTag instruction", function() {
+            var instruction = builder.tag("br")
+            expect(instruction.constructor).to(equal, View.SelfClosingTag);
+            expect(instruction.name).to(equal, "br");
+          });
         });
 
         context("if the tag is not self-closing", function() {
           it("generates an empty open tag and a close tag", function() {
             builder.tag("div");
             expect(builder.to_html()).to(equal, "<div></div>");
+          });
+
+          it("returns the OpenTag instruction", function() {
+            var instruction = builder.tag("div");
+            expect(instruction.constructor).to(equal, View.OpenTag);
+            expect(instruction.name).to(equal, "div");
           });
         });
       });
@@ -77,11 +89,21 @@ Screw.Unit(function(c) { with(c) {
         });
 
         context("if the tag is not self-closing", function() {
-          it("generates an open tag, calls the function, then generates a close tag", function() {
-            builder.tag("div", function() {
+          var instruction;
+
+          before(function() {
+            instruction = builder.tag("div", function() {
               builder.tag("div");
             });
+          });
+
+          it("generates an open tag, calls the function, then generates a close tag", function() {
             expect(builder.to_html()).to(equal, '<div><div></div></div>');
+          });
+
+          it("returns the OpenTag instruction", function() {
+            expect(instruction.constructor).to(equal, View.OpenTag);
+            expect(instruction.name).to(equal, "div");
           });
         });
       });
@@ -92,6 +114,44 @@ Screw.Unit(function(c) { with(c) {
             builder.tag("div", "text", function() {})
           }).to(throw_exception);
         });
+      });
+    });
+
+    describe("#to_view", function() {
+      var outer_div_on_build_arguments,
+          hello_p_on_build_args,
+          goodbye_p_on_build_arguments,
+          hello_div_on_build_arguments;
+
+      before(function() {
+        with(builder) {
+          div(function() {
+            div({id: "hello"}, function() {
+              p("Hello").on_build(function() {
+                hello_p_on_build_args = Util.to_array(arguments);
+              });
+            }).on_build(function() {
+              hello_div_on_build_arguments =  Util.to_array(arguments);
+            });
+            p("Goodbye").on_build(function() {
+              goodbye_p_on_build_arguments = Util.to_array(arguments);
+            });
+          }).on_build(function() {
+            outer_div_on_build_arguments = Util.to_array(arguments);
+          });
+        }
+      });
+
+      it("returns the html parsed in a jQuery wrapper", function() {
+        var view = builder.to_view();
+        expect(view.find("div#hello")).to_not(be_empty)
+        expect(view.find("div#hello p")).to_not(be_empty)
+        expect(view.find("p:contains('Goodbye')")).to_not(be_empty)
+      });
+
+      it("invokes on_build instructions defined on the elements with a jQuery wrapper for that element and the view", function() {
+        expect(outer_div_on_build_arguments[1]).to(equal, view);
+        expect(outer_div_on_build_arguments[0]).to(equal, view);
       });
     });
   });

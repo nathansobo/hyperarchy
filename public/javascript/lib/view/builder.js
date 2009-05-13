@@ -1,8 +1,12 @@
-constructor("ViewBuilder", {
+constructor("View.Builder", {
   self_closing_tags: { 'br': 1, 'hr': 1, 'input': 1, 'img': 1 },
 
   initialize: function() {
     this.instructions = [];
+  },
+
+  to_view: function() {
+    return jQuery(this.to_html());
   },
 
   to_html: function() {
@@ -17,22 +21,26 @@ constructor("ViewBuilder", {
     var args = this.parse_tag_arguments(arguments);
     if (args.text && args.body) throw new Error("Tags cannot have both text and body content");
     if (this.self_closing_tags[args.name]) {
-      this.self_closing_tag(args);
+      return this.self_closing_tag(args);
     } else {
-      this.standard_tag(args);
+      return this.standard_tag_sequence(args);
     }
   },
 
   self_closing_tag: function(tag_args) {
     if (tag_args.text || tag_args.body) throw new Error("Self-closing tag " + tag_args.name + " cannot contain text or have body content");
-    this.instructions.push(new ViewBuilder.SelfClosingTag(tag_args.name, tag_args.attributes));
+    var tag = new View.SelfClosingTag(tag_args.name, tag_args.attributes);
+    this.instructions.push(tag);
+    return tag;
   },
 
-  standard_tag: function(tag_args) {
-    this.instructions.push(new ViewBuilder.OpenTag(tag_args.name, tag_args.attributes));
-    if (tag_args.text) this.instructions.push(new ViewBuilder.TextNode(tag_args.text));
+  standard_tag_sequence: function(tag_args) {
+    var open_tag = new View.OpenTag(tag_args.name, tag_args.attributes);
+    this.instructions.push(open_tag);
+    if (tag_args.text) this.instructions.push(new View.TextNode(tag_args.text));
     if (tag_args.body) tag_args.body();
-    this.instructions.push(new ViewBuilder.CloseTag(tag_args.name));
+    this.instructions.push(new View.CloseTag(tag_args.name));
+    return open_tag;
   },
 
   parse_tag_arguments: function(args) {
@@ -49,7 +57,7 @@ constructor("ViewBuilder", {
   }
 });
 
-ViewBuilder.generate_tag_methods = function() {
+View.Builder.generate_tag_methods = function() {
   var supported_tags = [
     'a', 'acronym', 'address', 'area', 'b', 'base', 'bdo', 'big', 'blockquote', 'body',
     'br', 'button', 'caption', 'cite', 'code', 'dd', 'del', 'div', 'dl', 'dt', 'em',
@@ -61,58 +69,10 @@ ViewBuilder.generate_tag_methods = function() {
   ];
 
   Util.each(supported_tags, function(tag_name) {
-    ViewBuilder.prototype[tag_name] = function() {
+    View.Builder.prototype[tag_name] = function() {
       var tag_args = [tag_name].concat(Util.to_array(arguments));
       this.tag.apply(this, tag_args);
     }
   });
 };
-ViewBuilder.generate_tag_methods();
-
-
-
-constructor("ViewBuilder.OpenTag", {
-  initialize: function(name, attributes) {
-    this.name = name;
-    this.attributes = attributes;
-  },
-
-  to_html: function() {
-    return "<" + this.name + this.attributes_html() + ">"
-  },
-
-  attributes_html: function() {
-    var attribute_pairs = [];
-    for (var attribute_name in this.attributes) {
-      attribute_pairs.push(attribute_name + '="' + this.attributes[attribute_name] + '"');
-    }
-    return (attribute_pairs.length > 0) ? " " + attribute_pairs.join(" ") : "";
-  }
-});
-
-constructor("ViewBuilder.SelfClosingTag", ViewBuilder.OpenTag, {
-  to_html: function() {
-    return "<" + this.name + this.attributes_html() + "/>"
-  }
-});
-
-
-constructor("ViewBuilder.CloseTag", {
-  initialize: function(name) {
-    this.name = name;
-  },
-
-  to_html: function() {
-    return "</" + this.name + ">"
-  }
-});
-
-constructor("ViewBuilder.TextNode", {
-  initialize: function(text) {
-    this.text = text;
-  },
-
-  to_html: function() {
-    return htmlEscape(this.text);
-  }
-});
+View.Builder.generate_tag_methods();

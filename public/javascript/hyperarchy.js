@@ -4,5 +4,5 @@
 //= require "lib/module_system"
 //= require "lib/util"
 //= require "lib/template"
-//= require "lib/view_builder"
+//= require "lib/view"
 //= require "app/models"
