@@ -1,5 +1,32 @@
 constructor("View.Builder", {
-  self_closing_tags: { 'br': 1, 'hr': 1, 'input': 1, 'img': 1 },
+  eigenprops: {
+    initialize: function() {
+      this.generate_tag_methods();
+    },
+
+    supported_tags: [
+      'a', 'acronym', 'address', 'area', 'b', 'base', 'bdo', 'big', 'blockquote', 'body',
+      'br', 'button', 'caption', 'cite', 'code', 'dd', 'del', 'div', 'dl', 'dt', 'em',
+      'fieldset', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'html', 'i',
+      'img', 'iframe', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'map',
+      'meta', 'noframes', 'noscript', 'ol', 'optgroup', 'option', 'p', 'param', 'pre',
+      'samp', 'script', 'select', 'small', 'span', 'strong', 'style', 'sub', 'sup',
+      'table', 'tbody', 'td', 'textarea', 'th', 'thead', 'title', 'tr', 'tt', 'ul', 'var'
+    ],
+
+    self_closing_tags: { 'br': 1, 'hr': 1, 'input': 1, 'img': 1 },
+
+    generate_tag_methods: function() {
+      var self = this;
+
+      Util.each(this.supported_tags, function(tag_name) {
+        self.prototype[tag_name] = function() {
+          var tag_args = [tag_name].concat(Util.to_array(arguments));
+          return this.tag.apply(this, tag_args);
+        }
+      });
+    }
+  },
 
   initialize: function() {
     this.instructions = [];
@@ -28,7 +55,7 @@ constructor("View.Builder", {
   tag: function(name) {
     var args = this.parse_tag_arguments(arguments);
     if (args.text && args.body) throw new Error("Tags cannot have both text and body content");
-    if (this.self_closing_tags[args.name]) {
+    if (this.constructor.self_closing_tags[args.name]) {
       return this.self_closing_tag(args);
     } else {
       return this.standard_tag_sequence(args);
@@ -90,22 +117,3 @@ constructor("View.Builder", {
   }
 });
 
-View.Builder.generate_tag_methods = function() {
-  var supported_tags = [
-    'a', 'acronym', 'address', 'area', 'b', 'base', 'bdo', 'big', 'blockquote', 'body',
-    'br', 'button', 'caption', 'cite', 'code', 'dd', 'del', 'div', 'dl', 'dt', 'em',
-    'fieldset', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'html', 'i',
-    'img', 'iframe', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'map',
-    'meta', 'noframes', 'noscript', 'ol', 'optgroup', 'option', 'p', 'param', 'pre',
-    'samp', 'script', 'select', 'small', 'span', 'strong', 'style', 'sub', 'sup',
-    'table', 'tbody', 'td', 'textarea', 'th', 'thead', 'title', 'tr', 'tt', 'ul', 'var'
-  ];
-
-  Util.each(supported_tags, function(tag_name) {
-    View.Builder.prototype[tag_name] = function() {
-      var tag_args = [tag_name].concat(Util.to_array(arguments));
-      return this.tag.apply(this, tag_args);
-    }
-  });
-};
-View.Builder.generate_tag_methods();
