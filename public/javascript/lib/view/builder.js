@@ -3,10 +3,18 @@ constructor("View.Builder", {
 
   initialize: function() {
     this.instructions = [];
+    this.preceding_element_path = [0];
   },
 
   to_view: function() {
-    return jQuery(this.to_html());
+    var self = this;
+    var view = jQuery(this.to_html());
+    this.view = view;
+    Util.each(this.instructions, function(instruction) {
+      instruction.post_process(self);
+    });
+    this.view = null;
+    return view;
   },
 
   to_html: function() {
@@ -35,12 +43,12 @@ constructor("View.Builder", {
   },
 
   standard_tag_sequence: function(tag_args) {
-    var open_tag = new View.OpenTag(tag_args.name, tag_args.attributes);
-    this.instructions.push(open_tag);
+    this.instructions.push(new View.OpenTag(tag_args.name, tag_args.attributes));
     if (tag_args.text) this.instructions.push(new View.TextNode(tag_args.text));
     if (tag_args.body) tag_args.body();
-    this.instructions.push(new View.CloseTag(tag_args.name));
-    return open_tag;
+    var close_tag = new View.CloseTag(tag_args.name);
+    this.instructions.push(close_tag);
+    return close_tag;
   },
 
   parse_tag_arguments: function(args) {
@@ -54,6 +62,31 @@ constructor("View.Builder", {
       if (typeof arg == "function") tag_arguments.body = arg;
     })
     return tag_arguments;
+  },
+
+  push_child: function() {
+    this.preceding_element_path[this.preceding_element_path.length - 1]++;
+    this.preceding_element_path.push(0);
+  },
+
+  pop_child: function() {
+    this.preceding_element_path.pop();
+  },
+
+  find_preceding_element: function() {
+    if (this.preceding_element_path.length == 1) {
+      return this.view;
+    } else {
+      return this.view.find(this.preceding_element_selector());
+    }
+  },
+
+  preceding_element_selector: function() {
+    var selector_fragments = [];
+    for(i = 1; i < this.preceding_element_path.length; i++) {
+      selector_fragments.push(":eq(" + (this.preceding_element_path[i] - 1) + ")");
+    }
+    return "> " + selector_fragments.join(" > ");
   }
 });
 
@@ -71,7 +104,7 @@ View.Builder.generate_tag_methods = function() {
   Util.each(supported_tags, function(tag_name) {
     View.Builder.prototype[tag_name] = function() {
       var tag_args = [tag_name].concat(Util.to_array(arguments));
-      this.tag.apply(this, tag_args);
+      return this.tag.apply(this, tag_args);
     }
   });
 };

@@ -1,4 +1,4 @@
-//= require "../hyperarchy_spec_helper"
+//= require "../../hyperarchy_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
   describe("View.Builder", function() {
@@ -8,9 +8,11 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("auto-generated tag methods", function() {
-      they("call through to tag with their name as a first argument (this is one example of many tags)", function() {
-        mock(builder, 'tag');
-        builder.a({'href': "/the_moon"}, "Go to the moon");
+      they("call through to #tag with their name as a first argument and return its result (this is one example of many tags)", function() {
+        mock(builder, 'tag', function() {
+          return "result";
+        });
+        expect(builder.a({'href': "/the_moon"}, "Go to the moon")).to(equal, "result");
         expect(builder.tag).to(have_been_called, with_args("a", {'href': "/the_moon"}, "Go to the moon"));
       });
     });
@@ -36,9 +38,9 @@ Screw.Unit(function(c) { with(c) {
             expect(builder.to_html()).to(equal, "<div></div>");
           });
 
-          it("returns the OpenTag instruction", function() {
+          it("returns the CloseTag instruction", function() {
             var instruction = builder.tag("div");
-            expect(instruction.constructor).to(equal, View.OpenTag);
+            expect(instruction.constructor).to(equal, View.CloseTag);
             expect(instruction.name).to(equal, "div");
           });
         });
@@ -101,8 +103,8 @@ Screw.Unit(function(c) { with(c) {
             expect(builder.to_html()).to(equal, '<div><div></div></div>');
           });
 
-          it("returns the OpenTag instruction", function() {
-            expect(instruction.constructor).to(equal, View.OpenTag);
+          it("returns the CloseTag instruction", function() {
+            expect(instruction.constructor).to(equal, View.CloseTag);
             expect(instruction.name).to(equal, "div");
           });
         });
@@ -118,10 +120,11 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#to_view", function() {
-      var outer_div_on_build_arguments,
+      var outer_div_on_build_args,
+          br_on_build_args,
           hello_p_on_build_args,
-          goodbye_p_on_build_arguments,
-          hello_div_on_build_arguments;
+          goodbye_p_on_build_args,
+          hello_div_on_build_args;
 
       before(function() {
         with(builder) {
@@ -131,15 +134,20 @@ Screw.Unit(function(c) { with(c) {
                 hello_p_on_build_args = Util.to_array(arguments);
               });
             }).on_build(function() {
-              hello_div_on_build_arguments =  Util.to_array(arguments);
+              hello_div_on_build_args =  Util.to_array(arguments);
+            });
+            br().on_build(function() {
+              br_on_build_args = arguments;
             });
             p("Goodbye").on_build(function() {
-              goodbye_p_on_build_arguments = Util.to_array(arguments);
+              goodbye_p_on_build_args = Util.to_array(arguments);
             });
           }).on_build(function() {
-            outer_div_on_build_arguments = Util.to_array(arguments);
+            outer_div_on_build_args = Util.to_array(arguments);
           });
         }
+
+
       });
 
       it("returns the html parsed in a jQuery wrapper", function() {
@@ -150,8 +158,58 @@ Screw.Unit(function(c) { with(c) {
       });
 
       it("invokes on_build instructions defined on the elements with a jQuery wrapper for that element and the view", function() {
-        expect(outer_div_on_build_arguments[1]).to(equal, view);
-        expect(outer_div_on_build_arguments[0]).to(equal, view);
+        var view = builder.to_view();
+        expect(hello_p_on_build_args[0]).to(equal, view.find("p:contains('Hello')"));
+        expect(hello_p_on_build_args[1]).to(equal, view);
+
+        expect(hello_div_on_build_args[0]).to(equal, view.find("div#hello"));
+        expect(hello_div_on_build_args[1]).to(equal, view);
+
+        expect(goodbye_p_on_build_args[0]).to(equal, view.find("p:contains('Goodbye')"));
+        expect(goodbye_p_on_build_args[1]).to(equal, view);
+
+        expect(br_on_build_args[0]).to(equal, view.find("br"));
+        expect(br_on_build_args[1]).to(equal, view);
+
+        expect(outer_div_on_build_args[0]).to(equal, view);
+        expect(outer_div_on_build_args[1]).to(equal, view);
+      });
+    });
+
+    describe("#find_preceding_element", function() {
+      before(function() {
+        builder.view = { find: mock_function("find method on the view", function() {
+          return "find result";
+        }) };
+      });
+
+      context("when called for an element other than the root", function() {
+        it("performs a find against the current view based on the path indicated by successive calls to #push_child and #pop_child", function() {
+          builder.push_child();
+          builder.push_child();
+          builder.pop_child();
+
+          expect(builder.find_preceding_element()).to(equal, "find result");
+          expect(builder.view.find).to(have_been_called, with_args("> :eq(0)"));
+          builder.view.find.clear();
+
+          builder.push_child();
+          builder.push_child();
+          builder.pop_child();
+          expect(builder.find_preceding_element()).to(equal, "find result");
+          expect(builder.view.find).to(have_been_called, with_args("> :eq(1) > :eq(0)"));
+        });
+      });
+
+      context("when called for the root element", function() {
+        before(function() {
+          builder.push_child();
+          builder.pop_child();
+        });
+
+        it("returns the Builder's current #view", function() {
+          expect(builder.find_preceding_element()).to(equal, builder.view);
+        });
       });
     });
   });

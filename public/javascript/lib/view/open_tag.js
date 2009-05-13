@@ -14,5 +14,9 @@ constructor("View.OpenTag", {
       attribute_pairs.push(attribute_name + '="' + this.attributes[attribute_name] + '"');
     }
     return (attribute_pairs.length > 0) ? " " + attribute_pairs.join(" ") : "";
+  },
+
+  post_process: function(builder) {
+    builder.push_child();
   }
 });

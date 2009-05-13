@@ -5,5 +5,8 @@ constructor("View.TextNode", {
 
   to_html: function() {
     return htmlEscape(this.text);
+  },
+
+  post_process: function() {
   }
 });
