@@ -1,4 +1,33 @@
 constructor("View.CloseTag", {
+  eigenprops: {
+    initialize: function() {
+      this.generate_event_methods();
+    },
+
+    supported_events: [
+      "blur", "change", "click", "dblclick", "error", "focus", "keydown", "keypress",
+      "keyup", "load", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup",
+      "resize", "scroll", "select", "submit", "unload"
+    ],
+
+    generate_event_methods: function() {
+      var self = this;
+      Util.each(this.supported_events, function(event_name) {
+        self.generate_event_method(event_name);
+      });
+    },
+
+    generate_event_method: function(event_name) {
+      this.prototype[event_name] = function(handler) {
+        this.on_build(function(element, view) {
+          element[event_name].call(element, function(event) {
+            handler.call(element, view, event);
+          });
+        });
+      };
+    }
+  },
+
   initialize: function(name) {
     this.name = name;
   },
