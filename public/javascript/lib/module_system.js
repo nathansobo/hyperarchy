@@ -6,6 +6,10 @@ function module() {
   ModuleSystem.module.apply(ModuleSystem, arguments);
 }
 
+function mixin() {
+  ModuleSystem.mixin.apply(ModuleSystem, arguments);
+}
+
 ModuleSystem = {
   constructor: function() {
     var args = this.extract_constructor_arguments(arguments);

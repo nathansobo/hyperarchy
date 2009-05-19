@@ -3,6 +3,5 @@
 //= require <june>
 //= require "lib/module_system"
 //= require "lib/util"
-//= require "lib/template"
 //= require "lib/view"
 //= require "app/models"

@@ -21,6 +21,8 @@ Screw.Unit(function(c) { with(c) {
       var outer_div_on_build_args,
           br_on_build_args,
           hello_p_on_build_args,
+          value_of_foo_when_hello_p_on_build_is_triggered,
+          value_of_bar_when_hello_p_on_build_is_triggered,
           goodbye_p_on_build_args,
           hello_div_on_build_args;
 
@@ -28,8 +30,10 @@ Screw.Unit(function(c) { with(c) {
         with(builder) {
           div(function() {
             div({id: "hello"}, function() {
-              p("Hello").on_build(function() {
+              p("Hello").on_build(function(element, view) {
                 hello_p_on_build_args = Util.to_array(arguments);
+                value_of_foo_when_hello_p_on_build_is_triggered = view.foo;
+                value_of_bar_when_hello_p_on_build_is_triggered = view.bar;
               });
             }).on_build(function() {
               hello_div_on_build_args =  Util.to_array(arguments);
@@ -51,6 +55,31 @@ Screw.Unit(function(c) { with(c) {
         expect(view.find("div#hello")).to_not(be_empty)
         expect(view.find("div#hello p")).to_not(be_empty)
         expect(view.find("p:contains('Goodbye')")).to_not(be_empty)
+      });
+
+      context("when a properties hash is passed as an argument", function() {
+        it("mixes the given properties into the view before on_build instructions are processed", function() {
+          var view = builder.to_view({
+            foo: "foo",
+            bar: "bar"
+          });
+
+          expect(value_of_foo_when_hello_p_on_build_is_triggered).to(equal, "foo");
+          expect(value_of_bar_when_hello_p_on_build_is_triggered).to(equal, "bar");
+          expect(view.foo).to(equal, "foo");
+          expect(view.bar).to(equal, "bar");
+        });
+
+        it("invokes the 'initialize' method on the view if it supplied as a property after on_build handlers have been triggered", function() {
+          var initialize = mock_function("initialize", function() {
+            expect(hello_p_on_build_args).to_not(be_undefined);
+          });
+          var view = builder.to_view({
+            initialize: initialize
+          });
+
+          expect(initialize).to(have_been_called, on_object(view));
+        });
       });
 
       it("invokes on_build instructions defined on the elements with a jQuery wrapper for that element and the view", function() {
@@ -207,6 +236,70 @@ Screw.Unit(function(c) { with(c) {
           }).to(throw_exception);
         });
       });
+    });
+
+    describe("#subview", function() {
+      before(function() {
+        ModuleSystem.constructor("ExampleSubviewTemplate", View.Template, {
+          content: function(props) { with (this.builder) {
+            div({'class': "subview"}, function() {
+              h1("Subview " + props.subview_number);
+            });
+          }},
+
+          view_properties: {
+            foo: "foo",
+            bar: "bar"
+          }
+        });
+      });
+
+      after(function() {
+        delete window["ExampleSubviewTemplate"];
+      });
+
+
+      context("when given a subview name", function() {
+        it("builds a view within the current view and assigns it to that name", function() {
+          builder.div({id: "root"}, function() {
+            builder.subview("subview_1", ExampleSubviewTemplate, { subview_number: 1});
+            builder.div({id: "not_in_subview"}, function() {
+              builder.h1("Not In Subview");
+            });
+            builder.subview("subview_2", ExampleSubviewTemplate, { subview_number: 2});
+          });
+
+          var view = builder.to_view();
+
+
+          expect(view.subview_1.html()).to(equal, view.find(".subview:contains('Subview 1')").html());
+          expect(view.subview_1.foo).to(equal, "foo");
+          expect(view.subview_1.bar).to(equal, "bar");
+          expect(view.subview_1.subview_number).to(equal, 1);
+
+
+          expect(view.subview_2.html()).to(equal, view.find(".subview:contains('Subview 2')").html());
+          expect(view.subview_2.foo).to(equal, "foo");
+          expect(view.subview_2.bar).to(equal, "bar");
+          expect(view.subview_2.subview_number).to(equal, 2);
+        });
+      });
+
+      context("when given a hash name and an index", function() {
+        it("assigns the subview to an index on a hash with the given name, creating it if it doesn't exist", function() {
+          builder.div({id: "root"}, function() {
+            builder.subview("subviews", "one", ExampleSubviewTemplate, { subview_number: 1});
+            builder.subview("subviews", "two", ExampleSubviewTemplate, { subview_number: 2});
+          });
+
+          var view = builder.to_view();
+          expect(view.subviews.one.subview_number).to(equal, 1);
+          expect(view.subviews.two.subview_number).to(equal, 2);
+        });
+      });
+
+
+
     });
 
     describe("#find_preceding_element", function() {

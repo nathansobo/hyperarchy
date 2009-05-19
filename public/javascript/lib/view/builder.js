@@ -33,13 +33,15 @@ constructor("View.Builder", {
     this.preceding_element_path = [0];
   },
 
-  to_view: function() {
+  to_view: function(properties) {
     var self = this;
     var view = jQuery(this.to_html());
     this.view = view;
+    if (properties) mixin(view, properties);
     Util.each(this.instructions, function(instruction) {
       instruction.post_process(self);
     });
+    if (view.initialize) view.initialize();
     this.view = null;
     return view;
   },
@@ -50,6 +52,38 @@ constructor("View.Builder", {
       html += instruction.to_html();
     });
     return html;
+  },
+
+  subview: function() {
+    var args = this.parse_subview_arguments(arguments);
+
+
+    this.div().on_build(function(element, view) {
+      var subview = args.template.to_view(args.properties || {});
+      if (args.collection_name) {
+        if (!view[args.collection_name]) view[args.collection_name] = {};
+        view[args.collection_name][args.index] = subview;
+      } else {
+        view[args.name] = subview;
+      }
+      element.replaceWith(subview);
+    });
+  },
+
+  parse_subview_arguments: function(args) {
+    var args = Util.to_array(args);
+    var subview_arguments = {};
+    if (args[1].to_view) {
+      subview_arguments.name = args[0];
+      subview_arguments.template = args[1];
+      if (args[2]) subview_arguments.properties = args[2];
+    } else {
+      subview_arguments.collection_name = args[0];
+      subview_arguments.index = args[1];
+      subview_arguments.template = args[2];
+      if (args[3]) subview_arguments.properties = args[3];
+    }
+    return subview_arguments;
   },
 
   tag: function(name) {
