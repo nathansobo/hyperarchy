@@ -3,7 +3,6 @@ require "sequel"
 require "guid"
 require "thin"
 require "erector"
-require "sprockets"
 require "json"
 require "active_support/core_ext/module/delegation"
 require "active_support/core_ext/object/metaclass"
@@ -14,6 +13,7 @@ require "collections/sequenced_hash"
 dir = File.dirname(__FILE__)
 ROOT = File.expand_path("#{dir}/..")
 
+require "#{ROOT}/vendor/sprockets/lib/sprockets"
 require "#{ROOT}/lib/core_extensions"
 require "#{ROOT}/lib/domain"
 require "#{ROOT}/lib/global_domain"
