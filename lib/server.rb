@@ -13,6 +13,9 @@ class Server
   def start(options)
     port = options.delete(:port) || 8080
     Thin::Server.start(port) do
+      use Rack::Static, :urls => ["/javascript", "/stylesheets"], :root => "#{ROOT}/public"
+      use Rack::ContentLength
+      use Rack::ShowExceptions
       run Dispatcher.instance
     end
   end

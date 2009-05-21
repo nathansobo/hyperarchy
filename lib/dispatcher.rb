@@ -7,22 +7,14 @@ class Dispatcher
     protected :new
   end
 
-  attr_reader :root, :public_directory
+  attr_reader :root
   def initialize
     @root = Resources::Root.new
-    @public_directory = Rack::Directory.new("#{ROOT}/public")
   end
 
   def call(env)
     request = Rack::Request.new(env)
-    if resource = locate_resource(request.path_info)
-      resource.send(request.request_method.downcase, request.params)
-    else
-      public_directory.call(env)
-    end
-  rescue Exception => e
-    puts e.message
-    puts e.backtrace
+    locate_resource(request.path_info).send(request.request_method.downcase, request.params)
   end
 
   def locate_resource(path)

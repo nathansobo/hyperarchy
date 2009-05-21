@@ -1,11 +1,11 @@
 module Views
   class Root < Erector::Widget
-    def render
+    def content
       html do
         head do
           title "Hyperarchy"
           link :rel => "stylesheet", :type => "text/css", :href => "http://yui.yahooapis.com/2.7.0/build/reset/reset-min.css"
-          link :rel => "stylesheet", :type => "text/css", :href => "hyperarchy.css"
+          link :rel => "stylesheet", :type => "text/css", :href => "stylesheets/hyperarchy.css"
           application_javascript_tags
         end
 
