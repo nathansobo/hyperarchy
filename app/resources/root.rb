@@ -3,7 +3,7 @@ module Resources
     def locate(path_fragment)
       case path_fragment
       when "domain"
-        GlobalDomain.instance
+        Model::GlobalDomain.instance
       end
     end
 

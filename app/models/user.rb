@@ -1,4 +1,4 @@
-class User < Tuple
+class User < Model::Tuple
   attribute :full_name, :string
 
   relates_to_many :elections do

@@ -1,4 +1,4 @@
-class Candidate < Tuple
+class Candidate < Model::Tuple
   attribute :body, :string
   attribute :election_id, :string
 

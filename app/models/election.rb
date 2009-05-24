@@ -1,4 +1,4 @@
-class Election < Tuple
+class Election < Model::Tuple
   attribute :body, :string
 
   # has_many :answers

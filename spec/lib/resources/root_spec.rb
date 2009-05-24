@@ -10,7 +10,7 @@ module Resources
     describe "#locate" do
       context "when passed 'domain'" do
         it "returns GlobalDomain.instance" do
-          root.locate('domain').should == GlobalDomain.instance
+          root.locate('domain').should == Model::GlobalDomain.instance
         end
       end
     end
