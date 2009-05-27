@@ -12,6 +12,14 @@ Spec::Runner.configure do |config|
   end
 end
 
+module Http
+  class TestRequest < Http::Request
+    def initialize
+      super({})
+    end
+  end
+end
+
 at_exit do
   Spec::Runner.run
 end

@@ -4,4 +4,4 @@ dir = File.dirname(__FILE__)
 $LOAD_PATH.push("#{dir}/../lib/")
 require "#{dir}/../config/environment"
 
-Server.start(:port => 9090)
+Http::Server.start(:port => 9090)

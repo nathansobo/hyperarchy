@@ -3,7 +3,7 @@ module Model
     class Set < Relation
       attr_reader :global_name, :tuple_class, :attributes_by_name
       attr_accessor :declared_fixtures
-    
+
       def initialize(global_name, tuple_class)
         @global_name, @tuple_class = global_name, tuple_class
         @attributes_by_name = SequencedHash.new
@@ -21,7 +21,7 @@ module Model
         Origin.insert(global_name, tuple.field_values_by_attribute_name)
       end
 
-      def create(field_values)
+      def create(field_values = {})
         tuple = tuple_class.new(field_values)
         insert(tuple)
         tuple

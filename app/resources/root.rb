@@ -1,5 +1,5 @@
 module Resources
-  class Root
+  class Root < Http::Resource
     def locate(path_fragment)
       case path_fragment
       when "domain"
