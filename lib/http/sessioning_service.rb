@@ -8,11 +8,12 @@ module Http
 
     def call(env)
       request = Rack::Request.new(env)
-      session_id = request.cookies["rack.session"] || Session.create.id
-      status, headers, body = app.call(env)
-      response = Rack::Response.new(body, status, headers)
-      response.set_cookie("rack.session", :value => session_id)
-      response.finish
+      session_id = request.cookies["session_id"] || Session.create.id
+
+
+      response = Response.new(*app.call(env))
+      response.cookies["session_id"] = session_id
+      response.to_a
     end
   end
 end

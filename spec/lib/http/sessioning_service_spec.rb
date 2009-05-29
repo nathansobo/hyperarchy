@@ -10,8 +10,8 @@ module Http
         @sessioning_service = SessioningService.new(app)
       end
 
-      context "when no 'rack.session' cookie is present in the request" do
-        it "creates a new Session and sets the 'rack.session' cookie in the response to its id" do
+      context "when no 'session_id' cookie is present in the request" do
+        it "creates a new Session and sets the 'session_id' cookie in the response to its id" do
           request = TestRequest.new
           request.cookies['session_id'].should be_nil
 
