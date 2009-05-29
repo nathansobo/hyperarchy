@@ -7,7 +7,7 @@ module Http
     end
 
     def call(env)
-      request = Rack::Request.new(env)
+      request = Request.new(env)
       session_id = request.cookies["session_id"] || Session.create.id
 
 

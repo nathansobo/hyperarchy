@@ -27,19 +27,17 @@ module Http
         end
       end
 
-      context "when a 'rack.session' cookie is present in the request" do
-        it "does not create a new Session and sets the 'rack.session' cookie in the response to the given id" do
-#          env = { "rack.request.cookie_hash" => { 'rack.session' => Guid.new } }
-#          p Rack::Request.new(env).cookies
-#
-#          mock(app).call(env) { [200, {}, "test body"] }
-#          dont_allow(Session).create
-#          status, headers, body = sessioning_service.call(env)
-#          response = Rack::Response.new(body, status, headers)
-#          response.headers['Set-Cookie'].should == "rack.session=#{session_id}"
+      context "when a 'session_id' cookie is present in the request" do
+        it "does not create a new Session" do
+          request = TestRequest.new
+          request.cookies['session_id'] = Guid.new
+
+          mock(app).call(request.env) { [200, {}, "test body"] }
+          dont_allow(Session).create
+
+          sessioning_service.call(request.env)
         end
       end
-
     end
   end
 end
