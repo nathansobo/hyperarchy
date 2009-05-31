@@ -2,9 +2,30 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 
 module Http
   describe Request do
-    describe "#cookies" do
-      attr_reader :request
+    attr_reader :request
 
+    describe "#session_id" do
+      before do
+        @request = Request.new({'hyperarchy.session_id' => 'a-session-id'})
+      end
+
+      it "return the 'hyperarchy.session_id' value from the environment" do
+        request.session_id.should == request.env['hyperarchy.session_id']
+      end
+    end
+
+    describe "#session_id=" do
+      before do
+        @request = Request.new({})
+      end
+
+      it "sets the 'hyperarchy.session_id' value in the environment" do
+        request.session_id = "fake-session-id"
+        request.env['hyperarchy.session_id'].should == "fake-session-id"
+      end
+    end
+
+    describe "#cookies" do
       before do
         @request = Request.new({'HTTP_COOKIES' => 'foo=bar; baz=bop'})
       end

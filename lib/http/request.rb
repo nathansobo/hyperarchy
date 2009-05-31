@@ -10,6 +10,14 @@ module Http
       @cookies ||= Cookies.new(self)
     end
 
+    def session_id
+      env['hyperarchy.session_id']
+    end
+
+    def session_id=(session_id)
+      env['hyperarchy.session_id'] = session_id
+    end
+
     def http_cookies
       env['HTTP_COOKIES']
     end
