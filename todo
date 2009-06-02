@@ -1,14 +1,6 @@
-write relates to one in terms of a "limit" relation which limits the size of its result set to 1
-relates to 1 generates a #{relation_name}_relation method that gives direct access to its limit relation object
-has many, et al
-attributes can't have the same name as class methods on Tuple or they shadow them... how can this be circumvented?
-  either disallow attributes with those names
-  alias the existing methods to something else (could break other code)
-  change the api
+change attribute api to Class[:attribute] instead of Class.attribute
+has_many, has_one, belongs_to
+signals... belongs_to needs to listen for a change of the attribute value for which it is listening
 
-wire representations of attributes ultimately need to be evaluated in the context of a subdomain, because users might refer
-to forbidden attributes that are projected away. but right now its useless for them to refer to an attribute of a set they
-can't see, so we can use the global sets for resolving attributes
-
-don't concatenate an all.js in development. instead use sprockets to figure out all the js files and include them one at a time
-in the main layout
+update to the latest june
+Tuple#save, which should push the tuple into the repository. The only other option is

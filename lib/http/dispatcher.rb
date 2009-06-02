@@ -19,11 +19,11 @@ module Http
     end
 
     def locate_resource(path, session_id)
-      root.session_id = session_id
+      root.current_session_id = session_id
       path_parts(path).inject(root) do |resource, child_resource_name|
         if resource
           next_resource = resource.locate(child_resource_name)
-          next_resource.session_id = session_id
+          next_resource.current_session_id = session_id
           next_resource
         else
           nil

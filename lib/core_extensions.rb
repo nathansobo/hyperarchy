@@ -21,3 +21,9 @@ class FalseClass
     "f".inspect
   end
 end
+
+class NilClass
+  def to_sql
+    "null"
+  end
+end

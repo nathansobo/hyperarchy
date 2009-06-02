@@ -17,11 +17,11 @@ module Http
         session_id = 'sample-session_id'
 
         stub(dispatcher).root { mock_root }
-        mock(mock_root).session_id=(session_id)
+        mock(mock_root).current_session_id=(session_id)
         mock(mock_root).locate('resource_1') { resource_1 }
-        mock(resource_1).session_id=(session_id)
+        mock(resource_1).current_session_id=(session_id)
         mock(resource_1).locate('resource_2') { resource_2 }
-        mock(resource_2).session_id=(session_id)
+        mock(resource_2).current_session_id=(session_id)
 
         dispatcher.locate_resource("/resource_1/resource_2", session_id).should == resource_2
       end
