@@ -52,7 +52,7 @@ module Model
 
       describe "#find" do
         it "returns the first Tuple in a Selection where id is equal to the given id" do
-          Candidate.set.find("grain_quinoa").should == Candidate.set.where(Candidate.id.eq("grain_quinoa")).tuples.first
+          Candidate.set.find("grain_quinoa").should == Candidate.set.where(Candidate[:id].eq("grain_quinoa")).tuples.first
         end
       end
 

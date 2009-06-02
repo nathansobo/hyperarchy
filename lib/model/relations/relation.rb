@@ -38,7 +38,7 @@ module Model
       end
 
       def find(id)
-        where(tuple_class.id.eq(id)).tuples.first
+        where(tuple_class[:id].eq(id)).tuples.first
       end
 
       def tuples

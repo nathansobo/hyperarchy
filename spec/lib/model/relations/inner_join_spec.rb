@@ -35,8 +35,8 @@ module Model
           join.class.should == InnerJoin
           join.left_operand.should == subdomain.elections
           join.right_operand.should == subdomain.candidates
-          join.predicate.left_operand.should == Election.id
-          join.predicate.right_operand.should == Candidate.election_id
+          join.predicate.left_operand.should == Election[:id]
+          join.predicate.right_operand.should == Candidate[:election_id]
         end
       end
     end

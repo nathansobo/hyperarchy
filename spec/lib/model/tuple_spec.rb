@@ -14,9 +14,9 @@ module Model
         end
 
         it "defines an :id Attribute on the subclass" do
-          Candidate.id.class.should == Attribute
-          Candidate.id.name.should == :id
-          Candidate.id.type.should == :string
+          Candidate[:id].class.should == Attribute
+          Candidate[:id].name.should == :id
+          Candidate[:id].type.should == :string
         end
       end
 
@@ -26,17 +26,29 @@ module Model
           Candidate.attribute(:foo, :string)
         end
 
-        it "defines a class method that refers to the Attribute defined on .set" do
-          Candidate.body.should == Candidate.set.attributes_by_name[:body]
-        end
-
         it "defines named instance methods that call #set_field_value and #get_field_value" do
           tuple = Candidate.new
 
-          mock.proxy(tuple).set_field_value(Candidate.body, "Barley")
+          mock.proxy(tuple).set_field_value(Candidate[:body], "Barley")
           tuple.body = "Barley"
-          mock.proxy(tuple).get_field_value(Candidate.body)
+          mock.proxy(tuple).get_field_value(Candidate[:body])
           tuple.body.should  == "Barley"
+        end
+      end
+
+      describe ".[]" do
+        context "when the given value is the name of an Attribute defined on .set" do
+          it "returns the Attribute with the given name" do
+            Candidate[:body].should == Candidate.set.attributes_by_name[:body]
+          end
+        end
+
+        context "when the given value is not the name of an Attribute defined on .set" do
+          it "raises an exception" do
+            lambda do
+              Candidate[:nonexistant_attribute]
+            end.should raise_error
+          end
         end
       end
 
@@ -186,8 +198,8 @@ module Model
         end
 
         it "assigns the Field values in the given hash" do
-          tuple.get_field_value(Candidate.body).should == "Quinoa"
-          tuple.get_field_value(Candidate.election_id).should == "grain"
+          tuple.get_field_value(Candidate[:body]).should == "Quinoa"
+          tuple.get_field_value(Candidate[:election_id]).should == "grain"
         end
 
         it "assigns #id to a new guid" do
@@ -215,8 +227,8 @@ module Model
       describe "#set_field_value and #get_field_value" do
         specify "set and get a Field value" do
           tuple = Candidate.new
-          tuple.set_field_value(Candidate.body, "Quinoa")
-          tuple.get_field_value(Candidate.body).should == "Quinoa"
+          tuple.set_field_value(Candidate[:body], "Quinoa")
+          tuple.get_field_value(Candidate[:body]).should == "Quinoa"
         end
       end
 

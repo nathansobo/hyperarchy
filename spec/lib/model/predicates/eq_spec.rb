@@ -45,7 +45,7 @@ module Model
             it "returns an Eq predicate with the indicated attribute as one of its operands" do
               eq = Eq.from_wire_representation(wire_representation)
               eq.class.should == Eq
-              eq.left_operand.should == Candidate.body
+              eq.left_operand.should == Candidate[:body]
               eq.right_operand.should == 2
             end
           end
@@ -55,7 +55,7 @@ module Model
       describe "instance methods" do
         describe "#to_sql" do
           it "returns the left_operand.to_sql = right_operand.to_sql" do
-            Eq.new(Candidate.election_id, "grain").to_sql.should == %{candidates.election_id = "grain"}
+            Eq.new(Candidate[:election_id], "grain").to_sql.should == %{candidates.election_id = "grain"}
           end
         end
       end

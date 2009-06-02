@@ -4,6 +4,6 @@ class Candidate < Model::Tuple
 
   #  belongs_to :question
   relates_to_one :election do
-    Election.where(Election.id.eq(election_id))
+    Election.where(Election[:id].eq(election_id))
   end
 end

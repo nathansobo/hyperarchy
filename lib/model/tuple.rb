@@ -19,10 +19,11 @@ module Model
         define_method(name) do
           get_field_value(attribute)
         end
+      end
 
-        metaclass.send(:define_method, name) do
-          set.attributes_by_name[name]
-        end
+      def [](attribute_name)
+        raise "Attribute #{attribute_name} not found" unless set.attributes_by_name.has_key?(attribute_name)
+        set.attributes_by_name[attribute_name]
       end
 
       def relates_to_many(relation_name, &definition)

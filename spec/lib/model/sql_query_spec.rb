@@ -21,8 +21,8 @@ module Model
       context "when there are multiple #conditions" do
         before do
           query.add_from_set(Candidate.set)
-          query.add_condition(Predicates::Eq.new(Candidate.election_id, "grain"))
-          query.add_condition(Predicates::Eq.new(Candidate.body, "Peaches"))
+          query.add_condition(Predicates::Eq.new(Candidate[:election_id], "grain"))
+          query.add_condition(Predicates::Eq.new(Candidate[:body], "Peaches"))
         end
 
         it "generates a select with a where clause having all conditions and'ed together" do
@@ -42,8 +42,8 @@ module Model
 
     describe "#add_condition" do
       it "adds the given Predicate to #conditions" do
-        predicate_1 = Predicates::Eq.new(Candidate.election_id, "grain")
-        predicate_2 = Predicates::Eq.new(Candidate.election_id, "vegetable")
+        predicate_1 = Predicates::Eq.new(Candidate[:election_id], "grain")
+        predicate_2 = Predicates::Eq.new(Candidate[:election_id], "vegetable")
         query.add_condition(predicate_1)
         query.conditions.should == [predicate_1]
         query.add_condition(predicate_2)

@@ -11,7 +11,7 @@ module Model
             "name" => "body"
           })
 
-          attribute.should == Candidate.body
+          attribute.should == Candidate[:body]
         end
       end
     end
@@ -19,15 +19,15 @@ module Model
     describe "instance methods" do
       describe "#to_sql" do
         it "returns the qualified attribute name" do
-          Candidate.body.to_sql.should == "candidates.body"
+          Candidate[:body].to_sql.should == "candidates.body"
         end
       end
 
       describe "#eq" do
         it "returns an instance of Predicates::Eq with self as #left_operand and the argument as #right_operand" do
-          predicate = Candidate.id.eq("grain_quinoa")
+          predicate = Candidate[:id].eq("grain_quinoa")
           predicate.class.should == Predicates::Eq
-          predicate.left_operand.should == Candidate.id
+          predicate.left_operand.should == Candidate[:id]
           predicate.right_operand.should == "grain_quinoa"
         end
       end

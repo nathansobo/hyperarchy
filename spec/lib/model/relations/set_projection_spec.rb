@@ -6,10 +6,10 @@ module Model
     describe SetProjection do
       attr_reader :join, :projection, :composite_join, :composite_projection
       before do
-        @join = Election.where(Election.id.eq("grain")).join(Candidate).on(Election.id.eq(Candidate.election_id))
+        @join = Election.where(Election.id.eq("grain")).join(Candidate).on(Election.id.eq(Candidate[:election_id]))
         @projection = SetProjection.new(join, Election.set)
 
-        @composite_join = projection.join(Candidate.set).on(Candidate.election_id.eq(Election.id))
+        @composite_join = projection.join(Candidate.set).on(Candidate[:election_id].eq(Election.id))
         @composite_projection = SetProjection.new(composite_join, Candidate.set)
       end
 
