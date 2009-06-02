@@ -8,7 +8,7 @@ module("June", function(c) { with(c) {
       this.fields = {};
       for (var attribute_name in this.set.attributes) {
         var attribute = this.set.attributes[attribute_name];
-        this.fields[attribute_name] = new June.Field(attribute);
+        this.fields[attribute_name] = new June.Field(this, attribute);
       }
     });
 
@@ -22,24 +22,19 @@ module("June", function(c) { with(c) {
 
     def('initialize_relation', function(relation_name, relation_definition) {
       var relation = relation_definition.call(this);
-      this[relation_name + "_relation"] = relation;
 
       if (relation_definition.singleton) {
+        this[relation_name + "_relation"] = relation;
         this[relation_name] = function() {
-          return relation.tuples()[0];
+          return relation.all()[0];
         };
       } else {
-        var relation_method = function() {
-          return relation.tuples();
-        };
-        relation_method.each = function(fn) {
-          return relation.each(fn);
-        };
-        relation_method.map = function(fn) {
-          return relation.map(fn);
-        };
-        this[relation_name] = relation_method;
+        this[relation_name] = relation;
       }
+    });
+
+    def('on_update', function(attribute_name, update_handler) {
+      return this.fields[attribute_name].on_update(update_handler);
     });
 
     def('set_field_value', function(attribute, value) {
@@ -69,9 +64,13 @@ module("June", function(c) { with(c) {
       }
     });
 
-    def("update", function(attributes) {
+    def("update", function(attribute_values, callback) {
+      June.Origin.update(this, attribute_values, callback);
+    });
+
+    def("local_update", function(attribute_values) {
       this.batch_update_attributes = {};
-      this.assign_attributes(attributes);
+      this.assign_attributes(attribute_values);
       if (this.attribute_values_changed_during_batch_update()) this.set.tuple_updated(this, this.batch_update_attributes);
       this.batch_update_attributes = null;
     });

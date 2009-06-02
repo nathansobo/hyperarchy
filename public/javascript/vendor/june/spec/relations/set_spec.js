@@ -4,12 +4,12 @@ Screw.Unit(function(c) { with (c) {
   describe("Relations.Set", function() {
     var tuple;
     before(function() {
-      tuple = User.create({id: "fonz"});
+      tuple = User.local_create({id: "fonz"});
     });
 
     describe("metaprogrammatic declarations", function() {
       describe(".attributes", function() {
-        it("creates an Attribute object with the given name and type with on the Set for each declared Attribute", function() {
+        it("local_creates an Attribute object with the given name and type with on the Set for each declared Attribute", function() {
           first_name_attribute = User.first_name
           expect(first_name_attribute).to(equal, User.attributes.first_name);
           expect(first_name_attribute.constructor).to(equal, June.Attribute);
@@ -18,7 +18,7 @@ Screw.Unit(function(c) { with (c) {
           expect(first_name_attribute.set).to(equal, User);
         });
 
-        it("creates an accessor method for each declared attribute on the Set's generated Tuple constructor", function() {
+        it("local_creates an accessor method for each declared attribute on the Set's generated Tuple constructor", function() {
           tuple.first_name("Jan");
           expect(tuple.first_name()).to(equal, "Jan");
         });
@@ -35,11 +35,11 @@ Screw.Unit(function(c) { with (c) {
         var tuple, expected_tuples;
         before(function() {
           tuple = User.find("dan");
-          expected_tuples = Pet.where(Pet.owner_id.eq(tuple.id())).tuples();
+          expected_tuples = Pet.where(Pet.owner_id.eq(tuple.id())).all();
         });
 
-        it("creates a method with the given name that returns the #tuples of the relation defined by the given function", function() {
-          expect(tuple.pets()).to(equal, expected_tuples);
+        it("assigns the relation defined by the given function to the specified name on the tuple", function() {
+          expect(tuple.pets.all()).to(equal, expected_tuples);
         });
 
         it("defines an #each function on the relation method which iterates over the tuples in the relation", function() {
@@ -60,10 +60,6 @@ Screw.Unit(function(c) { with (c) {
           });
           expect(results).to(equal, expected_results);
         });
-
-        it("assigns the relation defined in the given function to the #{relation_name}_relation field on the tuple", function() {
-          expect(tuple.pets_relation.tuples()).to(equal, tuple.pets());
-        });
       });
 
       describe(".relates_to_one", function() {
@@ -73,11 +69,11 @@ Screw.Unit(function(c) { with (c) {
         });
 
         it("defines a method with the given name that returns the first tuple from the relation defined in the given function", function() {
-          expect(person_tuple.pet()).to(equal, person_tuple.pets()[0]);
+          expect(person_tuple.pet()).to(equal, person_tuple.pets.all()[0]);
         });
 
         it("assigns the relation defined in the given function to the #{relation_name}_relation field on the tuple", function() {
-          expect(person_tuple.pet_relation.tuples()[0]).to(equal, person_tuple.pet());
+          expect(person_tuple.pet_relation.all()[0]).to(equal, person_tuple.pet());
         });
       });
 
@@ -90,17 +86,17 @@ Screw.Unit(function(c) { with (c) {
 
         describe("when not given options", function() {
           it("sets up a many-relation with an inferred target Set and foreign key", function() {
-            var expected_tuples = Pet.where(Pet.species_id.eq(species_tuple.id())).tuples();
+            var expected_tuples = Pet.where(Pet.species_id.eq(species_tuple.id())).all();
             expect(expected_tuples).to_not(be_empty);
-            expect(species_tuple.pets()).to(equal, expected_tuples);
+            expect(species_tuple.pets.all()).to(equal, expected_tuples);
           });
         });
 
         describe("when given a target_set_name and a foreign_key_name", function() {
           it("sets up a many-relation with the requested target Set and foreign key", function() {
-            var expected_tuples = Pet.where(Pet.owner_id.eq(person_tuple.id())).tuples();
+            var expected_tuples = Pet.where(Pet.owner_id.eq(person_tuple.id())).all();
             expect(expected_tuples).to_not(be_empty);
-            expect(person_tuple.pets_2()).to(equal, expected_tuples);
+            expect(person_tuple.pets_2.all()).to(equal, expected_tuples);
           });
         });
       });
@@ -114,7 +110,7 @@ Screw.Unit(function(c) { with (c) {
 
         describe("when not given options", function() {
           it("sets up a many-relation with an inferred target Set and foreign key", function() {
-            var expected_tuple = Pet.where(Pet.species_id.eq(species_tuple.id())).tuples()[0];
+            var expected_tuple = Pet.where(Pet.species_id.eq(species_tuple.id())).all()[0];
             expect(expected_tuple).to_not(be_null);
             expect(species_tuple.pet()).to(equal, expected_tuple);
           });
@@ -122,7 +118,7 @@ Screw.Unit(function(c) { with (c) {
 
         describe("when given a target_set_name and a foreign_key_name", function() {
           it("sets up a many-relation with the requested target Set and foreign key", function() {
-            var expected_tuple = Pet.where(Pet.owner_id.eq(person_tuple.id())).tuples()[0];
+            var expected_tuple = Pet.where(Pet.owner_id.eq(person_tuple.id())).all()[0];
             expect(expected_tuple).to_not(be_null);
             expect(person_tuple.pet_2()).to(equal, expected_tuple);
           });
@@ -156,18 +152,18 @@ Screw.Unit(function(c) { with (c) {
       });
     });
 
-    describe("#tuples", function() {
+    describe("#all", function() {
       it("returns a copy of the sets tuples", function() {
-        var tuples_copy = User.tuples();
+        var tuples_copy = User.all();
         tuples_copy.push(1);
-        expect(User.tuples()).to_not(equal, tuples_copy);
+        expect(User.all()).to_not(equal, tuples_copy);
       });
     });
 
     describe("#find", function() {
       describe("when passed the id of a tuple in the Set", function() {
         it("returns the tuple with that id", function() {
-          var user = User.create({id: "george", first_name: "George"});
+          var user = User.local_create({id: "george", first_name: "George"});
           expect(User.find("george")).to(equal, user);
         });
       });
@@ -180,12 +176,25 @@ Screw.Unit(function(c) { with (c) {
     });
 
     describe("#create", function() {
+      it("proxies to June.Origin.create with itself as the set", function() {
+        June.origin("/domain");
+        mock(June.Origin, 'create');
+
+        var create_callback = function() {};
+        var attribute_values = {first_name: "Johnny", age: 0};
+        User.create(attribute_values, create_callback);
+        
+        expect(June.Origin.create).to(have_been_called, with_args(User, attribute_values, create_callback));
+      });
+    });
+
+    describe("#local_create", function() {
       var tuple, update_handler;
       before(function() {
         update_handler = mock_function("update handler");
         User.on_update(update_handler);
 
-        tuple = User.create({
+        tuple = User.local_create({
           age: 25,
           first_name: "Ryan"
         });
@@ -204,30 +213,30 @@ Screw.Unit(function(c) { with (c) {
         expect(tuple.age()).to(equal, 25)
       });
 
-      it("adds the created object to #tuples", function() {
-        expect(User.tuples().indexOf(tuple)).to_not(equal, -1);
+      it("adds the local_created object to #all", function() {
+        expect(User.all().indexOf(tuple)).to_not(equal, -1);
       });
 
-      it("does not trigger #on_update handlers while initializing the fields of the created tuple", function() {
+      it("does not trigger #on_update handlers while initializing the fields of the local_created tuple", function() {
         expect(update_handler).to_not(have_been_called);
       });
     });
 
     describe("#insert", function() {
-      it("adds the created object to #tuples", function() {
+      it("adds the local_created object to #all", function() {
         var tuple = new User.Tuple({
           age: 25,
           first_name: "Ryan"
         });
-        expect(User.tuples().indexOf(tuple)).to(equal, -1);
+        expect(User.all().indexOf(tuple)).to(equal, -1);
         User.insert(tuple);
-        expect(User.tuples().indexOf(tuple)).to_not(equal, -1);
+        expect(User.all().indexOf(tuple)).to_not(equal, -1);
       });
     });
 
     describe("#remove", function() {
-      describe("when given a tuple in #tuples", function() {
-        it("removes the given object from #tuples", function() {
+      describe("when given a tuple in #all", function() {
+        it("removes the given object from #all", function() {
           var tuple = User.find("bob")
           expect(tuple).to_not(be_null);
           User.remove(tuple);
@@ -235,7 +244,7 @@ Screw.Unit(function(c) { with (c) {
         });
       });
 
-      describe("when given an object not in #tuples", function() {
+      describe("when given an object not in #all", function() {
         it("returns null", function() {
           expect(User.remove("nothing")).to(equal, null);
         });
@@ -333,7 +342,7 @@ Screw.Unit(function(c) { with (c) {
 
         User.pause_events();
 
-        var tuple = User.create({id: "kunal", first_name: "Kunal"});
+        var tuple = User.local_create({id: "kunal", first_name: "Kunal"});
         tuple.first_name("Lanuk");
         tuple.destroy();
 
@@ -354,7 +363,7 @@ Screw.Unit(function(c) { with (c) {
         expect(remove_handler).to(have_been_called, with_args(tuple));
 
         insert_handler.clear();
-        var tuple_2 = User.create({id: "nathan", first_name: "Nathan"});
+        var tuple_2 = User.local_create({id: "nathan", first_name: "Nathan"});
 
         expect(insert_handler).to(have_been_called, once);
         expect(insert_handler).to(have_been_called, with_args(tuple_2));
@@ -432,7 +441,7 @@ Screw.Unit(function(c) { with (c) {
           var insert_handler = mock_function("insert handler");
           User.on_insert(insert_handler);
 
-          var tuple = User.create({id: "emma", first_name: "Emma"});
+          var tuple = User.local_create({id: "emma", first_name: "Emma"});
           expect(insert_handler).to(have_been_called, once);
           expect(insert_handler).to(have_been_called, with_args(tuple));
         });

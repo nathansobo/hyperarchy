@@ -1,13 +1,11 @@
-//require("/vendor/jquery-1.2.6");
+require("/vendor/jquery-1.2.6");
 require("/vendor/foundation");
 require("/vendor/json");
 
 require("/lib/june/string");
 require("/lib/june/subscription_node");
+require("/lib/june/subscription_bundle");
 require("/lib/june/subscription");
-require("/lib/june/subscriber_methods");
-require("/lib/june/subscribable");
-require("/lib/june/tuple_supervisor");
 require("/lib/june/domain");
 require("/lib/june/remote_domain");
 require("/lib/june/tuple_methods");
@@ -20,6 +18,7 @@ require("/lib/june/relations/set_configuration");
 require("/lib/june/relations/selection");
 require("/lib/june/relations/inner_join");
 require("/lib/june/relations/set_projection");
+require("/lib/june/relations/ordering");
 require("/lib/june/predicates/binary_predicate_methods");
 require("/lib/june/predicates/predicate_methods");
 require("/lib/june/predicates/equal_to");
@@ -44,7 +43,7 @@ Screw.Unit(function(c) { with(c) {
       has_one("pet_2", {target_set_name: "Pet", foreign_key_name: "owner_id"});
 
       relates_to_one("pet", function() {
-        return this.pets_relation;
+        return this.pets;
       }),
 
       methods({
@@ -81,19 +80,19 @@ Screw.Unit(function(c) { with(c) {
       has_one("pet");
     }});
 
-    User.create({id: "dan", first_name: "Dan", age: 21});
-    User.create({id: "bob", first_name: "Bob", age: 21});
-    User.create({id: "joe", first_name: "Joe", age: 21});
-    User.create({id: "alice", first_name: "Alice", age: 22});
-    User.create({id: "jean", first_name: "Jean", age: 22});
+    User.local_create({id: "alice", first_name: "Alice", age: 22});
+    User.local_create({id: "dan", first_name: "Dan", age: 21});
+    User.local_create({id: "bob", first_name: "Bob", age: 20});
+    User.local_create({id: "joe", first_name: "Joe", age: 19});
+    User.local_create({id: "jean", first_name: "Jean", age: 23});
 
-    Pet.create({id: "fido", name: "Fido", owner_id: "dan", species_id: "dog"});
-    Pet.create({id: "cleo", name: "Cleo", owner_id: "dan", species_id: "fish"});
-    Pet.create({id: "blue", name: "Blue", owner_id: "bob", species_id: "dog"});
-    Pet.create({id: "stray", name: "Unknown", owner_id: null, species_id: "dog"});
+    Pet.local_create({id: "fido", name: "Fido", owner_id: "dan", species_id: "dog"});
+    Pet.local_create({id: "cleo", name: "Cleo", owner_id: "dan", species_id: "fish"});
+    Pet.local_create({id: "blue", name: "Blue", owner_id: "bob", species_id: "dog"});
+    Pet.local_create({id: "stray", name: "Unknown", owner_id: null, species_id: "dog"});
 
-    Species.create({id: "dog", name: "Dog"});
-    Species.create({id: "fish", name: "Fish"});
+    Species.local_create({id: "dog", name: "Dog"});
+    Species.local_create({id: "fish", name: "Fish"});
   });
 
 

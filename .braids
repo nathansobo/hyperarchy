@@ -1,15 +1,15 @@
 --- 
-vendor/sprockets: 
-  squashed: true
-  url: git://github.com/nathansobo/sprockets.git
-  branch: master
-  type: git
-  revision: 6a4c881e40aa25071f1d064b4ddf295ed8851d3c
-  remote: braid/vendor/sprockets
 public/javascript/vendor/june: 
   squashed: true
   url: git@github.com:grockit/june.git
   branch: master
   type: git
-  revision: 26114be24cd0768959a2f34382ae9f3e900388e3
+  revision: 389c854bfed36233621883e49229cb72a5e181de
   remote: braid/javascript/vendor/june
+vendor/sprockets: 
+  squashed: true
+  branch: master
+  url: git://github.com/nathansobo/sprockets.git
+  type: git
+  revision: 6a4c881e40aa25071f1d064b4ddf295ed8851d3c
+  remote: braid/vendor/sprockets

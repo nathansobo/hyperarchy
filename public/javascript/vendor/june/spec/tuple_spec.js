@@ -15,7 +15,47 @@ Screw.Unit(function(c) { with(c) {
         expect(User.remove).to(have_been_called, with_args(tuple));
       });
     });
-    
+
+    describe("#on_update", function() {
+      context("when an event handler has been registered for a particular Attribute", function() {
+        var tuple, update_handler, update_subscription;
+
+        before(function() {
+          tuple = User.find("bob");
+          update_handler = mock_function("age update handler");
+          update_subscription = tuple.on_update("age", update_handler);
+        });
+
+        context("when a Field associated with the named Attribute is updated", function() {
+          it("triggers the event handler with the Field's new value and old value", function() {
+            var old_value = tuple.age();
+            var new_value = 45;
+            expect(old_value).to_not(equal, new_value);
+            
+            tuple.age(new_value);
+            expect(update_handler).to(have_been_called, with_args(new_value, old_value));
+          });
+        });
+
+        context("when the subscription has been destroyed", function() {
+          before(function() {
+            update_subscription.destroy();
+          });
+
+          context("when a Field associated with the named Attribute is updated", function() {
+            it("does not trigger the event handler", function() {
+              var old_value = tuple.age();
+              var new_value = 45;
+              expect(old_value).to_not(equal, new_value);
+
+              tuple.age(new_value);
+              expect(update_handler).to_not(have_been_called);
+            });
+          });
+        });
+      });
+    });
+
     describe("#get_field_value", function() {
       describe("when called with an Attribute that is defined on the Set", function() {
         it("retrieves the value in the corresponding Field", function() {
@@ -134,12 +174,25 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#update", function() {
+      it("calls June.Origin.update with the Tuple, the given attribute values, and the given callback", function() {
+        June.origin("/domain");
+        mock(June.Origin, "update");
+        var attribute_values = {first_name: "Roberto"};
+        var update_callback = mock_function("update callback");
+
+        tuple.update(attribute_values, update_callback);
+
+        expect(June.Origin.update).to(have_been_called, with_args(tuple, attribute_values, update_callback));
+      });
+    });
+    
+    describe("#local_update", function() {
       context("when called with Attribute values that are different from the existing values", function() {
         it("updates multiple Attribute values simultaneously", function() {
           expect(tuple.first_name()).to_not(equal, "Bobo");
           expect(tuple.age()).to_not(equal, 100);
 
-          tuple.update({ first_name: "Bobo", age: 100 });
+          tuple.local_update({ first_name: "Bobo", age: 100 });
 
           expect(tuple.first_name()).to(equal, "Bobo");
           expect(tuple.age()).to(equal, 100);
@@ -160,7 +213,7 @@ Screw.Unit(function(c) { with(c) {
               new_value: attributes['age']
             }
           }
-          tuple.update(attributes);
+          tuple.local_update(attributes);
 
           expect(tuple.set.tuple_updated).to(have_been_called, once);
           expect(tuple.set.tuple_updated).to(have_been_called, with_args(tuple, expected_changed_attributes));
@@ -170,7 +223,7 @@ Screw.Unit(function(c) { with(c) {
       context("when called with Attribute values that are the same as the existing values", function() {
         it("does not call #tuple_updated on its #set", function() {
           mock(tuple.set, "tuple_updated");
-          tuple.update({ first_name: tuple.first_name(), age: tuple.age() });
+          tuple.local_update({ first_name: tuple.first_name(), age: tuple.age() });
           expect(tuple.set.tuple_updated).to_not(have_been_called);
         });
       });

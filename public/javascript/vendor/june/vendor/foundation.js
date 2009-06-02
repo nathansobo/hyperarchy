@@ -58,7 +58,3 @@ function module(name, definition) {
 
   definition.call(current_module(), keywords);
 }
-
-function throw_june_unimplemented(object, method){
-  throw new Error("June.UnimplementedException: '" + method + "' was not implemented by: " + object);  
-}

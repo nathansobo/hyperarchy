@@ -10,7 +10,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("returns false", function() {
-            expect(predicate.evaluate(User.create({first_name: "Nathan"}))).to(equal, false);
+            expect(predicate.evaluate(User.local_create({first_name: "Nathan"}))).to(equal, false);
           });
         });
 
@@ -20,7 +20,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("returns true", function() {
-            expect(predicate.evaluate(User.create({first_name: "Nathan"}))).to(equal, true);
+            expect(predicate.evaluate(User.local_create({first_name: "Nathan"}))).to(equal, true);
           });
         });
       });
@@ -32,7 +32,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("returns false", function() {
-            expect(predicate.evaluate(User.create({first_name: "Nathan"}))).to(equal, false);
+            expect(predicate.evaluate(User.local_create({first_name: "Nathan"}))).to(equal, false);
           });
         });
 
@@ -42,7 +42,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("returns true", function() {
-            expect(predicate.evaluate(User.create({first_name: "Nathan"}))).to(equal, true);
+            expect(predicate.evaluate(User.local_create({first_name: "Nathan"}))).to(equal, true);
           });
         });
       });

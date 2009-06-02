@@ -34,6 +34,26 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+    describe("#order_by", function() {
+      context("when called with just an Attribute", function() {
+        it("builds an Ordering with self as #operand, the given Attribute as #attribute, and 'asc' as #direction", function() {
+          var ordering = User.order_by(User.name);
+          expect(ordering.constructor).to(equal, June.Relations.Ordering);
+          expect(ordering.attribute()).to(equal, User.name);
+          expect(ordering.direction()).to(equal, "asc");
+        });
+      });
+
+      context("when called with an Attribute and a Direction", function() {
+        it("builds an Ordering with self as #operand, the given Attribute as #attribute, and the given direction as #direction", function() {
+          var ordering = User.order_by(User.name, "desc");
+          expect(ordering.constructor).to(equal, June.Relations.Ordering);
+          expect(ordering.attribute()).to(equal, User.name);
+          expect(ordering.direction()).to(equal, "desc");
+        });
+      });
+    });
+
     describe("#find", function() {
       context("when passed an id", function() {
         it("returns the first element of a selection where relation.id is equal to the given id", function() {
@@ -50,30 +70,45 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#first", function() {
-      it("returns the first element of #tuples", function() {
-        expect(User.first()).to(equal, User.tuples()[0]);
+      it("returns the first element of #all", function() {
+        expect(User.first()).to(equal, User.all()[0]);
       });
     });
 
     describe("#map", function() {
       it("returns a new Array built by invoking the given function on each tuple in the relation", function() {
         var expected_result = [];
-        tuples = User.tuples();
-        for(var i = 0; i < tuples.length; i++) {
-          expected_result.push(tuples[i].first_name());
+        all = User.all();
+        for(var i = 0; i < all.length; i++) {
+          expected_result.push(all[i].first_name());
         }
 
         expect(User.map(function() { return this.first_name() })).to(equal, expected_result);
+        expect(User.map(function(tuple) { return tuple.first_name() })).to(equal, expected_result);
       });
     });
     
     describe("#each", function() {
       it("invokes the given function on each tuple in the relation", function() {
-        var each_tuple = [];
-        var results = User.each(function() { each_tuple.push(this) });
-        expect(each_tuple).to(equal, User.tuples());
+        var this_values = [];
+        var arg_values = [];
+        var results = User.each(function() { this_values.push(this) });
+        var results = User.each(function(tuple) { arg_values.push(tuple) });
+
+        expect(this_values).to(equal, User.all());
+        expect(arg_values).to(equal, User.all());
       });
     });
 
+
+    describe("#pull", function() {
+      it("calls June.pull with a singleton array containing itself and the given callback", function() {
+        mock(June, 'pull');
+        var pull_callback = function() {};
+        User.pull(pull_callback);
+        
+        expect(June.pull).to(have_been_called, with_args([User], pull_callback));
+      });
+    });
   });
 }});

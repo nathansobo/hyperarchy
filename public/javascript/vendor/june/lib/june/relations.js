@@ -4,3 +4,4 @@
 //= require "relations/selection"
 //= require "relations/inner_join"
 //= require "relations/set_projection"
+//= require "relations/ordering"

@@ -2,8 +2,6 @@ module("June", function(c) { with(c) {
   module("Relations", function() {
     constructor("Set", function() {
       include(June.Relations.RelationMethods);
-      include(June.Subscribable);
-      include(June.TupleSupervisor);
 
       def('initialize', function(global_name, configuration_fn) {
         this.global_name = global_name.underscore().pluralize();
@@ -17,8 +15,12 @@ module("June", function(c) { with(c) {
         this.queued_events = [];
       });
 
-      def('create', function(attributes) {
-        return this.insert(new this.Tuple(attributes));
+      def('create', function(attribute_values, create_callback) {
+        June.Origin.create(this, attribute_values, create_callback);
+      });
+
+      def('local_create', function(attribute_values) {
+        return this.insert(new this.Tuple(attribute_values));
       });
 
       def('insert', function(tuple) {
@@ -62,7 +64,7 @@ module("June", function(c) { with(c) {
         this.queued_events = [];
       });
 
-      def('tuples', function() {
+      def('all', function() {
         return this._tuples.concat();
       });
 
@@ -87,9 +89,9 @@ module("June", function(c) { with(c) {
           var tuple = this.find(id);
           var attributes = snapshot_fragment[id];
           if (!tuple) {
-            this.create(attributes);
+            this.local_create(attributes);
           } else {
-            tuple.update(attributes);
+            tuple.local_update(attributes);
           }
         }
       });

@@ -3,6 +3,28 @@ Legend:
 * == Done
 
 TODO:
+
+add FakeRemoteDomain and install it by default in tests
+make set_field_value call update on Origin, and add a local_set_field_value which is used by local_update
+
+add forms to the content editor. have the form#save call update on its underlying tuple with the all field values rather than setting them one at a time
+
+update should return a future that can take multiple on_success / on_failure / on_complete handlers
+default handler is on_complete, which takes a boolean value for success (is this really needed?)
+
+
+
+implement RemoteDomain#insert
+put #insert on relations generally
+same api for success/failure
+
+add a create button to all the lists which creates an empty object
+
+do a drag/drop interface for moving questions between sets?
+
+
+work out error reporting api
+
 [ ] remove inflector extensions on string prototype and use Inflector.X directly instead in library code
 [ ] integrate into mmol
 [ ] performance testing

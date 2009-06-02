@@ -11,11 +11,11 @@ Screw.Unit(function(c) { with(c) {
       join = new June.Relations.InnerJoin(left_operand, right_operand, predicate);
     });
 
-    describe("#tuples", function() {
-      it("includes all CompoundTuples in the cartesean product of the #tuples of the operands that match #predicate", function() {
-        var tuples = join.tuples();
-        expect(tuples).to_not(be_empty);
-        jQuery.each(tuples, function() {
+    describe("#all", function() {
+      it("includes all CompoundTuples in the cartesean product of the #all of the operands that match #predicate", function() {
+        var all = join.all();
+        expect(all).to_not(be_empty);
+        jQuery.each(all, function() {
           expect(predicate.evaluate(this)).to(equal, true);
         });
       });
@@ -71,8 +71,8 @@ Screw.Unit(function(c) { with(c) {
         context("when a tuple is inserted into the left operand", function() {
           context("when the insertion causes #cartesean_product to contain a new CompositeTuple that matches the predicate", function() {
             it("triggers #on_insert handlers with the new CompositeTuple", function() {
-              var right_tuple = Pet.create({owner_id: "amy"});
-              var left_tuple = User.create({id: "amy"});
+              var right_tuple = Pet.local_create({owner_id: "amy"});
+              var left_tuple = User.local_create({id: "amy"});
 
               expect(insert_handler).to(have_been_called, once);
               var composite_tuple = insert_handler.most_recent_args[0];
@@ -85,21 +85,21 @@ Screw.Unit(function(c) { with(c) {
                 expect(join.contains(composite_tuple)).to(be_true);
               });
 
-              Pet.create({owner_id: "amy"});
-              User.create({id: "amy"});
+              Pet.local_create({owner_id: "amy"});
+              User.local_create({id: "amy"});
             });
           });
 
           context("when the insertion does NOT cause #cartesean_product to contain a new CompositeTuple that matches the predicate", function() {
             it("does not trigger #on_insert handlers", function() {
-              User.create({id: "amy"});
+              User.local_create({id: "amy"});
               expect(insert_handler).to_not(have_been_called);
             });
 
-            it("does not modify the contents of #tuples", function() {
-              var num_tuples_before_insertion = join.tuples().length;
-              User.create({id: "amy"});
-              expect(join.tuples().length).to(equal, num_tuples_before_insertion);
+            it("does not modify the contents of #all", function() {
+              var num_tuples_before_insertion = join.all().length;
+              User.local_create({id: "amy"});
+              expect(join.all().length).to(equal, num_tuples_before_insertion);
             });
           });
         });
@@ -107,8 +107,8 @@ Screw.Unit(function(c) { with(c) {
         context("when a tuple is inserted into the right operand", function() {
           context("when the insertion causes #cartesean_product to contain a new CompositeTuple that matches the predicate", function() {
             it("triggers #on_insert handlers with the new CompositeTuple", function() {
-              var left_tuple = User.create({id: "amy"});
-              var right_tuple = Pet.create({owner_id: "amy"});
+              var left_tuple = User.local_create({id: "amy"});
+              var right_tuple = Pet.local_create({owner_id: "amy"});
 
               expect(insert_handler).to(have_been_called, once);
               var composite_tuple = insert_handler.most_recent_args[0];
@@ -121,21 +121,21 @@ Screw.Unit(function(c) { with(c) {
                 expect(join.contains(composite_tuple)).to(be_true);
               });
 
-              User.create({id: "amy"});
-              Pet.create({owner_id: "amy"});
+              User.local_create({id: "amy"});
+              Pet.local_create({owner_id: "amy"});
             });
           });
 
           context("when the insertion does NOT cause #cartesean_product to contain a new CompositeTuple that matches the predicate", function() {
             it("does not trigger #on_insert handlers", function() {
-              Pet.create({owner_id: "amy"});
+              Pet.local_create({owner_id: "amy"});
               expect(insert_handler).to_not(have_been_called);
             });
 
-            it("does not modify the contents of #tuples", function() {
-              var num_tuples_before_insertion = join.tuples().length;
-              Pet.create({owner_id: "amy"});
-              expect(join.tuples().length).to(equal, num_tuples_before_insertion);
+            it("does not modify the contents of #all", function() {
+              var num_tuples_before_insertion = join.all().length;
+              Pet.local_create({owner_id: "amy"});
+              expect(join.all().length).to(equal, num_tuples_before_insertion);
             });
           });
         });
@@ -166,10 +166,10 @@ Screw.Unit(function(c) { with(c) {
               expect(remove_handler).to_not(have_been_called);
             });
 
-            it("does not modify the contents of #tuples", function() {
-              var num_tuples_before_removal = join.tuples().length;
+            it("does not modify the contents of #all", function() {
+              var num_tuples_before_removal = join.all().length;
               User.remove(User.find("jean"));
-              expect(join.tuples().length).to(equal, num_tuples_before_removal);
+              expect(join.all().length).to(equal, num_tuples_before_removal);
             });
           });
         });
@@ -198,10 +198,10 @@ Screw.Unit(function(c) { with(c) {
               expect(remove_handler).to_not(have_been_called);
             });
 
-            it("does not modify the contents of #tuples", function() {
-              var num_tuples_before_removal = join.tuples().length;
+            it("does not modify the contents of #all", function() {
+              var num_tuples_before_removal = join.all().length;
               Pet.remove(Pet.find("stray"));
-              expect(join.tuples().length).to(equal, num_tuples_before_removal);
+              expect(join.all().length).to(equal, num_tuples_before_removal);
             });
           });
         });
@@ -209,7 +209,7 @@ Screw.Unit(function(c) { with(c) {
 
       describe("update events on operands", function() {
         context("when a tuple is updated in the left operand", function() {
-          context("when the updated tuple is the #left component of a CompositeTuple that is a member of #tuples before the update", function() {
+          context("when the updated tuple is the #left component of a CompositeTuple that is a member of #all before the update", function() {
             before(function() {
               tuple = User.find("bob");
             });
@@ -241,10 +241,10 @@ Screw.Unit(function(c) { with(c) {
                 expect(changed_attributes.age.new_value).to(equal, new_value);
               });
 
-              it("does not modify the contents of #tuples", function() {
-                var num_tuples_before_removal = join.tuples().length;
+              it("does not modify the contents of #all", function() {
+                var num_tuples_before_removal = join.all().length;
                 tuple.age(44);
-                expect(join.tuples().length).to(equal, num_tuples_before_removal);
+                expect(join.all().length).to(equal, num_tuples_before_removal);
               });
             });
             
@@ -265,7 +265,7 @@ Screw.Unit(function(c) { with(c) {
                 expect(update_handler).to_not(have_been_called);
               });
 
-              it("removes the updated CompositeTuple from #tuples before triggering #on_remove handlers", function() {
+              it("removes the updated CompositeTuple from #all before triggering #on_remove handlers", function() {
                 join.on_remove(function(composite_tuple) {
                   expect(join.contains(composite_tuple)).to(be_false);
                 });
@@ -274,12 +274,12 @@ Screw.Unit(function(c) { with(c) {
             });
           });
           
-          context("when the updated tuple is not a component of a CompositeTuple that is a member of #tuples before the update", function() {
+          context("when the updated tuple is not a component of a CompositeTuple that is a member of #all before the update", function() {
             context("when the update causes #cartesean_product to contain a CompositeTuple that matches #predicate", function() {
               var right_tuple, left_tuple;
 
               before(function() {
-                right_tuple = Pet.create({owner_id: "amanda"});
+                right_tuple = Pet.local_create({owner_id: "amanda"});
                 left_tuple = User.find("alice");
               });
 
@@ -302,7 +302,7 @@ Screw.Unit(function(c) { with(c) {
                 expect(update_handler).to_not(have_been_called);
               });
 
-              it("adds the updated CompositeTuple to #tuples before triggering #on_insert handlers", function() {
+              it("adds the updated CompositeTuple to #all before triggering #on_insert handlers", function() {
                 join.on_insert(function(composite_tuple) {
                   expect(join.contains(composite_tuple)).to(be_true);
                 });
@@ -335,7 +335,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         context("when a tuple is updated in the right operand", function() {
-          context("when the updated tuple is the #right component of a CompositeTuple that is a member of #tuples before the update", function() {
+          context("when the updated tuple is the #right component of a CompositeTuple that is a member of #all before the update", function() {
             before(function() {
               tuple = Pet.find("blue");
             });
@@ -367,10 +367,10 @@ Screw.Unit(function(c) { with(c) {
                 expect(changed_attributes.name.new_value).to(equal, new_value);
               });
 
-              it("does not modify the contents of #tuples", function() {
-                var num_tuples_before_removal = join.tuples().length;
+              it("does not modify the contents of #all", function() {
+                var num_tuples_before_removal = join.all().length;
                 tuple.name("booboo");
-                expect(join.tuples().length).to(equal, num_tuples_before_removal);
+                expect(join.all().length).to(equal, num_tuples_before_removal);
               });
             });
 
@@ -392,7 +392,7 @@ Screw.Unit(function(c) { with(c) {
                 expect(update_handler).to_not(have_been_called);
               });
 
-              it("removes the updated CompositeTuple from #tuples before triggering #on_remove handlers", function() {
+              it("removes the updated CompositeTuple from #all before triggering #on_remove handlers", function() {
                 join.on_remove(function(composite_tuple) {
                   expect(join.contains(composite_tuple)).to(be_false);
                 });
@@ -401,7 +401,7 @@ Screw.Unit(function(c) { with(c) {
             });
           });
 
-          context("when the updated tuple is not a component of a CompositeTuple that is a member of #tuples before the update", function() {
+          context("when the updated tuple is not a component of a CompositeTuple that is a member of #all before the update", function() {
             context("when the update causes #cartesean_product to contain a CompositeTuple that matches #predicate", function() {
               var right_tuple, left_tuple;
 
@@ -430,7 +430,7 @@ Screw.Unit(function(c) { with(c) {
                 expect(update_handler).to_not(have_been_called);
               });
 
-              it("adds the updated CompositeTuple to #tuples before triggering #on_insert handlers", function() {
+              it("adds the updated CompositeTuple to #all before triggering #on_insert handlers", function() {
                 join.on_insert(function(composite_tuple) {
                   expect(join.contains(composite_tuple)).to(be_true);
                 });
@@ -491,7 +491,7 @@ Screw.Unit(function(c) { with(c) {
             expect(composite_tuple.right).to(equal, pet);
           });
 
-          it("updates #tuples appropriately", function() {
+          it("updates #all appropriately", function() {
             var old_composite_tuple = new June.CompositeTuple(current_owner, pet);
             var new_composite_tuple = new June.CompositeTuple(new_owner, pet);
 
@@ -510,7 +510,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("subscription propagation", function() {
       describe("when a Subscription is registered for the Join, destroyed, and another Subscription is registered", function() {
-        it("subscribes to its #left_operand and #right_operand and memoizes #tuples, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
+        it("subscribes to its #left_operand and #right_operand and memoizes #all, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
           expect(left_operand.has_subscribers()).to(be_false);
           expect(right_operand.has_subscribers()).to(be_false);
           expect(join._tuples).to(be_null);
@@ -594,20 +594,9 @@ Screw.Unit(function(c) { with(c) {
 
           context("when it is the last subscription to be destroyed", function() {
             it("destroys the #on_insert, #on_remove, and #on_update subscriptions on #left_operand and #right_operand", function() {
-              expect(join.operand_subscriptions.length).to(equal, 6);
-
-              var subscriptions = [];
-              jQuery.each(join.operand_subscriptions, function() {
-                subscriptions.push(this);
-                mock(this, 'destroy');
-              });
-
+              mock(join.operand_subscription_bundle, 'destroy_all');
               subscription.destroy();
-
-              jQuery.each(subscriptions, function() {
-                expect(this.destroy).to(have_been_called);
-              });
-              expect(join.operand_subscriptions).to(be_empty);
+              expect(join.operand_subscription_bundle.destroy_all).to(have_been_called);
             });
 
           });
@@ -620,19 +609,9 @@ Screw.Unit(function(c) { with(c) {
             });
 
             it("does not destroy the #on_insert and #on_update subscriptions on #operand", function() {
-              expect(join.operand_subscriptions.length).to(equal, 6);
-
-              jQuery.each(join.operand_subscriptions, function() {
-                mock(this, 'destroy');
-              });
-
+              mock(join.operand_subscription_bundle, 'destroy_all');
               subscription1.destroy();
-
-              jQuery.each(join.operand_subscriptions, function() {
-                expect(this.destroy).to_not(have_been_called);
-              });
-
-              expect(join.operand_subscriptions.length).to(equal, 6);
+              expect(join.operand_subscription_bundle.destroy_all).to_not(have_been_called);
             });
           });
         });
@@ -697,20 +676,9 @@ Screw.Unit(function(c) { with(c) {
 
           context("when it is the last subscription to be destroyed", function() {
             it("destroys the #on_insert, #on_remove, and #on_update subscriptions on #left_operand and #right_operand", function() {
-              expect(join.operand_subscriptions.length).to(equal, 6);
-
-              var subscriptions = [];
-              jQuery.each(join.operand_subscriptions, function() {
-                subscriptions.push(this);
-                mock(this, 'destroy');
-              });
-
+              mock(join.operand_subscription_bundle, 'destroy_all');
               subscription.destroy();
-
-              jQuery.each(subscriptions, function() {
-                expect(this.destroy).to(have_been_called);
-              });
-              expect(join.operand_subscriptions).to(be_empty);
+              expect(join.operand_subscription_bundle.destroy_all).to(have_been_called);
             });
 
           });
@@ -723,19 +691,9 @@ Screw.Unit(function(c) { with(c) {
             });
 
             it("does not destroy the #on_insert and #on_update subscriptions on #operand", function() {
-              expect(join.operand_subscriptions.length).to(equal, 6);
-
-              jQuery.each(join.operand_subscriptions, function() {
-                mock(this, 'destroy');
-              });
-
+              mock(join.operand_subscription_bundle, 'destroy_all');
               subscription1.destroy();
-
-              jQuery.each(join.operand_subscriptions, function() {
-                expect(this.destroy).to_not(have_been_called);
-              });
-
-              expect(join.operand_subscriptions.length).to(equal, 6);
+              expect(join.operand_subscription_bundle.destroy_all).to_not(have_been_called);
             });
           });
         });
@@ -800,20 +758,9 @@ Screw.Unit(function(c) { with(c) {
 
           context("when it is the last subscription to be destroyed", function() {
             it("destroys the #on_insert, #on_remove, and #on_update subscriptions on #left_operand and #right_operand", function() {
-              expect(join.operand_subscriptions.length).to(equal, 6);
-
-              var subscriptions = [];
-              jQuery.each(join.operand_subscriptions, function() {
-                subscriptions.push(this);
-                mock(this, 'destroy');
-              });
-
+              mock(join.operand_subscription_bundle, 'destroy_all');
               subscription.destroy();
-
-              jQuery.each(subscriptions, function() {
-                expect(this.destroy).to(have_been_called);
-              });
-              expect(join.operand_subscriptions).to(be_empty);
+              expect(join.operand_subscription_bundle.destroy_all).to(have_been_called);
             });
 
           });
@@ -826,19 +773,9 @@ Screw.Unit(function(c) { with(c) {
             });
 
             it("does not destroy the #on_insert and #on_update subscriptions on #operand", function() {
-              expect(join.operand_subscriptions.length).to(equal, 6);
-
-              jQuery.each(join.operand_subscriptions, function() {
-                mock(this, 'destroy');
-              });
-
+              mock(join.operand_subscription_bundle, 'destroy_all');
               subscription1.destroy();
-
-              jQuery.each(join.operand_subscriptions, function() {
-                expect(this.destroy).to_not(have_been_called);
-              });
-
-              expect(join.operand_subscriptions.length).to(equal, 6);
+              expect(join.operand_subscription_bundle.destroy_all).to_not(have_been_called);
             });
           });
         });

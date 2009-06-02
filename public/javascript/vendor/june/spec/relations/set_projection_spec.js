@@ -10,13 +10,13 @@ Screw.Unit(function(c) { with(c) {
       projection = new June.Relations.SetProjection(operand, projected_set);
     });
 
-    describe("#tuples", function() {
+    describe("#all", function() {
       it("extracts the tuples belonging to the #projected_set from the CompoundTuples in by its #operand", function() {
-        var t = operand.tuples()[0];
-        var expected_tuples = Pet.where(Pet.owner_id.neq(null)).tuples();
-        var tuples = projection.tuples();
+        var t = operand.all()[0];
+        var expected_tuples = Pet.where(Pet.owner_id.neq(null)).all();
+        var all = projection.all();
 
-        expect(tuples).to(equal, expected_tuples);
+        expect(all).to(equal, expected_tuples);
       });
     });
 
@@ -121,38 +121,38 @@ Screw.Unit(function(c) { with(c) {
       });
 
       context("when a CompositeTuple is inserted in the Projection's #operand", function() {
-        context("when the projected tuple is already a member of #tuples", function() {
+        context("when the projected tuple is already a member of #all", function() {
           it("does not trigger #on_insert handlers", function() {
-            Pet.create({owner_id: "bob"});
+            Pet.local_create({owner_id: "bob"});
             expect(insert_handler).to_not(have_been_called);
           });
 
-          it("does not modify #tuples", function() {
-            var num_tuples_before_insert = projection.tuples().length;
-            Pet.create({owner_id: "bob"});
-            expect(projection.tuples().length).to(equal, num_tuples_before_insert);
+          it("does not modify #all", function() {
+            var num_tuples_before_insert = projection.all().length;
+            Pet.local_create({owner_id: "bob"});
+            expect(projection.all().length).to(equal, num_tuples_before_insert);
           });
         });
 
-        context("when the tuple corresponding to #projected_set is NOT a member of the Projection's #tuples", function() {
+        context("when the tuple corresponding to #projected_set is NOT a member of the Projection's #all", function() {
           var petless_user;
 
           before(function() {
             petless_user = User.find("alice");
-            expect(petless_user.pets()).to(be_empty);
+            expect(petless_user.pets.all()).to(be_empty);
           });
 
           it("triggers #on_insert handlers with the projected tuple", function() {
-            Pet.create({owner_id: petless_user.id()});
+            Pet.local_create({owner_id: petless_user.id()});
             expect(insert_handler).to(have_been_called, once);
             expect(insert_handler).to(have_been_called, with_args(petless_user));
           });
 
-          it("adds the projected to #tuples before #on_insert handlers are triggered", function() {
+          it("adds the projected to #all before #on_insert handlers are triggered", function() {
             projection.on_insert(function(tuple) {
               expect(projection.contains(tuple)).to(be_true);
             });
-            Pet.create({owner_id: petless_user.id()});
+            Pet.local_create({owner_id: petless_user.id()});
           });
         });
       });
@@ -162,8 +162,8 @@ Screw.Unit(function(c) { with(c) {
           var pet;
           before(function() {
             var user = User.find("bob");
-            pet = Pet.create({owner_id: "bob"});
-            expect(user.pets().length).to(be_gt, 1);
+            pet = Pet.local_create({owner_id: "bob"});
+            expect(user.pets.all().length).to(be_gt, 1);
           });
 
           it("does not trigger #on_remove handlers", function() {
@@ -171,10 +171,10 @@ Screw.Unit(function(c) { with(c) {
             expect(remove_handler).to_not(have_been_called);
           });
 
-          it("does not modify #tuples", function() {
-            var num_tuples_before_remove = projection.tuples().length;
+          it("does not modify #all", function() {
+            var num_tuples_before_remove = projection.all().length;
             Pet.remove(pet);
-            expect(projection.tuples().length).to(equal, num_tuples_before_remove);
+            expect(projection.all().length).to(equal, num_tuples_before_remove);
           });
         });
 
@@ -182,7 +182,7 @@ Screw.Unit(function(c) { with(c) {
           var user, pet;
           before(function() {
             user = User.find("bob")
-            expect(user.pets().length).to(equal, 1);
+            expect(user.pets.all().length).to(equal, 1);
             pet = Pet.find("blue");
             expect(pet.owner_id()).to(equal, "bob");
           });
@@ -194,7 +194,7 @@ Screw.Unit(function(c) { with(c) {
             expect(remove_handler).to(have_been_called, with_args(user));
           });
 
-          it("removes the projected tuple from #tuples before #on_remove handlers are triggered", function() {
+          it("removes the projected tuple from #all before #on_remove handlers are triggered", function() {
             projection.on_remove(function(tuple) {
               expect(projection.contains(tuple)).to(be_false);
             });
@@ -218,10 +218,10 @@ Screw.Unit(function(c) { with(c) {
             expect(update_handler).to(have_been_called, with_args(tuple, null));
           });
 
-          it("does not modify #tuples", function() {
-            var num_tuples_before_update = projection.tuples().length;
+          it("does not modify #all", function() {
+            var num_tuples_before_update = projection.all().length;
             tuple.first_name("boba tea");
-            expect(projection.tuples().length).to(equal, num_tuples_before_update);
+            expect(projection.all().length).to(equal, num_tuples_before_update);
           });
         });
 
@@ -236,10 +236,10 @@ Screw.Unit(function(c) { with(c) {
             expect(update_handler).to_not(have_been_called);
           });
 
-          it("does not modify #tuples", function() {
-            var num_tuples_before_update = projection.tuples().length;
+          it("does not modify #all", function() {
+            var num_tuples_before_update = projection.all().length;
             tuple.name("worthless");
-            expect(projection.tuples().length).to(equal, num_tuples_before_update);
+            expect(projection.all().length).to(equal, num_tuples_before_update);
           });
         });
       });
@@ -247,7 +247,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("subscription propagation", function() {
       describe("when a Subscription is registered for the SetProjection, destroyed, and another Subscription is registered", function() {
-        it("subscribes to its #operand and memoizes #tuples, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
+        it("subscribes to its #operand and memoizes #all, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
           expect(operand.has_subscribers()).to(be_false);
           expect(projection._tuples).to(be_null);
 
@@ -315,17 +315,9 @@ Screw.Unit(function(c) { with(c) {
 
           context("when it is the last subscription to be destroyed", function() {
             it("destroys the #on_insert, #on_remove, and #on_update subscriptions on #operand", function() {
-              expect(projection.operand_subscriptions).to_not(be_empty);
-              jQuery.each(projection.operand_subscriptions, function() {
-                mock(this, 'destroy');
-              });
-
+              mock(projection.operand_subscription_bundle, 'destroy_all')
               subscription.destroy();
-
-              jQuery.each(projection.operand_subscriptions, function() {
-                expect(this.destroy).to(have_been_called);
-              });
-              expect(projection.operand_subscriptions).to(be_empty);
+              expect(projection.operand_subscription_bundle.destroy_all).to(have_been_called);
             });
           });
 
@@ -335,17 +327,9 @@ Screw.Unit(function(c) { with(c) {
             });
 
             it("does not destroy the #on_insert and #on_update subscriptions on #operand", function() {
-              expect(projection.operand_subscriptions).to_not(be_empty);
-              jQuery.each(projection.operand_subscriptions, function() {
-                mock(this, 'destroy');
-              });
-
+              mock(projection.operand_subscription_bundle, 'destroy_all')
               subscription.destroy();
-
-              jQuery.each(projection.operand_subscriptions, function() {
-                expect(this.destroy).to_not(have_been_called);
-              });
-              expect(projection.operand_subscriptions).to_not(be_empty);
+              expect(projection.operand_subscription_bundle.destroy_all).to_not(have_been_called);
             });
           });
         });
@@ -398,17 +382,9 @@ Screw.Unit(function(c) { with(c) {
 
           context("when it is the last subscription to be destroyed", function() {
             it("destroys the #on_insert and #on_update subscriptions on #operand", function() {
-              expect(projection.operand_subscriptions).to_not(be_empty);
-              jQuery.each(projection.operand_subscriptions, function() {
-                mock(this, 'destroy');
-              });
-
+              mock(projection.operand_subscription_bundle, 'destroy_all')
               subscription.destroy();
-
-              jQuery.each(projection.operand_subscriptions, function() {
-                expect(this.destroy).to(have_been_called);
-              });
-              expect(projection.operand_subscriptions).to(be_empty);
+              expect(projection.operand_subscription_bundle.destroy_all).to(have_been_called);
             });
           });
 
@@ -418,17 +394,9 @@ Screw.Unit(function(c) { with(c) {
             });
 
             it("does not destroy the #on_insert and #on_update subscriptions on #operand", function() {
-              expect(projection.operand_subscriptions).to_not(be_empty);
-              jQuery.each(projection.operand_subscriptions, function() {
-                mock(this, 'destroy');
-              });
-
+              mock(projection.operand_subscription_bundle, 'destroy_all')
               subscription.destroy();
-
-              jQuery.each(projection.operand_subscriptions, function() {
-                expect(this.destroy).to_not(have_been_called);
-              });
-              expect(projection.operand_subscriptions).to_not(be_empty);
+              expect(projection.operand_subscription_bundle.destroy_all).to_not(have_been_called);
             });
           });
         });
@@ -481,17 +449,9 @@ Screw.Unit(function(c) { with(c) {
 
           context("when it is the last subscription to be destroyed", function() {
             it("destroys the #on_insert and #on_update subscriptions on #operand", function() {
-              expect(projection.operand_subscriptions).to_not(be_empty);
-              jQuery.each(projection.operand_subscriptions, function() {
-                mock(this, 'destroy');
-              });
-
+              mock(projection.operand_subscription_bundle, 'destroy_all')
               subscription.destroy();
-
-              jQuery.each(projection.operand_subscriptions, function() {
-                expect(this.destroy).to(have_been_called);
-              });
-              expect(projection.operand_subscriptions).to(be_empty);
+              expect(projection.operand_subscription_bundle.destroy_all).to(have_been_called);
             });
           });
 
@@ -501,17 +461,9 @@ Screw.Unit(function(c) { with(c) {
             });
 
             it("does not destroy the #on_insert and #on_update subscriptions on #operand", function() {
-              expect(projection.operand_subscriptions).to_not(be_empty);
-              jQuery.each(projection.operand_subscriptions, function() {
-                mock(this, 'destroy');
-              });
-
-              subscription.destroy();
-
-              jQuery.each(projection.operand_subscriptions, function() {
-                expect(this.destroy).to_not(have_been_called);
-              });
-              expect(projection.operand_subscriptions).to_not(be_empty);
+              mock(projection.operand_subscription_bundle, 'destroy_all')
+              subscription.destroy  ();
+              expect(projection.operand_subscription_bundle.destroy_all).to_not(have_been_called);
             });
           });
         });
