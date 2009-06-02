@@ -6,7 +6,7 @@ vendor/sprockets:
   type: git
   revision: 6a4c881e40aa25071f1d064b4ddf295ed8851d3c
   remote: braid/vendor/sprockets
-javascript/vendor/june: 
+public/javascript/vendor/june: 
   squashed: true
   url: git@github.com:grockit/june.git
   branch: master
