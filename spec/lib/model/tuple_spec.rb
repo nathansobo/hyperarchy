@@ -3,6 +3,29 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 module Model
   describe Tuple do
     describe "metaprogramatic functionality" do
+      before(:all) do
+        module ::Test
+          class A < Tuple
+
+          end
+
+          class B < Tuple
+
+          end
+
+          A.create_table
+          B.create_table
+        end
+      end
+
+      after(:all) do
+        Test::A.drop_table
+        Test::B.drop_table
+        GlobalDomain.sets_by_name.delete(:as)
+        GlobalDomain.sets_by_name.delete(:bs)
+        Object.send(:remove_const, :Test)
+      end
+
       describe "when a subclass in created" do
         it "assigns its .set to a new Set with the underscored-pluralized name of the class as its #global_name" do
           Candidate.set.global_name.should == :candidates
@@ -36,22 +59,6 @@ module Model
         end
       end
 
-      describe ".[]" do
-        context "when the given value is the name of an Attribute defined on .set" do
-          it "returns the Attribute with the given name" do
-            Candidate[:body].should == Candidate.set.attributes_by_name[:body]
-          end
-        end
-
-        context "when the given value is not the name of an Attribute defined on .set" do
-          it "raises an exception" do
-            lambda do
-              Candidate[:nonexistant_attribute]
-            end.should raise_error
-          end
-        end
-      end
-
       describe ".relates_to_many" do
         it "defines a method that returns the Relation defined in the given block" do
           election = Election.find("grain")
@@ -69,9 +76,31 @@ module Model
           candidate.election.should == Election.find("grain")
         end
       end
+
+      describe ".has_many" do
+        it "defines a Selection via .relates_to_many based on the given name" do
+
+        end
+      end
     end
 
     describe "class methods" do
+      describe ".[]" do
+        context "when the given value is the name of an Attribute defined on .set" do
+          it "returns the Attribute with the given name" do
+            Candidate[:body].should == Candidate.set.attributes_by_name[:body]
+          end
+        end
+
+        context "when the given value is not the name of an Attribute defined on .set" do
+          it "raises an exception" do
+            lambda do
+              Candidate[:nonexistant_attribute]
+            end.should raise_error
+          end
+        end
+      end
+
       describe ".create" do
         it "deletages to .set" do
           attributes = { :body => "Amaranth" }

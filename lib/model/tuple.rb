@@ -58,7 +58,9 @@ module Model
         @relation_definitions ||= SequencedHash.new
       end
 
-      delegate :create, :where, :project, :join, :find, :attributes_by_name, :tuples, :to => :set
+      delegate :create, :where, :project, :join, :find, :attributes_by_name,
+               :create_table, :drop_table, :clear_table, :tuples,
+               :to => :set
     end
 
     include Domain

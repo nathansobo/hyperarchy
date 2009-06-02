@@ -61,6 +61,11 @@ module Model
           end
         end
       end
+
+      #TODO: test
+      def drop_table
+        Origin.drop_table(global_name)
+      end
     end
   end
 end

@@ -1,5 +1,4 @@
-change attribute api to Class[:attribute] instead of Class.attribute
 has_many, has_one, belongs_to
 signals... belongs_to needs to listen for a change of the attribute value for which it is listening
-
 Tuple#save, which should push the tuple into the repository. The only other option is
+test create_table, drop_table, and clear_table on Set and Repository

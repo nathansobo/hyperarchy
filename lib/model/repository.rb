@@ -21,5 +21,10 @@ module Model
     def clear_table(name)
       connection[name].delete
     end
+
+    #TODO: test
+    def drop_table(name)
+      connection.drop_table(name)
+    end
   end
 end
