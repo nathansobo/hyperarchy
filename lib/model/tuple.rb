@@ -43,16 +43,16 @@ module Model
       def has_many(relation_name)
         relates_to_many(relation_name) do
           target_class = relation_name.to_s.singularize.classify.constantize
-          foreign_key = target_class["#{self.class.basename.underscore}_id".to_sym]
-          target_class.where(foreign_key.eq(id))
+          foreign_key_attribute = target_class["#{self.class.basename.underscore}_id".to_sym]
+          target_class.where(foreign_key_attribute.eq(id))
         end
       end
 
       def belongs_to(relation_name)
         relates_to_one(relation_name) do
           target_class = relation_name.to_s.classify.constantize
-          target_id = self.send("#{relation_name}_id")
-          target_class.where(target_class[:id].eq(target_id))
+          foreign_key_field = self.fields_by_attribute[self.class["#{relation_name}_id".to_sym]]
+          target_class.where(target_class[:id].eq(foreign_key_field))
         end
       end
 

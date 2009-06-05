@@ -1,4 +1,6 @@
-has_many, has_one, belongs_to
 signals... belongs_to needs to listen for a change of the attribute value for which it is listening
-Tuple#save, which should push the tuple into the repository. The only other option is
+Tuple#save, which should push the tuple into the repository.
+identity map
+
 test create_table, drop_table, and clear_table on Set and Repository
+has_one

@@ -9,5 +9,9 @@ module Model
     def value=(value)
       @value = attribute.convert_value(value)
     end
+
+    def to_sql
+      value.to_sql
+    end
   end
 end
