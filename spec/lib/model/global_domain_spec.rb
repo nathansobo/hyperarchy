@@ -45,7 +45,7 @@ module Model
         GlobalDomain.sets.each do |set|
           mock(set).clear_identity_map
         end
-¼        GlobalDomain.clear_identity_maps
+        GlobalDomain.clear_identity_maps
       end
     end
   end
