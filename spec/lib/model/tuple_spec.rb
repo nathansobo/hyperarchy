@@ -3,29 +3,6 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 module Model
   describe Tuple do
     describe "metaprogramatic functionality" do
-      before(:all) do
-        module ::Test
-          class A < Tuple
-
-          end
-
-          class B < Tuple
-
-          end
-
-          A.create_table
-          B.create_table
-        end
-      end
-
-      after(:all) do
-        Test::A.drop_table
-        Test::B.drop_table
-        GlobalDomain.sets_by_name.delete(:as)
-        GlobalDomain.sets_by_name.delete(:bs)
-        Object.send(:remove_const, :Test)
-      end
-
       describe "when a subclass in created" do
         it "assigns its .set to a new Set with the underscored-pluralized name of the class as its #global_name" do
           Candidate.set.global_name.should == :candidates
@@ -60,7 +37,15 @@ module Model
       end
 
       describe ".relates_to_many" do
-        it "defines a method that returns the Relation defined in the given block" do
+        it "defines a method that returns the Relation defined in the given block"
+      end
+
+      describe ".relates_to_one" do
+        it "defines a method that returns the first Tuple from the Relation defined in the given block"
+      end
+
+      describe ".has_many" do
+        it "defines a Selection via .relates_to_many based on the given name" do
           election = Election.find("grain")
           candidates_relation = election.candidates
           candidates_relation.tuples.should_not be_empty
@@ -70,16 +55,10 @@ module Model
         end
       end
 
-      describe ".relates_to_one" do
-        it "defines a method that returns the first Tuple from the Relation defined in the given block" do
+      describe ".belongs_to" do
+        it "defines a Selection via .relates_to_one of the member of the target class with an id matching this Tuple's id" do
           candidate = Candidate.find("grain_quinoa")
-          candidate.election.should == Election.find("grain")
-        end
-      end
-
-      describe ".has_many" do
-        it "defines a Selection via .relates_to_many based on the given name" do
-
+          candidate.election.should == Election.find(candidate.election_id)
         end
       end
     end
