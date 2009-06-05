@@ -5,7 +5,9 @@ module Model
         @instance ||= new
       end
 
-      delegate :new_set, :sets_by_name, :load_fixtures, :clear_tables, :create_schema, :to => :instance
+      delegate :new_set, :sets_by_name, :load_fixtures, :clear_tables, :create_schema,
+               :sets, :initialize_identity_maps, :clear_identity_maps,
+               :to => :instance
     end
     include Domain
 
@@ -20,6 +22,18 @@ module Model
 
     def locate(path_fragment)
       sets_by_name[path_fragment.to_sym]
+    end
+
+    def sets
+      sets_by_name.values
+    end
+
+    def initialize_identity_maps
+      sets.each {|set| set.initialize_identity_map}
+    end
+
+    def clear_identity_maps
+      sets.each {|set| set.clear_identity_map}
     end
 
     #TODO: test

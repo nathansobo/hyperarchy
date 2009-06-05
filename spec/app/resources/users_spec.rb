@@ -23,9 +23,9 @@ module Resources
         ))
         response.status.should == 200
 
-        pending do
+        pending "identity map" do
           resource.current_session.user.should == created_user
-        end 
+        end
       end
     end
   end

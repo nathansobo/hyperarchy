@@ -30,5 +30,23 @@ module Model
         GlobalDomain.instance.locate("groups").should == GlobalDomain.sets_by_name[:groups]
       end
     end
+
+    describe "#initialize_identity_maps" do
+      it "calls #initialize_identity_map on every Set" do
+        GlobalDomain.sets.each do |set|
+          mock(set).initialize_identity_map
+        end
+        GlobalDomain.initialize_identity_maps
+      end
+    end
+
+    describe "#clear_identity_maps" do
+      it "calls #clear_identity_map on every Set" do
+        GlobalDomain.sets.each do |set|
+          mock(set).clear_identity_map
+        end
+¼        GlobalDomain.clear_identity_maps
+      end
+    end
   end
 end

@@ -92,6 +92,27 @@ module Model
           Candidate.set.locate("quinoa").should == Candidate.set.find("quinoa")
         end
       end
+
+      describe "#initialize_identity_map" do
+        it "initializes a thread-local identity map" do
+          mock(Thread.current)['candidates_identity_map'] = {};
+          Candidate.set.initialize_identity_map
+        end
+      end
+
+      describe "#identity_map" do
+        it "returns the thread-local identity map" do
+          mock(Thread.current)['candidates_identity_map']
+          Candidate.set.identity_map
+        end
+      end
+
+      describe "#clear_identity_map" do
+        it "assigns the thread-local identity map to nil" do
+          mock(Thread.current)['candidates_identity_map'] = nil;
+          Candidate.set.clear_identity_map
+        end
+      end
     end
   end
 end

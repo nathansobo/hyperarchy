@@ -40,6 +40,18 @@ module Model
         find(path_fragment)
       end
 
+      def initialize_identity_map
+        Thread.current["#{global_name}_identity_map"] = {}
+      end
+
+      def identity_map
+        Thread.current["#{global_name}_identity_map"]
+      end
+
+      def clear_identity_map
+        Thread.current["#{global_name}_identity_map"] = nil
+      end
+
       def load_fixtures
         return unless declared_fixtures
         declared_fixtures.each do |id, field_values|
