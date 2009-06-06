@@ -2,8 +2,8 @@ module Model
   class Repository
     attr_accessor :connection
 
-    def insert(table_name, attributes)
-      connection.from(table_name).insert(attributes)
+    def insert(tuple_class, attributes)
+      connection.from(tuple_class.set.global_name).insert(attributes)
     end
 
     def read(tuple_class, query)

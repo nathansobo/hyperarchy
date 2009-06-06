@@ -3,14 +3,14 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 module Model
   describe Repository do
     describe "#insert" do
-      it "performs an insert against the database for the given table name and attributes" do
+      it "performs an insert against the database for the #global_name of the given Tuple class's #set and attributes" do
         id = Guid.new.to_s
 
         dataset = Origin.connection[:candidates]
         dataset[:id => id].should be_nil
 
         record = {:id => id, :body => "Bulgar Wheat", :election_id => "grain" }
-        Origin.insert("candidates", record)
+        Origin.insert(Candidate, record)
 
         retrieved_record = dataset[:id => id]
         retrieved_record[:id].should == record[:id]
@@ -20,7 +20,6 @@ module Model
     end
 
     describe "#read" do
-
       context "when reading a Tuple that is in the identity map" do
         it "returns the instance of the Tuple from the identity map instead of instantiating another" do
           tuple_in_id_map = Candidate.find('grain_quinoa')
