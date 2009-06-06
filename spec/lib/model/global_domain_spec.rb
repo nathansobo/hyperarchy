@@ -32,6 +32,11 @@ module Model
     end
 
     describe "#initialize_identity_maps" do
+      after do
+        # verify doubles before the global after clears the identity map, causing an unexpected invocation
+        RR::verify_doubles
+      end
+
       it "calls #initialize_identity_map on every Set" do
         GlobalDomain.sets.each do |set|
           mock(set).initialize_identity_map
@@ -41,6 +46,11 @@ module Model
     end
 
     describe "#clear_identity_maps" do
+      after do
+        # verify doubles before the global after clears the identity map, causing an unexpected invocation
+        RR::verify_doubles
+      end
+
       it "calls #clear_identity_map on every Set" do
         GlobalDomain.sets.each do |set|
           mock(set).clear_identity_map

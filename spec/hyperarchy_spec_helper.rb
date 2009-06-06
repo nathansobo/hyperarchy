@@ -9,6 +9,11 @@ Spec::Runner.configure do |config|
   config.before do
     Model::GlobalDomain.clear_tables
     Model::GlobalDomain.load_fixtures
+    Model::GlobalDomain.initialize_identity_maps
+  end
+
+  config.after do
+    Model::GlobalDomain.clear_identity_maps
   end
 end
 

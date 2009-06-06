@@ -94,6 +94,11 @@ module Model
       end
 
       describe "#initialize_identity_map" do
+        after do
+          # verify doubles before the global after clears the identity map, causing an unexpected invocation
+          RR::verify_doubles
+        end
+
         it "initializes a thread-local identity map" do
           mock(Thread.current)['candidates_identity_map'] = {};
           Candidate.set.initialize_identity_map
@@ -108,6 +113,11 @@ module Model
       end
 
       describe "#clear_identity_map" do
+        after do
+          # verify doubles before the global after clears the identity map, causing an unexpected invocation
+          RR::verify_doubles
+        end
+        
         it "assigns the thread-local identity map to nil" do
           mock(Thread.current)['candidates_identity_map'] = nil;
           Candidate.set.clear_identity_map

@@ -2,7 +2,6 @@ User.fixtures(
   :nathan => {
     :full_name => "nathan"  
   }
-
 )
 
 Election.fixtures(

@@ -22,10 +22,7 @@ module Resources
           :password => "password"
         ))
         response.status.should == 200
-
-        pending "identity map" do
-          resource.current_session.user.should == created_user
-        end
+        resource.current_session.user.should == created_user
       end
     end
   end
