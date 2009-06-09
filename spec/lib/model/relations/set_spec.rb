@@ -30,9 +30,9 @@ module Model
       end
 
       describe "#insert" do
-        it "calls Origin.insert with the Set's #tuple_class and #field_values_by_attribute_name" do
+        it "calls Origin.insert with the Set and #field_values_by_attribute_name" do
           tuple = Candidate.new(:body => "Brown Rice", :election_id => "grain")
-          mock(Origin).insert(set.tuple_class, tuple.field_values_by_attribute_name)
+          mock(Origin).insert(set, tuple.field_values_by_attribute_name)
           set.insert(tuple)
         end
       end
@@ -62,7 +62,7 @@ module Model
           tuple_2_id = set.create(:body => "White Rice", :election_id => "grain").id
           tuple_3_id = set.create(:body => "Pearled Barley", :election_id => "grain").id
 
-          mock.proxy(Origin).read(set.tuple_class, "select candidates.id, candidates.body, candidates.election_id from candidates;")
+          mock.proxy(Origin).read(set, "select candidates.id, candidates.body, candidates.election_id from candidates;")
 
           tuples = set.tuples
 

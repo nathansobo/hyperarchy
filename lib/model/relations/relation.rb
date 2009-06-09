@@ -42,7 +42,7 @@ module Model
       end
 
       def tuples
-        Origin.read(tuple_class, to_sql)
+        Origin.read(tuple_class.set, to_sql)
       end
 
       def tuple_wire_representations

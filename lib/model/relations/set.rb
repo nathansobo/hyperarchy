@@ -18,7 +18,7 @@ module Model
       end
 
       def insert(tuple)
-        Origin.insert(tuple_class, tuple.field_values_by_attribute_name)
+        Origin.insert(self, tuple.field_values_by_attribute_name)
       end
 
       def create(field_values = {})
