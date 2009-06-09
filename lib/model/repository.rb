@@ -2,8 +2,12 @@ module Model
   class Repository
     attr_accessor :connection
 
-    def insert(set, attributes)
-      connection.from(set.global_name).insert(attributes)
+    def insert(set, field_values)
+      connection.from(set.global_name).insert(field_values)
+    end
+
+    def update(set, field_values)
+      connection.from(set.global_name).filter(:id => field_values[:id]).update(field_values)
     end
 
     def read(set, query)

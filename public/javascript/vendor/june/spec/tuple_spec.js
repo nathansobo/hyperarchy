@@ -174,7 +174,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#update", function() {
-      it("calls June.Origin.update with the Tuple, the given attribute values, and the given callback", function() {
+      it("calls June.Origin.update with the Tuple, the given field values, and the given callback", function() {
         June.origin("/domain");
         mock(June.Origin, "update");
         var attribute_values = {first_name: "Roberto"};
