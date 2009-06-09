@@ -130,6 +130,13 @@ module Model
         end
       end
 
+      describe "#save" do
+        it "calls Origin.update with the #global_name of the Tuple's #set and its #field_values_by_attribute_name" do
+          mock(Origin).update(tuple.set, tuple.field_values_by_attribute_name)
+          tuple.save
+        end
+      end
+
       describe "#field_values_by_attribute_name" do
         it "returns a hash with the values of all fields indexed by Attribute name" do
           expected_hash = {}

@@ -99,6 +99,10 @@ module Model
       end
     end
 
+    def save
+      Origin.update(set, field_values_by_attribute_name)
+    end
+
     def field_values_by_attribute_name
       fields_by_attribute.inject({}) do |result, attribute_field_pair|
         result[attribute_field_pair[0].name] = attribute_field_pair[1].value
