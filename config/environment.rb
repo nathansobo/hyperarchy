@@ -3,14 +3,15 @@ ROOT = File.expand_path("#{dir}/..")
 
 require "rubygems"
 require "sequel"
+require "sequel/extensions/inflector"
 require "guid"
+require "bcrypt"
 require "thin"
 require "rack/session/abstract/id"
 require "erector"
 require "json"
 require "active_support/core_ext/module/delegation"
 require "active_support/core_ext/hash/keys"
-require "sequel/extensions/inflector"
 require "collections/sequenced_hash"
 require "#{ROOT}/vendor/sprockets/lib/sprockets"
 

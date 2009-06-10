@@ -1,5 +1,4 @@
-identity map
-Tuple#save, which should push the tuple into the repository.
+
 
 test create_table, drop_table, and clear_table on Set and Repository
 has_one
