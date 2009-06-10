@@ -8,6 +8,7 @@ module Model
 
     def value=(value)
       @value = attribute.convert_value(value)
+      tuple.dirty = true
     end
 
     def to_sql

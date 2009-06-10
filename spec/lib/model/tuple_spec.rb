@@ -137,6 +137,47 @@ module Model
         end
       end
 
+      describe "#dirty?" do
+        context "when a Tuple has been instantiated but not inserted into the Repository" do
+          it "returns true" do
+            tuple = Candidate.new
+            tuple.should be_dirty
+          end
+        end
+
+        context "when a Tuple has been inserted into the Repository and not modified since" do
+          it "returns false" do
+            tuple = Candidate.new(:election_id => "grain", :body => "Bulgar Wheat")
+            tuple.save
+            tuple.should_not be_dirty
+          end
+        end
+
+        context "when a Tuple has been inserted into the Repository and subsequently modified" do
+          it "returns true" do
+            tuple = Candidate.new(:election_id => "grain", :body => "Bulgar Wheat")
+            tuple.save
+            tuple.body = "Wheat"
+            tuple.should be_dirty
+          end
+        end
+
+        context "when a Tuple is first loaded from a Repository" do
+          it "returns false" do
+            tuple = Candidate.find("grain_quinoa")
+            tuple.should_not be_dirty
+          end
+        end
+
+        context "when a Tuple has been modified since being loaded from the Repository" do
+          it "returns true" do
+            tuple = Candidate.find("grain_quinoa")
+            tuple.body = "Red Rice"
+            tuple.should be_dirty
+          end
+        end
+      end
+
       describe "#field_values_by_attribute_name" do
         it "returns a hash with the values of all fields indexed by Attribute name" do
           expected_hash = {}

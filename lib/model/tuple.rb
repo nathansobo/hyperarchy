@@ -81,15 +81,18 @@ module Model
 
     include Domain
     attr_reader :fields_by_attribute, :relations_by_name
+    attr_writer :dirty
 
 
     def initialize(field_values = {})
       unsafe_initialize(field_values.merge(:id => Guid.new.to_s))
+      @dirty = true
     end
 
     def unsafe_initialize(field_values)
       initialize_fields
       update(field_values)
+      @dirty = false
       initialize_relations
     end
 
@@ -101,6 +104,11 @@ module Model
 
     def save
       Origin.update(set, field_values_by_attribute_name)
+      @dirty = false
+    end
+
+    def dirty?
+      @dirty
     end
 
     def field_values_by_attribute_name
