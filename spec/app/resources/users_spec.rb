@@ -23,9 +23,7 @@ module Resources
         ))
         response.status.should == 200
         resource.current_session.user.should == created_user
-        pending "Tuple#save" do
-          resource.current_session.should_not be_dirty
-        end 
+        resource.current_session.should_not be_dirty
       end
     end
   end
