@@ -8,6 +8,27 @@ module Http
       @dispatcher = Dispatcher.instance
     end
 
+    describe "#call" do
+      after do
+        RR.verify_doubles
+      end
+
+      it "initializes identity maps, locates and invokes the appropriate HTTP method on a Resource, then clears identity maps and returns the result of that invocation" do
+        request = TestRequest.new
+        request.method = :get
+        request.path_info = "/example/resource"
+        request.session_id = "sample-session-id"
+        mock_resource = Object.new
+
+        mock(Model::GlobalDomain).initialize_identity_maps.ordered
+        mock(dispatcher).locate_resource(request.path_info, request.session_id).ordered { mock_resource }
+        mock(mock_resource).get(request.params).ordered
+        mock(Model::GlobalDomain).clear_identity_maps.ordered
+
+        dispatcher.call(request.env)
+      end
+    end
+
     describe "#locate_resource" do
       it "starting with #root, successively calls #locate on resources with each fragment of the given path, assigning #current_session_id on each" do
         mock_root = Object.new
