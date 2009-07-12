@@ -2,28 +2,14 @@ body {
   margin: 20px;
 }
 
-p {
-  margin-bottom: 10px;
+#login_view {
+  display: block;
 }
 
-#navigator {
-  width: 100%;
-  margin-bottom: 20px;
+#signup_view {
+  display: none;
 }
 
-#navigator th {
-  background-color: lightblue;
-  width: 20%;
-}
-
-#navigator td {
-  vertical-align: top;
-}
-
-li.menu_item {
-  cursor: pointer;
-}
-
-.edit_form {
+#elections_view {
   display: none;
 }

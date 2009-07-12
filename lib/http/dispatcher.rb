@@ -16,8 +16,9 @@ module Http
     def call(env)
       Model::GlobalDomain.initialize_identity_maps
       request = Request.new(env)
-      locate_resource(request.path_info, request.session_id).send(request.method, request.params)
+      result = locate_resource(request.path_info, request.session_id).send(request.method, request.params)
       Model::GlobalDomain.clear_identity_maps
+      result
     end
 
     def locate_resource(path, session_id)
