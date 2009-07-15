@@ -19,11 +19,12 @@ ModuleSystem = {
       if (this.initialize) this.initialize.apply(this, arguments);
     }
 
+    if (args.superconstructor) this.extend(args.superconstructor, constructor);
+    
     for(var i = 0; i < args.mixin_modules.length; i++) {
       this.mixin(constructor.prototype, args.mixin_modules[i]);
     }
 
-    if (args.superconstructor) this.extend(args.superconstructor, constructor);
     if (constructor.prototype.eigenprops) {
       this.mixin(constructor, constructor.prototype.eigenprops);
       if (constructor.initialize) constructor.initialize();
@@ -41,14 +42,25 @@ ModuleSystem = {
   extend: function(superconstructor, subconstructor) {
     var original_subconstructor_prototype = subconstructor.prototype;
     subconstructor.prototype = new superconstructor();
+    if (superconstructor.prototype.eigenprops) {
+      subconstructor.prototype.eigenprops = this.clone(superconstructor.prototype.eigenprops);
+    }
     subconstructor.prototype.constructor = subconstructor;
     this.mixin(subconstructor.prototype, original_subconstructor_prototype);
     return subconstructor;
   },
 
+  clone: function(object) {
+    return this.mixin({}, object);
+  },
+
   mixin: function(target, module) {
     for (var prop in module) {
       if (target[prop] == "prototype") continue;
+      if (prop == "eigenprops" && target.eigenprops) {
+        this.mixin(target.eigenprops, module.eigenprops);
+        continue;
+      }
       target[prop] = module[prop];
     }
     return target;

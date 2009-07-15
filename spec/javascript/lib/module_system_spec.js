@@ -139,6 +139,79 @@ Screw.Unit(function(c) { with(c) {
           });
         });
       });
+
+      context("when an #eigenprops properties are defined on the superconstructor and the mixed-in modules", function() {
+        var mixin_module, subconstructor_prototype;
+
+        before(function() {
+          ModuleSystem.constructor("Super", {
+            eigenprops: {
+              foo: "foo super",
+              bar: "bar super",
+              boing: "boing"
+            }
+          });
+
+          mixin_module = {
+            eigenprops: {
+              bar: "bar module",
+              baz: "baz module"
+            }
+          };
+
+          subconstructor_prototype = {
+            eigenprops: {
+              foo: "foo sub",
+              baz: "baz sub",
+              bop: "bop"
+            }
+          };
+
+          ModuleSystem.constructor("Sub", Super, mixin_module, subconstructor_prototype);
+        });
+
+        after(function() {
+          delete window['Super'];
+          delete window['Sub'];
+        });
+
+        it("combines the eigenproperties into an 'eigenprops' hash on the prototype of the defined constructor, giving precedence to modules included later", function() {
+          expect(Sub.prototype.eigenprops).to(equal, {
+            foo: "foo sub",
+            bar: "bar module",
+            baz: "baz sub",
+            bop: "bop",
+            boing: "boing"
+          });
+        });
+
+        it("defines the merged eigenproperties as properties on the defined constructor itself", function() {
+          expect(Sub.foo).to(equal, "foo sub");
+          expect(Sub.bar).to(equal, "bar module");
+          expect(Sub.baz).to(equal, "baz sub");
+          expect(Sub.bop).to(equal, "bop");
+          expect(Sub.boing).to(equal, "boing");
+        });
+        
+        it("does not mutate the 'eigenprops' hashes on the superconstructor or any of the included modules", function() {
+          expect(Super.prototype.eigenprops).to(equal, {
+            foo: "foo super",
+            bar: "bar super",
+            boing: "boing"
+          });
+
+          expect(mixin_module.eigenprops).to(equal, {
+            bar: "bar module",
+            baz: "baz module"
+          });;
+
+          expect(subconstructor_prototype.eigenprops).to(equal, {
+            foo: "foo sub",
+            baz: "baz sub",
+            bop: "bop"
+          });
+        });
+      });
     });
 
     describe(".module", function() {
@@ -247,6 +320,10 @@ Screw.Unit(function(c) { with(c) {
       before(function() {
         Super = function() {};
         ModuleSystem.mixin(Super.prototype, {
+          eigenprops: {
+            super_eigenprop: "super_eigenprop"
+          },
+
           not_overridden_function: function() {
             return "not_overridden_function";
           },
@@ -261,6 +338,10 @@ Screw.Unit(function(c) { with(c) {
 
         Sub = function() {};
         ModuleSystem.mixin(Sub.prototype, {
+          eigenprops: {
+            sub_eigenprop: 'sub_eigenprop'
+          },
+
           overridden_function: function() {
             return "overridden_function";
           },
@@ -302,6 +383,19 @@ Screw.Unit(function(c) { with(c) {
           expect(object.overridden_property).to(equal, "overridden_property subconstructor version");
         });
       });
+
+      context("if an 'eigenprops' property is defined on the superconstructor's prototype", function() {
+        it("merges the the eigenprops of the subconstructor into a copy of those defined on the superconstructor, without mutating the eigenprops of the superconstructor", function() {
+          expect(Sub.prototype.eigenprops).to(equal, {
+            super_eigenprop: 'super_eigenprop',
+            sub_eigenprop: 'sub_eigenprop'
+          });
+
+          expect(Super.prototype.eigenprops).to(equal, {
+            super_eigenprop: 'super_eigenprop'
+          });
+        });
+      });
     });
 
     describe(".mixin", function() {
@@ -309,12 +403,12 @@ Screw.Unit(function(c) { with(c) {
         var a = {
           foo: "foo",
           bar: "bar"
-        }
+        };
 
         var b =  {
           bar: "bar2",
           baz: "baz"
-        }
+        };
 
         var result = ModuleSystem.mixin(a, b);
         expect(result).to(equal, a);
@@ -322,6 +416,27 @@ Screw.Unit(function(c) { with(c) {
         expect(a.foo).to(equal, "foo");
         expect(a.bar).to(equal, "bar2");
         expect(a.baz).to(equal, "baz");
+      });
+
+      it("mixes eigenprops defined in the second module into eigenprops defined on the first, rather than overwriting them", function() {
+        var a = {
+          eigenprops: {
+            foo: "foo",
+            bar: "bar"
+          }
+        };
+
+        var b =  {
+          eigenprops: {
+            bar: "bar2",
+            baz: "baz"
+          }
+        };
+
+        ModuleSystem.mixin(a, b);
+        expect(a.eigenprops.foo).to(equal, "foo");
+        expect(a.eigenprops.bar).to(equal, "bar2");
+        expect(a.eigenprops.baz).to(equal, "baz");
       });
     });
   });
