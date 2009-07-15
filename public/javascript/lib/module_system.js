@@ -56,7 +56,6 @@ ModuleSystem = {
 
   mixin: function(target, module) {
     for (var prop in module) {
-      if (target[prop] == "prototype") continue;
       if (prop == "eigenprops" && target.eigenprops) {
         this.mixin(target.eigenprops, module.eigenprops);
         continue;
