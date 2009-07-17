@@ -7,6 +7,10 @@ constructor("Views.Signup", View.Template, {
       input({ type: 'text', id: 'email_address', name: 'email_address' });
       label({ 'for': 'password' }, "Password:");
       input({ type: 'text', id: 'password', name: 'password' });
+
+      button({id: 'signup_submit'}).click(function(view) {
+        Application.post('/users', view.field_values());
+      });
     });
   }}
 });
