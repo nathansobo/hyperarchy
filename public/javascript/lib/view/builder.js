@@ -5,7 +5,7 @@ constructor("View.Builder", {
     },
 
     supported_tags: [
-      'a', 'acronym', 'address', 'area', 'b', 'base', 'bdo', 'big', 'blockquote', 'body',
+      'acronym', 'address', 'area', 'b', 'base', 'bdo', 'big', 'blockquote', 'body',
       'br', 'button', 'caption', 'cite', 'code', 'dd', 'del', 'div', 'dl', 'dt', 'em',
       'fieldset', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'html', 'i',
       'img', 'iframe', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'map',
@@ -31,6 +31,20 @@ constructor("View.Builder", {
   initialize: function() {
     this.instructions = [];
     this.preceding_element_path = [0];
+  },
+
+  a: function() {
+    var close_tag_instruction = this.tag.apply(this, ["a"].concat(Util.to_array(arguments)));
+    var open_tag_instruction = close_tag_instruction.open_tag_instruction;
+    if (open_tag_instruction.attributes && open_tag_instruction.attributes.local) {
+      close_tag_instruction.click(function() {
+        var href = this.attr('href');
+        var following_hash = href.replace(/^.*#/, '');
+        jQuery.history.load(following_hash);
+        return false;
+      });
+    }
+    return close_tag_instruction;
   },
 
   to_view: function(properties) {
@@ -86,7 +100,7 @@ constructor("View.Builder", {
     return subview_arguments;
   },
 
-  tag: function(name) {
+  tag: function() {
     var args = this.parse_tag_arguments(arguments);
     if (args.text && args.body) throw new Error("Tags cannot have both text and body content");
     if (this.constructor.self_closing_tags[args.name]) {
@@ -98,18 +112,20 @@ constructor("View.Builder", {
 
   self_closing_tag: function(tag_args) {
     if (tag_args.text || tag_args.body) throw new Error("Self-closing tag " + tag_args.name + " cannot contain text or have body content");
-    var tag = new View.SelfClosingTag(tag_args.name, tag_args.attributes);
-    this.instructions.push(tag);
-    return tag;
+    var tag_instruction = new View.SelfClosingTag(tag_args.name, tag_args.attributes);
+    this.instructions.push(tag_instruction);
+    return tag_instruction;
   },
 
   standard_tag_sequence: function(tag_args) {
-    this.instructions.push(new View.OpenTag(tag_args.name, tag_args.attributes));
+    var open_tag_instruction = new View.OpenTag(tag_args.name, tag_args.attributes);
+    this.instructions.push(open_tag_instruction);
     if (tag_args.text) this.instructions.push(new View.TextNode(tag_args.text));
     if (tag_args.body) tag_args.body();
-    var close_tag = new View.CloseTag(tag_args.name);
-    this.instructions.push(close_tag);
-    return close_tag;
+    var close_tag_instruction = new View.CloseTag(tag_args.name);
+    close_tag_instruction.open_tag_instruction = open_tag_instruction;
+    this.instructions.push(close_tag_instruction);
+    return close_tag_instruction;
   },
 
   parse_tag_arguments: function(args) {
@@ -150,4 +166,3 @@ constructor("View.Builder", {
     return "> " + selector_fragments.join(" > ");
   }
 });
-

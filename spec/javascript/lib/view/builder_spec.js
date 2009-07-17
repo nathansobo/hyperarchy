@@ -12,8 +12,28 @@ Screw.Unit(function(c) { with(c) {
         mock(builder, 'tag', function() {
           return "result";
         });
-        expect(builder.a({'href': "/the_moon"}, "Go to the moon")).to(equal, "result");
-        expect(builder.tag).to(have_been_called, with_args("a", {'href': "/the_moon"}, "Go to the moon"));
+        expect(builder.p({'class': "cool_paragraph"}, "This is a paragraph")).to(equal, "result");
+        expect(builder.tag).to(have_been_called, with_args("p", {'class': "cool_paragraph"}, "This is a paragraph"));
+      });
+    });
+
+    describe("#a", function() {
+      describe("when the 'local' attribute is set to true", function() {
+        it("assigns a click handler to the link that invokes jQuery.history.load with the portion of the href following the '#' character", function() {
+          mock(jQuery.history, 'load');
+          builder.a({'local': true, href: "#bar"}, "Go To The Bar");
+          builder.to_view().click();
+          expect(jQuery.history.load).to(have_been_called, with_args('bar'));
+        });
+      });
+
+      describe("when the 'local' attribute is set to false", function() {
+        it("assigns a click handler to the link that invokes jQuery.history.load", function() {
+          mock(jQuery.history, 'load');
+          builder.a({'local': false, href: "isi.edu"}, "Go To The Information Sciences Institute");
+          builder.to_view().click();
+          expect(jQuery.history.load).to_not(have_been_called);
+        });
       });
     });
 
@@ -157,10 +177,13 @@ Screw.Unit(function(c) { with(c) {
             expect(builder.to_html()).to(equal, "<div></div>");
           });
 
-          it("returns the CloseTag instruction", function() {
+          it("returns the CloseTag instruction with a reference to the OpenTag instruction", function() {
             var instruction = builder.tag("div");
             expect(instruction.constructor).to(equal, View.CloseTag);
             expect(instruction.name).to(equal, "div");
+            var open_tag_instruction = instruction.open_tag_instruction;
+            expect(open_tag_instruction.constructor).to(equal, View.OpenTag);
+            expect(open_tag_instruction.name).to(equal, "div");
           });
         });
       });
@@ -222,9 +245,12 @@ Screw.Unit(function(c) { with(c) {
             expect(builder.to_html()).to(equal, '<div><div></div></div>');
           });
 
-          it("returns the CloseTag instruction", function() {
+          it("returns the CloseTag instruction with a reference to the OpenTag instruction", function() {
             expect(instruction.constructor).to(equal, View.CloseTag);
             expect(instruction.name).to(equal, "div");
+            var open_tag_instruction = instruction.open_tag_instruction;
+            expect(open_tag_instruction.constructor).to(equal, View.OpenTag);
+            expect(open_tag_instruction.name).to(equal, "div");
           });
         });
       });
@@ -297,9 +323,6 @@ Screw.Unit(function(c) { with(c) {
           expect(view.subviews.two.subview_number).to(equal, 2);
         });
       });
-
-
-
     });
 
     describe("#find_preceding_element", function() {
