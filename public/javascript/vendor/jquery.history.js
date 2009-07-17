@@ -63,48 +63,48 @@ $.extend(History.prototype, {
 			var ihistory = $("#jQuery_history")[0];
 			var iframe = ihistory.contentDocument || ihistory.contentWindow.document;
 			var current_hash = iframe.location.hash;
-			if(current_hash != $.history._curHash) {
+			if(current_hash != jQuery.history._curHash) {
 			
 				location.hash = current_hash;
-				$.history._curHash = current_hash;
-				$.history._callback(current_hash.replace(/^#/, ''));
+				jQuery.history._curHash = current_hash;
+				jQuery.history._callback(current_hash.replace(/^#/, ''));
 				
 			}
 		} else if ($.browser.safari) {
-			if (!$.history._dontCheck) {
-				var historyDelta = history.length - $.history._historyBackStack.length;
+			if (!jQuery.history._dontCheck) {
+				var historyDelta = history.length - jQuery.history._historyBackStack.length;
 				
 				if (historyDelta) { // back or forward button has been pushed
-					$.history._isFirst = false;
+					jQuery.history._isFirst = false;
 					if (historyDelta < 0) { // back button has been pushed
 						// move items to forward stack
-						for (var i = 0; i < Math.abs(historyDelta); i++) $.history._historyForwardStack.unshift($.history._historyBackStack.pop());
+						for (var i = 0; i < Math.abs(historyDelta); i++) jQuery.history._historyForwardStack.unshift(jQuery.history._historyBackStack.pop());
 					} else { // forward button has been pushed
 						// move items to back stack
-						for (var i = 0; i < historyDelta; i++) $.history._historyBackStack.push($.history._historyForwardStack.shift());
+						for (var i = 0; i < historyDelta; i++) jQuery.history._historyBackStack.push(jQuery.history._historyForwardStack.shift());
 					}
-					var cachedHash = $.history._historyBackStack[$.history._historyBackStack.length - 1];
+					var cachedHash = jQuery.history._historyBackStack[jQuery.history._historyBackStack.length - 1];
 					if (cachedHash != undefined) {
-						$.history._curHash = location.hash;
-						$.history._callback(cachedHash);
+						jQuery.history._curHash = location.hash;
+						jQuery.history._callback(cachedHash);
 					}
-				} else if ($.history._historyBackStack[$.history._historyBackStack.length - 1] == undefined && !$.history._isFirst) {
+				} else if (jQuery.history._historyBackStack[jQuery.history._historyBackStack.length - 1] == undefined && !jQuery.history._isFirst) {
 					// back button has been pushed to beginning and URL already pointed to hash (e.g. a bookmark)
 					// document.URL doesn't change in Safari
 					if (document.URL.indexOf('#') >= 0) {
-						$.history._callback(document.URL.split('#')[1]);
+						jQuery.history._callback(document.URL.split('#')[1]);
 					} else {
-						$.history._callback('');
+						jQuery.history._callback('');
 					}
-					$.history._isFirst = true;
+					jQuery.history._isFirst = true;
 				}
 			}
 		} else {
 			// otherwise, check for location.hash
 			var current_hash = location.hash;
-			if(current_hash != $.history._curHash) {
-				$.history._curHash = current_hash;
-				$.history._callback(current_hash.replace(/^#/, ''));
+			if(current_hash != jQuery.history._curHash) {
+				jQuery.history._curHash = current_hash;
+				jQuery.history._callback(current_hash.replace(/^#/, ''));
 			}
 		}
 	},
@@ -135,7 +135,7 @@ $.extend(History.prototype, {
 			
 			// Wait a while before allowing checking so that Safari has time to update the "history" object
 			// correctly (otherwise the check loop would detect a false change in hash).
-			var fn = function() {$.history._dontCheck = false;};
+			var fn = function() {jQuery.history._dontCheck = false;};
 			window.setTimeout(fn, 200);
 			this._callback(hash);
 			// N.B. "location.hash=" must be the last line of code for Safari as execution stops afterwards.

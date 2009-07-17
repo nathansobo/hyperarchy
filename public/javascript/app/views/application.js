@@ -10,13 +10,22 @@ constructor("Views.Application", View.Template, {
 
   view_properties: {
     initialize: function() {
+      var self = this;
       this.elections_view.hide();
       this.signup_view.hide();
       window.Application = this;
+      jQuery.history.init(function(path) {
+        self.navigate(path);
+      });
     },
 
     navigate: function(path) {
       switch(path) {
+        case "":
+          this.elections_view.hide();
+          this.login_view.show();
+          this.signup_view.hide();
+          break;
         case "signup":
           this.elections_view.hide();
           this.login_view.hide();
