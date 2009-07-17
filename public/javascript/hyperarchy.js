@@ -6,7 +6,3 @@
 //= require "lib/view"
 //= require "app/models"
 //= require "app/views"
-
-$(function() {
-  $("#placeholder").replaceWith(Views.Application.to_view());
-});

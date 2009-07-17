@@ -3,13 +3,10 @@ body {
 }
 
 #login_view {
-  display: block;
 }
 
 #signup_view {
-  display: none;
 }
 
 #elections_view {
-  display: none;
 }

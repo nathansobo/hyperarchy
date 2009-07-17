@@ -5,6 +5,9 @@ constructor("Views.Login", View.Template, {
       input({ id: 'email_address', name: 'email_address' });
       label({ 'for': 'password' }, "Password:");
       input({ id: 'password', name: 'password' });
+      a({id: "sign_up", href: "#signup"}, "Sign Up").click(function() {
+        Application.navigate('signup');
+      });
     });
   }}
 });
