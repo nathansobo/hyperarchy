@@ -8,8 +8,12 @@ constructor("Views.Signup", View.Template, {
       label({ 'for': 'password' }, "Password:");
       input({ type: 'text', id: 'password', name: 'password' });
 
-      button({id: 'signup_submit'}).click(function(view) {
-        Application.post('/users', view.field_values());
+      button({id: 'signup_submit'}, "Sign Up").click(function(view) {
+        Application.post('/users', view.field_values())
+          .on_success(function(data) {
+            Application.current_user_id = data.current_user_id;
+            jQuery.history.load('elections');
+          });
       });
     });
   }}
