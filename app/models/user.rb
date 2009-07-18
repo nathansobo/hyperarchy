@@ -1,5 +1,6 @@
 class User < Model::Tuple
   attribute :full_name, :string
+  attribute :email_address, :string
   attribute :encrypted_password, :string
 
   relates_to_many :elections do

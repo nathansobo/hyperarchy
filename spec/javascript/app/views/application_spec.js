@@ -51,6 +51,19 @@ Screw.Unit(function(c) { with(c) {
           expect(view.find("#signup_view:visible")).to_not(be_empty);
         });
       });
+
+      context("when called with 'elections'", function() {
+        it("shows the elections_view and hides the others", function() {
+          expect(view.find("#login_view:visible")).to_not(be_empty);
+          expect(view.find("#elections_view:hidden")).to_not(be_empty);
+          expect(view.find("#signup_view:hidden")).to_not(be_empty);
+          view.navigate("elections");
+          expect(view.find("#login_view:hidden")).to_not(be_empty);
+          expect(view.find("#elections_view:visible")).to_not(be_empty);
+          expect(view.find("#signup_view:hidden")).to_not(be_empty);
+        });
+      });
+
     });
 
     describe("#post", function() {

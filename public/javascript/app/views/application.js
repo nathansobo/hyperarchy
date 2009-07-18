@@ -31,6 +31,11 @@ constructor("Views.Application", View.Template, {
           this.login_view.hide();
           this.signup_view.show();
           break;
+        case "elections":
+          this.elections_view.show();
+          this.login_view.hide();
+          this.signup_view.hide();
+          break;
       }
     },
 

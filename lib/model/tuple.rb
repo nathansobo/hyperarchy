@@ -98,7 +98,7 @@ module Model
 
     def update(field_values)
       field_values.each do |attribute_name, value|
-        set_field_value(set.attributes_by_name[attribute_name], value)
+        self.send("#{attribute_name}=", value)
       end
     end
 
