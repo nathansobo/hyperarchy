@@ -22,6 +22,13 @@ module Resources
           :password => "password"
         ))
         response.status.should == 200
+        response.body_as_json.should == {
+          "successful" => true,
+          "data" => {
+            "current_user_id" => created_user.id  
+          }
+        }
+
         resource.current_session.user.should == created_user
         resource.current_session.should_not be_dirty
       end

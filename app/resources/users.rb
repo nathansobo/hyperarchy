@@ -1,9 +1,10 @@
 module Resources
   class Users < Http::Resource
     def post(attributes)
-      current_session.user_id = User.create.id
+      new_user = User.create
+      current_session.user_id = new_user.id
       current_session.save
-      [200, {}, ""]
+      ajax_success("current_user_id" => new_user.id)
     end
   end
 end

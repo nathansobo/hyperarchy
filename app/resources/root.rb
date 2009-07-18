@@ -4,6 +4,8 @@ module Resources
       case path_fragment
       when "domain"
         Model::GlobalDomain.instance
+      when "users"
+        Users.new
       end
     end
 

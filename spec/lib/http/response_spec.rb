@@ -23,5 +23,16 @@ module Http
         end
       end
     end
+
+    describe "#body_as_json" do
+      it "returns the JSON-parsed #body" do
+        data = {
+          "foo" => "foo",
+          "bar" => "baz"
+        }
+        response = Response.new(200, {}, data.to_json)
+        response.body_as_json.should == data
+      end
+    end
   end
 end

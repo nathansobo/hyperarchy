@@ -8,9 +8,15 @@ module Resources
     end
 
     describe "#locate" do
-      context "when passed 'domain'" do
+      context "when called with 'domain'" do
         it "returns GlobalDomain.instance" do
           root.locate('domain').should == Model::GlobalDomain.instance
+        end
+      end
+
+      context "when called with 'users'" do
+        it "returns an instance of Resources::Users" do
+          root.locate('users').should be_an_instance_of(Resources::Users)
         end
       end
     end

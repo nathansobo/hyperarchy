@@ -14,6 +14,10 @@ module Http
       [status, headers, body]
     end
 
+    def body_as_json
+      JSON.parse(body)
+    end
+
     class Cookies
       attr_reader :response, :cookie_hash
 
