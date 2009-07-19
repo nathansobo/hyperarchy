@@ -1,6 +1,10 @@
 dir = File.dirname(__FILE__)
 ROOT = File.expand_path("#{dir}/..")
 
+unless Object.const_defined?(:ENVIRONMENT)
+  ENVIRONMENT = ENV['ENVIRONMENT'] || 'development'
+end 
+
 require "rubygems"
 require "sequel"
 require "sequel/extensions/inflector"
@@ -28,5 +32,4 @@ class Hash
 end
 
 Origin = Model::Repository.new
-Origin.connection = Sequel.sqlite
-Model::GlobalDomain.create_schema
+require "#{dir}/environments/#{ENVIRONMENT}"

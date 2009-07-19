@@ -13,6 +13,15 @@ module Model
       @set, @name, @type = set, name, type
     end
 
+    def ruby_type
+      case type
+      when :string
+        String
+      when :integer
+        Integer
+      end
+    end
+
     def convert_value(value)
       value
     end

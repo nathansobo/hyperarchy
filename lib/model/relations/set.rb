@@ -69,7 +69,7 @@ module Model
         attributes_to_become_columns = attributes
         Origin.create_table(global_name) do
           attributes_to_become_columns.each do |attribute|
-            column attribute.name, attribute.type
+            column attribute.name, attribute.ruby_type
           end
         end
       end
