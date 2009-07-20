@@ -19,6 +19,12 @@ module Resources
           root.locate('users').should be_an_instance_of(Resources::Users)
         end
       end
+
+      context "when called with 'login'" do
+        it "returns an instance of Resources::Login" do
+          root.locate('login').should be_an_instance_of(Resources::Login)
+        end
+      end
     end
   end
 end

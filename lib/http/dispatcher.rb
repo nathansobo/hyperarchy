@@ -26,6 +26,7 @@ module Http
       path_parts(path).inject(root) do |resource, child_resource_name|
         if resource
           next_resource = resource.locate(child_resource_name)
+          raise "no subresource named #{child_resource_name}" unless next_resource
           next_resource.current_session_id = session_id
           next_resource
         else

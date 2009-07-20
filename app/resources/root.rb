@@ -6,6 +6,8 @@ module Resources
         Model::GlobalDomain.instance
       when "users"
         Users.new
+      when "login"
+        Login.new
       end
     end
 
