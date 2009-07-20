@@ -1,10 +1,17 @@
 module Resources
   class Login < Http::Resource
     def post(attributes)
-#      new_user = User.create(attributes)
-#      current_session.user_id = new_user.id
-#      current_session.save
-#      ajax_success("current_user_id" => new_user.id)
+      if user = User.find(User[:email_address].eq(attributes[:email_address]))
+        if user.password == attributes[:password]
+          current_session.user_id = user.id
+          current_session.save
+          ajax_success("current_user_id" => user.id)
+        else
+          ajax_failure(:errors => { :password => "Incorrect password for the given email address." })
+        end
+      else
+        ajax_failure(:errors => { :email_address => "No user exists with this email address." })
+      end
     end
   end
 end

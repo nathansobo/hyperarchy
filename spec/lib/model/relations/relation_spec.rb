@@ -173,6 +173,21 @@ module Model
           end
         end
 
+        describe "#find" do
+          context "when passed an id" do
+            it "returns the first Tuple in a Selection where id is equal to the given id" do
+              Candidate.set.find("grain_quinoa").should == Candidate.set.where(Candidate[:id].eq("grain_quinoa")).tuples.first
+            end
+          end
+
+          context "when passed a Predicate" do
+            it "returns the first Tuple in the Relation that matches the Predicate" do
+              Candidate.set.find(Candidate[:body].eq("Millet")).should == Candidate.where(Candidate[:body].eq("Millet")).tuples.first
+            end
+          end
+        end
+
+
         describe "#tuple_wire_representations" do
           it "returns the #wire_representation of all its #tuples" do
             Candidate.set.tuple_wire_representations.should == Candidate.set.tuples.map {|t| t.wire_representation}

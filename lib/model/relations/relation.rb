@@ -37,8 +37,9 @@ module Model
         end
       end
 
-      def find(id)
-        where(tuple_class[:id].eq(id)).tuples.first
+      def find(id_or_predicate)
+        predicate = (id_or_predicate.is_a?(Predicates::Predicate)? id_or_predicate : tuple_class[:id].eq(id_or_predicate))
+        where(predicate).tuples.first
       end
 
       def tuples

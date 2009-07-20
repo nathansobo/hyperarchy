@@ -18,50 +18,53 @@ module Resources
 
       context "if a User with the given email address exists" do
         context "if the given password matches that User" do
-          it "sets the current_user" do
+          it "sets the current_user and returns a successful ajax response with the current_user_id" do
+            resource.current_session.user.should be_nil
+            response = Http::Response.new(*resource.post(:email_address => user.email_address, :password => "spectrum"))
+            resource.current_session.user.should == user
 
+            response.body_as_json.should == {
+              "successful" => true,
+              "data" => {
+                "current_user_id" => user.id  
+              }
+            }
           end
-
         end
 
         context "if the given password does NOT match that User" do
+          it "does not set the current_user and returns an unsuccessful ajax response with errors on password" do
+            resource.current_session.user.should be_nil
+            response = Http::Response.new(*resource.post(:email_address => user.email_address, :password => "incorrectpassword"))
+            resource.current_session.user.should be_nil
 
+            response.body_as_json.should == {
+              "successful" => false,
+              "data" => {
+                "errors" => {
+                  "password" => "Incorrect password for the given email address."
+                }
+              }
+            }
+          end
         end
       end
 
       context "if no User with the given email address exists" do
+        it "does not set the current_user and returns an unsuccessful ajax response with errors on email_address" do
+          resource.current_session.user.should be_nil
+          response = Http::Response.new(*resource.post(:email_address => "bogus@example.com", :password => "spectrum"))
+          resource.current_session.user.should be_nil
 
-      end
-
-
-      it "finds the User with the given email address, and assigns it to the current Session if the password matches " do
-        params = {
-          :email_address => 'nathan@example.com',
-          :full_name => "Nathan Sobo",
-          :password => "password"
-        }
-
-        created_user = nil
-        mock.proxy(User).create(params) do |user|
-          created_user = user
-        end
-
-        response = Http::Response.new(*resource.post(params))
-
-        created_user.email_address.should == 'nathan@example.com'
-        created_user.full_name.should == 'Nathan Sobo'
-        created_user.password.should == 'password'
-
-        response.status.should == 200
-        response.body_as_json.should == {
-          "successful" => true,
-          "data" => {
-            "current_user_id" => created_user.id  
+          response.body_as_json.should == {
+            "successful" => false,
+            "data" => {
+              "errors" => {
+                "email_address" => "No user exists with this email address."
+              }
+            }
           }
-        }
-
-        resource.current_session.user.should == created_user
-        resource.current_session.should_not be_dirty
+        end
       end
     end
   end

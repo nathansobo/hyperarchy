@@ -157,5 +157,9 @@ module Model
       raise "No relation with name #{name} found on #{inspect}" unless relation
       relation
     end
+
+    def inspect
+      field_values_by_attribute_name.inspect
+    end
   end
 end

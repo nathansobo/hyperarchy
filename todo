@@ -1,4 +1,1 @@
-
-
-test create_table, drop_table, and clear_table on Set and Repository
-has_one
+symbols should support all the predicates and somehow determine their attribute from the context in which they are used
