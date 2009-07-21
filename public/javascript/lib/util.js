@@ -8,5 +8,4 @@ module("Util", {
   to_array: function(arguments_object) {
     return Array.prototype.slice.call(arguments_object, 0);
   }
-
 });

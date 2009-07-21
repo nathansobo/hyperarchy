@@ -8,6 +8,19 @@ h1 {
   font-weight: bold;
 }
 
+a {
+  color: #292121;
+}
+
+a:hover {
+  color: #951b00;
+}
+
+ol.error_list {
+  margin: 5px;
+  font-size: small;
+}
+
 /* login_view.js */
 
 #login_view {
