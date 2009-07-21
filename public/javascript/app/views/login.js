@@ -18,7 +18,7 @@ constructor("Views.Login", View.Template, {
       var self = this;
       Application.post('/login', this.field_values())
         .on_success(function(data) {
-          Application.current_user_id = data.current_user_id;
+          Application.current_user_id_established(data.current_user_id);
           jQuery.history.load('elections');
         })
         .on_failure(function(data) {

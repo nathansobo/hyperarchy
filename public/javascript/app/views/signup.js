@@ -23,7 +23,7 @@ constructor("Views.Signup", View.Template, {
     signup_submitted: function() {
       Application.post('/users', this.field_values())
         .on_success(function(data) {
-          Application.current_user_id = data.current_user_id;
+          Application.current_user_id_established(data.current_user_id);
           jQuery.history.load('elections');
         });
     }
