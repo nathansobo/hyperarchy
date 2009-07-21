@@ -1,12 +1,72 @@
 body {
+  font-family: sans-serif;
   margin: 20px;
 }
 
-#login_view {
+h1 {
+  font-size: larger;
+  font-weight: bold;
 }
 
-#signup_view {
+/* login_view.js */
+
+#login_view {
+  margin: 20px auto;
+  text-align: center;
+  width: 600px;
 }
+
+#login_view #login_form {
+  -moz-border-radius: 10px;
+  border: 1px #666666 solid;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+#login_view label {
+  margin-right: 5px;
+}
+
+#login_view input {
+  margin-right: 5px;
+  width: 150px;
+}
+
+#login_view button {
+  margin-left: 10px;
+}
+
+/* signup_view.js */
+
+#signup_view {
+  -moz-border-radius: 10px;
+  border: 1px #666666 solid;
+  margin: 20px auto;
+  padding: 10px;
+  width: 320px;
+  position: relative;
+}
+
+#signup_view li {
+  margin-bottom: 5px;
+}
+
+#signup_view label {
+  display: inline-block;
+  width: 120px;
+}
+
+#signup_view input {
+  width: 200px;
+}
+
+#signup_view button {
+  width: 80px;
+  margin-left: 240px;
+}
+
+
+/* elections_view.js */
 
 #elections_view {
 }
