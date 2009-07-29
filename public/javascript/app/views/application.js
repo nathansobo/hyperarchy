@@ -51,6 +51,11 @@ constructor("Views.Application", View.Template, {
         }
       });
       return future;
+    },
+
+    current_user_id_established: function(current_user_id) {
+      this.current_user_id = current_user_id;
+      June.origin("/users/" + current_user_id + "/exposed_relations");
     }
   }
 });

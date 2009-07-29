@@ -7,6 +7,10 @@ Screw.Unit(function(c) { with(c) {
         throw new Error("Mock this function in spec");
       },
 
+      current_user_id_established: function() {
+        throw new Error("Mock this function in spec");
+      },
+
       posts: [],
       last_post: null,
       post: function(url, data) {

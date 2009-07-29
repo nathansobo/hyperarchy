@@ -8,7 +8,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("when #signup_submit is clicked", function() {
-      it("posts the form field values to '/users', then sets the Application.current_user_id and navigates to #elections if the result is successful", function() {
+      it("posts the form field values to '/users', then calls Application.current_user_id_established with the User's id and navigates to #elections if the result is successful", function() {
         view.find('#full_name').val("Billy Cobham");
         view.find('#email_address').val("cobham@gmail.com");
         view.find('#password').val("spectrum");
@@ -24,8 +24,9 @@ Screw.Unit(function(c) { with(c) {
           password: "spectrum"
         });
 
+        mock(Application, 'current_user_id_established');
         mock(jQuery.history, 'load', function() {
-          expect(Application.current_user_id).to(equal, "billy");
+          expect(Application.current_user_id_established).to(have_been_called, with_args("billy"));
         });
         Application.last_post.simulate_success({
           current_user_id: "billy"

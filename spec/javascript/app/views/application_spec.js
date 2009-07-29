@@ -98,5 +98,19 @@ Screw.Unit(function(c) { with(c) {
         expect(future.handle_response).to(have_been_called, with_args(response_json));
       });
     });
+
+    describe("#current_user_id_established", function() {
+      it("assigns #current_user_id to the given id", function() {
+        expect(view.current_user_id).to(be_null);
+        view.current_user_id_established('billy');
+        expect(view.current_user_id).to(equal, 'billy');
+      });
+
+      it("sets the June origin to /users/:current_user_id/exposed_relations", function() {
+        mock(June, 'origin');
+        view.current_user_id_established('billy');
+        expect(June.origin).to(have_been_called, with_args('/users/billy/exposed_relations'));
+      });
+    });
   });
 }});
