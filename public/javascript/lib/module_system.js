@@ -18,6 +18,7 @@ ModuleSystem = {
     var constructor = function() {
       if (this.initialize) this.initialize.apply(this, arguments);
     }
+    constructor.basename = constructor_basename;
 
     if (args.superconstructor) this.extend(args.superconstructor, constructor);
     
@@ -47,6 +48,7 @@ ModuleSystem = {
     }
     subconstructor.prototype.constructor = subconstructor;
     this.mixin(subconstructor.prototype, original_subconstructor_prototype);
+    if (superconstructor.extended) superconstructor.extended(subconstructor);
     return subconstructor;
   },
 

@@ -3,8 +3,10 @@
 //= require <htmlescape>
 //= require <june>
 //= require "lib/module_system"
+//= require "lib/inflection"
 //= require "lib/util"
 //= require "lib/ajax_future"
+//= require "lib/model"
 //= require "lib/view"
 //= require "app/models"
 //= require "app/views"

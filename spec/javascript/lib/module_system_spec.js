@@ -7,6 +7,13 @@ Screw.Unit(function(c) { with(c) {
         delete window['Foo'];
       });
 
+      it("assigns a 'basename' property to the created constructor", function() {
+        ModuleSystem.constructor("Foo");
+        expect(Foo.basename).to(equal, "Foo");
+        ModuleSystem.constructor("Foo.Bar");
+        expect(Foo.Bar.basename).to(equal, "Bar");
+      });
+
       context("when given a top-level name and a properties hash", function() {
         it("creates a constructor with that name, defining the given properties on its prototype", function() {
           expect(window['Foo']).to(be_undefined);
@@ -318,10 +325,10 @@ Screw.Unit(function(c) { with(c) {
       var object;
 
       before(function() {
-        Super = function() {};
-        ModuleSystem.mixin(Super.prototype, {
+        ModuleSystem.constructor("Super", {
           eigenprops: {
-            super_eigenprop: "super_eigenprop"
+            super_eigenprop: "super_eigenprop",
+            extended: mock_function()
           },
 
           not_overridden_function: function() {
@@ -336,8 +343,7 @@ Screw.Unit(function(c) { with(c) {
           not_overridden_property: "not_overridden_property"
         });
 
-        Sub = function() {};
-        ModuleSystem.mixin(Sub.prototype, {
+        ModuleSystem.constructor("Sub", {
           eigenprops: {
             sub_eigenprop: 'sub_eigenprop'
           },
@@ -388,12 +394,20 @@ Screw.Unit(function(c) { with(c) {
         it("merges the the eigenprops of the subconstructor into a copy of those defined on the superconstructor, without mutating the eigenprops of the superconstructor", function() {
           expect(Sub.prototype.eigenprops).to(equal, {
             super_eigenprop: 'super_eigenprop',
-            sub_eigenprop: 'sub_eigenprop'
+            sub_eigenprop: 'sub_eigenprop',
+            extended: Super.extended
           });
 
           expect(Super.prototype.eigenprops).to(equal, {
-            super_eigenprop: 'super_eigenprop'
+            super_eigenprop: 'super_eigenprop',
+            extended: Super.extended
           });
+        });
+      });
+
+      context("if .extended is defined on the superconstructor", function() {
+        it("it calls the method with the subconstructor", function() {
+          expect(Super.extended).to(have_been_called, with_args(Sub));
         });
       });
     });
