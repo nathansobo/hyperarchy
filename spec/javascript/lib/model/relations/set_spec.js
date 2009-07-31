@@ -23,7 +23,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#insert", function() {
-      it("adds the given Tuple to the result of all", function() {
+      it("adds the given Tuple to the array returned by #all", function() {
         var mock_tuple = {};
 
         expect(set.all()).to_not(contain, mock_tuple);
