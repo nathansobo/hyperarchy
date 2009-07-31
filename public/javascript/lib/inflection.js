@@ -125,7 +125,6 @@ module("Inflection", {
   },
 
   underscore: function(word) {
-    console.debug(word);
     return word.replace(/([a-zA-Z\d])([A-Z])/g,'$1_$2').toLowerCase();
   },
 
