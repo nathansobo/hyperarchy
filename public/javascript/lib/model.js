@@ -1,4 +1,4 @@
 //= require "model/record"
 //= require "model/field"
-//= require "model/attribute"
+//= require "model/column"
 //= require "model/relations"

@@ -1,7 +1,7 @@
 constructor("Model.Field", {
-  initialize: function(record, attribute) {
+  initialize: function(record, column) {
     this.record = record;
-    this.attribute = attribute;
+    this.column = column;
   },
 
   value: function(value) {

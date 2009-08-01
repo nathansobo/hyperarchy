@@ -2,13 +2,13 @@ constructor("Model.Record", {
   eigenprops: {
     extended: function(subconstructor) {
       subconstructor.table = new Model.Relations.Table(this.determine_global_name(subconstructor));
-      subconstructor.attribute("id", "string");
+      subconstructor.column("id", "string");
     },
 
-    attribute: function(name, type) {
-      this[name] = this.table.define_attribute(name, type);
+    column: function(name, type) {
+      this[name] = this.table.define_column(name, type);
       this.prototype[name] = function(value) {
-        var field = this.fields_by_attribute_name[name];
+        var field = this.fields_by_column_name[name];
         if (value) {
           return field.value(value);
         } else {
@@ -17,9 +17,9 @@ constructor("Model.Record", {
       };
     },
 
-    attributes: function(attribute_name_type_pairs) {
-      for (var name in attribute_name_type_pairs) {
-        this.attribute(name, attribute_name_type_pairs[name]);
+    columns: function(column_name_type_pairs) {
+      for (var name in column_name_type_pairs) {
+        this.column(name, column_name_type_pairs[name]);
       }
     },
 
@@ -28,22 +28,22 @@ constructor("Model.Record", {
     }
   },
 
-  initialize: function(field_values_by_attribute_name) {
-    this.initialize_fields_by_attribute_name();
-    if (field_values_by_attribute_name) this.assign_field_values(field_values_by_attribute_name);
+  initialize: function(field_values_by_column_name) {
+    this.initialize_fields_by_column_name();
+    if (field_values_by_column_name) this.assign_field_values(field_values_by_column_name);
   },
 
-  initialize_fields_by_attribute_name: function() {
-    this.fields_by_attribute_name = {};
-    for (var attr_name in this.constructor.table.attributes_by_name) {
-      var attribute = this.constructor.table.attributes_by_name[attr_name];
-      this.fields_by_attribute_name[attr_name] = new Model.Field(this, attribute);
+  initialize_fields_by_column_name: function() {
+    this.fields_by_column_name = {};
+    for (var attr_name in this.constructor.table.columns_by_name) {
+      var column = this.constructor.table.columns_by_name[attr_name];
+      this.fields_by_column_name[attr_name] = new Model.Field(this, column);
     }
   },
 
-  assign_field_values: function(field_values_by_attribute_name) {
-    for (var attr_name in field_values_by_attribute_name) {
-      this.fields_by_attribute_name[attr_name].value(field_values_by_attribute_name[attr_name])
+  assign_field_values: function(field_values_by_column_name) {
+    for (var attr_name in field_values_by_column_name) {
+      this.fields_by_column_name[attr_name].value(field_values_by_column_name[attr_name])
     }
   }
 });

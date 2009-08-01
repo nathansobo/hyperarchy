@@ -8,17 +8,17 @@ Screw.Unit(function(c) { with(c) {
     });
 
 
-    describe("#define_attribute", function() {
-      var attribute;
+    describe("#define_column", function() {
+      var column;
       before(function() {
-        attribute = table.define_attribute("family_id", "string");
+        column = table.define_column("family_id", "string");
       });
 
-      it("adds an Attribute with the given name and type to #attributes_by_name and returns it", function() {
-        expect(attribute).to(equal, table.attributes_by_name.family_id);
-        expect(attribute.constructor).to(equal, Model.Attribute);
-        expect(attribute.name).to(equal, 'family_id');
-        expect(attribute.type).to(equal, 'string');
+      it("adds an Column with the given name and type to #columns_by_name and returns it", function() {
+        expect(column).to(equal, table.columns_by_name.family_id);
+        expect(column.constructor).to(equal, Model.Column);
+        expect(column.name).to(equal, 'family_id');
+        expect(column.type).to(equal, 'string');
       });
     });
 

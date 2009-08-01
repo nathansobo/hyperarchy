@@ -17,27 +17,27 @@ Screw.Unit(function(c) { with(c) {
         expect(table.global_name).to(equal, "animals");
       });
 
-      it("automatically gives the subconstructor an 'id' Attribute with a type of 'string'", function() {
-        expect(Animal.id).to(be_an_instance_of, Model.Attribute);
+      it("automatically gives the subconstructor an 'id' Column with a type of 'string'", function() {
+        expect(Animal.id).to(be_an_instance_of, Model.Column);
         expect(Animal.id.name).to(equal, "id");
         expect(Animal.id.type).to(equal, "string");
       });
     });
 
     describe("eigenproperties", function() {
-      describe(".attribute", function() {
+      describe(".column", function() {
         before(function() {
-          Animal.attribute("species_id", "string");
+          Animal.column("species_id", "string");
         });
 
-        it("calls #declare_attribute on its #table, assigning the returned attribute to an eigenproperty", function() {
-          expect(Animal.species_id).to(equal, Animal.table.attributes_by_name.species_id);
+        it("calls #define_column on its #table, assigning the returned Column to an eigenproperty", function() {
+          expect(Animal.species_id).to(equal, Animal.table.columns_by_name.species_id);
         });
 
         it("generates a method on .prototype that accesses the field corresponding to the prototype", function() {
           var animal = new Animal();
 
-          var field = animal.fields_by_attribute_name.species_id;
+          var field = animal.fields_by_column_name.species_id;
           expect(field.value()).to(be_undefined);
           expect(animal.species_id("dog")).to(equal, "dog");
           expect(field.value()).to(equal, "dog");
@@ -45,44 +45,44 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
-      describe(".attributes", function() {
-        it("calls .attribute for every attribute-name/value pair in a given hash", function() {
-          mock(Animal, 'attribute');
+      describe(".columns", function() {
+        it("calls .column for every column-name/value pair in a given hash", function() {
+          mock(Animal, 'column');
 
-          Animal.attributes({
+          Animal.columns({
             id: "string",
             name: "string"
           });
 
-          expect(Animal.attribute).to(have_been_called, twice);
-          expect(Animal.attribute.call_args[0]).to(equal, ['id', 'string']);
-          expect(Animal.attribute.call_args[1]).to(equal, ['name', 'string']);
+          expect(Animal.column).to(have_been_called, twice);
+          expect(Animal.column.call_args[0]).to(equal, ['id', 'string']);
+          expect(Animal.column.call_args[1]).to(equal, ['name', 'string']);
         });
       });
     });
 
     describe("prototype properties", function() {
       before(function() {
-        Animal.attributes({
+        Animal.columns({
           name: "string",
           species_id: "string"
         });
       });
 
       describe("#initialize", function() {
-        it("instantiates a Field in #fields_by_attribute_name for each Attribute on the constructor's .table", function() {
+        it("instantiates a Field in #fields_by_column_name for each Column on the constructor's .table", function() {
           var animal = new Animal();
           
-          var name_field = animal.fields_by_attribute_name.name;
-          var species_id_field = animal.fields_by_attribute_name.species_id;
+          var name_field = animal.fields_by_column_name.name;
+          var species_id_field = animal.fields_by_column_name.species_id;
 
           expect(name_field).to(be_an_instance_of, Model.Field);
           expect(name_field.record).to(equal, animal);
-          expect(name_field.attribute).to(equal, Animal.name);
+          expect(name_field.column).to(equal, Animal.name);
 
           expect(species_id_field).to(be_an_instance_of, Model.Field);
           expect(species_id_field.record).to(equal, animal);
-          expect(species_id_field.attribute).to(equal, Animal.species_id);
+          expect(species_id_field.column).to(equal, Animal.species_id);
         });
 
         it("assigns the given field values to their respective Fields", function() {
