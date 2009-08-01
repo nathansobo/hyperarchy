@@ -82,6 +82,22 @@ Screw.Unit(function(c) { with(c) {
           ModuleSystem.constructor("Foo", Super, {});
           expect(ModuleSystem.extend).to(have_been_called, with_args(Super, Foo));
         });
+
+        context("if .extended is defined as an eigenproperty on the superconstructor", function() {
+          it("it calls the method with the subconstructor after the subconstructor has been fully defined", function() {
+            var constructor;
+            Super.extended = mock_function("Super.extended", function() {
+              expect(window.Foo).to_not(be_undefined);
+              expect(window.Foo.foo).to(equal, "foo");
+            });
+            constructor = ModuleSystem.constructor("Foo", Super, {
+              eigenprops: {
+                foo: "foo"
+              }
+            });
+            expect(Super.extended).to(have_been_called, with_args(Foo));
+          });
+        });
       });
 
       context("when given modules as arguments following the name", function() {
@@ -409,12 +425,6 @@ Screw.Unit(function(c) { with(c) {
             super_eigenprop: 'super_eigenprop',
             extended: Super.extended
           });
-        });
-      });
-
-      context("if .extended is defined on the superconstructor", function() {
-        it("it calls the method with the subconstructor", function() {
-          expect(Super.extended).to(have_been_called, with_args(Sub));
         });
       });
     });

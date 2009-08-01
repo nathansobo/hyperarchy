@@ -16,6 +16,12 @@ Screw.Unit(function(c) { with(c) {
         expect(set.constructor).to(equal, Model.Relations.Set);
         expect(set.global_name).to(equal, "animals");
       });
+
+      it("automatically gives the subconstructor an 'id' Attribute with a type of 'string'", function() {
+        expect(Animal.id).to(be_an_instance_of, Model.Attribute);
+        expect(Animal.id.name).to(equal, "id");
+        expect(Animal.id.type).to(equal, "string");
+      });
     });
 
     describe("eigenproperties", function() {
@@ -38,13 +44,30 @@ Screw.Unit(function(c) { with(c) {
           expect(animal.species_id()).to(equal, "dog");
         });
       });
+
+      describe(".attributes", function() {
+        it("calls .attribute for every attribute-name/value pair in a given hash", function() {
+          mock(Animal, 'attribute');
+
+          Animal.attributes({
+            id: "string",
+            name: "string"
+          });
+
+          expect(Animal.attribute).to(have_been_called, twice);
+          expect(Animal.attribute.call_args[0]).to(equal, ['id', 'string']);
+          expect(Animal.attribute.call_args[1]).to(equal, ['name', 'string']);
+        });
+      });
+
     });
 
     describe("prototype properties", function() {
       before(function() {
-        Animal.attribute("name", "string");
-        Animal.attribute("species_id", "string");
-        Animal.attribute("owner_id", "string");
+        Animal.attributes({
+          name: "string",
+          species_id: "string"
+        });
       });
 
       describe("#initialize", function() {
@@ -61,6 +84,16 @@ Screw.Unit(function(c) { with(c) {
           expect(species_id_field).to(be_an_instance_of, Model.Field);
           expect(species_id_field.tuple).to(equal, animal);
           expect(species_id_field.attribute).to(equal, Animal.species_id);
+        });
+
+        it("assigns the given field values to their respective Fields", function() {
+          var animal = new Animal({
+            id: "keefa",
+            name: "Keefa"
+          });
+
+          expect(animal.id()).to(equal, "keefa");
+          expect(animal.name()).to(equal, "Keefa");
         });
       });
     });

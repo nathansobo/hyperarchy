@@ -31,7 +31,9 @@ ModuleSystem = {
       if (constructor.initialize) constructor.initialize();
     }
 
-    return containing_module[constructor_basename] = constructor;
+    containing_module[constructor_basename] = constructor
+    if (args.superconstructor && args.superconstructor.extended) args.superconstructor.extended(constructor)
+    return constructor;
   },
 
   module: function(qualified_module_name, properties) {
@@ -54,7 +56,6 @@ ModuleSystem = {
     }
     subconstructor.prototype.constructor = subconstructor;
     this.mixin(subconstructor.prototype, original_subconstructor_prototype);
-    if (superconstructor.extended) superconstructor.extended(subconstructor);
     return subconstructor;
   },
 
