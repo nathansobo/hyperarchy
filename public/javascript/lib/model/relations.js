@@ -1,1 +1,1 @@
-//= require "relations/set"
+//= require "relations/table"

@@ -1,9 +1,9 @@
 //= require "../../hyperarchy_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("Model.Tuple", function() {
+  describe("Model.Record", function() {
     before(function() {
-      ModuleSystem.constructor("Animal", Model.Tuple);
+      ModuleSystem.constructor("Animal", Model.Record);
     });
 
     after(function() {
@@ -11,10 +11,10 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("when a subsconstructor is declared", function() {
-      it("associates the subconstructor with a Set whose #global_name is the underscored subconstructor name", function() {
-        var set = Animal.set;
-        expect(set.constructor).to(equal, Model.Relations.Set);
-        expect(set.global_name).to(equal, "animals");
+      it("associates the subconstructor with a Table whose #global_name is the underscored subconstructor name", function() {
+        var table = Animal.table;
+        expect(table.constructor).to(equal, Model.Relations.Table);
+        expect(table.global_name).to(equal, "animals");
       });
 
       it("automatically gives the subconstructor an 'id' Attribute with a type of 'string'", function() {
@@ -30,8 +30,8 @@ Screw.Unit(function(c) { with(c) {
           Animal.attribute("species_id", "string");
         });
 
-        it("calls #declare_attribute on its #set, assigning the returned attribute to an eigenproperty", function() {
-          expect(Animal.species_id).to(equal, Animal.set.attributes_by_name.species_id);
+        it("calls #declare_attribute on its #table, assigning the returned attribute to an eigenproperty", function() {
+          expect(Animal.species_id).to(equal, Animal.table.attributes_by_name.species_id);
         });
 
         it("generates a method on .prototype that accesses the field corresponding to the prototype", function() {
@@ -59,7 +59,6 @@ Screw.Unit(function(c) { with(c) {
           expect(Animal.attribute.call_args[1]).to(equal, ['name', 'string']);
         });
       });
-
     });
 
     describe("prototype properties", function() {
@@ -71,18 +70,18 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("#initialize", function() {
-        it("instantiates a Field in #fields_by_attribute_name for each Attribute on the constructor's .set", function() {
+        it("instantiates a Field in #fields_by_attribute_name for each Attribute on the constructor's .table", function() {
           var animal = new Animal();
           
           var name_field = animal.fields_by_attribute_name.name;
           var species_id_field = animal.fields_by_attribute_name.species_id;
 
           expect(name_field).to(be_an_instance_of, Model.Field);
-          expect(name_field.tuple).to(equal, animal);
+          expect(name_field.record).to(equal, animal);
           expect(name_field.attribute).to(equal, Animal.name);
 
           expect(species_id_field).to(be_an_instance_of, Model.Field);
-          expect(species_id_field.tuple).to(equal, animal);
+          expect(species_id_field.record).to(equal, animal);
           expect(species_id_field.attribute).to(equal, Animal.species_id);
         });
 

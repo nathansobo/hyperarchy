@@ -128,7 +128,6 @@ Screw.Unit(function(c) { with(c) {
             tuple.set_field_value(tuple.set.age, tuple.age());
             expect(tuple.set.tuple_updated).to_not(have_been_called, with_args(tuple));
           });
-          
         });
       });
 

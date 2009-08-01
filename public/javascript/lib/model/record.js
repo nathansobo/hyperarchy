@@ -1,12 +1,12 @@
-constructor("Model.Tuple", {
+constructor("Model.Record", {
   eigenprops: {
     extended: function(subconstructor) {
-      subconstructor.set = new Model.Relations.Set(this.determine_global_name(subconstructor));
+      subconstructor.table = new Model.Relations.Table(this.determine_global_name(subconstructor));
       subconstructor.attribute("id", "string");
     },
 
     attribute: function(name, type) {
-      this[name] = this.set.define_attribute(name, type);
+      this[name] = this.table.define_attribute(name, type);
       this.prototype[name] = function(value) {
         var field = this.fields_by_attribute_name[name];
         if (value) {
@@ -23,8 +23,8 @@ constructor("Model.Tuple", {
       }
     },
 
-    determine_global_name: function(tuple_constructor) {
-      return Inflection.pluralize(Inflection.underscore(tuple_constructor.basename));
+    determine_global_name: function(record_constructor) {
+      return Inflection.pluralize(Inflection.underscore(record_constructor.basename));
     }
   },
 
@@ -35,8 +35,8 @@ constructor("Model.Tuple", {
 
   initialize_fields_by_attribute_name: function() {
     this.fields_by_attribute_name = {};
-    for (var attr_name in this.constructor.set.attributes_by_name) {
-      var attribute = this.constructor.set.attributes_by_name[attr_name];
+    for (var attr_name in this.constructor.table.attributes_by_name) {
+      var attribute = this.constructor.table.attributes_by_name[attr_name];
       this.fields_by_attribute_name[attr_name] = new Model.Field(this, attribute);
     }
   },

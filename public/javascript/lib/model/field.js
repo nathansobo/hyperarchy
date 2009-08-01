@@ -1,6 +1,6 @@
 constructor("Model.Field", {
-  initialize: function(tuple, attribute) {
-    this.tuple = tuple;
+  initialize: function(record, attribute) {
+    this.record = record;
     this.attribute = attribute;
   },
 
