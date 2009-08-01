@@ -22,7 +22,6 @@ constructor("Model.Tuple", {
   },
 
   initialize: function() {
-    if (this.constructor == Model.Tuple) return;
     this.initialize_fields_by_attribute_name();
   },
 

@@ -331,6 +331,8 @@ Screw.Unit(function(c) { with(c) {
             extended: mock_function()
           },
 
+          initialize: mock_function(),
+
           not_overridden_function: function() {
             return "not_overridden_function";
           },
@@ -375,6 +377,11 @@ Screw.Unit(function(c) { with(c) {
         delete window['Sub'];
       });
 
+      it("does not invoke the superconstructor's initialize method when creating the prototypical object", function() {
+        Super.prototype.initialize.clear();
+        ModuleSystem.extend(Super, Sub);
+        expect(Super.prototype.initialize).to_not(have_been_called);
+      });
 
       describe("functions and properties on the superconstructor prototype that are not overridden in the subconstructor prototype", function() {
         they("are inherited by objects created by the subconstructor", function() {

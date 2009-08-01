@@ -16,7 +16,7 @@ ModuleSystem = {
     var constructor_basename = args.qualified_constructor_name.split(".").pop();
     var containing_module = this.create_module_containing_constructor(args.qualified_constructor_name);
     var constructor = function() {
-      if (this.initialize) this.initialize.apply(this, arguments);
+      if (this.initialize && !constructor.__initialize_disabled__) this.initialize.apply(this, arguments);
     }
     constructor.basename = constructor_basename;
 
@@ -42,7 +42,13 @@ ModuleSystem = {
 
   extend: function(superconstructor, subconstructor) {
     var original_subconstructor_prototype = subconstructor.prototype;
-    subconstructor.prototype = new superconstructor();
+    try {
+      superconstructor.__initialize_disabled__ = true;
+      subconstructor.prototype = new superconstructor();
+    } finally {
+      superconstructor.__initialize_disabled__ = false;
+    }
+
     if (superconstructor.prototype.eigenprops) {
       subconstructor.prototype.eigenprops = this.clone(superconstructor.prototype.eigenprops);
     }
