@@ -39,20 +39,6 @@ constructor("Views.Application", View.Template, {
       }
     },
 
-    post: function(url, data) {
-      var future = new AjaxFuture();
-      jQuery.ajax({
-        url: url,
-        type: 'POST',
-        dataType: 'json',
-        data: data,
-        success: function(response) {
-          future.handle_response(response);
-        }
-      });
-      return future;
-    },
-
     current_user_id_established: function(current_user_id) {
       this.current_user_id = current_user_id;
       June.origin("/users/" + current_user_id + "/exposed_relations");

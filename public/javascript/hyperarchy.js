@@ -6,6 +6,7 @@
 //= require "lib/inflection"
 //= require "lib/util"
 //= require "lib/ajax_future"
+//= require "lib/server"
 //= require "lib/model"
 //= require "lib/view"
 //= require "app/models"

@@ -46,7 +46,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe(".columns", function() {
-        it("calls .column for every column-name/value pair in a given hash", function() {
+        it("calls .column for every column-name/value pair in the given hash", function() {
           mock(Animal, 'column');
 
           Animal.columns({

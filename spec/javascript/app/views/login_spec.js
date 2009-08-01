@@ -13,15 +13,15 @@ Screw.Unit(function(c) { with(c) {
         view.find('#email_address').val("cobham@gmail.com");
         view.find('#password').val("spectrum");
 
-        expect(Application.posts).to(be_empty);
+        expect(Server.posts).to(be_empty);
         view.find('#login_submit').click();
 
       });
 
       it("posts the form field values to /login", function() {
-        expect(Application.posts.length).to(equal, 1);
-        expect(Application.last_post.url).to(equal, "/login");
-        expect(Application.last_post.data).to(equal, {
+        expect(Server.posts.length).to(equal, 1);
+        expect(Server.last_post.url).to(equal, "/login");
+        expect(Server.last_post.data).to(equal, {
           email_address: "cobham@gmail.com",
           password: "spectrum"
         });
@@ -35,7 +35,7 @@ Screw.Unit(function(c) { with(c) {
           mock(jQuery.history, 'load', function() {
             expect(Application.current_user_id_established).to(have_been_called, with_args("billy"));
           });
-          Application.last_post.simulate_success({
+          Server.last_post.simulate_success({
             current_user_id: "billy"
           });
           expect(jQuery.history.load).to(have_been_called, with_args("elections"));
@@ -45,7 +45,7 @@ Screw.Unit(function(c) { with(c) {
       context("when the result is unsuccessful", function() {
         it("displays the error and does not set the Application.current_user_id or navigate to #elections", function() {
           mock(jQuery.history, 'load');
-          Application.last_post.simulate_failure({
+          Server.last_post.simulate_failure({
             errors: {
               password: "Your password did not match the given email address."
             }

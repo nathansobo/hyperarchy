@@ -13,12 +13,12 @@ Screw.Unit(function(c) { with(c) {
         view.find('#email_address').val("cobham@gmail.com");
         view.find('#password').val("spectrum");
 
-        expect(Application.posts).to(be_empty);
+        expect(Server.posts).to(be_empty);
         view.find('#signup_submit').click();
 
-        expect(Application.posts.length).to(equal, 1);
-        expect(Application.last_post.url).to(equal, "/users");
-        expect(Application.last_post.data).to(equal, {
+        expect(Server.posts.length).to(equal, 1);
+        expect(Server.last_post.url).to(equal, "/users");
+        expect(Server.last_post.data).to(equal, {
           full_name: "Billy Cobham",
           email_address: "cobham@gmail.com",
           password: "spectrum"
@@ -28,7 +28,7 @@ Screw.Unit(function(c) { with(c) {
         mock(jQuery.history, 'load', function() {
           expect(Application.current_user_id_established).to(have_been_called, with_args("billy"));
         });
-        Application.last_post.simulate_success({
+        Server.last_post.simulate_success({
           current_user_id: "billy"
         });
         expect(jQuery.history.load).to(have_been_called);
