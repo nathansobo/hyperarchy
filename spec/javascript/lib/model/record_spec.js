@@ -2,17 +2,7 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Model.Record", function() {
-    before(function() {
-      ModuleSystem.constructor("Animal", Model.Record);
-      Animal.columns({
-        name: "string",
-        species_id: "string"
-      });
-    });
-
-    after(function() {
-      delete window['Animal'];
-    });
+    define_model_fixtures();
 
     describe("when a subsconstructor is declared", function() {
       it("associates the subconstructor with a Table whose #global_name is the underscored subconstructor name", function() {
@@ -75,7 +65,7 @@ Screw.Unit(function(c) { with(c) {
             });
 
             var create_future = Animal.create({ name: "Keefa" });
-            expect(Model.Repository.remote_create).to(have_been_called, with_args("animals", { name: "Keefa" }));
+            expect(Model.Repository.remote_create).to(have_been_called, with_args(Animal.table, { name: "Keefa" }));
 
             remote_create_future.trigger_success({id: 'keefa', name: 'Keefa'});
 

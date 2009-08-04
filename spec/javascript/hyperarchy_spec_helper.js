@@ -41,4 +41,19 @@ Screw.Unit(function(c) { with(c) {
   after(function() {
     delete window['Application'];
   });
+
+  c.define_model_fixtures = function() {
+    before(function() {
+      ModuleSystem.constructor("Animal", Model.Record);
+      Animal.columns({
+        name: "string",
+        species_id: "string"
+      });
+    });
+
+    after(function() {
+      delete window['Animal'];
+    });
+  };
 }});
+
