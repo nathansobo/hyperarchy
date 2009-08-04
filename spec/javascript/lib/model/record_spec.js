@@ -4,6 +4,10 @@ Screw.Unit(function(c) { with(c) {
   describe("Model.Record", function() {
     before(function() {
       ModuleSystem.constructor("Animal", Model.Record);
+      Animal.columns({
+        name: "string",
+        species_id: "string"
+      });
     });
 
     after(function() {
@@ -27,6 +31,8 @@ Screw.Unit(function(c) { with(c) {
     describe("eigenproperties", function() {
       describe(".column", function() {
         before(function() {
+          delete window['Animal'];
+          ModuleSystem.constructor("Animal", Model.Record);
           Animal.column("species_id", "string");
         });
 
@@ -59,16 +65,31 @@ Screw.Unit(function(c) { with(c) {
           expect(Animal.column.call_args[1]).to(equal, ['name', 'string']);
         });
       });
+
+      describe(".create", function() {
+        context("when Repository.remote_create responds successfully", function() {
+          it("calls .local_create with the field values returned by the remote repository and triggers success callbacks registered on the .create future", function() {
+            var remote_create_future = new AjaxFuture();
+            mock(Model.Repository, 'remote_create', function() {
+              return remote_create_future;
+            });
+
+            var create_future = Animal.create({ name: "Keefa" });
+            expect(Model.Repository.remote_create).to(have_been_called, with_args("animals", { name: "Keefa" }));
+
+            remote_create_future.trigger_success({id: 'keefa', name: 'Keefa'});
+
+            expect(create_future.successful).to(be_true);
+            var animal = create_future.data;
+            expect(animal).to(be_an_instance_of, Animal);
+            expect(animal.id()).to(equal, 'keefa');
+            expect(animal.name()).to(equal, 'Keefa');
+          });
+        });
+      });
     });
 
     describe("prototype properties", function() {
-      before(function() {
-        Animal.columns({
-          name: "string",
-          species_id: "string"
-        });
-      });
-
       describe("#initialize", function() {
         it("instantiates a Field in #fields_by_column_name for each Column on the constructor's .table", function() {
           var animal = new Animal();

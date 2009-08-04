@@ -5,17 +5,30 @@ constructor("AjaxFuture", {
   },
 
   handle_response: function(response) {
-    this.handled_response = response;
     if (response.successful) {
-      this.on_success_node.publish(response.data);
+      this.trigger_success(response.data);
     } else {
-      this.on_failure_node.publish(response.data);
+      this.trigger_failure(response.data);
     }
   },
 
+  trigger_success: function(data) {
+    this.triggered = true;
+    this.successful = true;
+    this.data = data;
+    this.on_success_node.publish(data);
+  },
+
+  trigger_failure: function(data) {
+    this.triggered = true;
+    this.successful = false;
+    this.data = data;
+    this.on_failure_node.publish(data);
+  },
+
   on_success: function(success_callback) {
-    if (this.handled_response) {
-      if (this.handled_response.successful) success_callback(this.handled_response.data);
+    if (this.triggered) {
+      if (this.successful) success_callback(this.data);
     } else {
       this.on_success_node.subscribe(success_callback);
     }
@@ -23,8 +36,8 @@ constructor("AjaxFuture", {
   },
 
   on_failure: function(failure_callback) {
-    if (this.handled_response) {
-      if (!this.handled_response.successful) failure_callback(this.handled_response.data);
+    if (this.triggered) {
+      if (!this.successful) failure_callback(this.data);
     } else {
       this.on_failure_node.subscribe(failure_callback);
     }

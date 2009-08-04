@@ -25,6 +25,20 @@ constructor("Model.Record", {
 
     determine_global_name: function(record_constructor) {
       return Inflection.pluralize(Inflection.underscore(record_constructor.basename));
+    },
+
+    create: function(field_values) {
+      var self = this;
+      var future = new AjaxFuture();
+      Model.Repository.remote_create(this.table.global_name, field_values)
+        .on_success(function(returned_field_values) {
+          future.trigger_success(self.local_create(returned_field_values));
+        });
+      return future;
+    },
+
+    local_create: function(field_values) {
+      return new this(field_values);
     }
   },
 

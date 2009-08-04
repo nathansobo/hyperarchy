@@ -5,8 +5,6 @@ Screw.Unit(function(c) { with(c) {
     var view;
     before(function() {
       mock(jQuery.history, 'init');
-      console.debug(Views);
-      
       view = Views.Application.to_view();
     });
 
