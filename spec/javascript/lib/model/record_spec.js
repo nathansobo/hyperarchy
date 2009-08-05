@@ -67,6 +67,7 @@ Screw.Unit(function(c) { with(c) {
             var create_future = Animal.create({ name: "Keefa" });
             expect(Model.Repository.remote_create).to(have_been_called, with_args(Animal.table, { name: "Keefa" }));
 
+            mock(Animal.table, 'insert');
             remote_create_future.trigger_success({id: 'keefa', name: 'Keefa'});
 
             expect(create_future.successful).to(be_true);
@@ -74,7 +75,22 @@ Screw.Unit(function(c) { with(c) {
             expect(animal).to(be_an_instance_of, Animal);
             expect(animal.id()).to(equal, 'keefa');
             expect(animal.name()).to(equal, 'Keefa');
+
+            expect(Animal.table.insert).to(have_been_called, with_args(animal));
           });
+        });
+      });
+
+      describe(".local_create", function() {
+        it("builds an instance of the Record with the given field_values and inserts it in .table before returning it", function() {
+          mock(Animal.table, 'insert');
+          var animal = Animal.local_create({
+            id: 'keefa',
+            name: 'Keefa'
+          });
+          expect(Animal.table.insert).to(have_been_called, with_args(animal));
+          expect(animal.id()).to(equal, 'keefa');
+          expect(animal.name()).to(equal, 'Keefa');
         });
       });
     });

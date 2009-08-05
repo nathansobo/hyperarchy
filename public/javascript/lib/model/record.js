@@ -38,7 +38,9 @@ constructor("Model.Record", {
     },
 
     local_create: function(field_values) {
-      return new this(field_values);
+      var record = new this(field_values);
+      this.table.insert(record);
+      return record;
     }
   },
 
