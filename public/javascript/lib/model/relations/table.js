@@ -16,5 +16,12 @@ constructor("Model.Relations.Table", {
 
   insert: function(record) {
     this.records.push(record);
+  },
+
+  wire_representation: function() {
+    return {
+      type: 'table',
+      name: this.global_name
+    };
   }
 });

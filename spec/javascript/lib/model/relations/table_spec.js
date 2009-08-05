@@ -31,5 +31,14 @@ Screw.Unit(function(c) { with(c) {
         expect(table.all()).to(contain, mock_record);
       });
     });
+
+    describe("#wire_representation", function() {
+      it("contains the Table's #name and has the 'type' of 'table'", function() {
+        expect(table.wire_representation()).to(equal, {
+          type: "table",
+          name: "programming_languages"
+        });
+      });
+    });
   });
 }});
