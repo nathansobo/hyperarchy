@@ -26,13 +26,19 @@ ModuleSystem = {
       this.mixin(constructor.prototype, args.mixin_modules[i]);
     }
 
-    if (constructor.prototype.eigenprops) {
-      this.mixin(constructor, constructor.prototype.eigenprops);
-      if (constructor.initialize) constructor.initialize();
+    if (constructor.prototype.constructor_initialize) {
+      if (!constructor.prototype.constructor_properties) constructor.prototype.constructor_properties = {};
+      constructor.prototype.constructor_properties.initialize = constructor.prototype.constructor_initialize;
+      delete constructor.prototype.constructor_initialize;
+    }
+    if (constructor.prototype.constructor_properties) {
+      this.mixin(constructor, constructor.prototype.constructor_properties);
     }
 
     containing_module[constructor_basename] = constructor
     if (args.superconstructor && args.superconstructor.extended) args.superconstructor.extended(constructor)
+    if (constructor.initialize) constructor.initialize();
+
     return constructor;
   },
 
@@ -51,8 +57,8 @@ ModuleSystem = {
       superconstructor.__initialize_disabled__ = false;
     }
 
-    if (superconstructor.prototype.eigenprops) {
-      subconstructor.prototype.eigenprops = this.clone(superconstructor.prototype.eigenprops);
+    if (superconstructor.prototype.constructor_properties) {
+      subconstructor.prototype.constructor_properties = this.clone(superconstructor.prototype.constructor_properties);
     }
     subconstructor.prototype.constructor = subconstructor;
     this.mixin(subconstructor.prototype, original_subconstructor_prototype);
@@ -65,8 +71,8 @@ ModuleSystem = {
 
   mixin: function(target, module) {
     for (var prop in module) {
-      if (prop == "eigenprops" && target.eigenprops) {
-        this.mixin(target.eigenprops, module.eigenprops);
+      if (prop == "constructor_properties" && target.constructor_properties) {
+        this.mixin(target.constructor_properties, module.constructor_properties);
         continue;
       }
       target[prop] = module[prop];

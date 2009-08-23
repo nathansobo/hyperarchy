@@ -1,5 +1,5 @@
 constructor("View.Builder", {
-  eigenprops: {
+  constructor_properties: {
     initialize: function() {
       this.generate_tag_methods();
     },

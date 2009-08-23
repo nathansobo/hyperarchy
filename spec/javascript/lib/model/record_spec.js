@@ -18,7 +18,7 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("eigenproperties", function() {
+    describe("constructor properties", function() {
       describe(".column", function() {
         before(function() {
           delete window['Animal'];
@@ -26,7 +26,7 @@ Screw.Unit(function(c) { with(c) {
           Animal.column("species_id", "string");
         });
 
-        it("calls #define_column on its #table, assigning the returned Column to an eigenproperty", function() {
+        it("calls #define_column on its #table, assigning the returned Column to a constructor property", function() {
           expect(Animal.species_id).to(equal, Animal.table.columns_by_name.species_id);
         });
 

@@ -1,5 +1,5 @@
 constructor("View.Template", {
-  eigenprops: {
+  constructor_properties: {
     to_view: function(properties) {
       return new this().to_view(properties);
     }

@@ -1,5 +1,5 @@
 constructor("View.CloseTag", {
-  eigenprops: {
+  constructor_properties: {
     initialize: function() {
       this.generate_event_methods();
     },

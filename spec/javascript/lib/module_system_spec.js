@@ -83,7 +83,7 @@ Screw.Unit(function(c) { with(c) {
           expect(ModuleSystem.extend).to(have_been_called, with_args(Super, Foo));
         });
 
-        context("if .extended is defined as an eigenproperty on the superconstructor", function() {
+        context("if .extended is defined as a constructor property on the superconstructor", function() {
           it("it calls the method with the subconstructor after the subconstructor has been fully defined", function() {
             var constructor;
             Super.extended = mock_function("Super.extended", function() {
@@ -91,7 +91,7 @@ Screw.Unit(function(c) { with(c) {
               expect(window.Foo.foo).to(equal, "foo");
             });
             constructor = ModuleSystem.constructor("Foo", Super, {
-              eigenprops: {
+              constructor_properties: {
                 foo: "foo"
               }
             });
@@ -134,10 +134,30 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
-      context("when an #eigenprops property is defined on the prototype", function() {
+      context("when a #constructor_initialize property is defined on the prototype", function() {
+        var constructor_initialize;
+
+        before(function() {
+          constructor_initialize = mock_function('constructor_initialize')
+          ModuleSystem.constructor("Foo", {
+            constructor_initialize: constructor_initialize
+          });
+        });
+
+        it("calls it on the constructor", function() {
+          expect(constructor_initialize).to(have_been_called, on_object(Foo));
+        });
+
+        it("moves it to the #constructor_properties hash and deletes it from the prototype", function() {
+          expect(Foo.prototype.constructor_initialize).to(be_undefined);
+          expect(Foo.prototype.constructor_properties.initialize).to(equal, constructor_initialize);
+        });
+      });
+
+      context("when a #constructor_properties property is defined on the prototype", function() {
         it("defines those properties on the constructor itself", function() {
           ModuleSystem.constructor("Foo", {
-            eigenprops: {
+            constructor_properties: {
               foo: "foo"
             }
           });
@@ -145,10 +165,10 @@ Screw.Unit(function(c) { with(c) {
           expect(Foo.foo).to(equal, "foo");
         });
 
-        context("when there is an #initialize eigenprop", function() {
+        context("when there is an #initialize constructor property", function() {
           it("invokes the initializer after the constructor is fully assembled", function() {
             ModuleSystem.constructor("Foo", {
-              eigenprops: {
+              constructor_properties: {
                 initialize: function() {
                   if (!this.prototype.foo) throw new Error("prototype should be assembled");
                   this.eigen_initialize_called = true;
@@ -163,12 +183,12 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
-      context("when an #eigenprops properties are defined on the superconstructor and the mixed-in modules", function() {
+      context("when a #constructor_properties properties are defined on the superconstructor and the mixed-in modules", function() {
         var mixin_module, subconstructor_prototype;
 
         before(function() {
           ModuleSystem.constructor("Super", {
-            eigenprops: {
+            constructor_properties: {
               foo: "foo super",
               bar: "bar super",
               boing: "boing"
@@ -176,14 +196,14 @@ Screw.Unit(function(c) { with(c) {
           });
 
           mixin_module = {
-            eigenprops: {
+            constructor_properties: {
               bar: "bar module",
               baz: "baz module"
             }
           };
 
           subconstructor_prototype = {
-            eigenprops: {
+            constructor_properties: {
               foo: "foo sub",
               baz: "baz sub",
               bop: "bop"
@@ -198,8 +218,8 @@ Screw.Unit(function(c) { with(c) {
           delete window['Sub'];
         });
 
-        it("combines the eigenproperties into an 'eigenprops' hash on the prototype of the defined constructor, giving precedence to modules included later", function() {
-          expect(Sub.prototype.eigenprops).to(equal, {
+        it("combines the constructor properties into an 'constructor_properties' hash on the prototype of the defined constructor, giving precedence to modules included later", function() {
+          expect(Sub.prototype.constructor_properties).to(equal, {
             foo: "foo sub",
             bar: "bar module",
             baz: "baz sub",
@@ -208,7 +228,7 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        it("defines the merged eigenproperties as properties on the defined constructor itself", function() {
+        it("defines the merged constructor properties as properties on the defined constructor itself", function() {
           expect(Sub.foo).to(equal, "foo sub");
           expect(Sub.bar).to(equal, "bar module");
           expect(Sub.baz).to(equal, "baz sub");
@@ -216,19 +236,19 @@ Screw.Unit(function(c) { with(c) {
           expect(Sub.boing).to(equal, "boing");
         });
         
-        it("does not mutate the 'eigenprops' hashes on the superconstructor or any of the included modules", function() {
-          expect(Super.prototype.eigenprops).to(equal, {
+        it("does not mutate the 'constructor_properties' hashes on the superconstructor or any of the included modules", function() {
+          expect(Super.prototype.constructor_properties).to(equal, {
             foo: "foo super",
             bar: "bar super",
             boing: "boing"
           });
 
-          expect(mixin_module.eigenprops).to(equal, {
+          expect(mixin_module.constructor_properties).to(equal, {
             bar: "bar module",
             baz: "baz module"
           });;
 
-          expect(subconstructor_prototype.eigenprops).to(equal, {
+          expect(subconstructor_prototype.constructor_properties).to(equal, {
             foo: "foo sub",
             baz: "baz sub",
             bop: "bop"
@@ -342,8 +362,8 @@ Screw.Unit(function(c) { with(c) {
 
       before(function() {
         ModuleSystem.constructor("Super", {
-          eigenprops: {
-            super_eigenprop: "super_eigenprop",
+          constructor_properties: {
+            superconstructor_property: "superconstructor_property",
             extended: mock_function()
           },
 
@@ -362,8 +382,8 @@ Screw.Unit(function(c) { with(c) {
         });
 
         ModuleSystem.constructor("Sub", {
-          eigenprops: {
-            sub_eigenprop: 'sub_eigenprop'
+          constructor_properties: {
+            subconstructor_property: 'subconstructor_property'
           },
 
           overridden_function: function() {
@@ -413,16 +433,16 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
-      context("if an 'eigenprops' property is defined on the superconstructor's prototype", function() {
-        it("merges the the eigenprops of the subconstructor into a copy of those defined on the superconstructor, without mutating the eigenprops of the superconstructor", function() {
-          expect(Sub.prototype.eigenprops).to(equal, {
-            super_eigenprop: 'super_eigenprop',
-            sub_eigenprop: 'sub_eigenprop',
+      context("if an 'constructor_properties' property is defined on the superconstructor's prototype", function() {
+        it("merges the the constructor_properties of the subconstructor into a copy of those defined on the superconstructor, without mutating the constructor_properties of the superconstructor", function() {
+          expect(Sub.prototype.constructor_properties).to(equal, {
+            superconstructor_property: 'superconstructor_property',
+            subconstructor_property: 'subconstructor_property',
             extended: Super.extended
           });
 
-          expect(Super.prototype.eigenprops).to(equal, {
-            super_eigenprop: 'super_eigenprop',
+          expect(Super.prototype.constructor_properties).to(equal, {
+            superconstructor_property: 'superconstructor_property',
             extended: Super.extended
           });
         });
@@ -449,25 +469,25 @@ Screw.Unit(function(c) { with(c) {
         expect(a.baz).to(equal, "baz");
       });
 
-      it("mixes eigenprops defined in the second module into eigenprops defined on the first, rather than overwriting them", function() {
+      it("mixes constructor_properties defined in the second module into constructor_properties defined on the first, rather than overwriting them", function() {
         var a = {
-          eigenprops: {
+          constructor_properties: {
             foo: "foo",
             bar: "bar"
           }
         };
 
         var b =  {
-          eigenprops: {
+          constructor_properties: {
             bar: "bar2",
             baz: "baz"
           }
         };
 
         ModuleSystem.mixin(a, b);
-        expect(a.eigenprops.foo).to(equal, "foo");
-        expect(a.eigenprops.bar).to(equal, "bar2");
-        expect(a.eigenprops.baz).to(equal, "baz");
+        expect(a.constructor_properties.foo).to(equal, "foo");
+        expect(a.constructor_properties.bar).to(equal, "bar2");
+        expect(a.constructor_properties.baz).to(equal, "baz");
       });
     });
   });

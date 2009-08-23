@@ -1,5 +1,5 @@
 constructor("Model.Record", {
-  eigenprops: {
+  constructor_properties: {
     extended: function(subconstructor) {
       subconstructor.table = new Model.Relations.Table(this.determine_global_name(subconstructor));
       subconstructor.column("id", "string");
