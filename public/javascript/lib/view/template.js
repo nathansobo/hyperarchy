@@ -26,6 +26,18 @@ constructor("View.Template", {
         values[self.attr('name')] = self.val();
       });
       return values;
+    },
+
+    show: function() {
+      if (this.before_show) this.before_show();
+      this._show();
+      if (this.after_show) this.after_show();
+    },
+
+    hide: function() {
+      if (this.before_hide) this.before_hide();
+      this._hide();
+      if (this.after_hide) this.after_hide();
     }
   }
 });

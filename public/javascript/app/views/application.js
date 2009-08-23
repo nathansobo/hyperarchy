@@ -23,8 +23,8 @@ constructor("Views.Application", View.Template, {
       switch(path) {
         case "":
           this.elections_view.hide();
-          this.login_view.show();
           this.signup_view.hide();
+          this.login_view.show();
           break;
         case "signup":
           this.elections_view.hide();
@@ -32,16 +32,16 @@ constructor("Views.Application", View.Template, {
           this.signup_view.show();
           break;
         case "elections":
-          this.elections_view.show();
           this.login_view.hide();
           this.signup_view.hide();
+          this.elections_view.show();
           break;
       }
     },
 
     current_user_id_established: function(current_user_id) {
       this.current_user_id = current_user_id;
-      June.origin("/users/" + current_user_id + "/exposed_relations");
+      Model.Repository.origin_url = "/users/" + current_user_id + "/repository"
     }
   }
 });

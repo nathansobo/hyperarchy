@@ -11,7 +11,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe(".remote_create", function() {
       it("calls Server.post with #origin_url and json to create a Record with the given field values in the given Relation", function() {
-        Repository.origin_url = "/users/steph/repo";
+        Repository.origin_url = "/users/steph/repository";
         var future = Repository.remote_create(Animal.table, {name: 'Keefa'});
         expect(Server.posts).to(have_length, 1);
 

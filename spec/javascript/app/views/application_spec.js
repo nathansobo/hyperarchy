@@ -72,11 +72,10 @@ Screw.Unit(function(c) { with(c) {
         expect(view.current_user_id).to(equal, 'billy');
       });
 
-      it("sets the June origin to /users/:current_user_id/exposed_relations", function() {
-        mock(June, 'origin');
+      it("assigns Model.Repository.origin_url to /users/:current_user_id/repository", function() {
         view.current_user_id_established('billy');
-        expect(June.origin).to(have_been_called, with_args('/users/billy/exposed_relations'));
-      });
+        expect(Model.Repository.origin_url).to(equal, "/users/billy/repository");
+      });  
     });
   });
 }});

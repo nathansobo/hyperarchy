@@ -51,10 +51,17 @@ constructor("View.Builder", {
     var self = this;
     var view = jQuery(this.to_html());
     this.view = view;
+
+    view._show = view.show;
+    view._hide = view.hide;
     if (properties) mixin(view, properties);
+
     Util.each(this.instructions, function(instruction) {
       instruction.post_process(self);
     });
+
+
+
     if (view.initialize) view.initialize();
     this.view = null;
     return view;
