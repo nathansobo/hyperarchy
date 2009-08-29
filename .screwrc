@@ -1,6 +1,7 @@
 ScrewUnit.configure do
-  port 8080
+  port 8282
   code_under_test_path "public/javascript"
   specs_path "spec/javascript"
   sprockets_enabled true
+  sprockets_load_paths "public/javascript", "public/javascript/vendor", "spec/javascript"
 end

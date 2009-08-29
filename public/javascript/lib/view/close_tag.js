@@ -24,6 +24,7 @@ constructor("View.CloseTag", {
             handler.call(element, view, event);
           });
         });
+        return this;
       };
     }
   },
@@ -35,9 +36,16 @@ constructor("View.CloseTag", {
   to_html: function() {
     return "</" + this.name + ">"
   },
-  
+
+  bind: function(name) {
+    this.on_build(function(element, view) {
+      view[name] = element;
+    });
+    return this;
+  },
+
   on_build: function(handler) {
-    if (!this.on_build_node) this.on_build_node = new June.SubscriptionNode();
+    if (!this.on_build_node) this.on_build_node = new SubscriptionNode();
     return this.on_build_node.subscribe(handler);
   },
 

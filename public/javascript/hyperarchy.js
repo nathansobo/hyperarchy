@@ -1,10 +1,11 @@
 //= require <jquery-1.3.2>
 //= require <jquery.history>
 //= require <htmlescape>
-//= require <june>
 //= require "lib/module_system"
 //= require "lib/inflection"
 //= require "lib/util"
+//= require "lib/subscription_node"
+//= require "lib/subscription"
 //= require "lib/ajax_future"
 //= require "lib/server"
 //= require "lib/model"

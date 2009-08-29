@@ -1,7 +1,7 @@
 constructor("AjaxFuture", {
   initialize: function() {
-    this.on_success_node = new June.SubscriptionNode();
-    this.on_failure_node = new June.SubscriptionNode();
+    this.on_success_node = new SubscriptionNode();
+    this.on_failure_node = new SubscriptionNode();
   },
 
   handle_response: function(response) {
