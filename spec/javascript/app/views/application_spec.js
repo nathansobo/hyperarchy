@@ -27,40 +27,42 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#navigate", function() {
+      before(function() {
+        mock(view.login_view, 'show');
+        mock(view.login_view, 'hide');
+        mock(view.signup_view, 'show');
+        mock(view.signup_view, 'hide');
+        mock(view.elections_view, 'show');
+        mock(view.elections_view, 'hide');
+      });
+
       context("when called with '' (empty string)", function() {
         it("shows the login_view and hides the others", function() {
-          view.navigate("signup");
-          expect(view.find("#login_view:hidden")).to_not(be_empty);
-          expect(view.find("#elections_view:hidden")).to_not(be_empty);
-          expect(view.find("#signup_view:visible")).to_not(be_empty);
           view.navigate("");
-          expect(view.find("#login_view:visible")).to_not(be_empty);
-          expect(view.find("#elections_view:hidden")).to_not(be_empty);
-          expect(view.find("#signup_view:hidden")).to_not(be_empty);
+
+          expect(view.login_view.show).to(have_been_called);
+          expect(view.signup_view.hide).to(have_been_called);
+          expect(view.elections_view.hide).to(have_been_called);
         });
       });
 
       context("when called with 'signup'", function() {
         it("shows the signup_view and hides the others", function() {
-          expect(view.find("#login_view:visible")).to_not(be_empty);
-          expect(view.find("#elections_view:hidden")).to_not(be_empty);
-          expect(view.find("#signup_view:hidden")).to_not(be_empty);
           view.navigate("signup");
-          expect(view.find("#login_view:hidden")).to_not(be_empty);
-          expect(view.find("#elections_view:hidden")).to_not(be_empty);
-          expect(view.find("#signup_view:visible")).to_not(be_empty);
+
+          expect(view.login_view.hide).to(have_been_called);
+          expect(view.signup_view.show).to(have_been_called);
+          expect(view.elections_view.hide).to(have_been_called);
         });
       });
 
       context("when called with 'elections'", function() {
         it("shows the elections_view and hides the others", function() {
-          expect(view.find("#login_view:visible")).to_not(be_empty);
-          expect(view.find("#elections_view:hidden")).to_not(be_empty);
-          expect(view.find("#signup_view:hidden")).to_not(be_empty);
           view.navigate("elections");
-          expect(view.find("#login_view:hidden")).to_not(be_empty);
-          expect(view.find("#elections_view:visible")).to_not(be_empty);
-          expect(view.find("#signup_view:hidden")).to_not(be_empty);
+
+          expect(view.login_view.hide).to(have_been_called);
+          expect(view.signup_view.hide).to(have_been_called);
+          expect(view.elections_view.show).to(have_been_called);
         });
       });
     });

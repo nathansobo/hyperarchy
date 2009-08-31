@@ -45,16 +45,16 @@ Screw.Unit(function(c) { with(c) {
         init(function() {
           view_properties = {
             before_show: mock_function("before_show", function() {
-              expect(this.is(":visible")).to(be_false);
+              expect(this.css('display')).to(equal, 'none');
             })
           };
         });
 
         it("calls it before showing the view", function() {
           view.hide();
-          expect(view.is(":visible")).to(be_false);
+          expect(view.css('display')).to(equal, 'none');
           view.show();
-          expect(view.is(":visible")).to(be_true);
+          expect(view.css('display')).to(equal, 'block');
           expect(view.before_show).to(have_been_called);
         });
       });
@@ -63,16 +63,16 @@ Screw.Unit(function(c) { with(c) {
         init(function() {
           view_properties = {
             after_show: mock_function("after_show", function() {
-              expect(this.is(":visible")).to(be_true);
+              expect(this.css('display')).to(equal, 'block');
             })
           };
         });
 
         it("calls it after showing the view", function() {
           view.hide();
-          expect(view.is(":visible")).to(be_false);
+          expect(view.css('display')).to(equal, 'none');
           view.show();
-          expect(view.is(":visible")).to(be_true);
+          expect(view.css('display')).to(equal, 'block');
           expect(view.after_show).to(have_been_called);
         });
       });
@@ -81,7 +81,7 @@ Screw.Unit(function(c) { with(c) {
         init(function() {
           view_properties = {
             before_hide: mock_function("before_hide", function() {
-              expect(this.is(":visible")).to(be_true);
+              expect(this.css("display")).to(equal, 'block');
             })
           };
         });
@@ -96,7 +96,7 @@ Screw.Unit(function(c) { with(c) {
         init(function() {
           view_properties = {
             after_hide: mock_function("after_hide", function() {
-              expect(this.is(":visible")).to(be_false);
+              expect(this.css('display')).to(equal, 'none');
             })
           };
         });

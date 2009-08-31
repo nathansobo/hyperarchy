@@ -5,7 +5,7 @@ module("June", function(c) { with(c) {
     });
 
     def('subscribe', function(handler) {
-      var subscription = new June.Subscription(this, handler);
+      var subscription = new Subscription(this, handler);
       this.subscriptions.push(subscription);
       return subscription;
     });
