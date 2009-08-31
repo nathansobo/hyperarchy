@@ -104,16 +104,16 @@ Screw.Unit(function(c) { with(c) {
 
       it("invokes on_build instructions defined on the elements with a jQuery wrapper for that element and the view", function() {
         var view = builder.to_view();
-        expect(hello_p_on_build_args[0]).to(equal, view.find("p:contains('Hello')"));
+        expect(hello_p_on_build_args[0].is("p:contains('Hello')")).to(be_true);
         expect(hello_p_on_build_args[1]).to(equal, view);
 
-        expect(hello_div_on_build_args[0]).to(equal, view.find("div#hello"));
+        expect(hello_div_on_build_args[0].is("div#hello")).to(be_true);
         expect(hello_div_on_build_args[1]).to(equal, view);
 
-        expect(goodbye_p_on_build_args[0]).to(equal, view.find("p:contains('Goodbye')"));
+        expect(goodbye_p_on_build_args[0].is("p:contains('Goodbye')")).to(be_true);
         expect(goodbye_p_on_build_args[1]).to(equal, view);
 
-        expect(br_on_build_args[0]).to(equal, view.find("br"));
+        expect(br_on_build_args[0].is("br")).to(be_true);
         expect(br_on_build_args[1]).to(equal, view);
         
         expect(outer_div_on_build_args[0]).to(equal, view);
