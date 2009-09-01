@@ -37,12 +37,11 @@ module Http
     end
 
     def response_with_file_contents(physical_path)
-      body = File.read(physical_path)
-      [200, {
-        "Last-Modified"  => File.mtime(physical_path).httpdate,
-        "Content-Type"   => Rack::Mime.mime_type(File.extname(physical_path), 'text/plain'),
-        "Content-Length" => Rack::Utils.bytesize(body)
-      }, body]
+      p physical_path
+
+      file = Rack::File.new(nil)
+      file.path = physical_path
+      file.serving
     end
 
     def add_js_directory(physical_prefix, virtual_prefix)

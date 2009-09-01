@@ -15,9 +15,9 @@ module Http
       port = options.delete(:port) || 8080
       Thin::Server.start(port) do
         use Rack::Static, :urls => ["/stylesheets"], :root => "#{ROOT}/public"
-        use StaticAssetManager
         use Rack::ContentLength
         use Rack::ShowExceptions
+        use StaticAssetManager
         use SessioningService
         run Dispatcher.instance
       end
