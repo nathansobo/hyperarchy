@@ -5,12 +5,19 @@ module Http
     attr_reader :dir, :proxied_app
     before do
       @dir = File.dirname(__FILE__)
-      StaticAssetManager.proxied_app = Object.new
+      @proxied_app = Object.new
+      StaticAssetManager.new(proxied_app)
       StaticAssetManager.add_js_directory("#{dir}/public_dir_spec/exposed_public_dir_1", "/virtual_dir_1")
       StaticAssetManager.add_js_directory("#{dir}/public_dir_spec/external_public_dir_2", "/virtual_dir_2")
     end
 
-    describe "#virtualized_dependency_paths" do
+    describe ".new(proxied_app)" do
+      it "assigns the proxied app on the instance" do
+        StaticAssetManager.instance.proxied_app.should == proxied_app
+      end
+    end
+
+    describe "#virtualized_dependency_paths(*js_source_files)" do
       it "computes the relative paths of all dependencies of the given javascript paths, accounting for virtual subdirectories" do
         expected_relative_paths = [
           "/virtual_dir_1/duplicated_dependency.js",
@@ -34,7 +41,7 @@ module Http
         context "when a file exists at the corresponding physical location" do
           it "returns the contents of the file at the physical location" do
             request.path_info = "/virtual_dir_1/dependency_1.js"
-            StaticAssetManager.call(request.env).should == [
+            StaticAssetManager.instance.call(request.env).should == [
               200,
               {"Last-Modified"=>"Tue, 01 Sep 2009 00:40:24 GMT", "Content-Type"=>"application/javascript", "Content-Length"=>18},
               "var dependency_1;\n"
@@ -46,8 +53,8 @@ module Http
           it "proxies the request through to #proxied_app" do
             request.path_info = "/virtual_dir_1/dependency_x.js"
             env = request.env
-            mock(StaticAssetManager.proxied_app).call(env)
-            StaticAssetManager.call(env)
+            mock(proxied_app).call(env)
+            StaticAssetManager.instance.call(env)
           end
         end
       end
@@ -56,8 +63,8 @@ module Http
         it "proxies the request through to #proxied_app" do
           request.path_info = "/not_a/virtual_prefix"
           env = request.env
-          mock(StaticAssetManager.proxied_app).call(env)
-          StaticAssetManager.call(env)
+          mock(proxied_app).call(env)
+          StaticAssetManager.instance.call(env)
         end
       end
     end

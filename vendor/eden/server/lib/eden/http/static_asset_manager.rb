@@ -5,20 +5,23 @@ module Http
         @instance ||= new
       end
 
-      def method_missing(name, *args, &block)
-        instance.send(name, *args, &block)
+      def new(proxied_app=nil)
+        @instance ||= super()
+        @instance.proxied_app = proxied_app
+        @instance
       end
+
+      delegate :call, :add_js_directory, :virtualized_dependency_paths, :to => :instance
     end
 
     attr_reader :js_directories_by_virtual_prefix, :js_directories_by_physical_prefix
-    attr_reader :js_directories
+    attr_accessor :proxied_app
 
     def initialize
+      @proxied_app = proxied_app
       @js_directories_by_physical_prefix = ActiveSupport::OrderedHash.new
       @js_directories_by_virtual_prefix = ActiveSupport::OrderedHash.new
     end
-
-    attr_accessor :proxied_app
 
     def call(env)
       request = Http::Request.new(env)

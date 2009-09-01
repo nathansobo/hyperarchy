@@ -18,5 +18,6 @@ class Hash
   include ActiveSupport::CoreExtensions::Hash::Keys
 end
 
+Http::StaticAssetManager.add_js_directory("#{ROOT}/public/javascript", "/javascript")
 Origin = Model::Repository.new
 require "#{dir}/environments/#{ENVIRONMENT}"

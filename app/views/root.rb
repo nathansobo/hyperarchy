@@ -20,7 +20,7 @@ module Views
 
 
     def application_javascript_tags
-      application_javascript_relative_paths.each do |path|
+      Http::StaticAssetManager.virtualized_dependency_paths('eden.js', 'hyperarchy.js').each do |path|
         script :type => "text/javascript", :language => "javascript", :src => path
       end
     end

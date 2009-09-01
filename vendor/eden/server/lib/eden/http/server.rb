@@ -14,7 +14,8 @@ module Http
     def start(options)
       port = options.delete(:port) || 8080
       Thin::Server.start(port) do
-        use Rack::Static, :urls => ["/javascript", "/stylesheets"], :root => "#{ROOT}/public"
+        use Rack::Static, :urls => ["/stylesheets"], :root => "#{ROOT}/public"
+        use StaticAssetManager
         use Rack::ContentLength
         use Rack::ShowExceptions
         use SessioningService
