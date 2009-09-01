@@ -30,6 +30,7 @@ module Http
           end
         end
       end
+      proxied_app.call(env)
     end
 
     def response_with_file_contents(physical_path)
@@ -46,7 +47,7 @@ module Http
       js_directories_by_virtual_prefix[virtual_prefix] = physical_prefix
     end
 
-    def relative_paths_of_dependencies(*source_files)
+    def virtualized_dependency_paths(*source_files)
       secretary = Sprockets::Secretary.new(
         :load_path    => js_directories_by_physical_prefix.keys,
         :source_files => source_files
