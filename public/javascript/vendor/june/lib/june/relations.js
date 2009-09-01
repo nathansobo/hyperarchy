@@ -1,7 +1,0 @@
-//= require "relations/relation_methods"
-//= require "relations/set"
-//= require "relations/set_configuration"
-//= require "relations/selection"
-//= require "relations/inner_join"
-//= require "relations/set_projection"
-//= require "relations/ordering"

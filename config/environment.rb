@@ -5,23 +5,10 @@ unless Object.const_defined?(:ENVIRONMENT)
   ENVIRONMENT = ENV['ENVIRONMENT'] || 'development'
 end 
 
+require "#{ROOT}/vendor/eden/server/lib/eden"
 require "rubygems"
-require "sequel"
-require "sequel/extensions/inflector"
-require "guid"
 require "bcrypt"
-require "rack/session/abstract/id"
 require "erector"
-require "json"
-require "active_support/core_ext/module/delegation"
-require "active_support/core_ext/hash/keys"
-require "collections/sequenced_hash"
-require "#{ROOT}/vendor/sprockets/lib/sprockets"
-require "#{ROOT}/vendor/jars/hyperarchy-0-jar-with-dependencies.jar"
-
-require "#{ROOT}/lib/core_extensions"
-require "#{ROOT}/lib/model"
-require "#{ROOT}/lib/http"
 
 require "#{ROOT}/app/models"
 require "#{ROOT}/app/views"
