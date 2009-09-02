@@ -8,14 +8,14 @@ User.fixtures(
 
 Blog.fixtures(
   :grain => {
-    :body => "What's your favorite grain?"
+    :title => "All about grain"
   },
   :vegetable => {
-   :body => "What's your favorite vegetable?"
+    :title => "All about vegetables"
   }
 )
 
-Candidate.fixtures(
+BlogPost.fixtures(
   :grain_quinoa => {
     :body => "Quinoa",
     :blog_id => "grain"

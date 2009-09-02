@@ -10,40 +10,40 @@ module Model
     describe "#to_sql" do
       context "when there is only one #from_set" do
         before do
-          query.add_from_set(Candidate.set)
+          query.add_from_set(BlogPost.set)
         end
 
         it "generates a simple select" do
-          query.to_sql.should == "select #{query.projected_columns_sql} from candidates;"
+          query.to_sql.should == "select #{query.projected_columns_sql} from blog_posts;"
         end
       end
 
       context "when there are multiple #conditions" do
         before do
-          query.add_from_set(Candidate.set)
-          query.add_condition(Predicates::Eq.new(Candidate[:blog_id], "grain"))
-          query.add_condition(Predicates::Eq.new(Candidate[:body], "Peaches"))
+          query.add_from_set(BlogPost.set)
+          query.add_condition(Predicates::Eq.new(BlogPost[:blog_id], "grain"))
+          query.add_condition(Predicates::Eq.new(BlogPost[:body], "Peaches"))
         end
 
         it "generates a select with a where clause having all conditions and'ed together" do
-          query.to_sql.should == %{select #{query.projected_columns_sql} from candidates where candidates.blog_id = "grain" and candidates.body = "Peaches";}
+          query.to_sql.should == %{select #{query.projected_columns_sql} from blog_posts where blog_posts.blog_id = "grain" and blog_posts.body = "Peaches";}
         end
       end
     end
 
     describe "#add_from_set" do
       it "adds the given Set to #from_sets" do
-        query.add_from_set(Candidate.set)
-        query.from_sets.should == [Candidate.set]
+        query.add_from_set(BlogPost.set)
+        query.from_sets.should == [BlogPost.set]
         query.add_from_set(Blog.set)
-        query.from_sets.should == [Candidate.set, Blog.set]
+        query.from_sets.should == [BlogPost.set, Blog.set]
       end
     end
 
     describe "#add_condition" do
       it "adds the given Predicate to #conditions" do
-        predicate_1 = Predicates::Eq.new(Candidate[:blog_id], "grain")
-        predicate_2 = Predicates::Eq.new(Candidate[:blog_id], "vegetable")
+        predicate_1 = Predicates::Eq.new(BlogPost[:blog_id], "grain")
+        predicate_2 = Predicates::Eq.new(BlogPost[:blog_id], "vegetable")
         query.add_condition(predicate_1)
         query.conditions.should == [predicate_1]
         query.add_condition(predicate_2)
@@ -54,8 +54,8 @@ module Model
     describe "#projected_set" do
       context "if #projected_set= has not been called" do
         it "returns the first Set in #from_sets" do
-          query.add_from_set(Candidate.set)
-          query.projected_set.should == Candidate.set
+          query.add_from_set(BlogPost.set)
+          query.projected_set.should == BlogPost.set
         end
       end
 

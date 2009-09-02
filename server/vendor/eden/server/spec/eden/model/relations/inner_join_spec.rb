@@ -14,7 +14,7 @@ module Model
             },
             "right_operand" => {
               "type" => "set",
-              "name" => "candidates"
+              "name" => "blog_posts"
             },
             "predicate" => {
               "type" => "eq",
@@ -25,7 +25,7 @@ module Model
               },
               "right_operand" => {
                 "type" => "column",
-                "set" => "candidates",
+                "set" => "blog_posts",
                 "name" => "blog_id"
               }
             }
@@ -34,9 +34,9 @@ module Model
           join = InnerJoin.from_wire_representation(representation, subdomain)
           join.class.should == InnerJoin
           join.left_operand.should == subdomain.blogs
-          join.right_operand.should == subdomain.candidates
+          join.right_operand.should == subdomain.blog_posts
           join.predicate.left_operand.should == Blog[:id]
-          join.predicate.right_operand.should == Candidate[:blog_id]
+          join.predicate.right_operand.should == BlogPost[:blog_id]
         end
       end
     end

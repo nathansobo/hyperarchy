@@ -1,4 +1,4 @@
-class Candidate < Model::Tuple
+class BlogPost < Model::Tuple
   column :body, :string
   column :blog_id, :string
 

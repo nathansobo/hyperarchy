@@ -4,7 +4,7 @@ module Model
   describe Field do
     attr_reader :field
     before do
-      @field = Candidate.new.fields_by_column[Candidate[:body]]
+      @field = BlogPost.new.fields_by_column[BlogPost[:body]]
     end
 
     describe "#value=" do

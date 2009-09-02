@@ -14,9 +14,9 @@ module Model
             it "resolves the name of the set in the given subdomain" do
               relation = Relation.from_wire_representation({
                 "type" => "set",
-                "name" => "candidates"
+                "name" => "blog_posts"
               }, subdomain)
-              relation.should == subdomain.candidates
+              relation.should == subdomain.blog_posts
             end
           end
 
@@ -119,10 +119,10 @@ module Model
       describe "instance methods" do
         describe "#where" do
           it "returns a Selection with self as #operand and the given Predicate as #predicate" do
-            predicate = Candidate[:id].eq("grain_quinoa")
-            selection = Candidate.set.where(predicate)
+            predicate = BlogPost[:id].eq("grain_quinoa")
+            selection = BlogPost.set.where(predicate)
             selection.class.should == Selection
-            selection.operand.should == Candidate.set
+            selection.operand.should == BlogPost.set
             selection.predicate.should == predicate
           end
         end
@@ -130,22 +130,22 @@ module Model
         describe "#join, #on" do
           context "when passed a Set" do
             it "returns an InnerJoin with self as #left_operand and the given Relation as #right_operand, then the Predicate passed to .on as its #predicate" do
-              predicate = Candidate[:blog_id].eq(Blog[:id])
-              join = Blog.set.join(Candidate.set).on(predicate)
+              predicate = BlogPost[:blog_id].eq(Blog[:id])
+              join = Blog.set.join(BlogPost.set).on(predicate)
               join.class.should == InnerJoin
               join.left_operand.should == Blog.set
-              join.right_operand.should == Candidate.set
+              join.right_operand.should == BlogPost.set
               join.predicate.should == predicate
             end
           end
 
           context "when passed a subclass of Tuple" do
             it "returns an InnerJoin with self as #left_operand and the #set of the given Tuple subclass as #right_operand, then the Predicate passed to .on as its #predicate" do
-              predicate = Candidate[:blog_id].eq(Blog[:id])
-              join = Blog.set.join(Candidate).on(predicate)
+              predicate = BlogPost[:blog_id].eq(Blog[:id])
+              join = Blog.set.join(BlogPost).on(predicate)
               join.class.should == InnerJoin
               join.left_operand.should == Blog.set
-              join.right_operand.should == Candidate.set
+              join.right_operand.should == BlogPost.set
               join.predicate.should == predicate
             end
           end
@@ -154,21 +154,21 @@ module Model
         describe "#project" do
           context "when passed a Set" do
             it "returns a SetProjection with self as #operand and the given Set as its #projected_set" do
-              join = Blog.set.join(Candidate.set).on(Candidate[:blog_id].eq(Blog[:id]))
-              projection = join.project(Candidate.set)
+              join = Blog.set.join(BlogPost.set).on(BlogPost[:blog_id].eq(Blog[:id]))
+              projection = join.project(BlogPost.set)
               projection.class.should == SetProjection
               projection.operand.should == join
-              projection.projected_set.should == Candidate.set
+              projection.projected_set.should == BlogPost.set
             end
           end
 
           context "when passed a subclass of Tuple" do
             it "returns a SetProjection with self as #operand and the #set of the given Tuple subclass as its #projected_set" do
-              join = Blog.set.join(Candidate.set).on(Candidate[:blog_id].eq(Blog[:id]))
-              projection = join.project(Candidate)
+              join = Blog.set.join(BlogPost.set).on(BlogPost[:blog_id].eq(Blog[:id]))
+              projection = join.project(BlogPost)
               projection.class.should == SetProjection
               projection.operand.should == join
-              projection.projected_set.should == Candidate.set
+              projection.projected_set.should == BlogPost.set
             end
           end
         end
@@ -176,13 +176,13 @@ module Model
         describe "#find" do
           context "when passed an id" do
             it "returns the first Tuple in a Selection where id is equal to the given id" do
-              Candidate.set.find("grain_quinoa").should == Candidate.set.where(Candidate[:id].eq("grain_quinoa")).tuples.first
+              BlogPost.set.find("grain_quinoa").should == BlogPost.set.where(BlogPost[:id].eq("grain_quinoa")).tuples.first
             end
           end
 
           context "when passed a Predicate" do
             it "returns the first Tuple in the Relation that matches the Predicate" do
-              Candidate.set.find(Candidate[:body].eq("Millet")).should == Candidate.where(Candidate[:body].eq("Millet")).tuples.first
+              BlogPost.set.find(BlogPost[:body].eq("Millet")).should == BlogPost.where(BlogPost[:body].eq("Millet")).tuples.first
             end
           end
         end
@@ -190,18 +190,18 @@ module Model
 
         describe "#tuple_wire_representations" do
           it "returns the #wire_representation of all its #tuples" do
-            Candidate.set.tuple_wire_representations.should == Candidate.set.tuples.map {|t| t.wire_representation}
+            BlogPost.set.tuple_wire_representations.should == BlogPost.set.tuples.map {|t| t.wire_representation}
           end
         end
 
         describe "#each" do
           specify "delegates to #tuples of #set" do
             tuples = []
-            stub(Candidate.set).tuples { tuples }
+            stub(BlogPost.set).tuples { tuples }
 
             block = lambda {}
             mock(tuples).each(&block)
-            Candidate.set.each(&block)
+            BlogPost.set.each(&block)
           end
         end
       end

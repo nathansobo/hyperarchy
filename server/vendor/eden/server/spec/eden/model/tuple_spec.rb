@@ -4,34 +4,34 @@ module Model
   describe Tuple do
     describe "when a subclass in created" do
       it "assigns its .set to a new Set with the underscored-pluralized name of the class as its #global_name" do
-        Candidate.set.global_name.should == :candidates
+        BlogPost.set.global_name.should == :blog_posts
       end
 
       it "adds its assigned .set to Domain #sets_by_name" do
-        GlobalDomain.sets_by_name[:candidates].should == Candidate.set
-        GlobalDomain.sets_by_name[:candidates].tuple_class.should == Candidate
+        GlobalDomain.sets_by_name[:blog_posts].should == BlogPost.set
+        GlobalDomain.sets_by_name[:blog_posts].tuple_class.should == BlogPost
       end
 
       it "defines an :id Column on the subclass" do
-        Candidate[:id].class.should == Column
-        Candidate[:id].name.should == :id
-        Candidate[:id].type.should == :string
+        BlogPost[:id].class.should == Column
+        BlogPost[:id].name.should == :id
+        BlogPost[:id].type.should == :string
       end
     end
 
     describe "class methods" do
       describe ".column" do
         it "delegates column definition to .set" do
-          mock(Candidate.set).define_column(:foo, :string)
-          Candidate.column(:foo, :string)
+          mock(BlogPost.set).define_column(:foo, :string)
+          BlogPost.column(:foo, :string)
         end
 
         it "defines named instance methods that call #set_field_value and #get_field_value" do
-          tuple = Candidate.new
+          tuple = BlogPost.new
 
-          mock.proxy(tuple).set_field_value(Candidate[:body], "Barley")
+          mock.proxy(tuple).set_field_value(BlogPost[:body], "Barley")
           tuple.body = "Barley"
-          mock.proxy(tuple).get_field_value(Candidate[:body])
+          mock.proxy(tuple).get_field_value(BlogPost[:body])
           tuple.body.should  == "Barley"
         end
       end
@@ -39,9 +39,9 @@ module Model
       describe ".has_many" do
         it "defines a Selection via .relates_to_many based on the given name" do
           blog = Blog.find("grain")
-          candidates_relation = blog.candidates
-          candidates_relation.tuples.should_not be_empty
-          candidates_relation.tuples.each do |answer|
+          blog_posts_relation = blog.blog_posts
+          blog_posts_relation.tuples.should_not be_empty
+          blog_posts_relation.tuples.each do |answer|
             answer.blog_id.should == blog.id
           end
         end
@@ -49,24 +49,24 @@ module Model
 
       describe ".belongs_to" do
         it "defines a Selection via .relates_to_one based on the given name" do
-          candidate = Candidate.find("grain_quinoa")
-          candidate.blog.should == Blog.find("grain")
-          candidate.blog_id = "vegetable"
-          candidate.blog.should == Blog.find("vegetable")
+          blog_post = BlogPost.find("grain_quinoa")
+          blog_post.blog.should == Blog.find("grain")
+          blog_post.blog_id = "vegetable"
+          blog_post.blog.should == Blog.find("vegetable")
         end
       end
 
       describe ".[]" do
         context "when the given value is the name of a Column defined on .set" do
           it "returns the Column with the given name" do
-            Candidate[:body].should == Candidate.set.columns_by_name[:body]
+            BlogPost[:body].should == BlogPost.set.columns_by_name[:body]
           end
         end
 
         context "when the given value is not the name of a Column defined on .set" do
           it "raises an exception" do
             lambda do
-              Candidate[:nonexistant_column]
+              BlogPost[:nonexistant_column]
             end.should raise_error
           end
         end
@@ -75,14 +75,14 @@ module Model
       describe ".create" do
         it "deletages to .set" do
           columns = { :body => "Amaranth" }
-          mock(Candidate.set).create(columns)
-          Candidate.create(columns)
+          mock(BlogPost.set).create(columns)
+          BlogPost.create(columns)
         end
       end
 
       describe ".unsafe_new" do
         it "instantiates a Tuple with the given field values without overriding the value of :id" do
-          tuple = Candidate.unsafe_new(:id => "foo", :body => "Rice")
+          tuple = BlogPost.unsafe_new(:id => "foo", :body => "Rice")
           tuple.id.should == "foo"
           tuple.body.should == "Rice"
         end
@@ -91,23 +91,23 @@ module Model
       describe "#each" do
         specify "are forwarded to #tuples of #set" do
           tuples = []
-          stub(Candidate.set).tuples { tuples }
+          stub(BlogPost.set).tuples { tuples }
 
           block = lambda {}
           mock(tuples).each(&block)
-          Candidate.each(&block)
+          BlogPost.each(&block)
         end
       end
     end
 
     describe "instance methods" do
       def tuple
-        @tuple ||= Candidate.new(:body => "Quinoa", :blog_id => "grain")
+        @tuple ||= BlogPost.new(:body => "Quinoa", :blog_id => "grain")
       end
 
       describe "#initialize" do
         it "assigns #fields_by_column to a hash with a Field object for every column declared in the set" do
-          Candidate.set.columns.each do |column|
+          BlogPost.set.columns.each do |column|
             field = tuple.fields_by_column[column]
             field.column.should == column
             field.tuple.should == tuple
@@ -115,8 +115,8 @@ module Model
         end
 
         it "assigns the Field values in the given hash" do
-          tuple.get_field_value(Candidate[:body]).should == "Quinoa"
-          tuple.get_field_value(Candidate[:blog_id]).should == "grain"
+          tuple.get_field_value(BlogPost[:body]).should == "Quinoa"
+          tuple.get_field_value(BlogPost[:blog_id]).should == "grain"
         end
 
         it "assigns #id to a new guid" do
@@ -140,14 +140,14 @@ module Model
       describe "#dirty?" do
         context "when a Tuple has been instantiated but not inserted into the Repository" do
           it "returns true" do
-            tuple = Candidate.new
+            tuple = BlogPost.new
             tuple.should be_dirty
           end
         end
 
         context "when a Tuple has been inserted into the Repository and not modified since" do
           it "returns false" do
-            tuple = Candidate.new(:blog_id => "grain", :body => "Bulgar Wheat")
+            tuple = BlogPost.new(:blog_id => "grain", :body => "Bulgar Wheat")
             tuple.save
             tuple.should_not be_dirty
           end
@@ -155,7 +155,7 @@ module Model
 
         context "when a Tuple has been inserted into the Repository and subsequently modified" do
           it "returns true" do
-            tuple = Candidate.new(:blog_id => "grain", :body => "Bulgar Wheat")
+            tuple = BlogPost.new(:blog_id => "grain", :body => "Bulgar Wheat")
             tuple.save
             tuple.body = "Wheat"
             tuple.should be_dirty
@@ -164,14 +164,14 @@ module Model
 
         context "when a Tuple is first loaded from a Repository" do
           it "returns false" do
-            tuple = Candidate.find("grain_quinoa")
+            tuple = BlogPost.find("grain_quinoa")
             tuple.should_not be_dirty
           end
         end
 
         context "when a Tuple has been modified since being loaded from the Repository" do
           it "returns true" do
-            tuple = Candidate.find("grain_quinoa")
+            tuple = BlogPost.find("grain_quinoa")
             tuple.body = "Red Rice"
             tuple.should be_dirty
           end
@@ -191,9 +191,9 @@ module Model
       
       describe "#set_field_value and #get_field_value" do
         specify "set and get a Field value" do
-          tuple = Candidate.new
-          tuple.set_field_value(Candidate[:body], "Quinoa")
-          tuple.get_field_value(Candidate[:body]).should == "Quinoa"
+          tuple = BlogPost.new
+          tuple.set_field_value(BlogPost[:body], "Quinoa")
+          tuple.get_field_value(BlogPost[:body]).should == "Quinoa"
         end
       end
 
@@ -201,20 +201,20 @@ module Model
         context "for Tuples of the same class" do
           context "for Tuples with the same id" do
             it "returns true" do
-              Candidate.find("grain_quinoa").should == Candidate.unsafe_new(:id => "grain_quinoa")
+              BlogPost.find("grain_quinoa").should == BlogPost.unsafe_new(:id => "grain_quinoa")
             end
           end
 
           context "for Tuples with different ids" do
             it "returns false" do
-              Candidate.find("grain_quinoa").should_not == Candidate.unsafe_new(:id => "grain_barley")
+              BlogPost.find("grain_quinoa").should_not == BlogPost.unsafe_new(:id => "grain_barley")
             end
           end
         end
 
         context "for Tuples of different classes" do
           it "returns false" do
-            Candidate.find("grain_quinoa").should_not == Blog.unsafe_new(:id => "grain_quinoa")
+            BlogPost.find("grain_quinoa").should_not == Blog.unsafe_new(:id => "grain_quinoa")
           end
         end
       end
@@ -257,17 +257,17 @@ module Model
               }
             }
 
-            candidates_relation_representation = {
+            blog_posts_relation_representation = {
               "type" => "selection",
               "operand" => {
                 "type" => "set",
-                "name" => "candidates"
+                "name" => "blog_posts"
               },
               "predicate" => {
                 "type" => "eq",
                 "left_operand" => {
                   "type" => "column",
-                  "set" => "candidates",
+                  "set" => "blog_posts",
                   "name" => "blog_id"
                 },
                 "right_operand" => {
@@ -277,7 +277,7 @@ module Model
               }
             }
 
-            snapshot = tuple.fetch([blogs_relation_representation, candidates_relation_representation])
+            snapshot = tuple.fetch([blogs_relation_representation, blog_posts_relation_representation])
 
             blogs_snapshot_fragment = snapshot["blogs"]
             blogs_snapshot_fragment.size.should == 1
@@ -287,7 +287,7 @@ module Model
 
         describe "#get" do
           it "parses the 'relations' paramater from a JSON string into an array of wire representations and performs a #fetch with it, returning the resulting snapshot as a JSON string" do
-            relations = [{ "type" => "set", "name" => "candidates"}]
+            relations = [{ "type" => "set", "name" => "blog_posts"}]
 
             snapshot = nil
             mock.proxy(GlobalDomain.instance).fetch(relations) {|result| snapshot = result}

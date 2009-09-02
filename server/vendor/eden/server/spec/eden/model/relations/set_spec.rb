@@ -6,7 +6,7 @@ module Model
 
       attr_reader :set
       before do
-        @set = Candidate.set
+        @set = BlogPost.set
       end
 
       describe "#initialize" do
@@ -31,7 +31,7 @@ module Model
 
       describe "#insert" do
         it "calls Origin.insert with the Set and #field_values_by_column_name" do
-          tuple = Candidate.new(:body => "Brown Rice", :blog_id => "grain")
+          tuple = BlogPost.new(:body => "Brown Rice", :blog_id => "grain")
           mock(Origin).insert(set, tuple.field_values_by_column_name)
           set.insert(tuple)
         end
@@ -56,7 +56,7 @@ module Model
           tuple_2_id = set.create(:body => "White Rice", :blog_id => "grain").id
           tuple_3_id = set.create(:body => "Pearled Barley", :blog_id => "grain").id
 
-          mock.proxy(Origin).read(set, "select candidates.id, candidates.body, candidates.blog_id from candidates;")
+          mock.proxy(Origin).read(set, "select blog_posts.id, blog_posts.body, blog_posts.blog_id from blog_posts;")
 
           tuples = set.tuples
 
@@ -83,7 +83,7 @@ module Model
 
       describe "#locate" do
         it "returns the Tuple with the given :id" do
-          Candidate.set.locate("quinoa").should == Candidate.set.find("quinoa")
+          BlogPost.set.locate("quinoa").should == BlogPost.set.find("quinoa")
         end
       end
 
@@ -94,15 +94,15 @@ module Model
         end
 
         it "initializes a thread-local identity map" do
-          mock(Thread.current)['candidates_identity_map'] = {};
-          Candidate.set.initialize_identity_map
+          mock(Thread.current)['blog_posts_identity_map'] = {};
+          BlogPost.set.initialize_identity_map
         end
       end
 
       describe "#identity_map" do
         it "returns the thread-local identity map" do
-          mock(Thread.current)['candidates_identity_map']
-          Candidate.set.identity_map
+          mock(Thread.current)['blog_posts_identity_map']
+          BlogPost.set.identity_map
         end
       end
 
@@ -113,8 +113,8 @@ module Model
         end
         
         it "assigns the thread-local identity map to nil" do
-          mock(Thread.current)['candidates_identity_map'] = nil;
-          Candidate.set.clear_identity_map
+          mock(Thread.current)['blog_posts_identity_map'] = nil;
+          BlogPost.set.clear_identity_map
         end
       end
     end

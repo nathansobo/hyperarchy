@@ -37,7 +37,7 @@ module Model
             def left_operand_representation
               {
                 "type" => "column",
-                "set" => "candidates",
+                "set" => "blog_posts",
                 "name" => "body"
               }
             end
@@ -45,7 +45,7 @@ module Model
             it "returns an Eq predicate with the indicated column as one of its operands" do
               eq = Eq.from_wire_representation(wire_representation)
               eq.class.should == Eq
-              eq.left_operand.should == Candidate[:body]
+              eq.left_operand.should == BlogPost[:body]
               eq.right_operand.should == 2
             end
           end
@@ -55,7 +55,7 @@ module Model
       describe "instance methods" do
         describe "#to_sql" do
           it "returns the left_operand.to_sql = right_operand.to_sql" do
-            Eq.new(Candidate[:blog_id], "grain").to_sql.should == %{candidates.blog_id = "grain"}
+            Eq.new(BlogPost[:blog_id], "grain").to_sql.should == %{blog_posts.blog_id = "grain"}
           end
         end
       end

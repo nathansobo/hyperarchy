@@ -6,15 +6,15 @@ module Model
       it "resolves relation names to primitive Sets" do
         relation = GlobalDomain.instance.build_relation_from_wire_representation({
           "type" => "set",
-          "name" => "candidates"
+          "name" => "blog_posts"
         })
-        relation.should == Candidate.set
+        relation.should == BlogPost.set
       end
     end
 
     describe "#get" do
       it "parses the 'relations' paramater from a JSON string into an array of wire representations and performs a #fetch with it, returning the resulting snapshot as a JSON string" do
-        relations = [{ "type" => "set", "name" => "candidates"}]
+        relations = [{ "type" => "set", "name" => "blog_posts"}]
 
         snapshot = nil
         mock.proxy(GlobalDomain.instance).fetch(relations) {|result| snapshot = result}

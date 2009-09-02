@@ -6,7 +6,7 @@ class User < Model::Tuple
     Blog.set
   end
 
-  relates_to_many :candidates do
-    Candidate.set
+  relates_to_many :blog_posts do
+    BlogPost.set
   end
 end

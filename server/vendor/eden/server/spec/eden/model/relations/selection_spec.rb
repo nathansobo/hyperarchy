@@ -11,13 +11,13 @@ module Model
               "type" => "selection",
               "operand" => {
                 "type" => "set",
-                "name" => "candidates"
+                "name" => "blog_posts"
               },
               "predicate" => {
                 "type" => "eq",
                 "left_operand" => {
                   "type" => "column",
-                  "set" => "candidates",
+                  "set" => "blog_posts",
                   "name" => "blog_id"
                 },
                 "right_operand" => {
@@ -28,9 +28,9 @@ module Model
             }, subdomain)
 
             selection.class.should == Relations::Selection
-            selection.operand.should == subdomain.candidates
+            selection.operand.should == subdomain.blog_posts
             selection.predicate.class.should == Predicates::Eq
-            selection.predicate.left_operand.should == Candidate[:blog_id]
+            selection.predicate.left_operand.should == BlogPost[:blog_id]
             selection.predicate.right_operand.should == "grain"
           end
         end
@@ -39,17 +39,17 @@ module Model
       describe "instance methods" do
         attr_reader :operand, :predicate, :selection, :predicate_2, :composite_selection
         before do
-          @operand = Candidate.set
-          @predicate = Predicates::Eq.new(Candidate[:blog_id], "grain")
+          @operand = BlogPost.set
+          @predicate = Predicates::Eq.new(BlogPost[:blog_id], "grain")
           @selection = Selection.new(operand, predicate)
-          @predicate_2 = Predicates::Eq.new(Candidate[:body], "Barley")
+          @predicate_2 = Predicates::Eq.new(BlogPost[:body], "Barley")
           @composite_selection = Selection.new(selection, predicate_2)
         end
 
         describe "#tuples" do
           context "when #operand is a Set" do
             it "executes an appropriate SQL query against the database and returns Tuples corresponding to its results" do
-              Candidate.set.tuples.detect {|t| t.blog_id == "grain"}.should_not be_nil
+              BlogPost.set.tuples.detect {|t| t.blog_id == "grain"}.should_not be_nil
               tuples = selection.tuples
               tuples.should_not be_empty
               tuples.each do |tuple|

@@ -1,5 +1,5 @@
 class Blog < Model::Tuple
-  column :body, :string
+  column :title, :string
   
-  has_many :candidates
+  has_many :blog_posts
 end
