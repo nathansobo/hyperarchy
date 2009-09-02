@@ -1,6 +1,6 @@
 class Candidate < Model::Tuple
   column :body, :string
-  column :election_id, :string
+  column :blog_id, :string
 
-  belongs_to :election
+  belongs_to :blog
 end

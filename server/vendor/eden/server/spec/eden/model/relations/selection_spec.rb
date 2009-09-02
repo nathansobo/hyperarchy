@@ -18,7 +18,7 @@ module Model
                 "left_operand" => {
                   "type" => "column",
                   "set" => "candidates",
-                  "name" => "election_id"
+                  "name" => "blog_id"
                 },
                 "right_operand" => {
                   "type" => "scalar",
@@ -30,7 +30,7 @@ module Model
             selection.class.should == Relations::Selection
             selection.operand.should == subdomain.candidates
             selection.predicate.class.should == Predicates::Eq
-            selection.predicate.left_operand.should == Candidate[:election_id]
+            selection.predicate.left_operand.should == Candidate[:blog_id]
             selection.predicate.right_operand.should == "grain"
           end
         end
@@ -40,7 +40,7 @@ module Model
         attr_reader :operand, :predicate, :selection, :predicate_2, :composite_selection
         before do
           @operand = Candidate.set
-          @predicate = Predicates::Eq.new(Candidate[:election_id], "grain")
+          @predicate = Predicates::Eq.new(Candidate[:blog_id], "grain")
           @selection = Selection.new(operand, predicate)
           @predicate_2 = Predicates::Eq.new(Candidate[:body], "Barley")
           @composite_selection = Selection.new(selection, predicate_2)
@@ -49,11 +49,11 @@ module Model
         describe "#tuples" do
           context "when #operand is a Set" do
             it "executes an appropriate SQL query against the database and returns Tuples corresponding to its results" do
-              Candidate.set.tuples.detect {|t| t.election_id == "grain"}.should_not be_nil
+              Candidate.set.tuples.detect {|t| t.blog_id == "grain"}.should_not be_nil
               tuples = selection.tuples
               tuples.should_not be_empty
               tuples.each do |tuple|
-                tuple.election_id.should == "grain"
+                tuple.blog_id.should == "grain"
               end
             end
           end
@@ -62,7 +62,7 @@ module Model
             it "executes an appropriate SQL query against the database and returns Tuples corresponding to its results" do
               tuple = composite_selection.tuples.first
               tuple.should_not be_nil
-              tuple.election_id.should == "grain"
+              tuple.blog_id.should == "grain"
               tuple.body.should == "Barley"
             end
           end

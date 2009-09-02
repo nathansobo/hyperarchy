@@ -130,10 +130,10 @@ module Model
         describe "#join, #on" do
           context "when passed a Set" do
             it "returns an InnerJoin with self as #left_operand and the given Relation as #right_operand, then the Predicate passed to .on as its #predicate" do
-              predicate = Candidate[:election_id].eq(Election[:id])
-              join = Election.set.join(Candidate.set).on(predicate)
+              predicate = Candidate[:blog_id].eq(Blog[:id])
+              join = Blog.set.join(Candidate.set).on(predicate)
               join.class.should == InnerJoin
-              join.left_operand.should == Election.set
+              join.left_operand.should == Blog.set
               join.right_operand.should == Candidate.set
               join.predicate.should == predicate
             end
@@ -141,10 +141,10 @@ module Model
 
           context "when passed a subclass of Tuple" do
             it "returns an InnerJoin with self as #left_operand and the #set of the given Tuple subclass as #right_operand, then the Predicate passed to .on as its #predicate" do
-              predicate = Candidate[:election_id].eq(Election[:id])
-              join = Election.set.join(Candidate).on(predicate)
+              predicate = Candidate[:blog_id].eq(Blog[:id])
+              join = Blog.set.join(Candidate).on(predicate)
               join.class.should == InnerJoin
-              join.left_operand.should == Election.set
+              join.left_operand.should == Blog.set
               join.right_operand.should == Candidate.set
               join.predicate.should == predicate
             end
@@ -154,7 +154,7 @@ module Model
         describe "#project" do
           context "when passed a Set" do
             it "returns a SetProjection with self as #operand and the given Set as its #projected_set" do
-              join = Election.set.join(Candidate.set).on(Candidate[:election_id].eq(Election[:id]))
+              join = Blog.set.join(Candidate.set).on(Candidate[:blog_id].eq(Blog[:id]))
               projection = join.project(Candidate.set)
               projection.class.should == SetProjection
               projection.operand.should == join
@@ -164,7 +164,7 @@ module Model
 
           context "when passed a subclass of Tuple" do
             it "returns a SetProjection with self as #operand and the #set of the given Tuple subclass as its #projected_set" do
-              join = Election.set.join(Candidate.set).on(Candidate[:election_id].eq(Election[:id]))
+              join = Blog.set.join(Candidate.set).on(Candidate[:blog_id].eq(Blog[:id]))
               projection = join.project(Candidate)
               projection.class.should == SetProjection
               projection.operand.should == join

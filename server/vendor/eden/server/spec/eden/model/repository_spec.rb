@@ -9,13 +9,13 @@ module Model
         dataset = Origin.connection[:candidates]
         dataset[:id => id].should be_nil
 
-        field_values = {:id => id, :body => "Bulgar Wheat", :election_id => "grain" }
+        field_values = {:id => id, :body => "Bulgar Wheat", :blog_id => "grain" }
         Origin.insert(Candidate.set, field_values)
 
         retrieved_record = dataset[:id => id]
         retrieved_record[:id].should == field_values[:id]
         retrieved_record[:body].should == field_values[:body]
-        retrieved_record[:election_id].should == field_values[:election_id]
+        retrieved_record[:blog_id].should == field_values[:blog_id]
       end
     end
 

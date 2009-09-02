@@ -38,11 +38,11 @@ module Model
 
       describe ".has_many" do
         it "defines a Selection via .relates_to_many based on the given name" do
-          election = Election.find("grain")
-          candidates_relation = election.candidates
+          blog = Blog.find("grain")
+          candidates_relation = blog.candidates
           candidates_relation.tuples.should_not be_empty
           candidates_relation.tuples.each do |answer|
-            answer.election_id.should == election.id
+            answer.blog_id.should == blog.id
           end
         end
       end
@@ -50,9 +50,9 @@ module Model
       describe ".belongs_to" do
         it "defines a Selection via .relates_to_one based on the given name" do
           candidate = Candidate.find("grain_quinoa")
-          candidate.election.should == Election.find("grain")
-          candidate.election_id = "vegetable"
-          candidate.election.should == Election.find("vegetable")
+          candidate.blog.should == Blog.find("grain")
+          candidate.blog_id = "vegetable"
+          candidate.blog.should == Blog.find("vegetable")
         end
       end
 
@@ -102,7 +102,7 @@ module Model
 
     describe "instance methods" do
       def tuple
-        @tuple ||= Candidate.new(:body => "Quinoa", :election_id => "grain")
+        @tuple ||= Candidate.new(:body => "Quinoa", :blog_id => "grain")
       end
 
       describe "#initialize" do
@@ -116,7 +116,7 @@ module Model
 
         it "assigns the Field values in the given hash" do
           tuple.get_field_value(Candidate[:body]).should == "Quinoa"
-          tuple.get_field_value(Candidate[:election_id]).should == "grain"
+          tuple.get_field_value(Candidate[:blog_id]).should == "grain"
         end
 
         it "assigns #id to a new guid" do
@@ -147,7 +147,7 @@ module Model
 
         context "when a Tuple has been inserted into the Repository and not modified since" do
           it "returns false" do
-            tuple = Candidate.new(:election_id => "grain", :body => "Bulgar Wheat")
+            tuple = Candidate.new(:blog_id => "grain", :body => "Bulgar Wheat")
             tuple.save
             tuple.should_not be_dirty
           end
@@ -155,7 +155,7 @@ module Model
 
         context "when a Tuple has been inserted into the Repository and subsequently modified" do
           it "returns true" do
-            tuple = Candidate.new(:election_id => "grain", :body => "Bulgar Wheat")
+            tuple = Candidate.new(:blog_id => "grain", :body => "Bulgar Wheat")
             tuple.save
             tuple.body = "Wheat"
             tuple.should be_dirty
@@ -214,7 +214,7 @@ module Model
 
         context "for Tuples of different classes" do
           it "returns false" do
-            Candidate.find("grain_quinoa").should_not == Election.unsafe_new(:id => "grain_quinoa")
+            Candidate.find("grain_quinoa").should_not == Blog.unsafe_new(:id => "grain_quinoa")
           end
         end
       end
@@ -228,7 +228,7 @@ module Model
           it "delegates to Relation#from_wire_representation with self as the subdomain" do
             representation = {
               "type" => "set",
-              "name" => "elections"
+              "name" => "blogs"
             }
             mock(Relations::Relation).from_wire_representation(representation, tuple)
             tuple.build_relation_from_wire_representation(representation)
@@ -237,17 +237,17 @@ module Model
 
         describe "#fetch" do
           it "populates a relational snapshot with the contents of an array of wire representations of relations" do
-            elections_relation_representation = {
+            blogs_relation_representation = {
               "type" => "selection",
               "operand" => {
                 "type" => "set",
-                "name" => "elections"
+                "name" => "blogs"
               },
               "predicate" => {
                 "type" => "eq",
                 "left_operand" => {
                   "type" => "column",
-                  "set" => "elections",
+                  "set" => "blogs",
                   "name" => "id"
                 },
                 "right_operand" => {
@@ -268,7 +268,7 @@ module Model
                 "left_operand" => {
                   "type" => "column",
                   "set" => "candidates",
-                  "name" => "election_id"
+                  "name" => "blog_id"
                 },
                 "right_operand" => {
                   "type" => "scalar",
@@ -277,11 +277,11 @@ module Model
               }
             }
 
-            snapshot = tuple.fetch([elections_relation_representation, candidates_relation_representation])
+            snapshot = tuple.fetch([blogs_relation_representation, candidates_relation_representation])
 
-            elections_snapshot_fragment = snapshot["elections"]
-            elections_snapshot_fragment.size.should == 1
-            elections_snapshot_fragment["grain"].should == Election.find("grain").wire_representation
+            blogs_snapshot_fragment = snapshot["blogs"]
+            blogs_snapshot_fragment.size.should == 1
+            blogs_snapshot_fragment["grain"].should == Blog.find("grain").wire_representation
           end
         end
 

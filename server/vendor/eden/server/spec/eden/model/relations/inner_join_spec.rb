@@ -10,7 +10,7 @@ module Model
             "type" => "inner_join",
             "left_operand" => {
               "type" => "set",
-              "name" => "elections"
+              "name" => "blogs"
             },
             "right_operand" => {
               "type" => "set",
@@ -20,23 +20,23 @@ module Model
               "type" => "eq",
               "left_operand" => {
                 "type" => "column",
-                "set" => "elections",
+                "set" => "blogs",
                 "name" => "id"
               },
               "right_operand" => {
                 "type" => "column",
                 "set" => "candidates",
-                "name" => "election_id"
+                "name" => "blog_id"
               }
             }
           }
 
           join = InnerJoin.from_wire_representation(representation, subdomain)
           join.class.should == InnerJoin
-          join.left_operand.should == subdomain.elections
+          join.left_operand.should == subdomain.blogs
           join.right_operand.should == subdomain.candidates
-          join.predicate.left_operand.should == Election[:id]
-          join.predicate.right_operand.should == Candidate[:election_id]
+          join.predicate.left_operand.should == Blog[:id]
+          join.predicate.right_operand.should == Candidate[:blog_id]
         end
       end
     end

@@ -3,8 +3,8 @@ class User < Model::Tuple
   attribute :email_address, :string
   attribute :encrypted_password, :string
 
-  relates_to_many :elections do
-    Election.set
+  relates_to_many :blogs do
+    Blog.set
   end
 
   relates_to_many :candidates do

@@ -6,7 +6,7 @@ User.fixtures(
   }
 )
 
-Election.fixtures(
+Blog.fixtures(
   :grain => {
     :body => "What's your favorite grain?"
   },
@@ -18,22 +18,22 @@ Election.fixtures(
 Candidate.fixtures(
   :grain_quinoa => {
     :body => "Quinoa",
-    :election_id => "grain"
+    :blog_id => "grain"
   },
   :grain_barley => {
     :body => "Barley",
-    :election_id => "grain"
+    :blog_id => "grain"
   },
   :grain_millet => {
     :body => "Millet",
-    :election_id => "grain"
+    :blog_id => "grain"
   },
   :vegetable_daikon => {
     :body => "Daikon",
-    :election_id => "vegetable"
+    :blog_id => "vegetable"
   },
   :vegetable_kale => {
     :body => "Kale",
-    :election_id => "vegetable"
+    :blog_id => "vegetable"
   }
 )

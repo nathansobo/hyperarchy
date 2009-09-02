@@ -31,7 +31,7 @@ module Model
 
       describe "#insert" do
         it "calls Origin.insert with the Set and #field_values_by_column_name" do
-          tuple = Candidate.new(:body => "Brown Rice", :election_id => "grain")
+          tuple = Candidate.new(:body => "Brown Rice", :blog_id => "grain")
           mock(Origin).insert(set, tuple.field_values_by_column_name)
           set.insert(tuple)
         end
@@ -42,35 +42,35 @@ module Model
           mock(set).insert(anything) do |tuple|
             tuple.class.should == set.tuple_class
             tuple.body.should == "Brown Rice"
-            tuple.election_id.should == "grain"
+            tuple.blog_id.should == "grain"
           end
 
-          tuple = set.create(:body => "Brown Rice", :election_id => "grain")
+          tuple = set.create(:body => "Brown Rice", :blog_id => "grain")
           tuple.body.should == "Brown Rice"
         end
       end
 
       describe "#tuples" do
         it "executes a select all SQL query against the database and returns Tuples corresponding to its results" do
-          tuple_1_id = set.create(:body => "Quinoa", :election_id => "grain").id
-          tuple_2_id = set.create(:body => "White Rice", :election_id => "grain").id
-          tuple_3_id = set.create(:body => "Pearled Barley", :election_id => "grain").id
+          tuple_1_id = set.create(:body => "Quinoa", :blog_id => "grain").id
+          tuple_2_id = set.create(:body => "White Rice", :blog_id => "grain").id
+          tuple_3_id = set.create(:body => "Pearled Barley", :blog_id => "grain").id
 
-          mock.proxy(Origin).read(set, "select candidates.id, candidates.body, candidates.election_id from candidates;")
+          mock.proxy(Origin).read(set, "select candidates.id, candidates.body, candidates.blog_id from candidates;")
 
           tuples = set.tuples
 
           retrieved_tuple_1 = tuples.find {|t| t.id == tuple_1_id }
           retrieved_tuple_1.body.should == "Quinoa"
-          retrieved_tuple_1.election_id.should == "grain"
+          retrieved_tuple_1.blog_id.should == "grain"
 
           retrieved_tuple_2 = tuples.find {|t| t.id == tuple_2_id }
           retrieved_tuple_2.body.should == "White Rice"
-          retrieved_tuple_2.election_id.should == "grain"
+          retrieved_tuple_2.blog_id.should == "grain"
 
           retrieved_tuple_3 = tuples.find {|t| t.id == tuple_3_id }
           retrieved_tuple_3.body.should == "Pearled Barley"
-          retrieved_tuple_3.election_id.should == "grain"
+          retrieved_tuple_3.blog_id.should == "grain"
         end
       end
 
