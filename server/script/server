@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+
+dir = File.dirname(__FILE__)
+require "#{dir}/../config/environment"
+
+Http::Server.start(:port => 9090)

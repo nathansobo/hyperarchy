@@ -1,3 +1,3 @@
-Dir["#{File.dirname(__FILE__)}/script/*.thor"].each do |path|
+Dir["#{File.dirname(__FILE__)}/server/script/*.thor"].each do |path|
   load path
 end
