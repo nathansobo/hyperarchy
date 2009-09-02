@@ -8,9 +8,8 @@ module Http
       protected :new
     end
 
-    attr_reader :root
-    def initialize
-      @root = Resources::Root.new
+    def root
+      @root ||= Resources::Root.new 
     end
 
     def call(env)

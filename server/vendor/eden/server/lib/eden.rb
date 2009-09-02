@@ -15,13 +15,19 @@ require "active_support/core_ext/hash/keys"
 require "active_support/core_ext/string/starts_ends_with"
 require "#{EDEN_SERVER_SERVER_ROOT}/vendor/sprockets/lib/sprockets"
 
-require "#{dir}/eden/http"
 require "#{dir}/eden/model"
+require "#{dir}/eden/http"
 require "#{dir}/eden/core_extensions"
 
 class String
  include ActiveSupport::CoreExtensions::String::StartsEndsWith
-end 
+end
+
+class Hash
+  include ActiveSupport::CoreExtensions::Hash::Keys
+end
+
+Origin = Model::Repository.new
 
 Http::StaticAssetManager.add_js_directory("#{EDEN_CLIENT_SERVER_ROOT}/lib", "/eden/lib")
 Http::StaticAssetManager.add_js_directory("#{EDEN_CLIENT_SERVER_ROOT}/vendor", "/eden/vendor")

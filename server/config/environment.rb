@@ -23,5 +23,4 @@ end
 
 Http::StaticAssetManager.add_js_directory("#{CLIENT_ROOT}/app", "/javascript/app")
 Http::StaticAssetManager.add_js_directory("#{CLIENT_ROOT}/vendor", "/javascript/vendor")
-Origin = Model::Repository.new
 require "#{dir}/environments/#{ENVIRONMENT}"

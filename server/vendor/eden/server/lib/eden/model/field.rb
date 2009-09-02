@@ -1,13 +1,13 @@
 module Model
   class Field
-    attr_reader :tuple, :attribute, :value
+    attr_reader :tuple, :column, :value
 
-    def initialize(tuple, attribute)
-      @tuple, @attribute = tuple, attribute
+    def initialize(tuple, column)
+      @tuple, @column = tuple, column
     end
 
     def value=(value)
-      @value = attribute.convert_value(value)
+      @value = column.convert_value(value)
       tuple.dirty = true
     end
 

@@ -9,7 +9,7 @@ module Model
     end
 
     def to_sql
-      "select #{projected_attributes_sql} from #{from_sets_sql}#{where_clause_sql};"
+      "select #{projected_columns_sql} from #{from_sets_sql}#{where_clause_sql};"
     end
 
     def where_clause_sql
@@ -20,8 +20,8 @@ module Model
       end
     end
 
-    def projected_attributes_sql
-      projected_set.attributes.map {|a| a.to_sql}.join(", ")
+    def projected_columns_sql
+      projected_set.columns.map {|a| a.to_sql}.join(", ")
     end
 
     def from_sets_sql

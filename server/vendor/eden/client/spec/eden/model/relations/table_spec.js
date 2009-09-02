@@ -14,7 +14,7 @@ Screw.Unit(function(c) { with(c) {
         column = table.define_column("family_id", "string");
       });
 
-      it("adds an Column with the given name and type to #columns_by_name and returns it", function() {
+      it("adds a Column with the given name and type to #columns_by_name and returns it", function() {
         expect(column).to(equal, table.columns_by_name.family_id);
         expect(column.constructor).to(equal, Model.Column);
         expect(column.name).to(equal, 'family_id');

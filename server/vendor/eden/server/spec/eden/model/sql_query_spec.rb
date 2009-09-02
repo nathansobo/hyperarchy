@@ -14,7 +14,7 @@ module Model
         end
 
         it "generates a simple select" do
-          query.to_sql.should == "select #{query.projected_attributes_sql} from candidates;"
+          query.to_sql.should == "select #{query.projected_columns_sql} from candidates;"
         end
       end
 
@@ -26,7 +26,7 @@ module Model
         end
 
         it "generates a select with a where clause having all conditions and'ed together" do
-          query.to_sql.should == %{select #{query.projected_attributes_sql} from candidates where candidates.election_id = "grain" and candidates.body = "Peaches";}
+          query.to_sql.should == %{select #{query.projected_columns_sql} from candidates where candidates.election_id = "grain" and candidates.body = "Peaches";}
         end
       end
     end

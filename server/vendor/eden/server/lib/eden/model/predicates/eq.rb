@@ -12,8 +12,8 @@ module Model
           case representation["type"]
           when "scalar"
             representation["value"]
-          when "attribute"
-            Attribute.from_wire_representation(representation)
+          when "column"
+            Column.from_wire_representation(representation)
           else
             raise "cannot translate #{representation} into an operand"
           end

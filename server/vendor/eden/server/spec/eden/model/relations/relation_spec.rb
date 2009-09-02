@@ -31,7 +31,7 @@ module Model
                 "predicate" => {
                   "type" => "eq",
                   "left_operand" => {
-                    "type" => "attribute",
+                    "type" => "column",
                     "set" => "answers",
                     "name" => "correct"
                   },
@@ -61,12 +61,12 @@ module Model
                 "predicate" => {
                   "type" => "eq",
                   "left_operand" => {
-                    "type" => "attribute",
+                    "type" => "column",
                     "set" => "questions",
                     "name" => "id"
                   },
                   "right_operand" => {
-                    "type" => "attribute",
+                    "type" => "column",
                     "set" => "answers",
                     "name" => "question_id"
                   }
@@ -96,12 +96,12 @@ module Model
                   "predicate" => {
                     "type" => "eq",
                     "left_operand" => {
-                      "type" => "attribute",
+                      "type" => "column",
                       "set" => "questions",
                       "name" => "id"
                     },
                     "right_operand" => {
-                      "type" => "attribute",
+                      "type" => "column",
                       "set" => "answers",
                       "name" => "question_id"
                     }

@@ -1,9 +1,9 @@
 module Model
-  class Attribute
+  class Column
     class << self
       def from_wire_representation(representation)
         set = GlobalDomain.sets_by_name[representation["set"].to_sym]
-        set.attributes_by_name[representation["name"].to_sym]
+        set.columns_by_name[representation["name"].to_sym]
       end
     end
 

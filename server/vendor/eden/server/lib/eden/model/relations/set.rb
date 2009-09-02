@@ -1,24 +1,24 @@
 module Model
   module Relations
     class Set < Relation
-      attr_reader :global_name, :tuple_class, :attributes_by_name
+      attr_reader :global_name, :tuple_class, :columns_by_name
       attr_accessor :declared_fixtures
 
       def initialize(global_name, tuple_class)
         @global_name, @tuple_class = global_name, tuple_class
-        @attributes_by_name = ActiveSupport::OrderedHash.new
+        @columns_by_name = ActiveSupport::OrderedHash.new
       end
 
-      def define_attribute(name, type)
-        attributes_by_name[name] = Attribute.new(self, name, type)
+      def define_column(name, type)
+        columns_by_name[name] = Column.new(self, name, type)
       end
 
-      def attributes
-        attributes_by_name.values
+      def columns
+        columns_by_name.values
       end
 
       def insert(tuple)
-        Origin.insert(self, tuple.field_values_by_attribute_name)
+        Origin.insert(self, tuple.field_values_by_column_name)
       end
 
       def create(field_values = {})
@@ -66,10 +66,10 @@ module Model
 
       #TODO: test
       def create_table
-        attributes_to_become_columns = attributes
+        columns_to_generate = columns
         Origin.create_table(global_name) do
-          attributes_to_become_columns.each do |attribute|
-            column attribute.name, attribute.ruby_type
+          columns_to_generate.each do |c|
+            column c.name, c.ruby_type
           end
         end
       end

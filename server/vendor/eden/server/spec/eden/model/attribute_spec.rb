@@ -1,24 +1,24 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../eden_spec_helper")
 
 module Model
-  describe Attribute do
+  describe Column do
     describe "class methods" do
       describe ".from_wire_representation" do
-        it "returns an Attribute based on the 'set' and 'name' of the given representation" do
-          attribute = Attribute.from_wire_representation({
-            "type" => "attribute",
+        it "returns a Column based on the 'set' and 'name' of the given representation" do
+          column = Column.from_wire_representation({
+            "type" => "column",
             "set" => "candidates",
             "name" => "body"
           })
 
-          attribute.should == Candidate[:body]
+          column.should == Candidate[:body]
         end
       end
     end
 
     describe "instance methods" do
       describe "#to_sql" do
-        it "returns the qualified attribute name" do
+        it "returns the qualified column name" do
           Candidate[:body].to_sql.should == "candidates.body"
         end
       end

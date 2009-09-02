@@ -10,35 +10,35 @@ module Model
       end
 
       describe "#initialize" do
-        it "automatically has a string-valued :id attribute" do
-          set.attributes_by_name[:id].type.should == :string
+        it "automatically has a string-valued :id column" do
+          set.columns_by_name[:id].type.should == :string
         end
       end
 
-      describe "#define_attribute" do
-        it "adds an Attribute with the given name and type and self as its #set to the #attributes_by_name hash" do
-          attribute = set.attributes_by_name[:body]
-          attribute.name.should == :body
-          attribute.type.should == :string
+      describe "#define_column" do
+        it "adds a Column with the given name and type and self as its #set to the #columns_by_name hash" do
+          column = set.columns_by_name[:body]
+          column.name.should == :body
+          column.type.should == :string
         end
       end
 
-      describe "#attributes" do
-        it "returns the #values of #attributes_by_name" do
-          set.attributes.should == set.attributes_by_name.values
+      describe "#columns" do
+        it "returns the #values of #columns_by_name" do
+          set.columns.should == set.columns_by_name.values
         end
       end
 
       describe "#insert" do
-        it "calls Origin.insert with the Set and #field_values_by_attribute_name" do
+        it "calls Origin.insert with the Set and #field_values_by_column_name" do
           tuple = Candidate.new(:body => "Brown Rice", :election_id => "grain")
-          mock(Origin).insert(set, tuple.field_values_by_attribute_name)
+          mock(Origin).insert(set, tuple.field_values_by_column_name)
           set.insert(tuple)
         end
       end
 
       describe "#create" do
-        it "instantiates an instance of #tuple_class with the given attributes, #inserts it, and returns it" do
+        it "instantiates an instance of #tuple_class with the given columns, #inserts it, and returns it" do
           mock(set).insert(anything) do |tuple|
             tuple.class.should == set.tuple_class
             tuple.body.should == "Brown Rice"
@@ -75,8 +75,8 @@ module Model
       end
 
       describe "#to_sql" do
-        it "returns a select statement for only the columns declared as Attributes on the Set" do
-          columns = set.attributes.map {|a| a.to_sql }.join(", ")
+        it "returns a select statement for only the columns declared as Columns on the Set" do
+          columns = set.columns.map {|a| a.to_sql }.join(", ")
           set.to_sql.should == "select #{columns} from #{set.global_name};"
         end
       end

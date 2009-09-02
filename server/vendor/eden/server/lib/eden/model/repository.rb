@@ -11,14 +11,14 @@ module Model
     end
 
     def read(set, query)
-      connection[query].map do |field_values_by_attribute_name|
-        id = field_values_by_attribute_name[:id]
+      connection[query].map do |field_values_by_column_name|
+        id = field_values_by_column_name[:id]
         tuple_from_id_map = set.identity_map[id]
 
         if tuple_from_id_map
           tuple_from_id_map
         else
-          tuple = set.tuple_class.unsafe_new(field_values_by_attribute_name)
+          tuple = set.tuple_class.unsafe_new(field_values_by_column_name)
           set.identity_map[id] = tuple
           tuple
         end

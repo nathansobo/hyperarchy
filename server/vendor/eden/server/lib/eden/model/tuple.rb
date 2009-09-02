@@ -6,24 +6,24 @@ module Model
       attr_accessor :set
       def inherited(subclass)
         subclass.set = GlobalDomain.new_set(subclass.basename.underscore.pluralize.to_sym, subclass)
-        subclass.attribute(:id, :string)
+        subclass.column(:id, :string)
       end
 
-      def attribute(name, type)
-        attribute = set.define_attribute(name, type)
+      def column(name, type)
+        column = set.define_column(name, type)
 
         define_method("#{name}=".to_sym) do |value|
-          set_field_value(attribute, value)
+          set_field_value(column, value)
         end
 
         define_method(name) do
-          get_field_value(attribute)
+          get_field_value(column)
         end
       end
 
-      def [](attribute_name)
-        raise "Attribute #{attribute_name} not found" unless set.attributes_by_name.has_key?(attribute_name)
-        set.attributes_by_name[attribute_name]
+      def [](column_name)
+        raise "Column #{column_name} not found" unless set.columns_by_name.has_key?(column_name)
+        set.columns_by_name[column_name]
       end
 
       def relates_to_many(relation_name, &definition)
@@ -43,15 +43,15 @@ module Model
       def has_many(relation_name)
         relates_to_many(relation_name) do
           target_class = relation_name.to_s.singularize.classify.constantize
-          foreign_key_attribute = target_class["#{self.class.basename.underscore}_id".to_sym]
-          target_class.where(foreign_key_attribute.eq(id))
+          foreign_key_column = target_class["#{self.class.basename.underscore}_id".to_sym]
+          target_class.where(foreign_key_column.eq(id))
         end
       end
 
       def belongs_to(relation_name)
         relates_to_one(relation_name) do
           target_class = relation_name.to_s.classify.constantize
-          foreign_key_field = self.fields_by_attribute[self.class["#{relation_name}_id".to_sym]]
+          foreign_key_field = self.fields_by_column[self.class["#{relation_name}_id".to_sym]]
           target_class.where(target_class[:id].eq(foreign_key_field))
         end
       end
@@ -74,13 +74,13 @@ module Model
         @relation_definitions ||= ActiveSupport::OrderedHash.new
       end
 
-      delegate :create, :where, :project, :join, :find, :attributes_by_name,
+      delegate :create, :where, :project, :join, :find, :columns_by_name,
                :create_table, :drop_table, :clear_table, :tuples,
                :to => :set
     end
 
     include Domain
-    attr_reader :fields_by_attribute, :relations_by_name
+    attr_reader :fields_by_column, :relations_by_name
     attr_writer :dirty
 
 
@@ -97,13 +97,13 @@ module Model
     end
 
     def update(field_values)
-      field_values.each do |attribute_name, value|
-        self.send("#{attribute_name}=", value)
+      field_values.each do |column_name, value|
+        self.send("#{column_name}=", value)
       end
     end
 
     def save
-      Origin.update(set, field_values_by_attribute_name)
+      Origin.update(set, field_values_by_column_name)
       @dirty = false
     end
 
@@ -111,29 +111,29 @@ module Model
       @dirty
     end
 
-    def field_values_by_attribute_name
-      fields_by_attribute.inject({}) do |result, attribute_field_pair|
-        result[attribute_field_pair[0].name] = attribute_field_pair[1].value
+    def field_values_by_column_name
+      fields_by_column.inject({}) do |result, column_field_pair|
+        result[column_field_pair[0].name] = column_field_pair[1].value
         result
       end
     end
 
     def wire_representation
-      field_values_by_attribute_name.stringify_keys
+      field_values_by_column_name.stringify_keys
     end
 
-    def set_field_value(attribute, value)
-      fields_by_attribute[attribute].value = value
+    def set_field_value(column, value)
+      fields_by_column[column].value = value
     end
 
-    def get_field_value(attribute)
-      fields_by_attribute[attribute].value
+    def get_field_value(column)
+      fields_by_column[column].value
     end
 
     def initialize_fields
-      @fields_by_attribute = {}
-      set.attributes.each do |attribute|
-        fields_by_attribute[attribute] = Field.new(self, attribute)
+      @fields_by_column = {}
+      set.columns.each do |column|
+        fields_by_column[column] = Field.new(self, column)
       end
     end
 
@@ -159,7 +159,7 @@ module Model
     end
 
     def inspect
-      field_values_by_attribute_name.inspect
+      field_values_by_column_name.inspect
     end
   end
 end

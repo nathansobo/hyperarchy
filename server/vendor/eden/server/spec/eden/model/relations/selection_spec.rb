@@ -16,7 +16,7 @@ module Model
               "predicate" => {
                 "type" => "eq",
                 "left_operand" => {
-                  "type" => "attribute",
+                  "type" => "column",
                   "set" => "candidates",
                   "name" => "election_id"
                 },
@@ -71,13 +71,13 @@ module Model
         describe "#to_sql" do
           context "when #operand is a Set" do
             it "generates a query with an appropriate where clause" do
-              selection.to_sql.should == "select #{operand.attributes.map {|a| a.to_sql}.join(", ")} from #{operand.global_name} where #{predicate.to_sql};"
+              selection.to_sql.should == "select #{operand.columns.map {|a| a.to_sql}.join(", ")} from #{operand.global_name} where #{predicate.to_sql};"
             end
           end
 
           context "when #operand is another Selection" do
             it "generates a query with a where clause that has multiple conditions" do
-              composite_selection.to_sql.should == "select #{operand.attributes.map {|a| a.to_sql}.join(", ")} from #{operand.global_name} where #{predicate_2.to_sql} and #{predicate.to_sql};"
+              composite_selection.to_sql.should == "select #{operand.columns.map {|a| a.to_sql}.join(", ")} from #{operand.global_name} where #{predicate_2.to_sql} and #{predicate.to_sql};"
             end
           end
         end

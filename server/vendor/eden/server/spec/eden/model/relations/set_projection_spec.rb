@@ -33,12 +33,12 @@ module Model
                 "predicate" => {
                   "type" => "eq",
                   "left_operand" => {
-                    "type" => "attribute",
+                    "type" => "column",
                     "set" => "questions",
                     "name" => "id"
                   },
                   "right_operand" => {
-                    "type" => "attribute",
+                    "type" => "column",
                     "set" => "answers",
                     "name" => "question_id"
                   }
@@ -67,15 +67,15 @@ module Model
 
         describe "#to_sql" do
           context "when the composed relation contains only one SetProjection" do
-            it "generates a query that selects the attributes of #projected_set and includes all joined tables in its from clause" do
-              projected_columns = projection.projected_set.attributes.map {|a| a.to_sql}.join(", ")
+            it "generates a query that selects the columns of #projected_set and includes all joined tables in its from clause" do
+              projected_columns = projection.projected_set.columns.map {|a| a.to_sql}.join(", ")
               projection.to_sql.should == %{select #{projected_columns} from question_sets, questions where questions.question_set_id = question_sets.id and question_sets.id = "foods";}
             end
           end
 
           context "when the composed relation contains more than one SetProjection" do
-            it "generates a query that selects the attributes of #projected_set and includes all joined tables in its from clause" do
-              projected_columns = composite_projection.projected_set.attributes.map {|a| a.to_sql}.join(", ")
+            it "generates a query that selects the columns of #projected_set and includes all joined tables in its from clause" do
+              projected_columns = composite_projection.projected_set.columns.map {|a| a.to_sql}.join(", ")
               composite_projection.to_sql.should == %{select #{projected_columns} from elections, candidates where candidates.election_id = questions.id and questions.question_set_id = question_sets.id and question_sets.id = "foods";}
             end
           end

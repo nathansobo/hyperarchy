@@ -12,18 +12,18 @@ module Model
         GlobalDomain.sets_by_name[:candidates].tuple_class.should == Candidate
       end
 
-      it "defines an :id Attribute on the subclass" do
-        Candidate[:id].class.should == Attribute
+      it "defines an :id Column on the subclass" do
+        Candidate[:id].class.should == Column
         Candidate[:id].name.should == :id
         Candidate[:id].type.should == :string
       end
     end
 
     describe "class methods" do
-      describe ".attribute" do
-        it "delegates attribute definition to .set" do
-          mock(Candidate.set).define_attribute(:foo, :string)
-          Candidate.attribute(:foo, :string)
+      describe ".column" do
+        it "delegates column definition to .set" do
+          mock(Candidate.set).define_column(:foo, :string)
+          Candidate.column(:foo, :string)
         end
 
         it "defines named instance methods that call #set_field_value and #get_field_value" do
@@ -57,16 +57,16 @@ module Model
       end
 
       describe ".[]" do
-        context "when the given value is the name of an Attribute defined on .set" do
-          it "returns the Attribute with the given name" do
-            Candidate[:body].should == Candidate.set.attributes_by_name[:body]
+        context "when the given value is the name of a Column defined on .set" do
+          it "returns the Column with the given name" do
+            Candidate[:body].should == Candidate.set.columns_by_name[:body]
           end
         end
 
-        context "when the given value is not the name of an Attribute defined on .set" do
+        context "when the given value is not the name of a Column defined on .set" do
           it "raises an exception" do
             lambda do
-              Candidate[:nonexistant_attribute]
+              Candidate[:nonexistant_column]
             end.should raise_error
           end
         end
@@ -74,9 +74,9 @@ module Model
 
       describe ".create" do
         it "deletages to .set" do
-          attributes = { :body => "Amaranth" }
-          mock(Candidate.set).create(attributes)
-          Candidate.create(attributes)
+          columns = { :body => "Amaranth" }
+          mock(Candidate.set).create(columns)
+          Candidate.create(columns)
         end
       end
 
@@ -106,10 +106,10 @@ module Model
       end
 
       describe "#initialize" do
-        it "assigns #fields_by_attribute to a hash with a Field object for every attribute declared in the set" do
-          Candidate.set.attributes.each do |attribute|
-            field = tuple.fields_by_attribute[attribute]
-            field.attribute.should == attribute
+        it "assigns #fields_by_column to a hash with a Field object for every column declared in the set" do
+          Candidate.set.columns.each do |column|
+            field = tuple.fields_by_column[column]
+            field.column.should == column
             field.tuple.should == tuple
           end
         end
@@ -125,14 +125,14 @@ module Model
       end
 
       describe "#wire_representation" do
-        it "returns #fields_by_attribute_name with string-valued keys" do
-          tuple.wire_representation.should == tuple.field_values_by_attribute_name.stringify_keys
+        it "returns #fields_by_column_name with string-valued keys" do
+          tuple.wire_representation.should == tuple.field_values_by_column_name.stringify_keys
         end
       end
 
       describe "#save" do
-        it "calls Origin.update with the #global_name of the Tuple's #set and its #field_values_by_attribute_name" do
-          mock(Origin).update(tuple.set, tuple.field_values_by_attribute_name)
+        it "calls Origin.update with the #global_name of the Tuple's #set and its #field_values_by_column_name" do
+          mock(Origin).update(tuple.set, tuple.field_values_by_column_name)
           tuple.save
         end
       end
@@ -178,14 +178,14 @@ module Model
         end
       end
 
-      describe "#field_values_by_attribute_name" do
-        it "returns a hash with the values of all fields indexed by Attribute name" do
+      describe "#field_values_by_column_name" do
+        it "returns a hash with the values of all fields indexed by Column name" do
           expected_hash = {}
-          tuple.fields_by_attribute.each do |attribute, field|
-            expected_hash[attribute.name] = field.value
+          tuple.fields_by_column.each do |column, field|
+            expected_hash[column.name] = field.value
           end
 
-          tuple.field_values_by_attribute_name.should == expected_hash
+          tuple.field_values_by_column_name.should == expected_hash
         end
       end
       
@@ -246,7 +246,7 @@ module Model
               "predicate" => {
                 "type" => "eq",
                 "left_operand" => {
-                  "type" => "attribute",
+                  "type" => "column",
                   "set" => "elections",
                   "name" => "id"
                 },
@@ -266,7 +266,7 @@ module Model
               "predicate" => {
                 "type" => "eq",
                 "left_operand" => {
-                  "type" => "attribute",
+                  "type" => "column",
                   "set" => "candidates",
                   "name" => "election_id"
                 },

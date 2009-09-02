@@ -19,12 +19,12 @@ module Model
             "predicate" => {
               "type" => "eq",
               "left_operand" => {
-                "type" => "attribute",
+                "type" => "column",
                 "set" => "elections",
                 "name" => "id"
               },
               "right_operand" => {
-                "type" => "attribute",
+                "type" => "column",
                 "set" => "candidates",
                 "name" => "election_id"
               }

@@ -33,16 +33,16 @@ module Model
             end
           end
 
-          context "when one of the operands is an attribute" do
+          context "when one of the operands is an column" do
             def left_operand_representation
               {
-                "type" => "attribute",
+                "type" => "column",
                 "set" => "candidates",
                 "name" => "body"
               }
             end
 
-            it "returns an Eq predicate with the indicated attribute as one of its operands" do
+            it "returns an Eq predicate with the indicated column as one of its operands" do
               eq = Eq.from_wire_representation(wire_representation)
               eq.class.should == Eq
               eq.left_operand.should == Candidate[:body]

@@ -4,12 +4,12 @@ module Model
   describe Field do
     attr_reader :field
     before do
-      @field = Candidate.new.fields_by_attribute[Candidate[:body]]
+      @field = Candidate.new.fields_by_column[Candidate[:body]]
     end
 
     describe "#value=" do
-      it "sets #value to the result of #attribute.convert_value on the given value" do
-        mock(field.attribute).convert_value("foo") { "bar" }
+      it "sets #value to the result of #column.convert_value on the given value" do
+        mock(field.column).convert_value("foo") { "bar" }
         field.value=("foo")
         field.value.should == "bar"
       end

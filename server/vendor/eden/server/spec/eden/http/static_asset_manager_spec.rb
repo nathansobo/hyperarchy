@@ -7,8 +7,8 @@ module Http
       @dir = File.dirname(__FILE__)
       @proxied_app = Object.new
       StaticAssetManager.new(proxied_app)
-      StaticAssetManager.add_js_directory("#{dir}/public_dir_spec/exposed_public_dir_1", "/virtual_dir_1")
-      StaticAssetManager.add_js_directory("#{dir}/public_dir_spec/external_public_dir_2", "/virtual_dir_2")
+      StaticAssetManager.add_js_directory("#{dir}/static_asset_manager_spec/exposed_public_dir_1", "/virtual_dir_1")
+      StaticAssetManager.add_js_directory("#{dir}/static_asset_manager_spec/external_public_dir_2", "/virtual_dir_2")
     end
 
     describe ".new(proxied_app)" do
@@ -43,7 +43,7 @@ module Http
             request.path_info = "/virtual_dir_1/dependency_1.js"
             response = Response.new(*StaticAssetManager.instance.call(request.env))
 
-            expected_physical_path = "#{dir}/public_dir_spec/exposed_public_dir_1/dependency_1.js"
+            expected_physical_path = "#{dir}/static_asset_manager_spec/exposed_public_dir_1/dependency_1.js"
             response.status.should == 200
             response.headers.should == {"Last-Modified" => File.mtime(expected_physical_path).httpdate, "Content-Type" => "application/javascript", "Content-Length" => "18"}
             response.body.should be_an_instance_of(Rack::File)
