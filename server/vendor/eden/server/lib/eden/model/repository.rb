@@ -1,43 +1,62 @@
 module Model
-  class RemoteRepository
-    attr_accessor :connection
-
-    def insert(set, field_values)
-      connection.from(set.global_name).insert(field_values)
-    end
-
-    def update(set, field_values)
-      connection.from(set.global_name).filter(:id => field_values[:id]).update(field_values)
-    end
-
-    def read(set, query)
-      connection[query].map do |field_values_by_column_name|
-        id = field_values_by_column_name[:id]
-        tuple_from_id_map = set.identity_map[id]
-
-        if tuple_from_id_map
-          tuple_from_id_map
-        else
-          tuple = set.tuple_class.unsafe_new(field_values_by_column_name)
-          set.identity_map[id] = tuple
-          tuple
-        end
+  class Repository
+    class << self
+      def instance
+        @instance ||= new
       end
+
+      delegate :new_table, :tables_by_name, :load_fixtures, :clear_tables, :create_schema,
+               :tables, :initialize_identity_maps, :clear_identity_maps,
+               :to => :instance
+    end
+    include RemoteQueryable
+
+    attr_reader :tables_by_name
+    def initialize
+      @tables_by_name = {}
+    end
+
+    def new_table(name, record_class)
+      tables_by_name[name] = Relations::Table.new(name, record_class)
+    end
+
+    def locate(path_fragment)
+      tables_by_name[path_fragment.to_sym]
+    end
+
+    def tables
+      tables_by_name.values
+    end
+
+    def initialize_identity_maps
+      tables.each {|table| table.initialize_identity_map}
+    end
+
+    def clear_identity_maps
+      tables.each {|table| table.clear_identity_map}
     end
 
     #TODO: test
-    def create_table(name, &definition)
-      connection.create_table(name, &definition)
+    def create_schema
+      tables.each {|table| table.create_table}
     end
 
     #TODO: test
-    def clear_table(name)
-      connection[name].delete
+    def load_fixtures
+      tables.each {|table| table.load_fixtures}
     end
 
     #TODO: test
-    def drop_table(name)
-      connection.drop_table(name)
+    def clear_tables
+      tables.each {|table| table.clear_table}
+    end
+
+    def tables
+      tables_by_name.values
+    end
+
+    def resolve_named_relation(name)
+      tables_by_name[name.to_sym]
     end
   end
 end

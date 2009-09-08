@@ -1,16 +1,16 @@
 module Model
-  class Tuple
+  class Record
     class << self
-      include ForwardsArrayMethodsToTuples
+      include ForwardsArrayMethodsToRecords
 
-      attr_accessor :set
+      attr_accessor :table
       def inherited(subclass)
-        subclass.set = GlobalDomain.new_set(subclass.basename.underscore.pluralize.to_sym, subclass)
+        subclass.table = Repository.new_table(subclass.basename.underscore.pluralize.to_sym, subclass)
         subclass.column(:id, :string)
       end
 
       def column(name, type)
-        column = set.define_column(name, type)
+        column = table.define_column(name, type)
 
         define_method("#{name}=".to_sym) do |value|
           set_field_value(column, value)
@@ -22,8 +22,8 @@ module Model
       end
 
       def [](column_name)
-        raise "Column #{column_name} not found" unless set.columns_by_name.has_key?(column_name)
-        set.columns_by_name[column_name]
+        raise "Column #{column_name} not found" unless table.columns_by_name.has_key?(column_name)
+        table.columns_by_name[column_name]
       end
 
       def relates_to_many(relation_name, &definition)
@@ -36,7 +36,7 @@ module Model
       def relates_to_one(relation_name, &definition)
         relation_definitions[relation_name] = definition
         define_method relation_name do
-          relations_by_name[relation_name].tuples.first
+          relations_by_name[relation_name].records.first
         end
       end
 
@@ -57,9 +57,9 @@ module Model
       end
 
       def unsafe_new(field_values = {})
-        tuple = allocate
-        tuple.unsafe_initialize(field_values)
-        tuple
+        record = allocate
+        record.unsafe_initialize(field_values)
+        record
       end
 
       def basename
@@ -67,7 +67,7 @@ module Model
       end
 
       def fixtures(declared_fixtures)
-        set.declared_fixtures = declared_fixtures
+        table.declared_fixtures = declared_fixtures
       end
 
       def relation_definitions
@@ -75,8 +75,8 @@ module Model
       end
 
       delegate :create, :where, :project, :join, :find, :columns_by_name,
-               :create_table, :drop_table, :clear_table, :tuples,
-               :to => :set
+               :create_table, :drop_table, :clear_table, :records,
+               :to => :table
     end
 
     include RemoteQueryable
@@ -103,7 +103,7 @@ module Model
     end
 
     def save
-      Origin.update(set, field_values_by_column_name)
+      Origin.update(table, field_values_by_column_name)
       @dirty = false
     end
 
@@ -132,7 +132,7 @@ module Model
 
     def initialize_fields
       @fields_by_column = {}
-      set.columns.each do |column|
+      table.columns.each do |column|
         fields_by_column[column] = Field.new(self, column)
       end
     end
@@ -144,8 +144,8 @@ module Model
       end
     end
 
-    def set
-      self.class.set
+    def table
+      self.class.table
     end
 
     def ==(other)

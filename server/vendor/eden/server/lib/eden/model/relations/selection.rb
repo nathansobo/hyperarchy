@@ -16,8 +16,8 @@ module Model
         @operand, @predicate = operand, predicate
       end
 
-      def tuple_class
-        operand.tuple_class
+      def record_class
+        operand.record_class
       end
 
       def to_sql

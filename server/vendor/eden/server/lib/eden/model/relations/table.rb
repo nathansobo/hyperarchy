@@ -1,11 +1,11 @@
 module Model
   module Relations
-    class Set < Relation
-      attr_reader :global_name, :tuple_class, :columns_by_name
+    class Table < Relation
+      attr_reader :global_name, :record_class, :columns_by_name
       attr_accessor :declared_fixtures
 
-      def initialize(global_name, tuple_class)
-        @global_name, @tuple_class = global_name, tuple_class
+      def initialize(global_name, record_class)
+        @global_name, @record_class = global_name, record_class
         @columns_by_name = ActiveSupport::OrderedHash.new
       end
 
@@ -17,14 +17,14 @@ module Model
         columns_by_name.values
       end
 
-      def insert(tuple)
-        Origin.insert(self, tuple.field_values_by_column_name)
+      def insert(record)
+        Origin.insert(self, record.field_values_by_column_name)
       end
 
       def create(field_values = {})
-        tuple = tuple_class.new(field_values)
-        insert(tuple)
-        tuple
+        record = record_class.new(field_values)
+        insert(record)
+        record
       end
 
       def to_sql
@@ -32,7 +32,7 @@ module Model
       end
 
       def build_sql_query(query=SqlQuery.new)
-        query.add_from_set(self)
+        query.add_from_table(self)
         query
       end
 
@@ -55,7 +55,7 @@ module Model
       def load_fixtures
         return unless declared_fixtures
         declared_fixtures.each do |id, field_values|
-          insert(tuple_class.unsafe_new(field_values.merge(:id => id.to_s)))
+          insert(record_class.unsafe_new(field_values.merge(:id => id.to_s)))
         end
       end
 

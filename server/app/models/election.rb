@@ -1,5 +1,5 @@
-class Election < Model::Tuple
-  attribute :body, :string
+class Election < Model::Record
+  column :body, :string
   
   has_many :candidates
 end

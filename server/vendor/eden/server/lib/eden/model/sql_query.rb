@@ -1,15 +1,15 @@
 module Model
   class SqlQuery
-    attr_reader :from_sets, :conditions
-    attr_writer :projected_set
+    attr_reader :from_tables, :conditions
+    attr_writer :projected_table
 
     def initialize
-      @from_sets = []
+      @from_tables = []
       @conditions = []
     end
 
     def to_sql
-      "select #{projected_columns_sql} from #{from_sets_sql}#{where_clause_sql};"
+      "select #{projected_columns_sql} from #{from_tables_sql}#{where_clause_sql};"
     end
 
     def where_clause_sql
@@ -21,23 +21,23 @@ module Model
     end
 
     def projected_columns_sql
-      projected_set.columns.map {|a| a.to_sql}.join(", ")
+      projected_table.columns.map {|a| a.to_sql}.join(", ")
     end
 
-    def from_sets_sql
-      from_sets.map {|s| s.global_name}.join(", ")
+    def from_tables_sql
+      from_tables.map {|s| s.global_name}.join(", ")
     end
 
-    def add_from_set(set)
-      from_sets.push(set)
+    def add_from_table(table)
+      from_tables.push(table)
     end
 
     def add_condition(predicate)
       conditions.push(predicate)
     end
 
-    def projected_set
-      @projected_set || from_sets.first
+    def projected_table
+      @projected_table || from_tables.first
     end
   end
 end

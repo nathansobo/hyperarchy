@@ -1,5 +1,5 @@
-class Session < Model::Tuple
-  attribute :user_id, :string
+class Session < Model::Record
+  column :user_id, :string
 
   belongs_to :user
 end

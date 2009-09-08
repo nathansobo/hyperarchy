@@ -2,25 +2,25 @@ module Model
   class RemoteRepository
     attr_accessor :connection
 
-    def insert(set, field_values)
-      connection.from(set.global_name).insert(field_values)
+    def insert(table, field_values)
+      connection.from(table.global_name).insert(field_values)
     end
 
-    def update(set, field_values)
-      connection.from(set.global_name).filter(:id => field_values[:id]).update(field_values)
+    def update(table, field_values)
+      connection.from(table.global_name).filter(:id => field_values[:id]).update(field_values)
     end
 
-    def read(set, query)
+    def read(table, query)
       connection[query].map do |field_values_by_column_name|
         id = field_values_by_column_name[:id]
-        tuple_from_id_map = set.identity_map[id]
+        record_from_id_map = table.identity_map[id]
 
-        if tuple_from_id_map
-          tuple_from_id_map
+        if record_from_id_map
+          record_from_id_map
         else
-          tuple = set.tuple_class.unsafe_new(field_values_by_column_name)
-          set.identity_map[id] = tuple
-          tuple
+          record = table.record_class.unsafe_new(field_values_by_column_name)
+          table.identity_map[id] = record
+          record
         end
       end
     end

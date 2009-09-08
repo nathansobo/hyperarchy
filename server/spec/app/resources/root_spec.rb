@@ -1,4 +1,4 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../../eden_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper")
 
 module Resources
   describe Root do
@@ -9,8 +9,8 @@ module Resources
 
     describe "#locate" do
       context "when called with 'domain'" do
-        it "returns GlobalDomain.instance" do
-          root.locate('domain').should == Model::GlobalDomain.instance
+        it "returns Repository.instance" do
+          root.locate('domain').should == Model::Repository.instance
         end
       end
 

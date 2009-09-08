@@ -1,8 +1,8 @@
 # TODO: include a more exhaustive list here
 module Model
-  module ForwardsArrayMethodsToTuples
+  module ForwardsArrayMethodsToRecords
     def each(&block)
-      tuples.each(&block)
+      records.each(&block)
     end
   end
 end

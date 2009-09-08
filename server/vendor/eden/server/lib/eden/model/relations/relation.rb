@@ -4,18 +4,18 @@ module Model
       class << self
         def from_wire_representation(representation, subdomain)
           case representation["type"]
-          when "set"
+          when "table"
             subdomain.resolve_named_relation(representation["name"])
           when "selection"
             Selection.from_wire_representation(representation, subdomain)
           when "inner_join"
             InnerJoin.from_wire_representation(representation, subdomain)
-          when "set_projection"
-            SetProjection.from_wire_representation(representation, subdomain)
+          when "table_projection"
+            TableProjection.from_wire_representation(representation, subdomain)
           end
         end
       end
-      include ForwardsArrayMethodsToTuples
+      include ForwardsArrayMethodsToRecords
 
       def where(predicate)
         Selection.new(self, predicate)
@@ -25,29 +25,29 @@ module Model
         PartiallyConstructedInnerJoin.new(self, normalize_to_relation(right_operand))
       end
 
-      def project(projected_set)
-        SetProjection.new(self, normalize_to_relation(projected_set))
+      def project(projected_table)
+        TableProjection.new(self, normalize_to_relation(projected_table))
       end
 
-      def normalize_to_relation(relation_or_tuple_class)
-        if relation_or_tuple_class.instance_of?(Class)
-          relation_or_tuple_class.set
+      def normalize_to_relation(relation_or_record_class)
+        if relation_or_record_class.instance_of?(Class)
+          relation_or_record_class.table
         else
-          relation_or_tuple_class
+          relation_or_record_class
         end
       end
 
       def find(id_or_predicate)
-        predicate = (id_or_predicate.is_a?(Predicates::Predicate)? id_or_predicate : tuple_class[:id].eq(id_or_predicate))
-        where(predicate).tuples.first
+        predicate = (id_or_predicate.is_a?(Predicates::Predicate)? id_or_predicate : record_class[:id].eq(id_or_predicate))
+        where(predicate).records.first
       end
 
-      def tuples
-        Origin.read(tuple_class.set, to_sql)
+      def records
+        Origin.read(record_class.table, to_sql)
       end
 
-      def tuple_wire_representations
-        tuples.map {|tuple| tuple.wire_representation}
+      def record_wire_representations
+        records.map {|record| record.wire_representation}
       end
 
       class PartiallyConstructedInnerJoin

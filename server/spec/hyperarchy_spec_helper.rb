@@ -7,13 +7,13 @@ Spec::Runner.configure do |config|
   config.mock_with :rr
 
   config.before do
-    Model::GlobalDomain.clear_tables
-    Model::GlobalDomain.load_fixtures
-    Model::GlobalDomain.initialize_identity_maps
+    Model::Repository.clear_tables
+    Model::Repository.load_fixtures
+    Model::Repository.initialize_identity_maps
   end
 
   config.after do
-    Model::GlobalDomain.clear_identity_maps
+    Model::Repository.clear_identity_maps
   end
 end
 

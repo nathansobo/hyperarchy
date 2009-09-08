@@ -9,7 +9,7 @@ class Db < Thor
     Origin.connection.execute('drop database if exists hyperarchy_development')
     Origin.connection.execute('create database hyperarchy_development')
     Origin.connection.use('hyperarchy_development')
-    Model::GlobalDomain.create_schema
+    Model::Repository.create_schema
   end
 
   desc "console", "connect to the 'hyperarchy_development' database in mysql console"

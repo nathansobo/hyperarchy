@@ -37,7 +37,7 @@ module Model
             def left_operand_representation
               {
                 "type" => "column",
-                "set" => "blog_posts",
+                "table" => "blog_posts",
                 "name" => "body"
               }
             end

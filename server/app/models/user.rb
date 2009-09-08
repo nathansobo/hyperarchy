@@ -1,14 +1,14 @@
-class User < Model::Tuple
-  attribute :full_name, :string
-  attribute :email_address, :string
-  attribute :encrypted_password, :string
+class User < Model::Record
+  column :full_name, :string
+  column :email_address, :string
+  column :encrypted_password, :string
 
   relates_to_many :elections do
-    Election.set
+    Election.table
   end
 
   relates_to_many :candidates do
-    Candidate.set
+    Candidate.table
   end
 
   def password=(unencrypted_password)

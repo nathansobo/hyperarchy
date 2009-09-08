@@ -1,14 +1,14 @@
 module Model
   class Field
-    attr_reader :tuple, :column, :value
+    attr_reader :record, :column, :value
 
-    def initialize(tuple, column)
-      @tuple, @column = tuple, column
+    def initialize(record, column)
+      @record, @column = record, column
     end
 
     def value=(value)
       @value = column.convert_value(value)
-      tuple.dirty = true
+      record.dirty = true
     end
 
     def to_sql

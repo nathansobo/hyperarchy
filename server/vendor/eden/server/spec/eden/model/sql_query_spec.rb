@@ -8,9 +8,9 @@ module Model
     end
 
     describe "#to_sql" do
-      context "when there is only one #from_set" do
+      context "when there is only one #from_table" do
         before do
-          query.add_from_set(BlogPost.set)
+          query.add_from_table(BlogPost.table)
         end
 
         it "generates a simple select" do
@@ -20,7 +20,7 @@ module Model
 
       context "when there are multiple #conditions" do
         before do
-          query.add_from_set(BlogPost.set)
+          query.add_from_table(BlogPost.table)
           query.add_condition(Predicates::Eq.new(BlogPost[:blog_id], "grain"))
           query.add_condition(Predicates::Eq.new(BlogPost[:body], "Peaches"))
         end
@@ -31,12 +31,12 @@ module Model
       end
     end
 
-    describe "#add_from_set" do
-      it "adds the given Set to #from_sets" do
-        query.add_from_set(BlogPost.set)
-        query.from_sets.should == [BlogPost.set]
-        query.add_from_set(Blog.set)
-        query.from_sets.should == [BlogPost.set, Blog.set]
+    describe "#add_from_table" do
+      it "adds the given Table to #from_tables" do
+        query.add_from_table(BlogPost.table)
+        query.from_tables.should == [BlogPost.table]
+        query.add_from_table(Blog.table)
+        query.from_tables.should == [BlogPost.table, Blog.table]
       end
     end
 
@@ -51,18 +51,18 @@ module Model
       end
     end
 
-    describe "#projected_set" do
-      context "if #projected_set= has not been called" do
-        it "returns the first Set in #from_sets" do
-          query.add_from_set(BlogPost.set)
-          query.projected_set.should == BlogPost.set
+    describe "#projected_table" do
+      context "if #projected_table= has not been called" do
+        it "returns the first Table in #from_tables" do
+          query.add_from_table(BlogPost.table)
+          query.projected_table.should == BlogPost.table
         end
       end
 
-      context "if #projected_set= has been called" do
-        it "returns the Set that was assigned" do
-          query.projected_set = Blog.set
-          query.projected_set.should == Blog.set
+      context "if #projected_table= has been called" do
+        it "returns the Table that was assigned" do
+          query.projected_table = Blog.table
+          query.projected_table.should == Blog.table
         end
       end
     end

@@ -10,10 +10,10 @@ module Model
             @subdomain = User.find("nathan")
           end
 
-          context "when the given representation's type is 'set'" do
-            it "resolves the name of the set in the given subdomain" do
+          context "when the given representation's type is 'table'" do
+            it "resolves the name of the table in the given subdomain" do
               relation = Relation.from_wire_representation({
-                "type" => "set",
+                "type" => "table",
                 "name" => "blog_posts"
               }, subdomain)
               relation.should == subdomain.blog_posts
@@ -25,14 +25,14 @@ module Model
               representation = {
                 "type" => "selection",
                 "operand" => {
-                  "type" => "set",
+                  "type" => "table",
                   "name" => "answers"
                 },
                 "predicate" => {
                   "type" => "eq",
                   "left_operand" => {
                     "type" => "column",
-                    "set" => "answers",
+                    "table" => "answers",
                     "name" => "correct"
                   },
                   "right_operand" => {
@@ -51,23 +51,23 @@ module Model
               representation = {
                 "type" => "inner_join",
                 "left_operand" => {
-                  "type" => "set",
+                  "type" => "table",
                   "name" => "questions"
                 },
                 "right_operand" => {
-                  "type" => "set",
+                  "type" => "table",
                   "name" => "answers"
                 },
                 "predicate" => {
                   "type" => "eq",
                   "left_operand" => {
                     "type" => "column",
-                    "set" => "questions",
+                    "table" => "questions",
                     "name" => "id"
                   },
                   "right_operand" => {
                     "type" => "column",
-                    "set" => "answers",
+                    "table" => "answers",
                     "name" => "question_id"
                   }
                 }
@@ -78,38 +78,38 @@ module Model
             end
           end
 
-          context "when the given representation's type is 'set_projection'" do
-            it "delegates to SetProjection.from_wire_representation" do
+          context "when the given representation's type is 'table_projection'" do
+            it "delegates to TableProjection.from_wire_representation" do
               representation = {
-                "type" => "set_projection",
-                "projected_set" => "answers",
+                "type" => "table_projection",
+                "projected_table" => "answers",
                 "operand" => {
                   "type" => "inner_join",
                   "left_operand" => {
-                    "type" => "set",
+                    "type" => "table",
                     "name" => "questions"
                   },
                   "right_operand" => {
-                    "type" => "set",
+                    "type" => "table",
                     "name" => "answers"
                   },
                   "predicate" => {
                     "type" => "eq",
                     "left_operand" => {
                       "type" => "column",
-                      "set" => "questions",
+                      "table" => "questions",
                       "name" => "id"
                     },
                     "right_operand" => {
                       "type" => "column",
-                      "set" => "answers",
+                      "table" => "answers",
                       "name" => "question_id"
                     }
                   }
                 }
               }
 
-              mock(SetProjection).from_wire_representation(representation, subdomain)
+              mock(TableProjection).from_wire_representation(representation, subdomain)
               Relation.from_wire_representation(representation, subdomain)
             end
           end
@@ -120,88 +120,88 @@ module Model
         describe "#where" do
           it "returns a Selection with self as #operand and the given Predicate as #predicate" do
             predicate = BlogPost[:id].eq("grain_quinoa")
-            selection = BlogPost.set.where(predicate)
+            selection = BlogPost.table.where(predicate)
             selection.class.should == Selection
-            selection.operand.should == BlogPost.set
+            selection.operand.should == BlogPost.table
             selection.predicate.should == predicate
           end
         end
 
         describe "#join, #on" do
-          context "when passed a Set" do
+          context "when passed a Table" do
             it "returns an InnerJoin with self as #left_operand and the given Relation as #right_operand, then the Predicate passed to .on as its #predicate" do
               predicate = BlogPost[:blog_id].eq(Blog[:id])
-              join = Blog.set.join(BlogPost.set).on(predicate)
+              join = Blog.table.join(BlogPost.table).on(predicate)
               join.class.should == InnerJoin
-              join.left_operand.should == Blog.set
-              join.right_operand.should == BlogPost.set
+              join.left_operand.should == Blog.table
+              join.right_operand.should == BlogPost.table
               join.predicate.should == predicate
             end
           end
 
-          context "when passed a subclass of Tuple" do
-            it "returns an InnerJoin with self as #left_operand and the #set of the given Tuple subclass as #right_operand, then the Predicate passed to .on as its #predicate" do
+          context "when passed a subclass of Record" do
+            it "returns an InnerJoin with self as #left_operand and the #table of the given Record subclass as #right_operand, then the Predicate passed to .on as its #predicate" do
               predicate = BlogPost[:blog_id].eq(Blog[:id])
-              join = Blog.set.join(BlogPost).on(predicate)
+              join = Blog.table.join(BlogPost).on(predicate)
               join.class.should == InnerJoin
-              join.left_operand.should == Blog.set
-              join.right_operand.should == BlogPost.set
+              join.left_operand.should == Blog.table
+              join.right_operand.should == BlogPost.table
               join.predicate.should == predicate
             end
           end
         end
 
         describe "#project" do
-          context "when passed a Set" do
-            it "returns a SetProjection with self as #operand and the given Set as its #projected_set" do
-              join = Blog.set.join(BlogPost.set).on(BlogPost[:blog_id].eq(Blog[:id]))
-              projection = join.project(BlogPost.set)
-              projection.class.should == SetProjection
+          context "when passed a Table" do
+            it "returns a TableProjection with self as #operand and the given Table as its #projected_table" do
+              join = Blog.table.join(BlogPost.table).on(BlogPost[:blog_id].eq(Blog[:id]))
+              projection = join.project(BlogPost.table)
+              projection.class.should == TableProjection
               projection.operand.should == join
-              projection.projected_set.should == BlogPost.set
+              projection.projected_table.should == BlogPost.table
             end
           end
 
-          context "when passed a subclass of Tuple" do
-            it "returns a SetProjection with self as #operand and the #set of the given Tuple subclass as its #projected_set" do
-              join = Blog.set.join(BlogPost.set).on(BlogPost[:blog_id].eq(Blog[:id]))
+          context "when passed a subclass of Record" do
+            it "returns a TableProjection with self as #operand and the #table of the given Record subclass as its #projected_table" do
+              join = Blog.table.join(BlogPost.table).on(BlogPost[:blog_id].eq(Blog[:id]))
               projection = join.project(BlogPost)
-              projection.class.should == SetProjection
+              projection.class.should == TableProjection
               projection.operand.should == join
-              projection.projected_set.should == BlogPost.set
+              projection.projected_table.should == BlogPost.table
             end
           end
         end
 
         describe "#find" do
           context "when passed an id" do
-            it "returns the first Tuple in a Selection where id is equal to the given id" do
-              BlogPost.set.find("grain_quinoa").should == BlogPost.set.where(BlogPost[:id].eq("grain_quinoa")).tuples.first
+            it "returns the first Record in a Selection where id is equal to the given id" do
+              BlogPost.table.find("grain_quinoa").should == BlogPost.table.where(BlogPost[:id].eq("grain_quinoa")).records.first
             end
           end
 
           context "when passed a Predicate" do
-            it "returns the first Tuple in the Relation that matches the Predicate" do
-              BlogPost.set.find(BlogPost[:body].eq("Millet")).should == BlogPost.where(BlogPost[:body].eq("Millet")).tuples.first
+            it "returns the first Record in the Relation that matches the Predicate" do
+              BlogPost.table.find(BlogPost[:body].eq("Millet")).should == BlogPost.where(BlogPost[:body].eq("Millet")).records.first
             end
           end
         end
 
 
-        describe "#tuple_wire_representations" do
-          it "returns the #wire_representation of all its #tuples" do
-            BlogPost.set.tuple_wire_representations.should == BlogPost.set.tuples.map {|t| t.wire_representation}
+        describe "#record_wire_representations" do
+          it "returns the #wire_representation of all its #records" do
+            BlogPost.table.record_wire_representations.should == BlogPost.table.records.map {|t| t.wire_representation}
           end
         end
 
         describe "#each" do
-          specify "delegates to #tuples of #set" do
-            tuples = []
-            stub(BlogPost.set).tuples { tuples }
+          specify "delegates to #records of #table" do
+            records = []
+            stub(BlogPost.table).records { records }
 
             block = lambda {}
-            mock(tuples).each(&block)
-            BlogPost.set.each(&block)
+            mock(records).each(&block)
+            BlogPost.table.each(&block)
           end
         end
       end

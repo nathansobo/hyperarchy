@@ -1,4 +1,4 @@
-class Blog < Model::Tuple
+class Blog < Model::Record
   column :title, :string
   column :user_id, :string
 

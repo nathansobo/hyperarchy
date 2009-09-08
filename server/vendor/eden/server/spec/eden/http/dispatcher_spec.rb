@@ -20,10 +20,10 @@ module Http
         request.session_id = "sample-session-id"
         mock_resource = Object.new
 
-        mock(Model::GlobalDomain).initialize_identity_maps.ordered
+        mock(Model::Repository).initialize_identity_maps.ordered
         mock(dispatcher).locate_resource(request.path_info, request.session_id).ordered { mock_resource }
         mock(mock_resource).get(request.params).ordered
-        mock(Model::GlobalDomain).clear_identity_maps.ordered
+        mock(Model::Repository).clear_identity_maps.ordered
 
         dispatcher.call(request.env)
       end

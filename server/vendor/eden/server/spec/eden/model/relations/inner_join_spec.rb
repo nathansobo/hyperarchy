@@ -9,23 +9,23 @@ module Model
           representation = {
             "type" => "inner_join",
             "left_operand" => {
-              "type" => "set",
+              "type" => "table",
               "name" => "blogs"
             },
             "right_operand" => {
-              "type" => "set",
+              "type" => "table",
               "name" => "blog_posts"
             },
             "predicate" => {
               "type" => "eq",
               "left_operand" => {
                 "type" => "column",
-                "set" => "blogs",
+                "table" => "blogs",
                 "name" => "id"
               },
               "right_operand" => {
                 "type" => "column",
-                "set" => "blog_posts",
+                "table" => "blog_posts",
                 "name" => "blog_id"
               }
             }

@@ -1,2 +1,2 @@
 Origin.connection = Sequel.sqlite
-Model::GlobalDomain.create_schema
+Model::Repository.create_schema

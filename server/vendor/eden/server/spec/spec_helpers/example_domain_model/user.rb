@@ -1,12 +1,12 @@
-class User < Model::Tuple
+class User < Model::Record
   column :full_name, :string
   column :email_address, :string
 
   relates_to_many :blogs do
-    Blog.set
+    Blog.table
   end
 
   relates_to_many :blog_posts do
-    BlogPost.set
+    BlogPost.table
   end
 end

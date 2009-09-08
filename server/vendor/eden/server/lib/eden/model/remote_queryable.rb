@@ -18,10 +18,10 @@ module Model
     end
 
     def add_to_relational_snapshot(snapshot, relation)
-      set_name = relation.tuple_class.set.global_name.to_s
-      snapshot[set_name] ||= {}
-      relation.tuple_wire_representations.each do |representation|
-        snapshot[set_name][representation["id"]] = representation
+      table_name = relation.record_class.table.global_name.to_s
+      snapshot[table_name] ||= {}
+      relation.record_wire_representations.each do |representation|
+        snapshot[table_name][representation["id"]] = representation
       end
     end
   end

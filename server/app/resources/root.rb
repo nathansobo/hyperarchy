@@ -3,7 +3,7 @@ module Resources
     def locate(path_fragment)
       case path_fragment
       when "domain"
-        Model::GlobalDomain.instance
+        Model::Repository.instance
       when "users"
         Users.new
       when "login"

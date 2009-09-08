@@ -10,9 +10,9 @@ module("Util", {
   },
 
   remove: function(array, element) {
-    var tuple_index = array.indexOf(element);
-    if (tuple_index == -1) return null;
-    array.splice(tuple_index, 1);
+    var record_index = array.indexOf(element);
+    if (record_index == -1) return null;
+    array.splice(record_index, 1);
     return element;
   }
 });
