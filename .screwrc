@@ -1,7 +1,11 @@
-ScrewUnit.configure do
+  ScrewUnit.configure do
   port 8282
-  code_under_test_path "public/javascript"
-  specs_path "spec/javascript"
-  sprockets_enabled true
-  sprockets_load_paths "public/javascript", "public/javascript/vendor", "spec/javascript"
+
+  add_js_location "/eden_vendor", "server/vendor/eden/client/vendor"
+  add_js_location "/eden", "server/vendor/eden/client/lib"
+  add_js_location "/vendor", "client/vendor"
+  add_js_location "/app", "client/app"
+
+  add_js_location "/specs/app", "client/spec"
+  add_js_location "/specs/eden", "server/vendor/eden/client/spec"
 end

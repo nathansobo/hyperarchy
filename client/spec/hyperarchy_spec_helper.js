@@ -1,4 +1,4 @@
-//= require <hyperarchy>
+//= require <application>
 
 Screw.Unit(function(c) { with(c) {
   before(function() {

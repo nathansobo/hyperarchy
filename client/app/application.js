@@ -1,4 +1,3 @@
-//= require <jquery.history>
-//= require <htmlescape>
+//= require <eden>
 //= require "models"
 //= require "views"
