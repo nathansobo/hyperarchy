@@ -57,15 +57,15 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe(".create", function() {
-        context("when Repository.remote_create responds successfully", function() {
+        context("when RemoteRepository.remote_create responds successfully", function() {
           it("calls .local_create with the field values returned by the remote repository and triggers success callbacks with the result", function() {
             var remote_create_future = new AjaxFuture();
-            mock(Model.Repository, 'remote_create', function() {
+            mock(Model.RemoteRepository, 'remote_create', function() {
               return remote_create_future;
             });
 
             var create_future = Animal.create({ name: "Keefa" });
-            expect(Model.Repository.remote_create).to(have_been_called, with_args(Animal.table, { name: "Keefa" }));
+            expect(Model.RemoteRepository.remote_create).to(have_been_called, with_args(Animal.table, { name: "Keefa" }));
 
             var mock_local_create_result = {};
             mock(Animal, 'local_create', function() {

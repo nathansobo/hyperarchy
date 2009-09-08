@@ -30,7 +30,7 @@ constructor("Model.Record", {
     create: function(field_values) {
       var self = this;
       var future = new AjaxFuture();
-      Model.Repository.remote_create(this.table, field_values)
+      Model.RemoteRepository.remote_create(this.table, field_values)
         .on_success(function(returned_field_values) {
           future.trigger_success(self.local_create(returned_field_values));
         });

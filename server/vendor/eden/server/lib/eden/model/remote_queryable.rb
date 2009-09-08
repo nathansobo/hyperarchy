@@ -1,5 +1,5 @@
 module Model
-  module Domain
+  module RemoteQueryable
     def get(params)
       relation_wire_representations = JSON.parse(params["relations"])
       [200, { 'Content-Type' => 'application/json' }, fetch(relation_wire_representations).to_json]

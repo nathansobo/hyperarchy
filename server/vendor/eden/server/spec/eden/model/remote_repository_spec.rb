@@ -1,7 +1,7 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../eden_spec_helper")
 
 module Model
-  describe Repository do
+  describe RemoteRepository do
     describe "#insert" do
       it "performs a database insert into the table corresponding to the given Set with the given field values" do
         id = Guid.new.to_s

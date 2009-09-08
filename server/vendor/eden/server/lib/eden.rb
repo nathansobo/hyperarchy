@@ -27,7 +27,7 @@ class Hash
   include ActiveSupport::CoreExtensions::Hash::Keys
 end
 
-Origin = Model::Repository.new
+Origin = Model::RemoteRepository.new
 
 Http::StaticAssetManager.add_js_directory("#{EDEN_CLIENT_SERVER_ROOT}/lib", "/eden/lib")
 Http::StaticAssetManager.add_js_directory("#{EDEN_CLIENT_SERVER_ROOT}/vendor", "/eden/vendor")

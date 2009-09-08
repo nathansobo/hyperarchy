@@ -79,7 +79,7 @@ module Model
                :to => :set
     end
 
-    include Domain
+    include RemoteQueryable
     attr_reader :fields_by_column, :relations_by_name
     attr_writer :dirty
 

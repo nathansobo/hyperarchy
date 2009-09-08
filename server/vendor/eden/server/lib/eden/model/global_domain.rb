@@ -9,7 +9,7 @@ module Model
                :sets, :initialize_identity_maps, :clear_identity_maps,
                :to => :instance
     end
-    include Domain
+    include RemoteQueryable
 
     attr_reader :sets_by_name
     def initialize

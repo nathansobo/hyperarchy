@@ -138,14 +138,14 @@ module Model
       end
 
       describe "#dirty?" do
-        context "when a Tuple has been instantiated but not inserted into the Repository" do
+        context "when a Tuple has been instantiated but not inserted into the RemoteRepository" do
           it "returns true" do
             tuple = BlogPost.new
             tuple.should be_dirty
           end
         end
 
-        context "when a Tuple has been inserted into the Repository and not modified since" do
+        context "when a Tuple has been inserted into the RemoteRepository and not modified since" do
           it "returns false" do
             tuple = BlogPost.new(:blog_id => "grain", :body => "Bulgar Wheat")
             tuple.save
@@ -153,7 +153,7 @@ module Model
           end
         end
 
-        context "when a Tuple has been inserted into the Repository and subsequently modified" do
+        context "when a Tuple has been inserted into the RemoteRepository and subsequently modified" do
           it "returns true" do
             tuple = BlogPost.new(:blog_id => "grain", :body => "Bulgar Wheat")
             tuple.save
@@ -162,14 +162,14 @@ module Model
           end
         end
 
-        context "when a Tuple is first loaded from a Repository" do
+        context "when a Tuple is first loaded from a RemoteRepository" do
           it "returns false" do
             tuple = BlogPost.find("grain_quinoa")
             tuple.should_not be_dirty
           end
         end
 
-        context "when a Tuple has been modified since being loaded from the Repository" do
+        context "when a Tuple has been modified since being loaded from the RemoteRepository" do
           it "returns true" do
             tuple = BlogPost.find("grain_quinoa")
             tuple.body = "Red Rice"
