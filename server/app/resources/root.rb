@@ -2,8 +2,8 @@ module Resources
   class Root < Http::Resource
     def locate(path_fragment)
       case path_fragment
-      when "domain"
-        Model::Repository.instance
+      when "user_repository"
+        UserRepository.new(current_user)
       when "users"
         Users.new
       when "login"

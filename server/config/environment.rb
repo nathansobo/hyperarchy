@@ -8,7 +8,7 @@ unless Object.const_defined?(:ENVIRONMENT)
   ENVIRONMENT = ENV['ENVIRONMENT'] || 'development'
 end 
 
-require "#{SERVER_ROOT}/vendor/eden/server/lib/eden"
+require "#{SERVER_ROOT}/vendor/monarch/server/lib/monarch"
 require "rubygems"
 require "bcrypt"
 require "erector"
@@ -21,6 +21,6 @@ class Hash
   include ActiveSupport::CoreExtensions::Hash::Keys
 end
 
-Http::StaticAssetManager.add_js_directory("#{CLIENT_ROOT}/app", "/javascript/app")
-Http::StaticAssetManager.add_js_directory("#{CLIENT_ROOT}/vendor", "/javascript/vendor")
+Http::AssetManager.add_js_location("/javascript/app", "#{CLIENT_ROOT}/app")
+Http::AssetManager.add_location("/stylesheets", "#{CLIENT_ROOT}/stylesheets")
 require "#{dir}/environments/#{ENVIRONMENT}"

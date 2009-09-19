@@ -20,7 +20,7 @@ module Views
 
 
     def application_javascript_tags
-      Http::StaticAssetManager.dependency_paths('eden.js', 'application.js').each do |path|
+      Http::AssetManager.virtual_dependency_paths_from_load_path('application.js').each do |path|
         script :type => "text/javascript", :language => "javascript", :src => path
       end
     end

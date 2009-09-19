@@ -2,6 +2,8 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Views.Application", function() {
+    use_fake_server();
+    
     var view;
     before(function() {
       mock(jQuery.history, 'init');

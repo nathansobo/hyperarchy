@@ -16,7 +16,7 @@ constructor("Views.Login", View.Template, {
   view_properties: {
     login_submitted: function() {
       var self = this;
-      Server.post('/login', this.field_values())
+      Origin.post('/login', this.field_values())
         .on_success(function(data) {
           Application.current_user_id_established(data.current_user_id);
           jQuery.history.load('elections');

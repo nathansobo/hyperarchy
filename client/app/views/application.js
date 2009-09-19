@@ -41,7 +41,6 @@ constructor("Views.Application", View.Template, {
 
     current_user_id_established: function(current_user_id) {
       this.current_user_id = current_user_id;
-      Model.Repository.origin_url = "/users/" + current_user_id + "/repository"
     }
   }
 });

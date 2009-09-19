@@ -12,8 +12,20 @@ class Db < Thor
     Model::Repository.create_schema
   end
 
+  desc "load_fixtures", "load the test fixtures into the development database"
+  def load_fixtures
+    require "#{dir}/../config/environments/development"
+    require "#{dir}/../spec/spec_helpers/fixtures"
+    Model::Repository::load_fixtures(FIXTURES)
+  end
+
   desc "console", "connect to the 'hyperarchy_development' database in mysql console"
   def console
     exec "/usr/bin/env mysql -uroot -ppassword hyperarchy_development"
+  end
+
+  private
+  def dir
+    File.dirname(__FILE__)
   end
 end
