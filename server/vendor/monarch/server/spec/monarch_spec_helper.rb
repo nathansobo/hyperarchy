@@ -15,7 +15,7 @@ Spec::Runner.configure do |config|
   config.mock_with :rr
   config.before do
     Model::Repository.clear_tables
-    Model::Repository.load_fixtures
+    Model::Repository.load_fixtures(FIXTURES)
     Model::Repository.initialize_identity_maps
   end
 

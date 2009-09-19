@@ -14,7 +14,6 @@ require "active_support/core_ext/module/delegation"
 require "active_support/core_ext/hash/keys"
 require "active_support/core_ext/hash/indifferent_access"
 require "active_support/core_ext/string/starts_ends_with"
-require "#{MONARCH_SERVER_SERVER_ROOT}/vendor/sprockets/lib/sprockets"
 
 require "#{dir}/monarch/http"
 require "#{dir}/monarch/model"
