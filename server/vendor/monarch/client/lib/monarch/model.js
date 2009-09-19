@@ -1,0 +1,7 @@
+//= require "model/repository"
+//= require "model/fetch_future"
+//= require "model/record"
+//= require "model/field"
+//= require "model/column"
+//= require "model/relations"
+//= require "model/predicates"
