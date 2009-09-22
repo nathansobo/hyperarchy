@@ -174,20 +174,20 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe(".bind declarations", function() {
+    describe(".ref declarations", function() {
       var view, child_callback;
 
       before(function() {
         child_callback = mock_function("child callback");
         with(builder) {
           div({'id': 'root'}, function() {
-            div({'id': 'child'}).bind('child').click(child_callback);
-          }).bind('root');
+            div({'id': 'child'}).ref('child').click(child_callback);
+          }).ref('root');
         }
         view = builder.to_view();
       });
 
-      they("create fields on the generated view that point to the element on which .bind was called", function() {
+      they("create fields on the generated view that point to the element on which .ref was called", function() {
         expect(view.root.attr('id')).to(equal, 'root');
         expect(view.child.attr('id')).to(equal, 'child');
       });

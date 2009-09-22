@@ -11,6 +11,10 @@ Screw.Unit(function(c) {
             mike: {
               full_name: 'Mike Schore',
               age: 28
+            },
+            wil: {
+              full_name: 'Wil Bierbaum',
+              age: 28
             }
           },
           blogs: {

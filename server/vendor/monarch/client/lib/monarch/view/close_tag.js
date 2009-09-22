@@ -37,7 +37,7 @@ constructor("View.CloseTag", {
     return "</" + this.name + ">"
   },
 
-  bind: function(name) {
+  ref: function(name) {
     this.on_build(function(element, view) {
       view[name] = element;
     });

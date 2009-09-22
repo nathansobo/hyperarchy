@@ -2,7 +2,6 @@ module Model
   module Relations
     class Table < Relation
       attr_reader :global_name, :record_class, :columns_by_name
-      attr_accessor :declared_fixtures
 
       def initialize(global_name, record_class)
         @global_name, @record_class = global_name, record_class

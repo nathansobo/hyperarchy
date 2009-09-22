@@ -66,10 +66,6 @@ module Model
         name.split("::").last
       end
 
-      def fixtures(declared_fixtures)
-        table.declared_fixtures = declared_fixtures
-      end
-
       def relation_definitions
         @relation_definitions ||= ActiveSupport::OrderedHash.new
       end

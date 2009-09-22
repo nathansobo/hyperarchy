@@ -9,6 +9,13 @@ constructor("Model.Column", {
     return new Model.Predicates.Eq(this, right_operand);
   },
 
+  asc: function() {
+    return new Model.OrderByColumn(this, 'asc');
+  },
+
+  desc: function() {
+    return new Model.OrderByColumn(this, 'desc');
+  },
 
   wire_representation: function() {
     return {

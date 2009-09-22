@@ -15,6 +15,30 @@ constructor("Model.Relations.Relation", {
     return new Model.Relations.Selection(this, predicate);
   },
 
+  order_by: function() {
+    var self = this;
+    var order_by_columns = Util.map(Util.to_array(arguments), function(order_by_column) {
+      if (order_by_column instanceof Model.OrderByColumn) {
+        return order_by_column;
+      } else if (order_by_column instanceof Model.Column) {
+        return order_by_column.asc();
+      } else if (typeof order_by_column == "string") {
+        var parts = order_by_column.split(/ +/);
+        var column_name = parts[0];
+        var direction = parts[1] || 'asc';
+        if (direction == 'desc') {
+          return self.primary_table().columns_by_name[column_name].desc();
+        } else {
+          return self.primary_table().columns_by_name[column_name].asc();
+        }
+      } else {
+        throw new Error("You can only order by Columns, OrderByColumns, or 'column_name direction' strings");
+      }
+    });
+
+    return new Model.Relations.Ordering(this, order_by_columns);
+  },
+
   each: function(fn) {
     Util.each(this.all(), fn);
   },

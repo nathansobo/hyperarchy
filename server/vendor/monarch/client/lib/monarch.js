@@ -8,6 +8,7 @@
 //= require "monarch/subscription"
 //= require "monarch/subscription_bundle"
 //= require "monarch/ajax_future"
+//= require "monarch/queue"
 //= require "monarch/inflection"
 //= require "monarch/server"
 //= require "monarch/model"

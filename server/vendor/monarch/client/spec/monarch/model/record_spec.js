@@ -74,6 +74,31 @@ Screw.Unit(function(c) { with(c) {
         var relation = user.blogs();
         expect(relation.predicate).to(equal, Blog.user_id.eq("jan"));
       });
+
+      context("if a single 'order_by' column is supplied in the options", function() {
+        it("constructs an ordered has_many relation ordered by that one column", function() {
+          User.has_many('blogs', { order_by: "name desc" });
+          var user = User.local_create({id: "jerry"});
+          var ordering = user.blogs();
+          expect(ordering.constructor).to(equal, Model.Relations.Ordering);
+          expect(ordering.order_by_columns[0].column).to(equal, Blog.name);
+          expect(ordering.order_by_columns[0].direction).to(equal, "desc");
+        });
+      });
+
+      context("if multiple 'order_by' columns are supplied in the options", function() {
+        it("constructs an ordered has_many relation ordered by those columns", function() {
+          User.has_many('blogs', { order_by: ["name desc", "user_id"]});
+          var user = User.local_create({id: "jerry"});
+          var ordering = user.blogs();
+          expect(ordering.constructor).to(equal, Model.Relations.Ordering);
+          expect(ordering.order_by_columns.length).to(equal, 2);
+          expect(ordering.order_by_columns[0].column).to(equal, Blog.name);
+          expect(ordering.order_by_columns[0].direction).to(equal, "desc");
+          expect(ordering.order_by_columns[1].column).to(equal, Blog.user_id);
+          expect(ordering.order_by_columns[1].direction).to(equal, "asc");
+        });
+      });
     });
 
     describe(".create(field_values)", function() {

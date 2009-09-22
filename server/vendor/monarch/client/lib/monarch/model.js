@@ -3,5 +3,6 @@
 //= require "model/record"
 //= require "model/field"
 //= require "model/column"
+//= require "model/order_by_column"
 //= require "model/relations"
 //= require "model/predicates"

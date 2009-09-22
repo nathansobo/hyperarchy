@@ -3,7 +3,7 @@
 Screw.Unit(function(c) { with(c) {
   describe("Model.Relations.Relation (abstract superclass)", function() {
     use_local_fixtures();
-    var relation, insert;
+    var relation, insert, column_1, column_2;
 
     scenario("Table subclass", function() {
       init(function() {
@@ -11,6 +11,8 @@ Screw.Unit(function(c) { with(c) {
         insert = function(record) {
           Blog.table.insert(record);
         }
+        column_1 = Blog.user_id;
+        column_2 = Blog.name;
       })
     })
 
@@ -20,6 +22,8 @@ Screw.Unit(function(c) { with(c) {
         insert = function(record) {
           Blog.table.insert(record);
         }
+        column_1 = Blog.user_id;
+        column_2 = Blog.name;
       })
     })
 
@@ -48,6 +52,38 @@ Screw.Unit(function(c) { with(c) {
         expect(selection.constructor).to(equal, Model.Relations.Selection);
         expect(selection.operand).to(equal, relation);
         expect(selection.predicate).to(equal, predicate);
+      });
+    });
+
+    describe("#order_by(order_by_columns...)", function() {
+      context("when passed OrderByColumns", function() {
+        it("builds an Ordering relation with the receiver as its #operand and the given #order_by_columns", function() {
+          var ordering = relation.order_by(column_1.asc(), column_2.desc());
+          expect(ordering.order_by_columns[0].column).to(equal, column_1);
+          expect(ordering.order_by_columns[0].direction).to(equal, "asc");
+          expect(ordering.order_by_columns[1].column).to(equal, column_2);
+          expect(ordering.order_by_columns[1].direction).to(equal, "desc");
+        });
+      });
+
+      context("when passed naked Columns", function() {
+        it("builds an Ordering relation with the receiver as its #operand and defaults the OrderByColumns to ascending", function() {
+          var ordering = relation.order_by(column_1, column_2);
+          expect(ordering.order_by_columns[0].column).to(equal, column_1);
+          expect(ordering.order_by_columns[0].direction).to(equal, "asc");
+          expect(ordering.order_by_columns[1].column).to(equal, column_2);
+          expect(ordering.order_by_columns[1].direction).to(equal, "asc");
+        });
+      });
+
+      context("when passed strings", function() {
+        it("builds an Ordering relation with the receiver as its #operand and defaults the OrderByColumns to ascending", function() {
+          var ordering = relation.order_by(column_1.name + " asc", column_2.name + " desc");
+          expect(ordering.order_by_columns[0].column).to(equal, column_1);
+          expect(ordering.order_by_columns[0].direction).to(equal, "asc");
+          expect(ordering.order_by_columns[1].column).to(equal, column_2);
+          expect(ordering.order_by_columns[1].direction).to(equal, "desc");
+        });
       });
     });
   });
