@@ -17,6 +17,30 @@ constructor("Views.Application", View.Template, {
       jQuery.history.init(function(path) {
         self.navigate(path);
       });
+
+      var connection = new Strophe.Connection("/http-bind");
+      connection.connect("nathan", "password", function(status) {
+        if (status == Strophe.Status.CONNECTING) {
+          console.log('Strophe is connecting.');
+        } else if (status == Strophe.Status.CONNFAIL) {
+          console.log('Strophe failed to connect.');
+          $('#connect').get(0).value = 'connect';
+        } else if (status == Strophe.Status.DISCONNECTING) {
+          console.log('Strophe is disconnecting.');
+        } else if (status == Strophe.Status.DISCONNECTED) {
+          console.log('Strophe is disconnected.');
+          $('#connect').get(0).value = 'connect';
+        } else if (status == Strophe.Status.CONNECTED) {
+          console.log('Strophe is connected.');
+          connection.send($pres());
+
+          console.debug("sth", $build("iq", {type: "get"}).c("query", {xmlns: Strophe.NS.DISCO_ITEMS}));
+
+
+          connection.send($iq({type: "get"}).c("query", {xmlns: Strophe.NS.DISCO_ITEMS}));
+
+        }
+      });
     },
 
     navigate: function(path) {
@@ -41,6 +65,7 @@ constructor("Views.Application", View.Template, {
 
     current_user_id_established: function(current_user_id) {
       this.current_user_id = current_user_id;
+
     }
   }
 });

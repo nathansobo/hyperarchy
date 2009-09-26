@@ -1,6 +1,10 @@
 //= require <jquery-1.3.2>
 //= require <jquery.history>
 //= require <htmlescape>
+//= require <b64>
+//= require <sha1>
+//= require <md5>
+//= require <strophe>
 //= require "monarch/module_system"
 //= require "monarch/util"
 //= require "monarch/object"
