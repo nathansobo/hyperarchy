@@ -5,6 +5,7 @@ constructor("Model.Relations.Table", Model.Relations.Relation, {
     this.global_name = global_name;
     this.record_constructor = record_constructor;
     this.columns_by_name = {};
+    this.synthetic_columns_by_name = {};
     this.records = [];
     this.records_by_id = {};
 
@@ -13,6 +14,10 @@ constructor("Model.Relations.Table", Model.Relations.Relation, {
 
   define_column: function(name, type) {
     return this.columns_by_name[name] = new Model.Column(this, name, type);
+  },
+
+  define_synthetic_column: function(name, definition) {
+    return this.synthetic_columns_by_name[name] = new Model.SyntheticColumn(this, name, definition);
   },
 
   column: function(name) {
@@ -45,13 +50,13 @@ constructor("Model.Relations.Table", Model.Relations.Relation, {
     };
   },
 
-  pause_delta_events: function() {
+  pause_events: function() {
     this.on_insert_node.pause_events();
     this.on_remove_node.pause_events();
     this.on_update_node.pause_events();
   },
 
-  resume_delta_events: function() {
+  resume_events: function() {
     this.on_insert_node.resume_events();
     this.on_remove_node.resume_events();
     this.on_update_node.resume_events();
@@ -62,7 +67,7 @@ constructor("Model.Relations.Table", Model.Relations.Relation, {
     Util.each(dataset, function(id, attributes) {
       var extant_record = self.find(id);
       if (extant_record) {
-        extant_record.update(attributes);
+        extant_record.local_update(attributes);
       } else {
         self.record_constructor.local_create(attributes)
       }

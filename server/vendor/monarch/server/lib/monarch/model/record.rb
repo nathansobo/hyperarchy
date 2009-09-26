@@ -77,7 +77,7 @@ module Model
 
     attr_reader :fields_by_column, :relations_by_name
     attr_writer :dirty
-
+    delegate :table, :to => "self.class"
 
     def initialize(field_values = {})
       unsafe_initialize(field_values.merge(:id => Guid.new.to_s))
@@ -91,19 +91,35 @@ module Model
       initialize_relations
     end
 
-    def update(field_values)
-      field_values.each do |column_name, value|
-        self.send("#{column_name}=", value)
+    def reload
+      Origin.reload(self)
+    end
+
+    def update(values_by_method_name)
+      values_by_method_name.each do |method_name, value|
+        self.send("#{method_name}=", value)
       end
+      dirty_field_values_by_column_name
+    end
+
+    def update_fields(field_values_by_column_name)
+      field_values_by_column_name.each do |column_name, value|
+        self.field(column_name).value = value
+      end
+      dirty_field_values_by_column_name
     end
 
     def save
       Origin.update(table, field_values_by_column_name)
-      @dirty = false
+      mark_clean
     end
 
     def dirty?
-      @dirty
+      fields.any? {|field| field.dirty?}
+    end
+
+    def mark_clean
+      fields.each { |field| field.mark_clean }
     end
 
     def field_values_by_column_name
@@ -113,16 +129,40 @@ module Model
       end
     end
 
+    def dirty_field_values_by_column_name
+      dirty_fields.inject({}) do |field_values, field|
+        field_values[field.column.name] = field.value_wire_representation
+        field_values
+      end
+    end
+
+    def fields
+      fields_by_column.values
+    end
+
+    def dirty_fields
+      fields.select { |field| field.dirty? }
+    end
+
+    def field(column)
+      case column
+      when String, Symbol
+        fields_by_column[table.column(column)]
+      when Column
+        fields_by_column[column]
+      end
+    end
+
     def wire_representation
       field_values_by_column_name.stringify_keys
     end
 
     def set_field_value(column, value)
-      fields_by_column[column].value = value
+      field(column).value = value
     end
 
     def get_field_value(column)
-      fields_by_column[column].value
+      field(column).value
     end
 
     def initialize_fields

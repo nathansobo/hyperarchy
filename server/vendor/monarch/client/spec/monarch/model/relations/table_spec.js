@@ -164,8 +164,8 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#pause_delta_events and #resume_delta_events", function() {
-      specify("#pause_delta_events delays #on_insert, #on_remove, and #on_update triggers until #resume_delta_events is called. Then delayed events are flushed and future events are no longer delayed", function() {
+    describe("#pause_events and #resume_events", function() {
+      specify("#pause_events delays #on_insert, #on_remove, and #on_update triggers until #resume_events is called. Then delayed events are flushed and future events are no longer delayed", function() {
         var insert_callback = mock_function("insert callback");
         var update_callback = mock_function("update callback");
         var remove_callback = mock_function("remove callback");
@@ -174,7 +174,7 @@ Screw.Unit(function(c) { with(c) {
         User.table.on_update(update_callback);
         User.table.on_remove(remove_callback);
 
-        User.table.pause_delta_events();
+        User.table.pause_events();
 
         var record = User.local_create({id: "jake", full_name: "Jake Frautschi"});
         record.full_name("Jacob Frautschi");
@@ -184,7 +184,7 @@ Screw.Unit(function(c) { with(c) {
         expect(update_callback).to_not(have_been_called);
         expect(remove_callback).to_not(have_been_called);
 
-        User.table.resume_delta_events();
+        User.table.resume_events();
 
         expect(insert_callback).to(have_been_called, with_args(record));
         expect(update_callback).to(have_been_called, with_args(record, {

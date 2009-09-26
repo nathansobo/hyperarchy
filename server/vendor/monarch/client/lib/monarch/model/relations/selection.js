@@ -37,10 +37,10 @@ constructor("Model.Relations.Selection", Model.Relations.Relation, {
       if (self.predicate.evaluate(record)) self.record_removed(record);
     }));
 
-    this.operands_subscription_bundle.add(this.operand.on_update(function(record, changed_attributes) {
+    this.operands_subscription_bundle.add(this.operand.on_update(function(record, changed_fields) {
       if (self.contains(record)) {
         if (self.predicate.evaluate(record)) {
-          self.record_updated(record, changed_attributes);
+          self.record_updated(record, changed_fields);
         } else {
           self.record_removed(record);
         }

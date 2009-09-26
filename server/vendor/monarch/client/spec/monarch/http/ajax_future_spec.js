@@ -1,11 +1,11 @@
-//= require "../monarch_spec_helper"
+//= require "../../monarch_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("AjaxFuture", function() {
+  describe("Http.AjaxFuture", function() {
     var future;
 
     before(function() {
-      future = new AjaxFuture();
+      future = new Http.AjaxFuture();
     });
 
     describe("#handle_response", function() {

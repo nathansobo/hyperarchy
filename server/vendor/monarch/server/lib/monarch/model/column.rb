@@ -19,11 +19,27 @@ module Model
         String
       when :integer
         Integer
+      when :datetime
+        Time
       end
     end
 
-    def convert_value(value)
-      value
+    def convert_value_for_storage(value)
+      case type
+      when :datetime
+        convert_datetime_value_for_storage(value)
+      else
+        value
+      end
+    end
+
+    def convert_value_for_wire(value)
+      case type
+      when :datetime
+        value.to_millis
+      else
+        value
+      end
     end
 
     def to_sql
@@ -32,6 +48,16 @@ module Model
 
     def eq(right_operand)
       Predicates::Eq.new(self, right_operand)
+    end
+
+    protected
+    def convert_datetime_value_for_storage(value)
+      case value
+      when Time
+        value
+      when Integer
+        Time.at(value / 1000)
+      end
     end
   end
 end

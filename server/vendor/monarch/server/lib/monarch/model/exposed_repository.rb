@@ -15,6 +15,17 @@ module Model
       [200, headers, { :successful => true, :data => fetch(relation_wire_representations)}.to_json]
     end
 
+    def put(params)
+      id = params[:id]
+      relation = build_relation_from_wire_representation(JSON.parse(params[:relation]))
+      field_values = JSON.parse(params[:field_values])
+      record = relation.find(id)
+      updated_field_values = record.update(field_values)
+      record.save
+
+      [200, headers, { :successful => true, :data => {:field_values => updated_field_values}}.to_json]
+    end
+
     def headers
       { 'Content-Type' => 'application/json' }
     end

@@ -2433,7 +2433,7 @@ window.Sizzle = Sizzle;
 jQuery.event = {
 
 	// Bind an event to an element
-	// Original by Dean Edwards
+	// Serveral by Dean Edwards
 	add: function(elem, types, callback, data) {
 		if ( elem.nodeType == 3 || elem.nodeType == 8 )
 			return;

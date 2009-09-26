@@ -9,13 +9,16 @@ constructor("Model.Record", {
 
     column: function(name, type) {
       this[name] = this.table.define_column(name, type);
-      this.prototype[name] = function(value) {
-        var field = this.fields_by_column_name[name];
-        if (value) {
-          return field.value(value);
-        } else {
-          return field.value();
-        }
+      this.prototype[name] = function() {
+        var field = this.field(name);
+        return field.value.apply(field, arguments);
+      };
+    },
+
+    synthetic_column: function(name, definition) {
+      this[name] = this.table.define_synthetic_column(name, definition);
+      this.prototype[name] = function() {
+        return this.field(name).value();
       };
     },
 
@@ -60,7 +63,7 @@ constructor("Model.Record", {
 
     create: function(field_values) {
       var self = this;
-      var future = new AjaxFuture();
+      var future = new Http.AjaxFuture();
       Repository.remote_create(this.table, field_values)
         .on_success(function(returned_field_values) {
           future.trigger_success(self.local_create(returned_field_values));
@@ -109,13 +112,14 @@ constructor("Model.Record", {
   },
 
   initialize: function(field_values_by_column_name) {
-    this.initialize_fields_by_column_name();
+    this.primary_fieldset = new Model.Fieldset(this);
+    this.active_fieldset = this.primary_fieldset;
     if (field_values_by_column_name) {
-      this.update_events_enabled = false;
-      this.update(field_values_by_column_name);
+      this.active_fieldset.disable_update_events();
+      this.local_update(field_values_by_column_name);
+      this.active_fieldset.enable_update_events();
     }
-    this.update_events_enabled = true;
-
+    this.primary_fieldset.initialize_synthetic_fields();
     this.initialize_relations();
   },
 
@@ -123,7 +127,7 @@ constructor("Model.Record", {
     this.fields_by_column_name = {};
     for (var attr_name in this.constructor.table.columns_by_name) {
       var column = this.constructor.table.columns_by_name[attr_name];
-      this.fields_by_column_name[attr_name] = new Model.Field(this, column);
+      this.fields_by_column_name[attr_name] = new Model.ConcreteField(this, column);
     }
   },
 
@@ -139,16 +143,56 @@ constructor("Model.Record", {
     this.table().remove(this);
   },
 
-  update: function(field_values_by_column_name) {
-    if (this.update_events_enabled) this.batched_updates = {};
-    for (var attr_name in field_values_by_column_name) {
-      this.fields_by_column_name[attr_name].value(field_values_by_column_name[attr_name])
+  update: function(values_by_method_name) {
+    this.start_pending_changes();
+    this.local_update(values_by_method_name);
+    return this.push();
+  },
+
+  start_pending_changes: function() {
+    this.active_fieldset = this.active_fieldset.new_pending_fieldset();
+  },
+
+  push: function() {
+    var push_future = new Http.RepositoryUpdateFuture();
+    var pending_fieldset = this.active_fieldset;
+    this.restore_primary_fieldset();
+
+    Server.put(Repository.origin_url, {
+      id: this.id(),
+      relation: this.table().wire_representation(),
+      field_values: pending_fieldset.wire_representation()
+    })
+      .on_success(function(data) {
+        pending_fieldset.update(data.field_values);
+        pending_fieldset.commit({
+          before_events: function() {
+            push_future.trigger_before_events();
+          },
+          after_events: function() {
+            push_future.trigger_after_events();
+          }
+        });
+      });
+    
+    return push_future;
+  },
+
+  restore_primary_fieldset: function() {
+    this.active_fieldset = this.primary_fieldset;
+  },
+
+  local_update: function(values_by_method_name, options) {
+    if (!options) options = {};
+    this.active_fieldset.begin_batch_update();
+    for (var method_name in values_by_method_name) {
+      if (this[method_name]) {
+        this[method_name].call(this, values_by_method_name[method_name]);
+      }
     }
-    if (this.update_events_enabled) {
-      var batched_updates = this.batched_updates;
-      this.batched_updates = null;
-      this.table().record_updated(this, batched_updates);
-    }
+    if (options.before_events) options.before_events();
+    this.active_fieldset.finish_batch_update();
+    if (options.after_events) options.after_events();
   },
 
   table: function() {
@@ -156,15 +200,15 @@ constructor("Model.Record", {
   },
 
   wire_representation: function() {
-    var wire_representation = {};
-    Util.each(this.fields_by_column_name, function(column_name, field) {
-      wire_representation[column_name] = field.value();
-    });
-    return wire_representation;
+    return this.active_fieldset.wire_representation();
   },
 
   field: function(column) {
-    return this.fields_by_column_name[column.name];
+    return this.active_fieldset.field(column);
+  },
+
+  signal: function(column, optional_transformer) {
+    return this.field(column).signal(optional_transformer);
   },
 
   evaluate: function(column_or_constant) {

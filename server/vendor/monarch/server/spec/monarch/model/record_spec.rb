@@ -102,7 +102,7 @@ module Model
 
     describe "instance methods" do
       def record
-        @record ||= BlogPost.new(:body => "Quinoa", :blog_id => "grain")
+        @record ||= BlogPost.create(:body => "Quinoa", :blog_id => "grain")
       end
 
       describe "#initialize" do
@@ -124,9 +124,53 @@ module Model
         end
       end
 
+      describe "#reload" do
+        it "reloads field values from the database, bypassing any custom setter methods" do
+          def record.body=(body)
+            self.set_field_value(:body, "EVIL " + body)
+          end
+
+          original_body = record.body
+          record.body = "Something else"
+          record.body.should == "EVIL Something else"
+          record.reload
+          record.body.should == original_body
+        end
+      end
+
       describe "#wire_representation" do
         it "returns #fields_by_column_name with string-valued keys" do
           record.wire_representation.should == record.field_values_by_column_name.stringify_keys
+        end
+      end
+
+      describe "#update(values_by_method_name)" do
+        it "assigns field values by name and returns a hash of any fields that the update changed" do
+          def record.fancy_title=(title)
+            self.title = "Fancy " + title
+          end
+
+          blog_id_before_update = record.blog_id
+
+          dirty_field_values = record.update(:body => "Moo", :fancy_title => "Cows", :blog_id => blog_id_before_update)
+
+          record.body.should == "Moo"
+          record.title.should == "Fancy Cows"
+          record.blog_id.should == blog_id_before_update
+
+          dirty_field_values.should == { :body => "Moo", :title => "Fancy Cows" }
+        end
+      end
+
+      describe "#update_fields(field_values_by_column_name)" do
+        it "writes directly to fields, bypassing any custom writer methods, and returns the fields that were made dirty" do
+          def record.title=(title)
+            self.title = "Fancy " + title
+          end
+          dirty_field_values = record.update_fields(:title => "Aspiration", :body => "I want to break free!", :blog_id => record.blog_id)
+          record.title.should == "Aspiration"
+          record.body.should == "I want to break free!"
+          dirty_field_values.should == { :title => "Aspiration", :body => "I want to break free!" }
         end
       end
 
@@ -190,10 +234,13 @@ module Model
       end
       
       describe "#set_field_value and #get_field_value" do
-        specify "set and get a Field value" do
+        specify "set and get a Field value by Column or Column name" do
           record = BlogPost.new
           record.set_field_value(BlogPost[:body], "Quinoa")
           record.get_field_value(BlogPost[:body]).should == "Quinoa"
+
+          record.set_field_value(:body, "Amaranth")
+          record.get_field_value(:body).should == "Amaranth"
         end
       end
 

@@ -28,7 +28,8 @@ constructor("View.Builder", {
     }
   },
 
-  initialize: function() {
+  initialize: function(template) {
+    this.template = template;
     this.instructions = [];
     this.preceding_element_path = [0];
   },
@@ -99,11 +100,14 @@ constructor("View.Builder", {
   parse_subview_arguments: function(args) {
     var args = Util.to_array(args);
     var subview_arguments = {};
+
+    if (!args[1]) throw new Error("Undefined second argument for subview '" + args[0] + "'.");
     if (args[1].to_view) {
       subview_arguments.name = args[0];
       subview_arguments.template = args[1];
       if (args[2]) subview_arguments.properties = args[2];
     } else {
+      if (!args[2]) throw new Error("Undefined third argument for subview '" + args[0] + "['" + args[1] + "'].");
       subview_arguments.collection_name = args[0];
       subview_arguments.index = args[1];
       subview_arguments.template = args[2];

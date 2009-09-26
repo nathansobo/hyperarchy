@@ -1,6 +1,10 @@
 class UserRepository < Model::ExposedRepository
   attr_reader :user
 
+  expose :users do
+    User.table
+  end
+
   expose :blogs do
     user.blogs
   end

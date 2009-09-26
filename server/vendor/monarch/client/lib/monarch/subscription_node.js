@@ -1,4 +1,8 @@
 constructor("SubscriptionNode", {
+  constructor_properties: {
+    total_subscriptions: 0
+  },
+
   initialize: function() {
     this.subscriptions = [];
     this.paused = false;

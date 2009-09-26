@@ -1,22 +1,50 @@
-//= require "../monarch_spec_helper"
+//= require "../../monarch_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("Server", function() {
+  describe("Http.Server", function() {
     var server;
 
     before(function() {
-      server = new Server();
+      server = new Http.Server();
     });
 
-    describe(".fetch(relations)", function() {
+
+    describe("#create(relation, field_values)", function() {
+      use_example_domain_model();
+
+      before(function() {
+        server.posts = [];
+        server.post = FakeServer.prototype.post;
+      });
+
+      it("calls #post with Repository.origin_url and json to create a Record with the given field values in the given Relation", function() {
+        Repository.origin_url = "/users/steph/repository";
+        var future = server.create(Blog.table, {name: 'Recipes'});
+        expect(server.posts).to(have_length, 1);
+
+        var post = server.posts.shift();
+        expect(post.url).to(equal, "/users/steph/repository");
+        expect(post.data).to(equal, {
+          relation: Blog.table.wire_representation(),
+          field_values: {name: 'Recipes'}
+        });
+
+        mock(future, 'handle_response');
+        post.simulate_success({id: 'recipes', name: 'Recipes'});
+      });
+    });
+
+
+    describe("#fetch(origin_url, relations)", function() {
       use_example_domain_model();
       use_fake_server();
 
-      it("performs a GET to the given url with the json to fetch the given Relations, then merges the results into the Repository with the delta events sandwiched by before_events and after_events callback triggers on the returned future", function() {
-        var future = server.fetch("/users/steph/repository", [Blog.table, User.table]);
+      it("performs a GET to Repository.origin_url with the json to fetch the given Relations, then merges the results into the Repository with the delta events sandwiched by before_events and after_events callback triggers on the returned future", function() {
+        Repository.origin_url = "/users/steph/repository"
+        var future = server.fetch([Blog.table, User.table]);
 
-        expect(Origin.gets).to(have_length, 1);
-        var get = Origin.gets.shift();
+        expect(Server.gets).to(have_length, 1);
+        var get = Server.gets.shift();
         expect(get.url).to(equal, "/users/steph/repository");
         expect(get.data).to(equal, {
           relations: [Blog.table.wire_representation(), User.table.wire_representation()]
@@ -50,23 +78,23 @@ Screw.Unit(function(c) { with(c) {
         var events = [];
 
         future
-          .before_delta_events(function() {
-            events.push('before_delta_events');
+          .before_events(function() {
+            events.push('before_events');
           })
-          .after_delta_events(function() {
-            events.push('after_delta_events')
+          .after_events(function() {
+            events.push('after_events')
           });
 
-        mock(Repository, 'pause_delta_events', function() {
-          events.push('Repository.pause_delta_events')
+        mock(Repository, 'pause_events', function() {
+          events.push('Repository.pause_events')
         });
 
         mock(Repository, 'update', function() {
           events.push('Repository.update')
         });
 
-        mock(Repository, 'resume_delta_events', function() {
-          events.push('Repository.resume_delta_events')
+        mock(Repository, 'resume_events', function() {
+          events.push('Repository.resume_events')
         });
 
         get.simulate_success(dataset);
@@ -74,11 +102,11 @@ Screw.Unit(function(c) { with(c) {
         expect(Repository.update).to(have_been_called, with_args(dataset));
 
         expect(events).to(equal, [
-          'Repository.pause_delta_events',
+          'Repository.pause_events',
           'Repository.update',
-          'before_delta_events',
-          'Repository.resume_delta_events',
-          'after_delta_events'
+          'before_events',
+          'Repository.resume_events',
+          'after_events'
         ]);
       });
     });
@@ -113,6 +141,8 @@ Screw.Unit(function(c) { with(c) {
             quux: 1
           },
           baz: "hello",
+          corge: [1, 2],
+          grault: 1
         };
 
         var future = server[request_method].call(server, "/users", data);
@@ -126,9 +156,11 @@ Screw.Unit(function(c) { with(c) {
 
 
         expect(JSON.parse(ajax_options.data.foo)).to(equal, data.foo);
-        expect(JSON.parse(ajax_options.data.baz)).to(equal, data.baz);
+        expect(ajax_options.data.baz).to(equal, data.baz);
+        expect(JSON.parse(ajax_options.data.corge)).to(equal, data.corge);
+        expect(JSON.parse(ajax_options.data.grault)).to(equal, data.grault);
 
-        expect(future.constructor).to(equal, AjaxFuture);
+        expect(future.constructor).to(equal, Http.AjaxFuture);
 
         mock(future, 'handle_response');
 

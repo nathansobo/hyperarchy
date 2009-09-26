@@ -9,47 +9,27 @@ Screw.Unit(function(c) { with(c) {
       repository = Repository;
     });
 
-    describe("#remote_create(relation, field_values)", function() {
-      use_fake_server();
+    describe("#pause_events", function() {
+      it("calls .pause_events on all Tables", function() {
+        mock(Blog.table, 'pause_events');
+        mock(User.table, 'pause_events');
 
-      it("calls Server.post with #origin_url and json to create a Record with the given field values in the given Relation", function() {
-        repository.origin_url = "/users/steph/repository";
-        var future = repository.remote_create(Blog.table, {name: 'Recipes'});
-        expect(Origin.posts).to(have_length, 1);
+        repository.pause_events();
 
-        var post = Origin.posts.shift();
-        expect(post.url).to(equal, repository.origin_url);
-        expect(post.data).to(equal, {
-          relation: Blog.table.wire_representation(),
-          field_values: {name: 'Recipes'}
-        });
-
-        mock(future, 'handle_response');
-        post.simulate_success({id: 'recipes', name: 'Recipes'});
+        expect(Blog.table.pause_events).to(have_been_called, once);
+        expect(User.table.pause_events).to(have_been_called, once);
       });
     });
 
-    describe("#pause_delta_events", function() {
-      it("calls .pause_delta_events on all Tables", function() {
-        mock(Blog.table, 'pause_delta_events');
-        mock(User.table, 'pause_delta_events');
+    describe("#resume_events", function() {
+      it("calls .resume_events on all Tables", function() {
+        mock(Blog.table, 'resume_events');
+        mock(User.table, 'resume_events');
 
-        repository.pause_delta_events();
+        repository.resume_events();
 
-        expect(Blog.table.pause_delta_events).to(have_been_called, once);
-        expect(User.table.pause_delta_events).to(have_been_called, once);
-      });
-    });
-
-    describe("#resume_delta_events", function() {
-      it("calls .resume_delta_events on all Tables", function() {
-        mock(Blog.table, 'resume_delta_events');
-        mock(User.table, 'resume_delta_events');
-
-        repository.resume_delta_events();
-
-        expect(Blog.table.resume_delta_events).to(have_been_called, once);
-        expect(User.table.resume_delta_events).to(have_been_called, once);
+        expect(Blog.table.resume_events).to(have_been_called, once);
+        expect(User.table.resume_events).to(have_been_called, once);
       });
     });
 

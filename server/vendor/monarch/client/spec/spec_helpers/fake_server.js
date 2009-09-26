@@ -3,12 +3,12 @@ Screw.Unit(function(c) {
     var original_server;
 
     c.init(function() {
-      original_server = Origin;
-      Origin = new FakeServer();
+      original_server = Server;
+      Server = new FakeServer();
     });
 
     c.after(function() {
-      Origin = original_server;
+      Server = original_server;
     })
   };
 });
@@ -19,19 +19,24 @@ constructor("FakeServer", {
     this.puts = [];
     this.gets = [];
     this.fetches = [];
+    this.creates = [];
 
     this.Repository = Repository.clone_schema();
   },
 
-  fetch: function(url, relations) {
-    var fake_fetch = new FakeServer.FakeFetch(url, relations, this.Repository);
+  fetch: function(relations) {
+    var fake_fetch = new FakeServer.FakeFetch(Repository.origin_url, relations, this.Repository);
     this.last_fetch = fake_fetch;
     this.fetches.push(fake_fetch);
     return fake_fetch.future;
   },
 
+  create: function(relation, field_values) {
+    throw new Error("not yet implemented");
+  },
+
   simulate_fetch: function(relations) {
-    this.fetch("simulated fetch", relations);
+    this.fetch(relations);
     this.fetches.shift().simulate_success();
   },
 
@@ -59,7 +64,7 @@ constructor("FakeServer", {
 
 constructor("FakeServer.FakeRequest", {
   initialize: function(type, url, data) {
-    this.future = new AjaxFuture();
+    this.future = new Http.AjaxFuture();
     this.type = type;
     this.url = url;
     this.data = data;
@@ -85,16 +90,16 @@ constructor("FakeServer.FakeFetch", {
     this.url = url;
     this.relations = relations;
     this.fixture_repository = fixture_repository;
-    this.future = new Model.FetchFuture();
+    this.future = new Http.RepositoryUpdateFuture();
   },
 
   simulate_success: function() {
     var dataset = this.fetch_dataset_from_fixture_repository();
-    Repository.pause_delta_events();
+    Repository.pause_events();
     Repository.update(dataset);
-    this.future.trigger_before_delta_events();
-    Repository.resume_delta_events();
-    this.future.trigger_after_delta_events();
+    this.future.trigger_before_events();
+    Repository.resume_events();
+    this.future.trigger_after_events();
   },
 
   fetch_dataset_from_fixture_repository: function() {

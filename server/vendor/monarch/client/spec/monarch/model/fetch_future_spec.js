@@ -1,22 +1,22 @@
 //= require "../../monarch_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("Model.FetchFuture", function() {
+  describe("Http.RepositoryUpdateFuture", function() {
     var future, event_type;
 
     before(function() {
-      future = new Model.FetchFuture();
+      future = new Http.RepositoryUpdateFuture();
     });
 
-    scenario("#before_delta_events", function() {
+    scenario("#before_events", function() {
       init(function() {
-        event_type = 'before_delta_events'
+        event_type = 'before_events'
       });
     });
 
-    scenario("#after_delta_events", function() {
+    scenario("#after_events", function() {
       init(function() {
-        event_type = 'after_delta_events'
+        event_type = 'after_events'
       });
     });
 

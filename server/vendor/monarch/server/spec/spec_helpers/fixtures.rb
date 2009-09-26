@@ -3,7 +3,9 @@ require "#{File.dirname(__FILE__)}/example_domain_model"
 FIXTURES = {
   :users => {
     :jan => {
-      :full_name => "Jan Nelson"
+      :full_name => "Jan Nelson",
+      :age => 31,
+      :signed_up_at => 1253740028201
     }
   },
 

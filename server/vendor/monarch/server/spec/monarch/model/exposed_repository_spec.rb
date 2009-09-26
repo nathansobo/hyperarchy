@@ -28,6 +28,46 @@ module Model
       end
     end
 
+    describe "#put" do
+      it "finds the record with the given 'id' in the given 'relation', then updates it with the given field values and returns all changed field values as its result" do
+        record = User.find('jan')
+        record.should_not be_dirty
+        def record.full_name=(name)
+          set_field_value(:full_name, name + " The Great")
+        end
+
+        new_signed_up_at = record.signed_up_at - 1.hours
+
+        response = Http::Response.new(*exposed_repository.put({
+          :relation => { "type" => "table", "name" => "users"}.to_json,
+          :id => "jan",
+          :field_values => {
+            :full_name => "Jan Christian Nelson",
+            :age => record.age,
+            :signed_up_at => new_signed_up_at.to_millis
+          }.to_json
+        }))
+
+        record.reload
+        record.full_name.should == "Jan Christian Nelson The Great"
+        record.age.should == 31
+        record.signed_up_at.to_millis.should == new_signed_up_at.to_millis
+        
+        response.should be_ok
+        body_json = JSON.parse(response.body)
+        body_json.should == {
+          'successful' => true,
+          'data' => {
+            'field_values' => {
+              'full_name' => "Jan Christian Nelson The Great",
+              'signed_up_at' => new_signed_up_at.to_millis
+            }
+          }
+        }
+      end
+    end
+
+
     describe "#build_relation_from_wire_representation" do
       it "resolves relation names to primitive Tables" do
         relation = exposed_repository.build_relation_from_wire_representation({

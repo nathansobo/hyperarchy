@@ -18,6 +18,7 @@ constructor("Model.Relations.Ordering", Model.Relations.Relation, {
       }
       return 0;
     }
+    this.initialize_events_system();
   },
 
   all: function() {
@@ -34,5 +35,22 @@ constructor("Model.Relations.Ordering", Model.Relations.Relation, {
 
   wire_representation: function() {
     return this.operand.wire_representation();
+  },
+
+  subscribe_to_operands: function() {
+    this.memoize_records();
+
+    var self = this;
+    this.operands_subscription_bundle.add(this.operand.on_insert(function(record) {
+      self.record_inserted(record);
+    }));
+
+    this.operands_subscription_bundle.add(this.operand.on_remove(function(record) {
+      self.record_removed(record);
+    }));
+
+    this.operands_subscription_bundle.add(this.operand.on_update(function(record, changed_fields) {
+      self.record_updated(record, changed_fields);
+    }));
   }
 })

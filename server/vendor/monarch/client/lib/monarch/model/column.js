@@ -23,5 +23,21 @@ constructor("Model.Column", {
       table: this.table.global_name,
       name: this.name
     };
+  },
+
+  convert_for_storage: function(value) {
+    if (this.type == "datetime" && value && typeof value == "number") {
+      return new Date(value);
+    } else {
+      return value;
+    }
+  },
+
+  convert_for_wire: function(value) {
+    if (this.type == "datetime" && value) {
+      return value.getTime();
+    } else {
+      return value;
+    }
   }
 });

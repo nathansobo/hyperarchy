@@ -14,6 +14,8 @@ require "active_support/core_ext/module/delegation"
 require "active_support/core_ext/hash/keys"
 require "active_support/core_ext/hash/indifferent_access"
 require "active_support/core_ext/string/starts_ends_with"
+require "active_support/duration"
+require "active_support/core_ext/numeric/time"
 
 require "#{dir}/monarch/http"
 require "#{dir}/monarch/model"
@@ -25,6 +27,10 @@ end
 
 class Hash
   include ActiveSupport::CoreExtensions::Hash::Keys
+end
+
+class Numeric
+  include ActiveSupport::CoreExtensions::Numeric::Time
 end
 
 Origin = Model::RemoteRepository.new

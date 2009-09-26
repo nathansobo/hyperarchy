@@ -1,4 +1,4 @@
-constructor("AjaxFuture", {
+constructor("Http.AjaxFuture", {
   initialize: function() {
     this.on_success_node = new SubscriptionNode();
     this.on_failure_node = new SubscriptionNode();

@@ -19,10 +19,18 @@ module Model
           record_from_id_map
         else
           record = table.record_class.unsafe_new(field_values_by_column_name)
+          record.mark_clean
           table.identity_map[id] = record
           record
         end
       end
+    end
+
+    def reload(record)
+      table = record.table
+      query = table.where(table.column(:id).eq(record.id)).to_sql
+      field_values = connection[query].first
+      record.update_fields(field_values)
     end
 
     #TODO: test

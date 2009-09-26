@@ -6,22 +6,72 @@ Screw.Unit(function(c) { with(c) {
       delete window['TestTemplate'];
     });
 
-    describe("#field_values", function() {
-      it("returns a hash of name value pairs for all input elements on the view", function() {
+
+    describe("form interaction methods", function() {
+      var view, model;
+
+      before(function() {
         ModuleSystem.constructor("TestTemplate", View.Template, {
           content: function() { with(this.builder) {
             div(function() {
-              input({name: "foo", value: "Foo"});
-              input({name: "bar", value: "Bar"});
-              input({name: "baz", value: "Baz"});
+              input({name: "foo", value: "Foo"}).ref('foo');
+              input({name: "bar", value: "Bar"}).ref('bar');
+              input({name: "baz", value: "Baz", type: "checkbox"}).ref('baz');
             });
           }}
         });
 
-        expect(TestTemplate.to_view().field_values()).to(equal, {
-          foo: "Foo",
-          bar: "Bar",
-          baz: "Baz"
+        view = TestTemplate.to_view();
+
+
+        model = {
+          foo: function() {
+            return "foo";
+          },
+
+          bar: function() {
+            return "bar"
+          },
+
+          baz: function(baz) {
+            return true;
+          },
+
+          update: mock_function('update')
+        }
+      });
+
+      describe("#field_values", function() {
+        it("returns a hash of name value pairs for all input elements on the view", function() {
+          expect(view.field_values()).to(equal, {
+            foo: "Foo",
+            bar: "Bar",
+            baz: false
+          });
+        });
+      });
+
+      describe("#model(model)", function() {
+        it("populates text fields by calling methods on the given model corresponding to their names", function() {
+          expect(view.foo.val()).to(equal, "Foo");
+          expect(view.bar.val()).to(equal, "Bar");
+          view.model(model);
+          expect(view.foo.val()).to(equal, "foo");
+          expect(view.bar.val()).to(equal, "bar");
+        });
+
+        it("populates checkbox fields by calling methods on the given model corresponding to their names", function() {
+          expect(view.baz.attr('checked')).to(be_false);
+          view.model(model);
+          expect(view.baz.attr('checked')).to(be_true);
+        });
+      });
+
+      describe("#save()", function() {
+        it("calls #update on #model with the results of #field_values", function() {
+          view.model(model);
+          view.save();
+          expect(model.update).to(have_been_called, with_args(view.field_values()));
         });
       });
     });

@@ -30,7 +30,27 @@ Screw.Unit(function(c) { with(c) {
     });
 
     after(function() {
-      delete window['ExampleTemplate']
+      delete window.ExampleTemplate
+    });
+
+    describe("when the template is extended", function() {
+      after(function() {
+        delete window.ExampleSubtemplate
+      });
+
+      specify("the subtemplate's view_properties are merged with those of the supertemplate", function() {
+        ModuleSystem.constructor("ExampleSubtemplate", ExampleTemplate, {
+          view_properties: {
+            age: "Unknown",
+            name: "Joe"
+          }
+        });
+
+        expect(ExampleSubtemplate.prototype.view_properties.bold_name).to(equal, ExampleTemplate.prototype.view_properties.bold_name);
+        expect(ExampleSubtemplate.prototype.view_properties.name).to(equal, "Joe");
+        expect(ExampleSubtemplate.prototype.view_properties.gender).to(equal, "Unknown");
+        expect(ExampleSubtemplate.prototype.view_properties.age).to(equal, "Unknown");
+      });
     });
 
     describe(".to_view", function() {

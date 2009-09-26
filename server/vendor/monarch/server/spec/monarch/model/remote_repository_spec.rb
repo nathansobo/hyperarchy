@@ -58,10 +58,12 @@ module Model
           records.size.should == 2
           
           record_1 = records.find {|t| t.id == "1"}
+          record_1.should_not be_dirty
           record_1.body.should == "Quinoa"
           BlogPost.table.identity_map['1'].should == record_1
 
           record_2 = records.find {|t| t.id == "2"}
+          record_2.should_not be_dirty
           record_2.body.should == "Barley"
           BlogPost.table.identity_map['2'].should == record_2
         end

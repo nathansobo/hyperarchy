@@ -36,5 +36,11 @@ module("Util", {
     if (record_index == -1) return null;
     array.splice(record_index, 1);
     return element;
+  },
+
+  keys: function(hash) {
+    var keys = [];
+    for (key in hash) keys.push(key);
+    return keys;
   }
 });

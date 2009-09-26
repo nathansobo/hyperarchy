@@ -3,26 +3,15 @@ constructor("Model.Repository", {
     this.tables = {};
   },
 
-  remote_create: function(relation, field_values) {
-    return Origin.post(this.origin_url, {
-      relation: relation.wire_representation(),
-      field_values: field_values
+  pause_events: function() {
+    Util.each(this.tables, function(name, table) {
+      table.pause_events();
     });
   },
 
-  fetch: function(relations) {
-    return Origin.fetch(this.origin_url, relations);
-  },
-
-  pause_delta_events: function() {
+  resume_events: function() {
     Util.each(this.tables, function(name, table) {
-      table.pause_delta_events();
-    });
-  },
-
-  resume_delta_events: function() {
-    Util.each(this.tables, function(name, table) {
-      table.resume_delta_events();
+      table.resume_events();
     });
   },
 

@@ -38,7 +38,7 @@ module Model
       end
 
       describe "#create" do
-        it "instantiates an instance of #record_class with the given columns, #inserts it, and returns it" do
+        it "instantiates an instance of #record_class with the given columns, #inserts it, and returns it in a non-dirty state" do
           mock(table).insert(anything) do |record|
             record.class.should == table.record_class
             record.body.should == "Brown Rice"
@@ -47,6 +47,7 @@ module Model
 
           record = table.create(:body => "Brown Rice", :blog_id => "grain")
           record.body.should == "Brown Rice"
+          record.should_not be_dirty
         end
 
         context "if the #record_class defines a #before_create hook" do
@@ -70,7 +71,7 @@ module Model
           record_2_id = table.create(:body => "White Rice", :blog_id => "grain").id
           record_3_id = table.create(:body => "Pearled Barley", :blog_id => "grain").id
 
-          mock.proxy(Origin).read(table, "select blog_posts.id, blog_posts.body, blog_posts.blog_id from blog_posts;")
+          mock.proxy(Origin).read(table, "select blog_posts.id, blog_posts.title, blog_posts.body, blog_posts.blog_id from blog_posts;")
 
           records = table.records
 
@@ -92,12 +93,6 @@ module Model
         it "returns a select statement for only the columns declared as Columns on the Table" do
           columns = table.columns.map {|a| a.to_sql }.join(", ")
           table.to_sql.should == "select #{columns} from #{table.global_name};"
-        end
-      end
-
-      describe "#locate" do
-        it "returns the Record with the given :id" do
-          BlogPost.table.locate("quinoa").should == BlogPost.table.find("quinoa")
         end
       end
 

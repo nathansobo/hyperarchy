@@ -46,3 +46,13 @@ class NilClass
     "null"
   end
 end
+
+class Time
+  def to_millis
+    to_i * 1000
+  end
+
+  def ==(other)
+    to_i == other.to_i
+  end
+end

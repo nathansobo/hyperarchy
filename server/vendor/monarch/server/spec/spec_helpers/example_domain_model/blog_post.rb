@@ -1,4 +1,5 @@
 class BlogPost < Model::Record
+  column :title, :string
   column :body, :string
   column :blog_id, :string
 

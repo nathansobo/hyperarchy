@@ -24,6 +24,7 @@ module Model
         record = record_class.new(field_values)
         record.before_create if record.respond_to?(:before_create)
         insert(record)
+        record.mark_clean
         record.after_create if record.respond_to?(:after_create)
         record
       end
@@ -37,8 +38,9 @@ module Model
         query
       end
 
-      def locate(path_fragment)
-        find(path_fragment)
+      def column(name)
+        name = name.to_sym if name.instance_of?(String)
+        columns_by_name[name]
       end
 
       def initialize_identity_map

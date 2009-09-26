@@ -14,11 +14,11 @@ constructor("SubscriptionBundle", {
     this.subscriptions = [];
   },
 
-  subscription_count: function() {
+  size: function() {
     return this.subscriptions.length;
   },
 
   is_empty: function() {
-    return this.subscription_count() == 0;
+    return this.size() == 0;
   }
 });
