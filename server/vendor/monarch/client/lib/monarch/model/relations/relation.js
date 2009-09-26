@@ -43,7 +43,7 @@ constructor("Model.Relations.Relation", {
     Util.each(this.all(), fn);
   },
 
-  is_empty: function() {
+  empty: function() {
     return this.all().length == 0;
   },
 
@@ -71,7 +71,7 @@ constructor("Model.Relations.Relation", {
   },
 
   has_subscribers: function() {
-    return !(this.on_insert_node.is_empty() && this.on_remove_node.is_empty() && this.on_update_node.is_empty());
+    return !(this.on_insert_node.empty() && this.on_remove_node.empty() && this.on_update_node.empty());
   },
 
   fetch: function() {

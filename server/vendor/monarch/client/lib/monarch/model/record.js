@@ -108,6 +108,10 @@ constructor("Model.Record", {
 
     where: function(predicate) {
       return this.table.where(predicate);
+    },
+
+    empty: function() {
+      return this.table.empty();
     }
   },
 

@@ -35,7 +35,7 @@ constructor("SubscriptionNode", {
     }
   },
 
-  is_empty: function() {
+  empty: function() {
     return this.subscriptions.length == 0;
   },
 

@@ -18,7 +18,7 @@ constructor("SubscriptionBundle", {
     return this.subscriptions.length;
   },
 
-  is_empty: function() {
+  empty: function() {
     return this.size() == 0;
   }
 });
