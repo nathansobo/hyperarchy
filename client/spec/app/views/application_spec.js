@@ -75,11 +75,6 @@ Screw.Unit(function(c) { with(c) {
         view.current_user_id_established('billy');
         expect(view.current_user_id).to(equal, 'billy');
       });
-
-      it("assigns Model.Repository.origin_url to /users/:current_user_id/repository", function() {
-        view.current_user_id_established('billy');
-        expect(Model.Repository.origin_url).to(equal, "/users/billy/repository");
-      });  
     });
   });
 }});

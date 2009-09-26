@@ -11,10 +11,10 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#initialize", function() {
       it("fetches the Organizations and populates the organization_select with them", function() {
-        expect(Origin.fetches.length).to(equal, 1);
-        Origin.fetches.shift().simulate_success();
+        expect(Server.fetches.length).to(equal, 1);
+        Server.fetches.shift().simulate_success();
 
-        expect(Organization.is_empty()).to(be_false);
+        expect(Organization.empty()).to(be_false);
 
         Organization.each(function(organization) {
           expect(view.organization_select.find("option:contains('" + organization.name() + "')")).to_not(be_empty);
