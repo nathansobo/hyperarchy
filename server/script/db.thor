@@ -1,6 +1,4 @@
-dir = File.dirname(__FILE__)
-Object::ENVIRONMENT = "script"
-require "#{dir}/../config/environment"
+require File.expand_path("#{File.dirname(__FILE__)}/thor_helper")
 
 class Db < Thor
   desc "setup", "(re)create 'hyperarchy_development' database and build its schema"

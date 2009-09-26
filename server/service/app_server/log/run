@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+system("mkdir -p /var/multilog/app_server") unless File.exist?("/var/multilog/app_server")
+exec "multilog t /var/multilog/app_server"

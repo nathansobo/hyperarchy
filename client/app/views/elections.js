@@ -2,7 +2,7 @@ constructor("Views.Elections", View.Template, {
   content: function() { with(this.builder) {
     div({id: 'elections_view'}, function() {
       h2("elections");
-      select().bind("organization_select");
+      select().ref("organization_select");
     });
   }},
 
