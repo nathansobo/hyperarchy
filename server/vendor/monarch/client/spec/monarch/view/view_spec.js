@@ -6,7 +6,6 @@ Screw.Unit(function(c) { with(c) {
       delete window['TestTemplate'];
     });
 
-
     describe("form interaction methods", function() {
       var view, model;
 

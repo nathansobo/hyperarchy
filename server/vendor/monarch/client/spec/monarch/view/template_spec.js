@@ -60,19 +60,6 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe(".build(content_fn)", function() {
-      it("instantiates an anonymous Template with the given function as its content method (except it is passed the builder as a param), then returns the result of calling #to_view on it", function() {
-        var view = View.Template.build(function(b) { with(b) {
-          div({id: "foo"}, function() {
-            div("BAR", {id: "bar"});
-          });
-        }});
-
-        expect(view.attr('id')).to(equal, 'foo');
-        expect(view.find('div#bar')).to_not(be_empty);
-      });
-    });
-
     describe("#to_view", function() {
       it("assigns .builder to a new Builder, calls #content, then returns #builder.to_view", function() {
         var view = template.to_view({ name: "Nathan", gender: "male"});

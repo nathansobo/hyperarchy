@@ -18,6 +18,8 @@ constructor("Xml.Template", {
     this.builder = builder;
     this.content(properties);
     this.builder = null;
-    return builder.to_jquery();
+    var jquery_fragment = builder.to_jquery();
+    jquery_fragment.template = this;
+    return jquery_fragment;
   }
 });
