@@ -11,7 +11,7 @@ constructor("View.Template", Xml.Template, {
     }
   },
 
-  to_view: function(properties) {
+  to_jquery: function(properties) {
     var builder = new View.Builder(this);
     this.builder = builder;
     this.content(properties);
@@ -22,6 +22,10 @@ constructor("View.Template", Xml.Template, {
     if (this.view_properties) mixin(view_properties, this.view_properties);
     if (properties) mixin(view_properties, properties);
     return builder.to_view(view_properties);
+  },
+
+  to_view: function(properties) {
+    return this.to_jquery(properties);
   },
 
   default_view_properties: {

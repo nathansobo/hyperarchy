@@ -9,7 +9,7 @@ constructor("Xml.Template", {
       template.content = function() {
         content_fn.call(this, this.builder);
       }
-      return template.to_view();
+      return template.to_jquery();
     }
   },
 
