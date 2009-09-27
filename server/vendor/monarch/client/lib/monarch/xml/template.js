@@ -14,7 +14,7 @@ constructor("Xml.Template", {
   },
 
   to_jquery: function(properties) {
-    var builder = new View.Builder(this);
+    var builder = new Xml.Builder(this);
     this.builder = builder;
     this.content(properties);
     this.builder = null;

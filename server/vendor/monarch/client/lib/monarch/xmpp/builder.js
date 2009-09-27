@@ -1,4 +1,4 @@
-constructor("Xmpp.Builder", View.Builder, {
+constructor("Xmpp.Builder", Xml.Builder, {
   supported_tags: [
     ""
   ]

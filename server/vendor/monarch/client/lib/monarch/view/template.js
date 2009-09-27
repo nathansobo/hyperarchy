@@ -1,15 +1,7 @@
-constructor("View.Template", {
+constructor("View.Template", Xml.Template, {
   constructor_properties: {
     to_view: function(properties) {
       return new this().to_view(properties);
-    },
-
-    build: function(content_fn) {
-      var template = new this();
-      template.content = function() {
-        content_fn.call(this, this.builder);
-      }
-      return template.to_view();
     },
 
     extended: function(subtemplate) {
