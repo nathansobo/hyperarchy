@@ -1,9 +1,5 @@
-constructor("View.Builder", {
+constructor("View.Builder", Xml.Builder, {
   constructor_properties: {
-    initialize: function() {
-      this.generate_tag_methods();
-    },
-
     supported_tags: [
       'acronym', 'address', 'area', 'b', 'base', 'bdo', 'big', 'blockquote', 'body',
       'br', 'button', 'caption', 'cite', 'code', 'dd', 'del', 'div', 'dl', 'dt', 'em',
@@ -15,23 +11,17 @@ constructor("View.Builder", {
     ],
 
     self_closing_tags: { 'br': 1, 'hr': 1, 'input': 1, 'img': 1 },
-
-    generate_tag_methods: function() {
-      var self = this;
-
-      Util.each(this.supported_tags, function(tag_name) {
-        self.prototype[tag_name] = function() {
-          var tag_args = [tag_name].concat(Util.to_array(arguments));
-          return this.tag.apply(this, tag_args);
-        }
-      });
-    }
   },
 
-  initialize: function(template) {
-    this.template = template;
-    this.instructions = [];
-    this.preceding_element_path = [0];
+  to_view: function(extend_view_with_properties) {
+    var self = this;
+    var view = this.to_jquery(extend_view_with_properties);
+    if (view.initialize) view.initialize();
+    return view;
+  },
+
+  to_html: function() {
+    return this.to_xml();
   },
 
   a: function() {
@@ -46,40 +36,6 @@ constructor("View.Builder", {
       });
     }
     return close_tag_instruction;
-  },
-
-  to_view: function(properties) {
-    var self = this;
-    var view = jQuery(this.to_html());
-    this.view = view;
-
-    view._show = view.show;
-    view._hide = view.hide;
-    if (properties) mixin(view, properties);
-
-    Util.each(this.instructions, function(instruction) {
-      instruction.post_process(self);
-    });
-
-    if (!this.has_single_top_level_element()) {
-      throw new Error("Template content must have a single top-level element.");
-    }
-
-    if (view.initialize) view.initialize();
-    this.view = null;
-    return view;
-  },
-
-  to_html: function() {
-    var html = "";
-    Util.each(this.instructions, function(instruction) {
-      html += instruction.to_html();
-    });
-    return html;
-  },
-
-  has_single_top_level_element: function() {
-    return this.preceding_element_path.length == 1 && this.preceding_element_path[0] == 1
   },
 
   subview: function() {
@@ -114,71 +70,5 @@ constructor("View.Builder", {
       if (args[3]) subview_arguments.properties = args[3];
     }
     return subview_arguments;
-  },
-
-  tag: function() {
-    var args = this.parse_tag_arguments(arguments);
-    if (args.text && args.body) throw new Error("Tags cannot have both text and body content");
-    if (this.constructor.self_closing_tags[args.name]) {
-      return this.self_closing_tag(args);
-    } else {
-      return this.standard_tag_sequence(args);
-    }
-  },
-
-  self_closing_tag: function(tag_args) {
-    if (tag_args.text || tag_args.body) throw new Error("Self-closing tag " + tag_args.name + " cannot contain text or have body content");
-    var tag_instruction = new View.SelfClosingTag(tag_args.name, tag_args.attributes);
-    this.instructions.push(tag_instruction);
-    return tag_instruction;
-  },
-
-  standard_tag_sequence: function(tag_args) {
-    var open_tag_instruction = new View.OpenTag(tag_args.name, tag_args.attributes);
-    this.instructions.push(open_tag_instruction);
-    if (tag_args.text) this.instructions.push(new View.TextNode(tag_args.text));
-    if (tag_args.body) tag_args.body();
-    var close_tag_instruction = new View.CloseTag(tag_args.name);
-    close_tag_instruction.open_tag_instruction = open_tag_instruction;
-    this.instructions.push(close_tag_instruction);
-    return close_tag_instruction;
-  },
-
-  parse_tag_arguments: function(args) {
-    var args = Util.to_array(args);
-    var tag_arguments = {
-      name: args.shift()
-    }
-    Util.each(args, function(arg) {
-      if (typeof arg == "string") tag_arguments.text = arg;
-      if (typeof arg == "object") tag_arguments.attributes = arg;
-      if (typeof arg == "function") tag_arguments.body = arg;
-    })
-    return tag_arguments;
-  },
-
-  push_child: function() {
-    this.preceding_element_path[this.preceding_element_path.length - 1]++;
-    this.preceding_element_path.push(0);
-  },
-
-  pop_child: function() {
-    this.preceding_element_path.pop();
-  },
-
-  find_preceding_element: function() {
-    if (this.preceding_element_path.length == 1) {
-      return this.view;
-    } else {
-      return this.view.find(this.preceding_element_selector());
-    }
-  },
-
-  preceding_element_selector: function() {
-    var selector_fragments = [];
-    for(i = 1; i < this.preceding_element_path.length; i++) {
-      selector_fragments.push(":eq(" + (this.preceding_element_path[i] - 1) + ")");
-    }
-    return "> " + selector_fragments.join(" > ");
   }
 });

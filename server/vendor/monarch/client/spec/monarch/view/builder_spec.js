@@ -208,7 +208,7 @@ Screw.Unit(function(c) { with(c) {
 
           it("returns the SelfClosingTag instruction", function() {
             var instruction = builder.tag("br")
-            expect(instruction.constructor).to(equal, View.SelfClosingTag);
+            expect(instruction.constructor).to(equal, Xml.SelfClosingTag);
             expect(instruction.name).to(equal, "br");
           });
         });
@@ -221,10 +221,10 @@ Screw.Unit(function(c) { with(c) {
 
           it("returns the CloseTag instruction with a reference to the OpenTag instruction", function() {
             var instruction = builder.tag("div");
-            expect(instruction.constructor).to(equal, View.CloseTag);
+            expect(instruction.constructor).to(equal, Xml.CloseTag);
             expect(instruction.name).to(equal, "div");
             var open_tag_instruction = instruction.open_tag_instruction;
-            expect(open_tag_instruction.constructor).to(equal, View.OpenTag);
+            expect(open_tag_instruction.constructor).to(equal, Xml.OpenTag);
             expect(open_tag_instruction.name).to(equal, "div");
           });
         });
@@ -288,10 +288,10 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("returns the CloseTag instruction with a reference to the OpenTag instruction", function() {
-            expect(instruction.constructor).to(equal, View.CloseTag);
+            expect(instruction.constructor).to(equal, Xml.CloseTag);
             expect(instruction.name).to(equal, "div");
             var open_tag_instruction = instruction.open_tag_instruction;
-            expect(open_tag_instruction.constructor).to(equal, View.OpenTag);
+            expect(open_tag_instruction.constructor).to(equal, Xml.OpenTag);
             expect(open_tag_instruction.name).to(equal, "div");
           });
         });
@@ -369,7 +369,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#find_preceding_element", function() {
       before(function() {
-        builder.view = { find: mock_function("find method on the view", function() {
+        builder.jquery_fragment = { find: mock_function("find method on the view", function() {
           return "find result";
         }) };
       });
@@ -381,14 +381,14 @@ Screw.Unit(function(c) { with(c) {
           builder.pop_child();
 
           expect(builder.find_preceding_element()).to(equal, "find result");
-          expect(builder.view.find).to(have_been_called, with_args("> :eq(0)"));
-          builder.view.find.clear();
+          expect(builder.jquery_fragment.find).to(have_been_called, with_args("> :eq(0)"));
+          builder.jquery_fragment.find.clear();
 
           builder.push_child();
           builder.push_child();
           builder.pop_child();
           expect(builder.find_preceding_element()).to(equal, "find result");
-          expect(builder.view.find).to(have_been_called, with_args("> :eq(1) > :eq(0)"));
+          expect(builder.jquery_fragment.find).to(have_been_called, with_args("> :eq(1) > :eq(0)"));
         });
       });
 
@@ -399,7 +399,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         it("returns the Builder's current #view", function() {
-          expect(builder.find_preceding_element()).to(equal, builder.view);
+          expect(builder.find_preceding_element()).to(equal, builder.jquery_fragment);
         });
       });
     });

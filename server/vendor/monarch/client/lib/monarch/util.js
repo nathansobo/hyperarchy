@@ -38,9 +38,12 @@ module("Util", {
     return element;
   },
 
-  keys: function(hash) {
+  keys: function(hash, optional_each_function) {
     var keys = [];
     for (key in hash) keys.push(key);
+    if (optional_each_function) {
+      Util.each(keys, optional_each_function);
+    }
     return keys;
   }
 });

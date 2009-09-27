@@ -18,8 +18,18 @@ constructor("Views.Application", View.Template, {
         self.navigate(path);
       });
 
-      var connection = new Strophe.Connection("/http-bind");
-      connection.connect("nathan", "password", function(status) {
+      Connection = new Strophe.Connection("/http-bind");
+
+      Connection.addHandler(function(msg) {
+
+        $(msg).find("item").each(function() {
+          console.debug($(this).attr("name"));
+        })
+
+        console.debug(msg);
+      });
+
+      Connection.connect("nathan", "password", function(status) {
         if (status == Strophe.Status.CONNECTING) {
           console.log('Strophe is connecting.');
         } else if (status == Strophe.Status.CONNFAIL) {
@@ -32,13 +42,8 @@ constructor("Views.Application", View.Template, {
           $('#connect').get(0).value = 'connect';
         } else if (status == Strophe.Status.CONNECTED) {
           console.log('Strophe is connected.');
-          connection.send($pres());
-
-          console.debug("sth", $build("iq", {type: "get"}).c("query", {xmlns: Strophe.NS.DISCO_ITEMS}));
-
-
-          connection.send($iq({type: "get"}).c("query", {xmlns: Strophe.NS.DISCO_ITEMS}));
-
+          Connection.send($pres());
+          Connection.send($iq({type: "get"}).c("query", {xmlns: Strophe.NS.DISCO_ITEMS}));
         }
       });
     },

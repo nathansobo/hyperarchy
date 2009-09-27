@@ -13,9 +13,11 @@
 //= require "monarch/subscription_bundle"
 //= require "monarch/queue"
 //= require "monarch/inflection"
-//= require "monarch/http"
-//= require "monarch/model"
+//= require "monarch/xml"
 //= require "monarch/view"
+//= require "monarch/http"
+//= require "monarch/xmpp"
+//= require "monarch/model"
 
 Server = new Http.Server();
 Repository = new Model.Repository();
