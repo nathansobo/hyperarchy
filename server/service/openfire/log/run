@@ -1,4 +1,0 @@
-#!/usr/bin/env ruby
-
-system("mkdir -p /var/multilog/openfire") unless File.exist?("/var/multilog/openfire")
-exec "multilog t /var/multilog/openfire"
