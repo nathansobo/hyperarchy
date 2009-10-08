@@ -15,26 +15,28 @@ module Http
       end
 
       context "when no '_session_id' cookie is present in the request" do
-        it "creates a new Session, sets #session_id in the forwarded request, and adds a 'Set-Cookie' header to the response" do
+        it "creates a new Session, registers an XMPP user for the session, sets #session_id in the forwarded request, and adds a 'Set-Cookie' header to the response" do
           incoming_request.cookies['_session_id'].should be_nil
 
-          session_id = nil
           mock.proxy(Session).create do |session|
-            session_id = session.session_id
+            session.session_id = "fake-session-id"
             session
           end
 
+          mock(sessioning_service).register_xmpp_user("fake-session-id@hyperarchy.org", "fake-session-id")
+
           response = Response.new(*sessioning_service.call(incoming_request.env))
-          forwarded_request.session_id.should == session_id
-          response.cookies['_session_id'].should == session_id
+          forwarded_request.session_id.should == "fake-session-id"
+          response.cookies['_session_id'].should == "fake-session-id"
         end
       end
 
       context "when a '_session_id' cookie is present in the request" do
-        it "sets #session_id in the forwarded request withoun creating a new Session, and does not add a 'Set-Cookie' header to the response" do
+        it "sets #session_id in the forwarded request withoun creating a new Session or registering an XMPP user, and does not add a 'Set-Cookie' header to the response" do
           incoming_request.cookies['_session_id'] = "sample-session-id"
 
           dont_allow(Session).create
+          dont_allow(sessioning_service).register_xmpp_user
           response = Response.new(*sessioning_service.call(incoming_request.env))
           forwarded_request.session_id.should == incoming_request.cookies['_session_id']
           response.cookies['_session_id'].should be_nil
