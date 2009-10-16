@@ -1,4 +1,5 @@
 //= require <monarch>
+//= require <monarch/add_to_global_namespace>
 //= require "models"
 //= require "views"
 

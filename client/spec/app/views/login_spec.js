@@ -34,25 +34,25 @@ Screw.Unit(function(c) { with(c) {
         it("calls Application.current_user_id_established with the User's id and navigates to #elections", function() {
 
           mock(Application, 'current_user_id_established');
-          mock(jQuery.history, 'load', function() {
+          mock(History, 'load', function() {
             expect(Application.current_user_id_established).to(have_been_called, with_args("billy"));
           });
           Server.last_post.simulate_success({
             current_user_id: "billy"
           });
-          expect(jQuery.history.load).to(have_been_called, with_args("elections"));
+          expect(History.load).to(have_been_called, with_args("elections"));
         });
       })
 
       context("when the result is unsuccessful", function() {
         it("displays the error and does not set the Application.current_user_id or navigate to #elections", function() {
-          mock(jQuery.history, 'load');
+          mock(History, 'load');
           Server.last_post.simulate_failure({
             errors: {
               password: "Your password did not match the given email address."
             }
           });
-          expect(jQuery.history.load).to_not(have_been_called);
+          expect(History.load).to_not(have_been_called);
           expect(view.html()).to(match, "Your password did not match the given email address.");
         });
       })

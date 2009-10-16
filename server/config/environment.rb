@@ -21,6 +21,6 @@ class Hash
   include ActiveSupport::CoreExtensions::Hash::Keys
 end
 
-Http::AssetManager.add_js_location("/javascript/app", "#{CLIENT_ROOT}/app")
-Http::AssetManager.add_location("/stylesheets", "#{CLIENT_ROOT}/stylesheets")
+Util::AssetManager.add_js_location("/javascript/app", "#{CLIENT_ROOT}/app")
+Util::AssetManager.add_location("/stylesheets", "#{CLIENT_ROOT}/stylesheets")
 require "#{dir}/environments/#{ENVIRONMENT}"

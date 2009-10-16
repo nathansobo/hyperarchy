@@ -3,10 +3,10 @@
 Screw.Unit(function(c) { with(c) {
   describe("Views.Application", function() {
     use_fake_server();
-    
+    use_fake_history();
+
     var view;
     before(function() {
-      mock(jQuery.history, 'init');
       view = Views.Application.to_view();
     });
 
@@ -19,11 +19,9 @@ Screw.Unit(function(c) { with(c) {
         expect(window.Application).to(equal, view);
       });
 
-      it("registers its #navigate method with jQuery.history.init", function() {
-        expect(jQuery.history.init).to(have_been_called);
-        var callback = jQuery.history.init.most_recent_args[0];
+      it("registers its #navigate method with History.load", function() {
         mock(view, 'navigate');
-        callback("bar");
+        History.load("bar");
         expect(view.navigate).to(have_been_called, with_args("bar"));
       });
     });

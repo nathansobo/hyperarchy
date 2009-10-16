@@ -27,14 +27,14 @@ Screw.Unit(function(c) { with(c) {
         });
 
         mock(Application, 'current_user_id_established');
-        mock(jQuery.history, 'load', function() {
+        mock(History, 'load', function() {
           expect(Application.current_user_id_established).to(have_been_called, with_args("billy"));
         });
         Server.last_post.simulate_success({
           current_user_id: "billy"
         });
-        expect(jQuery.history.load).to(have_been_called);
-        expect(jQuery.history.load).to(have_been_called, with_args("elections"));
+        expect(History.load).to(have_been_called);
+        expect(History.load).to(have_been_called, with_args("elections"));
       });
     });
   });

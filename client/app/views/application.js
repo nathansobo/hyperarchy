@@ -14,7 +14,7 @@ constructor("Views.Application", View.Template, {
       this.elections_view.hide();
       this.signup_view.hide();
       window.Application = this;
-      jQuery.history.init(function(path) {
+      History.on_change(function(path) {
         self.navigate(path);
       });
 

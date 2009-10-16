@@ -29,7 +29,7 @@ module Resources
         created_user.password.should == 'password'
 
         response.status.should == 200
-        response.body_as_json.should == {
+        response.body_from_json.should == {
           "successful" => true,
           "data" => {
             "current_user_id" => created_user.id  

@@ -1,5 +1,6 @@
 //= require <application>
 //= require <spec_helpers/fake_server>
+//= require <spec_helpers/fake_history>
 //= require "spec_helpers/fixtures"
 
 Screw.Unit(function(c) { with(c) {

@@ -23,7 +23,7 @@ module Resources
             response = Http::Response.new(*resource.post(:email_address => user.email_address, :password => "spectrum"))
             resource.current_session.user.should == user
 
-            response.body_as_json.should == {
+            response.body_from_json.should == {
               "successful" => true,
               "data" => {
                 "current_user_id" => user.id  
@@ -38,7 +38,7 @@ module Resources
             response = Http::Response.new(*resource.post(:email_address => user.email_address, :password => "incorrectpassword"))
             resource.current_session.user.should be_nil
 
-            response.body_as_json.should == {
+            response.body_from_json.should == {
               "successful" => false,
               "data" => {
                 "errors" => {
@@ -56,7 +56,7 @@ module Resources
           response = Http::Response.new(*resource.post(:email_address => "bogus@example.com", :password => "spectrum"))
           resource.current_session.user.should be_nil
 
-          response.body_as_json.should == {
+          response.body_from_json.should == {
             "successful" => false,
             "data" => {
               "errors" => {

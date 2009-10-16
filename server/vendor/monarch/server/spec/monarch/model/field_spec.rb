@@ -1,0 +1,89 @@
+require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
+
+module Model
+  describe Field do
+    attr_reader :field
+
+    def field
+      @field ||= BlogPost.new.field(:body)
+    end
+
+    def datetime_field
+      @field ||= User.find('jan').field(:signed_up_at)
+    end
+
+    describe "#value=" do
+      context "when assigning to a :datetime field" do
+        def field
+          datetime_field
+        end
+
+        context "when assigning an integer" do
+          it "interprets the integer as milliseconds since the epoch and converts it to a Time" do
+            time = Time.now
+            millis = time.to_i * 1000
+            field.value = millis
+            field.value.should be_an_instance_of(Time)
+            field.value.to_i.should == time.to_i
+          end
+        end
+
+        context "when assigning a Time" do
+          it "just assigns the Time without converting it" do
+            time = Time.now
+            field.value = time
+            field.value.should be_an_instance_of(Time)
+            field.value.should == time
+          end
+        end
+      end
+
+      it "sets #value to the result of #column.convert_value_for_storage on the given value" do
+        mock(field.column).convert_value_for_storage("foo") { "bar" }
+        field.value=("foo")
+        field.value.should == "bar"
+      end
+
+      it "sets #dirty? to true if the value changed and leaves it false if it did not change" do
+        field.value = "adroit"
+        field.should be_dirty
+        field.mark_clean
+        field.value = "adroit"
+        field.should_not be_dirty
+
+        time = Time.now
+        datetime_field.value = time
+        field.should be_dirty
+        field.mark_clean
+        datetime_field.value = time
+        field.should_not be_dirty
+      end
+
+    end
+
+    describe "#value_wire_representation" do
+      context "when the column's #type is :datetime" do
+        def field
+          datetime_field
+        end
+
+        it "returns the #value converted to milliseconds since the epoch" do
+          field.value_wire_representation.should == field.value.to_millis
+        end
+      end
+
+      context "when the column's #type is not :datetime" do
+        it "just returns the #value" do
+
+        end
+      end
+    end
+
+    describe "#to_sql" do
+      it "proxies to #value" do
+        field.value = "hello"
+        field.to_sql.should == field.value.to_sql
+      end
+    end
+  end
+end

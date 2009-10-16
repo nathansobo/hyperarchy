@@ -20,7 +20,7 @@ module Views
 
 
     def application_javascript_tags
-      Http::AssetManager.virtual_dependency_paths_from_load_path('application.js').each do |path|
+      Util::AssetManager.virtual_dependency_paths_from_load_path('application.js').each do |path|
         script :type => "text/javascript", :language => "javascript", :src => path
       end
     end
