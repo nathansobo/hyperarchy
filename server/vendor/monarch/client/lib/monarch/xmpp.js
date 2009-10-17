@@ -2,6 +2,7 @@
 
 //= require "xmpp/builder" 
 //= require "xmpp/template" 
+//= require "xmpp/server" 
 
 Monarch.module("Monarch.Xmpp", {
   build: function(content_fn) {

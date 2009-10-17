@@ -23,6 +23,7 @@
 //= require "monarch/model"
 
 Server = new Monarch.Http.Server();
+XmppServer = new Monarch.Xmpp.Server();
 Repository = new Monarch.Model.Repository();
 History = new Monarch.View.History();
 
