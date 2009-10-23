@@ -23,6 +23,9 @@ Monarch.constructor("Monarch.Xmpp.Server", {
         $('#connect').get(0).value = 'connect';
       } else if (status == Strophe.Status.CONNECTED) {
         console.log('Strophe is connected.');
+
+        Monarch.Xmpp.Presence.send({to: "app@app.localhost"});
+
       }
     });
   },

@@ -24,6 +24,5 @@ gems:
   - name: builder
   - name: hpricot
   - name: SystemTimer 
-  - name: skyfallsin-ruby_bosh
-    version: '0.5.4'
-    install_options: --source=http://gems.github.com
+  - name: xmpp4r
+    version: '0.5'

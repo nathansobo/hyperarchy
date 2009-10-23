@@ -2,6 +2,7 @@
 
 //= require <jquery-1.3.2>
 //= require <jquery.history>
+//= require <jquery.cookie>
 //= require <htmlescape>
 //= require <b64>
 //= require <sha1>

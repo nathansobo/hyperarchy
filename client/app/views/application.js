@@ -18,34 +18,7 @@ constructor("Views.Application", View.Template, {
         self.navigate(path);
       });
 
-      Connection = new Strophe.Connection("/http-bind");
-
-      Connection.addHandler(function(msg) {
-
-        $(msg).find("item").each(function() {
-          console.debug($(this).attr("name"));
-        })
-
-        console.debug(msg);
-      });
-
-      Connection.connect("nathan", "password", function(status) {
-        if (status == Strophe.Status.CONNECTING) {
-          console.log('Strophe is connecting.');
-        } else if (status == Strophe.Status.CONNFAIL) {
-          console.log('Strophe failed to connect.');
-          $('#connect').get(0).value = 'connect';
-        } else if (status == Strophe.Status.DISCONNECTING) {
-          console.log('Strophe is disconnecting.');
-        } else if (status == Strophe.Status.DISCONNECTED) {
-          console.log('Strophe is disconnected.');
-          $('#connect').get(0).value = 'connect';
-        } else if (status == Strophe.Status.CONNECTED) {
-          console.log('Strophe is connected.');
-          Connection.send($pres());
-          Connection.send($iq({type: "get"}).c("query", {xmlns: Strophe.NS.DISCO_ITEMS}));
-        }
-      });
+      XmppServer.connect();
     },
 
     navigate: function(path) {
