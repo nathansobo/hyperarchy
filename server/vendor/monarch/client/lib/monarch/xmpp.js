@@ -1,7 +1,8 @@
 (function(Monarch) {
 
-//= require "xmpp/builder" 
-//= require "xmpp/template" 
+//= require "xmpp/open_tag" 
+//= require "xmpp/builder"
+//= require "xmpp/template"
 //= require "xmpp/server" 
 //= require "xmpp/presence" 
 

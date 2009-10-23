@@ -22,6 +22,8 @@ Monarch.constructor("Monarch.Xml.Builder", {
     }
   },
 
+  open_tag_instruction_constructor: Monarch.Xml.OpenTag,
+
   initialize: function(template) {
     this.template = template;
     this.instructions = [];
@@ -84,7 +86,7 @@ Monarch.constructor("Monarch.Xml.Builder", {
   },
 
   standard_tag_sequence: function(tag_args) {
-    var open_tag_instruction = new Monarch.Xml.OpenTag(tag_args.name, tag_args.attributes);
+    var open_tag_instruction = new this.open_tag_instruction_constructor(tag_args.name, tag_args.attributes);
     this.instructions.push(open_tag_instruction);
     if (tag_args.text) this.instructions.push(new Monarch.Xml.TextNode(tag_args.text));
     if (tag_args.body) tag_args.body();

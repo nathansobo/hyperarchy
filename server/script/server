@@ -1,10 +1,24 @@
 #!/usr/bin/env ruby
 
-puts "starting server env loaded"
-
-
 dir = File.dirname(__FILE__)
 require "#{dir}/../config/environment"
 
-puts "starting server env loaded"
-Http::Server.start(:port => 8080)
+http_server = Http::Server.new(:port => 9090)
+xmpp_dispatcher = Xmpp::Dispatcher.new
+
+trap "INT" do
+  http_server.stop
+  xmpp_dispatcher.stop
+  exit
+end
+
+http_thread = Thread.new do
+  http_server.start
+end
+
+xmpp_thread = Thread.new do
+  xmpp_dispatcher.start
+end
+
+xmpp_thread.join
+http_thread.join

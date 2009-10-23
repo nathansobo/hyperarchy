@@ -692,6 +692,7 @@ Strophe = {
      */
     serialize: function (elem)
     {
+
         var result;
 
         if (!elem) return null;

@@ -10,6 +10,7 @@ Monarch.constructor("Monarch.Xmpp.Server", {
   },
 
   connect: function() {
+    var self = this;
     this.connection.connect('localhost', null, function(status) {
       if (status == Strophe.Status.CONNECTING) {
         console.log('Strophe is connecting.');
@@ -23,15 +24,17 @@ Monarch.constructor("Monarch.Xmpp.Server", {
         $('#connect').get(0).value = 'connect';
       } else if (status == Strophe.Status.CONNECTED) {
         console.log('Strophe is connected.');
-
-        Monarch.Xmpp.Presence.send({to: "app@app.localhost"});
-
+        Monarch.Xmpp.Presence.send({to: "app.localhost"});
       }
     });
   },
 
   send: function(message) {
     this.connection.send(message);
+  },
+
+  jid: function() {
+    return this.connection.jid;
   }
 });
   

@@ -13,7 +13,9 @@ Monarch.constructor("Monarch.Xml.OpenTag", {
   attributes_html: function() {
     var attribute_pairs = [];
     for (var attribute_name in this.attributes) {
-      attribute_pairs.push(attribute_name + '="' + this.attributes[attribute_name] + '"');
+      if (this.attributes[attribute_name]) {
+        attribute_pairs.push(attribute_name + '="' + this.attributes[attribute_name] + '"');
+      }
     }
     return (attribute_pairs.length > 0) ? " " + attribute_pairs.join(" ") : "";
   },

@@ -5,7 +5,7 @@ Monarch.constructor("Monarch.Xmpp.Template", Monarch.Xml.Template, {
 
   constructor_properties: {
     send: function(properties) {
-      XmppServer.send(this.to_jquery(properties));
+      XmppServer.send(this.to_jquery(properties)[0]);
     }
   }
 });
