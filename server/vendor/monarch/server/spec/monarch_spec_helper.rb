@@ -27,3 +27,13 @@ end
 at_exit do
   Spec::Runner.run
 end
+
+module Spec::Example::ExampleMethods
+  def publicize(object, *method_names)
+    (class << object; self; end).class_eval do
+      method_names.each do |method_name|
+        public method_name
+      end
+    end
+  end
+end

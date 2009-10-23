@@ -10,34 +10,13 @@ module Model
       connection.from(table.global_name).filter(:id => field_values[:id]).update(field_values)
     end
 
+    def destroy(table, id)
+      connection.from(table.global_name).filter(:id => id).delete
+    end
+
     def read(relation)
-      if relation.composite?
-        read_composite_relation(relation)
-      else
-        read_simple_relation(relation)
-      end
-    end
-
-    def read_composite_relation(relation)
       connection[relation.to_sql].map do |field_values|
-        relation.record_class.new(field_values)
-      end
-    end
-
-    def read_simple_relation(relation)
-      table = relation.table
-      connection[relation.to_sql].map do |field_values|
-
-
-        id = field_values[:id]
-        if record_from_id_map = table.identity_map[id]
-          record_from_id_map
-        else
-          record = relation.record_class.unsafe_new(field_values)
-          record.mark_clean
-          table.identity_map[id] = record
-          record
-        end
+        relation.build_record_from_database(field_values)
       end
     end
 
@@ -45,6 +24,7 @@ module Model
       table = record.table
       query = table.where(table.column(:id).eq(record.id)).to_sql
       field_values = connection[query].first
+      raise "Record '#{record.id}' not found during reload" unless field_values
       record.update_fields(field_values)
     end
 

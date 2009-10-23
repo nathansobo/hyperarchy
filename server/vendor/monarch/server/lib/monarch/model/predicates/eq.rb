@@ -27,7 +27,7 @@ module Model
       end
 
       def to_sql
-        "#{left_operand.to_sql} = #{right_operand.to_sql}"
+        "#{left_operand.to_sql} #{sql_operator} #{right_operand.to_sql}"
       end
 
       def ==(other_predicate)
@@ -35,11 +35,20 @@ module Model
         other_predicate.left_operand == left_operand && other_predicate.right_operand == right_operand
       end
 
-      def force_matching_field_values
-        { column_operand.name => scalar_operand }
+      def force_matching_field_values(field_values={})
+        field_values.merge(column_operand.name => scalar_operand)
       end
 
       protected
+
+      def sql_operator
+        if left_operand.nil? || right_operand.nil?
+          "is"
+        else
+          "="
+        end
+      end
+
       def column_operand
         return left_operand if left_operand.instance_of?(Column)
         return right_operand if right_operand.instance_of?(Column)

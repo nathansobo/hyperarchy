@@ -122,7 +122,6 @@ Monarch.constructor("Monarch.Model.Record", {
       this.local_update(field_values_by_column_name);
     }
     this.primary_fieldset.initialize_synthetic_fields();
-    this.initialize_relations();
   },
 
   initialize_fields_by_column_name: function() {
@@ -141,12 +140,12 @@ Monarch.constructor("Monarch.Model.Record", {
     });
   },
 
-  destroy: function() {
-    this.table().remove(this);
-  },
-
   update: function(values_by_method_name) {
     return Server.update(this, values_by_method_name);
+  },
+
+  destroy: function() {
+    return Server.destroy(this);
   },
 
   start_pending_changes: function() {
@@ -212,7 +211,8 @@ Monarch.constructor("Monarch.Model.Record", {
     var self = this;
     var push_future = new Monarch.Http.RepositoryUpdateFuture();
     Server.delete_(Repository.origin_url, {
-      record: this.wire_representation()
+      relation: this.table().wire_representation(),
+      id: this.id()
     })
       .on_success(function() {
         self.table().remove(self, {
@@ -228,18 +228,6 @@ Monarch.constructor("Monarch.Model.Record", {
     return push_future;
   },
 
-  enable_update_events: function() {
-    this.active_fieldset.enable_update_events();
-  },
-
-  disable_update_events: function() {
-    this.active_fieldset.disable_update_events();
-  },
-
-  restore_primary_fieldset: function() {
-    this.active_fieldset = this.primary_fieldset;
-  },
-
   local_update: function(values_by_method_name, options) {
     if (!options) options = {};
     this.active_fieldset.begin_batch_update();
@@ -251,6 +239,22 @@ Monarch.constructor("Monarch.Model.Record", {
     if (options.before_events) options.before_events();
     this.active_fieldset.finish_batch_update();
     if (options.after_events) options.after_events();
+  },
+
+  local_destroy: function() {
+    this.table().remove(this);
+  },
+
+  enable_update_events: function() {
+    this.active_fieldset.enable_update_events();
+  },
+
+  disable_update_events: function() {
+    this.active_fieldset.disable_update_events();
+  },
+
+  restore_primary_fieldset: function() {
+    this.active_fieldset = this.primary_fieldset;
   },
 
   table: function() {

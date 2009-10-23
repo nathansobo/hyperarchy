@@ -171,7 +171,7 @@ Screw.Unit(function(c) { with(c) {
 
         var record = User.local_create({id: "jake", full_name: "Jake Frautschi"});
         record.full_name("Jacob Frautschi");
-        record.destroy();
+        record.local_destroy();
 
         expect(insert_callback).to_not(have_been_called);
         expect(update_callback).to_not(have_been_called);
@@ -201,7 +201,7 @@ Screw.Unit(function(c) { with(c) {
         record_2.full_name("Nate Sobo");
         expect(update_callback).to(have_been_called, once);
 
-        record_2.destroy();
+        record_2.local_destroy();
         expect(remove_callback).to(have_been_called, once);
       });
     });

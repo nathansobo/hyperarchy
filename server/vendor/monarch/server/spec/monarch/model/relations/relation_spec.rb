@@ -180,8 +180,8 @@ module Model
             it "returns a Projection with ProjectedColumns corresponding to the given columns" do
               blog_title = Blog[:title].as(:blog_title)
               projection = join.project(blog_title, BlogPost[:title])
-              projection.projected_columns[0].should == blog_title
-              blog_post_title = projection.projected_columns[1]
+              projection.columns[0].should == blog_title
+              blog_post_title = projection.columns[1]
               blog_post_title.should be_an_instance_of(ProjectedColumn)
               blog_post_title.column.should == BlogPost[:title]
             end
@@ -190,15 +190,15 @@ module Model
           context "when passed a Table and a Column" do
             it "returns a Projection with ProjectedColumns corresponding to all the columns in the given table and also the other given columns" do
               projection = join.project(Blog.table, BlogPost[:body])
-              projected_columns = projection.projected_columns
+              columns = projection.columns
 
-              projected_columns.size.should == Blog.table.columns.size + 1
+              columns.size.should == Blog.table.columns.size + 1
               Blog.table.columns.each_with_index do |blog_column, index|
-                projected_columns[index].should be_an_instance_of(ProjectedColumn)
-                projected_columns[index].column.should == blog_column
+                columns[index].should be_an_instance_of(ProjectedColumn)
+                columns[index].column.should == blog_column
               end
-              projected_columns.last.should be_an_instance_of(ProjectedColumn)
-              projected_columns.last.column.should == BlogPost[:body]
+              columns.last.should be_an_instance_of(ProjectedColumn)
+              columns.last.column.should == BlogPost[:body]
             end
           end
 
@@ -206,13 +206,13 @@ module Model
             it "returns a Projection with ProjectedColumns corresponding to all the columns in the given record class's table and also the other given columns" do
               blog_post_title = BlogPost[:title].as(:blog_post_title)
               projection = join.project(Blog, blog_post_title)
-              projected_columns = projection.projected_columns
-              projected_columns.size.should == Blog.table.columns.size + 1
+              columns = projection.columns
+              columns.size.should == Blog.table.columns.size + 1
               Blog.table.columns.each_with_index do |blog_column, index|
-                projected_columns[index].should be_an_instance_of(ProjectedColumn)
-                projected_columns[index].column.should == blog_column
+                columns[index].should be_an_instance_of(ProjectedColumn)
+                columns[index].column.should == blog_column
               end
-              projected_columns.last.should == blog_post_title
+              columns.last.should == blog_post_title
             end
           end
         end
@@ -220,24 +220,24 @@ module Model
         describe "#find" do
           context "when passed an id" do
             it "returns the first Record in a Selection where id is equal to the given id" do
-              BlogPost.table.find("grain_quinoa").should == BlogPost.table.where(BlogPost[:id].eq("grain_quinoa")).records.first
+              BlogPost.table.find("grain_quinoa").should == BlogPost.table.where(BlogPost[:id].eq("grain_quinoa")).all.first
             end
           end
 
           context "when passed a Predicate" do
             it "returns the first Record in the Relation that matches the Predicate" do
-              BlogPost.table.find(BlogPost[:body].eq("Millet")).should == BlogPost.where(BlogPost[:body].eq("Millet")).records.first
+              BlogPost.table.find(BlogPost[:body].eq("Millet")).should == BlogPost.where(BlogPost[:body].eq("Millet")).all.first
             end
           end
         end
 
         describe "#each" do
-          specify "delegates to #records of #table" do
-            records = []
-            stub(BlogPost.table).records { records }
+          specify "delegates to #all of #table" do
+            all = []
+            stub(BlogPost.table).all { all }
 
             block = lambda {}
-            mock(records).each(&block)
+            mock(all).each(&block)
             BlogPost.table.each(&block)
           end
         end

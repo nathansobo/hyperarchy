@@ -9,23 +9,16 @@ module Model
         end
       end
 
-
       attr_reader :operand, :predicate
+      delegate :column, :tables, :build_record_from_database, :to => :operand
 
-      def initialize(operand, predicate)
+      def initialize(operand, predicate, &block)
+        super(&block)
         @operand, @predicate = operand, predicate
       end
 
-      def constituent_tables
-        operand.constituent_tables
-      end
-
-      def table
-        operand.table
-      end
-
-      def record_class
-        operand.record_class
+      def create(field_values={})
+        operand.create(predicate.force_matching_field_values(field_values))
       end
 
       def build_sql_query(query=SqlQuery.new)

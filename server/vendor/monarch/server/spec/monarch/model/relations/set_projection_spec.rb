@@ -55,11 +55,11 @@ module Model
       end
 
       describe "instance methods" do
-        describe "#records" do
+        describe "#all" do
           it "executes an appropriate SQL query against the database and returns Records corresponding to its results" do
-            records = projection.records
-            records.should_not be_empty
-            records.each do |record|
+            all = projection.all
+            all.should_not be_empty
+            all.each do |record|
               record.class.should == Blog
             end
           end
@@ -68,15 +68,15 @@ module Model
         describe "#to_sql" do
           context "when the composed relation contains only one TableProjection" do
             it "generates a query that selects the columns of #projected_table and includes all joined tables in its from clause" do
-              projected_columns = projection.projected_table.columns.map {|a| a.to_sql}.join(", ")
-              projection.to_sql.should == %{select #{projected_columns} from question_tables, questions where questions.question_table_id = question_tables.id and question_tables.id = "foods";}
+              columns = projection.projected_table.columns.map {|a| a.to_sql}.join(", ")
+              projection.to_sql.should == %{select #{columns} from question_tables, questions where questions.question_table_id = question_tables.id and question_tables.id = "foods";}
             end
           end
 
           context "when the composed relation contains more than one TableProjection" do
             it "generates a query that selects the columns of #projected_table and includes all joined tables in its from clause" do
-              projected_columns = composite_projection.projected_table.columns.map {|a| a.to_sql}.join(", ")
-              composite_projection.to_sql.should == %{select #{projected_columns} from blogs, blog_posts where blog_posts.blog_id = questions.id and questions.question_table_id = question_tables.id and question_tables.id = "foods";}
+              columns = composite_projection.projected_table.columns.map {|a| a.to_sql}.join(", ")
+              composite_projection.to_sql.should == %{select #{columns} from blogs, blog_posts where blog_posts.blog_id = questions.id and questions.question_table_id = question_tables.id and question_tables.id = "foods";}
             end
           end
         end

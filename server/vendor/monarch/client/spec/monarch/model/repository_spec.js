@@ -23,6 +23,8 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#resume_events", function() {
       it("calls .resume_events on all Tables", function() {
+        repository.pause_events();
+
         mock(Blog.table, 'resume_events');
         mock(User.table, 'resume_events');
 

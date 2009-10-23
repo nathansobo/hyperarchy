@@ -12,7 +12,7 @@ Screw.Unit(function(c) { with(c) {
       use_example_domain_model();
       use_fake_server();
 
-      it("instantiates a record without inserting it, posts its field values to the remote repository, then updates the record with the returned field values and inserts it", function() {
+      it("instantiates a record without inserting it, posts its field values to the remote repository, then updates the record with the returned field values, reinitializes its relations, and inserts it", function() {
         var insert_callback = mock_function("insert callback");
         var update_callback = mock_function("update callback");
         Blog.on_insert(insert_callback);
@@ -50,7 +50,9 @@ Screw.Unit(function(c) { with(c) {
         var new_record = Blog.find('dinosaurs');
         expect(new_record.name()).to(equal, "Recipes Modified By Server");
         expect(new_record.user_id()).to(equal, "wil");
-
+        
+        expect(new_record.blog_posts().predicate.right_operand).to(equal, new_record.id());
+        
         expect(before_events_callback).to(have_been_called, with_args(new_record));
         expect(after_events_callback).to(have_been_called, with_args(new_record));
       });
@@ -152,7 +154,7 @@ Screw.Unit(function(c) { with(c) {
       use_local_fixtures();
       use_fake_server();
 
-      it("sends the record to be deleted to the remote repository, then destroys the local record on success", function() {
+      it("sends the table and id of the record to be deleted to the remote repository, then destroys the local record on success", function() {
         var remove_callback = mock_function("remove callback");
         Blog.on_remove(remove_callback);
 
@@ -162,7 +164,8 @@ Screw.Unit(function(c) { with(c) {
         expect(Server.deletes.length).to(equal, 1);
         var delete_request = Server.deletes.shift();
         expect(delete_request.url).to(equal, Repository.origin_url);
-        expect(delete_request.data.record).to(equal, record.wire_representation());
+        expect(delete_request.data.relation).to(equal, record.table().wire_representation());
+        expect(delete_request.data.id).to(equal, record.id());
 
         var before_events_callback = mock_function("before events", function() {
           expect(remove_callback).to_not(have_been_called);
@@ -264,21 +267,27 @@ Screw.Unit(function(c) { with(c) {
     describe("request methods", function() {
       var request_method;
 
-      scenario(".post", function() {
+      scenario(".post(url, data)", function() {
         init(function() {
           request_method = 'post';
         });
       });
 
-      scenario(".get", function() {
+      scenario(".get(url, data)", function() {
         init(function() {
           request_method = 'get';
         });
       });
 
-      scenario(".put", function() {
+      scenario(".put(url, data)", function() {
         init(function() {
           request_method = 'put';
+        });
+      });
+
+      scenario(".delete(url, data)", function() {
+        init(function() {
+          request_method = 'delete_';
         });
       });
 
@@ -300,15 +309,21 @@ Screw.Unit(function(c) { with(c) {
         expect(jQuery.ajax).to(have_been_called, once);
 
         var ajax_options = jQuery.ajax.most_recent_args[0];
-        expect(ajax_options.url).to(equal, '/users');
-        expect(ajax_options.type).to(equal, request_method.toUpperCase());
+        expect(ajax_options.type).to(equal, request_method.toUpperCase().replace("_", ""));
         expect(ajax_options.dataType).to(equal, 'json');
 
+        // data is url-encoded and appended as params for delete requests
+        if (request_method == "delete_") {
+          expect(ajax_options.url).to(equal, '/users?' + jQuery.param(server.stringify_json_data(data)));
+          expect(ajax_options.data).to(be_null);
+        } else {
+          expect(ajax_options.url).to(equal, '/users');
+          expect(JSON.parse(ajax_options.data.foo)).to(equal, data.foo);
+          expect(ajax_options.data.baz).to(equal, data.baz);
+          expect(JSON.parse(ajax_options.data.corge)).to(equal, data.corge);
+          expect(JSON.parse(ajax_options.data.grault)).to(equal, data.grault);
+        }
 
-        expect(JSON.parse(ajax_options.data.foo)).to(equal, data.foo);
-        expect(ajax_options.data.baz).to(equal, data.baz);
-        expect(JSON.parse(ajax_options.data.corge)).to(equal, data.corge);
-        expect(JSON.parse(ajax_options.data.grault)).to(equal, data.grault);
 
         expect(future.constructor).to(equal, Monarch.Http.AjaxFuture);
 

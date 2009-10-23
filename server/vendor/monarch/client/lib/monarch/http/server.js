@@ -50,7 +50,8 @@ Monarch.constructor("Monarch.Http.Server", {
   },
 
   delete_: function(url, data) {
-    return this.request('DELETE', url, data);
+    var url_encoded_data = jQuery.param(this.stringify_json_data(data));
+    return this.request('DELETE', url + "?" + url_encoded_data);
   },
 
   request: function(type, url, data) {
@@ -59,7 +60,7 @@ Monarch.constructor("Monarch.Http.Server", {
       url: url,
       type: type,
       dataType: 'json',
-      data: this.stringify_json_data(data),
+      data: data ? this.stringify_json_data(data) : null,
       success: function(response) {
         future.handle_response(response);
       }

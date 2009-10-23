@@ -31,8 +31,6 @@ module Model
     describe "#put" do
       it "finds the record with the given 'id' in the given 'relation', then updates it with the given field values and returns all changed field values as its result" do
         record = User.find('jan')
-        record.should_not be_dirty
-
         new_signed_up_at = record.signed_up_at - 1.hours
 
         response = Http::Response.new(*exposed_repository.put({
@@ -93,7 +91,40 @@ module Model
       end
     end
 
+    describe "#delete" do
+      it "finds the record with the given 'id' in the given 'relation', then destroys it" do
+        User.find('jan').should_not be_nil
+
+        response = Http::Response.new(*exposed_repository.delete({
+          :relation => { "type" => "table", "name" => "users"}.to_json,
+          :id => "jan"
+        }))
+
+        User.find('jan').should be_nil
+
+
+        response.should be_ok
+        response.body_from_json.should == {
+          'successful' => true,
+        }
+      end
+    end
+
     describe "#build_relation_from_wire_representation" do
+      before do
+        publicize exposed_repository, :build_relation_from_wire_representation
+      end
+
+      it "delegates to Relation#from_wire_representation with self as the repository" do
+        representation = {
+          "type" => "table",
+          "name" => "blogs"
+        }
+        mock(Relations::Relation).from_wire_representation(representation, exposed_repository)
+        exposed_repository.build_relation_from_wire_representation(representation)
+      end
+
+
       it "resolves relation names to primitive Tables" do
         relation = exposed_repository.build_relation_from_wire_representation({
           "type" => "table",
@@ -103,18 +134,11 @@ module Model
       end
     end
 
-    describe "#build_relation_from_wire_representation" do
-      it "delegates to Relation#from_wire_representation with self as the repository" do
-        representation = {
-          "type" => "table",
-          "name" => "blogs"
-        }
-        mock(Relations::Relation).from_wire_representation(representation, exposed_repository)
-        exposed_repository.build_relation_from_wire_representation(representation)
-      end
-    end
-
     describe "#fetch" do
+      before do
+        publicize exposed_repository, :fetch
+      end
+
       it "populates a relational dataset with the contents of an array of wire representations of relations" do
         blogs_relation_representation = {
           "type" => "selection",
@@ -185,7 +209,7 @@ module Model
         }
 
         dataset = exposed_repository.fetch([super_blog_posts_relation_representation])
-        expected_records = exposed_repository.resolve_table_name(:super_blog_posts).where(Blog[:user_id].eq('jan')).records
+        expected_records = exposed_repository.resolve_table_name(:super_blog_posts).where(Blog[:user_id].eq('jan')).all
         expected_records.should_not be_empty
 
         expected_records.each do |record|

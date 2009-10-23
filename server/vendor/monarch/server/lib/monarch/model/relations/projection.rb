@@ -1,45 +1,46 @@
 module Model
   module Relations
     class Projection < Relations::Relation
+
       attr_reader :operand, :projected_columns_by_name
+      delegate :tables, :to => :operand
 
-      def initialize(operand, projected_columns, &block)
-        @operand, @projected_columns = operand, projected_columns
-
+      def initialize(operand, columns, &block)
+        super(&block)
+        @operand, @columns = operand, columns
         @projected_columns_by_name = ActiveSupport::OrderedHash.new
-        projected_columns.each do |projected_column|
+        columns.each do |projected_column|
           projected_columns_by_name[projected_column.name] = projected_column
         end
-        
-        class_eval(&block) if block
       end
 
-      def projected_columns
+      def columns
         projected_columns_by_name.values
       end
 
-      def column(name)
-        projected_columns_by_name[name]
+      def column(column_or_name)
+        case column_or_name
+        when String, Symbol
+          projected_columns_by_name[column_or_name]
+        when ProjectedColumn
+          column_or_name
+        end
+      end
+      
+      def tuple_class
+        return @tuple_class if @tuple_class
+        @tuple_class = Class.new(Tuple)
+        @tuple_class.relation = self
+        @tuple_class
       end
 
       def build_sql_query(sql_query=SqlQuery.new)
-        sql_query.projected_columns = projected_columns
+        sql_query.select_clause_columns = columns
         operand.build_sql_query(sql_query)
       end
 
-      def composite?
-        true
-      end
-
-      def constituent_tables
-        operand.constituent_tables
-      end
-
-      def record_class
-        return @record_class if @record_class
-        @record_class = Class.new(ProjectionRecord)
-        @record_class.projected_columns = projected_columns
-        @record_class
+      def build_record_from_database(field_values)
+        tuple_class.new(field_values)
       end
     end
   end

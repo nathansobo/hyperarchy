@@ -23,12 +23,6 @@ module Model
         end
       end
 
-      describe "#to_aliased_sql" do
-        it "returns the qualified column name aliased to a name that includes the table name" do
-          BlogPost[:body].to_aliased_sql.should == "blog_posts.body as blog_posts__body"
-        end
-      end
-
       describe "#eq" do
         it "returns an instance of Predicates::Eq with self as #left_operand and the argument as #right_operand" do
           predicate = BlogPost[:id].eq("grain_quinoa")

@@ -1,7 +1,7 @@
 module Model
   class SqlQuery
     attr_reader :from_tables, :conditions
-    attr_writer :projected_columns
+    attr_writer :select_clause_columns
     
     def initialize
       @from_tables = []
@@ -9,9 +9,18 @@ module Model
     end
 
     def to_sql
-      "#{select} #{projected_columns_sql} from #{from_tables_sql}#{where_clause_sql}"
+      "#{select} #{select_clause_sql} from #{from_tables_sql}#{where_clause_sql}"
     end
 
+    def add_from_table(table)
+      from_tables.push(table) unless from_tables.include?(table)
+    end
+
+    def add_condition(predicate)
+      conditions.push(predicate) unless conditions.include?(predicate)
+    end
+
+    protected
     def select
       if from_tables.size > 1
         "select distinct"
@@ -28,29 +37,22 @@ module Model
       end
     end
 
-    def projected_columns_sql
-      return '*' unless projected_columns
-      projected_columns.map {|c| c.to_sql }.join(", ")
+    def select_clause_sql
+      return '*' unless select_clause_columns
+      select_clause_columns.map {|c| c.to_sql }.join(", ")
     end
 
     def from_tables_sql
       from_tables.map {|s| s.global_name}.join(", ")
     end
 
-    def add_from_table(table)
-      from_tables.push(table) unless from_tables.include?(table)
-    end
 
-    def add_condition(predicate)
-      conditions.push(predicate) unless conditions.include?(predicate)
-    end
-
-    def projected_columns
-      return @projected_columns if @projected_columns
+    def select_clause_columns
+      return @select_clause_columns if @select_clause_columns
       if from_tables.size == 1
-        @projected_columns = nil
+        @select_clause_columns = nil
       else
-        @projected_columns = columns_aliased_with_table_name_prefix
+        @select_clause_columns = columns_aliased_with_table_name_prefix
       end
     end
 

@@ -8,7 +8,7 @@ module Model
       before do
         @table = BlogPost.table
       end
-
+      
       describe "#initialize" do
         it "automatically has a string-valued :id column" do
           table.columns_by_name[:id].type.should == :string
@@ -38,9 +38,9 @@ module Model
       end
 
       describe "#create" do
-        it "instantiates an instance of #record_class with the given columns, #inserts it, and returns it in a non-dirty state" do
+        it "instantiates an instance of #tuple_class with the given columns, #inserts it, and returns it in a non-dirty state" do
           mock(table).insert(anything) do |record|
-            record.class.should == table.record_class
+            record.class.should == table.tuple_class
             record.body.should == "Brown Rice"
             record.blog_id.should == "grain"
           end
@@ -50,14 +50,14 @@ module Model
           record.should_not be_dirty
         end
 
-        context "if the #record_class defines a #before_create hook" do
+        context "if the #tuple_class defines a #before_create hook" do
           it "calls the after inserting the record" do
             mock.instance_of(BlogPost).before_create
             table.create(:body => "Couscous")
           end
         end
 
-        context "if the #record_class defines an #after_create hook" do
+        context "if the #tuple_class defines an #after_create hook" do
           it "calls the after inserting the record" do
             mock.instance_of(BlogPost).after_create
             table.create(:body => "Couscous")
@@ -83,7 +83,7 @@ module Model
         end
       end
 
-      describe "#records" do
+      describe "#all" do
         it "executes a select all SQL query against the database and returns Records corresponding to its results" do
           record_1_id = table.create(:body => "Quinoa", :blog_id => "grain").id
           record_2_id = table.create(:body => "White Rice", :blog_id => "grain").id
@@ -91,17 +91,17 @@ module Model
 
           mock.proxy(Origin).read(table)
 
-          records = table.records
+          all = table.all
 
-          retrieved_record_1 = records.find {|t| t.id == record_1_id }
+          retrieved_record_1 = all.find {|t| t.id == record_1_id }
           retrieved_record_1.body.should == "Quinoa"
           retrieved_record_1.blog_id.should == "grain"
 
-          retrieved_record_2 = records.find {|t| t.id == record_2_id }
+          retrieved_record_2 = all.find {|t| t.id == record_2_id }
           retrieved_record_2.body.should == "White Rice"
           retrieved_record_2.blog_id.should == "grain"
 
-          retrieved_record_3 = records.find {|t| t.id == record_3_id }
+          retrieved_record_3 = all.find {|t| t.id == record_3_id }
           retrieved_record_3.body.should == "Pearled Barley"
           retrieved_record_3.blog_id.should == "grain"
         end

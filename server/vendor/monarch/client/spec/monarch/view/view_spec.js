@@ -16,6 +16,7 @@ Screw.Unit(function(c) { with(c) {
               input({name: "foo", value: "Foo"}).ref('foo');
               input({name: "bar", value: "Bar"}).ref('bar');
               input({name: "baz", value: "Baz", type: "checkbox"}).ref('baz');
+              input({value: "Do not include because I have no name"});
 
               select({name: "quux"}, function() {
                 option({value: "1"});
@@ -27,7 +28,6 @@ Screw.Unit(function(c) { with(c) {
         });
 
         view = TestTemplate.to_view();
-
 
         model = {
           foo: function() {
@@ -57,6 +57,21 @@ Screw.Unit(function(c) { with(c) {
             bar: "Bar",
             baz: false,
             quux: 2
+          });
+        });
+
+        it("if a custom_field_values method is present, merges its results into the returned field_values", function() {
+          view.custom_field_values = function() {
+            return {
+              corge: "hi there"
+            }
+          }
+          expect(view.field_values()).to(equal, {
+            foo: "Foo",
+            bar: "Bar",
+            baz: false,
+            quux: 2,
+            corge: "hi there"
           });
         });
       });

@@ -1,3 +1,9 @@
+class Class
+  def basename
+    name.split("::").last
+  end
+end
+
 class Object
   def to_sql
     inspect

@@ -17,26 +17,81 @@ module Model
       end
       include ForwardsArrayMethodsToRecords
       attr_writer :exposed_name
+      delegate :include?, :to => :all
 
-      delegate :composite?, :column, :to => :operand
-      delegate :include?, :to => :records
 
-      def where(predicate)
-        Selection.new(self, predicate)
+      def initialize(&block)
+        class_eval(&block) if block
       end
 
-      def join(right_operand)
-        PartiallyConstructedInnerJoin.new(self, convert_to_table_if_needed(right_operand))
+      def all
+        Origin.read(self)
+      end
+
+      def find(id_or_predicate)
+        predicate = (id_or_predicate.is_a?(Predicates::Predicate)? id_or_predicate : column(:id).eq(id_or_predicate))
+        where(predicate).all.first
+      end
+
+      def find_or_create(predicate)
+        extant_record = find(predicate)
+        if extant_record
+          extant_record
+        else
+          create(predicate.force_matching_field_values)
+        end
+      end
+
+      def [](column_or_name)
+        column = column(column_or_name)
+        raise "No column name #{column_or_name}" unless column
+        column
+      end
+
+      def destroy(id)
+        find(id).destroy
+      end
+
+      def where(predicate, &block)
+        Selection.new(self, predicate, &block)
+      end
+
+      def join(right_operand, &block)
+        PartiallyConstructedInnerJoin.new(self, convert_to_table_if_needed(right_operand), &block)
       end
 
       def project(*args, &block)
         if args.size == 1 && table_or_record_class?(args.first)
-          TableProjection.new(self, convert_to_table_if_needed(args.first))
+          TableProjection.new(self, convert_to_table_if_needed(args.first), &block)
         else
           Projection.new(self, convert_to_projected_columns_if_needed(args), &block)
         end
       end
 
+      def aggregate(*args, &block)
+        Aggregation.new(self, args, &block)
+      end
+
+      def to_sql
+        build_sql_query.to_sql
+      end
+
+      def add_to_relational_dataset(dataset)
+        dataset[exposed_name] ||= {}
+        all.each do |record|
+          dataset[exposed_name][record.id] = record.wire_representation
+        end
+      end
+
+      def exposed_name
+        @exposed_name || operand.exposed_name
+      end
+
+      def size
+        all.size
+      end
+
+      protected
       def table_or_record_class?(arg)
         arg.instance_of?(Table) || arg.instance_of?(Class)
       end
@@ -60,46 +115,7 @@ module Model
           end
         end.flatten
       end
-
-      def find(id_or_predicate)
-        predicate = (id_or_predicate.is_a?(Predicates::Predicate)? id_or_predicate : record_class[:id].eq(id_or_predicate))
-        where(predicate).records.first
-      end
-
-      def find_or_create(predicate)
-        extant_record = find(predicate)
-        if extant_record
-          extant_record
-        else
-          create(predicate.force_matching_field_values)
-        end
-      end
-
-
-      def records
-        Origin.read(self)
-      end
-
-      def to_sql
-        build_sql_query.to_sql
-      end
-
-      def table
-        raise "Can only call #table on non-composite relations" if composite?
-        constituent_tables.first
-      end
-
-      def add_to_relational_dataset(dataset)
-        dataset[exposed_name] ||= {}
-        records.each do |record|
-          dataset[exposed_name][record.id] = record.wire_representation
-        end
-      end
-
-      def exposed_name
-        @exposed_name || operand.exposed_name
-      end
-
+      
       class PartiallyConstructedInnerJoin
         attr_reader :left_operand, :right_operand
         def initialize(left_operand, right_operand)

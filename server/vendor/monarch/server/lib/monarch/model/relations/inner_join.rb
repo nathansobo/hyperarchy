@@ -11,32 +11,34 @@ module Model
       end
 
       attr_reader :left_operand, :right_operand, :predicate
-      def initialize(left_operand, right_operand, predicate)
+      def initialize(left_operand, right_operand, predicate, &block)
+        super(&block)
         @left_operand, @right_operand, @predicate = left_operand, right_operand, predicate
-      end
-
-      def composite?
-        true
       end
 
       def column(name)
         left_operand.column(name) || right_operand.column(name)
       end
 
-      def constituent_tables
-        left_operand.constituent_tables + right_operand.constituent_tables
+      def tables
+        left_operand.tables + right_operand.tables
       end
 
-      def record_class
-        @record_class ||= Class.new(JoinRecord)
-        @record_class.constituent_tables = constituent_tables
-        @record_class
+      def tuple_class
+        return @tuple_class if @tuple_class
+        @tuple_class = Class.new(CompositeTuple)
+        @tuple_class.relation = self
+        @tuple_class
       end
 
       def build_sql_query(query=SqlQuery.new)
         query.add_condition(predicate)
         left_operand.build_sql_query(query)
         right_operand.build_sql_query(query)
+      end
+
+      def build_record_from_database(field_values)
+        tuple_class.new(field_values)
       end
     end
   end

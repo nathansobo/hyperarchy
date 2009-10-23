@@ -1,35 +1,32 @@
 module Model
   module Relations
     class Table < Relation
-      attr_reader :global_name, :record_class, :columns_by_name
+      attr_reader :global_name, :tuple_class, :columns_by_name
 
-      def initialize(global_name, record_class)
-        @global_name, @record_class = global_name, record_class
+      def initialize(global_name, tuple_class)
+        @global_name, @tuple_class = global_name, tuple_class
         @columns_by_name = ActiveSupport::OrderedHash.new
       end
 
-      def composite?
-        false
-      end
-
-      def constituent_tables
-        [self]
-      end
-
-      def define_column(name, type)
-        columns_by_name[name] = Column.new(self, name, type)
+      def define_column(name, type, options={})
+        columns_by_name[name] = Column.new(self, name, type, options)
       end
 
       def columns
         columns_by_name.values
       end
 
-      def insert(record)
-        Origin.insert(self, record.field_values_by_column_name)
+      def column(column_or_name)
+        case column_or_name
+        when String, Symbol
+          columns_by_name[column_or_name.to_sym]
+        when Column
+          column_or_name
+        end
       end
 
       def create(field_values = {})
-        record = record_class.new(field_values)
+        record = tuple_class.new(field_values)
         record.before_create if record.respond_to?(:before_create)
         insert(record)
         record.mark_clean
@@ -37,14 +34,29 @@ module Model
         record
       end
 
+      def insert(record)
+        Origin.insert(self, record.field_values_by_column_name)
+      end
+
+      def tables
+        [self]
+      end
+
       def build_sql_query(query=SqlQuery.new)
         query.add_from_table(self)
         query
       end
 
-      def column(name)
-        name = name.to_sym if name.instance_of?(String)
-        columns_by_name[name]
+      def build_record_from_database(field_values)
+        id = field_values[:id]
+        if record_from_id_map = identity_map[id]
+          record_from_id_map
+        else
+          record = tuple_class.unsafe_new(field_values)
+          record.mark_clean
+          identity_map[id] = record
+          record
+        end
       end
 
       def initialize_identity_map
@@ -61,16 +73,14 @@ module Model
 
       def load_fixtures(fixtures)
         fixtures.each do |id, field_values|
-          insert(record_class.unsafe_new(field_values.merge(:id => id.to_s)))
+          insert(tuple_class.unsafe_new(field_values.merge(:id => id.to_s)))
         end
       end
 
-      #TODO: test
       def clear_table
         Origin.clear_table(global_name)
       end
 
-      #TODO: test
       def create_table
         columns_to_generate = columns
         Origin.create_table(global_name) do
@@ -80,7 +90,6 @@ module Model
         end
       end
 
-      #TODO: test
       def drop_table
         Origin.drop_table(global_name)
       end

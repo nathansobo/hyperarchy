@@ -15,8 +15,8 @@ module Model
       @tables_by_name = {}
     end
 
-    def new_table(name, record_class)
-      tables_by_name[name] = Relations::Table.new(name, record_class)
+    def new_table(name, tuple_class)
+      tables_by_name[name] = Relations::Table.new(name, tuple_class)
     end
 
     def tables

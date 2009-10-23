@@ -18,10 +18,10 @@ require "active_support/core_ext/string/starts_ends_with"
 require "active_support/duration"
 require "active_support/core_ext/numeric/time"
 
+require "#{dir}/monarch/core_extensions"
 require "#{dir}/monarch/util"
 require "#{dir}/monarch/http"
 require "#{dir}/monarch/model"
-require "#{dir}/monarch/core_extensions"
 
 class String
  include ActiveSupport::CoreExtensions::String::StartsEndsWith

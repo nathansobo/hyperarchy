@@ -35,13 +35,18 @@ Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
       var values = {};
       this.find("input,select").each(function() {
         var elt = $(this);
+        var name = elt.attr('name');
+        if (!name) return;
         if (elt.is(':checkbox')) {
-          values[elt.attr('name')] = elt.attr('checked');
+          values[name] = elt.attr('checked');
         } else {
-          values[elt.attr('name')] = elt.val();
+          values[name] = elt.val();
         }
       });
 
+      if (this.custom_field_values) {
+        jQuery.extend(values, this.custom_field_values());
+      }
 
       return values;
     },

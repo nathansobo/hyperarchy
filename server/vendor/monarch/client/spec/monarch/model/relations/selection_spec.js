@@ -46,6 +46,14 @@ Screw.Unit(function(c) { with(c) {
 
         expect(create_callback).to(have_been_called);
       });
+
+      context("if called with no arguments", function() {
+        it("still introduces the necessary field values in a call to #create on its operand", function() {
+          mock(operand, 'create');
+          selection.create();
+          expect(operand.create).to(have_been_called, with_args({age: 31}));
+        });
+      });
     });
 
     describe("#wire_representation", function() {

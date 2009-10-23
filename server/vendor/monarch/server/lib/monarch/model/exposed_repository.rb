@@ -34,6 +34,27 @@ module Model
       [200, headers, { :successful => true, :data => {:field_values => new_record.wire_representation}}.to_json]
     end
 
+    def delete(params)
+      id = params[:id]
+      relation = build_relation_from_wire_representation(JSON.parse(params[:relation]))
+      relation.destroy(id)
+
+      [200, headers, { :successful => true }.to_json]
+    end
+
+    def resolve_table_name(name)
+      if relation = exposed_relations_by_name[name]
+        return relation
+      end
+      relation_definition = exposed_relation_definitions_by_name[name]
+      raise "No table named #{name} defined in #{inspect}" unless relation_definition
+      relation = instance_eval(&relation_definition)
+      relation.exposed_name = name
+      exposed_relations_by_name[name] = relation
+    end
+    
+    protected
+
     def headers
       { 'Content-Type' => 'application/json' }
     end
@@ -48,17 +69,6 @@ module Model
 
     def build_relation_from_wire_representation(representation)
       Relations::Relation.from_wire_representation(representation, self)
-    end
-
-    def resolve_table_name(name)
-      if relation = exposed_relations_by_name[name]
-        return relation
-      end
-      relation_definition = exposed_relation_definitions_by_name[name]
-      raise "No table named #{name} defined in #{inspect}" unless relation_definition
-      relation = instance_eval(&relation_definition)
-      relation.exposed_name = name
-      exposed_relations_by_name[name] = relation
     end
 
     def exposed_relations_by_name

@@ -145,10 +145,10 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#destroy", function() {
+    describe("#local_destroy", function() {
       it("removes the Record from its Table", function() {
         var record = User.find('jan');
-        record.destroy();
+        record.local_destroy();
         expect(User.find('jan')).to(be_null);
       });
     });

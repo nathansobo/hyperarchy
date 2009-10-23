@@ -9,7 +9,7 @@ module Model
 
       it "adds its assigned .table to Repository #tables_by_name" do
         Repository.tables_by_name[:blog_posts].should == BlogPost.table
-        Repository.tables_by_name[:blog_posts].record_class.should == BlogPost
+        Repository.tables_by_name[:blog_posts].tuple_class.should == BlogPost
       end
 
       it "defines an :id Column on the subclass" do
@@ -21,11 +21,6 @@ module Model
 
     describe "class methods" do
       describe ".column" do
-        it "delegates column definition to .table" do
-          mock(BlogPost.table).define_column(:foo, :string)
-          BlogPost.column(:foo, :string)
-        end
-
         it "defines named instance methods that call #set_field_value and #get_field_value" do
           record = BlogPost.new
 
@@ -40,8 +35,8 @@ module Model
         it "defines a Selection via .relates_to_many based on the given name" do
           blog = Blog.find("grain")
           blog_posts_relation = blog.blog_posts
-          blog_posts_relation.records.should_not be_empty
-          blog_posts_relation.records.each do |answer|
+          blog_posts_relation.all.should_not be_empty
+          blog_posts_relation.all.each do |answer|
             answer.blog_id.should == blog.id
           end
         end
@@ -89,12 +84,12 @@ module Model
       end
 
       describe "#each" do
-        specify "are forwarded to #records of #table" do
-          records = []
-          stub(BlogPost.table).records { records }
+        specify "are forwarded to #all of #table" do
+          all = []
+          stub(BlogPost.table).all { all }
 
           block = lambda {}
-          mock(records).each(&block)
+          mock(all).each(&block)
           BlogPost.each(&block)
         end
       end
@@ -106,14 +101,6 @@ module Model
       end
 
       describe "#initialize" do
-        it "assigns #fields_by_column to a hash with a Field object for every column declared in the table" do
-          BlogPost.table.columns.each do |column|
-            field = record.fields_by_column[column]
-            field.column.should == column
-            field.record.should == record
-          end
-        end
-
         it "assigns the Field values in the given hash" do
           record.get_field_value(BlogPost[:body]).should == "Quinoa"
           record.get_field_value(BlogPost[:blog_id]).should == "grain"
@@ -121,6 +108,11 @@ module Model
 
         it "assigns #id to a new guid" do
           record.id.should_not be_nil
+        end
+
+        it "assigns a field to its column's declared default if no value is assigned" do
+          record = BlogPost.create(:blog_id => "grain", :created_at => 1254162750000)
+          record.body.should == BlogPost[:body].default_value
         end
       end
 
@@ -231,6 +223,7 @@ module Model
 
       describe "#field_values_by_column_name" do
         it "returns a hash with the values of all fields indexed by Column name" do
+          publicize record, :fields_by_column
           expected_hash = {}
           record.fields_by_column.each do |column, field|
             expected_hash[column.name] = field.value

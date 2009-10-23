@@ -5,6 +5,7 @@ module Model
     attr_reader :query
     before do
       @query = SqlQuery.new
+      publicize query, :select_clause_sql
     end
 
     describe "#to_sql" do
@@ -14,7 +15,7 @@ module Model
         end
 
         it "generates a simple select" do
-          query.to_sql.should == "select #{query.projected_columns_sql} from blog_posts"
+          query.to_sql.should == "select #{query.select_clause_sql} from blog_posts"
         end
       end
 
@@ -26,7 +27,7 @@ module Model
         end
 
         it "generates a select with a where clause having all conditions and'ed together" do
-          query.to_sql.should == %{select #{query.projected_columns_sql} from blog_posts where blog_posts.blog_id = "grain" and blog_posts.body = "Peaches"}
+          query.to_sql.should == %{select #{query.select_clause_sql} from blog_posts where blog_posts.blog_id = "grain" and blog_posts.body = "Peaches"}
         end
       end
     end

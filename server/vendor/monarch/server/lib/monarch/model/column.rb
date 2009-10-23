@@ -7,10 +7,35 @@ module Model
       end
     end
 
-    attr_reader :table, :name, :type
+    attr_reader :table, :name, :type, :default_value
 
-    def initialize(table, name, type)
+    def initialize(table, name, type, options={})
       @table, @name, @type = table, name, type
+      @default_value = options[:default]
+    end
+
+    def eq(right_operand)
+      Predicates::Eq.new(self, right_operand)
+    end
+
+    def as(column_alias)
+      ProjectedColumn.new(self, column_alias.to_sym)
+    end
+
+    def max
+      AggregationExpression.new('max', self)
+    end
+
+    def min
+      AggregationExpression.new('min', self)
+    end
+
+    def sum
+      AggregationExpression.new('sum', self)
+    end
+
+    def count
+      AggregationExpression.new('count', self)
     end
 
     def ruby_type
@@ -26,6 +51,8 @@ module Model
 
     def convert_value_for_storage(value)
       case type
+      when :integer
+        value.to_i
       when :datetime
         convert_datetime_value_for_storage(value)
       else
@@ -46,18 +73,6 @@ module Model
       "#{table.global_name}.#{name}"
     end
 
-    def to_aliased_sql
-      "#{to_sql} as #{table.global_name}__#{name}"
-    end
-
-    def eq(right_operand)
-      Predicates::Eq.new(self, right_operand)
-    end
-
-    def as(column_alias)
-      ProjectedColumn.new(self, column_alias.to_sym)
-    end
-
     protected
     def convert_datetime_value_for_storage(value)
       case value
@@ -65,6 +80,8 @@ module Model
         value
       when Integer
         Time.at(value / 1000)
+      when String
+        Sequel.string_to_datetime(value)
       end
     end
   end

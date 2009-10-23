@@ -6,6 +6,11 @@ FIXTURES = {
       :full_name => "Jan Nelson",
       :age => 31,
       :signed_up_at => 1253740028201
+    },
+    :wil => {
+      :full_name => "Wil Bierbaum",
+      :age => 29,
+      :signed_up_at => 1253740022000
     }
   },
 

@@ -33,6 +33,7 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
   insert: function(record, options) {
     this.records_by_id[record.id()] = record;
     record.enable_update_events();
+    record.initialize_relations();
     this.record_inserted(record, options);
   },
 

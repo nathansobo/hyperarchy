@@ -1,11 +1,14 @@
 module Model
   class ProjectedColumn
     attr_reader :column, :column_alias
-
     delegate :convert_value_for_storage, :convert_value_for_wire, :to => :column
 
     def initialize(column, column_alias=nil)
       @column, @column_alias = column, column_alias
+    end
+
+    def eq(right_operand)
+      Predicates::Eq.new(self, right_operand)
     end
 
     def name
