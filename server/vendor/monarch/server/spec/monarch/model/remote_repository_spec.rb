@@ -48,7 +48,7 @@ module Model
       context "when reading a Record that is in the identity map" do
         it "returns the instance of the Record from the identity map associated with the given Table instead of instantiating another" do
           record_in_id_map = BlogPost.find('grain_quinoa')
-          BlogPost.table.identity_map['grain_quinoa'] = record_in_id_map
+          BlogPost.table.thread_local_identity_map['grain_quinoa'] = record_in_id_map
 
           all = Origin.read(BlogPost.where(BlogPost[:id].eq("grain_quinoa")))
           all.size.should == 1
@@ -62,8 +62,8 @@ module Model
           Origin.connection[:blog_posts].delete
           Origin.connection[:blog_posts] << { :id => "1", :body => "Quinoa" }
           Origin.connection[:blog_posts] << { :id => "2", :body => "Barley" }
-          BlogPost.table.identity_map['1'].should be_nil
-          BlogPost.table.identity_map['2'].should be_nil
+          BlogPost.table.thread_local_identity_map['1'].should be_nil
+          BlogPost.table.thread_local_identity_map['2'].should be_nil
 
           all = Origin.read(BlogPost.table)
           all.size.should == 2
@@ -71,12 +71,12 @@ module Model
           record_1 = all.find {|t| t.id == "1"}
           record_1.should_not be_dirty
           record_1.body.should == "Quinoa"
-          BlogPost.table.identity_map['1'].should == record_1
+          BlogPost.table.thread_local_identity_map['1'].should == record_1
 
           record_2 = all.find {|t| t.id == "2"}
           record_2.should_not be_dirty
           record_2.body.should == "Barley"
-          BlogPost.table.identity_map['2'].should == record_2
+          BlogPost.table.thread_local_identity_map['2'].should == record_2
         end
       end
     end

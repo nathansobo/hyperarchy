@@ -84,6 +84,10 @@ module Model
       initialize_relations
     end
 
+    def activate
+      table.global_identity_map[id] = self
+    end
+
     def reload
       Origin.reload(self)
       self

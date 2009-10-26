@@ -125,10 +125,10 @@ module Model
         end
       end
 
-      describe "#identity_map" do
+      describe "#thread_local_identity_map" do
         it "returns the thread-local identity map" do
           mock(Thread.current)['blog_posts_identity_map']
-          BlogPost.table.identity_map
+          BlogPost.table.thread_local_identity_map
         end
       end
 

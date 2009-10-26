@@ -1,11 +1,12 @@
 module Model
   module Relations
     class Table < Relation
-      attr_reader :global_name, :tuple_class, :columns_by_name
+      attr_reader :global_name, :tuple_class, :columns_by_name, :global_identity_map
 
       def initialize(global_name, tuple_class)
         @global_name, @tuple_class = global_name, tuple_class
         @columns_by_name = ActiveSupport::OrderedHash.new
+        @global_identity_map = {}
       end
 
       def define_column(name, type, options={})
@@ -49,12 +50,15 @@ module Model
 
       def build_record_from_database(field_values)
         id = field_values[:id]
-        if record_from_id_map = identity_map[id]
+
+        if record_from_global_id_map = global_identity_map[id]
+          record_from_global_id_map
+        elsif record_from_id_map = thread_local_identity_map[id]
           record_from_id_map
         else
           record = tuple_class.unsafe_new(field_values)
           record.mark_clean
-          identity_map[id] = record
+          thread_local_identity_map[id] = record
           record
         end
       end
@@ -63,7 +67,7 @@ module Model
         Thread.current["#{global_name}_identity_map"] = {}
       end
 
-      def identity_map
+      def thread_local_identity_map
         Thread.current["#{global_name}_identity_map"]
       end
 

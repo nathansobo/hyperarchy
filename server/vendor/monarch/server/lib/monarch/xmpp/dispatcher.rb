@@ -9,13 +9,7 @@ module Xmpp
     def start
       connection.connect('localhost', 8888)
       connection.auth('secret')
-
-      connection.add_presence_callback do |presence|
-        p presence
-      end
-      connection.add_xml_callback do |stanza|
-        p stanza
-      end
+      connection.add_presence_callback { |stanza| handle_presence(stanza) }
       connection.start
     end
 
@@ -23,5 +17,10 @@ module Xmpp
       connection.stop
     end
 
+    protected
+    def handle_presence(stanza)
+      client = Client.create(:jid => stanza.from.to_s, :session_id => stanza.attribute("session_id").value)
+      client.activate
+    end
   end
 end
