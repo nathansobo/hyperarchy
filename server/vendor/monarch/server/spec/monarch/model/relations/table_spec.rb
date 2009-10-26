@@ -30,10 +30,11 @@ module Model
       end
 
       describe "#insert" do
-        it "calls Origin.insert with the Table and #field_values_by_column_name" do
+        it "calls Origin.insert with the Table and #field_values_by_column_name and stores the record in the thread-local identity map" do
           record = BlogPost.new(:body => "Brown Rice", :blog_id => "grain")
           mock(Origin).insert(table, record.field_values_by_column_name)
           table.insert(record)
+          table.thread_local_identity_map[record.id].should == record
         end
       end
 

@@ -130,6 +130,20 @@ module Model
         end
       end
 
+      describe "#destroy" do
+        it "removes destroys the record in the database and removes it from the thread-local and global identity maps" do
+          record.activate
+          BlogPost.table.thread_local_identity_map[record.id].should == record
+          BlogPost.table.global_identity_map[record.id].should == record
+
+          record.destroy
+
+          BlogPost.table.thread_local_identity_map.should_not have_key(record.id)
+          BlogPost.table.global_identity_map.should_not have_key(record.id)
+          BlogPost.find(record.id).should be_nil
+        end
+      end
+
       describe "#wire_representation" do
         it "returns the values of all fields by string-valued column names, and converts :datetime fields to milliseconds since the epoch" do
           wire_representation = record.wire_representation

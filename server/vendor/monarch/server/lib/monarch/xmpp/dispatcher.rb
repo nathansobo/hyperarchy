@@ -19,8 +19,12 @@ module Xmpp
 
     protected
     def handle_presence(stanza)
-      client = Client.create(:jid => stanza.from.to_s, :session_id => stanza.attribute("session_id").value)
-      client.activate
+      if stanza.type == :unavailable
+        Client.find(Client[:jid].eq(stanza.from.to_s)).destroy
+      else
+        client = Client.create(:jid => stanza.from.to_s, :session_id => stanza.attribute("session_id").value)
+        client.activate
+      end
     end
   end
 end

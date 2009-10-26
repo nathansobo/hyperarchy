@@ -12,7 +12,7 @@ module Xmpp
         publicize dispatcher, :handle_presence
       end
 
-      it "creates a Client object with the jid and session_id attributes from the stanza and adds it to the persistent identity map" do
+      it "creates a Client object with the jid and session_id attributes from the stanza and adds it to the persistent identity map, then destroys it when the client becomes unavailable" do
         stanza = Jabber::Presence.new
         stanza.from = "12345@hyperarchy.org/r12345"
         stanza.to = "app.hyperarchy.org"
@@ -25,6 +25,15 @@ module Xmpp
 
         Model::Repository.clear_identity_maps
         Client.find(client.id).should == client
+
+        unavailable_stanza = Jabber::Presence.new
+        unavailable_stanza.from = "12345@hyperarchy.org/r12345"
+        unavailable_stanza.to = "app.hyperarchy.org"
+        unavailable_stanza.type = :unavailable
+
+        dispatcher.handle_presence(unavailable_stanza)
+
+        Client.find(client.id).should be_nil
       end
     end
   end

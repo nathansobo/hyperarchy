@@ -37,6 +37,13 @@ module Model
 
       def insert(record)
         Origin.insert(self, record.field_values_by_column_name)
+        thread_local_identity_map[record.id] = record if thread_local_identity_map
+      end
+
+      def destroy(record)
+        Origin.destroy(self, record.id)
+        thread_local_identity_map.delete(record.id) if thread_local_identity_map
+        global_identity_map.delete(record.id)
       end
 
       def tables
