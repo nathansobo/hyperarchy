@@ -77,7 +77,7 @@ Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
     },
 
     save: function() {
-      this.model().update(this.field_values());
+      if (this.model()) this.model().update(this.field_values());
     },
 
     populate_text_fields: function() {

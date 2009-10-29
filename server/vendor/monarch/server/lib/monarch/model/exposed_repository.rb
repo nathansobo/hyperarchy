@@ -15,31 +15,16 @@ module Model
       [200, headers, { :successful => true, :data => fetch(relation_wire_representations)}.to_json]
     end
 
-    def put(params)
-      id = params[:id]
-      relation = build_relation_from_wire_representation(JSON.parse(params[:relation]))
-      field_values = JSON.parse(params[:field_values])
-      record = relation.find(id)
-      updated_field_values = record.update(field_values)
-      record.save
-
-      [200, headers, { :successful => true, :data => {:field_values => updated_field_values}}.to_json]
-    end
-
     def post(params)
-      relation = build_relation_from_wire_representation(JSON.parse(params[:relation]))
-      field_values = JSON.parse(params[:field_values])
-      new_record = relation.create(field_values)
-      
-      [200, headers, { :successful => true, :data => {:field_values => new_record.wire_representation}}.to_json]
-    end
-
-    def delete(params)
-      id = params[:id]
-      relation = build_relation_from_wire_representation(JSON.parse(params[:relation]))
-      relation.destroy(id)
-
-      [200, headers, { :successful => true }.to_json]
+      response_data = {};
+      operations_by_table_name = JSON.parse(params[:operations])
+      operations_by_table_name.each do |table_name, operations_by_id|
+        response_data[table_name] = {}
+        operations_by_id.each do |id, field_values|
+          response_data[table_name][id] = perform_operation(table_name, id, field_values)
+        end
+      end
+      [200, headers, { 'successful' => true, 'data' => response_data}.to_json]
     end
 
     def resolve_table_name(name)
@@ -54,6 +39,36 @@ module Model
     end
     
     protected
+
+    def perform_operation(table_name, id, field_values)
+      if id =~ /^create/
+        perform_create(table_name, field_values)
+      elsif field_values.nil?
+        perform_destroy(table_name, id)
+      else
+        perform_update(table_name, id, field_values)
+      end
+    end
+
+    def perform_create(table_name, field_values)
+      relation = resolve_table_name(table_name)
+      new_record = relation.create(field_values)
+      new_record.wire_representation
+    end
+
+    def perform_update(table_name, id, field_values)
+      relation = resolve_table_name(table_name)
+      record = relation.find(id)
+      updated_field_values = record.update(field_values)
+      record.save
+      updated_field_values
+    end
+
+    def perform_destroy(table_name, id)
+      relation = resolve_table_name(table_name)
+      relation.destroy(id)
+      nil
+    end
 
     def headers
       { 'Content-Type' => 'application/json' }
