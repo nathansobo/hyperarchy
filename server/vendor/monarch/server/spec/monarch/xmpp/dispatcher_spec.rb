@@ -38,9 +38,6 @@ module Xmpp
       end
     end
 
-#    iq = Jabber::Iq.new(:put, "app.hyperarchy.org")
-#    iq.from = "12345@hyperarchy.org/r12345"
-#    iq.id = "sample-iq-id"
 #
 #    relations = [
 #      { 'type' => "table", 'name' => "blogs" },
@@ -55,10 +52,44 @@ module Xmpp
 
 
     describe "#handle_iq(iq_stanza)" do
+      attr_reader :jid, :client
+
+      before do
+        publicize dispatcher, :client_came_online, :handle_iq
+
+        @jid = "12345@hyperarchy.org/r12345"
+        dispatcher.client_came_online(jid, "sample-session-id")
+        @client = Client.find(Client[:jid].eq(jid))
+      end
+
       it "locates the resource indicated in the path following the 'to' attribute and calls the method indicated by the name of the iq's child tag with a hash of its attribute values" do
-        iq = Jabber::Iq.new(:put, "app.hyperarchy.org")
-        iq.from = "12345@hyperarchy.org/r12345"
-        iq.id = "sample-iq-id"
+        iq_stanza = Jabber::Iq.new(:put, "app.hyperarchy.org/res/our/ce")
+        iq_stanza.from = jid
+        iq_stanza.id = "sample-iq-id"
+        method_element = REXML::Element.new("foo")
+        method_element.add_attribute("foo", "bar")
+        method_element.add_attribute("baz", "quux")
+        iq_stanza.add_element(method_element)
+
+        resource = Class.new do
+          public
+          def foo(params)
+          end
+
+          protected
+          def bar(params)
+            raise "non-public methods should not be called"
+          end
+        end.new
+
+        mock(resource_locator).locate("res/our/ce", { :client => client }) { resource }.twice
+        mock(resource).foo({ :foo => "bar", :baz => "quux" }).once
+
+        dispatcher.handle_iq(iq_stanza)
+
+        # should not attempt to call a protected method
+        method_element.name = "bar"
+        dispatcher.handle_iq(iq_stanza)
       end
     end
   end
