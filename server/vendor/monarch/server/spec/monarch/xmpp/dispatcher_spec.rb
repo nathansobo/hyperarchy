@@ -2,12 +2,13 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 
 module Xmpp
   describe Dispatcher do
-    attr_reader :dispatcher
+    attr_reader :resource_locator, :dispatcher
     before do
-      @dispatcher = Xmpp::Dispatcher.new
+      @resource_locator = Util::ResourceLocator.new
+      @dispatcher = Xmpp::Dispatcher.new(resource_locator)
     end
     
-    describe "#handle_presence" do
+    describe "#handle_presence(presense_stanza)" do
       before do
         publicize dispatcher, :handle_presence
       end
@@ -34,6 +35,30 @@ module Xmpp
         dispatcher.handle_presence(unavailable_stanza)
 
         Client.find(client.id).should be_nil
+      end
+    end
+
+#    iq = Jabber::Iq.new(:put, "app.hyperarchy.org")
+#    iq.from = "12345@hyperarchy.org/r12345"
+#    iq.id = "sample-iq-id"
+#
+#    relations = [
+#      { 'type' => "table", 'name' => "blogs" },
+#      { 'type' => "table", 'name' => "blog_posts" }
+#    ].to_json
+#
+#    subscribe_element = REXML::Element.new("subscribe")
+#    subscribe_element.add_attribute("relations", relations)
+#    subscribe_element.add_attribute("fetch", true)
+#
+#    iq.add_element
+
+
+    describe "#handle_iq(iq_stanza)" do
+      it "locates the resource indicated in the path following the 'to' attribute and calls the method indicated by the name of the iq's child tag with a hash of its attribute values" do
+        iq = Jabber::Iq.new(:put, "app.hyperarchy.org")
+        iq.from = "12345@hyperarchy.org/r12345"
+        iq.id = "sample-iq-id"
       end
     end
   end

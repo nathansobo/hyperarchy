@@ -66,7 +66,7 @@ module Model
 
     def perform_destroy(table_name, id)
       relation = resolve_table_name(table_name)
-      relation.destroy(id)
+      relation.destroy(relation.find(id))
       nil
     end
 

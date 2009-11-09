@@ -1,8 +1,9 @@
 module Xmpp
   class Dispatcher
-    attr_reader :connection
+    attr_reader :resource_locator, :connection
 
-    def initialize
+    def initialize(resource_locator)
+      @resource_locator = resource_locator
       @connection = Jabber::Component.new("application@hyperarchy.org")
     end
 
