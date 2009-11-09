@@ -4,7 +4,7 @@
 //= require "xmpp/builder"
 //= require "xmpp/template"
 //= require "xmpp/server" 
-//= require "xmpp/presence" 
+//= require "xmpp/templates" 
 
 Monarch.module("Monarch.Xmpp", {
   build: function(content_fn) {

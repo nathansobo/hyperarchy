@@ -1,9 +1,13 @@
 module Http
   class Resource
-    attr_accessor :current_session_id
+    attr_accessor :current_session_id, :current_client
 
     def current_session
-      Session.find(Session[:session_id].eq(current_session_id))
+      if current_session_id
+        Session.find(Session[:session_id].eq(current_session_id))
+      elsif current_client
+        current_client.session
+      end
     end
 
     def current_user

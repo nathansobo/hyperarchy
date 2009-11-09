@@ -28,6 +28,8 @@ module Model
     end
 
     def subscribe(params)
+      puts "GOT THERE"
+      p params
       "TEST RESPONSE"
     end
 

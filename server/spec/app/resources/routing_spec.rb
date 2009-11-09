@@ -23,7 +23,7 @@ module Resources
       use_fixtures
 
       it "returns a UserRepository for the current user" do
-        repository = resource_locator.locate("/user_repository", "nathan_session")
+        repository = resource_locator.locate("/user_repository", :session_id => "nathan_session")
         repository.should be_an_instance_of(Resources::UserRepository)
         repository.user.should == User.find("nathan")
       end

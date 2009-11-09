@@ -3,10 +3,10 @@ require File.expand_path("#{File.dirname(__FILE__)}/thor_helper")
 class Db < Thor
   desc "setup", "(re)create 'hyperarchy_development' database and build its schema"
   def setup
-    Server.connection = Sequel.mysql :user => 'root', :password => 'password', :host => 'localhost'
-    Server.connection.execute('drop database if exists hyperarchy_development')
-    Server.connection.execute('create database hyperarchy_development')
-    Server.connection.use('hyperarchy_development')
+    Origin.connection = Sequel.mysql :user => 'root', :password => 'password', :host => 'localhost'
+    Origin.connection.execute('drop database if exists hyperarchy_development')
+    Origin.connection.execute('create database hyperarchy_development')
+    Origin.connection.use('hyperarchy_development')
     Model::Repository.create_schema
   end
 

@@ -16,7 +16,7 @@ module Util
 
           session_id = 'sample-session_id'
 
-          stub(resource_locator).root { mock_root }
+          stub(resource_locator).new_root_resource { mock_root }
           mock(mock_root).current_session_id=(session_id)
           mock(mock_root).locate('resource_1') { resource_1 }
           mock(resource_1).current_session_id=(session_id)
@@ -35,7 +35,7 @@ module Util
 
           client = 'mock client'
 
-          stub(resource_locator).root { mock_root }
+          stub(resource_locator).new_root_resource { mock_root }
           mock(mock_root).current_client=(client)
           mock(mock_root).locate('resource_1') { resource_1 }
           mock(resource_1).current_client=(client)

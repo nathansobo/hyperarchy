@@ -2,14 +2,15 @@ module Util
   class ResourceLocator
     attr_reader :root
 
-    def root
-      @root ||= Resources::Root.new
+    def new_root_resource
+      Resources::Root.new
     end
 
     def locate(path, params)
       session_id = params[:session_id]
       client = params[:client]
 
+      root = new_root_resource
       assign_session_id_or_client(root, session_id, client)
       path_parts(path).inject(root) do |resource, child_resource_name|
         if resource

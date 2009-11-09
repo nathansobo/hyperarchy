@@ -1,6 +1,6 @@
 (function(Monarch, jQuery) {
 
-Monarch.constructor("Monarch.Xmpp.Presence", Monarch.Xmpp.Template, {
+Monarch.constructor("Monarch.Xmpp.Templates.Presence", Monarch.Xmpp.Template, {
   content: function(attributes) { with (this.builder) {
     presence({
       xmlns: 'jabber:client',
