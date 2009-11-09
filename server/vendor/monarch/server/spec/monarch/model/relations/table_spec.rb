@@ -34,7 +34,7 @@ module Model
           record = BlogPost.new(:body => "Brown Rice", :blog_id => "grain")
           mock(Origin).insert(table, record.field_values_by_column_name)
           table.insert(record)
-          table.thread_local_identity_map[record.id].should == record
+          table.local_identity_map[record.id].should == record
         end
       end
 
@@ -126,10 +126,10 @@ module Model
         end
       end
 
-      describe "#thread_local_identity_map" do
+      describe "#local_identity_map" do
         it "returns the thread-local identity map" do
           mock(Thread.current)['blog_posts_identity_map']
-          BlogPost.table.thread_local_identity_map
+          BlogPost.table.local_identity_map
         end
       end
 

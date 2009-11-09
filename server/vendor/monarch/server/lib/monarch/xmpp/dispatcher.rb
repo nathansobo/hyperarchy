@@ -21,7 +21,7 @@ module Xmpp
 
     protected
     def handle_presence(stanza)
-      with_thread_local_identity_map do
+      with_local_identity_map do
         if stanza.type == :unavailable
           client_went_offline(stanza.from)
         else
@@ -31,7 +31,7 @@ module Xmpp
     end
 
     def handle_iq(stanza)
-      with_thread_local_identity_map do
+      with_local_identity_map do
         resource = resource_locator.locate(stanza.to.resource, :client => client_for_jid(stanza.from))
         method_element = stanza.children.first
         method_name = method_element.name
@@ -59,7 +59,7 @@ module Xmpp
       Client.find(Client[:jid].eq(jid.to_s))
     end
     
-    def with_thread_local_identity_map()
+    def with_local_identity_map()
       Model::Repository.initialize_identity_maps
       yield
     rescue
