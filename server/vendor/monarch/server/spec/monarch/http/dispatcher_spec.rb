@@ -21,7 +21,7 @@ module Http
         mock_resource = Object.new
 
         mock(Model::Repository).initialize_identity_maps.ordered
-        mock(dispatcher.resource_locator).locate(request.path_info, request.session_id).ordered { mock_resource }
+        mock(dispatcher.resource_locator).locate(request.path_info, :session_id => request.session_id).ordered { mock_resource }
         mock(mock_resource).get(request.params).ordered
         mock(Model::Repository).clear_identity_maps.ordered
 

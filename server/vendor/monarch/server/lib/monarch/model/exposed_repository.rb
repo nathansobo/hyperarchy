@@ -27,6 +27,10 @@ module Model
       [200, headers, { 'successful' => true, 'data' => response_data}.to_json]
     end
 
+    def subscribe(params)
+      "TEST RESPONSE"
+    end
+
     def resolve_table_name(name)
       if relation = exposed_relations_by_name[name]
         return relation
