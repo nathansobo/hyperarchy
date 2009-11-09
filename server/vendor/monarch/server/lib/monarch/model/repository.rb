@@ -6,7 +6,7 @@ module Model
       end
 
       delegate :new_table, :tables_by_name, :load_fixtures, :clear_tables, :create_schema,
-               :tables, :initialize_identity_maps, :clear_identity_maps,
+               :tables, :initialize_local_identity_map, :clear_local_identity_map, :with_local_identity_map,
                :to => :instance
     end
 
@@ -23,11 +23,18 @@ module Model
       tables_by_name.values
     end
 
-    def initialize_identity_maps
+    def with_local_identity_map
+      initialize_local_identity_map
+      yield
+    ensure
+      clear_local_identity_map
+    end
+
+    def initialize_local_identity_map
       tables.each {|table| table.initialize_identity_map}
     end
 
-    def clear_identity_maps
+    def clear_local_identity_map
       tables.each {|table| table.clear_identity_map}
     end
 

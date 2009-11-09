@@ -24,7 +24,7 @@ module Xmpp
         client = Client.find(Client[:session_id].eq("fake-session-id").and(Client[:jid].eq("12345@hyperarchy.org/r12345")))
         client.should_not be_nil
 
-        Model::Repository.clear_identity_maps
+        Model::Repository.clear_local_identity_map
         Client.find(client.id).should == client
 
         unavailable_stanza = Jabber::Presence.new

@@ -16,11 +16,11 @@ Spec::Runner.configure do |config|
   config.before do
     Model::Repository.clear_tables
     Model::Repository.load_fixtures(FIXTURES)
-    Model::Repository.initialize_identity_maps
+    Model::Repository.initialize_local_identity_map
   end
 
   config.after do
-    Model::Repository.clear_identity_maps
+    Model::Repository.clear_local_identity_map
   end
 end
 
