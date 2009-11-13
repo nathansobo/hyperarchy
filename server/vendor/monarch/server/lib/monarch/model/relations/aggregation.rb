@@ -20,7 +20,7 @@ module Model
         expressions_by_name.values
       end
 
-      def columns
+      def concrete_columns
         expressions
       end
 

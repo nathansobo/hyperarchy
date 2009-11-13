@@ -146,20 +146,27 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#local_destroy", function() {
-      it("removes the Record from its Table", function() {
+      it("removes the Record from its Table and calls #after_destroy if it is defined", function() {
         var record = User.find('jan');
+        record.after_destroy = mock_function('after destroy hook');
+
         record.local_destroy();
         expect(User.find('jan')).to(be_null);
+
+        expect(record.after_destroy).to(have_been_called);
       });
     });
 
     describe("#local_update(values_by_method)", function() {
-      it("calls setter methods for each key in the given hash and fires update callbacks on its Table with all the changed attributes", function() {
+      it("calls setter methods for each key in the given hash and fires an optional after_update hook plus update callbacks on itself and its Table with all the changed attributes", function() {
         var record = Blog.find('recipes');
+        record.after_update = mock_function("after update hook");
         record.other_method = mock_function('other method');
+        var record_update_callback = mock_function('record_update_callback');
+        var table_update_callback = mock_function('table_update_callback');
 
-        var update_callback = mock_function('update_callback');
-        record.table().on_update(update_callback);
+        record.table().on_update(table_update_callback);
+        record.on_update(record_update_callback);
 
         record.local_update({
           id: 'recipes',
@@ -172,7 +179,7 @@ Screw.Unit(function(c) { with(c) {
         expect(record.user_id()).to(equal, 'jan');
         expect(record.other_method).to(have_been_called, with_args('foo'));
 
-        expect(update_callback).to(have_been_called, with_args(record, {
+        var expected_changeset = {
           fun_profit_name: {
             column: Blog.fun_profit_name,
             old_value: 'Recipes from the Front for Fun and Profit',
@@ -188,7 +195,10 @@ Screw.Unit(function(c) { with(c) {
             old_value: 'mike',
             new_value: 'jan'
           }
-        }));
+        };
+        expect(record_update_callback).to(have_been_called, with_args(expected_changeset));
+        expect(table_update_callback).to(have_been_called, with_args(record, expected_changeset));
+        expect(record.after_update).to(have_been_called, with_args(expected_changeset));
       });
     });
 
@@ -246,9 +256,39 @@ Screw.Unit(function(c) { with(c) {
       they("can read synthetic fields", function() {
         expect(record.fun_profit_name()).to(equal, record.field('fun_profit_name').value());
       });
+
+      they("can write synthetic fields if a setter method is defined for the column", function() {
+        record.fun_profit_name("Eating Fortune Cookies");
+        expect(record.fun_profit_name()).to(equal, "Eating Fortune Cookies in Bed for Fun and Profit");
+      });
     });
 
-    describe("#field", function() {
+    describe("#fetch", function() {
+      use_fake_server();
+
+      it("fetches just the current record from the server", function() {
+        var record = Blog.find('recipes');
+        record.fetch();
+
+        expect(Server.fetches.length).to(equal, 1);
+        var fetched_relation = Server.last_fetch.relations[0];
+        expect(fetched_relation.constructor).to(equal, Monarch.Model.Relations.Selection);
+        expect(fetched_relation.operand).to(equal, Blog.table);
+        expect(fetched_relation.predicate.left_operand).to(equal, Blog.id);
+        expect(fetched_relation.predicate.right_operand).to(equal, 'recipes');
+      });
+    });
+
+    describe("#valid()", function() {
+      it("returns false if there are any validation errors", function() {
+        var record = Blog.find('recipes');
+        expect(record.valid()).to(be_true);
+        record.field('name').validation_errors = ["Bad name"];
+        expect(record.valid()).to(be_false);
+      });
+    });
+
+    describe("#field(field_name_or_column)", function() {
       it("returns the field for the given column name or Column", function() {
         var record = Blog.find('recipes');
 

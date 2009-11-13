@@ -2,6 +2,19 @@ class User < Model::Record
   column :full_name, :string
   column :age, :integer
   column :signed_up_at, :datetime
+  column :has_hair, :boolean
+
+  synthetic_column :great_name, :string do
+    signal(:full_name) do |new_value, old_value|
+      full_name + " The Great"
+    end
+  end
+
+  synthetic_column :human, :boolean do
+    signal(:full_name) do |new_value, old_value|
+      true
+    end
+  end
 
   relates_to_many :blogs do
     Blog.where(Blog[:user_id].eq(id))
@@ -13,5 +26,9 @@ class User < Model::Record
 
   def great_name=(full_name)
     self.full_name = full_name + " The Great"
+  end
+
+  def validate
+    validation_error(:age, "User must be at least 10 years old") if age && age < 10
   end
 end

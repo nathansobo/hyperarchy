@@ -64,10 +64,35 @@ Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
     },
 
     model: function(model) {
-      if (!model) return this._model;
+      if (arguments.length == 0) return this._model;
       this._model = model;
       this.populate_form_fields();
+      if (this.update_subscription) {
+        this.update_subscription.destroy();
+        this.update_subscription = null;
+      }
+      if (model) this.subscribe_to_model_updates();
       if (this.model_assigned) this.model_assigned(model);
+    },
+
+    subscribe_to_model_updates: function() {
+      var self = this;
+      this.update_subscription = this._model.on_update(function(changeset) {
+        Monarch.Util.each(changeset, function(field_name, changes) {
+          self.handle_model_field_update(field_name, changes);
+        });
+      });
+    },
+
+    handle_model_field_update: function(field_name, changes) {
+      var element = this.find("[name='" + field_name + "']");
+      if (!element) return;
+
+      if (element.attr('type') == "checkbox") {
+        this.populate_checkbox_field(element, changes.new_value);
+      } else {
+        element.val(changes.new_value);
+      }
     },
 
     populate_form_fields: function() {
@@ -77,7 +102,7 @@ Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
     },
 
     save: function() {
-      if (this.model()) this.model().update(this.field_values());
+      if (this.model()) return this.model().update(this.field_values());
     },
 
     populate_text_fields: function() {
@@ -101,11 +126,15 @@ Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
         var elt = $(this);
         var field_name = elt.attr('name');
         if (model[field_name]) {
-          elt.attr('checked', model[field_name].call(model));
+          self.populate_checkbox_field(elt, model[field_name].call(model));
         } else {
-          elt.attr('checked', false)
+          self.populate_checkbox_field(elt, false);
         }
       });
+    },
+
+    populate_checkbox_field: function(element, new_value) {
+      element.attr('checked', new_value);
     },
 
     populate_select_fields: function() {

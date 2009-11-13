@@ -19,16 +19,14 @@ Monarch.module("Monarch.Util", {
 
   array_detect: function(array, fn) {
     for(var i = 0; i < array.length; i++) {
-      var result = fn.call(array[i], array[i]);
-      if (result) return result;
+      if (fn.call(array[i], array[i])) return array[i];
     }
     return null;
   },
 
   hash_detect: function(hash, fn) {
     for (key in hash) {
-      var value = fn.call(hash[key], key, hash[key]);
-      if (value) return value;
+      if (fn.call(hash[key], key, hash[key])) return hash[key];
     }
     return null;
   },

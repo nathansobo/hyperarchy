@@ -1,11 +1,11 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 
 module Model
-  describe Column do
+  describe ConcreteColumn do
     describe "class methods" do
       describe ".from_wire_representation" do
-        it "returns a Column based on the 'table' and 'name' of the given representation" do
-          column = Column.from_wire_representation({
+        it "returns a ConcreteColumn based on the 'table' and 'name' of the given representation" do
+          column = ConcreteColumn.from_wire_representation({
             "type" => "column",
             "table" => "blog_posts",
             "name" => "body"

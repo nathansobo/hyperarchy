@@ -8,6 +8,7 @@ Monarch.constructor("Monarch.Model.PendingFieldset", Monarch.Model.Fieldset, {
       var pending_field = primary_fieldset.fields_by_column_name[column_name].clone_pending_field(this);
       this.fields_by_column_name[column_name] = pending_field;
     }
+    this.synthetic_fields_by_column_name = primary_fieldset.synthetic_fields_by_column_name;
   },
 
   wire_representation: function() {
@@ -25,8 +26,8 @@ Monarch.constructor("Monarch.Model.PendingFieldset", Monarch.Model.Fieldset, {
     });
   },
 
-  commit: function(options) {
-    this.record.local_update(this.wire_representation(), options);
+  commit: function() {
+    this.record.local_update(this.wire_representation());
   }
 });
 

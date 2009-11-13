@@ -13,7 +13,7 @@ module Model
           when "scalar"
             representation["value"]
           when "column"
-            Column.from_wire_representation(representation, repository)
+            ConcreteColumn.from_wire_representation(representation, repository)
           else
             raise "cannot translate #{representation} into an operand"
           end
@@ -31,7 +31,7 @@ module Model
       end
 
       def ==(other_predicate)
-        return false unless other_predicate.instance_of?(Eq)
+        return false unless other_predicate.instance_of?(self.class)
         other_predicate.left_operand == left_operand && other_predicate.right_operand == right_operand
       end
 
@@ -50,14 +50,14 @@ module Model
       end
 
       def column_operand
-        return left_operand if left_operand.instance_of?(Column)
-        return right_operand if right_operand.instance_of?(Column)
+        return left_operand if left_operand.instance_of?(ConcreteColumn)
+        return right_operand if right_operand.instance_of?(ConcreteColumn)
         raise "No column operands"
       end
 
       def scalar_operand
-        return left_operand unless left_operand.instance_of?(Column)
-        return right_operand unless right_operand.instance_of?(Column)
+        return left_operand unless left_operand.instance_of?(ConcreteColumn)
+        return right_operand unless right_operand.instance_of?(ConcreteColumn)
         raise "No scalar operands"
       end
     end

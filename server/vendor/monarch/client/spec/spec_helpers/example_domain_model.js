@@ -15,6 +15,10 @@ Screw.Unit(function(c) {
             });
           });
 
+          this.fun_profit_name.setter = function(name) {
+            this.name(name + " in Bed");
+          };
+
           this.has_many("blog_posts");
         },
 

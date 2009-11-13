@@ -26,7 +26,7 @@ module Model
         field_values = dataset[:id => "grain_quinoa"]
         field_values[:body] = "QUINOA!!!"
 
-        Origin.update(BlogPost.table, field_values)
+        Origin.update(BlogPost.table, 'grain_quinoa', field_values)
 
         retrieved_record = dataset[:id => "grain_quinoa"]
         retrieved_record.should == field_values

@@ -30,74 +30,126 @@ module Model
 
     describe "#post" do
       context "when called with a single create operation" do
-        it "calls #create on the indicated 'relation' with the given 'field_values', then returns all field values as its result" do
-          signed_up_at = Time.now
+        context "when the given field values are valid" do
+          it "calls #create on the indicated 'relation' with the given 'field_values', then returns all field values as its result" do
+            signed_up_at = Time.now
 
-          response = Http::Response.new(*exposed_repository.post({
-            :operations => {
-              'users' => {
-                'create_0' => {
-                  'great_name' => "Sharon Ly",
-                  'age' => 25,
-                  'signed_up_at' => signed_up_at.to_millis
-                }
-              }
-            }.to_json
-          }))
+            field_values = {
+              'great_name' => "Sharon Ly",
+              'age' => 25,
+              'signed_up_at' => signed_up_at.to_millis
+            }
 
-          new_record = User.find(User[:full_name].eq('Sharon Ly The Great'))
+            User.new(field_values).should be_valid
 
-          response.should be_ok
-          response.body_from_json.should == {
-            'successful' => true,
-            'data' => {
-              'users' => {
-                'create_0' => {
-                  'id' => new_record.id,
-                  'full_name' => "Sharon Ly The Great",
-                  'age' => 25,
-                  'signed_up_at' => signed_up_at.to_millis
-                }
+            response = Http::Response.new(*exposed_repository.post(
+              :operations => [['create', 'users', field_values]].to_json
+            ))
+
+            new_record = User.find(User[:full_name].eq('Sharon Ly The Great'))
+
+            response.should be_ok
+            response.body_from_json.should == {
+              'successful' => true,
+              'data' => [{
+                'id' => new_record.id,
+                'full_name' => "Sharon Ly The Great",
+                'age' => 25,
+                'signed_up_at' => signed_up_at.to_millis,
+                'has_hair' => nil,
+                'great_name' => "Sharon Ly The Great The Great",
+                'human' => true
+              }]
+            }
+          end
+        end
+
+        context "when the given field values are invalid" do
+          it "calls #create on the indicated 'relation' with the given 'field_values', then returns all the validation errors as its result" do
+            field_values = {
+              'full_name' => "Baby Sharon Ly",
+              'age' => 2
+            }
+
+            invalid_example = User.new(field_values)
+            invalid_example.should_not be_valid
+
+            response = Http::Response.new(*exposed_repository.post({
+              :operations => [['create', 'users', field_values]].to_json
+            }))
+
+            User.find(User[:full_name].eq("Baby Sharon Ly")).should be_nil
+            
+            response.should be_ok
+            response.body_from_json.should == {
+              'successful' => false,
+              'data' => {
+                'index' => 0,
+                'errors' => { 'age' => invalid_example.field(:age).validation_errors}
               }
             }
-          }
+          end
         end
       end
 
       context "when called with a single update operation" do
-        it "finds the record with the given 'id' in the given 'relation', then updates it with the given field values and returns all changed field values as its result" do
-          record = User.find('jan')
-          new_signed_up_at = record.signed_up_at - 1.hours
 
-          response = Http::Response.new(*exposed_repository.post({
-            :operations => {
-              "users" => {
-                "jan" => {
-                  'great_name' => "Jan Christian Nelson",
-                  'age' => record.age,
-                  'signed_up_at' => new_signed_up_at.to_millis
-                }
-              }
-            }.to_json
-          }))
+        context "when the given field values are valid" do
+          it "finds the record with the given 'id' in the given 'relation', then updates it with the given field values and returns all changed field values as its result" do
+            record = User.find('jan')
+            new_signed_up_at = record.signed_up_at - 1.hours
 
-          record.reload
-          record.full_name.should == "Jan Christian Nelson The Great"
-          record.age.should == 31
-          record.signed_up_at.to_millis.should == new_signed_up_at.to_millis
+            field_values = {
+              'great_name' => "Jan Christian Nelson",
+              'age' => record.age,
+              'signed_up_at' => new_signed_up_at.to_millis
+            }
 
-          response.should be_ok
-          response.body_from_json.should == {
-            'successful' => true,
-            'data' => {
-              'users' => {
-                'jan' => {
-                  'full_name' => "Jan Christian Nelson The Great",
-                  'signed_up_at' => new_signed_up_at.to_millis
-                }
+            response = Http::Response.new(*exposed_repository.post({
+              :operations => [['update', 'users', 'jan', field_values]].to_json
+            }))
+
+            record.reload
+            record.full_name.should == "Jan Christian Nelson The Great"
+            record.age.should == 31
+            record.signed_up_at.to_millis.should == new_signed_up_at.to_millis
+
+            response.should be_ok
+            response.body_from_json.should == {
+              'successful' => true,
+              'data' => [{
+                'full_name' => "Jan Christian Nelson The Great",
+                'signed_up_at' => new_signed_up_at.to_millis,
+                'human' => true,
+                'great_name' => "Jan Christian Nelson The Great The Great"
+              }]
+            }
+          end
+        end
+
+        context "when the given field values are invalid" do
+          it "returns the validation errors in an unsuccessful response" do
+            record = User.find('jan')
+            pre_update_age = record.age
+
+            response = Http::Response.new(*exposed_repository.post({
+              :operations => [['update', 'users', 'jan', { :age => 3}]].to_json
+            }))
+
+            validation_errors_on_age = record.field(:age).validation_errors
+            record.reload
+            record.age.should == pre_update_age
+
+            response.should be_ok
+            response.body_from_json.should == {
+              'successful' => false,
+              'data' => {
+                'index' => 0,
+                'errors' => { 'age' => ["User must be at least 10 years old"]}
               }
             }
-          }
+          end
+
         end
       end
 
@@ -105,68 +157,91 @@ module Model
         it "finds the record with the given 'id' in the given 'relation', then destroys it" do
           User.find('jan').should_not be_nil
 
-          response = Http::Response.new(*exposed_repository.post({
-            :operations => {
-              'users' => {'jan' => nil}
-            }.to_json
-          }))
+          response = Http::Response.new(*exposed_repository.post(
+            :operations => [['destroy', 'users', 'jan']].to_json
+          ))
 
           User.find('jan').should be_nil
 
           response.should be_ok
           response.body_from_json.should == {
-            'data' => {
-              'users' => {'jan' => nil}
-            },
-            'successful' => true
+            'successful' => true,
+            'data' => [nil]
           }
         end
       end
 
       context "when called with multiple operations" do
-        it "performs all operations" do
-          signed_up_at = Time.now
-          User.find('jan').should_not be_nil
+        context "when all operations are valid" do
+          it "performs all operations and returns a result for each" do
+            signed_up_at = Time.now
+            User.find('jan').should_not be_nil
 
-          response = Http::Response.new(*exposed_repository.post({
-            :operations => {
-              'users' => {
-                'create_0' => {
-                  'full_name' => "Jake Frautschi",
-                  'age' => 27,
-                  'signed_up_at' => signed_up_at.to_millis
-                },
-                "jan" => {
-                  'age' => 101
-                },
-                'wil' => nil
-              }
-            }.to_json
-          }))
+            response = Http::Response.new(*exposed_repository.post({
+              :operations => [
+                ['create', 'users', { 'full_name' => "Jake Frautschi", 'age' => 27, 'signed_up_at' => signed_up_at.to_millis }],
+                ['update', 'users', 'jan', {'age' => 101}],
+                ['destroy', 'users', 'wil']
+              ].to_json
+            }))
 
-          jake = User.find(User[:full_name].eq("Jake Frautschi"))
-          jake.should_not be_nil
-          User.find("jan").age.should == 101
-          User.find('wil').should be_nil
+            jake = User.find(User[:full_name].eq("Jake Frautschi"))
+            jake.should_not be_nil
+            User.find("jan").age.should == 101
+            User.find('wil').should be_nil
 
-          response.should be_ok
-          response.body_from_json.should == {
-            'data' => {
-              'users' => {
-                'create_0' => {
+            response.should be_ok
+            response.body_from_json.should == {
+              'data' => [
+                {
                   'id' => jake.id,
                   'full_name' => "Jake Frautschi",
                   'age' => 27,
-                  'signed_up_at' => signed_up_at.to_millis
+                  'signed_up_at' => signed_up_at.to_millis,
+                  'has_hair' => nil,
+                  'great_name' => "Jake Frautschi The Great",
+                  'human' => true
                 },
-                "jan" => {
-                  'age' => 101
-                },
-                'wil' => nil
-              }
-            },
-            'successful' => true
-          }
+                { 'age' => 101 },
+                nil
+              ],
+              'successful' => true
+            }
+          end
+        end
+
+        context "when some operations are invalid" do
+          manually_manage_identity_map
+
+          it "rolls back all operations and returns validation errors for each" do
+            signed_up_at = Time.now
+            jan = User.find('jan')
+            age_before_update = jan.age
+
+            Model::Repository.initialize_local_identity_map
+            response = Http::Response.new(*exposed_repository.post({
+              :operations => [
+                ['create', 'users', { 'full_name' => "Jake Frautschi", 'age' => 27, 'signed_up_at' => signed_up_at.to_millis }],
+                ['update', 'users', 'jan', {'age' => 3}],
+                ['destroy', 'users', 'wil']
+              ].to_json
+            }))
+            Model::Repository.clear_local_identity_map
+
+            User.find(User[:full_name].eq("Jake Frautschi")).should be_nil
+
+            User.find("jan").age.should == age_before_update
+            User.find('wil').should_not be_nil
+
+            response.should be_ok
+            response.body_from_json.should == {
+              'data' => {
+                'index' => 1,
+                'errors' => { 'age' => ["User must be at least 10 years old"] }
+              },
+              'successful' => false
+            }
+          end
         end
       end
     end

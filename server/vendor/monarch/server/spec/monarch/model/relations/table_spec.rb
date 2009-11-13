@@ -11,21 +11,21 @@ module Model
       
       describe "#initialize" do
         it "automatically has a string-valued :id column" do
-          table.columns_by_name[:id].type.should == :string
+          table.concrete_columns_by_name[:id].type.should == :string
         end
       end
 
-      describe "#define_column" do
-        it "adds a Column with the given name and type and self as its #table to the #columns_by_name hash" do
-          column = table.columns_by_name[:body]
+      describe "#define_concrete_column" do
+        it "adds a ConcreteColumn with the given name and type and self as its #table to the #concrete_columns_by_name hash" do
+          column = table.concrete_columns_by_name[:body]
           column.name.should == :body
           column.type.should == :string
         end
       end
 
-      describe "#columns" do
-        it "returns the #values of #columns_by_name" do
-          table.columns.should == table.columns_by_name.values
+      describe "#concrete_columns" do
+        it "returns the #values of #concrete_columns_by_name" do
+          table.concrete_columns.should == table.concrete_columns_by_name.values
         end
       end
 
@@ -39,15 +39,11 @@ module Model
       end
 
       describe "#create" do
-        it "instantiates an instance of #tuple_class with the given columns, #inserts it, and returns it in a non-dirty state" do
-          mock(table).insert(anything) do |record|
-            record.class.should == table.tuple_class
-            record.body.should == "Brown Rice"
-            record.blog_id.should == "grain"
-          end
-
+        it "instantiates an instance of #tuple_class with the given concrete_columns, #inserts it, and returns it in a non-dirty state" do
           record = table.create(:body => "Brown Rice", :blog_id => "grain")
+          table.find(table.column(:body).eq("Brown Rice")).should == record
           record.body.should == "Brown Rice"
+          record.should be_valid
           record.should_not be_dirty
         end
 
@@ -62,6 +58,15 @@ module Model
           it "calls the after inserting the record" do
             mock.instance_of(BlogPost).after_create
             table.create(:body => "Couscous")
+          end
+        end
+
+        context "if the instantiated record is invalid" do
+          it "does not insert it in the database and returns the invalid record" do
+            field_values = { :full_name => "Invalid Bob", :age => 2 }
+            User.new(field_values).should_not be_valid
+            User.table.create(field_values)
+            User.find(User[:full_name].eq("Invalid Bob")).should be_nil
           end
         end
       end
@@ -109,7 +114,7 @@ module Model
       end
 
       describe "#to_sql" do
-        it "returns a select statement for only the columns declared as Columns on the Table" do
+        it "returns a select statement for only the concrete_columns declared as Columns on the Table" do
           table.to_sql.should == "select * from #{table.global_name}"
         end
       end

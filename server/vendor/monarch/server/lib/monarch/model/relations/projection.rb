@@ -5,16 +5,16 @@ module Model
       attr_reader :operand, :projected_columns_by_name
       delegate :tables, :to => :operand
 
-      def initialize(operand, columns, &block)
+      def initialize(operand, concrete_columns, &block)
         super(&block)
-        @operand, @columns = operand, columns
+        @operand, @concrete_columns = operand, concrete_columns
         @projected_columns_by_name = ActiveSupport::OrderedHash.new
-        columns.each do |projected_column|
+        concrete_columns.each do |projected_column|
           projected_columns_by_name[projected_column.name] = projected_column
         end
       end
 
-      def columns
+      def concrete_columns
         projected_columns_by_name.values
       end
 
@@ -35,7 +35,7 @@ module Model
       end
 
       def build_sql_query(sql_query=SqlQuery.new)
-        sql_query.select_clause_columns = columns
+        sql_query.select_clause_columns = concrete_columns
         operand.build_sql_query(sql_query)
       end
 

@@ -1,25 +1,23 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Http.DestroyCommand", {
+Monarch.constructor("Monarch.Http.DestroyCommand", Monarch.Http.Command, {
   initialize: function(record) {
     this.record = record;
+    this.table_name = record.table().global_name;
     this.future = new Monarch.Http.RepositoryUpdateFuture();
     this.command_id = record.id();
   },
 
-  add_to_request_data: function(request_data) {
-    var table_name = this.record.table().global_name;
-    if (!request_data[table_name]) request_data[table_name] = {};
-    request_data[table_name][this.command_id] = null;
+  wire_representation: function() {
+    return ['destroy', this.table_name, this.command_id];
   },
 
-  complete_and_trigger_before_events: function(field_values_from_server) {
+  complete: function() {
     this.record.local_destroy();
-    this.future.trigger_before_events(this.record);
   },
 
-  trigger_after_events: function() {
-    this.future.trigger_after_events(this.record);
+  handle_failure: function() {
+    this.future.trigger_on_failure(this.record);
   }
 });
 

@@ -4,6 +4,7 @@ Screw.Unit(function(c) { with(c) {
   describe("Views constructed with Monarch.View.Template#to_view", function() {
     after(function() {
       delete window['TestTemplate'];
+      delete window['SampleModel'];
     });
 
     describe("form interaction methods", function() {
@@ -15,7 +16,7 @@ Screw.Unit(function(c) { with(c) {
             div(function() {
               input({name: "foo", value: "Foo"}).ref('foo');
               input({name: "bar", value: "Bar"}).ref('bar');
-              input({name: "baz", value: "Baz", type: "checkbox"}).ref('baz');
+              input({name: "baz", type: "checkbox", checked: false}).ref('baz');
               input({value: "Do not include because I have no name"});
 
               select({name: "quux"}, function() {
@@ -29,25 +30,26 @@ Screw.Unit(function(c) { with(c) {
 
         view = TestTemplate.to_view();
 
-        model = {
-          foo: function() {
-            return "foo";
-          },
+        Monarch.constructor("SampleModel", Monarch.Model.Record, {
+          constructor_initialize: function() {
+            this.columns({
+              foo: "string",
+              bar: "string",
+              baz: "boolean",
+              quux: "integer"
+            });
+          }
+        })
 
-          bar: function() {
-            return "bar"
-          },
 
-          baz: function(baz) {
-            return true;
-          },
+        model = SampleModel.local_create({
+          foo: "foo",
+          bar: "bar",
+          baz: true,
+          quux: 3
+        });
 
-          quux: function() {
-            return 3;
-          },
-
-          update: mock_function('update')
-        }
+        mock(model, 'update');
       });
 
       describe("#field_values", function() {
@@ -77,30 +79,46 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("#model(model)", function() {
-        it("populates text fields by calling methods on the given model corresponding to their names", function() {
+        it("populates text fields by calling methods on the given model corresponding to their names and keeps them updated as model changes", function() {
           expect(view.foo.val()).to(equal, "Foo");
           expect(view.bar.val()).to(equal, "Bar");
           view.model(model);
           expect(view.foo.val()).to(equal, "foo");
           expect(view.bar.val()).to(equal, "bar");
+          model.local_update({foo: "FOO!", bar: "BAR!"});
+          expect(view.foo.val()).to(equal, "FOO!");
+          expect(view.bar.val()).to(equal, "BAR!");
         });
 
-        it("populates checkbox fields by calling methods on the given model corresponding to their names", function() {
+        it("populates checkbox fields by calling methods on the given model corresponding to their names and keeps them updated as model changes", function() {
           expect(view.baz.attr('checked')).to(be_false);
           view.model(model);
           expect(view.baz.attr('checked')).to(be_true);
+          model.local_update({baz: false});
+          expect(view.baz.attr('checked')).to(be_false);
         });
         
-        it("populates select fields by calling methods on the given model corresponding to their name", function() {
+        it("populates select fields by calling methods on the given model corresponding to their name and keeps them updated as model changes", function() {
           expect(view.quux.val()).to(equal, '2');
           view.model(model);
           expect(view.quux.val()).to(equal, '3');
+          model.local_update({quux: 1});
+          expect(view.quux.val()).to(equal, '1');
         });
 
         it("calls the .model_assigned hook if it's defined", function() {
           view.model_assigned = mock_function("model_assigned");
           view.model(model);
           expect(view.model_assigned).to(have_been_called, with_args(model));
+        });
+
+        it("cancels previous update subscriptions when a new model is assigned", function() {
+          view.model(model);
+          view.model(SampleModel.local_create({foo: "new foo"}));
+
+          expect(view.foo.val()).to(equal, 'new foo');
+          model.local_update({foo: "old model foo new value"});
+          expect(view.foo.val()).to(equal, 'new foo');
         });
       });
 

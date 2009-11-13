@@ -3,38 +3,43 @@ Monarch.constructor("FakeServer.FakeBatch", {
 
   initialize: function(fake_server) {
     this.fake_server = fake_server;
-    this.batched_requests = {};
-  },
-
-  add_command: function(command) {
-    command.add_to_batch_requests(this.batched_requests);
+    this.mutations = [];
   },
 
   find_update: function(record) {
-    var commands_for_table = this.batched_requests[record.table().global_name];
-    if (!commands_for_table) return null;
-    return commands_for_table[record.id()];
+    return Monarch.Util.detect(this.mutations, function(mutation) {
+      return mutation.record === record
+    });
   },
 
-  simulate_success: function() {
+  add_mutation: function(mutation) {
+    mutation.batch = this;
+    this.mutations.push(mutation);
+  },
+
+  simulate_success: function(server_response) {
+    var self = this;
+    if (!server_response) server_response = this.generate_fake_server_response();
+
     Repository.pause_events();
-    this.for_each_batched_request(function(request) {
-      request.simulate_success();
-    });
-    Repository.resume_events()
-    this.for_each_batched_request(function(request) {
-      request.trigger_after_events();
+
+    Monarch.Util.each(this.mutations, function(mutation, index) {
+      mutation.complete_and_trigger_before_events(server_response[index]);
+    })
+
+    Repository.resume_events();
+    
+    Monarch.Util.each(this.mutations, function(mutation) {
+      mutation.trigger_after_events();
+      self.fake_server.remove_request(mutation);
     });
 
-
+    this.fake_server.remove_request(this);
   },
 
-  for_each_batched_request: function(fn) {
-    Monarch.Util.values(this.batched_requests, function(requests_by_id) {
-      Monarch.Util.values(requests_by_id, function(request) {
-        fn(request);
-      });
+  generate_fake_server_response: function() {
+    return Monarch.Util.map(this.mutations, function(mutation) {
+      return mutation.response_wire_representation();
     });
-    this.fake_server.remove_request(this);
   }
 });

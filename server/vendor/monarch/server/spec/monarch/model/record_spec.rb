@@ -12,8 +12,8 @@ module Model
         Repository.tables_by_name[:blog_posts].tuple_class.should == BlogPost
       end
 
-      it "defines an :id Column on the subclass" do
-        BlogPost[:id].class.should == Column
+      it "defines an :id ConcreteColumn on the subclass" do
+        BlogPost[:id].class.should == ConcreteColumn
         BlogPost[:id].name.should == :id
         BlogPost[:id].type.should == :string
       end
@@ -28,6 +28,27 @@ module Model
           record.body = "Barley"
           mock.proxy(record).get_field_value(BlogPost[:body])
           record.body.should  == "Barley"
+        end
+      end
+      
+      describe ".synthetic_column" do
+        attr_reader :record
+        before do
+          @record = User.find('jan')
+        end
+
+        it "defines a reader method for the synthetic field" do
+          record.field(:great_name).value
+          record.great_name
+        end
+
+        it "includes the value of a reader method by the same name in a record's #wire_representation" do
+          record.wire_representation["great_name"].should == record.great_name
+        end
+
+        it "allows a writer method by the same name to be written to in a call to #update_fields" do
+          record.field(:great_name).value = "Hunan"
+          record.full_name.should == "Hunan The Great"
         end
       end
 
@@ -52,13 +73,13 @@ module Model
       end
 
       describe ".[]" do
-        context "when the given value is the name of a Column defined on .table" do
-          it "returns the Column with the given name" do
-            BlogPost[:body].should == BlogPost.table.columns_by_name[:body]
+        context "when the given value is the name of a ConcreteColumn defined on .table" do
+          it "returns the ConcreteColumn with the given name" do
+            BlogPost[:body].should == BlogPost.table.concrete_columns_by_name[:body]
           end
         end
 
-        context "when the given value is not the name of a Column defined on .table" do
+        context "when the given value is not the name of a ConcreteColumn defined on .table" do
           it "raises an exception" do
             lambda do
               BlogPost[:nonexistant_column]
@@ -83,7 +104,7 @@ module Model
         end
       end
 
-      describe "#each" do
+      describe ".each" do
         specify "are forwarded to #all of #table" do
           all = []
           stub(BlogPost.table).all { all }
@@ -101,7 +122,7 @@ module Model
       end
 
       describe "#initialize" do
-        it "assigns the Field values in the given hash" do
+        it "assigns the ConcreteField values in the given hash" do
           record.get_field_value(BlogPost[:body]).should == "Quinoa"
           record.get_field_value(BlogPost[:blog_id]).should == "grain"
         end
@@ -131,7 +152,8 @@ module Model
       end
 
       describe "#destroy" do
-        it "removes destroys the record in the database and removes it from the thread-local and global identity maps" do
+        it "removes the record in the database and removes it from the thread-local and global identity maps and calls after_destroy hook" do
+          mock(record).after_destroy
           record.activate
           BlogPost.table.local_identity_map[record.id].should == record
           BlogPost.table.global_identity_map[record.id].should == record
@@ -141,6 +163,18 @@ module Model
           BlogPost.table.local_identity_map.should_not have_key(record.id)
           BlogPost.table.global_identity_map.should_not have_key(record.id)
           BlogPost.find(record.id).should be_nil
+        end
+      end
+
+      describe "#field(column_or_name)" do
+        def record
+          @record ||= User.find('jan')
+        end
+
+        it "can return concrete or synthetic fields" do
+          record.field(:full_name).should be_an_instance_of(ConcreteField)
+          record.field(User[:full_name]).should be_an_instance_of(ConcreteField)
+          record.field(:great_name).should be_an_instance_of(SyntheticField)
         end
       end
 
@@ -158,39 +192,87 @@ module Model
       end
 
       describe "#update(values_by_method_name)" do
+        def record
+          @record ||= User.find('jan')
+        end
+
         it "calls those assignment methods that actually exist by name and returns a hash of any fields that the update changed" do
-          def record.fancy_title=(title)
-            self.title = "Fancy " + title
+          def record.fancy_full_name=(full_name)
+            self.full_name = "Fancy " + full_name
           end
 
-          blog_id_before_update = record.blog_id
+          age_before_update = record.age
 
-          dirty_field_values = record.update(:body => "Moo", :fancy_title => "Cows", :blog_id => blog_id_before_update, :bogus => "crap")
+          dirty_field_values = record.update(:has_hair => false, :fancy_full_name => "Nash Lincoln", :age => age_before_update, :bogus => "crap")
 
-          record.body.should == "Moo"
-          record.title.should == "Fancy Cows"
-          record.blog_id.should == blog_id_before_update
+          record.full_name.should == "Fancy Nash Lincoln"
+          record.has_hair.should == false
+          record.age.should == age_before_update
 
-          dirty_field_values.should == { :body => "Moo", :title => "Fancy Cows" }
+          dirty_field_values.should == {:has_hair => false, :full_name => "Fancy Nash Lincoln", :great_name => "Fancy Nash Lincoln The Great", :human => true}
         end
       end
 
       describe "#update_fields(field_values_by_column_name)" do
+        def record
+          @record ||= User.find('jan')
+        end
+
         it "writes directly to fields, bypassing any custom writer methods, and returns the fields that were made dirty" do
-          def record.title=(title)
-            self.title = "Fancy " + title
+
+          def record.some_method=(value)
+            raise "Should not be called"
           end
-          dirty_field_values = record.update_fields(:title => "Aspiration", :body => "I want to break free!", :blog_id => record.blog_id)
-          record.title.should == "Aspiration"
-          record.body.should == "I want to break free!"
-          dirty_field_values.should == { :title => "Aspiration", :body => "I want to break free!" }
+
+          age_before_update = record.age
+
+          dirty_field_values = record.update_fields(:has_hair => false, :full_name => "Nash Lincoln", :age => age_before_update, :some_method => "crap", :bogus => "crap")
+
+          record.full_name.should == "Nash Lincoln"
+          record.has_hair.should == false
+          record.age.should == age_before_update
+
+          dirty_field_values.should == {:has_hair => false, :full_name => "Nash Lincoln", :great_name => "Nash Lincoln The Great", :human => true}
         end
       end
 
       describe "#save" do
         it "calls Origin.update with the #global_name of the Record's #table and its #field_values_by_column_name" do
-          mock(Origin).update(record.table, record.field_values_by_column_name)
+          record.title = "Queso"
+          mock(Origin).update(record.table, record.id, record.dirty_concrete_field_values_by_column_name)
           record.save
+        end
+
+        it "calls #after_update if it is defined on the record with the dirty fields" do
+          def record.after_update; end
+          mock(record).after_update({:title => "Queso"})
+          record.title = "Queso"
+          record.save
+        end
+      end
+
+      describe "#valid?" do
+        describe "when #validate stores validation errors on at least one field" do
+          it "returns false" do
+            record.title = "Has Many Through"
+            mock(record).validate do
+              record.field(:title).validation_errors.push("Title must not be lame")
+            end
+            record.should_not be_valid
+          end
+        end
+
+        describe "when #validates stores no validation errors on any fields" do
+          it "returns true" do
+            record.should be_valid
+          end
+        end
+      end
+
+      describe "#validation_error" do
+        it "pushes the given validation error message onto the field with the given name" do
+          record.validation_error(:title, "Title must not be lame")
+          record.field(:title).validation_errors.should == ["Title must not be lame"]
         end
       end
 
@@ -216,6 +298,7 @@ module Model
             record.save
             record.body = "Wheat"
             record.should be_dirty
+            record.should_not be_validated
           end
         end
 
@@ -231,15 +314,16 @@ module Model
             record = BlogPost.find("grain_quinoa")
             record.body = "Red Rice"
             record.should be_dirty
+            record.should_not be_validated
           end
         end
       end
 
       describe "#field_values_by_column_name" do
-        it "returns a hash with the values of all fields indexed by Column name" do
-          publicize record, :fields_by_column
+        it "returns a hash with the values of all fields indexed by ConcreteColumn name" do
+          publicize record, :concrete_fields_by_column
           expected_hash = {}
-          record.fields_by_column.each do |column, field|
+          record.concrete_fields_by_column.each do |column, field|
             expected_hash[column.name] = field.value
           end
 
@@ -248,7 +332,7 @@ module Model
       end
       
       describe "#set_field_value and #get_field_value" do
-        specify "set and get a Field value by Column or Column name" do
+        specify "set and get a ConcreteField value by ConcreteColumn or ConcreteColumn name" do
           record = BlogPost.new
           record.set_field_value(BlogPost[:body], "Quinoa")
           record.get_field_value(BlogPost[:body]).should == "Quinoa"

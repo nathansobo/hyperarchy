@@ -30,6 +30,22 @@ Monarch.constructor("Monarch.Model.Fieldset", {
     return new Monarch.Model.PendingFieldset(this);
   },
 
+  valid: function() {
+    var valid = true;
+    Monarch.Util.each(this.fields_by_column_name, function(column_name, field) {
+      if (!field.valid()) valid = false;
+    });
+    return valid;
+  },
+
+  all_validation_errors: function() {
+    var all_validation_errors = [];
+    Monarch.Util.each(this.fields_by_column_name, function(column_name, field) {
+      all_validation_errors = all_validation_errors.concat(field.validation_errors);
+    });
+    return all_validation_errors;
+  },
+
   field: function(column) {
     var column_name = (typeof column == 'string') ? column : column.name;
     var field = this.fields_by_column_name[column_name];
@@ -54,10 +70,12 @@ Monarch.constructor("Monarch.Model.Fieldset", {
   },
 
   finish_batch_update: function() {
-    var batched_updates = this.batched_updates;
+    var changeset = this.batched_updates;
     this.batched_updates = null;
-    if (this.update_events_enabled && Monarch.Util.keys(batched_updates).length > 0) {
-      this.record.table().record_updated(this.record, batched_updates);
+    if (this.update_events_enabled && Monarch.Util.keys(changeset).length > 0) {
+      if (this.record.after_update) this.record.after_update(changeset);
+      if (this.record.on_update_node) this.record.on_update_node.publish(changeset);
+      this.record.table().record_updated(this.record, changeset);
     }
   },
 
@@ -76,10 +94,10 @@ Monarch.constructor("Monarch.Model.Fieldset", {
     }
   },
 
-  wire_representation: function(only_dirty) {
+  wire_representation: function() {
     var wire_representation = {};
     Monarch.Util.each(this.fields_by_column_name, function(column_name, field) {
-      if (!only_dirty || field.dirty) wire_representation[column_name] = field.value_wire_representation();
+      wire_representation[column_name] = field.value_wire_representation();
     });
     return wire_representation;
   }

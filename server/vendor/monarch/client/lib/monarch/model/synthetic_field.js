@@ -14,8 +14,14 @@ Monarch.constructor("Monarch.Model.SyntheticField", Monarch.Model.Field, {
     });
   },
 
-  value: function() {
-    return this.signal.value();
+  value: function(value) {
+    if (arguments.length == 0) {
+      return this.signal.value();
+    } else if (this.column.setter) {
+      this.column.setter.call(this.fieldset.record, value);
+    } else {
+      throw new Error("No setter method defined on the synthetic column " + this.column.name);
+    }
   }
 });
 

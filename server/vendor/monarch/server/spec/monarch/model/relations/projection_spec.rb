@@ -3,18 +3,18 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../../monarch_spec_helper
 module Model
   module Relations
     describe Projection do
-      attr_reader :projection, :operand, :columns
+      attr_reader :projection, :operand, :concrete_columns
 
       before do
         @operand = Blog.join(BlogPost).on(BlogPost[:blog_id].eq(Blog[:id]))
-        @columns = [
+        @concrete_columns = [
           ProjectedColumn.new(BlogPost[:id]),
           Blog[:title].as(:blog_title),
           BlogPost[:title].as(:blog_post_title),
           ProjectedColumn.new(Blog[:user_id]),
           ProjectedColumn.new(BlogPost[:body])
         ]
-        @projection = Projection.new(operand, columns) do
+        @projection = Projection.new(operand, concrete_columns) do
           def foo; end
         end
       end
@@ -36,12 +36,13 @@ module Model
             blog = join_record[Blog]
             blog_post = join_record[BlogPost]
 
-            projection_record = all[index]
+            projected_tuple = all[index]
 
-            projection_record.blog_post_title.should == blog_post.title
-            projection_record.blog_title.should == blog.title
-            projection_record.body.should == blog_post.body
-            projection_record.user_id.should == blog.user_id
+            projected_tuple.blog_post_title.should == blog_post.title
+            projected_tuple.blog_title.should == blog.title
+            projected_tuple.body.should == blog_post.body
+            projected_tuple.user_id.should == blog.user_id
+            projected_tuple.should be_valid
           end
         end
       end
@@ -51,12 +52,12 @@ module Model
           operand_record = operand.first
           blog = operand_record[Blog]
           blog_post = operand_record[BlogPost]
-          projection_record = projection.find(blog_post.id)
+          projected_tuple = projection.find(blog_post.id)
 
-          projection_record.blog_post_title.should == blog_post.title
-          projection_record.blog_title.should == blog.title
-          projection_record.body.should == blog_post.body
-          projection_record.user_id.should == blog.user_id
+          projected_tuple.blog_post_title.should == blog_post.title
+          projected_tuple.blog_title.should == blog.title
+          projected_tuple.body.should == blog_post.body
+          projected_tuple.user_id.should == blog.user_id
         end
       end
 

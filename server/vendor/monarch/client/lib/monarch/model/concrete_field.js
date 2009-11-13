@@ -5,6 +5,11 @@ Monarch.constructor("Monarch.Model.ConcreteField", Monarch.Model.Field, {
     this.fieldset = fieldset;
     this.column = column;
     this.on_update_node = new Monarch.SubscriptionNode();
+    this.validation_errors = [];
+  },
+
+  valid: function() {
+    return (this.validation_errors.length == 0);
   },
 
   clone_pending_field: function(fieldset) {

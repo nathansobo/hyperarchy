@@ -68,7 +68,7 @@ Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relation
 
   projected_column_from_operand_column: function(operand_column) {
     return Monarch.Util.detect(this.projected_columns_by_name, function(name, projected_column) {
-      if (projected_column.column === operand_column) return projected_column;
+      return projected_column.column === operand_column;
     });
   }
 });

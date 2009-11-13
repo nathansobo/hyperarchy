@@ -123,23 +123,17 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
   },
 
   record_inserted: function(record, options) {
-    if (!options) options = {};
     this._records.push(record)
-    if (options.before_events) options.before_events();
     this.on_insert_node.publish(record);
-    if (options.after_events) options.after_events();
   },
 
   record_updated: function(record, update_data) {
     this.on_update_node.publish(record, update_data);
   },
 
-  record_removed: function(record, options) {
-    if (!options) options = {};
+  record_removed: function(record) {
     Monarch.Util.remove(this._records, record);
-    if (options.before_events) options.before_events();
     this.on_remove_node.publish(record);
-    if (options.after_events) options.after_events();
   },
 
   contains: function(record) {

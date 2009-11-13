@@ -137,6 +137,19 @@ Screw.Unit(function(c) { with(c) {
           fake_server.creates[1].simulate_success();
           expect(fake_server.last_create).to(equal, fake_server.creates[0]);
         });
+
+        it("removes the create request even if it its success is simulated via #simulate_success on its containing batch", function() {
+          fake_server.create(Blog.table, {name: "Puff Daddy Songs I Moderately Dislike"});
+          expect(fake_server.batches.length).to(equal, 1);
+          expect(fake_server.creates.length).to(equal, 1);
+
+          fake_server.last_batch.simulate_success();
+
+          expect(fake_server.batches).to(be_empty);
+          expect(fake_server.last_batch).to(be_null);
+          expect(fake_server.creates).to(be_empty);
+          expect(fake_server.last_create).to(be_null);
+        });
       });
 
       describe("#update", function() {

@@ -16,15 +16,31 @@ module Model
     end
 
     def post(params)
-      response_data = {};
-      operations_by_table_name = JSON.parse(params[:operations])
-      operations_by_table_name.each do |table_name, operations_by_id|
-        response_data[table_name] = {}
-        operations_by_id.each do |id, field_values|
-          response_data[table_name][id] = perform_operation(table_name, id, field_values)
+      successful, response_data = perform_operations_in_transaction(JSON.parse(params[:operations]))
+      [200, headers, { 'successful' => successful, 'data' => response_data}.to_json]
+    end
+
+    def perform_operations_in_transaction(operations)
+      successful = true
+      response_data = []
+
+      Repository.transaction do
+        operations.each_with_index do |operation, index|
+          result = perform_operation(operation)
+          if result.valid?
+            response_data.push(result.data)
+          else
+            successful = false
+            response_data = {
+              :index => index,
+              :errors => result.data
+            }
+            raise Sequel::Rollback
+          end
         end
       end
-      [200, headers, { 'successful' => true, 'data' => response_data}.to_json]
+
+      [successful, response_data]
     end
 
     def subscribe(params)
@@ -46,34 +62,47 @@ module Model
     
     protected
 
-    def perform_operation(table_name, id, field_values)
-      if id =~ /^create/
-        perform_create(table_name, field_values)
-      elsif field_values.nil?
-        perform_destroy(table_name, id)
-      else
-        perform_update(table_name, id, field_values)
+    def perform_operation(operation)
+      operation_type = operation.shift
+
+      case operation_type
+      when 'create'
+        perform_create(*operation)
+      when 'update'
+        perform_update(*operation)
+      when 'destroy'
+        perform_destroy(*operation)
       end
     end
 
     def perform_create(table_name, field_values)
       relation = resolve_table_name(table_name)
-      new_record = relation.create(field_values)
-      new_record.wire_representation
+      record = relation.create(field_values)
+
+      if record.valid?
+        valid_result(record.wire_representation)
+      else
+        invalid_result(record.validation_errors_by_column_name)
+      end
     end
 
     def perform_update(table_name, id, field_values)
       relation = resolve_table_name(table_name)
       record = relation.find(id)
-      updated_field_values = record.update(field_values)
-      record.save
-      updated_field_values
+      updated_field_values = record.update_fields(field_values)
+
+      if record.valid?
+        record.save
+        valid_result(updated_field_values)
+      else
+        invalid_result(record.validation_errors_by_column_name)
+      end
     end
 
     def perform_destroy(table_name, id)
       relation = resolve_table_name(table_name)
-      relation.destroy(relation.find(id))
-      nil
+      relation.destroy(id)
+      valid_result(nil)
     end
 
     def headers
@@ -98,6 +127,26 @@ module Model
 
     def exposed_relation_definitions_by_name
       self.class.exposed_relation_definitions_by_name
+    end
+
+    def valid_result(data)
+      OperationResult.new(true, data)
+    end
+
+    def invalid_result(data)
+      OperationResult.new(false, data)
+    end
+
+    class OperationResult
+      attr_reader :data
+
+      def initialize(valid, data)
+        @valid, @data = valid, data
+      end
+
+      def valid?
+        @valid
+      end
     end
   end
 end

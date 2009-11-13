@@ -1,3 +1,4 @@
+
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Record", {
@@ -19,8 +20,12 @@ Monarch.constructor("Monarch.Model.Record", {
 
     synthetic_column: function(name, definition) {
       this[name] = this.table.define_synthetic_column(name, definition);
-      this.prototype[name] = function() {
-        return this.field(name).value();
+      this.prototype[name] = function(value) {
+        if (arguments.length == 0) {
+          return this.field(name).value();
+        } else {
+          return this.field(name).value(value);
+        }
       };
     },
 
@@ -140,6 +145,10 @@ Monarch.constructor("Monarch.Model.Record", {
     });
   },
 
+  fetch: function() {
+    return this.table().where(this.table().column('id').eq(this.id())).fetch();
+  },
+
   update: function(values_by_method_name) {
     return Server.update(this, values_by_method_name);
   },
@@ -148,25 +157,43 @@ Monarch.constructor("Monarch.Model.Record", {
     return Server.destroy(this);
   },
 
-  start_pending_changes: function() {
-    this.active_fieldset = this.active_fieldset.new_pending_fieldset();
+  populate_fields_with_errors: function(errors_by_field_name) {
+    var self = this;
+    Monarch.Util.each(errors_by_field_name, function(field_name, errors) {
+      self.field(field_name).validation_errors = errors;
+    });
   },
 
-  local_update: function(values_by_method_name, options) {
-    if (!options) options = {};
+  all_validation_errors: function() {
+    return this.active_fieldset.all_validation_errors();
+  },
+
+  start_pending_changes: function() {
+    this.use_pending_fieldset(this.active_fieldset.new_pending_fieldset());
+  },
+
+  on_update: function(callback) {
+    if (!this.on_update_node) this.on_update_node = new Monarch.SubscriptionNode();
+    return this.on_update_node.subscribe(callback);
+  },
+
+  local_update: function(values_by_method_name) {
     this.active_fieldset.begin_batch_update();
     for (var method_name in values_by_method_name) {
       if (this[method_name]) {
-        this[method_name].call(this, values_by_method_name[method_name]);
+        this[method_name](values_by_method_name[method_name]);
       }
     }
-    if (options.before_events) options.before_events();
     this.active_fieldset.finish_batch_update();
-    if (options.after_events) options.after_events();
   },
 
   local_destroy: function() {
     this.table().remove(this);
+    if (this.after_destroy) this.after_destroy();
+  },
+
+  valid: function() {
+    return this.active_fieldset.valid();
   },
 
   enable_update_events: function() {
@@ -175,6 +202,10 @@ Monarch.constructor("Monarch.Model.Record", {
 
   disable_update_events: function() {
     this.active_fieldset.disable_update_events();
+  },
+
+  use_pending_fieldset: function(pending_fieldset) {
+    this.active_fieldset = pending_fieldset;
   },
 
   restore_primary_fieldset: function() {

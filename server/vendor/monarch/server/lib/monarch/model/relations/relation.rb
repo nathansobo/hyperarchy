@@ -91,6 +91,10 @@ module Model
         all.size
       end
 
+      def empty?
+        all.empty?
+      end
+
       protected
       def table_or_record_class?(arg)
         arg.instance_of?(Table) || arg.instance_of?(Class)
@@ -106,10 +110,10 @@ module Model
 
       def convert_to_projected_columns_if_needed(args)
         args.map do |arg|
-          if arg.instance_of?(Column)
+          if arg.instance_of?(ConcreteColumn)
             ProjectedColumn.new(arg)
           elsif table_or_record_class?(arg)
-            convert_to_table_if_needed(arg).columns.map {|c| ProjectedColumn.new(c)}
+            convert_to_table_if_needed(arg).concrete_columns.map {|c| ProjectedColumn.new(c)}
           else
             arg
           end

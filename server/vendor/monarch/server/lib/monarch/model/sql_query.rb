@@ -58,7 +58,7 @@ module Model
 
     def columns_aliased_with_table_name_prefix
       from_tables.map do |table|
-        table.columns.map do |column|
+        table.concrete_columns.map do |column|
           ProjectedColumn.new(column, "#{table.global_name}__#{column.name}")
         end
       end.flatten
