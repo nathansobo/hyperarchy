@@ -3,5 +3,7 @@ constructor("Organization", Model.Record, {
     this.columns({
       name: "string"
     });
+
+    this.has_many("elections");
   }
 });

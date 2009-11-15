@@ -21,10 +21,10 @@
 //= require "monarch/view"
 //= require "monarch/http"
 //= require "monarch/xmpp"
+//= require "monarch/combined_server"
 //= require "monarch/model"
 
-Server = new Monarch.Http.Server();
-XmppServer = new Monarch.Xmpp.Server();
+Server = new Monarch.CombinedServer();
 Repository = new Monarch.Model.Repository();
 History = new Monarch.View.History();
 

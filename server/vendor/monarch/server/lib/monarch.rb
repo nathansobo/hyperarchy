@@ -9,7 +9,12 @@ require "sequel"
 require "sequel/extensions/inflector"
 require "guid"
 require "json"
-require "xmpp4r" if defined?(XMPP_ENABLED) && XMPP_ENABLED
+
+if defined?(XMPP_ENABLED) && XMPP_ENABLED
+  require "blather"
+  require "blather/client/dsl" 
+end
+
 require "active_support/ordered_hash"
 require "active_support/core_ext/module/delegation"
 require "active_support/core_ext/hash/keys"

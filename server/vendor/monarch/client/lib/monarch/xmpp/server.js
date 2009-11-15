@@ -7,6 +7,8 @@ Monarch.constructor("Monarch.Xmpp.Server", {
     this.connection.addHandler(function(msg) {
       console.debug(msg);
     });
+
+    this.connect();
   },
 
   connect: function() {
@@ -24,13 +26,7 @@ Monarch.constructor("Monarch.Xmpp.Server", {
         $('#connect').get(0).value = 'connect';
       } else if (status == Strophe.Status.CONNECTED) {
         console.log('Strophe is connected.');
-        Monarch.Xmpp.Templates.Presence.send({to: "app.localhost"});
-        Monarch.Xmpp.Templates.Discovery.send({to: "localhost"});
-
-
-
-
-//        Monarch.Xmpp.Templates.Subscribe.send({to: "app.localhost/user_repository"});
+        Monarch.Xmpp.Templates.Presence.send({to: "application.hyperarchy.org"});
       }
     });
   },

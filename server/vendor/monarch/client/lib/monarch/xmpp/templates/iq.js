@@ -10,7 +10,7 @@ Monarch.constructor("Monarch.Xmpp.Templates.Iq", Monarch.Xmpp.Template, {
   },
 
   content: function(attributes) { with (this.builder) {
-    iq({ xmlns: 'jabber:client', from: XmppServer.jid(), to: attributes.to, type: template.type, id: this.constructor.next_id() }, function() {
+    iq({ xmlns: 'jabber:client', from: Server.jid(), to: attributes.to, type: template.type, id: this.constructor.next_id() }, function() {
       template.query(attributes);
     });
   }}

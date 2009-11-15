@@ -4,7 +4,7 @@ Monarch.constructor("Monarch.Xmpp.Templates.Presence", Monarch.Xmpp.Template, {
   content: function(attributes) { with (this.builder) {
     presence({
       xmlns: 'jabber:client',
-      from: XmppServer.jid(),
+      from: Server.jid(),
       to: attributes.to,
       type: attributes.type,
       session_id: jQuery.cookie("_session_id")

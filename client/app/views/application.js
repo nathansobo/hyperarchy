@@ -17,8 +17,6 @@ constructor("Views.Application", View.Template, {
       History.on_change(function(path) {
         self.navigate(path);
       });
-
-      XmppServer.connect();
     },
 
     navigate: function(path) {
