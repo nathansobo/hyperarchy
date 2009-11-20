@@ -84,9 +84,15 @@ module Model
             }.gsub(/[ \n]+/, " ").strip
           end
         end
+
+        describe "#==" do
+          it "structurally compares the receiver with the operand" do
+            predicate_2 = Blog[:id].eq(BlogPost[:blog_id])
+            join_2 = InnerJoin.new(left_operand, right_operand, predicate_2)
+            join.should == join_2
+          end
+        end
       end
-
-
     end
   end
 end

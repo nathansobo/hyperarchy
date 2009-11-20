@@ -57,11 +57,11 @@ Monarch.constructor("Monarch.Xml.Builder", {
   },
 
   to_xml: function() {
-    var xml = "";
+    var xml = [];
     Monarch.Util.each(this.instructions, function(instruction) {
-      xml += instruction.to_xml();
+      xml.push(instruction.to_xml());
     });
-    return xml;
+    return xml.join("");
   },
 
   has_single_top_level_element: function() {

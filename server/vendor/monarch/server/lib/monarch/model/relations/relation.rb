@@ -60,6 +60,19 @@ module Model
         PartiallyConstructedInnerJoin.new(self, convert_to_table_if_needed(right_operand), &block)
       end
 
+      def join_through(right_operand)
+        right_operand = convert_to_table_if_needed(right_operand)
+        left_operand_surface_tables = surface_tables
+        right_operand_surface_tables = right_operand.surface_tables
+        unless left_operand_surface_tables.size == 1 && right_operand_surface_tables.size == 1
+          raise "#join_through can only be called on relations that have a single surface table"
+        end
+
+        right_surface_table = right_operand_surface_tables.first
+        id_column, foreign_key_column = find_join_columns(left_operand_surface_tables.first, right_surface_table)
+        self.join(right_operand).on(id_column.eq(foreign_key_column)).project(right_surface_table)
+      end
+
       def project(*args, &block)
         if args.size == 1 && table_or_record_class?(args.first)
           TableProjection.new(self, convert_to_table_if_needed(args.first), &block)
@@ -119,7 +132,17 @@ module Model
           end
         end.flatten
       end
-      
+
+      def find_join_columns(table_1, table_2)
+        if foreign_key = table_2.column("#{table_1.global_name.singularize}_id".to_sym)
+          [table_1.column(:id), foreign_key]
+        elsif foreign_key = table_1.column("#{table_2.global_name.singularize}_id".to_sym)
+          [table_2.column(:id), foreign_key]
+        else
+          raise "No viable foreign key column found between #{table_1.global_name} and #{table_2.global_name}"
+        end
+      end
+
       class PartiallyConstructedInnerJoin
         attr_reader :left_operand, :right_operand
         def initialize(left_operand, right_operand)

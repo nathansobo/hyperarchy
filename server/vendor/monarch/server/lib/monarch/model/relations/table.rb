@@ -57,7 +57,7 @@ module Model
         global_identity_map.delete(record.id)
       end
 
-      def tables
+      def surface_tables
         [self]
       end
 

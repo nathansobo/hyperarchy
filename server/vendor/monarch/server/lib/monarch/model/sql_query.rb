@@ -20,6 +20,10 @@ module Model
       conditions.push(predicate) unless conditions.include?(predicate)
     end
 
+    def has_explicit_select_clause_columns?
+      !@select_clause_columns.nil?
+    end
+
     protected
     def select
       if from_tables.size > 1

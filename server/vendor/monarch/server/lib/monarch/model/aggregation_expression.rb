@@ -20,6 +20,11 @@ module Model
       expression_alias || to_sql.to_sym 
     end
 
+    def ==(other)
+      return false unless other.instance_of?(self.class)
+      function_name == other.function_name && column == other.column && expression_alias == other.expression_alias
+    end
+
     protected
     def alias_sql
       expression_alias ? " as #{expression_alias}" : ""

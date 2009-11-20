@@ -88,6 +88,16 @@ module Model
             end
           end
         end
+
+        describe "#==" do
+          it "structurally compares the receiver with the operand" do
+            predicate_2 = Predicates::Eq.new(BlogPost[:blog_id], "grain")
+            selection_2 = Selection.new(operand, predicate_2)
+
+            selection.should == selection_2
+          end
+        end
+
       end
     end
   end

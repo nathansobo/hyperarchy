@@ -5,12 +5,12 @@ module Model
     end
 
     delegate :relation, :to => "self.class"
-    delegate :tables, :to => "relation"
+    delegate :surface_tables, :to => "relation"
     attr_reader :constituent_records_by_table
     
     def initialize(field_values)
       @constituent_records_by_table = {}
-      tables.each do |table|
+      surface_tables.each do |table|
         constituent_records_by_table[table] = build_constituent_record(table, field_values)
       end
     end

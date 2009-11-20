@@ -117,7 +117,7 @@ module Model
       end
 
       describe "instance methods" do
-        describe "#where" do
+        describe "#where(predicate)" do
           it "returns a Selection with self as #operand and the given Predicate as #predicate" do
             predicate = BlogPost[:id].eq("grain_quinoa")
             selection = BlogPost.table.where(predicate)
@@ -127,7 +127,7 @@ module Model
           end
         end
 
-        describe "#join, #on" do
+        describe "#join(relation).on(predicate)" do
           context "when passed a Table" do
             it "returns an InnerJoin with self as #left_operand and the given Relation as #right_operand, then the Predicate passed to .on as its #predicate" do
               predicate = BlogPost[:blog_id].eq(Blog[:id])
@@ -148,6 +148,14 @@ module Model
               join.right_operand.should == BlogPost.table
               join.predicate.should == predicate
             end
+          end
+        end
+
+        describe "#join_through(table)" do
+          it "automatically joins the receiver with the given table on an inferred foreign key and then projects the given table" do
+            relation = Blog.where(Blog[:user_id].eq('jan'))
+            relation.join_through(BlogPost).should == relation.join(BlogPost).on(Blog[:id].eq(BlogPost[:blog_id])).project(BlogPost)
+            BlogPost.join_through(Blog).should == BlogPost.join(Blog).on(BlogPost[:blog_id].eq(Blog[:id])).project(Blog)
           end
         end
 

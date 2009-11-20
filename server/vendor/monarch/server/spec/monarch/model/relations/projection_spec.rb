@@ -3,18 +3,18 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../../monarch_spec_helper
 module Model
   module Relations
     describe Projection do
-      attr_reader :projection, :operand, :concrete_columns
+      attr_reader :projection, :operand, :projected_columns
 
       before do
         @operand = Blog.join(BlogPost).on(BlogPost[:blog_id].eq(Blog[:id]))
-        @concrete_columns = [
+        @projected_columns = [
           ProjectedColumn.new(BlogPost[:id]),
           Blog[:title].as(:blog_title),
           BlogPost[:title].as(:blog_post_title),
           ProjectedColumn.new(Blog[:user_id]),
           ProjectedColumn.new(BlogPost[:body])
         ]
-        @projection = Projection.new(operand, concrete_columns) do
+        @projection = Projection.new(operand, projected_columns) do
           def foo; end
         end
       end
@@ -77,7 +77,29 @@ module Model
               blog_posts.blog_id = blogs.id
           }.gsub(/[  \n]+/, " ").strip
         end
+
+        it "always honors the topmost projection operation in the relation tree" do
+          composed_projection = projection.project(ProjectedColumn.new(BlogPost[:id]), Blog[:title].as(:blog_title))
+          projection.to_sql.should == %{select distinct blog_posts.id, blogs.title as blog_title, blog_posts.title as blog_post_title, blogs.user_id, blog_posts.body from blogs, blog_posts where blog_posts.blog_id = blogs.id}
+        end
       end
+
+      describe "#==" do
+        it "structurally compares the receiver with the operand" do
+          operand_2 = Blog.join(BlogPost).on(BlogPost[:blog_id].eq(Blog[:id]))
+          projected_columns_2 = [
+            ProjectedColumn.new(BlogPost[:id]),
+            Blog[:title].as(:blog_title),
+            BlogPost[:title].as(:blog_post_title),
+            ProjectedColumn.new(Blog[:user_id]),
+            ProjectedColumn.new(BlogPost[:body])
+          ]
+          projection_2 = Projection.new(operand_2, projected_columns_2)
+
+          projection.should == projection_2
+        end
+      end
+
     end
   end
 end

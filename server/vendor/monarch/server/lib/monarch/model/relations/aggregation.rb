@@ -39,6 +39,11 @@ module Model
         tuple_class.new(field_values)
       end
 
+      def ==(other)
+        return false unless other.instance_of?(self.class)
+        operand == other.operand && expressions_by_name == other.expressions_by_name
+      end
+
       protected
       def build_sql_query(query=SqlQuery.new)
         query.select_clause_columns = expressions

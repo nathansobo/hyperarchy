@@ -24,6 +24,14 @@ class Symbol
   def starts_with?(prefix)
     to_s.starts_with?(prefix)
   end
+
+  def singularize
+    to_s.singularize.to_sym
+  end
+
+  def pluralize
+    to_s.pluralize.to_sym
+  end
 end
 
 class String

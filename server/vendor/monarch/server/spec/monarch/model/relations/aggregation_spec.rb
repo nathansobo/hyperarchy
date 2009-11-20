@@ -26,6 +26,16 @@ module Model
           aggregation.to_sql.should == "select max(users.signed_up_at) as max_signed_up_at, sum(users.age) from users"
         end
       end
+
+      describe "#==" do
+        it "structurally compares the receiver with the operand" do
+          operand_2 = User.table
+          expressions_2 = [AggregationExpression.new("max", User[:signed_up_at]).as(:max_signed_up_at), AggregationExpression.new("sum", User[:age])]
+          aggregation_2 = Aggregation.new(operand_2, expressions_2)
+
+          aggregation.should == aggregation_2
+        end
+      end
     end
   end
 end

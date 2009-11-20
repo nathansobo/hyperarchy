@@ -19,5 +19,10 @@ module Model
       as_suffix = column_alias ? " as #{column_alias}" : ""
       "#{column.to_sql}#{as_suffix}"
     end
+
+    def ==(other)
+      return false unless other.instance_of?(self.class)
+      column == other.column && column_alias == other.column_alias
+    end
   end
 end

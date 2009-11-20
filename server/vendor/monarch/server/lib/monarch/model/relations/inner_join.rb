@@ -20,8 +20,8 @@ module Model
         left_operand.column(name) || right_operand.column(name)
       end
 
-      def tables
-        left_operand.tables + right_operand.tables
+      def surface_tables
+        left_operand.surface_tables + right_operand.surface_tables
       end
 
       def tuple_class
@@ -39,6 +39,11 @@ module Model
 
       def build_record_from_database(field_values)
         tuple_class.new(field_values)
+      end
+
+      def ==(other)
+        return false unless other.instance_of?(self.class)
+        left_operand == other.left_operand && right_operand == other.right_operand && predicate == other.predicate
       end
     end
   end

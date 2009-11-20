@@ -12,7 +12,9 @@ Monarch.constructor("Monarch.View.Builder", Monarch.Xml.Builder, {
       'table', 'tbody', 'td', 'textarea', 'th', 'thead', 'title', 'tr', 'tt', 'ul', 'var'
     ],
 
-    self_closing_tags: { 'br': 1, 'hr': 1, 'input': 1, 'img': 1 }
+    self_closing_tags: { 'br': 1, 'hr': 1, 'input': 1, 'img': 1 },
+
+    hash_regex: /^.*#/
   },
 
   to_view: function(extend_view_with_properties) {
@@ -32,7 +34,7 @@ Monarch.constructor("Monarch.View.Builder", Monarch.Xml.Builder, {
     if (open_tag_instruction.attributes && open_tag_instruction.attributes.local) {
       close_tag_instruction.click(function() {
         var href = this.attr('href');
-        var following_hash = href.replace(/^.*#/, '');
+        var following_hash = href.replace(this.constructor.hash_regex, '');
         History.load(following_hash);
         return false;
       });

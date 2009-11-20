@@ -3,6 +3,9 @@ module Model
     class << self
       def expose(name, &relation_definition)
         exposed_relation_definitions_by_name[name] = relation_definition
+        define_method name do
+          resolve_table_name(name)
+        end
       end
 
       def exposed_relation_definitions_by_name
@@ -112,7 +115,8 @@ module Model
     def fetch(relation_wire_representations)
       dataset = {}
       relation_wire_representations.each do |representation|
-        build_relation_from_wire_representation(representation).add_to_relational_dataset(dataset)
+        rel = build_relation_from_wire_representation(representation)
+        rel.add_to_relational_dataset(dataset)
       end
       dataset
     end

@@ -30,9 +30,10 @@ module Model
         "#{left_operand.to_sql} #{sql_operator} #{right_operand.to_sql}"
       end
 
-      def ==(other_predicate)
-        return false unless other_predicate.instance_of?(self.class)
-        other_predicate.left_operand == left_operand && other_predicate.right_operand == right_operand
+      def ==(other)
+        return false unless other.instance_of?(self.class)
+        left_operand == other.left_operand && right_operand == other.right_operand ||
+          left_operand == other.right_operand  && right_operand == other.left_operand
       end
 
       def force_matching_field_values(field_values={})

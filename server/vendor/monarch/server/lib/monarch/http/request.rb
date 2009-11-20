@@ -27,11 +27,14 @@ module Http
     end
 
     def params
-      if media_type == 'application/x-www-form-urlencoded'
-        url_params.merge(body_params)
-      else
-        url_params
-      end
+      @params ||=
+        if media_type == 'multipart/form-data'
+          url_params.merge(Rack::Utils::Multipart.parse_multipart(env).symbolize_keys!)
+        elsif media_type == 'application/x-www-form-urlencoded'
+          url_params.merge(body_params)
+        else
+          url_params
+        end
     end
 
     def url_params

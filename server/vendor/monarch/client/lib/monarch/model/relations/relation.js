@@ -146,8 +146,8 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
 
   subscribe_to_operands_if_needed: function() {
     if (this.has_operands && !this.has_subscribers()) {
-      this.memoize_records();
       this.subscribe_to_operands();
+      this.memoize_records();
     }
   },
 

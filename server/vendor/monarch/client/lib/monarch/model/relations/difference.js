@@ -9,12 +9,30 @@ Monarch.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relation
 
   records: function() {
     if (this._records) return this._records;
-
-    var self = this;
     var records = [];
-    this.left_operand.each(function(record) {
-      if (!self.right_operand.find(record.id())) records.push(record);
+
+    var left_records = this.left_operand.records().sort(function(a, b) {
+      if (a.id() < b.id()) return -1;
+      if (a.id() > b.id()) return 1;
+      return 0;
     });
+
+    var right_records = this.right_operand.records().sort(function(a, b) {
+      if (a.id() < b.id()) return -1;
+      if (a.id() > b.id()) return 1;
+      return 0;
+    });
+
+    var right_index = 0;
+
+    Monarch.Util.each(left_records, function(left_record, index) {
+      if (right_records[right_index] && left_record.id() === right_records[right_index].id()) {
+        right_index++;
+      } else {
+        records.push(left_record);
+      }
+    });
+
     return records;
   },
 
