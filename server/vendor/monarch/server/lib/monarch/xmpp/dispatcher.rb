@@ -1,37 +1,60 @@
 module Xmpp
   class Dispatcher
+    include Blather::DSL
+
     attr_reader :resource_locator, :connection
 
     def initialize(resource_locator)
       @resource_locator = resource_locator
-      @connection = Jabber::Component.new("application@hyperarchy.org")
+      setup("application.hyperarchy.org", "component", "localhost", 5275)
+    end
+
+    def send(stanza)
+      client.write(stanza)
     end
 
     def start
-      connection.connect('localhost', 8888)
-      connection.auth('secret')
-      connection.add_presence_callback { |stanza| handle_presence(stanza) }
-      connection.add_iq_callback { |stanza| handle_iq(stanza) }
-      connection.start
+      status :available? do |stanza|
+        puts stanza.to_s
+        client_came_online(stanza.from, stanza['session_id'])
+      end
+
+      status :unavailable? do |stanza|
+        puts "unavailable!!!!"
+        puts stanza.to_s
+        client_went_offline(stanza.from)
+      end
+
+      iq do |stanza|
+        puts stanza.to_s
+        p stanza.find("/iq/subscribe")
+      end
+
+      client.run
     end
 
     def stop
-      connection.stop
+      client.stop
     end
 
     protected
-    def handle_presence(stanza)
-      Model::Repository.with_local_identity_map do
-        if stanza.type == :unavailable
-          client_went_offline(stanza.from)
-        else
-          client_came_online(stanza.from, stanza.attribute("session_id").value)
-        end
-      end
+
+    def client_came_online(jid, session_id)
+      client = Client.create(:jid => jid.to_s, :session_id => session_id)
+      client.activate
+      say(jid, "Hi there!!!!!!")
+    end
+
+    def client_went_offline(jid)
+      client = client_for_jid(jid)
+      client.destroy if client
     end
 
     def handle_iq(stanza)
+      puts "IQ #{stanza}"
       Model::Repository.with_local_identity_map do
+        return unless stanza.to.resource
+        
         resource = resource_locator.locate(stanza.to.resource, :client => client_for_jid(stanza.from))
         method_element = stanza.children.first
         method_name = method_element.name
@@ -42,17 +65,22 @@ module Xmpp
           method_params[attribute.name.to_sym] = attribute.value
         end
 
-        resource.send(method_name, method_params)
+        result = resource.send(method_name, method_params)
+
+        reply = Jabber::Iq.new(:result)
+        reply.id = stanza.id
+        response_element = REXML::Element.new
+        response_element.text = result
+        reply.add_element(response_element)
+        
+        send(reply)
       end
     end
 
-    def client_came_online(jid, session_id)
-      client = Client.create(:jid => jid.to_s, :session_id => session_id)
-      client.activate
-    end
 
-    def client_went_offline(jid)
-      client_for_jid(jid).destroy
+    def send(stanza)
+      puts "SENDING #{stanza}"
+      connection.send(stanza)
     end
 
     def client_for_jid(jid)

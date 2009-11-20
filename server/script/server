@@ -4,7 +4,7 @@ dir = File.dirname(__FILE__)
 require "#{dir}/../config/environment"
 
 resource_locator = Util::ResourceLocator.new
-http_server = Http::Server.new(resource_locator, :port => 9090)
+http_server = Http::Server.new(resource_locator, :port => 9000)
 xmpp_dispatcher = Xmpp::Dispatcher.new(resource_locator)
 
 trap "INT" do
