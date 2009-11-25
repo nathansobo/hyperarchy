@@ -26,7 +26,6 @@ require "active_support/core_ext/numeric/time"
 require "#{dir}/monarch/core_extensions"
 require "#{dir}/monarch/util"
 require "#{dir}/monarch/http"
-require "#{dir}/monarch/xmpp"
 require "#{dir}/monarch/model"
 
 class String
