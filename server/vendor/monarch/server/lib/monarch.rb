@@ -1,7 +1,7 @@
 dir = File.dirname(__FILE__)
-MONARCH_SERVER_ROOT = File.expand_path(File.join(dir, '..', '..'))
-MONARCH_CLIENT_SERVER_ROOT = File.expand_path(File.join(MONARCH_SERVER_ROOT, 'client'))
-MONARCH_SERVER_SERVER_ROOT = File.expand_path(File.join(MONARCH_SERVER_ROOT, 'server'))
+MONARCH_ROOT = File.expand_path(File.join(dir, '..', '..'))
+MONARCH_CLIENT_ROOT = File.expand_path(File.join(MONARCH_ROOT, 'client'))
+MONARCH_SERVER_ROOT = File.expand_path(File.join(MONARCH_ROOT, 'server'))
 
 require "rubygems"
 require "thin"
@@ -9,6 +9,9 @@ require "sequel"
 require "sequel/extensions/inflector"
 require "guid"
 require "json"
+
+$:.push("#{MONARCH_SERVER_ROOT}/vendor/pusher/lib")
+require "pusher"
 
 require "active_support/ordered_hash"
 require "active_support/core_ext/module/delegation"
@@ -38,5 +41,5 @@ end
 Origin = Model::RemoteRepository.new
 
 MONARCH_ASSET_PREFIX = "" unless defined?(MONARCH_ASSET_PREFIX)
-Util::AssetManager.add_js_location("#{MONARCH_ASSET_PREFIX}/monarch/lib", "#{MONARCH_CLIENT_SERVER_ROOT}/lib")
-Util::AssetManager.add_js_location("#{MONARCH_ASSET_PREFIX}/monarch/vendor", "#{MONARCH_CLIENT_SERVER_ROOT}/vendor")
+Util::AssetManager.add_js_location("#{MONARCH_ASSET_PREFIX}/monarch/lib", "#{MONARCH_CLIENT_ROOT}/lib")
+Util::AssetManager.add_js_location("#{MONARCH_ASSET_PREFIX}/monarch/vendor", "#{MONARCH_CLIENT_ROOT}/vendor")

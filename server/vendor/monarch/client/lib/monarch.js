@@ -5,6 +5,7 @@
 //= require <jquery.cookie>
 //= require <htmlescape>
 //= require <prototype>
+//= require <pusher>
 //= require "monarch/module_system"
 //= require "monarch/util"
 //= require "monarch/object"
@@ -22,5 +23,10 @@
 Server = new Monarch.Http.Server();
 Repository = new Monarch.Model.Repository();
 History = new Monarch.View.History();
+
+var client = new Pusher.Client("/comet", "foo", function(message) {
+  console.debug(message);
+});
+client.connect();
 
 })(Monarch);

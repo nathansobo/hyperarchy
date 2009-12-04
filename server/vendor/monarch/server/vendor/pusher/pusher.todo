@@ -1,0 +1,11 @@
+✓ Fix Safari not reconnecting on error (do not trigger onComplete)
+✓ Generate session_id inside client
+✓ Add specs
+✓ Add pluggable Channel backends (AMQP, in memory, etc)
+- Implement HtmlFile transport
+✓ Implement SSE transport
+✓ Ping clients
+- Test JS client
+- Fix multi tab/window issue w/ subdomains (storing tab id in cookie?)
+- Implement Stomp channel backend
+- Benchmark against Orbited
