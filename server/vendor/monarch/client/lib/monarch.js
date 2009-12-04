@@ -24,8 +24,10 @@ Server = new Monarch.Http.Server();
 Repository = new Monarch.Model.Repository();
 History = new Monarch.View.History();
 
-var client = new Pusher.Client("/comet", "foo", function(message) {
-  console.debug(message);
+var client = new Pusher.Client("/comet", "foo", function(messages) {
+  Monarch.Util.each(messages.split("\n"), function(message) {
+    console.debug(JSON.parse(message));
+  })
 });
 client.connect();
 

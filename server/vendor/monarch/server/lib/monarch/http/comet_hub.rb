@@ -13,6 +13,7 @@ module Http
 
       client_id = request[:session_id]
       transport = Pusher::Transport.select(request[:transport]).new(request)
+      EM.next_tick { request.async_callback.call(transport.render) }
 
       if clients.has_key?(client_id)
         clients[client_id].transport = transport
@@ -22,18 +23,20 @@ module Http
         clients[client_id] = CometClient.new(client_id, transport, self)
       end
 
-      EM.next_tick { request.async_callback.call(transport.render) }
       ASYNC_RESPONSE
     end
 
+    def remove_client(client_id)
+      clients.delete(client_id)
+    end
 
     private
     def on_start
       EM.add_periodic_timer(PING_INTERVAL) { Pusher::Transport.ping_all }
       EM.add_periodic_timer(2) do
-        p clients
         clients.values.each do |client|
-          client.send("HELLO!!!!!!!!")
+          client.send("#{"NEW\nLINE".to_json}\n")
+          client.send("#{"Hey man!".to_json}\n")
         end
       end
       @started = true

@@ -2,7 +2,7 @@ module Pusher
   module Transport
     class XhrStream < Base
       MAX_BYTES_SENT = 1048576 # Magic number taken from Orbited
-      
+
       register :xhr_stream
       
       def content_type
