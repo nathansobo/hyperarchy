@@ -9,7 +9,7 @@ Monarch.constructor("Monarch.Http.CometClient", {
     var xhr = jQuery.ajax({
       type: "post",
       url: "/comet",
-      data: { session_id: session_id, transport: "xhr_stream" },
+      data: { comet_session_id: window.COMET_SESSION_ID, transport: "xhr_stream" },
       complete: function() { self.connect() }
     });
 

@@ -14,8 +14,6 @@ module Model
     end
 
     def get(params)
-      p params[:relations]s
-
       relation_wire_representations = JSON.parse(params[:relations])
       [200, headers, { :successful => true, :data => fetch(relation_wire_representations)}.to_json]
     end

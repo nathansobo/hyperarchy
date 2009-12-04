@@ -25,6 +25,4 @@ History = new Monarch.View.History();
 var client = new Monarch.Http.CometClient();
 client.connect();
 
-
-
 })(Monarch);

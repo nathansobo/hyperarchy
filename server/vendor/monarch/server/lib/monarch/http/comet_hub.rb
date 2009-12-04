@@ -11,7 +11,7 @@ module Http
     def call(request)
       on_start unless @started
 
-      client_id = request[:session_id]
+      client_id = request[:comet_session_id]
       transport = Pusher::Transport.select(request[:transport]).new(request)
       EM.next_tick { request.async_callback.call(transport.render) }
 
