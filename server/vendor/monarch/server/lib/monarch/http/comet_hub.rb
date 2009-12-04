@@ -18,8 +18,6 @@ module Http
       if clients.has_key?(client_id)
         clients[client_id].transport = transport
       else
-
-        puts "adding client #{request.params.inspect}"
         clients[client_id] = CometClient.new(client_id, transport, self)
       end
 
@@ -33,12 +31,6 @@ module Http
     private
     def on_start
       EM.add_periodic_timer(PING_INTERVAL) { Pusher::Transport.ping_all }
-      EM.add_periodic_timer(2) do
-        clients.values.each do |client|
-          client.send("#{"NEW\nLINE".to_json}\n")
-          client.send("#{"Hey man!".to_json}\n")
-        end
-      end
       @started = true
     end
   end
