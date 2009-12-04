@@ -1,9 +1,14 @@
 module Http
   class Request
+    delegate :[], :to => :params
     attr_reader :env
 
     def initialize(env)
       @env = env
+    end
+
+    def async_callback
+      env["async.callback"]
     end
 
     def cookies
