@@ -2,7 +2,6 @@ dir = File.dirname(__FILE__)
 
 require "rubygems"
 require "spec"
-
 require "#{dir}/../lib/monarch"
 
 Dir["#{File.dirname(__FILE__)}/spec_helpers/*.rb"].each do |spec_helper_path|

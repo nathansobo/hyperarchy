@@ -8,7 +8,7 @@ module Views
           link :rel => "stylesheet", :type => "text/css", :href => "stylesheets/hyperarchy.css"
           application_javascript_tags
           script :type => "text/javascript", :language => "javascript" do
-            rawtext %[$(function() { $("#placeholder").replaceWith(Views.Application.to_view()); });]
+            rawtext %[jQuery(function() { jQuery("#placeholder").replaceWith(Views.Application.to_view()); });]
           end
         end
 
