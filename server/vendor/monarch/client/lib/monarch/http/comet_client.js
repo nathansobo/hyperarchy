@@ -4,7 +4,7 @@ Monarch.constructor("Monarch.Http.CometClient", {
   connect: function() {
     var self = this;
     var len = 0
-    session_id = Math.uuid(12);
+    session_id = "fake_client_id";
 
     var xhr = jQuery.ajax({
       type: "post",

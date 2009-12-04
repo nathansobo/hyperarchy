@@ -4,8 +4,6 @@
 //= require <jquery.history>
 //= require <jquery.cookie>
 //= require <htmlescape>
-//= require <prototype>
-//= require <pusher>
 //= require "monarch/module_system"
 //= require "monarch/util"
 //= require "monarch/object"
