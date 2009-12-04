@@ -17,5 +17,12 @@ FIXTURES = {
     :meta => {
       :name => "Meta Hyperarchy"  
     }
+  },
+
+  :elections => {
+    :bottleneck => {
+      :organization_id => "meta",
+      :body => "What's our biggest bottleneck?"
+    }
   }
 }

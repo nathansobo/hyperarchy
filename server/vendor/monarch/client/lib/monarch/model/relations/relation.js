@@ -118,6 +118,10 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     return Server.fetch([this]);
   },
 
+  subscribe: function() {
+    return Server.subscribe([this]);
+  },
+
   memoize_records: function() {
     this._records = this.records();
   },

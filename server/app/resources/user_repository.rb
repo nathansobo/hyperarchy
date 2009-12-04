@@ -8,5 +8,9 @@ module Resources
     expose :organizations do
       Organization.table
     end
+
+    expose :elections do
+      Election.table
+    end
   end
 end
