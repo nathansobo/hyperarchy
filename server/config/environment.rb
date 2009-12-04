@@ -3,7 +3,6 @@ dir = File.expand_path(File.dirname(__FILE__))
 ROOT = File.expand_path("#{dir}/../..")
 SERVER_ROOT = File.expand_path("#{ROOT}/server")
 CLIENT_ROOT = File.expand_path("#{ROOT}/client")
-XMPP_ENABLED = true
 
 unless Object.const_defined?(:ENVIRONMENT)
   ENVIRONMENT = ENV['ENVIRONMENT'] || 'development'

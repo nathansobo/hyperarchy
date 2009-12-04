@@ -4,22 +4,4 @@ dir = File.dirname(__FILE__)
 require "#{dir}/../config/environment"
 
 resource_locator = Util::ResourceLocator.new
-http_server = Http::Server.new(resource_locator, :port => 9000)
-xmpp_dispatcher = Xmpp::Dispatcher.new(resource_locator)
-
-trap "INT" do
-  http_server.stop
-  xmpp_dispatcher.stop
-  exit
-end
-
-http_thread = Thread.new do
-  http_server.start
-end
-
-xmpp_thread = Thread.new do
-  xmpp_dispatcher.start
-end
-
-xmpp_thread.join
-http_thread.join
+Http::Server.new(resource_locator, :port => 9000).start
