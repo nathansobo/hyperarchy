@@ -2,46 +2,34 @@ constructor("Views.Application", View.Template, {
   content: function() { with(this.builder) {
     div({id: 'application_view'}, function() {
       h1("hyperarchy");
-      subview('elections_view', Views.Elections);
-      subview('login_view', Views.Login);
-      subview('signup_view', Views.Signup);
+      subview('main_views', Monarch.View.Templates.Multiview, {
+        elections: Views.Elections,
+        login: Views.Login,
+        signup: Views.Signup
+      })
     });
   }},
 
   view_properties: {
     initialize: function() {
       var self = this;
-      this.elections_view.hide();
-      this.signup_view.hide();
       window.Application = this;
+      this.main_views.login.show();
       History.on_change(function(path) {
         self.navigate(path);
       });
     },
 
     navigate: function(path) {
-      switch(path) {
-        case "":
-          this.elections_view.hide();
-          this.signup_view.hide();
-          this.login_view.show();
-          break;
-        case "signup":
-          this.elections_view.hide();
-          this.login_view.hide();
-          this.signup_view.show();
-          break;
-        case "elections":
-          this.login_view.hide();
-          this.signup_view.hide();
-          this.elections_view.show();
-          break;
+      if (path == "") {
+        this.main_views.hide_all_except('login');
+      } else {
+        this.main_views.hide_all_except(path);
       }
     },
 
     current_user_id_established: function(current_user_id) {
       this.current_user_id = current_user_id;
-
     }
   }
 });
