@@ -8,7 +8,7 @@ module Views
           link :rel => "stylesheet", :type => "text/css", :href => "stylesheets/hyperarchy.css"
           application_javascript_tags
           script :type => "text/javascript", :language => "javascript" do
-            rawtext %[window.COMET_SESSION_ID = #{Guid.new.to_s.to_json};]
+            rawtext %[window.COMET_CLIENT_ID = #{Guid.new.to_s.to_json};]
             rawtext %[jQuery(function() { jQuery("#placeholder").replaceWith(Views.Application.to_view()); });]
           end
         end

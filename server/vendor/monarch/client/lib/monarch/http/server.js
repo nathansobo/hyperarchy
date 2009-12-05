@@ -126,7 +126,7 @@ Monarch.constructor("Monarch.Http.Server", {
       url: url,
       type: type,
       dataType: 'json',
-      data: data ? this.stringify_json_data(data) : null,
+      data: jQuery.extend({ comet_client_id: COMET_CLIENT_ID }, data ? this.stringify_json_data(data) : null),
       success: function(response) {
         future.handle_response(response);
       }

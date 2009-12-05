@@ -3,9 +3,9 @@ module Http
     RECONNECT_INTERVAL = 5
     attr_reader :id, :transport, :hub
 
-    def initialize(id, transport, hub)
+    def initialize(id, hub)
       @id, @hub = id, hub
-      self.transport = transport
+      start_reconnect_timer
     end
 
     def transport=(transport)

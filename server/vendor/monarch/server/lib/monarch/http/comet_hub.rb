@@ -10,18 +10,20 @@ module Http
 
     def call(request)
       on_start unless @started
-
-      client_id = request[:comet_session_id]
+      client_id = request[:comet_client_id]
       transport = Pusher::Transport.select(request[:transport]).new(request)
+
+      find_or_build(client_id).transport = transport
       EM.next_tick { request.async_callback.call(transport.render) }
-
-      if clients.has_key?(client_id)
-        clients[client_id].transport = transport
-      else
-        clients[client_id] = CometClient.new(client_id, transport, self)
-      end
-
       ASYNC_RESPONSE
+    end
+
+    def find_or_build(client_id)
+      if clients.has_key?(client_id)
+        clients[client_id]
+      else
+        clients[client_id] = CometClient.new(client_id, self)
+      end
     end
 
     def remove_client(client_id)

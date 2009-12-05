@@ -46,12 +46,6 @@ module Model
       [successful, response_data]
     end
 
-    def subscribe(params)
-      puts "GOT THERE"
-      p params
-      "TEST RESPONSE"
-    end
-
     def resolve_table_name(name)
       if relation = exposed_relations_by_name[name]
         return relation

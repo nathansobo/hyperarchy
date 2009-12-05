@@ -10,20 +10,9 @@ module Http
         @resource = Resource.new
       end
 
-      context "when a current_session_id has been assigned" do
-        it "returns the Session with an id of #current_session_id" do
-          resource.current_session_id = session.session_id
-          resource.current_session.should == session
-        end
-      end
-      
-      context "when a current_client has been assigned" do
-        it "returns the Session associated with that client" do
-          client = Client.create(:session_id => session.session_id)
-          resource.current_client = client
-
-          resource.current_session.should == session
-        end
+      it "returns the Session with an id of #current_session_id" do
+        resource.current_session_id = session.session_id
+        resource.current_session.should == session
       end
     end
   end

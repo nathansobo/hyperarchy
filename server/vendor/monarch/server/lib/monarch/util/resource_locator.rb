@@ -8,15 +8,15 @@ module Util
 
     def locate(path, params)
       session_id = params[:session_id]
-      client = params[:client]
+      comet_client = params[:comet_client]
 
       root = new_root_resource
-      assign_session_id_or_client(root, session_id, client)
+      assign_session_id_or_comet_client(root, session_id, comet_client)
       path_parts(path).inject(root) do |resource, child_resource_name|
         if resource
           next_resource = resource.locate(child_resource_name)
           raise "no subresource named #{child_resource_name}" unless next_resource
-          assign_session_id_or_client(next_resource, session_id, client)
+          assign_session_id_or_comet_client(next_resource, session_id, comet_client)
           next_resource
         else
           nil
@@ -29,9 +29,9 @@ module Util
       path.split('/').reject { |part| part == "" }
     end
 
-    def assign_session_id_or_client(resource, session_id, client)
+    def assign_session_id_or_comet_client(resource, session_id, comet_client)
       resource.current_session_id = session_id if session_id
-      resource.current_client = client if client
+      resource.current_comet_client = comet_client if comet_client
     end
   end
 end

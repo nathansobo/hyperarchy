@@ -13,19 +13,25 @@ module Http
         RR.verify_doubles
       end
 
-      it "initializes identity maps, locates and invokes the appropriate HTTP method on a Resource, then clears identity maps and returns the result of that invocation" do
-        request = TestRequest.new
-        request.method = :get
-        request.path_info = "/example/resource"
-        request.session_id = "sample-session-id"
-        mock_resource = Object.new
 
-        mock(Model::Repository.instance).initialize_local_identity_map.ordered
-        mock(dispatcher.resource_locator).locate(request.path_info, :session_id => request.session_id).ordered { mock_resource }
-        mock(mock_resource).get(request.params).ordered
-        mock(Model::Repository.instance).clear_local_identity_map.ordered
+      context "when called with a path not beginning with /comet" do
+        it "initializes the identity map, then locates a Resource with a session_id and CometClient and invokes the appropriate method thereupon, then clears the identity map" do
+          request = TestRequest.new
+          request.method = :get
+          request.path_info = "/example/resource"
+          request.session_id = "sample-session-id"
+          request.env['QUERY_STRING'] = "comet_client_id=sample-comet-client-id&foo=bar"
+          expected_comet_client = dispatcher.comet_hub.find_or_build("sample-comet-client-id")
 
-        dispatcher.call(request.env)
+          mock_resource = Object.new
+
+          mock(Model::Repository.instance).initialize_local_identity_map.ordered
+          mock(dispatcher.resource_locator).locate(request.path_info, :session_id => request.session_id, :comet_client => expected_comet_client).ordered { mock_resource }
+          mock(mock_resource).get(:foo => 'bar').ordered
+          mock(Model::Repository.instance).clear_local_identity_map.ordered
+
+          dispatcher.call(request.env)
+        end
       end
     end
   end
