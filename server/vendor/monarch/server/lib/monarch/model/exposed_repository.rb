@@ -15,7 +15,8 @@ module Model
 
     def get(params)
       relation_wire_representations = JSON.parse(params[:relations])
-      [200, headers, { :successful => true, :data => fetch(relation_wire_representations)}.to_json]
+      subscribe = params[:subscribe]
+      [200, headers, { :successful => true, :data => fetch(relation_wire_representations, subscribe)}.to_json]
     end
 
     def post(params)
@@ -106,11 +107,12 @@ module Model
       { 'Content-Type' => 'application/json' }
     end
 
-    def fetch(relation_wire_representations)
+    def fetch(relation_wire_representations, subscribe)
       dataset = {}
       relation_wire_representations.each do |representation|
         rel = build_relation_from_wire_representation(representation)
         rel.add_to_relational_dataset(dataset)
+        current_comet_client.subscribe(rel) if subscribe
       end
       dataset
     end

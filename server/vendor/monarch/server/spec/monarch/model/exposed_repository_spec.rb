@@ -15,12 +15,12 @@ module Model
     end
 
     describe "#get" do
-      it "parses the 'relations' paramater from a JSON string into an array of wire representations and performs a #fetch with it, returning the resulting dataset as a JSON string" do
+      it "parses the 'relations' parameter from a JSON string into an array of wire representations and performs a #fetch with it, returning the resulting dataset as a JSON string" do
         relations = [{ "type" => "table", "name" => "blog_posts"}]
 
         dataset = nil
-        mock.proxy(exposed_repository).fetch(relations) {|result| dataset = result}
-        response = Http::Response.new(*exposed_repository.get({:relations => relations.to_json}))
+        mock.proxy(exposed_repository).fetch(relations, false) {|result| dataset = result}
+        response = Http::Response.new(*exposed_repository.get({:relations => relations.to_json, :subscribe => false}))
 
         response.should be_ok
         response.headers.should == { 'Content-Type' => 'application/json'}
@@ -246,7 +246,6 @@ module Model
       end
     end
 
-
     describe "#build_relation_from_wire_representation" do
       before do
         publicize exposed_repository, :build_relation_from_wire_representation
@@ -272,12 +271,12 @@ module Model
     end
 
     describe "#fetch" do
+      attr_reader :blog_posts_relation_representation, :blogs_relation_representation
+
       before do
         publicize exposed_repository, :fetch
-      end
 
-      it "populates a relational dataset with the contents of an array of wire representations of relations" do
-        blogs_relation_representation = {
+        @blogs_relation_representation = {
           "type" => "selection",
           "operand" => {
             "type" => "table",
@@ -297,7 +296,7 @@ module Model
           }
         }
 
-        blog_posts_relation_representation = {
+        @blog_posts_relation_representation = {
           "type" => "selection",
           "operand" => {
             "type" => "table",
@@ -317,7 +316,10 @@ module Model
           }
         }
 
-        dataset = exposed_repository.fetch([blogs_relation_representation, blog_posts_relation_representation])
+      end
+
+      it "populates a relational dataset with the contents of an array of wire representations of relations" do
+        dataset = exposed_repository.fetch([blogs_relation_representation, blog_posts_relation_representation], false)
 
         blogs_dataset_fragment = dataset["blogs"]
         blogs_dataset_fragment.size.should == 1
@@ -345,12 +347,26 @@ module Model
           }
         }
 
-        dataset = exposed_repository.fetch([super_blog_posts_relation_representation])
+        dataset = exposed_repository.fetch([super_blog_posts_relation_representation], false)
         expected_records = exposed_repository.resolve_table_name(:super_blog_posts).where(Blog[:user_id].eq('jan')).all
         expected_records.should_not be_empty
 
         expected_records.each do |record|
           dataset['super_blog_posts'][record.id].should == record.wire_representation
+        end
+      end
+
+      context "when passed true as its second argument, indicating a subscription request" do
+        it "subscribes to the requested relations" do
+          publicize exposed_repository, :build_relation_from_wire_representation
+          exposed_repository.current_comet_client = Object.new
+
+          blogs_relation = exposed_repository.build_relation_from_wire_representation(blogs_relation_representation)
+          blog_posts_relation = exposed_repository.build_relation_from_wire_representation(blog_posts_relation_representation)
+          mock(exposed_repository.current_comet_client).subscribe(blogs_relation)
+          mock(exposed_repository.current_comet_client).subscribe(blog_posts_relation)
+
+          exposed_repository.fetch([blogs_relation_representation, blog_posts_relation_representation], true)
         end
       end
     end
