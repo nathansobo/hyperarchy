@@ -1,23 +1,41 @@
 module Http
   class CometClient
     RECONNECT_INTERVAL = 5
-    attr_reader :id, :transport, :hub
+    attr_reader :id, :transport, :hub, :subscriptions
 
     def initialize(id, hub)
       @id, @hub = id, hub
+      @subscriptions = Util::SubscriptionBundle.new
       start_reconnect_timer
     end
 
     def transport=(transport)
       @transport = transport
       cancel_reconnect_timer
+      flush_queued_messages
       transport.on_close do
         start_reconnect_timer
       end
     end
 
     def send(message)
-      transport.write(message) if transport
+      if transport
+        transport.write(message.to_json + "\n")
+      else
+        queued_messages.push(message)
+      end
+    end
+
+    def flush_queued_messages
+      while !queued_messages.empty?
+        send(queued_messages.shift)
+      end
+    end
+
+    def subscribe(relation)
+      subscriptions.add(relation.on_insert do |record|
+        send(["create", relation.exposed_name, relation.wire_representation])
+      end)
     end
 
     private
