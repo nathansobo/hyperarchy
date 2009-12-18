@@ -1,7 +1,7 @@
 module Model
   class ProjectedColumn
     attr_reader :column, :column_alias
-    delegate :convert_value_for_storage, :convert_value_for_wire, :to => :column
+    delegate :convert_value_for_storage, :convert_value_for_wire, :where_clause_sql, :to => :column
 
     def initialize(column, column_alias=nil)
       @column, @column_alias = column, column_alias
@@ -15,9 +15,8 @@ module Model
       column_alias || column.name
     end
 
-    def to_sql
-      as_suffix = column_alias ? " as #{column_alias}" : ""
-      "#{column.to_sql}#{as_suffix}"
+    def select_clause_sql
+      "#{column.to_sql} as #{name}"
     end
 
     def ==(other)

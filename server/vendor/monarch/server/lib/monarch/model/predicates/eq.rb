@@ -27,7 +27,7 @@ module Model
       end
 
       def to_sql
-        "#{left_operand.to_sql} #{sql_operator} #{right_operand.to_sql}"
+        "#{left_operand.where_clause_sql} #{sql_operator} #{right_operand.where_clause_sql}"
       end
 
       def ==(other)

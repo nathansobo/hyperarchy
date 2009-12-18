@@ -13,7 +13,7 @@ Screw.Unit(function(c) { with(c) {
           Blog.table.insert(record);
         }
         column_1 = Blog.user_id;
-        column_2 = Blog.name;
+        column_2 = Blog.name_;
       })
     });
 
@@ -25,7 +25,7 @@ Screw.Unit(function(c) { with(c) {
           Blog.table.insert(record);
         }
         column_1 = Blog.user_id;
-        column_2 = Blog.name;
+        column_2 = Blog.name_;
       })
     });
 
@@ -38,7 +38,7 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#find(id_or_predicate)", function() {
+    describe("#find(id_or_predicate_or_hash)", function() {
       context("when passed an id", function() {
         it("returns the Record with the given id or null if none exists", function() {
           var found_record = relation.find(record.id());
@@ -49,6 +49,17 @@ Screw.Unit(function(c) { with(c) {
       context("when passed a predicate", function() {
         it("returns the first Record matching the predicate or null if none exists", function() {
           var found_record = relation.find(column_2.eq(record.field(column_2).value()));
+          expect(found_record).to(equal, record);
+        });
+      });
+
+      context("when passed a hash", function() {
+        it("converts it into a predicate and performs a find with it", function() {
+          var hash = {};
+          hash[column_1.name] = record.field(column_1).value();
+          hash[column_2.name] = record.field(column_2).value();
+
+          var found_record = relation.find(hash);
           expect(found_record).to(equal, record);
         });
       });
@@ -63,13 +74,93 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#where(predicate)", function() {
-      it("returns a Selection with the receiver as its #operand and the given predicate as its #predicate", function() {
-        var predicate = Blog.user_id.eq('The Pain of Motorcycle Maintenance');
-        var selection = relation.where(predicate);
-        expect(selection.constructor).to(equal, Monarch.Model.Relations.Selection);
-        expect(selection.operand).to(equal, relation);
-        expect(selection.predicate).to(equal, predicate);
+    describe("#where(predicate_or_equality_conditions)", function() {
+      context("when passed a predicate", function() {
+        it("returns a Selection with the receiver as its #operand and the given predicate as its #predicate", function() {
+          var predicate = Blog.user_id.eq('jan');
+          var selection = relation.where(predicate);
+          expect(selection.constructor).to(equal, Monarch.Model.Relations.Selection);
+          expect(selection.operand).to(equal, relation);
+          expect(selection.predicate).to(equal, predicate);
+        });
+      });
+
+      context("when passed a hash of equality conditions", function() {
+        context("when passed a hash with multiple key-value pairs", function() {
+          it("constructs a selections with an And predicate reflecting each key-value pair in the hash", function() {
+            var selection = relation.where({ user_id: "jan", name: "The Pain of Motorcycle Maintenance" });
+
+            var predicate = selection.predicate
+            expect(predicate.constructor).to(equal, Monarch.Model.Predicates.And);
+            expect(predicate.operands.length).to(equal, 2);
+
+            expect(Monarch.Util.detect(predicate.operands, function(eq_predicate) {
+              return eq_predicate.left_operand === Blog.user_id && eq_predicate.right_operand == "jan";
+            })).to_not(be_null);
+
+            expect(Monarch.Util.detect(predicate.operands, function(eq_predicate) {
+              return eq_predicate.left_operand === Blog.name_ && eq_predicate.right_operand == "The Pain of Motorcycle Maintenance";
+            })).to_not(be_null);
+
+            expect(selection.operand).to(equal, relation);
+          });
+        });
+
+        context("when passed a hash with a single key-value pair", function() {
+          it("constructs a selection with an Eq predicate reflecting the key-value pair", function() {
+            var selection = relation.where({ user_id: "jan" });
+            expect(selection.predicate.left_operand).to(equal, Blog.user_id);
+            expect(selection.predicate.right_operand).to(equal, "jan");
+          });
+        });
+
+      });
+    });
+
+    describe("#join(right_operand).on(predicate)", function() {
+      it("constructs an inner join using self as the left operand, plus the given right operand and predicate", function() {
+        var predicate = BlogPost.blog_id.eq(Blog.id)
+        var join = relation.join(BlogPost.table).on(predicate);
+        expect(join.constructor).to(equal, Monarch.Model.Relations.InnerJoin);
+        expect(join.left_operand).to(equal, relation);
+        expect(join.right_operand).to(equal, BlogPost.table);
+        expect(join.predicate).to(equal, predicate);
+      });
+
+      context("when given a record constructor as a right_operand", function() {
+        it("uses the constructor's table as the right_operand", function() {
+          var join = relation.join(BlogPost).on(BlogPost.blog_id.eq(Blog.id));
+          expect(join.right_operand).to(equal, BlogPost.table);
+        });
+      });
+    });
+
+    describe("#join_to(right_operand)", function() {
+      it("constructs an inner join using self as the left operand, plus the given right operand and an inferred predicate", function() {
+        var user = User.find("jan");
+        var join = user.blogs().join_to(BlogPost);
+        expect(join.constructor).to(equal, Monarch.Model.Relations.InnerJoin);
+        expect(join.left_operand).to(equal, user.blogs());
+        expect(join.right_operand).to(equal, BlogPost.table);
+        expect(join.predicate.constructor).to(equal, Monarch.Model.Predicates.Eq);
+        expect(join.predicate.left_operand).to(equal, Blog.id);
+        expect(join.predicate.right_operand).to(equal, BlogPost.blog_id);
+      });
+    });
+
+    describe("#join_through(table)", function() {
+      it("constructs an inner join to the given table with #join_to, then projects the given table", function() {
+        var user = User.find("jan");
+        var projection = user.blogs().join_through(BlogPost);
+        expect(projection.constructor).to(equal, Monarch.Model.Relations.TableProjection);
+        expect(projection.projected_table).to(equal, BlogPost.table);
+        var join = projection.operand;
+        expect(join.constructor).to(equal, Monarch.Model.Relations.InnerJoin);
+        expect(join.left_operand).to(equal, user.blogs());
+        expect(join.right_operand).to(equal, BlogPost.table);
+        expect(join.predicate.constructor).to(equal, Monarch.Model.Predicates.Eq);
+        expect(join.predicate.left_operand).to(equal, Blog.id);
+        expect(join.predicate.right_operand).to(equal, BlogPost.blog_id);
       });
     });
 
@@ -126,6 +217,24 @@ Screw.Unit(function(c) { with(c) {
           expect(projection.operand).to(equal, relation);
           expect(projection.projected_columns_by_name[column_1.name].column).to(equal, column_1);
           expect(projection.projected_columns_by_name[column_2.name].column).to(equal, column_2);
+        });
+      });
+
+      context("when passed a record constructor", function() {
+        it("returns a table projection based on the given constructor's table", function() {
+          var projection = relation.project(BlogPost);
+          expect(projection).to(be_an_instance_of, Monarch.Model.Relations.TableProjection);
+          expect(projection.operand).to(equal, relation);
+          expect(projection.projected_table).to(equal, BlogPost.table);
+        });
+      });
+
+      context("when passed a table", function() {
+        it("returns a table projection based on the given table", function() {
+          var projection = relation.project(BlogPost.table);
+          expect(projection).to(be_an_instance_of, Monarch.Model.Relations.TableProjection);
+          expect(projection.operand).to(equal, relation);
+          expect(projection.projected_table).to(equal, BlogPost.table);
         });
       });
     });

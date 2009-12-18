@@ -70,6 +70,14 @@ module Model
       "#{table.global_name}.#{name}"
     end
 
+    def select_clause_sql
+      to_sql
+    end
+
+    def where_clause_sql
+      to_sql
+    end
+
     protected
     def convert_datetime_value_for_storage(value)
       case value

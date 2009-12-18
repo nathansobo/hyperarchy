@@ -7,17 +7,21 @@ Monarch.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relation
     this.initialize_events_system();
   },
 
-  records: function() {
-    if (this._records) return this._records;
-    var records = [];
+  contains: function(record) {
+    return record.id() in this.tuples_by_id;
+  },
 
-    var left_records = this.left_operand.records().sort(function(a, b) {
+  all_tuples: function() {
+    if (this.tuples_by_id) return Monarch.Util.values(this.tuples_by_id);
+    var tuples = [];
+
+    var left_tuples = this.left_operand.all_tuples().sort(function(a, b) {
       if (a.id() < b.id()) return -1;
       if (a.id() > b.id()) return 1;
       return 0;
     });
 
-    var right_records = this.right_operand.records().sort(function(a, b) {
+    var right_tuples = this.right_operand.all_tuples().sort(function(a, b) {
       if (a.id() < b.id()) return -1;
       if (a.id() > b.id()) return 1;
       return 0;
@@ -25,38 +29,66 @@ Monarch.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relation
 
     var right_index = 0;
 
-    Monarch.Util.each(left_records, function(left_record, index) {
-      if (right_records[right_index] && left_record.id() === right_records[right_index].id()) {
+    Monarch.Util.each(left_tuples, function(left_record, index) {
+      if (right_tuples[right_index] && left_record.id() === right_tuples[right_index].id()) {
         right_index++;
       } else {
-        records.push(left_record);
+        tuples.push(left_record);
       }
     });
 
-    return records;
+    return tuples;
   },
+
+  surface_tables: function() {
+    return this.left_operand.surface_tables();
+  },
+
+  // private
 
   subscribe_to_operands: function() {
     var self = this;
     this.operands_subscription_bundle.add(this.left_operand.on_insert(function(record) {
-      if (!self.right_operand.find(record.id())) self.record_inserted(record);
+      if (!self.right_operand.find(record.id())) self.tuple_inserted(record);
     }));
 
     this.operands_subscription_bundle.add(this.left_operand.on_update(function(record, changes) {
-      if (!self.right_operand.find(record.id())) self.record_updated(record, changes);
+      if (self.contains(record)) self.tuple_updated(record, changes);
     }));
 
     this.operands_subscription_bundle.add(this.left_operand.on_remove(function(record) {
-      if (!self.right_operand.find(record.id())) self.record_removed(record);
+      if (self.contains(record)) self.tuple_removed(record);
     }));
 
     this.operands_subscription_bundle.add(this.right_operand.on_insert(function(record) {
-      if (self.left_operand.find(record.id())) self.record_removed(record);
+      if (self.contains(record)) self.tuple_removed(record);
     }));
 
     this.operands_subscription_bundle.add(this.right_operand.on_remove(function(record) {
-      if (self.left_operand.find(record.id())) self.record_inserted(record);
+      if (self.left_operand.find(record.id())) self.tuple_inserted(record);
     }));
+  },
+
+  memoize_tuples: function() {
+    var tuples_by_id = {};
+    this.each(function(record) {
+      tuples_by_id[record.id()] = record;
+    }.bind(this));
+    this.tuples_by_id = tuples_by_id;
+  },
+
+  tuple_inserted: function(record, options) {
+    this.tuples_by_id[record.id()] = record;
+    this.on_insert_node.publish(record);
+  },
+
+  tuple_updated: function(record, update_data) {
+    this.on_update_node.publish(record, update_data);
+  },
+
+  tuple_removed: function(record) {
+    delete this.tuples_by_id[record.id()];
+    this.on_remove_node.publish(record);
   }
 });
 

@@ -8,5 +8,6 @@
 //= require "http/update_command"
 //= require "http/destroy_command"
 //= require "http/comet_client"
+//= require "http/command_batch"
 
 })(Monarch);

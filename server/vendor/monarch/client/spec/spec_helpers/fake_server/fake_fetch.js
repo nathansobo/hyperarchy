@@ -25,11 +25,11 @@ Monarch.constructor("FakeServer.FakeFetch", {
   },
 
   add_relation_to_dataset: function(relation, dataset) {
-    var records = relation.evaluate_in_repository(this.fixture_repository).records();
+    var tuples = relation.evaluate_in_repository(this.fixture_repository).tuples();
     var table_name = relation.primary_table().global_name;
 
     if (!dataset[table_name]) dataset[table_name] = {};
-    Monarch.Util.each(records, function(record) {
+    Monarch.Util.each(tuples, function(record) {
       dataset[table_name][record.id()] = record.wire_representation();
     });
   }

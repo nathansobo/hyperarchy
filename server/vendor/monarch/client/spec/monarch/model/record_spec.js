@@ -28,10 +28,16 @@ Screw.Unit(function(c) { with(c) {
         delete window['Blog'];
         Monarch.ModuleSystem.constructor("Blog", Monarch.Model.Record);
         Blog.column("user_id", "string");
+        Blog.column("name", "string");
       });
 
       it("calls #define_column on its #table, assigning the returned Column to a constructor property", function() {
-        expect(Blog.user_id).to(equal, Blog.table.columns_by_name.user_id);
+        expect(Blog.user_id).to(equal, Blog.table.column('user_id'));
+      });
+
+      it("associates columns named 'name' with 'name_' on the constructor to evade 'name' being a read-only property in Safari and Chrome", function() {
+        expect(Blog.name).to_not(equal, Blog.name_);
+        expect(Blog.name_).to(equal, Blog.table.column('name'));
       });
 
       it("generates a method on .prototype that accesses the field corresponding to the prototype", function() {
@@ -61,7 +67,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe(".synthetic_column(name, definition)", function() {
-      it("causes records to have synthetic fields that are based on signals returned by the definition", function() {
+      it("causes tuples to have synthetic fields that are based on signals returned by the definition", function() {
         var record = Blog.find('recipes')
         expect(record.fun_profit_name()).to(equal, record.name() + " for Fun and Profit");
       });
@@ -88,7 +94,7 @@ Screw.Unit(function(c) { with(c) {
           var user = User.local_create({id: "jerry"});
           var ordering = user.blogs();
           expect(ordering.constructor).to(equal, Monarch.Model.Relations.Ordering);
-          expect(ordering.order_by_columns[0].column).to(equal, Blog.name);
+          expect(ordering.order_by_columns[0].column).to(equal, Blog.name_);
           expect(ordering.order_by_columns[0].direction).to(equal, "desc");
         });
       });
@@ -100,10 +106,39 @@ Screw.Unit(function(c) { with(c) {
           var ordering = user.blogs();
           expect(ordering.constructor).to(equal, Monarch.Model.Relations.Ordering);
           expect(ordering.order_by_columns.length).to(equal, 2);
-          expect(ordering.order_by_columns[0].column).to(equal, Blog.name);
+          expect(ordering.order_by_columns[0].column).to(equal, Blog.name_);
           expect(ordering.order_by_columns[0].direction).to(equal, "desc");
           expect(ordering.order_by_columns[1].column).to(equal, Blog.user_id);
           expect(ordering.order_by_columns[1].direction).to(equal, "asc");
+        });
+      });
+
+      context("if a conditions hash is supplied in the options", function() {
+        it("constrains the generated relation by the conditions", function() {
+          User.has_many('blogs', { conditions: { name: "My Blog" }});
+          var user = User.local_create({id: 'jake'});
+          expect(user.blogs().empty()).to(be_true);
+          user.blogs().local_create();
+          expect(user.blogs().size()).to(equal, 1);
+          expect(user.blogs().first().name()).to(equal, "My Blog");
+        });
+      });
+
+      context("if a 'table' option is provided", function() {
+        it("uses the named table instead of trying to infer it from the name of the relation", function() {
+          User.has_many('blogs_o_rama', { table: 'blogs' });
+          var user = User.local_create({id: 'jake'});
+          user.blogs_o_rama().local_create();
+          expect(user.blogs_o_rama().empty()).to(be_false);
+        });
+      });
+
+      context("if a 'key' option is provided", function() {
+        it("uses the named foreign key instead of trying to infer it from the name of the model on which the relation is being defined", function() {
+          User.has_many('blogs', { key: 'owner_id' });
+          var user = User.local_create({id: 'jake'});
+          var blog = user.blogs().local_create();
+          expect(blog.owner_id()).to(equal, 'jake');
         });
       });
     });
@@ -112,12 +147,12 @@ Screw.Unit(function(c) { with(c) {
       it("builds an instance of the Record with the given field_values and inserts it in .table before returning it", function() {
         mock(Blog.table, 'insert');
         var record = Blog.local_create({
-          id: 'recipes',
-          name: 'Recipes'
+          id: 'index',
+          name: 'Index Cards'
         });
         expect(Blog.table.insert).to(have_been_called, with_args(record));
-        expect(record.id()).to(equal, 'recipes');
-        expect(record.name()).to(equal, 'Recipes');
+        expect(record.id()).to(equal, 'index');
+        expect(record.name()).to(equal, 'Index Cards');
       });
 
       it("does not trigger update events on its Table", function() {
@@ -125,11 +160,28 @@ Screw.Unit(function(c) { with(c) {
         Blog.table.on_update(update_callback);
 
         var record = Blog.local_create({
-          id: 'recipes',
-          name: 'Recipes'
+          id: 'index',
+          name: 'Index Cards'
         });
 
         expect(update_callback).to_not(have_been_called);
+      });
+
+      it("makes the record findable by id if one is provided, but waits for the remote save if the the id is initially undefined", function() {
+        var record = Blog.local_create({
+          id: 'tina',
+          name: 'What Ever Happened To Tina Turner?'
+        });
+
+        var record_2 = Blog.local_create({
+          name: 'Ike For President'
+        });
+
+        expect(Blog.find('tina')).to(equal, record);
+        expect(undefined in Blog.table.tuples_by_id).to(be_false);
+
+        record_2.save();
+        expect(Blog.find(record_2.id())).to(equal, record_2)
       });
     });
 
@@ -145,12 +197,23 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+
     describe("#local_destroy", function() {
+      it("causes the record to be dirty and no longer appear in queries or finds", function() {
+        var record = User.find('jan');
+        record.local_destroy();
+        expect(record.dirty()).to(be_true);
+        expect(User.any(function(user) { return user === record; })).to(be_false);
+        expect(User.find('jan')).to(be_null);
+      });
+    });
+
+    describe("#finalize_local_destroy", function() {
       it("removes the Record from its Table and calls #after_destroy if it is defined", function() {
         var record = User.find('jan');
         record.after_destroy = mock_function('after destroy hook');
 
-        record.local_destroy();
+        record.finalize_local_destroy();
         expect(User.find('jan')).to(be_null);
 
         expect(record.after_destroy).to(have_been_called);
@@ -158,18 +221,11 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#local_update(values_by_method)", function() {
-      it("calls setter methods for each key in the given hash and fires an optional after_update hook plus update callbacks on itself and its Table with all the changed attributes", function() {
+      it("calls setter methods for each key in the given hash", function() {
         var record = Blog.find('recipes');
-        record.after_update = mock_function("after update hook");
         record.other_method = mock_function('other method');
-        var record_update_callback = mock_function('record_update_callback');
-        var table_update_callback = mock_function('table_update_callback');
-
-        record.table().on_update(table_update_callback);
-        record.on_update(record_update_callback);
 
         record.local_update({
-          id: 'recipes',
           name: 'Pesticides',
           user_id: 'jan',
           other_method: 'foo'
@@ -178,27 +234,6 @@ Screw.Unit(function(c) { with(c) {
         expect(record.name()).to(equal, 'Pesticides');
         expect(record.user_id()).to(equal, 'jan');
         expect(record.other_method).to(have_been_called, with_args('foo'));
-
-        var expected_changeset = {
-          fun_profit_name: {
-            column: Blog.fun_profit_name,
-            old_value: 'Recipes from the Front for Fun and Profit',
-            new_value: 'Pesticides for Fun and Profit'
-          },
-          name: {
-            column: Blog.name,
-            old_value: 'Recipes from the Front',
-            new_value: 'Pesticides'
-          },
-          user_id: {
-            column: Blog.user_id,
-            old_value: 'mike',
-            new_value: 'jan'
-          }
-        };
-        expect(record_update_callback).to(have_been_called, with_args(expected_changeset));
-        expect(table_update_callback).to(have_been_called, with_args(record, expected_changeset));
-        expect(record.after_update).to(have_been_called, with_args(expected_changeset));
       });
     });
 
@@ -208,9 +243,8 @@ Screw.Unit(function(c) { with(c) {
         var update_callback = mock_function('update_callback');
         record.table().on_update(update_callback);
 
-        expect(record.active_fieldset.batch_update_in_progress()).to(be_false);
-
         record.name("Farming");
+        record.save();
 
         expect(update_callback).to(have_been_called, once);
       });
@@ -227,6 +261,7 @@ Screw.Unit(function(c) { with(c) {
         Blog.on_update(update_callback);
 
         record.name('Pesticides');
+        record.save();
 
         expect(update_callback).to(have_been_called, once);
         expect(update_callback).to(have_been_called, with_args(record, {
@@ -236,7 +271,7 @@ Screw.Unit(function(c) { with(c) {
             new_value: 'Pesticides for Fun and Profit'
           },
           name: {
-            column: Blog.name,
+            column: Blog.name_,
             old_value: 'Recipes from the Front',
             new_value: 'Pesticides'
           }
@@ -245,6 +280,8 @@ Screw.Unit(function(c) { with(c) {
         update_callback.clear();
 
         record.name('Pesticides');
+        record.save();
+        
         expect(update_callback).to_not(have_been_called);
       });
       
@@ -264,9 +301,8 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#fetch", function() {
-      use_fake_server();
-
       it("fetches just the current record from the server", function() {
+        Server.auto = false;
         var record = Blog.find('recipes');
         record.fetch();
 
@@ -283,7 +319,7 @@ Screw.Unit(function(c) { with(c) {
       it("returns false if there are any validation errors", function() {
         var record = Blog.find('recipes');
         expect(record.valid()).to(be_true);
-        record.field('name').validation_errors = ["Bad name"];
+        record.local.field('name').validation_errors = ["Bad name"];
         expect(record.valid()).to(be_false);
       });
     });
@@ -299,19 +335,6 @@ Screw.Unit(function(c) { with(c) {
         field = record.field('id');
         expect(field.fieldset.record).to(equal, record);
         expect(field.column).to(equal, Blog.id);
-      });
-    });
-
-    describe("#wire_representation", function() {
-      it("returns the field values by column name", function() {
-        var record = Blog.find('recipes');
-
-        expect(record.wire_representation()).to(equal, {
-          id: 'recipes',
-          name: 'Recipes from the Front',
-          user_id: 'mike',
-          started_at: record.started_at().getTime()
-        });
       });
     });
   });

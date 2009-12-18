@@ -23,8 +23,8 @@ Monarch.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.
     this.initialize_events_system();
   },
 
-  records: function() {
-    return this.operand.records().sort(this.comparator);
+  all_tuples: function() {
+    return this.operand.all_tuples().sort(this.comparator);
   },
 
   create: function(field_values) {
@@ -47,18 +47,24 @@ Monarch.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.
     return this.operand.wire_representation();
   },
 
+  surface_tables: function() {
+    return this.operand.surface_tables();
+  },
+
+  // private
+
   subscribe_to_operands: function() {
     var self = this;
     this.operands_subscription_bundle.add(this.operand.on_insert(function(record) {
-      self.record_inserted(record);
+      self.tuple_inserted(record);
     }));
 
     this.operands_subscription_bundle.add(this.operand.on_remove(function(record) {
-      self.record_removed(record);
+      self.tuple_removed(record);
     }));
 
     this.operands_subscription_bundle.add(this.operand.on_update(function(record, changed_fields) {
-      self.record_updated(record, changed_fields);
+      self.tuple_updated(record, changed_fields);
     }));
   }
 })

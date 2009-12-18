@@ -21,7 +21,7 @@ module Model
         operand.create(predicate.force_matching_field_values(field_values))
       end
 
-      def build_sql_query(query=SqlQuery.new)
+      def build_sql_query(query=Sql::Select.new)
         query.add_condition(predicate)
         operand.build_sql_query(query)
       end

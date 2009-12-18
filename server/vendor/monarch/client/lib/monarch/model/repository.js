@@ -24,6 +24,44 @@ Monarch.constructor("Monarch.Model.Repository", {
     });
   },
 
+  delta: function(dataset) {
+    var self = this;
+    Monarch.Util.each(this.tables, function(table_name, table) {
+      var table_dataset = dataset[table_name] || {};
+      table.delta(table_dataset);
+    });
+  },
+
+  mutate: function(commands) {
+    var self = this;
+    Monarch.Util.each(commands, function(command) {
+      var type = command.shift();-
+      self["perform_" + type + "_command"].apply(self, command);
+    });
+  },
+
+  perform_create_command: function(table_name, field_values) {
+    var table = this.tables[table_name];
+    if (table && !table.find(field_values.id)) {
+      var record = table.local_create(field_values);
+      record.finalize_local_create(field_values);
+    }
+  },
+
+  perform_update_command: function(table_name, id, field_values) {
+    var table = this.tables[table_name];
+    if (!table) return;
+    var record = table.find(id);
+    if (record) record.remote.update(field_values, new Date());
+  },
+
+  perform_destroy_command: function(table_name, id) {
+    var table = this.tables[table_name];
+    if (!table) return;
+    var record = table.find(id);
+    if (record) record.finalize_local_destroy();
+  },
+
   register_table: function(table) {
     this.tables[table.global_name] = table;
   },

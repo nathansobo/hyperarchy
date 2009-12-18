@@ -48,8 +48,12 @@ Screw.Unit(function(c) { with(c) {
           baz: true,
           quux: 3
         });
-
-        mock(model, 'update');
+        model.finalize_local_create({
+          foo: "foo",
+          bar: "bar",
+          baz: true,
+          quux: 3
+        });  
       });
 
       describe("#field_values", function() {
@@ -85,7 +89,7 @@ Screw.Unit(function(c) { with(c) {
           view.model(model);
           expect(view.foo.val()).to(equal, "foo");
           expect(view.bar.val()).to(equal, "bar");
-          model.local_update({foo: "FOO!", bar: "BAR!"});
+          model.update({foo: "FOO!", bar: "BAR!"});
           expect(view.foo.val()).to(equal, "FOO!");
           expect(view.bar.val()).to(equal, "BAR!");
         });
@@ -94,7 +98,7 @@ Screw.Unit(function(c) { with(c) {
           expect(view.baz.attr('checked')).to(be_false);
           view.model(model);
           expect(view.baz.attr('checked')).to(be_true);
-          model.local_update({baz: false});
+          model.update({baz: false});
           expect(view.baz.attr('checked')).to(be_false);
         });
         
@@ -102,7 +106,7 @@ Screw.Unit(function(c) { with(c) {
           expect(view.quux.val()).to(equal, '2');
           view.model(model);
           expect(view.quux.val()).to(equal, '3');
-          model.local_update({quux: 1});
+          model.update({quux: 1});
           expect(view.quux.val()).to(equal, '1');
         });
 
@@ -123,7 +127,9 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("#save()", function() {
+
         it("calls #update on #model with the results of #field_values", function() {
+          mock(model, 'update');
           view.model(model);
           view.save();
           expect(model.update).to(have_been_called, with_args(view.field_values()));
@@ -143,6 +149,11 @@ Screw.Unit(function(c) { with(c) {
           view_properties: view_properties
         });
         view = TestTemplate.to_view();
+        jQuery("#test_content").html(view);
+      });
+
+      after(function() {
+        jQuery("#test_content").html("");
       });
 
 
@@ -150,16 +161,17 @@ Screw.Unit(function(c) { with(c) {
         init(function() {
           view_properties = {
             before_show: mock_function("before_show", function() {
-              expect(this.css('display')).to(equal, 'none');
+              expect(view.is(':visible')).to(be_false);
             })
           };
         });
 
         it("calls it before showing the view", function() {
           view.hide();
-          expect(view.css('display')).to(equal, 'none');
+
+          expect(view.is(':visible')).to(be_false);
           view.show();
-          expect(view.css('display')).to(equal, 'block');
+          expect(view.is(':visible')).to(be_true);
           expect(view.before_show).to(have_been_called);
         });
       });
@@ -168,16 +180,16 @@ Screw.Unit(function(c) { with(c) {
         init(function() {
           view_properties = {
             after_show: mock_function("after_show", function() {
-              expect(this.css('display')).to(equal, 'block');
+              expect(view.is(':visible')).to(be_true);
             })
           };
         });
 
         it("calls it after showing the view", function() {
           view.hide();
-          expect(view.css('display')).to(equal, 'none');
+          expect(view.is(':visible')).to(be_false);
           view.show();
-          expect(view.css('display')).to(equal, 'block');
+          expect(view.is(':visible')).to(be_true);
           expect(view.after_show).to(have_been_called);
         });
       });
@@ -186,14 +198,16 @@ Screw.Unit(function(c) { with(c) {
         init(function() {
           view_properties = {
             before_hide: mock_function("before_hide", function() {
-              expect(this.css("display")).to(equal, 'block');
+              expect(view.is(':visible')).to(be_true);
             })
           };
         });
 
         it("calls it before hiding the view", function() {
+          expect(view.is(':visible')).to(be_true);
           view.hide();
           expect(view.before_hide).to(have_been_called);
+          expect(view.is(':visible')).to(be_false);
         });
       });
 
@@ -201,13 +215,15 @@ Screw.Unit(function(c) { with(c) {
         init(function() {
           view_properties = {
             after_hide: mock_function("after_hide", function() {
-              expect(this.css('display')).to(equal, 'none');
+              expect(view.is(':visible')).to(be_false);
             })
           };
         });
 
         it("calls it before hiding the view", function() {
+          expect(view.is(':visible')).to(be_true);
           view.hide();
+          expect(view.is(':visible')).to(be_false);
           expect(view.after_hide).to(have_been_called);
         });
       });

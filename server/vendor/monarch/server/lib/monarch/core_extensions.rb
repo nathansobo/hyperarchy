@@ -5,7 +5,7 @@ class Class
 end
 
 class Object
-  def to_sql
+  def where_clause_sql
     inspect
   end
 
@@ -17,6 +17,10 @@ class Object
 
   def class_eval(*args, &block)
     eigenclass.class_eval(*args, &block)
+  end
+
+  def union(*operands, &block)
+    Model::Relations::Union.new(operands, &block)
   end
 end
 
@@ -42,10 +46,6 @@ class String
   def path_starts_with?(prefix)
     split('/').starts_with?(prefix.split('/'))
   end
-
-  def to_sql
-    inspect
-  end
 end
 
 class Array
@@ -60,19 +60,19 @@ class Array
 end
 
 class TrueClass
-  def to_sql
-    "t".inspect
+  def where_clause_sql
+    1
   end
 end
 
 class FalseClass
-  def to_sql
-    "f".inspect
+  def where_clause_sql
+    0
   end
 end
 
 class NilClass
-  def to_sql
+  def where_clause_sql
     "null"
   end
 end

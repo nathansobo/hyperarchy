@@ -7,21 +7,21 @@ Screw.Unit(function(c) { with(c) {
     var operand, projected_columns, projection;
     before(function() {
       operand = Blog.table;
-      projected_columns = [new Monarch.Model.ProjectedColumn(Blog.user_id), Blog.name.as('blog_name')];
+      projected_columns = [new Monarch.Model.ProjectedColumn(Blog.user_id), Blog.name_.as('blog_name')];
       projection = new Monarch.Model.Relations.Projection(operand, projected_columns);
     });
 
 
-    describe("#records", function() {
-      it("returns ProjectedRecords with fields corresponding only to the #projected_columns", function() {
-        var projection_records = projection.records();
-        var operand_records = operand.records();
+    describe("#tuples", function() {
+      it("returns ProjectedTuples with fields corresponding only to the #projected_columns", function() {
+        var projection_tuples = projection.tuples();
+        var operand_tuples = operand.tuples();
 
-        expect(projection_records).to_not(be_empty);
-        expect(projection_records.length).to(equal, operand_records.length);
+        expect(projection_tuples).to_not(be_empty);
+        expect(projection_tuples.length).to(equal, operand_tuples.length);
 
-        Monarch.Util.each(operand.records(), function(operand_record, index) {
-          var projection_record = projection_records[index];
+        Monarch.Util.each(operand.tuples(), function(operand_record, index) {
+          var projection_record = projection_tuples[index];
           expect(projection_record.user_id()).to(equal, operand_record.user_id());
           expect(projection_record.field(projection.column('blog_name')).value()).to(equal, operand_record.name());
           expect(projection_record.field('blog_name').value()).to(equal, operand_record.name());
@@ -44,7 +44,7 @@ Screw.Unit(function(c) { with(c) {
 
       describe("when a record is inserted into the operand", function() {
         it("triggers on_insert callbacks with the inserted record's corresponding ProjectionRecord", function() {
-          var operand_record = operand.local_create({name: "Radio Flyer"});
+          var operand_record = operand.create({name: "Radio Flyer"});
 
           expect(insert_callback).to(have_been_called, once);
           expect(insert_callback.most_recent_args[0].blog_name()).to(equal, "Radio Flyer");
@@ -60,7 +60,7 @@ Screw.Unit(function(c) { with(c) {
             var projection_record = projection.find(projection.column('blog_name').eq(operand_record.name()));
             expect(projection_record).to_not(be_null);
             
-            operand_record.local_update({name: "Motorcycles: Wheee!"});
+            operand_record.update({name: "Motorcycles: Wheee!"});
 
             expect(update_callback).to(have_been_called, with_args(projection_record, {
               blog_name: {

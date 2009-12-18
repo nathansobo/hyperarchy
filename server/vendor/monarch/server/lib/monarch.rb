@@ -12,7 +12,6 @@ require "json"
 
 $:.push("#{MONARCH_SERVER_ROOT}/vendor/pusher/lib")
 require "pusher"
-
 require "active_support/ordered_hash"
 require "active_support/core_ext/module/delegation"
 require "active_support/core_ext/hash/keys"

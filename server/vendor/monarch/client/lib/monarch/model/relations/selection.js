@@ -8,15 +8,11 @@ Monarch.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations
     this.initialize_events_system();
   },
 
-  records: function() {
-    if (this._records) return this._records;
-
-    var predicate = this.predicate;
-    var records = [];
-    this.operand.each(function() {
-      if (predicate.evaluate(this)) records.push(this);
-    });
-    return records;
+  all_tuples: function() {
+    if (this._tuples) return this._tuples;
+    return Monarch.Util.select(this.operand.all_tuples(), function(tuple) {
+      return this.predicate.evaluate(tuple);
+    }.bind(this));
   },
 
   create: function(field_values) {
@@ -35,29 +31,6 @@ Monarch.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations
     };
   },
 
-  subscribe_to_operands: function() {
-    var self = this;
-    this.operands_subscription_bundle.add(this.operand.on_insert(function(record) {
-      if (self.predicate.evaluate(record)) self.record_inserted(record);
-    }));
-
-    this.operands_subscription_bundle.add(this.operand.on_remove(function(record) {
-      if (self.predicate.evaluate(record)) self.record_removed(record);
-    }));
-
-    this.operands_subscription_bundle.add(this.operand.on_update(function(record, changed_fields) {
-      if (self.contains(record)) {
-        if (self.predicate.evaluate(record)) {
-          self.record_updated(record, changed_fields);
-        } else {
-          self.record_removed(record);
-        }
-      } else {
-        if (self.predicate.evaluate(record)) self.record_inserted(record);
-      }
-    }));
-  },
-
   evaluate_in_repository: function(repository) {
     return new Monarch.Model.Relations.Selection(this.operand.evaluate_in_repository(repository), this.predicate);
   },
@@ -68,6 +41,35 @@ Monarch.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations
 
   column: function(name) {
     return this.operand.column(name);
+  },
+
+  surface_tables: function() {
+    return this.operand.surface_tables();
+  },
+
+  // private
+
+  subscribe_to_operands: function() {
+    var self = this;
+    this.operands_subscription_bundle.add(this.operand.on_insert(function(record) {
+      if (self.predicate.evaluate(record)) self.tuple_inserted(record);
+    }));
+
+    this.operands_subscription_bundle.add(this.operand.on_remove(function(record) {
+      if (self.predicate.evaluate(record)) self.tuple_removed(record);
+    }));
+
+    this.operands_subscription_bundle.add(this.operand.on_update(function(record, changed_fields) {
+      if (self.contains(record)) {
+        if (self.predicate.evaluate(record)) {
+          self.tuple_updated(record, changed_fields);
+        } else {
+          self.tuple_removed(record);
+        }
+      } else {
+        if (self.predicate.evaluate(record)) self.tuple_inserted(record);
+      }
+    }));
   }
 });
 

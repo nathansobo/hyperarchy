@@ -151,6 +151,14 @@ module Model
           end
         end
 
+        describe "#join_to(table)" do
+          it "automatically joins the receiver with the given table on an inferred foreign key" do
+            relation = Blog.where(Blog[:user_id].eq('jan'))
+            relation.join_to(BlogPost).should == relation.join(BlogPost).on(Blog[:id].eq(BlogPost[:blog_id]))
+            BlogPost.join_to(Blog).should == BlogPost.join(Blog).on(BlogPost[:blog_id].eq(Blog[:id]))
+          end
+        end
+
         describe "#join_through(table)" do
           it "automatically joins the receiver with the given table on an inferred foreign key and then projects the given table" do
             relation = Blog.where(Blog[:user_id].eq('jan'))

@@ -3,34 +3,23 @@
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Signal", function() {
     use_local_fixtures();
-    var field, source, signal, transformer;
+    var local_field, remote_field, signal, transformer;
 
     init(function() {
-      field = Blog.find('recipes').field('name');
+      local_field = Blog.find('recipes').field('name');
+      remote_field = local_field._remote_field;
       transformer = null;
-      source = null;
     });
 
     before(function() {
-      signal = new Monarch.Model.Signal(source, transformer);
+      signal = new Monarch.Model.Signal(local_field, remote_field, transformer);
     });
 
-    scenario("when the #source is a Field", function() {
-      init(function() {
-        source = field;
-      });
-    });
 
-    scenario("when the #source is another Signal", function() {
-      init(function() {
-        source = field.signal();
-      });
-    });
-
-    describe("#value()", function() {
+    describe("#local_value()", function() {
       context("when no transformer function is supplied", function() {
-        it("returns the #value of the source", function() {
-          expect(signal.value()).to(equal, source.value());
+        it("returns the #value of the local field", function() {
+          expect(signal.local_value()).to(equal, local_field.value());
         });
       });
 
@@ -41,26 +30,39 @@ Screw.Unit(function(c) { with(c) {
           }
         })
 
-        it("returns the transformed #value of the source", function() {
-          expect(signal.value()).to(equal, transformer(source.value()));
+        it("returns the transformed #value of the local field", function() {
+          expect(signal.local_value()).to(equal, transformer(local_field.value()));
         });
       });
     });
 
-    context("when the source's #value is updated", function() {
-      var update_callback;
+    context("when the remote or local field's #values are updated", function() {
+      var update_callback, field;
+
       before(function() {
         update_callback = mock_function("update callback");
-        signal.on_update(update_callback);
+      });
+
+      scenario("when the remote field is updated", function() {
+        before(function() {
+          field = remote_field;
+          signal.on_remote_update(update_callback);
+        });
+      });
+
+      scenario("when local field is updated", function() {
+        before(function() {
+          field = local_field;
+          signal.on_local_update(update_callback);
+        });
       });
 
       context("when no transformer function is supplied", function() {
-        it("triggers update callbacks with the new and old #value of the source", function() {
-          var original_value = source.value()
+        it("triggers appropriate callback with the new and old #value of the field", function() {
+          var original_value = field.value()
           field.value("Cardamom");
-          var new_value = source.value();
           expect(update_callback).to(have_been_called, once);
-          expect(update_callback).to(have_been_called, with_args(new_value, original_value));
+          expect(update_callback).to(have_been_called, with_args("Cardamom", original_value));
         });
       });
 
@@ -71,21 +73,12 @@ Screw.Unit(function(c) { with(c) {
           }
         })
 
-        it("triggers update callbacks with the transformed new and old #value of the source", function() {
-          var original_value = source.value()
+        it("triggers on_remote_update callbacks with the transformed new and old #value of the remote field", function() {
+          var original_value = field.value()
           field.value("Cardamom");
-          var new_value = source.value();
           expect(update_callback).to(have_been_called, once);
-          expect(update_callback).to(have_been_called, with_args(transformer(new_value), transformer(original_value)));
+          expect(update_callback).to(have_been_called, with_args(transformer("Cardamom"), transformer(original_value)));
         });
-      });
-    });
-
-    describe("#signal", function() {
-      it("returns a Signal based on the receiver", function() {
-        var secondary_signal = signal.signal();
-        expect(secondary_signal instanceof Monarch.Model.Signal).to(be_true);
-        expect(secondary_signal.source).to(equal, signal);
       });
     });
   });

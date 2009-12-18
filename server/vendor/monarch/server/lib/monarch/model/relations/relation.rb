@@ -60,17 +60,25 @@ module Model
         PartiallyConstructedInnerJoin.new(self, convert_to_table_if_needed(right_operand), &block)
       end
 
-      def join_through(right_operand)
+
+      def join_to(right_operand)
         right_operand = convert_to_table_if_needed(right_operand)
         left_operand_surface_tables = surface_tables
         right_operand_surface_tables = right_operand.surface_tables
-        unless left_operand_surface_tables.size == 1 && right_operand_surface_tables.size == 1
-          raise "#join_through can only be called on relations that have a single surface table"
+        unless right_operand_surface_tables.size == 1
+          raise "#join_to can only be passed relations that have a single surface table"
         end
 
         right_surface_table = right_operand_surface_tables.first
-        id_column, foreign_key_column = find_join_columns(left_operand_surface_tables.first, right_surface_table)
-        self.join(right_operand).on(id_column.eq(foreign_key_column)).project(right_surface_table)
+        id_column, foreign_key_column = find_join_columns(left_operand_surface_tables.last, right_surface_table)
+        self.join(right_operand).on(id_column.eq(foreign_key_column))
+      end
+
+
+      def join_through(right_operand)
+        right_operand = convert_to_table_if_needed(right_operand)
+        right_surface_table = right_operand.surface_tables.first
+        self.join_to(right_operand).project(right_surface_table)
       end
 
       def project(*args, &block)

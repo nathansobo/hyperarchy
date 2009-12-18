@@ -1,13 +1,13 @@
-(function(Monarch, jQuery) {
+(function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Predicates.Eq", {
+Monarch.constructor("Monarch.Model.Predicates.Eq", Monarch.Model.Predicates.Predicate, {
   initialize: function(left_operand, right_operand) {
     this.left_operand = left_operand;
     this.right_operand = right_operand;
   },
 
-  evaluate: function(record) {
-    return record.evaluate(this.left_operand) == record.evaluate(this.right_operand);
+  evaluate: function(tuple) {
+    return tuple.evaluate(this.left_operand) == tuple.evaluate(this.right_operand);
   },
 
   wire_representation: function() {
@@ -19,7 +19,7 @@ Monarch.constructor("Monarch.Model.Predicates.Eq", {
   },
 
   force_matching_field_values: function(field_values) {
-    var matching_field_values = jQuery.extend({}, field_values);
+    var matching_field_values = Monarch.Util.extend({}, field_values);
     matching_field_values[this.column_operand().name] = this.scalar_operand();
     return matching_field_values;
   },
@@ -56,4 +56,4 @@ Monarch.constructor("Monarch.Model.Predicates.Eq", {
   }
 });
 
-})(Monarch, jQuery);
+})(Monarch);

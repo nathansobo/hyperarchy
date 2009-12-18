@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.ProjectionRecord", {
+Monarch.constructor("Monarch.Model.Tuple", {
   constructor_properties: {
     initialize_field_readers: function() {
       var self = this;
@@ -33,6 +33,14 @@ Monarch.constructor("Monarch.Model.ProjectionRecord", {
     } else {
       return column_or_constant;
     }
+  },
+
+  hash_code: function() {
+    var digest_input = [];
+    _.each(_(this.constructor.projected_columns_by_name).keys().sort(), function(key) {
+      digest_input.push(key, this.field(key).value_wire_representation());
+    }, this);
+    return b64_md5(digest_input.join(""));
   }
 });
 

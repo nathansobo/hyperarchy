@@ -65,11 +65,11 @@ module Model
         it "generates appropriate sql" do
           projection.to_sql.should == %{
             select distinct
-              blog_posts.id,
+              blog_posts.id as id,
               blogs.title as blog_title,
               blog_posts.title as blog_post_title,
-              blogs.user_id,
-              blog_posts.body
+              blogs.user_id as user_id,
+              blog_posts.body as body
             from
               blogs,
               blog_posts
@@ -79,8 +79,8 @@ module Model
         end
 
         it "always honors the topmost projection operation in the relation tree" do
-          composed_projection = projection.project(ProjectedColumn.new(BlogPost[:id]), Blog[:title].as(:blog_title))
-          projection.to_sql.should == %{select distinct blog_posts.id, blogs.title as blog_title, blog_posts.title as blog_post_title, blogs.user_id, blog_posts.body from blogs, blog_posts where blog_posts.blog_id = blogs.id}
+          composed_projection = projection.project(BlogPost[:id], Blog[:title].as(:blog_title))
+          projection.to_sql.should == %{select distinct blog_posts.id as id, blogs.title as blog_title, blog_posts.title as blog_post_title, blogs.user_id as user_id, blog_posts.body as body from blogs, blog_posts where blog_posts.blog_id = blogs.id}
         end
       end
 

@@ -12,12 +12,12 @@ module Model
       self
     end
 
-    def to_sql
+    def select_clause_sql
       "#{function_name}(#{column.to_sql})#{alias_sql}"
     end
 
     def name
-      expression_alias || to_sql.to_sym 
+      expression_alias || select_clause_sql.to_sym 
     end
 
     def ==(other)

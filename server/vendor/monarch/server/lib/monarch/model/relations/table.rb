@@ -61,7 +61,7 @@ module Model
         [self]
       end
 
-      def build_sql_query(query=SqlQuery.new)
+      def build_sql_query(query=Sql::Select.new)
         query.add_from_table(self)
         query
       end

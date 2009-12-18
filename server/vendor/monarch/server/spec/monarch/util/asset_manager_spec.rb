@@ -5,7 +5,7 @@ module Util
     attr_reader :manager, :dir
 
     before do
-      @dir = File.dirname(__FILE__)
+      @dir = File.expand_path(File.dirname(__FILE__))
       @manager = AssetManager.new
       manager.add_js_location("/specs/1", "#{dir}/file_system_fixtures_for_asset_manager_specs/dir_1")
       manager.add_js_location("/specs/2", "#{dir}/file_system_fixtures_for_asset_manager_specs/dir_2")
@@ -53,10 +53,10 @@ module Util
 
     describe "#glob_virtual_paths" do
       it "maps the glob pattern to the declared locations, potentially spanning multiple physical locations, and returns the matching relative paths" do
-        manager.glob_virtual_paths("/specs/**/*.js").should == ["/specs/2/2.js", "/specs/1/1.js", "/specs/1/subdir_1/4.js"]
+        Set.new(manager.glob_virtual_paths("/specs/**/*.js")).should == Set.new(["/specs/2/2.js", "/specs/1/1.js", "/specs/1/subdir_1/4.js"])
         manager.glob_virtual_paths("/specs/1/*.js").should == ["/specs/1/1.js"]
         manager.glob_virtual_paths("/specs/x/*.js").should == []
-        manager.glob_virtual_paths("/implementations/**/*.js").should == ["/implementations/3.js", "/implementations/subdir_3/5.js"]
+        Set.new(manager.glob_virtual_paths("/implementations/**/*.js")).should == Set.new(["/implementations/3.js", "/implementations/subdir_3/5.js"])
         manager.glob_virtual_paths("/implementations/*.js").should == ["/implementations/3.js"]
       end
     end

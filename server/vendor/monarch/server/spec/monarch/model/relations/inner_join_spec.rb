@@ -76,7 +76,8 @@ module Model
                 blog_posts.title as blog_posts__title,
                 blog_posts.body as blog_posts__body,
                 blog_posts.blog_id as blog_posts__blog_id,
-                blog_posts.created_at as blog_posts__created_at
+                blog_posts.created_at as blog_posts__created_at,
+                blog_posts.featured as blog_posts__featured
               from
                 blogs, blog_posts
               where

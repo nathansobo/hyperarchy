@@ -45,7 +45,7 @@ module Model
       end
 
       protected
-      def build_sql_query(query=SqlQuery.new)
+      def build_sql_query(query=Sql::Select.new)
         query.select_clause_columns = expressions
         operand.build_sql_query(query)
       end

@@ -2,7 +2,9 @@ dir = File.dirname(__FILE__)
 
 require "rubygems"
 require "spec"
+require "set"
 require "#{dir}/../lib/monarch"
+require "#{dir}/../lib/monarch/model/client"
 
 Dir["#{File.dirname(__FILE__)}/spec_helpers/*.rb"].each do |spec_helper_path|
   require spec_helper_path
@@ -26,7 +28,7 @@ Spec::Runner.configure do |config|
 end
 
 at_exit do
-   Spec::Runner.run
+   exit Spec::Runner.run
 end
 
 module Spec::Example::ExampleGroupMethods

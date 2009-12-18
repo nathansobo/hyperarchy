@@ -64,7 +64,7 @@ module Model
         @relation_definitions ||= ActiveSupport::OrderedHash.new
       end
 
-      delegate :create, :where, :project, :join, :join_through, :find, :concrete_columns_by_name, :[],
+      delegate :create, :where, :project, :join, :join_to, :join_through, :find, :concrete_columns_by_name, :[],
                :create_table, :drop_table, :clear_table, :all, :find_or_create,
                :to => :table
 
@@ -120,13 +120,16 @@ module Model
     end
 
     def save
-      return false unless valid?
-      return true unless dirty?
-      Origin.update(table, id, dirty_concrete_field_values_by_column_name)
+      return nil unless valid?
+      return {} unless dirty?
+      before_update(dirty_concrete_field_values_by_column_name)
       changeset = dirty_concrete_field_values_by_column_name
+      wire_representation = dirty_field_values_wire_representation
+      Origin.update(table, id, changeset)
       mark_clean
       after_update(changeset)
-      true
+
+      wire_representation
     end
 
     def dirty?
@@ -213,6 +216,10 @@ module Model
     attr_reader :synthetic_fields_by_column
 
     def after_destroy
+      # override when needed
+    end
+
+    def before_update(changeset)
       # override when needed
     end
 

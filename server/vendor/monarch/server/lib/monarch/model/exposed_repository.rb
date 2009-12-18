@@ -26,13 +26,13 @@ module Model
 
     def perform_operations_in_transaction(operations)
       successful = true
-      response_data = []
+      response_data = { 'primary' => [], 'secondary' => [] }
 
       Repository.transaction do
         operations.each_with_index do |operation, index|
           result = perform_operation(operation)
           if result.valid?
-            response_data.push(result.data)
+            response_data['primary'].push(result.data)
           else
             successful = false
             response_data = {
@@ -87,13 +87,17 @@ module Model
     def perform_update(table_name, id, field_values)
       relation = resolve_table_name(table_name)
       record = relation.find(id)
-      updated_field_values = record.update_fields(field_values)
+      record.update_fields(field_values)
 
       if record.valid?
-        record.save
-        valid_result(updated_field_values)
+        updated_field_values = record.save
+        if relation.find(id)
+          return valid_result(updated_field_values)
+        else
+          return invalid_result("Security violation")
+        end
       else
-        invalid_result(record.validation_errors_by_column_name)
+        return invalid_result(record.validation_errors_by_column_name)
       end
     end
 
@@ -147,6 +151,9 @@ module Model
       def valid?
         @valid
       end
+    end
+
+    class SecurityException < Exception
     end
   end
 end

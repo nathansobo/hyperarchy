@@ -27,7 +27,7 @@ Monarch.constructor("Monarch.Model.Column", {
     };
   },
 
-  convert_for_storage: function(value) {
+  convert_value_for_field: function(value) {
     if (this.type == "datetime" && value && typeof value == "number") {
       return new Date(value);
     } else {
@@ -35,7 +35,7 @@ Monarch.constructor("Monarch.Model.Column", {
     }
   },
 
-  convert_for_wire: function(value) {
+  convert_value_for_wire: function(value) {
     if (this.type == "datetime" && value) {
       return value.getTime();
     } else {

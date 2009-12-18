@@ -29,6 +29,14 @@ module Model
           mock.proxy(record).get_field_value(BlogPost[:body])
           record.body.should  == "Barley"
         end
+
+        context "if the column type is :boolean" do
+          it "also defines a predicate ending in '?' that maps to #get_field_value for the field" do
+            record = BlogPost.new
+            mock.proxy(record).get_field_value(BlogPost[:featured]) { true }
+            record.featured?.should be_true
+          end
+        end
       end
       
       describe ".synthetic_column" do

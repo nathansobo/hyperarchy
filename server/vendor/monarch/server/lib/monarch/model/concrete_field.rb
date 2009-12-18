@@ -23,10 +23,9 @@ module Model
       update_node.subscribe(&block)
     end
 
-    def to_sql
-      value.to_sql
+    def where_clause_sql
+      value.where_clause_sql
     end
-
 
     def signal(&block)
       Signal.new(self, &block)

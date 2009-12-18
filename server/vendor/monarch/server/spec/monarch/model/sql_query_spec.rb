@@ -1,10 +1,10 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 
 module Model
-  describe SqlQuery do
+  describe Sql::Select do
     attr_reader :query
     before do
-      @query = SqlQuery.new
+      @query = Sql::Select.new
       publicize query, :select_clause_sql
     end
 

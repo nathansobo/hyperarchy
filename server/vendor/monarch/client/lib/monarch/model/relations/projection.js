@@ -9,44 +9,46 @@ Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relation
       self.projected_columns_by_name[projected_column.name()] = projected_column;
     });
 
-    this.record_constructor = Monarch.ModuleSystem.constructor(Monarch.Model.ProjectionRecord);
-    this.record_constructor.projected_columns_by_name = this.projected_columns_by_name;
-    this.record_constructor.initialize_field_readers();
+    this.tuple_constructor = Monarch.ModuleSystem.constructor(Monarch.Model.Tuple);
+    this.tuple_constructor.projected_columns_by_name = this.projected_columns_by_name;
+    this.tuple_constructor.initialize_field_readers();
 
     this.initialize_events_system();
   },
 
-  records: function() {
-    var self = this;
-    if (this._records) return this._records;
+  all_tuples: function() {
+    if (this._tuples) return this._tuples;
 
-    var record_constructor = this.record_constructor;
-    this.records_by_operand_record_id = {};
-    return this.operand.map(function(operand_record) {
-      var record = new record_constructor(operand_record);
-      self.records_by_operand_record_id[operand_record.id()] = record;
-      return record;
-    });
+    this.tuples_by_operand_record_id = {};
+    return Monarch.Util.map(this.operand.all_tuples(), function(operand_tuple) {
+      return this.tuples_by_operand_record_id[operand_tuple.id()] = new this.tuple_constructor(operand_tuple);
+    }.bind(this));
   },
 
   column: function(name) {
     return this.projected_columns_by_name[name];
   },
 
+  surface_tables: function() {
+    throw new Error("Projections do not have surface tables");
+  },
+
+  // private
+
   subscribe_to_operands: function() {
     var self = this;
     this.operands_subscription_bundle.add(this.operand.on_insert(function(operand_record) {
-      var record = new self.record_constructor(operand_record);
-      self.records_by_operand_record_id[operand_record.id()] = record;
-      self.record_inserted(record);
+      var record = new self.tuple_constructor(operand_record);
+      self.tuples_by_operand_record_id[operand_record.id()] = record;
+      self.tuple_inserted(record);
     }));
     this.operands_subscription_bundle.add(this.operand.on_update(function(operand_record, operand_changes) {
       var changes = self.translate_update_changes(operand_changes);
       if (Monarch.Util.is_empty(changes)) return;
-      self.record_updated(self.records_by_operand_record_id[operand_record.id()], changes);
+      self.tuple_updated(self.tuples_by_operand_record_id[operand_record.id()], changes);
     }));
     this.operands_subscription_bundle.add(this.operand.on_remove(function(operand_record) {
-      self.record_removed(self.records_by_operand_record_id[operand_record.id()]);
+      self.tuple_removed(self.tuples_by_operand_record_id[operand_record.id()]);
     }));
   },
 

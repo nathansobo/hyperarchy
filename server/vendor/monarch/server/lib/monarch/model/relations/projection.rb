@@ -38,7 +38,7 @@ module Model
         @tuple_class
       end
 
-      def build_sql_query(sql_query=SqlQuery.new)
+      def build_sql_query(sql_query=Sql::Select.new)
         sql_query.select_clause_columns = concrete_columns unless sql_query.has_explicit_select_clause_columns?
         operand.build_sql_query(sql_query)
       end

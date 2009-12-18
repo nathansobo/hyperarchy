@@ -6,6 +6,7 @@ Screw.Unit(function(c) {
           this.columns({
             name: "string",
             user_id: "string",
+            owner_id: "string",
             started_at: "datetime"
           });
 
@@ -30,7 +31,9 @@ Screw.Unit(function(c) {
       Monarch.ModuleSystem.constructor("BlogPost", Monarch.Model.Record, {
         constructor_initialize: function() {
           this.columns({
-            blog_id: "string"
+            name: "string",
+            blog_id: "string",
+            body: "string"
           });
         }
       });

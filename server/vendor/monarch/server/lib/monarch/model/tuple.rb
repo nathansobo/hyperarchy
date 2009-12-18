@@ -13,6 +13,12 @@ module Model
         define_method(column.name) do
           get_field_value(column)
         end
+
+        if column.instance_of?(ConcreteColumn) && column.type == :boolean
+          define_method("#{column.name}?") do
+            get_field_value(column)
+          end
+        end
       end
     end
     delegate :relation, :to => "self.class"

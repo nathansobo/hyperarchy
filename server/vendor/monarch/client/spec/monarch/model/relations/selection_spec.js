@@ -12,25 +12,24 @@ Screw.Unit(function(c) { with(c) {
       selection = new Monarch.Model.Relations.Selection(operand, predicate);
     });
 
-    describe("#records", function() {
-      it("returns only the #records of #operand that match #predicate", function() {
+    describe("#all_tuples", function() {
+      it("returns only the #tuples of #operand that match #predicate", function() {
         var expected_tuples = [];
-        var operand_tuples = operand.records();
+        var operand_tuples = operand.tuples();
 
-        for (var i = 0; i < operand_tuples.length; i++) {
-          var tuple = operand_tuples[i];
-          if (predicate.evaluate(tuple)) {
-            expected_tuples.push(tuple);
-          }
-        }
+        var expected_tuples = Monarch.Util.select(operand.all_tuples(), function(tuple) {
+          return predicate.evaluate(tuple);
+        });
 
         expect(expected_tuples).to_not(be_empty);
-        expect(selection.records()).to(equal, expected_tuples);
+        expect(selection.all_tuples()).to(equal, expected_tuples);
       });
     });
 
     describe("#create", function() {
-      use_fake_server();
+      before(function() {
+        Server.auto = false;
+      });
 
       it("calls #create on its operand with the given attributes extended with an attribute value that satisfies the predicate", function() {
         var create_future = selection.create({full_name: "John Lennon"});
@@ -150,19 +149,21 @@ Screw.Unit(function(c) { with(c) {
       context("when a record is inserted in the Selection's #operand", function() {
         context("when that record matches #predicate", function() {
           it("triggers #on_insert callbacks with the inserted record", function() {
-            var record = User.local_create({id: "joe", age: 31});
-            expect(predicate.evaluate(record)).to(be_true);
-            
-            expect(insert_callback).to(have_been_called, with_args(record));
+            User.create({id: "joe", age: 31})
+              .after_events(function(record) {
+                expect(predicate.evaluate(record)).to(be_true);
+                expect(insert_callback).to(have_been_called, with_args(record));
+              });
           });
         });
 
         context("when that record does not match #predicate", function() {
           it("does not trigger #on_insert callbacks", function() {
-            var record = User.local_create({id: "mike", age: 22});
-            expect(predicate.evaluate(record)).to(be_false);
-
-            expect(insert_callback).to_not(have_been_called);
+            User.create({id: "mike", age: 22})
+              .after_events(function(record) {
+                expect(predicate.evaluate(record)).to(be_false);
+                expect(insert_callback).to_not(have_been_called);
+              });
           });
         });
       });
@@ -222,6 +223,7 @@ Screw.Unit(function(c) { with(c) {
 
               expect(selection.contains(record)).to(be_true);
               record.full_name(new_value);
+              record.save();
               expect(selection.contains(record)).to(be_true);
               
               expect(predicate.evaluate(record)).to(be_true);
@@ -239,30 +241,32 @@ Screw.Unit(function(c) { with(c) {
 
           context("when that record does not match #predicate after the update", function() {
             it("does not trigger #on_insert callbacks", function() {
-              record.age(34);
+              record.update({age: 34});
               expect(predicate.evaluate(record)).to(be_false);
               expect(insert_callback).to_not(have_been_called);
             });
 
             it("triggers #on_remove callbacks to be invoked with the updated record", function() {
-              record.age(34);
+              record.update({age: 34});
               expect(predicate.evaluate(record)).to(be_false);
               expect(remove_callback).to(have_been_called, with_args(record));
             });
 
             it("does not trigger #on_update callbacks", function() {
-              record.age(34);
+              record.update({age: 34});
               expect(predicate.evaluate(record)).to(be_false);
               expect(update_callback).to_not(have_been_called);
             });
 
             it("does not #contain the updated record before the #on_remove callbacks are triggered", function() {
-              selection.on_remove(function() {
+              var on_remove_callback = mock_function('on_remove_callback', function() {
                 expect(selection.contains(record)).to(be_false);
               });
+              selection.on_remove(on_remove_callback);
 
               expect(selection.contains(record)).to(be_true);
-              record.age(34);
+              record.update({age: 34});
+              expect(on_remove_callback).to(have_been_called);
             });
           });
         });
@@ -275,30 +279,32 @@ Screw.Unit(function(c) { with(c) {
 
           context("when that record matches #predicate after the update", function() {
             it("triggers #on_insert callbacks with the updated record", function() {
-              record.age(31);
+              record.update({age: 31});
               expect(predicate.evaluate(record)).to(be_true);
               expect(insert_callback).to(have_been_called);
             });
 
             it("does not trigger #on_remove callbacks", function() {
-              record.age(31);
+              record.update({age: 31});
               expect(predicate.evaluate(record)).to(be_true);
               expect(remove_callback).to_not(have_been_called);
             });
 
             it("does not trigger #on_update callbacks", function() {
-              record.age(31);
+              record.update({age: 31});
               expect(predicate.evaluate(record)).to(be_true);
               expect(update_callback).to_not(have_been_called);
             });
 
             it("#contains the record before #on_insert callbacks are fired", function() {
-              selection.on_insert(function(record) {
+              var on_insert_callback = mock_function('on_insert_callback', function(record) {
                 expect(selection.contains(record)).to(be_true);
               });
+              selection.on_insert(on_insert_callback);
 
               expect(selection.contains(record)).to(be_false);
-              record.age(21);
+              record.update({age: 31});
+              expect(on_insert_callback).to(have_been_called);
             });
           });
 
@@ -353,24 +359,24 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        it("subscribes to its #operand and memoizes records, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
+        it("subscribes to its #operand and memoizes tuples, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
           expect(operand.has_subscribers()).to(be_false);
-          expect(selection._records).to(be_null);
+          expect(selection._tuples).to(be_null);
 
           var subscription = selection[event_type].call(selection, function() {});
 
           expect(operand.has_subscribers()).to(be_true);
-          expect(selection._records).to_not(be_null);
+          expect(selection._tuples).to_not(be_null);
 
           subscription.destroy();
 
           expect(operand.has_subscribers()).to(be_false);
-          expect(selection._records).to(be_null);
+          expect(selection._tuples).to(be_null);
 
           selection.on_update(function() {});
 
           expect(operand.has_subscribers()).to(be_true);
-          expect(selection._records).to_not(be_null);
+          expect(selection._tuples).to_not(be_null);
         });
       });
     });
