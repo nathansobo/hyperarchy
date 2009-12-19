@@ -6,6 +6,7 @@ module Http
     def initialize(id, hub)
       @id, @hub = id, hub
       @subscriptions = Util::SubscriptionBundle.new
+      @queued_messages = []
       start_reconnect_timer
     end
 
@@ -39,7 +40,7 @@ module Http
     end
 
     private
-    attr_reader :reconnect_timer
+    attr_reader :reconnect_timer, :queued_messages
 
     def start_reconnect_timer
       @reconnect_timer = EM::Timer.new(RECONNECT_INTERVAL) do

@@ -38,20 +38,20 @@ constructor("Views.Elections", View.Template, {
     organization_changed: function() {
       var self = this;
       this.elections = this.selected_organization().elections()
-      this.elections.fetch();
-//        .after_events(function() {
-//          self.elections.each(function(election) {
-//            self.elections_ul.append_view(function(b) {
-//              b.li(election.body())
-//            });
-//          });
-//
-//          self.elections.on_insert(function(election) {
-//            self.elections_ul.append_view(function(b) {
-//              b.li(election.body())
-//            });
-//          });
-//        });
+      this.elections.fetch()
+        .after_events(function() {
+          self.elections.each(function(election) {
+            self.elections_ul.append_view(function(b) {
+              b.li(election.body())
+            });
+          });
+
+          self.elections.on_insert(function(election) {
+            self.elections_ul.append_view(function(b) {
+              b.li(election.body())
+            });
+          }); 
+        });
     },
 
     create_election: function() {

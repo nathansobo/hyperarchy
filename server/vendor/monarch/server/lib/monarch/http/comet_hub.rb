@@ -22,6 +22,7 @@ module Http
       if clients.has_key?(client_id)
         clients[client_id]
       else
+        puts "#{client_id} came online"
         clients[client_id] = CometClient.new(client_id, self)
       end
     end
