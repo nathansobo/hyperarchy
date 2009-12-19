@@ -4,6 +4,11 @@
 //= require "spec_helpers/fixtures"
 
 Screw.Unit(function(c) { with(c) {
+  use_fake_history();
+
+  init(function() {
+    window.COMET_CLIENT_ID = "fake-from-spec-helper";
+  });
 
   before(function() {
     window.Application = {

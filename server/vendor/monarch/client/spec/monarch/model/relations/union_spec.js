@@ -20,9 +20,6 @@ Screw.Unit(function(c) { with(c) {
         var user_4 = User.local_create({full_name: "John"});
         var user_5 = User.local_create({full_name: "Mark"});
 
-        console.debug(left_operand.size());
-        console.debug(right_operand.size());
-
         Server.save(User.table);
 
         var tuples = union.all_tuples();
