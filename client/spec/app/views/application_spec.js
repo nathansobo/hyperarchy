@@ -3,7 +3,7 @@
 Screw.Unit(function(c) { with(c) {
   describe("Views.Application", function() {
     use_fake_server();
-    use_fake_history();
+    use_remote_fixtures();
 
     var view;
     before(function() {
@@ -28,41 +28,41 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#navigate", function() {
       before(function() {
-        mock(view.login_view, 'show');
-        mock(view.login_view, 'hide');
-        mock(view.signup_view, 'show');
-        mock(view.signup_view, 'hide');
-        mock(view.elections_view, 'show');
-        mock(view.elections_view, 'hide');
+        mock(view.main_views.login, 'show');
+        mock(view.main_views.login, 'hide');
+        mock(view.main_views.signup, 'show');
+        mock(view.main_views.signup, 'hide');
+        mock(view.main_views.elections, 'show');
+        mock(view.main_views.elections, 'hide');
       });
 
       context("when called with '' (empty string)", function() {
-        it("shows the login_view and hides the others", function() {
+        it("shows the login view and hides the others", function() {
           view.navigate("");
 
-          expect(view.login_view.show).to(have_been_called);
-          expect(view.signup_view.hide).to(have_been_called);
-          expect(view.elections_view.hide).to(have_been_called);
+          expect(view.main_views.login.show).to(have_been_called);
+          expect(view.main_views.signup.hide).to(have_been_called);
+          expect(view.main_views.elections.hide).to(have_been_called);
         });
       });
 
       context("when called with 'signup'", function() {
-        it("shows the signup_view and hides the others", function() {
+        it("shows the signup view and hides the others", function() {
           view.navigate("signup");
 
-          expect(view.login_view.hide).to(have_been_called);
-          expect(view.signup_view.show).to(have_been_called);
-          expect(view.elections_view.hide).to(have_been_called);
+          expect(view.main_views.login.hide).to(have_been_called);
+          expect(view.main_views.signup.show).to(have_been_called);
+          expect(view.main_views.elections.hide).to(have_been_called);
         });
       });
 
       context("when called with 'elections'", function() {
-        it("shows the elections_view and hides the others", function() {
+        it("shows the elections view and hides the others", function() {
           view.navigate("elections");
 
-          expect(view.login_view.hide).to(have_been_called);
-          expect(view.signup_view.hide).to(have_been_called);
-          expect(view.elections_view.show).to(have_been_called);
+          expect(view.main_views.login.hide).to(have_been_called);
+          expect(view.main_views.signup.hide).to(have_been_called);
+          expect(view.main_views.elections.show).to(have_been_called);
         });
       });
     });

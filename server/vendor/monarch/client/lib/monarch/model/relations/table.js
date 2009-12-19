@@ -70,8 +70,10 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
     if (typeof predicate_or_id === "string") {
       var record = this.tuples_by_id[predicate_or_id]
       return (record && record.locally_destroyed) ? null : record;
-    } else {
+    } else if (predicate_or_id) {
       return this.where(predicate_or_id).first();
+    } else {
+      throw new Error("You called find with null id");
     }
   },
 

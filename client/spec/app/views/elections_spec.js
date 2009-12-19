@@ -10,6 +10,10 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#initialize", function() {
+      init(function() {
+        Server.auto = false;
+      });
+
       it("fetches the Organizations and populates the organization_select with them", function() {
         expect(Server.fetches.length).to(equal, 1);
         Server.fetches.shift().simulate_success();
@@ -17,7 +21,7 @@ Screw.Unit(function(c) { with(c) {
         expect(Organization.empty()).to(be_false);
 
         Organization.each(function(organization) {
-          expect(view.organization_select.find("option:contains('" + organization.name() + "')")).to_not(be_empty);
+          expect(view.organizations_select.find("option:contains('" + organization.name() + "')")).to_not(be_empty);
         });
       });
     });
