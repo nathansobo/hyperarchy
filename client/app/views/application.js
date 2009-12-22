@@ -18,8 +18,6 @@ constructor("Views.Application", View.Template, {
       History.on_change(function(path) {
         self.navigate(path);
       });
-      var client = new Monarch.Http.CometClient();
-      client.connect();
     },
 
     navigate: function(path) {

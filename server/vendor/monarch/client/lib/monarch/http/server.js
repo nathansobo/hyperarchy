@@ -25,7 +25,15 @@ Monarch.constructor("Monarch.Http.Server", {
   },
 
   subscribe: function(relations) {
-    return null;
+    if (!this.comet_client) {
+      this.comet_client = new Monarch.Http.CometClient();
+      this.comet_client.connect();
+    }
+    return this.post(Repository.origin_url + "/subscribe", {
+      relations: Monarch.Util.map(relations, function(relation) {
+        return relation.wire_representation();
+      })
+    });
   },
 
   save: function() {

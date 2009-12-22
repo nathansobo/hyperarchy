@@ -135,6 +135,10 @@ Monarch.constructor("Monarch.Model.Record", {
 
     empty: function() {
       return this.table.empty();
+    },
+
+    wire_representation: function() {
+      return this.table.wire_representation();
     }
   },
 

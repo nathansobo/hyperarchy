@@ -8,7 +8,7 @@ Screw.Unit(function(c) { with(c) {
       server = new Monarch.Http.Server();
     });
 
-    describe("#fetch and #save", function() {
+    describe("#fetch, #save, and #subscribe", function() {
       before(function() {
         // use the fake server implementation of basic request functions (only testing higher levels of abstraction)
         server.posts = [];
@@ -31,7 +31,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
 
-        it("performs a GET to {Repository.origin_url}/fetch with the json to fetch the given Relations, then merges the results into the Repository with the delta events sandwiched by before_events and after_events callback triggers on the returned future", function() {
+        it("performs a GET to {Repository.origin_url}/fetch with the json to fetch the given relations, then merges the results into the Repository with the delta events sandwiched by before_events and after_events callback triggers on the returned future", function() {
           var future = server.fetch([Blog.table, User.table]);
 
           expect(server.gets).to(have_length, 1);
@@ -100,6 +100,31 @@ Screw.Unit(function(c) { with(c) {
           ]);
         });
       });
+
+      describe("#subscribe(relations)", function() {
+        use_example_domain_model();
+
+        it("if there is no comet client, initializes one and connects it", function() {
+          mock(Monarch.Http.CometClient.prototype, 'connect');
+          expect(server.comet_client).to(be_null);
+          server.subscribe([Blog, BlogPost]);
+          expect(server.comet_client).to_not(be_null);
+          expect(server.comet_client.connect).to(have_been_called);
+        });
+
+        it("performs a POST to {Repository.origin_url}/subscribe with the json representation of the given relations", function() {
+          server.subscribe([Blog, BlogPost]);
+
+          expect(server.posts.length).to(equal, 1);
+
+          expect(server.last_post.type).to(equal, "post");
+          expect(server.last_post.url).to(equal, Repository.origin_url + "/subscribe");
+          expect(server.last_post.data).to(equal, {
+            relations: [Blog.table.wire_representation(), BlogPost.table.wire_representation()]            
+          });
+        });
+      });
+
 
       describe("#save(records_or_relations...)", function() {
         use_local_fixtures();
