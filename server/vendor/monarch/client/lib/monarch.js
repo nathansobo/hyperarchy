@@ -26,9 +26,4 @@ Server = new Monarch.Http.Server();
 Repository = new Monarch.Model.Repository();
 History = new Monarch.View.History();
 
-jQuery(function() {
-  var client = new Monarch.Http.CometClient();
-  client.connect();
-});
-
 })(Monarch);

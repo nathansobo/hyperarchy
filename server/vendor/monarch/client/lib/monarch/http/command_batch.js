@@ -12,7 +12,7 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
 
     if (this.commands.length > 0) {
       this.requested_at = new Date();
-      this.server.post(Repository.origin_url, { operations: this.wire_representation() })
+      this.server.post(Repository.origin_url + "/mutate", { operations: this.wire_representation() })
         .on_success(function(response_data) {
           self.handle_successful_response(response_data);
         })

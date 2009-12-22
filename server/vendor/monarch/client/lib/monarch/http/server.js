@@ -8,7 +8,7 @@ Monarch.constructor("Monarch.Http.Server", {
   fetch: function(relations) {
     var fetch_future = new Monarch.Http.RepositoryUpdateFuture();
 
-    this.get(Repository.origin_url, {
+    this.get(Repository.origin_url + "/fetch", {
       relations: Monarch.Util.map(relations, function(relation) {
         return relation.wire_representation();
       })

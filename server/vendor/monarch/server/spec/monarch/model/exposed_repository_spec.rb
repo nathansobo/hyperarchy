@@ -14,13 +14,13 @@ module Model
       end
     end
 
-    describe "#get" do
+    describe "#fetch" do
       it "parses the 'relations' parameter from a JSON string into an array of wire representations and performs a #fetch with it, returning the resulting dataset as a JSON string" do
         relations = [{ "type" => "table", "name" => "blog_posts"}]
 
         dataset = nil
-        mock.proxy(exposed_repository).fetch(relations, false) {|result| dataset = result}
-        response = Http::Response.new(*exposed_repository.get({:relations => relations.to_json, :subscribe => false}))
+        mock.proxy(exposed_repository).perform_fetch(relations) {|result| dataset = result}
+        response = Http::Response.new(*exposed_repository.fetch({:relations => relations.to_json}))
 
         response.should be_ok
         response.headers.should == { 'Content-Type' => 'application/json'}
@@ -28,7 +28,7 @@ module Model
       end
     end
 
-    describe "#post" do
+    describe "#mutate" do
       context "when called with a single create operation" do
         context "when the given field values are valid" do
           it "calls #create on the indicated 'relation' with the given 'field_values', then returns all field values as its result" do
@@ -42,7 +42,7 @@ module Model
 
             User.new(field_values).should be_valid
 
-            response = Http::Response.new(*exposed_repository.post(
+            response = Http::Response.new(*exposed_repository.mutate(
               :operations => [['create', 'users', field_values]].to_json
             ))
 
@@ -77,7 +77,7 @@ module Model
             invalid_example = User.new(field_values)
             invalid_example.should_not be_valid
 
-            response = Http::Response.new(*exposed_repository.post({
+            response = Http::Response.new(*exposed_repository.mutate({
               :operations => [['create', 'users', field_values]].to_json
             }))
 
@@ -107,7 +107,7 @@ module Model
               'signed_up_at' => new_signed_up_at.to_millis
             }
 
-            response = Http::Response.new(*exposed_repository.post({
+            response = Http::Response.new(*exposed_repository.mutate({
               :operations => [['update', 'users', 'jan', field_values]].to_json
             }))
 
@@ -137,7 +137,7 @@ module Model
             record = User.find('jan')
             pre_update_age = record.age
 
-            response = Http::Response.new(*exposed_repository.post({
+            response = Http::Response.new(*exposed_repository.mutate({
               :operations => [['update', 'users', 'jan', { :age => 3}]].to_json
             }))
 
@@ -158,7 +158,7 @@ module Model
 
         context "when the given field values would cause the record to no longer be contained by the exposed relation" do
           it "returns a security error and does not perform the update" do
-            response = Http::Response.new(*exposed_repository.post(:operations => [['update', 'blogs', 'grain', { 'user_id' => 'wil' }]].to_json))
+            response = Http::Response.new(*exposed_repository.mutate(:operations => [['update', 'blogs', 'grain', { 'user_id' => 'wil' }]].to_json))
             response.body_from_json.should == {"data"=>{"errors"=>"Security violation", "index"=>0}, "successful"=>false}
             Blog.find('grain').reload.user_id.should == 'jan'
           end
@@ -169,7 +169,7 @@ module Model
         it "finds the record with the given 'id' in the given 'relation', then destroys it" do
           User.find('jan').should_not be_nil
 
-          response = Http::Response.new(*exposed_repository.post(
+          response = Http::Response.new(*exposed_repository.mutate(
             :operations => [['destroy', 'users', 'jan']].to_json
           ))
 
@@ -192,7 +192,7 @@ module Model
             signed_up_at = Time.now
             User.find('jan').should_not be_nil
 
-            response = Http::Response.new(*exposed_repository.post({
+            response = Http::Response.new(*exposed_repository.mutate({
               :operations => [
                 ['create', 'users', { 'full_name' => "Jake Frautschi", 'age' => 27, 'signed_up_at' => signed_up_at.to_millis }],
                 ['update', 'users', 'jan', {'age' => 101}],
@@ -238,7 +238,7 @@ module Model
             age_before_update = jan.age
 
             Model::Repository.initialize_local_identity_map
-            response = Http::Response.new(*exposed_repository.post({
+            response = Http::Response.new(*exposed_repository.mutate({
               :operations => [
                 ['create', 'users', { 'full_name' => "Jake Frautschi", 'age' => 27, 'signed_up_at' => signed_up_at.to_millis }],
                 ['update', 'users', 'jan', {'age' => 3}],
@@ -293,7 +293,7 @@ module Model
       attr_reader :blog_posts_relation_representation, :blogs_relation_representation
 
       before do
-        publicize exposed_repository, :fetch
+        publicize exposed_repository, :perform_fetch
 
         @blogs_relation_representation = {
           "type" => "selection",
@@ -338,7 +338,7 @@ module Model
       end
 
       it "populates a relational dataset with the contents of an array of wire representations of relations" do
-        dataset = exposed_repository.fetch([blogs_relation_representation, blog_posts_relation_representation], false)
+        dataset = exposed_repository.perform_fetch([blogs_relation_representation, blog_posts_relation_representation])
 
         blogs_dataset_fragment = dataset["blogs"]
         blogs_dataset_fragment.size.should == 1
@@ -366,26 +366,12 @@ module Model
           }
         }
 
-        dataset = exposed_repository.fetch([super_blog_posts_relation_representation], false)
+        dataset = exposed_repository.perform_fetch([super_blog_posts_relation_representation])
         expected_records = exposed_repository.resolve_table_name(:super_blog_posts).where(Blog[:user_id].eq('jan')).all
         expected_records.should_not be_empty
 
         expected_records.each do |record|
           dataset['super_blog_posts'][record.id].should == record.wire_representation
-        end
-      end
-
-      context "when passed true as its second argument, indicating a subscription request" do
-        it "subscribes to the requested relations" do
-          publicize exposed_repository, :build_relation_from_wire_representation
-          exposed_repository.current_comet_client = Object.new
-
-          blogs_relation = exposed_repository.build_relation_from_wire_representation(blogs_relation_representation)
-          blog_posts_relation = exposed_repository.build_relation_from_wire_representation(blog_posts_relation_representation)
-          mock(exposed_repository.current_comet_client).subscribe(blogs_relation)
-          mock(exposed_repository.current_comet_client).subscribe(blog_posts_relation)
-
-          exposed_repository.fetch([blogs_relation_representation, blog_posts_relation_representation], true)
         end
       end
     end

@@ -15,7 +15,7 @@ Monarch.constructor("Monarch.Http.CometClient", {
 
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 3) {
-        var data = xhr.responseText.slice(len).strip();
+        var data = xhr.responseText.slice(len);
         len = xhr.responseText.length;
         if (data.length > 0) console.debug(data);
       }
