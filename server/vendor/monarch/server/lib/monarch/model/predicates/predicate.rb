@@ -13,7 +13,7 @@ module Model
       end
 
       def and(right_operand)
-        And.new(self, right_operand)
+        And.new([self, right_operand])
       end
     end
   end

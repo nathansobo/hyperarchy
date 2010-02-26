@@ -9,8 +9,8 @@ module Model
         super(&block)
         @operand, @concrete_columns = operand, concrete_columns
         @concrete_columns_by_name = ActiveSupport::OrderedHash.new
-        concrete_columns.each do |projected_column|
-          concrete_columns_by_name[projected_column.name] = projected_column
+        concrete_columns.each do |column|
+          concrete_columns_by_name[column.name] = column
         end
       end
 
@@ -22,7 +22,7 @@ module Model
         case column_or_name
         when String, Symbol
           concrete_columns_by_name[column_or_name]
-        when ProjectedColumn
+        when ConcreteColumn
           column_or_name
         end
       end
@@ -50,6 +50,38 @@ module Model
       def ==(other)
         return false unless other.instance_of?(self.class)
         operand == other.operand && concrete_columns_by_name == other.concrete_columns_by_name
+      end
+
+      protected
+      def subscribe_to_operands
+        operand_subscriptions.add(operand.on_insert do |tuple|
+          on_insert_node.publish(project_tuple(tuple))
+        end)
+        
+        operand_subscriptions.add(operand.on_update do |tuple, changeset|
+          projected_changeset = project_changeset(changeset)
+          on_update_node.publish(project_tuple(tuple), projected_changeset) if projected_changeset.has_changes?
+        end)
+
+        operand_subscriptions.add(operand.on_remove do |tuple|
+          on_remove_node.publish(project_tuple(tuple))
+        end)
+      end
+
+      def project_tuple(tuple)
+        field_values = {}
+        concrete_columns_by_name.each do |name, column|
+          column = column.column if column.instance_of?(AliasedColumn)
+          field = tuple.field(column)
+          field_values[name] = field.value if field
+        end
+        tuple_class.new(field_values)
+      end
+
+      def project_changeset(changeset)
+        projected_new_state = project_tuple(changeset.new_state)
+        projected_old_state = project_tuple(changeset.old_state)
+        Changeset.new(projected_new_state, projected_old_state)
       end
     end
   end

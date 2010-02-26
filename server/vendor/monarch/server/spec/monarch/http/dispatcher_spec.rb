@@ -13,25 +13,25 @@ module Http
         RR.verify_doubles
       end
 
+      it "initializes the identity map, then locates a Resource with a session_id and CometClient and invokes the appropriate method thereupon, then clears the identity map" do
+        request = TestRequest.new
+        request.method = :get
+        request.path_info = "/example/resource"
+        request.session_id = "sample-session-id"
+        request.env['QUERY_STRING'] = "comet_client_id=sample-comet-client-id&foo=bar"
+        expected_comet_client = CometHub.instance.find_or_build_comet_client("sample-comet-client-id")
 
-      context "when called with a path not beginning with /comet" do
-        it "initializes the identity map, then locates a Resource with a session_id and CometClient and invokes the appropriate method thereupon, then clears the identity map" do
-          request = TestRequest.new
-          request.method = :get
-          request.path_info = "/example/resource"
-          request.session_id = "sample-session-id"
-          request.env['QUERY_STRING'] = "comet_client_id=sample-comet-client-id&foo=bar"
-          expected_comet_client = dispatcher.comet_hub.find_or_build("sample-comet-client-id")
+        mock_resource = Object.new
 
-          mock_resource = Object.new
+        expected_request = Http::Request.new(request.env)
+        mock(Request).new(request.env) { expected_request }
 
-          mock(Model::Repository.instance).initialize_local_identity_map.ordered
-          mock(dispatcher.resource_locator).locate(request.path_info, :session_id => request.session_id, :comet_client => expected_comet_client).ordered { mock_resource }
-          mock(mock_resource).get(:foo => 'bar').ordered
-          mock(Model::Repository.instance).clear_local_identity_map.ordered
+        mock(Model::Repository.instance).initialize_local_identity_map.ordered
+        mock(dispatcher.resource_locator).locate(expected_request, expected_comet_client).ordered { mock_resource }
+        mock(mock_resource).get(:foo => 'bar').ordered
+        mock(Model::Repository.instance).clear_local_identity_map.ordered
 
-          dispatcher.call(request.env)
-        end
+        dispatcher.call(request.env)
       end
     end
   end

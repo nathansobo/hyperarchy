@@ -2,7 +2,7 @@ Screw.Unit(function(c) {
   c.use_local_fixtures = function() {
     c.use_example_domain_model(function() {
       c.init(function() {
-        Repository.fixtures({
+        Repository.load_fixtures({
           users: {
             jan: {
               full_name: 'Jan Nelson',
@@ -33,8 +33,6 @@ Screw.Unit(function(c) {
             }
           }
         });
-
-        Repository.load_fixtures();
       });
 
       c.after(function() {

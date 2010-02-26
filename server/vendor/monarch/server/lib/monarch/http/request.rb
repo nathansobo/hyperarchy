@@ -54,11 +54,11 @@ module Http
     end
 
     def session_id
-      env['hyperarchy.session_id']
+      env['monarch.session_id']
     end
 
     def session_id=(session_id)
-      env['hyperarchy.session_id'] = session_id
+      env['monarch.session_id'] = session_id
     end
 
     def cookie_string

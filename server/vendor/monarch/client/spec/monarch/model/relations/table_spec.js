@@ -71,16 +71,6 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#insert", function() {
-      it("adds the given Record to the array returned by #tuples", function() {
-        var record = new User();
-
-        expect(User.table.tuples()).to_not(contain, record);
-        User.table.insert(record)
-        expect(User.table.tuples()).to(contain, record);
-      });
-    });
-
     describe("#wire_representation", function() {
       it("contains the Table's #name and has the 'type' of 'table'", function() {
         expect(table.wire_representation()).to(equal, {
@@ -91,49 +81,61 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("delta event callback registration methods", function() {
-      describe("#on_insert(callback)", function() {
-        it("returns a Monarch.Subscription for the #on_insert_node", function() {
-          var subscription = User.table.on_insert(mock_function);
-          expect(subscription.node).to(equal, User.table.on_insert_node);
+      describe("#on_remote_insert(callback)", function() {
+        it("returns a Monarch.Subscription for the #on_remote_insert_node", function() {
+          var subscription = User.table.on_remote_insert(mock_function);
+          expect(subscription.node).to(equal, User.table.on_remote_insert_node);
         });
       });
 
-      describe("#on_remove(callback)", function() {
-        it("returns a Monarch.Subscription for the #on_remove_node", function() {
-          var subscription = User.table.on_remove(function() {
+      describe("#on_remote_remove(callback)", function() {
+        it("returns a Monarch.Subscription for the #on_remote_remove_node", function() {
+          var subscription = User.table.on_remote_remove(function() {
           });
-          expect(subscription.node).to(equal, User.table.on_remove_node);
+          expect(subscription.node).to(equal, User.table.on_remote_remove_node);
         });
       });
 
-      describe("#on_update(callback)", function() {
-        it("returns a Monarch.Subscription for the #on_update_node", function() {
-          var subscription = User.table.on_update(function() {
+      describe("#on_remote_update(callback)", function() {
+        it("returns a Monarch.Subscription for the #on_remote_update_node", function() {
+          var subscription = User.table.on_remote_update(function() {
           });
-          expect(subscription.node).to(equal, User.table.on_update_node);
+          expect(subscription.node).to(equal, User.table.on_remote_update_node);
         });
       });
     });
 
     describe("#has_subscribers()", function() {
       context("if a callback has been registered", function() {
-        scenario("with #on_insert", function() {
+        scenario("with #on_remote_insert", function() {
           before(function() {
-            User.table.on_insert(mock_function());
+            User.table.on_remote_insert(mock_function());
           });
-        })
+        });
 
-        scenario("with #on_update", function() {
+        scenario("with #on_remote_update", function() {
           before(function() {
-            User.table.on_update(mock_function());
+            User.table.on_remote_update(mock_function());
           });
-        })
+        });
 
-        scenario("with #on_remove", function() {
+        scenario("with #on_remote_remove", function() {
           before(function() {
-            User.table.on_remove(mock_function());
+            User.table.on_remote_remove(mock_function());
           });
-        })
+        });
+
+        scenario("with #on_dirty", function() {
+          before(function() {
+            User.table.on_dirty(mock_function());
+          });
+        });
+
+        scenario("with #on_clean", function() {
+          before(function() {
+            User.table.on_clean(mock_function());
+          });
+        });
 
         it("returns true", function() {
           expect(User.table.has_subscribers()).to(be_true);
@@ -151,9 +153,9 @@ Screw.Unit(function(c) { with(c) {
       use_local_fixtures();
 
       describe("when a Record is inserted into the Table", function() {
-        it("triggers #on_insert callbacks with the inserted record", function() {
+        it("triggers #on_remote_insert callbacks with the inserted record", function() {
           var insert_callback = mock_function("insert callback");
-          User.table.on_insert(insert_callback);
+          User.table.on_remote_insert(insert_callback);
 
           User.create({id: "emma", full_name: "Emma Cunningham"})
             .after_events(function(record) {
@@ -164,9 +166,9 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("when a record in the Table is removed", function() {
-        it("triggers #on_remove callbacks with the removed record", function() {
+        it("triggers #on_remote_remove callbacks with the removed record", function() {
           var remove_callback = mock_function("remove callback");
-          User.table.on_remove(remove_callback);
+          User.table.on_remote_remove(remove_callback);
 
           var record = User.find("jan");
           User.table.remove(record);
@@ -177,9 +179,9 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("when a record in the Table is updated", function() {
-        it("triggers #on_update callbacks with the updated record and a changed attributes object", function() {
+        it("triggers #on_remote_update callbacks with the updated record and a changed attributes object", function() {
           var update_callback = mock_function("update callback");
-          User.table.on_update(update_callback);
+          User.table.on_remote_update(update_callback);
 
           var record = User.find("jan");
 
@@ -201,23 +203,44 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+    describe("dirty / clean callback triggering", function() {
+      use_local_fixtures();
+
+      it("fires dirty / clean callbacks when a record in the table becomes dirty or clean", function() {
+        var dirty_callback = mock_function('dirty_callback');
+        var clean_callback = mock_function('clean_callback');
+
+        User.table.on_dirty(dirty_callback);
+        User.table.on_clean(clean_callback);
+
+        var user = User.find('jan');
+        var full_name_before = user.full_name();
+
+        user.full_name("Mahatma Ghandi");
+        expect(dirty_callback).to(have_been_called, with_args(user));
+
+        user.full_name(full_name_before);
+        expect(clean_callback).to(have_been_called, with_args(user));
+      });
+    });
+
     describe("#pause_events and #resume_events", function() {
-      specify("#pause_events delays #on_insert, #on_remove, and #on_update triggers until #resume_events is called. Then delayed events are flushed and future events are no longer delayed", function() {
+      specify("#pause_events delays #on_remote_insert, #on_remote_remove, and #on_remote_update triggers until #resume_events is called. Then delayed events are flushed and future events are no longer delayed", function() {
         var insert_callback = mock_function("insert callback");
         var update_callback = mock_function("update callback");
         var remove_callback = mock_function("remove callback");
 
-        User.table.on_insert(insert_callback);
-        User.table.on_update(update_callback);
-        User.table.on_remove(remove_callback);
+        User.table.on_remote_insert(insert_callback);
+        User.table.on_remote_update(update_callback);
+        User.table.on_remote_remove(remove_callback);
 
         User.table.pause_events();
 
         var record = User.local_create({id: "jake", full_name: "Jake Frautschi"});
-        record.finalize_local_create({id: "jake", full_name: "Jake Frautschi"});
+        record.remotely_created({id: "jake", full_name: "Jake Frautschi"});
         record.remote.update({ full_name: "Jacob Frautschi" });
         record.local_destroy();
-        record.finalize_local_destroy();
+        record.remotely_destroyed();
 
         expect(insert_callback).to_not(have_been_called);
         expect(update_callback).to_not(have_been_called);
@@ -241,7 +264,7 @@ Screw.Unit(function(c) { with(c) {
         remove_callback.clear();
 
         var record_2 = User.local_create({id: "nathan", full_name: "Nathan Sobo"});
-        record_2.finalize_local_create({id: "nathan", full_name: "Nathan Sobo"});
+        record_2.remotely_created({id: "nathan", full_name: "Nathan Sobo"});
 
         expect(insert_callback).to(have_been_called, once);
         expect(insert_callback).to(have_been_called, with_args(record_2));
@@ -249,7 +272,7 @@ Screw.Unit(function(c) { with(c) {
         record_2.remote.update({full_name: "Nate Sobo"});
         expect(update_callback).to(have_been_called, once);
 
-        record_2.finalize_local_destroy();
+        record_2.remotely_destroyed();
         expect(remove_callback).to(have_been_called, once);
       });
     });

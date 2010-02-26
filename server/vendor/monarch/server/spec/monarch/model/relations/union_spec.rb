@@ -4,6 +4,7 @@ module Model
   module Relations
     describe Union do
       attr_reader :operand_1, :operand_2, :union
+
       before do
         @operand_1 = BlogPost.where(BlogPost[:blog_id].eq("grain"))
         @operand_2 = BlogPost.where(BlogPost[:blog_id].eq("vegetable"))
@@ -52,6 +53,78 @@ module Model
                 and blogs.id = blog_posts.blog_id
                 and blog_posts.blog_id = \"vegetable\"
             }.gsub(/\s+/, " ").strip
+          end
+        end
+      end
+
+      describe "event handling" do
+        describe "propagation of operand events" do
+          attr_reader :on_insert_calls, :on_update_calls, :on_remove_calls, :on_insert_subscription, :on_update_subscription, :on_remove_subscription
+
+          before do
+            @on_insert_calls = []
+            @on_update_calls = []
+            @on_remove_calls = []
+
+            @on_insert_subscription = union.on_insert do |record|
+              on_insert_calls.push(record)
+            end
+            @on_update_subscription = union.on_update do |record, changeset|
+              on_update_calls.push([record, changeset])
+            end
+            @on_remove_subscription = union.on_remove do |record|
+              on_remove_calls.push(record)
+            end
+          end
+
+          after do
+            on_insert_subscription.destroy
+            on_update_subscription.destroy
+            on_remove_subscription.destroy
+          end
+
+          describe "when a tuple is inserted into an operand" do
+            it "triggers #on_insert events" do
+              grain_post = BlogPost.create(:blog_id => "grain", :title => "Hash rocket")
+              on_insert_calls.should == [grain_post]
+
+              vegetable_post = BlogPost.create(:blog_id => "vegetable", :title => "Hash rocket")
+              on_insert_calls.should == [grain_post, vegetable_post]
+
+              on_update_calls.should be_empty
+              on_remove_calls.should be_empty
+            end
+          end
+
+          describe "when a tuple is removed from an operand" do
+            it "triggers #on_remove events" do
+              post_1 = operand_1.first
+              post_1.destroy
+              on_remove_calls.should == [post_1]
+
+              post_2 = operand_2.first
+              post_2.destroy
+              on_remove_calls.should == [post_1, post_2]
+
+              on_insert_calls.should be_empty
+              on_update_calls.should be_empty
+            end
+          end
+
+          describe "when a tuple in one of the operands is updated" do
+            it "triggers #on_update events" do
+              post = operand_1.first
+              post.title = "Hash rocket"
+              post.save
+
+              on_insert_calls.should be_empty
+              on_update_calls.length.should == 1
+              tuple, changeset = on_update_calls.first
+              tuple.should == post
+              changeset.wire_representation.should == {"title" => "Hash rocket"}
+
+              on_remove_calls.should be_empty
+            end
           end
         end
       end

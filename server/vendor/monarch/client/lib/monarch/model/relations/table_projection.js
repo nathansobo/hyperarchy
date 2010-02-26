@@ -28,12 +28,12 @@ Monarch.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Rel
 
   subscribe_to_operands: function() {
     var self = this;
-    this.operands_subscription_bundle.add(this.operand.on_insert(function(composite_tuple) {
+    this.operands_subscription_bundle.add(this.operand.on_remote_insert(function(composite_tuple) {
       var tuple = composite_tuple.record(self.projected_table);
-      if (!self.contains(tuple)) self.tuple_inserted(tuple);
+      if (!self.contains(tuple)) self.tuple_inserted_remotely(tuple);
     }));
 
-    this.operands_subscription_bundle.add(this.operand.on_update(function(composite_tuple, changeset) {
+    this.operands_subscription_bundle.add(this.operand.on_remote_update(function(composite_tuple, changeset) {
       var updated_column_in_projected_table = Monarch.Util.detect(changeset, function(column_name, change) {
         return change.column.table == self.projected_table;
       });
@@ -41,14 +41,14 @@ Monarch.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Rel
 
       if (updated_column_in_projected_table && !self.duplicates_last_update_event(record, changeset)) {
         self.last_update_event = [record, changeset];
-        self.tuple_updated(record, changeset);
+        self.tuple_updated_remotely(record, changeset);
       }
     }));
 
-    this.operands_subscription_bundle.add(this.operand.on_remove(function(composite_tuple) {
+    this.operands_subscription_bundle.add(this.operand.on_remote_remove(function(composite_tuple) {
       var tuple = composite_tuple.record(self.projected_table);
       if (!self.operand.find(self.projected_table.column('id').eq(tuple.id()))) {
-        self.tuple_removed(tuple);
+        self.tuple_removed_remotely(tuple);
       }
     }));
   },

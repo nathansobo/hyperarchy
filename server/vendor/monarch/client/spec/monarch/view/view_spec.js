@@ -48,7 +48,7 @@ Screw.Unit(function(c) { with(c) {
           baz: true,
           quux: 3
         });
-        model.finalize_local_create({
+        model.remotely_created({
           foo: "foo",
           bar: "bar",
           baz: true,

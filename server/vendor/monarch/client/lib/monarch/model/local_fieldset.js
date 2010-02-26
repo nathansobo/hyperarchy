@@ -35,20 +35,74 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
     return wire_representation;
   },
 
-  populate_fields_with_errors: function(errors_by_field_name) {
-    Monarch.Util.each(errors_by_field_name, function(field_name, errors) {
-      this.field(field_name).validation_errors = errors;
-    }.bind(this));
+  clear_validation_errors: function() {
+    Monarch.Util.each(this.fields_by_column_name, function(name, field) {
+      field.clear_validation_errors();
+    });
   },
 
-  field_updated: function(field, new_value, old_value) {
-    // TODO  
+  assign_validation_errors: function(errors_by_field_name) {
+    Monarch.Util.each(this.fields_by_column_name, function(name, field) {
+      if (errors_by_field_name[name]) {
+        field.assign_validation_errors(errors_by_field_name[name]);
+      } else {
+        field.clear_validation_errors();
+      }
+
+    }.bind(this));
   },
 
   dirty: function() {
     return Monarch.Util.any(this.fields_by_column_name, function(name, field) {
       return field.dirty();
     });
+  },
+
+  field_marked_dirty: function() {
+    if (!this._dirty) {
+      this._dirty = true;
+      this.record.made_dirty();
+    }
+  },
+
+  field_marked_clean: function() {
+    if (!this.dirty()) {
+      this._dirty = false;
+      this.record.made_clean();
+    }
+  },
+
+  begin_batch_update: function() {
+    this.batch_in_progress = true;
+    this.batched_updates = {};
+  },
+
+  finish_batch_update: function() {
+    this.batch_in_progress = false;
+    var changeset = this.batched_updates;
+    this.batched_updates = null;
+
+    if (this.update_events_enabled && Monarch.Util.keys(changeset).length > 0) {
+      if (this.record.on_local_update_node) this.record.on_local_update_node.publish(changeset);
+      if (this.record.after_local_update) this.record.after_local_update(changeset);
+      this.record.table.tuple_updated_locally(this.record, changeset);
+    }
+  },
+
+  field_updated: function(field, new_value, old_value) {
+    var batch_was_in_progress = this.batch_in_progress;
+    if (!batch_was_in_progress) this.begin_batch_update();
+
+    var change_data = {};
+    change_data[field.column.name] = {
+      column: field.column,
+      old_value: old_value,
+      new_value: new_value
+    };
+
+    Monarch.Util.extend(this.batched_updates, change_data);
+
+    if (!batch_was_in_progress) this.finish_batch_update();
   },
 
   // private

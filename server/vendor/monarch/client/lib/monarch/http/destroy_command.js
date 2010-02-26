@@ -3,7 +3,7 @@
 Monarch.constructor("Monarch.Http.DestroyCommand", Monarch.Http.Command, {
   initialize: function(record) {
     this.record = record;
-    this.table_name = record.table().global_name;
+    this.table_name = record.table.global_name;
     this.id = record.id();
   },
 
@@ -12,7 +12,7 @@ Monarch.constructor("Monarch.Http.DestroyCommand", Monarch.Http.Command, {
   },
 
   complete: function() {
-    this.record.finalize_local_destroy();
+    this.record.remotely_destroyed();
   },
 
   handle_failure: function() {

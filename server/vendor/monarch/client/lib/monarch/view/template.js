@@ -71,13 +71,14 @@ Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
         this.update_subscription.destroy();
         this.update_subscription = null;
       }
+
       if (model) this.subscribe_to_model_updates();
       if (this.model_assigned) this.model_assigned(model);
     },
 
     subscribe_to_model_updates: function() {
       var self = this;
-      this.update_subscription = this._model.on_update(function(changeset) {
+      this.update_subscription = this._model.on_remote_update(function(changeset) {
         Monarch.Util.each(changeset, function(field_name, changes) {
           self.handle_model_field_update(field_name, changes);
         });
@@ -101,6 +102,28 @@ Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
       this.populate_select_fields();
     },
 
+    observe_form_fields: function() {
+      var assign_field_value = function(name, value) {
+        if (!(this.model() && name && this.model()[name])) return;
+        this.model()[name](value);
+      }.bind(this)
+
+      this.find("input:text").keyup(function() {
+        var elt = $(this);
+        assign_field_value(elt.attr('name'), elt.val());
+      });
+      
+      this.find("select").change(function() {
+        var elt = $(this);
+        assign_field_value(elt.attr('name'), elt.val());
+      });
+
+      this.find("input:checkbox").change(function() {
+        var elt = $(this);
+        assign_field_value(elt.attr('name'), elt.attr('checked'));
+      });
+    },
+
     save: function() {
       if (this.model()) return this.model().update(this.field_values());
     },
@@ -112,7 +135,7 @@ Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
         var elt = jQuery(this);
         var field_name = elt.attr('name');
         if (model[field_name]) {
-          elt.val(model[field_name].call(model));
+          elt.val(model[field_name].call(model) || "");
         } else {
           elt.val("");
         }
@@ -144,11 +167,12 @@ Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
         var elt = jQuery(this);
         var field_name = elt.attr('name');
         if (model[field_name]) {
-          elt.val(model[field_name].call(model));
+          elt.val(model[field_name].call(model) || "");
         }
       });
+    },
 
-    }
+    hitch: Monarch.ModuleSystem.Object.prototype.hitch
   }
 });
 

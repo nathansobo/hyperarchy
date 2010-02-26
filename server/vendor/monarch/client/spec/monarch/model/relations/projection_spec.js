@@ -37,13 +37,13 @@ Screw.Unit(function(c) { with(c) {
         insert_callback = mock_function("insert_callback");
         update_callback = mock_function("update_callback");
         remove_callback = mock_function("remove_callback");
-        projection.on_insert(insert_callback);
-        projection.on_update(update_callback);
-        projection.on_remove(remove_callback);
+        projection.on_remote_insert(insert_callback);
+        projection.on_remote_update(update_callback);
+        projection.on_remote_remove(remove_callback);
       });
 
       describe("when a record is inserted into the operand", function() {
-        it("triggers on_insert callbacks with the inserted record's corresponding ProjectionRecord", function() {
+        it("triggers on_remote_insert callbacks with the inserted record's corresponding ProjectionRecord", function() {
           var operand_record = operand.create({name: "Radio Flyer"});
 
           expect(insert_callback).to(have_been_called, once);
@@ -54,7 +54,7 @@ Screw.Unit(function(c) { with(c) {
 
       describe("when a record is updated in the operand", function() {
         context("if any of the updated columns are in #projected_columns", function() {
-          it("triggers on_update callbacks with the record's corresponding ProjectionRecord and the changed columns", function() {
+          it("triggers on_remote_update callbacks with the record's corresponding ProjectionRecord and the changed columns", function() {
             var operand_record = operand.find('motorcycle');
             var old_name = operand_record.name();
             var projection_record = projection.find(projection.column('blog_name').eq(operand_record.name()));
@@ -84,7 +84,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("when a record is removed from the operand", function() {
-        it("triggers on_remove callbacks with the removed record's corresponding ProjectionRecord", function() {
+        it("triggers on_remote_remove callbacks with the removed record's corresponding ProjectionRecord", function() {
           var operand_record = operand.find('motorcycle');
           var projection_record = projection.find(projection.column('blog_name').eq(operand_record.name()));
           operand.remove(operand_record);

@@ -50,6 +50,10 @@ Monarch.constructor("Monarch.Model.Signal", {
 
   on_remote_update: function(callback) {
     return this.on_remote_update_node.subscribe(callback);
+  },
+
+  combine: function(other_signal, transformer) {
+    return new Monarch.Model.CombinedSignal(this, other_signal, transformer);
   }
 });
 

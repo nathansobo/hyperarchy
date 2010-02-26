@@ -5,16 +5,51 @@ module Model
         @instance ||= new
       end
 
-      delegate :new_table, :tables_by_name, :load_fixtures, :clear_tables, :create_schema,
+      delegate :new_table, :tables_by_name, :load_fixtures, :clear_tables, :create_schema, :num_subscriptions,
                :tables, :initialize_local_identity_map, :clear_local_identity_map, :with_local_identity_map, :transaction,
                :to => :instance
     end
 
-    delegate :transaction, :to => :Origin
-
     attr_reader :tables_by_name
     def initialize
       @tables_by_name = {}
+    end
+
+    def transaction
+      cancelled = false
+      pause_events
+      Origin.transaction do
+        begin
+          yield
+        rescue Exception => e
+          cancel_events
+          cancelled = true
+          raise e
+        end
+      end
+
+      unless cancelled
+        start = Time.now
+#        puts "RESUMING EVENTS"
+        resume_events
+#        puts "DONE RESUMING EVENTS #{(Time.now - start) * 1000}"
+      end
+    end
+
+    def pause_events
+      tables.each {|table| table.pause_events}
+    end
+
+    def resume_events
+      tables.each {|table| table.resume_events}
+    end
+
+    def cancel_events
+      tables.each {|table| table.cancel_events}
+    end
+
+    def num_subscriptions
+      tables.map {|table| table.num_subscriptions}.sum
     end
 
     def new_table(name, tuple_class)

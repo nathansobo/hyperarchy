@@ -13,6 +13,7 @@
 //= require "model/local_fieldset"
 //= require "model/remote_fieldset"
 //= require "model/signal"
+//= require "model/combined_signal"
 //= require "model/column"
 //= require "model/projected_column"
 //= require "model/synthetic_column"

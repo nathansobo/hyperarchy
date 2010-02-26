@@ -64,8 +64,8 @@ module Model
         @relation_definitions ||= ActiveSupport::OrderedHash.new
       end
 
-      delegate :create, :where, :project, :join, :join_to, :join_through, :find, :concrete_columns_by_name, :[],
-               :create_table, :drop_table, :clear_table, :all, :find_or_create,
+      delegate :create, :unsafe_create, :where, :project, :join, :join_to, :join_through, :aggregate, :find,
+               :concrete_columns_by_name, :[], :create_table, :drop_table, :clear_table, :all, :find_or_create,
                :to => :table
 
       protected
@@ -121,15 +121,20 @@ module Model
 
     def save
       return nil unless valid?
-      return {} unless dirty?
+      return Changeset.new(snapshot, snapshot) unless dirty?
+
       before_update(dirty_concrete_field_values_by_column_name)
-      changeset = dirty_concrete_field_values_by_column_name
-      wire_representation = dirty_field_values_wire_representation
-      Origin.update(table, id, changeset)
+      field_values_for_database = dirty_concrete_field_values_by_column_name
+
+      old_state = snapshot
+      Origin.update(table, id, field_values_for_database)
       mark_clean
+      new_state = snapshot
+      changeset = Changeset.new(new_state, old_state)
+      table.record_updated(self, changeset)
       after_update(changeset)
 
-      wire_representation
+      changeset
     end
 
     def dirty?
@@ -162,10 +167,6 @@ module Model
       fields.select { |field| field.dirty? }
     end
 
-    def ==(other)
-      other.class == self.class && id == other.id
-    end
-
     def fields
       super + synthetic_fields
     end
@@ -192,6 +193,7 @@ module Model
 
     def validate_if_needed
       return if validated?
+      before_validate
       validate
       mark_validated
     end
@@ -212,10 +214,50 @@ module Model
       field(field_name).validation_errors.push(error_string)
     end
 
+    def snapshot
+      snapshot = self.class.new
+      synthetic_fields_by_column.each do |column, field|
+        snapshot.instance_eval do
+          synthetic_fields_by_column[column] = field.snapshot
+        end
+      end
+      concrete_fields_by_column.each do |column, field|
+        snapshot.instance_eval do
+          concrete_fields_by_column[column] = field.snapshot
+        end
+      end
+      snapshot
+    end
+
+    def [](index_or_table)
+      if index_or_table.instance_of?(Relations::Table)
+        return self if index_or_table == table
+      else
+        super
+      end
+    end
+
+    def hash
+      object_id.hash
+    end
+
+    def constituent_records
+      [self]
+    end
+
+    def ==(other)
+      return false unless self.class == other.class
+      super
+    end
+
     protected
     attr_reader :synthetic_fields_by_column
 
     def after_destroy
+      # override when needed
+    end
+
+    def before_validate
       # override when needed
     end
 

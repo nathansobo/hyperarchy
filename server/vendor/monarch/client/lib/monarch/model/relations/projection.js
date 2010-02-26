@@ -32,23 +32,23 @@ Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relation
   surface_tables: function() {
     throw new Error("Projections do not have surface tables");
   },
-
+  
   // private
 
   subscribe_to_operands: function() {
     var self = this;
-    this.operands_subscription_bundle.add(this.operand.on_insert(function(operand_record) {
+    this.operands_subscription_bundle.add(this.operand.on_remote_insert(function(operand_record) {
       var record = new self.tuple_constructor(operand_record);
       self.tuples_by_operand_record_id[operand_record.id()] = record;
-      self.tuple_inserted(record);
+      self.tuple_inserted_remotely(record);
     }));
-    this.operands_subscription_bundle.add(this.operand.on_update(function(operand_record, operand_changes) {
+    this.operands_subscription_bundle.add(this.operand.on_remote_update(function(operand_record, operand_changes) {
       var changes = self.translate_update_changes(operand_changes);
       if (Monarch.Util.is_empty(changes)) return;
-      self.tuple_updated(self.tuples_by_operand_record_id[operand_record.id()], changes);
+      self.tuple_updated_remotely(self.tuples_by_operand_record_id[operand_record.id()], changes);
     }));
-    this.operands_subscription_bundle.add(this.operand.on_remove(function(operand_record) {
-      self.tuple_removed(self.tuples_by_operand_record_id[operand_record.id()]);
+    this.operands_subscription_bundle.add(this.operand.on_remote_remove(function(operand_record) {
+      self.tuple_removed_remotely(self.tuples_by_operand_record_id[operand_record.id()]);
     }));
   },
 

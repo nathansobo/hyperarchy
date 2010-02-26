@@ -18,6 +18,24 @@ module Model
       def build_sql_query(query=Sql::Select.new)
         Sql::Union.new(operands.map {|o| o.build_sql_query(query.clone)})
       end
+
+      protected
+
+      def subscribe_to_operands
+        operands.each do |operand|
+          operand_subscriptions.add(operand.on_insert do |tuple|
+            on_insert_node.publish(tuple)
+          end)
+
+          operand_subscriptions.add(operand.on_update do |tuple, changeset|
+            on_update_node.publish(tuple, changeset)
+          end)
+
+          operand_subscriptions.add(operand.on_remove do |tuple|
+            on_remove_node.publish(tuple)
+          end)
+        end
+      end
     end
   end
 end

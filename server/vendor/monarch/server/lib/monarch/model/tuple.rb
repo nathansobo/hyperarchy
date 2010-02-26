@@ -26,8 +26,8 @@ module Model
 
     def initialize(field_values)
       initialize_fields
-      field_values.each do |projected_column_name, value|
-        field(projected_column_name).value = value
+      field_values.each do |column_name, value|
+        field(column_name).value = value
       end
     end
 
@@ -85,6 +85,23 @@ module Model
 
     def valid?
       true
+    end
+
+    def hash
+      @hash ||= field_values_by_column_name.hash
+    end
+
+    def ==(other)
+      return true if equal?(other)
+      hash == other.hash
+    end
+
+    def evaluate(term)
+      if term.is_a?(Column)
+        field(term).value
+      else
+        term
+      end
     end
 
     protected

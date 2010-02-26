@@ -5,6 +5,7 @@ Monarch.constructor("Monarch.Http.RepositoryUpdateFuture", {
     this.before_events_node = new Monarch.SubscriptionNode();
     this.after_events_node = new Monarch.SubscriptionNode();
     this.on_failure_node = new Monarch.SubscriptionNode();
+    this.on_complete_node = new Monarch.SubscriptionNode();
   },
 
   trigger_before_events: function(data) {
@@ -17,12 +18,20 @@ Monarch.constructor("Monarch.Http.RepositoryUpdateFuture", {
     this.triggered_after_events = true;
     this.after_events_data = data;
     this.after_events_node.publish(data);
+    this.trigger_on_complete(data);
   },
 
   trigger_on_failure: function(data) {
     this.triggered_on_failure = true;
     this.failure_data = data;
     this.on_failure_node.publish(data);
+    this.trigger_on_complete(data);
+  },
+
+  trigger_on_complete: function(data) {
+    this.triggered_on_complete = true;
+    this.complete_data = data;
+    this.on_complete_node.publish(data);
   },
 
   before_events: function(callback) {
@@ -48,6 +57,14 @@ Monarch.constructor("Monarch.Http.RepositoryUpdateFuture", {
       callback(this.failure_data);
     } else {
       this.on_failure_node.subscribe(callback);
+    }
+  },
+
+  on_complete: function(callback) {
+    if (this.triggered_on_complete) {
+      callback(this.complete_data);
+    } else {
+      this.on_complete_node.subscribe(callback);
     }
   }
 });

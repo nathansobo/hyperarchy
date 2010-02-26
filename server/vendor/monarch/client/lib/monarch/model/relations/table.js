@@ -24,46 +24,38 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
     return this.synthetic_columns_by_name[name] = new Monarch.Model.SyntheticColumn(this, name, definition);
   },
 
-  column: function(name) {
-    return this.columns_by_name[name];
-  },
-
-  all_tuples: function() {
-    return this._tuples.concat();
-  },
-
-  insert: function(record) {
-    this._tuples.push(record);
-    if (record.id()) this.tuples_by_id[record.id()] = record;
-    record.initialize_relations();
-  },
-
-  remove: function(record) {
-    delete this.tuples_by_id[record.id()];
-    this.tuple_removed(record);
-  },
-
   create: function(field_values) {
     var record = this.local_create(field_values);
     return Server.save(record);
   },
 
   local_create: function(field_values) {
-    var record = new this.record_constructor();
-    record.local_update(field_values);
-    record.remotely_created = false;
+    var record = new this.record_constructor(field_values, this);
+    record.is_remotely_created = false;
     this.insert(record);
+    if (record.after_local_create) record.after_local_create();
     return record;
   },
 
-  surface_tables: function() {
-    return [this];
+  create_from_remote: function(field_values) {
+    var record = new this.record_constructor(null, this);
+    this.insert(record);
+    record.remotely_created(field_values);
+    return record;
   },
 
-  // remotely
-  tuple_inserted: function(record) {
+  remove: function(record) {
+    delete this.tuples_by_id[record.id()];
+    this.tuple_removed_remotely(record);
+  },
+
+  tuple_inserted_remotely: function(record) {
     this.tuples_by_id[record.id()] = record;
-    this.on_insert_node.publish(record);
+    this.on_remote_insert_node.publish(record);
+  },
+
+  all_tuples: function() {
+    return this._tuples.concat();
   },
 
   find: function(predicate_or_id) {
@@ -77,6 +69,14 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
     }
   },
 
+  column: function(name) {
+    return this.columns_by_name[name];
+  },
+
+  surface_tables: function() {
+    return [this];
+  },
+
   wire_representation: function() {
     return {
       type: 'table',
@@ -85,16 +85,16 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
   },
 
   pause_events: function() {
-    this.on_insert_node.pause_events();
-    this.on_remove_node.pause_events();
-    this.on_update_node.pause_events();
+    this.on_remote_insert_node.pause_events();
+    this.on_remote_remove_node.pause_events();
+    this.on_remote_update_node.pause_events();
     this.on_pause_events_node.publish();
   },
 
   resume_events: function() {
-    this.on_insert_node.resume_events();
-    this.on_remove_node.resume_events();
-    this.on_update_node.resume_events();
+    this.on_remote_insert_node.resume_events();
+    this.on_remote_remove_node.resume_events();
+    this.on_remote_update_node.resume_events();
     this.on_resume_events_node.publish();
   },
 
@@ -105,46 +105,44 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
   on_resume_events: function(callback) {
     return this.on_resume_events_node.subscribe(callback);
   },
-
-  update: function(dataset) {
+  
+  update_contents: function(dataset) {
     var self = this;
     Monarch.Util.each(dataset, function(id, field_values) {
       var extant_record = self.find(id);
       if (extant_record) {
-        extant_record.remote.update(field_values);
+        extant_record.remotely_updated(field_values);
       } else {
-        var record = self.local_create(field_values)
-        record.finalize_local_create(field_values);
+        self.create_from_remote(field_values)
       }
     });
   },
   
-  delta: function(dataset) {
+  delta_contents: function(dataset) {
     this.each(function(record) {
-      if (!dataset[record.id()]) record.local_destroy();
+      if (!dataset[record.id()]) {
+        record.remotely_destroyed();
+      }
     });
-    this.update(dataset);
+    this.update_contents(dataset);
   },
-
-  fixtures: function(fixture_definitions) {
-    this.fixture_definitions = fixture_definitions;
-  },
-
-  load_fixtures: function() {
-    if (!this.fixture_definitions) return;
+  
+  load_fixtures: function(fixture_definitions) {
     var self = this;
-    Monarch.Util.each(this.fixture_definitions, function(id, properties) {
+    Monarch.Util.each(fixture_definitions, function(id, properties) {
       var field_values = Monarch.Util.extend({id: id}, properties)
-      var record = self.local_create(field_values);
-      record.remote.update(field_values);
-      self.tuple_inserted(record);
-      record.on_create_node.publish(record);
+      self.create_from_remote(field_values);
     });
   },
 
   clear: function() {
     this._tuples = [];
     this.tuples_by_id = {}
+    this.on_remote_insert_node = new Monarch.SubscriptionNode();
+    this.on_remote_remove_node = new Monarch.SubscriptionNode();
+    this.on_remote_update_node = new Monarch.SubscriptionNode();
+    this.on_pause_events_node = new Monarch.SubscriptionNode();
+    this.on_resume_events_node = new Monarch.SubscriptionNode();
   },
 
   clone_schema: function() {
@@ -159,6 +157,14 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
 
   primary_table: function() {
     return this;
+  },
+
+  // private
+
+  insert: function(record) {
+    this._tuples.push(record);
+    if (record.id()) this.tuples_by_id[record.id()] = record;
+    record.initialize_relations();
   }
 });
 

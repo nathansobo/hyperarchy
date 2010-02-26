@@ -9,8 +9,8 @@ Screw.Unit(function(c) { with(c) {
       init(function() {
         relation = Blog.table;
         record = relation.first();
-        insert = function(record) {
-          Blog.table.insert(record);
+        insert = function(field_values) {
+          Blog.table.local_create(field_values);
         }
         column_1 = Blog.user_id;
         column_2 = Blog.name_;
@@ -21,8 +21,8 @@ Screw.Unit(function(c) { with(c) {
       init(function() {
         relation = Blog.where(Blog.user_id.eq("jan"));
         record = relation.first();
-        insert = function(record) {
-          Blog.table.insert(record);
+        insert = function(field_values) {
+          Blog.table.local_create(field_values);
         }
         column_1 = Blog.user_id;
         column_2 = Blog.name_;
@@ -67,9 +67,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#contains(record)", function() {
       it("returns true if the relation has the record and false otherwise", function() {
-        record = new Blog({user_id: "jan"});
-        expect(relation.contains(record)).to(be_false);
-        insert(record);
+        insert({user_id: "jan"});
         expect(relation.contains(record)).to(be_true);
       });
     });

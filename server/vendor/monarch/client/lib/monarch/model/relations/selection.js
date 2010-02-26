@@ -51,24 +51,33 @@ Monarch.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations
 
   subscribe_to_operands: function() {
     var self = this;
-    this.operands_subscription_bundle.add(this.operand.on_insert(function(record) {
-      if (self.predicate.evaluate(record)) self.tuple_inserted(record);
+
+    this.operands_subscription_bundle.add(this.operand.on_remote_insert(function(record) {
+      if (self.predicate.evaluate(record)) self.tuple_inserted_remotely(record);
     }));
 
-    this.operands_subscription_bundle.add(this.operand.on_remove(function(record) {
-      if (self.predicate.evaluate(record)) self.tuple_removed(record);
+    this.operands_subscription_bundle.add(this.operand.on_remote_remove(function(record) {
+      if (self.predicate.evaluate(record)) self.tuple_removed_remotely(record);
     }));
 
-    this.operands_subscription_bundle.add(this.operand.on_update(function(record, changed_fields) {
+    this.operands_subscription_bundle.add(this.operand.on_remote_update(function(record, changed_fields) {
       if (self.contains(record)) {
         if (self.predicate.evaluate(record)) {
-          self.tuple_updated(record, changed_fields);
+          self.tuple_updated_remotely(record, changed_fields);
         } else {
-          self.tuple_removed(record);
+          self.tuple_removed_remotely(record);
         }
       } else {
-        if (self.predicate.evaluate(record)) self.tuple_inserted(record);
+        if (self.predicate.evaluate(record)) self.tuple_inserted_remotely(record);
       }
+    }));
+
+    this.operands_subscription_bundle.add(this.operand.on_dirty(function(record) {
+      if (self.contains(record)) self.record_made_dirty(record);
+    }));
+
+    this.operands_subscription_bundle.add(this.operand.on_clean(function(record) {
+      if (self.contains(record)) self.record_made_clean(record);
     }));
   }
 });

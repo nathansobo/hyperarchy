@@ -1,7 +1,7 @@
 module Model
   class Field
-    attr_reader :record, :column, :validation_errors
-    delegate :name, :to => :column
+    attr_reader :record, :column, :value, :remote_value, :validation_errors
+    delegate :name, :table, :to => :column
 
     def initialize(record, column)
       @record, @column = record, column
@@ -15,6 +15,7 @@ module Model
     def mark_clean
       @dirty = false
       @validation_errors = []
+      @remote_value = value
     end
 
     def dirty?
@@ -31,6 +32,20 @@ module Model
 
     def valid?
       validation_errors.empty?
+    end
+
+    def snapshot
+      snapshot = Field.new(record, column)
+      snapshot_value = remote_value
+      snapshot.instance_eval do
+        @value = snapshot_value
+        @snapshot = true
+      end
+      snapshot
+    end
+
+    def snapshot?
+      @snapshot
     end
 
     protected

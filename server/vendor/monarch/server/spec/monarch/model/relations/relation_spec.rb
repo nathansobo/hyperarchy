@@ -192,43 +192,35 @@ module Model
             end
           end
 
-          context "when passed ProjectedColumns and Columns" do
-            it "returns a Projection with ProjectedColumns corresponding to the given concrete_columns" do
-              blog_title = Blog[:title].as(:blog_title)
-              projection = join.project(blog_title, BlogPost[:title])
-              projection.concrete_columns[0].should == blog_title
-              blog_post_title = projection.concrete_columns[1]
-              blog_post_title.should be_an_instance_of(ProjectedColumn)
-              blog_post_title.column.should == BlogPost[:title]
+          context "when passed columns" do
+            it "returns a Projection with the given columns as its #concrete_columns" do
+              blog_title_alias = Blog[:title].as(:blog_title)
+              projection = join.project(blog_title_alias, BlogPost[:title])
+              projection.concrete_columns.should == [blog_title_alias, BlogPost[:title]]
             end
           end
 
-          context "when passed a Table and a ConcreteColumn" do
-            it "returns a Projection with ProjectedColumns corresponding to all the concrete_columns in the given table and also the other given concrete_columns" do
+          context "when passed a table and a column" do
+            it "returns a Projection with all the columns of the table and the other column" do
               projection = join.project(Blog.table, BlogPost[:body])
               concrete_columns = projection.concrete_columns
 
-              concrete_columns.size.should == Blog.table.concrete_columns.size + 1
-              Blog.table.concrete_columns.each_with_index do |blog_column, index|
-                concrete_columns[index].should be_an_instance_of(ProjectedColumn)
-                concrete_columns[index].column.should == blog_column
+              Blog.table.concrete_columns.each do |column|
+                concrete_columns.should include column
               end
-              concrete_columns.last.should be_an_instance_of(ProjectedColumn)
-              concrete_columns.last.column.should == BlogPost[:body]
+              concrete_columns.should include(BlogPost[:body])
             end
           end
 
-          context "when passed a subclass of Record and a ProjectedColumn" do
-            it "returns a Projection with ProjectedColumns corresponding to all the concrete_columns in the given record class's table and also the other given concrete_columns" do
-              blog_post_title = BlogPost[:title].as(:blog_post_title)
-              projection = join.project(Blog, blog_post_title)
+          context "when passed a subclass of Record and a AliasedColumn" do
+            it "returns a Projection with all the columns of the record class's table and the other column" do
+              projection = join.project(Blog, BlogPost[:body])
               concrete_columns = projection.concrete_columns
-              concrete_columns.size.should == Blog.table.concrete_columns.size + 1
-              Blog.table.concrete_columns.each_with_index do |blog_column, index|
-                concrete_columns[index].should be_an_instance_of(ProjectedColumn)
-                concrete_columns[index].column.should == blog_column
+
+              Blog.table.concrete_columns.each do |column|
+                concrete_columns.should include column
               end
-              concrete_columns.last.should == blog_post_title
+              concrete_columns.should include(BlogPost[:body])
             end
           end
         end

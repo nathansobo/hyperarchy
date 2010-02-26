@@ -15,7 +15,6 @@ Monarch.constructor("FakeServer.FakeCommandBatch", {
 
   perform: function() {
     this.future = new Monarch.Http.RepositoryUpdateFuture();
-    this.requested_at = new Date();
 
     if (this.commands.length == 0) {
       this.future.trigger_before_events();
@@ -42,7 +41,7 @@ Monarch.constructor("FakeServer.FakeCommandBatch", {
     Repository.pause_events();
 
     Monarch.Util.each(this.commands, function(command, index) {
-      command.complete(server_response.primary[index], this.requested_at);
+      command.complete(server_response.primary[index]);
     });
     Repository.mutate(server_response.secondary)
 

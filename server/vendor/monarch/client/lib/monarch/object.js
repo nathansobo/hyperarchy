@@ -5,7 +5,12 @@ Monarch.constructor("Monarch.ModuleSystem.Object", {
     delegate_constructor_methods: function() {
       var args = Monarch.Util.to_array(arguments);
       var delegate_name = args.pop();
-      this.setup_delegate_methods(this, args, delegate_name);
+
+      var new_constructor_methods = {};
+      this.setup_delegate_methods(new_constructor_methods, args, delegate_name);
+      if (!this.prototype.constructor_properties) this.prototype.constructor_properties = {};
+      Monarch.Util.extend(this.prototype.constructor_properties, new_constructor_methods);
+      Monarch.Util.extend(this, new_constructor_methods);
     },
 
     delegate: function(source) {
@@ -22,6 +27,14 @@ Monarch.constructor("Monarch.ModuleSystem.Object", {
         };
       });
     }
+  },
+
+  hitch: function() {
+    var args = _.toArray(arguments);
+    var method_name = args.shift();
+    var bind_args = [this].concat(args);
+    var method = this[method_name]; 
+    return method.bind.apply(method, bind_args);
   }
 });
 

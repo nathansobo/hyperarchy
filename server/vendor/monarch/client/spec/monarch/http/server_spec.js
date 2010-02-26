@@ -1,3 +1,4 @@
+
 //= require "../../monarch_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
@@ -6,6 +7,9 @@ Screw.Unit(function(c) { with(c) {
 
     before(function() {
       server = new Monarch.Http.Server();
+      mock(server, 'new_comet_client', function() {
+        return new FakeServer.FakeCometClient();
+      });
     });
 
     describe("#fetch, #save, and #subscribe", function() {
@@ -105,15 +109,14 @@ Screw.Unit(function(c) { with(c) {
         use_example_domain_model();
 
         it("if there is no comet client, initializes one and connects it", function() {
-          mock(Monarch.Http.CometClient.prototype, 'connect');
           expect(server.comet_client).to(be_null);
-          server.subscribe([Blog, BlogPost]);
+          server.subscribe([Blog.table, BlogPost.table]);
           expect(server.comet_client).to_not(be_null);
-          expect(server.comet_client.connect).to(have_been_called);
+          expect(server.comet_client.connected).to(be_true);
         });
 
-        it("performs a POST to {Repository.origin_url}/subscribe with the json representation of the given relations", function() {
-          server.subscribe([Blog, BlogPost]);
+        it("performs a POST to {Repository.origin_url}/subscribe with the json representation of the given relations and invokes the returned future with RemoteSubscriptions when the post completes successfully", function() {
+          var subscribe_future = server.subscribe([Blog.table, BlogPost.table]);
 
           expect(server.posts.length).to(equal, 1);
 
@@ -122,15 +125,51 @@ Screw.Unit(function(c) { with(c) {
           expect(server.last_post.data).to(equal, {
             relations: [Blog.table.wire_representation(), BlogPost.table.wire_representation()]            
           });
+
+          var success_callback = mock_function("success_callback");
+          subscribe_future.on_success(success_callback);
+          
+          server.last_post.simulate_success(["mock_subscription_id_1", "mock_subscription_id_2"]);
+
+          var remote_subscriptions = success_callback.most_recent_args[0];
+          expect(remote_subscriptions.length).to(equal, 2);
+          expect(remote_subscriptions[0].relation).to(equal, Blog.table);
+          expect(remote_subscriptions[0].id).to(equal, "mock_subscription_id_1");
+          expect(remote_subscriptions[1].relation).to(equal, BlogPost.table);
+          expect(remote_subscriptions[1].id).to(equal, "mock_subscription_id_2");
+        });
+
+        it("causes all mutation commands received to be sent to Repository.mutate", function() {
+          mock(Repository, "mutate");
+
+          server.subscribe([Blog.table, BlogPost.table]);
+          server.comet_client.simulate_receive(['create', 'blogs', { id: 'animals' }]);
+
+          expect(Repository.mutate).to(have_been_called, with_args([['create', 'blogs', { id: 'animals' }]]));
         });
       });
 
+      describe("#unsubscribe(remote_subscriptions)", function() {
+        use_example_domain_model();
+        
+        it("performs a POST to {Repository.origin_url/unsubscribe with the ids of the given RemoteSubscriptions", function() {
+          var remote_subscription_1 = new Monarch.Http.RemoteSubscription("fake_subscription_1", Blog.table);
+          var remote_subscription_2 = new Monarch.Http.RemoteSubscription("fake_subscription_2", BlogPost.table);
+
+          server.unsubscribe([remote_subscription_1, remote_subscription_2]);
+          expect(server.posts.length).to(equal, 1);
+          expect(server.last_post.type).to(equal, "post");
+          expect(server.last_post.url).to(equal, Repository.origin_url + "/unsubscribe");
+          expect(server.last_post.data).to(equal, {
+            subscription_ids: [remote_subscription_1.id, remote_subscription_2.id]
+          });
+        });
+      });
 
       describe("#save(records_or_relations...)", function() {
         use_local_fixtures();
 
         context("when given a locally-created record", function() {
-
           var record, table_insert_callback, table_update_callback, table_remove_callback,
               record_create_callback, record_update_callback;
 
@@ -138,15 +177,15 @@ Screw.Unit(function(c) { with(c) {
             record = User.local_create({full_name: "Jesus Chang"});
 
             table_insert_callback = mock_function("table insert callback");
-            User.on_insert(table_insert_callback);
+            User.on_remote_insert(table_insert_callback);
             table_update_callback = mock_function("table update callback");
-            User.on_update(table_update_callback);
+            User.on_remote_update(table_update_callback);
             record_create_callback = mock_function("record insert callback");
-            record.on_create(record_create_callback);
+            record.on_remote_create(record_create_callback);
             record_update_callback = mock_function("record update callback");
-            record.on_update(record_update_callback);
-            record.after_update = mock_function("optional after update hook");
-            record.after_create = mock_function("optional after create hook");
+            record.on_remote_update(record_update_callback);
+            record.after_remote_update = mock_function("optional after update hook");
+            record.after_remote_create = mock_function("optional after create hook");
           });
 
           it("sends a create command to {Repository.origin_url}/mutate", function() {
@@ -167,7 +206,7 @@ Screw.Unit(function(c) { with(c) {
               var before_events_callback = mock_function("before events", function() {
                 expect(table_insert_callback).to_not(have_been_called);
                 expect(record_create_callback).to_not(have_been_called);
-                expect(record.after_create).to_not(have_been_called);
+                expect(record.after_remote_create).to_not(have_been_called);
                 expect(record.id()).to(equal, "jesus");
                 expect(record.full_name()).to(equal, "Jesus H. Chang");
               });
@@ -175,11 +214,11 @@ Screw.Unit(function(c) { with(c) {
               var after_events_callback = mock_function("after events", function() {
                 expect(table_insert_callback).to(have_been_called, with_args(record));
                 expect(record_create_callback).to(have_been_called, with_args(record));
-                expect(record.after_create).to(have_been_called, once);
+                expect(record.after_remote_create).to(have_been_called, once);
 
                 expect(table_update_callback).to_not(have_been_called);
                 expect(record_update_callback).to_not(have_been_called);
-                expect(record.after_update).to_not(have_been_called);
+                expect(record.after_remote_update).to_not(have_been_called);
               });
               save_future.before_events(before_events_callback);
               save_future.after_events(after_events_callback);
@@ -219,14 +258,14 @@ Screw.Unit(function(c) { with(c) {
 
               expect(table_insert_callback).to_not(have_been_called);
               expect(record_create_callback).to_not(have_been_called);
-              expect(record.after_create).to_not(have_been_called);
+              expect(record.after_remote_create).to_not(have_been_called);
             });
           });
         });
 
         context("when given a locally-updated record", function() {
           var record, name_before_update, fun_profit_name_before_update, user_id_before_update,
-              table_update_callback, record_update_callback;
+              table_remote_update_callback, record_remote_update_callback;
 
           before(function() {
             record = Blog.find('recipes');
@@ -234,11 +273,11 @@ Screw.Unit(function(c) { with(c) {
             fun_profit_name_before_update = record.fun_profit_name();
             user_id_before_update = record.user_id();
 
-            table_update_callback = mock_function("table update callback");
-            record_update_callback = mock_function("record update callback");
-            Blog.on_update(table_update_callback);
-            record.on_update(record_update_callback);
-            record.after_update = mock_function("optional record on update method");
+            table_remote_update_callback = mock_function("table update callback");
+            record_remote_update_callback = mock_function("record update callback");
+            Blog.on_remote_update(table_remote_update_callback);
+            record.on_remote_update(record_remote_update_callback);
+            record.after_remote_update = mock_function("optional record on update method");
           });
 
           it("sends an update command to {Repository.origin_url}/mutate", function() {
@@ -253,11 +292,22 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when the request is successful", function() {
-            it("updates the remote field values and fires the before_events and after_events callbacks", function() {
+            it("marks the record valid, updates the remote and local field values, and fires the remote event callbacks sandwiched between before_events and after_events callbacks", function() {
+              record.assign_validation_errors({
+                name: "Bad name!"
+              });
+              expect(record.valid()).to(be_false);
+
               record.local_update({
                 name: "Programming",
                 user_id: 'wil'
               });
+
+              var table_local_update_callback = mock_function('table_local_update_callback');
+              var record_local_update_callback = mock_function('record_local_update_callback');
+              Blog.on_local_update(table_local_update_callback);
+              record.on_local_update(record_local_update_callback);
+              record.after_local_update = mock_function('optional after_local_update hook');
 
               var save_future = server.save(record);
 
@@ -266,9 +316,9 @@ Screw.Unit(function(c) { with(c) {
               expect(record.remote.user_id()).to(equal, user_id_before_update);
 
               var before_events_callback = mock_function('before events callback', function() {
-                expect(table_update_callback).to_not(have_been_called);
-                expect(record_update_callback).to_not(have_been_called);
-                expect(record.after_update).to_not(have_been_called);
+                expect(table_remote_update_callback).to_not(have_been_called);
+                expect(record_remote_update_callback).to_not(have_been_called);
+                expect(record.after_remote_update).to_not(have_been_called);
               });
               var after_events_callback = mock_function('after events callback', function() {
                 var expected_changset = {
@@ -288,15 +338,22 @@ Screw.Unit(function(c) { with(c) {
                     new_value: 'Programming Prime for Fun and Profit'
                   }
                 };
+                
+                expect(record.valid()).to(be_true);
 
-                expect(table_update_callback).to(have_been_called, with_args(record, expected_changset));
-                expect(record_update_callback).to(have_been_called, with_args(expected_changset));
-                expect(record.after_update).to(have_been_called, with_args(expected_changset));
+                expect(table_remote_update_callback).to(have_been_called, with_args(record, expected_changset));
+                expect(record_remote_update_callback).to(have_been_called, with_args(expected_changset));
+                expect(record.after_remote_update).to(have_been_called, with_args(expected_changset));
+
+                // remote update may change local field values but they should not fire local update callbacks because
+                // the change was initiated remotely
+                expect(table_local_update_callback).to_not(have_been_called);
+                expect(record_local_update_callback).to_not(have_been_called);
+                expect(record.after_local_update).to_not(have_been_called);
               });
 
               save_future.before_events(before_events_callback);
               save_future.after_events(after_events_callback);
-
               server.last_post.simulate_success({
                 primary: [{
                   name: "Programming Prime", // server can change field values too
@@ -350,9 +407,9 @@ Screw.Unit(function(c) { with(c) {
               expect(record.local.field('name').validation_errors).to(equal, name_errors);
               expect(record.local.field('user_id').validation_errors).to(equal, user_id_errors);
 
-              expect(table_update_callback).to_not(have_been_called);
-              expect(record_update_callback).to_not(have_been_called);
-              expect(record.on_update).to_not(have_been_called);
+              expect(table_remote_update_callback).to_not(have_been_called);
+              expect(record_remote_update_callback).to_not(have_been_called);
+              expect(record.on_remote_update).to_not(have_been_called);
             });
           });
         });
@@ -363,10 +420,10 @@ Screw.Unit(function(c) { with(c) {
           before(function() {
             record = Blog.find('recipes');
             table_remove_callback = mock_function("table remove callback");
-            Blog.on_remove(table_remove_callback);
+            Blog.on_remote_remove(table_remove_callback);
             record_destroy_callback = mock_function("record remove callback");
-            record.on_destroy(record_destroy_callback)
-            record.after_destroy = mock_function("optional after_destroy method");
+            record.on_remote_destroy(record_destroy_callback)
+            record.after_remote_destroy = mock_function("optional after_remote_destroy method");
           });
 
           it("sends a destroy command to {Repository.origin_url}/mutate", function() {
@@ -381,19 +438,19 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when the request is successful", function() {
-            it("finalizes the destruction of the record, firing on_remove callbacks in between the before_events and after_events callbacks", function() {
+            it("finalizes the destruction of the record, firing on_remote_remove callbacks in between the before_events and after_events callbacks", function() {
               record.local_destroy();
               var save_future = server.save(record);
 
               var before_events_callback = mock_function("before events", function() {
                 expect(table_remove_callback).to_not(have_been_called);
                 expect(record_destroy_callback).to_not(have_been_called);
-                expect(record.after_destroy).to_not(have_been_called);
+                expect(record.after_remote_destroy).to_not(have_been_called);
               });
               var after_events_callback = mock_function("after events", function() {
                 expect(table_remove_callback).to(have_been_called, once);
                 expect(record_destroy_callback).to(have_been_called, once);
-                expect(record.after_destroy).to(have_been_called, once);
+                expect(record.after_remote_destroy).to(have_been_called, once);
               });
               var on_failure_callback = mock_function("on_failure_callback");
               save_future.before_events(before_events_callback);
@@ -431,7 +488,7 @@ Screw.Unit(function(c) { with(c) {
 
               expect(table_remove_callback).to_not(have_been_called);
               expect(record_destroy_callback).to_not(have_been_called);
-              expect(record.after_destroy).to_not(have_been_called);
+              expect(record.after_remote_destroy).to_not(have_been_called);
             });
           });
         });
@@ -450,9 +507,9 @@ Screw.Unit(function(c) { with(c) {
             update_callback = mock_function('update_callback');
             remove_callback = mock_function('remove_callback');
 
-            User.on_insert(insert_callback);
-            User.on_update(update_callback);
-            Blog.on_remove(remove_callback);
+            User.on_remote_insert(insert_callback);
+            User.on_remote_update(update_callback);
+            Blog.on_remote_remove(remove_callback);
           });
 
           it("performs a batch mutation representing the state of all the dirty records", function() {
@@ -524,7 +581,7 @@ Screw.Unit(function(c) { with(c) {
 
               expect(on_failure_callback).to(have_been_called, with_args(locally_updated));
 
-              expect(locally_created.remotely_created).to(be_false);
+              expect(locally_created.is_remotely_created).to(be_false);
               expect(locally_updated.field('full_name').validation_errors).to(equal, ["That name is taken"]);
               expect(locally_updated.remote.full_name()).to(equal, "Jan Nelson");
               expect(Monarch.Util.contains(Blog.table.all_tuples(), locally_destroyed)).to(be_true);
@@ -547,6 +604,29 @@ Screw.Unit(function(c) { with(c) {
             expect(before_events_callback).to(have_been_called, once);
             expect(after_events_callback).to(have_been_called, once);
           });
+        });
+
+        it("pauses mutations before sending the save to the server and resumes them once the server responds", function() {
+          var record = User.local_create({id: 'jesus', full_name: "Jesus Chang"});
+          server.save(record);
+
+          expect(Repository.mutations_paused).to(be_true);
+          server.last_post.simulate_failure({
+            index: 0,
+            errors: { full_name: ["Jesus Chang? Come on."]}
+          });
+          expect(Repository.mutations_paused).to(be_false);
+
+          server.save(record);
+          expect(Repository.mutations_paused).to(be_true);
+          server.last_post.simulate_success({
+            primary: [{
+              full_name: "Jesus Chang",
+              user_id: 'jesus'
+            }],
+            secondary: []
+          });
+          expect(Repository.mutations_paused).to(be_false);
         });
       });
     });

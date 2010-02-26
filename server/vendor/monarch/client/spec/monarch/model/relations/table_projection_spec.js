@@ -36,14 +36,14 @@ Screw.Unit(function(c) { with(c) {
         insert_callback = mock_function("insert_callback");
         update_callback = mock_function("update_callback");
         remove_callback = mock_function("remove_callback");
-        projection.on_insert(insert_callback);
-        projection.on_update(update_callback);
-        projection.on_remove(remove_callback);
+        projection.on_remote_insert(insert_callback);
+        projection.on_remote_update(update_callback);
+        projection.on_remote_remove(remove_callback);
       });
 
       describe("when a tuple is inserted into the operand", function() {
         context("if the record corresponding to the projected table is NOT already present in the projection", function() {
-          it("triggers on_insert callbacks with the record", function() {
+          it("triggers on_remote_insert callbacks with the record", function() {
             var blog = user.blogs().local_create({id: 'bloggo'});
             var post = blog.blog_posts().local_create();
             Server.save(blog, post);
@@ -62,7 +62,7 @@ Screw.Unit(function(c) { with(c) {
 
       describe("when a record is updated in the operand", function() {
         context("if one of the updated columns is in the #projected_table", function() {
-          it("triggers on_update callbacks with the record's corresponding projected record and the changed columns", function() {
+          it("triggers on_remote_update callbacks with the record's corresponding projected record and the changed columns", function() {
             var old_value = blog_2.name();
             var new_value = "I feeeel good!";
 
@@ -101,7 +101,7 @@ Screw.Unit(function(c) { with(c) {
 
       describe("when a record is removed from the operand", function() {
         context("if there are NO other tuples in the operand with the same record as their projected component", function() {
-          it("triggers on_remove callbacks with the removed record's corresponding projected record", function() {
+          it("triggers on_remote_remove callbacks with the removed record's corresponding projected record", function() {
             post_3.destroy();
             expect(remove_callback).to(have_been_called, with_args(blog_2));
           });

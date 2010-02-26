@@ -6,9 +6,7 @@ Screw.Unit(function(c) { with(c) {
 
     var fake_server;
     before(function() {
-
-      expect(User.find('sharon')).to(be_null);
-
+      Repository.origin_url = "/users/bob/sandbox"
       fake_server = new FakeServer(false);
 
       fake_server.Repository.tables.users.on_fake_repo = true;
@@ -38,7 +36,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#fetch", function() {
-      it("adds the a FakeFetch to a #fetches array, then executes the fetch against its fixture repository and triggers the returned future when #simulate_success is called on it", function() {
+      it("adds a FakeFetch to a #fetches array, then executes the fetch against its fixture repository and triggers the returned future when #simulate_success is called on it", function() {
         var before_events_callback = mock_function("before delta events callback", function() {
           expect(User.find("sharon")).to_not(be_null);
           expect(insert_callback).to_not(have_been_called);
@@ -49,13 +47,12 @@ Screw.Unit(function(c) { with(c) {
           expect(insert_callback).to(have_been_called, twice);
         });
 
-        User.on_insert(insert_callback);
+        User.on_remote_insert(insert_callback);
 
         expect(fake_server.fetches).to(be_empty);
         expect(User.find('sharon')).to(be_null);
         expect(Blog.find('guns')).to(be_null);
 
-        Repository.origin_url = "/users/bob/sandbox"
         var future = fake_server.fetch([Blog.table, User.table]);
 
         future.before_events(before_events_callback);
@@ -65,7 +62,8 @@ Screw.Unit(function(c) { with(c) {
         expect(User.find('sharon')).to(be_null);
         expect(Blog.find('guns')).to(be_null);
 
-        fake_server.fetches.shift().simulate_success();
+        fake_server.last_fetch.simulate_success();
+        expect(fake_server.fetches).to(be_empty);
 
         expect(before_events_callback).to(have_been_called);
         expect(insert_callback).to(have_been_called);
@@ -81,6 +79,57 @@ Screw.Unit(function(c) { with(c) {
         expect(Blog.tuples()).to(be_empty);
         fake_server.auto_fetch([Blog.table]);
         expect(Blog.tuples()).to_not(be_empty);
+      });
+    });
+
+    describe("#subscribe", function() {
+      it("adds a FakeSubscribe to the #subscribes array and triggers the returned future with synthetic subscription ids when #simulate_success is called on it", function() {
+        expect(fake_server.subscribes).to(be_empty);
+
+        var future = fake_server.subscribe([Blog.table, User.table]);
+
+        expect(fake_server.subscribes).to(have_length, 1);
+        expect(fake_server.last_subscribe).to(equal, fake_server.subscribes[0]);
+        expect(fake_server.last_subscribe.relations).to(equal, [Blog.table, User.table]);
+
+
+        var success_callback = mock_function('success_callback');
+        future.on_success(success_callback);
+
+        fake_server.last_subscribe.simulate_success();
+
+        expect(fake_server.subscribes.length).to(equal, 0);
+        expect(fake_server.last_subscribe).to(be_null);
+
+        expect(success_callback).to(have_been_called, once);
+        expect(success_callback.most_recent_args[0][0].id).to_not(be_null);
+        expect(success_callback.most_recent_args[0][0].relation).to(equal, Blog.table);
+        expect(success_callback.most_recent_args[0][1].id).to_not(equal, success_callback.most_recent_args[0].id);
+        expect(success_callback.most_recent_args[0][1].relation).to(equal, User.table);
+      });
+    });
+
+    describe("#unsubscribe", function() {
+      it("adds a FakeUnsubscribe to the #unsubscribes array and triggers the returned future when #simulate_success is called on it", function() {
+        expect(fake_server.unsubscribes).to(be_empty);
+        
+        var remote_subscription_1 = new Monarch.Http.RemoteSubscription("1", Blog.table);
+        var remote_subscription_2 = new Monarch.Http.RemoteSubscription("2", User.table);
+
+        var future = fake_server.unsubscribe([remote_subscription_1, remote_subscription_2]);
+
+        expect(fake_server.unsubscribes).to(have_length, 1);
+        expect(fake_server.last_unsubscribe).to(equal, fake_server.unsubscribes[0]);
+        expect(fake_server.last_unsubscribe.remote_subscriptions).to(equal, [remote_subscription_1, remote_subscription_2]);
+
+        var success_callback = mock_function('success_callback');
+        future.on_success(success_callback);
+
+        fake_server.last_unsubscribe.simulate_success();
+
+        expect(fake_server.unsubscribes.length).to(equal, 0);
+        expect(fake_server.last_unsubscribe).to(be_null);
+        expect(success_callback).to(have_been_called, once);
       });
     });
 

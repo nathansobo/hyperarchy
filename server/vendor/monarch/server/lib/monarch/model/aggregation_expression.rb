@@ -25,6 +25,14 @@ module Model
       function_name == other.function_name && column == other.column && expression_alias == other.expression_alias
     end
 
+    def convert_value_for_storage(value)
+      if function_name == "count"
+        value.to_i
+      else
+        column.convert_value_for_storage(value)
+      end
+    end
+
     protected
     def alias_sql
       expression_alias ? " as #{expression_alias}" : ""

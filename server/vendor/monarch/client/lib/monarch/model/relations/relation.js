@@ -5,12 +5,15 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
   __relation__: true,
 
   initialize_events_system: function() {
-    this.on_insert_node = new Monarch.SubscriptionNode();
-    this.on_remove_node = new Monarch.SubscriptionNode();
-    this.on_update_node = new Monarch.SubscriptionNode();
+    this.on_local_update_node = new Monarch.SubscriptionNode();
+    this.on_remote_insert_node = new Monarch.SubscriptionNode();
+    this.on_remote_update_node = new Monarch.SubscriptionNode();
+    this.on_remote_remove_node = new Monarch.SubscriptionNode();
+    this.on_dirty_node = new Monarch.SubscriptionNode();
+    this.on_clean_node = new Monarch.SubscriptionNode();
     if (this.has_operands) {
       this.operands_subscription_bundle = new Monarch.SubscriptionBundle();
-      this.unsubscribe_from_operands_when_this_relation_no_longer_has_subscribers();
+      this.unsubscribe_from_operands_when_this_no_longer_has_subscribers();
     }
   },
 
@@ -117,6 +120,10 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     });
   },
 
+  dirty: function() {
+    return this.dirty_tuples().length > 0;
+  },
+
   each: function(fn) {
     Monarch.Util.each(this.tuples(), fn);
   },
@@ -158,23 +165,47 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     return this.tuples()[i];
   },
 
-  on_insert: function(on_insert_callback) {
+  on_local_update: function(callback) {
     this.subscribe_to_operands_if_needed();
-    return this.on_insert_node.subscribe(on_insert_callback);
+    return this.on_local_update_node.subscribe(callback);
   },
 
-  on_remove: function(on_remove_callback) {
+  on_remote_insert: function(callback) {
     this.subscribe_to_operands_if_needed();
-    return this.on_remove_node.subscribe(on_remove_callback);
+    return this.on_remote_insert_node.subscribe(callback);
   },
 
-  on_update: function(on_update_callback) {
+  on_remote_update: function(callback) {
     this.subscribe_to_operands_if_needed();
-    return this.on_update_node.subscribe(on_update_callback);
+    return this.on_remote_update_node.subscribe(callback);
+  },
+
+  on_remote_remove: function(callback) {
+    this.subscribe_to_operands_if_needed();
+    return this.on_remote_remove_node.subscribe(callback);
+  },
+
+  on_dirty: function(callback) {
+    this.subscribe_to_operands_if_needed();
+    return this.on_dirty_node.subscribe(callback);
+  },
+
+  on_clean: function(callback) {
+    this.subscribe_to_operands_if_needed();
+    return this.on_clean_node.subscribe(callback);
+  },
+
+  record_made_dirty: function(record) {
+    this.on_dirty_node.publish(record);
+  },
+
+  record_made_clean: function(record) {
+    this.on_clean_node.publish(record);
   },
 
   has_subscribers: function() {
-    return !(this.on_insert_node.empty() && this.on_remove_node.empty() && this.on_update_node.empty());
+    return !(this.on_remote_insert_node.empty() && this.on_remote_remove_node.empty()
+        && this.on_remote_update_node.empty() && this.on_dirty_node.empty() && this.on_clean_node.empty());
   },
 
   fetch: function() {
@@ -189,20 +220,24 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     this._tuples = this.tuples();
   },
 
-  tuple_inserted: function(record, options) {
+  tuple_inserted_remotely: function(record, options) {
     if (!this.contains(record)) {
       this._tuples.push(record)
     }
-    this.on_insert_node.publish(record);
+    this.on_remote_insert_node.publish(record);
   },
 
-  tuple_updated: function(record, update_data) {
-    this.on_update_node.publish(record, update_data);
+  tuple_updated_remotely: function(record, update_data) {
+    this.on_remote_update_node.publish(record, update_data);
   },
 
-  tuple_removed: function(record) {
+  tuple_updated_locally: function(record, update_data) {
+    this.on_local_update_node.publish(record, update_data);
+  },
+
+  tuple_removed_remotely: function(record) {
     Monarch.Util.remove(this._tuples, record);
-    this.on_remove_node.publish(record);
+    this.on_remote_remove_node.publish(record);
   },
 
   contains: function(record) {
@@ -220,20 +255,30 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     }
   },
 
-  unsubscribe_from_operands_when_this_relation_no_longer_has_subscribers: function() {
+  unsubscribe_from_operands_when_this_no_longer_has_subscribers: function() {
     var self = this;
     var unsubscribe_callback = function() {
        if (!self.has_subscribers()) self.unsubscribe_from_operands();
     };
 
-    this.on_insert_node.on_unsubscribe(unsubscribe_callback);
-    this.on_remove_node.on_unsubscribe(unsubscribe_callback);
-    this.on_update_node.on_unsubscribe(unsubscribe_callback);
+    this.on_remote_insert_node.on_unsubscribe(unsubscribe_callback);
+    this.on_remote_remove_node.on_unsubscribe(unsubscribe_callback);
+    this.on_remote_update_node.on_unsubscribe(unsubscribe_callback);
+    this.on_dirty_node.on_unsubscribe(unsubscribe_callback);
+    this.on_clean_node.on_unsubscribe(unsubscribe_callback);
   },
 
   unsubscribe_from_operands: function() {
     this.operands_subscription_bundle.destroy_all();
     this._tuples = null;
+  },
+
+  remote_subscribe: function() {
+    var subscribe_future = new Monarch.Http.AjaxFuture();
+    Server.subscribe([this]).on_success(function(remote_subscriptions) {
+      subscribe_future.trigger_success(remote_subscriptions[0]);
+    });
+    return subscribe_future;
   },
 
   // private

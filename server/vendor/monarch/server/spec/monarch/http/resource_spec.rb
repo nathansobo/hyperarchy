@@ -8,10 +8,11 @@ module Http
       before do
         @session = Session.create
         @resource = Resource.new
+        resource.current_request = Http::TestRequest.new
+        resource.current_request.session_id = session.id
       end
 
-      it "returns the Session with an id of #current_session_id" do
-        resource.current_session_id = session.session_id
+      it "returns the Session with an id of #current_request's session_id" do
         resource.current_session.should == session
       end
     end

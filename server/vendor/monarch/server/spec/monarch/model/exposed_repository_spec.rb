@@ -14,10 +14,22 @@ module Model
       end
     end
 
+    describe "#locate with subresource urls" do
+      it "returns resources that delegate back to the ExposedRepository as appropriate" do
+        mock(exposed_repository).fetch({:foo => "bar"})
+        exposed_repository.locate('fetch').get({:foo => "bar"})
+
+        mock(exposed_repository).mutate({:baz => "boo"})
+        exposed_repository.locate('mutate').post({:baz => "boo"})
+
+        mock(exposed_repository).subscribe({:bon => "quux"})
+        exposed_repository.locate('subscribe').post({:bon => "quux"})
+      end
+    end
+
     describe "#fetch" do
       it "parses the 'relations' parameter from a JSON string into an array of wire representations and performs a #fetch with it, returning the resulting dataset as a JSON string" do
         relations = [{ "type" => "table", "name" => "blog_posts"}]
-
         dataset = nil
         mock.proxy(exposed_repository).perform_fetch(relations) {|result| dataset = result}
         response = Http::Response.new(*exposed_repository.fetch({:relations => relations.to_json}))
@@ -99,6 +111,7 @@ module Model
         context "when the given field values are valid" do
           it "finds the record with the given 'id' in the given 'relation', then updates it with the given field values and returns all changed field values as its result" do
             record = User.find('jan')
+
             new_signed_up_at = record.signed_up_at - 1.hours
 
             field_values = {
@@ -110,7 +123,6 @@ module Model
             response = Http::Response.new(*exposed_repository.mutate({
               :operations => [['update', 'users', 'jan', field_values]].to_json
             }))
-
             record.reload
             record.full_name.should == "Jan Christian Nelson The Great"
             record.age.should == 31
@@ -123,7 +135,6 @@ module Model
                 'primary' => [{
                   'full_name' => "Jan Christian Nelson The Great",
                   'signed_up_at' => new_signed_up_at.to_millis,
-                  'human' => true,
                   'great_name' => "Jan Christian Nelson The Great The Great"
                 }],
                 'secondary' => []
@@ -262,6 +273,36 @@ module Model
             }
           end
         end
+      end
+    end
+
+    describe "#subscribe and #unsubscribe" do
+      specify "#subscribe converts the 'relations' JSON into actual relations defined in terms of the exposed tables and calls #current_comet_client.subscribe with them and #unsubscribe calls #current_comet_client.unsubscribe with each subscription_id" do
+        relations = [{ "type" => "table", "name" => "blogs"}, { "type" => "table", "name" => "blog_posts"}]
+
+        mock_relation_1 = Object.new
+        mock_relation_2 = Object.new
+        mock(exposed_repository).build_relation_from_wire_representation({ "type" => "table", "name" => "blogs"}) { mock_relation_1 }
+        mock(exposed_repository).build_relation_from_wire_representation({ "type" => "table", "name" => "blog_posts"}) { mock_relation_2 }
+
+        exposed_repository.current_comet_client = Http::FakeCometClient.new
+        mock(exposed_repository.current_comet_client).subscribe(mock_relation_1) { "mock_subscription_id_1"}
+        mock(exposed_repository.current_comet_client).subscribe(mock_relation_2) { "mock_subscription_id_2"}
+        response = Http::Response.new(*exposed_repository.subscribe({:relations => relations.to_json}))
+
+        response.should be_ok
+        response.headers.should == { 'Content-Type' => 'application/json'}
+        parsed_repsonse_body = JSON.parse(response.body)
+        parsed_repsonse_body['successful'].should be_true
+        parsed_repsonse_body['data'].should == ["mock_subscription_id_1", "mock_subscription_id_2"]
+
+        mock(exposed_repository.current_comet_client).unsubscribe("mock_subscription_id_1")
+        mock(exposed_repository.current_comet_client).unsubscribe("mock_subscription_id_2")
+        response = Http::Response.new(*exposed_repository.unsubscribe({:subscription_ids => ["mock_subscription_id_1", "mock_subscription_id_2"].to_json}))
+
+        response.should be_ok
+        response.headers.should == { 'Content-Type' => 'application/json'}
+        response.body_from_json.should == {'successful' => true, 'data' => ""}
       end
     end
 

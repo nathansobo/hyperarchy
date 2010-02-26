@@ -9,7 +9,7 @@ module Http
     def call(env)
       request = Request.new(env)
       if request.cookies["_session_id"]
-        request.session_id = request.cookies["_session_id"]
+        request.session_id = Array(request.cookies["_session_id"]).first
         app.call(request.env)
       else
         session_id = Session.create.id

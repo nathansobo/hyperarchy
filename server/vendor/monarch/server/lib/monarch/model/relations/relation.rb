@@ -17,7 +17,7 @@ module Model
       end
       include ForwardsArrayMethodsToRecords
       attr_writer :exposed_name
-      delegate :include?, :to => :all
+      delegate :include?, :map, :to => :all
 
 
       def initialize(&block)
@@ -60,7 +60,6 @@ module Model
         PartiallyConstructedInnerJoin.new(self, convert_to_table_if_needed(right_operand), &block)
       end
 
-
       def join_to(right_operand)
         right_operand = convert_to_table_if_needed(right_operand)
         left_operand_surface_tables = surface_tables
@@ -85,7 +84,7 @@ module Model
         if args.size == 1 && table_or_record_class?(args.first)
           TableProjection.new(self, convert_to_table_if_needed(args.first), &block)
         else
-          Projection.new(self, convert_to_projected_columns_if_needed(args), &block)
+          Projection.new(self, convert_to_columns_if_needed(args), &block)
         end
       end
 
@@ -116,7 +115,53 @@ module Model
         all.empty?
       end
 
+      def on_insert(&block)
+        initialize_event_system
+        on_insert_node.subscribe(&block)
+      end
+
+      def on_update(&block)
+        initialize_event_system
+        on_update_node.subscribe(&block)
+      end
+
+      def on_remove(&block)
+        initialize_event_system
+        on_remove_node.subscribe(&block)
+      end
+
+      def num_subscriptions
+        (event_nodes || []).map {|node| node.count}.sum
+      end
+
       protected
+      attr_reader :on_insert_node, :on_update_node, :on_remove_node, :event_nodes, :operand_subscriptions
+
+      def initialize_event_system
+        if event_nodes.nil?
+          @on_insert_node = Util::SubscriptionNode.new
+          @on_update_node = Util::SubscriptionNode.new
+          @on_remove_node = Util::SubscriptionNode.new
+          @event_nodes = [on_insert_node, on_update_node, on_remove_node]
+        end
+        initialize_operand_subscriptions if has_operands? && num_subscriptions == 0 
+      end
+
+      def initialize_operand_subscriptions
+        @operand_subscriptions = Util::SubscriptionBundle.new
+        subscribe_to_operands
+
+        event_nodes.each do |node|
+          node.on_unsubscribe do
+            operand_subscriptions.destroy_all if num_subscriptions == 0
+          end
+        end
+      end
+
+      def has_operands?
+        true
+      end
+
       def table_or_record_class?(arg)
         arg.instance_of?(Table) || arg.instance_of?(Class)
       end
@@ -129,14 +174,14 @@ module Model
         end
       end
 
-      def convert_to_projected_columns_if_needed(args)
+      def convert_to_columns_if_needed(args)
         args.map do |arg|
-          if arg.instance_of?(ConcreteColumn)
-            ProjectedColumn.new(arg)
-          elsif table_or_record_class?(arg)
-            convert_to_table_if_needed(arg).concrete_columns.map {|c| ProjectedColumn.new(c)}
-          else
+          if arg.is_a?(ConcreteColumn)
             arg
+          elsif table_or_record_class?(arg)
+            convert_to_table_if_needed(arg).concrete_columns
+          else
+            raise "Invalid projection column: #{arg.inspect}"
           end
         end.flatten
       end
@@ -149,6 +194,14 @@ module Model
         else
           raise "No viable foreign key column found between #{table_1.global_name} and #{table_2.global_name}"
         end
+      end
+      
+      def hash_to_predicate(hash)
+        predicates = []
+        hash.each do |column_name, value|
+          predicates.push(column(column_name).eq(value))
+        end
+        Predicates::And.new(predicates)
       end
 
       class PartiallyConstructedInnerJoin

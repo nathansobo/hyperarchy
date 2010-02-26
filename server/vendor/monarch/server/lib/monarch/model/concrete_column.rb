@@ -23,7 +23,7 @@ module Model
     end
 
     def as(column_alias)
-      ProjectedColumn.new(self, column_alias.to_sym)
+      AliasedColumn.new(self, column_alias.to_sym)
     end
 
     def max
@@ -71,7 +71,7 @@ module Model
     end
 
     def select_clause_sql
-      to_sql
+      "#{to_sql} as #{name}"
     end
 
     def where_clause_sql

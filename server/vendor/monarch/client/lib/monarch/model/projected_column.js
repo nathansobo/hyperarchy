@@ -12,6 +12,14 @@ Monarch.constructor("Monarch.Model.ProjectedColumn", {
 
   eq: function(right_operand) {
     return new Monarch.Model.Predicates.Eq(this, right_operand);
+  },
+
+  asc: function() {
+    return new Monarch.Model.OrderByColumn(this, 'asc');
+  },
+
+  desc: function() {
+    return new Monarch.Model.OrderByColumn(this, 'desc');
   }
 });
 

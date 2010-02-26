@@ -1,8 +1,10 @@
 Monarch.constructor("FakeServer.FakeFetch", {
-  initialize: function(url, relations, fixture_repository) {
+  type: 'fetch',
+
+  initialize: function(url, relations, fake_server) {
     this.url = url;
     this.relations = relations;
-    this.fixture_repository = fixture_repository;
+    this.fake_server = fake_server;
     this.future = new Monarch.Http.RepositoryUpdateFuture();
   },
 
@@ -13,6 +15,7 @@ Monarch.constructor("FakeServer.FakeFetch", {
     this.future.trigger_before_events();
     Repository.resume_events();
     this.future.trigger_after_events();
+    this.fake_server.remove_request(this);
   },
 
   fetch_dataset_from_fixture_repository: function() {
@@ -25,7 +28,7 @@ Monarch.constructor("FakeServer.FakeFetch", {
   },
 
   add_relation_to_dataset: function(relation, dataset) {
-    var tuples = relation.evaluate_in_repository(this.fixture_repository).tuples();
+    var tuples = relation.evaluate_in_repository(this.fake_server.Repository).tuples();
     var table_name = relation.primary_table().global_name;
 
     if (!dataset[table_name]) dataset[table_name] = {};

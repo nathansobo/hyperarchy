@@ -6,7 +6,6 @@ Monarch.constructor("Monarch.Model.SyntheticField", Monarch.Model.Field, {
     this.local = (fieldset instanceof Monarch.Model.LocalFieldset);
     this.signal = signal;
     this.column = column;
-    this.on_update_node = new Monarch.SubscriptionNode();
     this.subscribe_to_field_updates();
   },
 
@@ -20,13 +19,12 @@ Monarch.constructor("Monarch.Model.SyntheticField", Monarch.Model.Field, {
     }
   },
 
-
   // private
 
   subscribe_to_field_updates: function() {
     var update_handler = function(new_value, old_value) {
       this.fieldset.field_updated(this, new_value, old_value);
-      if (this.fieldset.update_events_enabled) this.on_update_node.publish(this, new_value, old_value)
+      if (this.fieldset.update_events_enabled && this.on_update_node) this.on_update_node.publish(new_value, old_value);
     }.bind(this)
 
     if (this.local) {

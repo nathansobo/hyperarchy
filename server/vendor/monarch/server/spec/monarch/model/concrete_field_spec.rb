@@ -86,14 +86,13 @@ module Model
 
       it "triggers #on_update callbacks" do
         callback_args = []
-        field.on_update do |new_value, old_value|
-          callback_args.push([new_value, old_value])
+        field.on_update do |new_value|
+          callback_args.push([new_value])
         end
 
-        old_value = field.value
         field.value = "BAAM"
 
-        callback_args.should == [["BAAM", old_value]]
+        callback_args.should == [["BAAM"]]
       end
     end
 

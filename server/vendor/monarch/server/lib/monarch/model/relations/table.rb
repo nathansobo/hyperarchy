@@ -1,14 +1,16 @@
 module Model
   module Relations
     class Table < Relation
-      attr_reader :global_name, :tuple_class, :concrete_columns_by_name, :synthetic_columns_by_name, :global_identity_map
+      attr_reader :global_name, :tuple_class, :concrete_columns_by_name, :synthetic_columns_by_name,
+                  :global_identity_map
 
       def initialize(global_name, tuple_class)
         @global_name, @tuple_class = global_name, tuple_class
         @concrete_columns_by_name = ActiveSupport::OrderedHash.new
         @synthetic_columns_by_name = ActiveSupport::OrderedHash.new
         @global_identity_map = {}
-        enable_validation_on_insert
+
+        initialize_event_system
       end
 
       def define_concrete_column(name, type, options={})
@@ -32,33 +34,62 @@ module Model
         when String, Symbol
           concrete_columns_by_name[column_or_name.to_sym] || synthetic_columns_by_name[column_or_name.to_sym]
         when Column
-          column_or_name
+          column_or_name if column_or_name.table == self
         end
       end
 
+      def table
+        self
+      end
+
       def create(field_values = {})
-        record = tuple_class.new(field_values)
+        insert(tuple_class.new(field_values))
+      end
+
+      def unsafe_create(field_values = {})
+        insert(tuple_class.unsafe_new(field_values))
+      end
+
+      def insert(record)
         record.before_create if record.respond_to?(:before_create)
-        insert(record)
+        return record if !record.valid?
+        Origin.insert(self, record.field_values_by_column_name)
+        on_insert_node.publish(record)
+        local_identity_map[record.id] = record if local_identity_map
+        record.mark_clean
         record.after_create if record.respond_to?(:after_create)
         record
       end
 
-      def insert(record)
-        return record if validation_on_insert_enabled? && !record.valid?
-        Origin.insert(self, record.field_values_by_column_name)
-        local_identity_map[record.id] = record if local_identity_map
-        record.mark_clean
-      end
-
       def remove(record)
         Origin.destroy(self, record.id)
+        on_remove_node.publish(record)
         local_identity_map.delete(record.id) if local_identity_map
         global_identity_map.delete(record.id)
       end
 
+      def record_updated(record, changeset)
+        on_update_node.publish(record, changeset)
+      end
+
       def surface_tables
         [self]
+      end
+
+      def exposed_name
+        @exposed_name || global_name
+      end
+
+      def pause_events
+        event_nodes.each {|node| node.pause}
+      end
+
+      def resume_events
+        event_nodes.each {|node| node.resume}
+      end
+
+      def cancel_events
+        event_nodes.each {|node| node.cancel}
       end
 
       def build_sql_query(query=Sql::Select.new)
@@ -94,26 +125,16 @@ module Model
       end
 
       def load_fixtures(fixtures)
-        disable_validation_on_insert
         fixtures.each do |id, field_values|
-          insert(tuple_class.unsafe_new(field_values.merge(:id => id.to_s)))
+          record = tuple_class.unsafe_new(field_values.merge(:id => id.to_s))
+          Origin.insert(self, record.field_values_by_column_name)
         end
-        enable_validation_on_insert
-      end
-
-      def disable_validation_on_insert
-        @validation_on_insert_enabled = false
-      end
-
-      def enable_validation_on_insert
-        @validation_on_insert_enabled = true
-      end
-
-      def validation_on_insert_enabled?
-        @validation_on_insert_enabled
       end
 
       def clear_table
+        event_nodes.each do |event_node|
+          event_node.clear
+        end
         Origin.clear_table(global_name)
       end
 
@@ -128,6 +149,12 @@ module Model
 
       def drop_table
         Origin.drop_table(global_name)
+      end
+
+      protected
+
+      def has_operands?
+        false
       end
     end
   end

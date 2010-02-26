@@ -30,8 +30,8 @@ Monarch.module("Monarch.Util", {
 
   map: function(array, fn) {
     var new_array = [];
-    this.each(array, function(element) {
-      new_array.push(fn.call(element, element));
+    this.each(array, function(element, index) {
+      new_array.push(fn.call(element, element, index));
     });
     return new_array;
   },
@@ -107,6 +107,10 @@ Monarch.module("Monarch.Util", {
       current_val = fn(current_val, elt);
     });
     return current_val;
+  },
+
+  trim: function(string) {
+    return jQuery.trim(string);
   },
 
   // private

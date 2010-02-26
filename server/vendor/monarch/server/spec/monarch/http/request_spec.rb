@@ -109,11 +109,11 @@ module Http
 
     describe "#session_id" do
       before do
-        @request = Request.new({'hyperarchy.session_id' => 'a-session-id'})
+        @request = Request.new({'monarch.session_id' => 'a-session-id'})
       end
 
-      it "returns the 'hyperarchy.session_id' value from the environment" do
-        request.session_id.should == request.env['hyperarchy.session_id']
+      it "returns the 'monarch.session_id' value from the environment" do
+        request.session_id.should == request.env['monarch.session_id']
       end
     end
 
@@ -122,9 +122,9 @@ module Http
         @request = Request.new({})
       end
 
-      it "sets the 'hyperarchy.session_id' value in the environment" do
+      it "sets the 'monarch.session_id' value in the environment" do
         request.session_id = "fake-session-id"
-        request.env['hyperarchy.session_id'].should == "fake-session-id"
+        request.env['monarch.session_id'].should == "fake-session-id"
       end
     end
 

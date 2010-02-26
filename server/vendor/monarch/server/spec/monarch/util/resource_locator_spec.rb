@@ -8,45 +8,31 @@ module Util
     end
 
     describe "#locate" do
-      context "when a :session_id param is provided" do
-        it "starting with #root, successively calls #locate on resources with each fragment of the given path, assigning #current_session_id on each" do
-          mock_root = Object.new
-          resource_1 = Object.new
-          resource_2 = Object.new
 
-          session_id = 'sample-session_id'
+      it "starting with #root, successively calls #locate on resources with each fragment of the given requests's #path_info, assigning the #current_request and #current_client on each" do
+        mock_root = Object.new
+        resource_1 = Object.new
+        resource_2 = Object.new
 
-          stub(resource_locator).new_root_resource { mock_root }
-          mock(mock_root).current_session_id=(session_id)
-          mock(mock_root).locate('resource_1') { resource_1 }
-          mock(resource_1).current_session_id=(session_id)
-          mock(resource_1).locate('resource_2') { resource_2 }
-          mock(resource_2).current_session_id=(session_id)
+        session_id = 'sample-session_id'
+        client = Object.new
 
-          resource_locator.locate("/resource_1/resource_2", :session_id => session_id).should == resource_2
-        end
-      end
+        request = Http::TestRequest.new
+        request.path_info = "/resource_1/resource_2"
+        request.session_id = session_id
 
-      context "when a :comet_client param is provided" do
-        it "starting with #root, successively calls #locate on resources with each fragment of the given path, assigning #current_comet_client on each" do
-          mock_root = Object.new
-          resource_1 = Object.new
-          resource_2 = Object.new
+        stub(resource_locator).new_root_resource { mock_root }
+        mock(mock_root).current_request=(request)
+        mock(mock_root).current_comet_client=(client)
+        mock(mock_root).locate('resource_1') { resource_1 }
+        mock(resource_1).current_request=(request)
+        mock(resource_1).current_comet_client=(client)
+        mock(resource_1).locate('resource_2') { resource_2 }
+        mock(resource_2).current_request=(request)
+        mock(resource_2).current_comet_client=(client)
 
-          client = 'mock client'
-
-          stub(resource_locator).new_root_resource { mock_root }
-          mock(mock_root).current_comet_client=(client)
-          mock(mock_root).locate('resource_1') { resource_1 }
-          mock(resource_1).current_comet_client=(client)
-          mock(resource_1).locate('resource_2') { resource_2 }
-          mock(resource_2).current_comet_client=(client)
-
-          resource_locator.locate("/resource_1/resource_2", :comet_client => client).should == resource_2
-        end
-        
+        resource_locator.locate(request, client).should == resource_2
       end
     end
-
   end
 end

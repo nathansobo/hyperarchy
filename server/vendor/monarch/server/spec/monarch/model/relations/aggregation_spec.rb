@@ -19,6 +19,12 @@ module Model
           tuple.max_signed_up_at.should_not be_nil
           tuple[1].should be >= 60 
         end
+
+        specify "the tuples it returns cast their fields to the appropriate datatype based on the expression and the column type" do
+          User.aggregate(User[:signed_up_at].max).value.should be_a(Time)
+          User.aggregate(User[:age].max).value.should be_an(Integer)
+          User.aggregate(User[:id].count).value.should be_an(Integer)
+        end
       end
 
       describe "#to_sql" do

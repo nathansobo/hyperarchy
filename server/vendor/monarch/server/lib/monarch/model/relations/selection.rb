@@ -21,6 +21,10 @@ module Model
         operand.create(predicate.force_matching_field_values(field_values))
       end
 
+      def unsafe_create(field_values={})
+        operand.unsafe_create(predicate.force_matching_field_values(field_values))
+      end
+
       def build_sql_query(query=Sql::Select.new)
         query.add_condition(predicate)
         operand.build_sql_query(query)
@@ -29,6 +33,32 @@ module Model
       def ==(other)
         return false unless other.instance_of?(self.class)
         operand == other.operand && predicate == other.predicate
+      end
+
+      protected
+
+      def subscribe_to_operands
+        operand_subscriptions.add(operand.on_insert do |record|
+          on_insert_node.publish(record) if predicate.matches?(record)
+        end)
+
+        operand_subscriptions.add(operand.on_update do |record, changeset|
+          if predicate.matches?(changeset.old_state)
+            if predicate.matches?(changeset.new_state)
+              on_update_node.publish(record, changeset)
+            else
+              on_remove_node.publish(record)
+            end
+          else
+            if predicate.matches?(changeset.new_state)
+              on_insert_node.publish(record)
+            end
+          end
+        end)
+
+        operand_subscriptions.add(operand.on_remove do |record|
+          on_remove_node.publish(record) if predicate.matches?(record)
+        end)
       end
     end
   end

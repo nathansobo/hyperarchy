@@ -1,7 +1,5 @@
 module Model
   class ConcreteField < Field
-    attr_reader :value
-
     delegate :name, :to => :column
 
     def initialize(record, column)
@@ -10,12 +8,13 @@ module Model
     end
 
     def value=(value)
+      raise "This is a snapshot field. It is read only." if snapshot?
+
       new_value = column.convert_value_for_storage(value)
-      old_value = @value
-      if old_value != new_value
+      if @value != new_value
         @value = new_value
         mark_dirty
-        update_node.publish(new_value, old_value)
+        update_node.publish(new_value)
       end
     end
 

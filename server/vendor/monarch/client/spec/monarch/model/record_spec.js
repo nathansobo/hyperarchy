@@ -41,7 +41,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       it("generates a method on .prototype that accesses the field corresponding to the prototype", function() {
-        var record = new Blog();
+        var record = Blog.local_create();
 
         var field = record.field('user_id');
         expect(field.value()).to(be_undefined);
@@ -86,6 +86,13 @@ Screw.Unit(function(c) { with(c) {
         var user = User.find('jan');
         var relation = user.blogs();
         expect(relation.predicate).to(equal, Blog.user_id.eq("jan"));
+      });
+
+      it("is updated correctly if the id of the record changes after the relation is instantiated", function() {
+        var user = User.local_create({name: "Burt Smith"});
+        expect(user.blogs().predicate.right_operand).to(be_null);
+        user.save();
+        expect(user.blogs().predicate.right_operand).to(equal, user.id());
       });
 
       context("if a single 'order_by' column is supplied in the options", function() {
@@ -155,9 +162,19 @@ Screw.Unit(function(c) { with(c) {
         expect(record.name()).to(equal, 'Index Cards');
       });
 
-      it("does not trigger update events on its Table", function() {
+      it("calls #after_local_create if it is defined on the record's prototype", function() {
+        Blog.prototype.after_local_create = mock_function('optional after_local_create hook');
+        var record = Blog.local_create();
+        expect(record.after_local_create).to(have_been_called);
+        delete Blog.prototype.after_local_create;
+      });
+
+      it("does not trigger update events on the record or its table", function() {
         var update_callback = mock_function("update callback");
-        Blog.table.on_update(update_callback);
+        Blog.table.on_remote_update(update_callback);
+        Blog.table.on_local_update(update_callback);
+        Blog.prototype.after_remote_update = update_callback;
+        Blog.prototype.after_local_update = update_callback;
 
         var record = Blog.local_create({
           id: 'index',
@@ -185,86 +202,76 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#initialize(field_values_by_column_name={})", function() {
-      it("assigns the given field values to their respective Fields", function() {
-        var record = new Blog({
-          id: "recipes",
-          name: "Recipes"
-        });
-
-        expect(record.id()).to(equal, "recipes");
-        expect(record.name()).to(equal, "Recipes");
-      });
-    });
-
-
-    describe("#local_destroy", function() {
-      it("causes the record to be dirty and no longer appear in queries or finds", function() {
-        var record = User.find('jan');
-        record.local_destroy();
-        expect(record.dirty()).to(be_true);
-        expect(User.any(function(user) { return user === record; })).to(be_false);
-        expect(User.find('jan')).to(be_null);
-      });
-    });
-
-    describe("#finalize_local_destroy", function() {
-      it("removes the Record from its Table and calls #after_destroy if it is defined", function() {
-        var record = User.find('jan');
-        record.after_destroy = mock_function('after destroy hook');
-
-        record.finalize_local_destroy();
-        expect(User.find('jan')).to(be_null);
-
-        expect(record.after_destroy).to(have_been_called);
-      });
-    });
-
     describe("#local_update(values_by_method)", function() {
-      it("calls setter methods for each key in the given hash", function() {
+      it("calls setter methods for each key in the given hash and fires update callbacks with all changes", function() {
         var record = Blog.find('recipes');
+
+        var table_update_callback = mock_function('table_update_callback');
+        var record_update_callback = mock_function('record_update_callback');
+
+        Blog.on_local_update(table_update_callback);
+        record.on_local_update(record_update_callback);
+        record.after_local_update = mock_function('optional after_local_update hook');
         record.other_method = mock_function('other method');
+
+        var started_at = Date();
+
+        var name_before = record.name();
+        var fun_profit_name_before = record.fun_profit_name();
+        var user_id_before = record.user_id();
+        var started_at_before = record.started_at();
 
         record.local_update({
           name: 'Pesticides',
           user_id: 'jan',
-          other_method: 'foo'
+          other_method: "foo"
         });
 
         expect(record.name()).to(equal, 'Pesticides');
         expect(record.user_id()).to(equal, 'jan');
-        expect(record.other_method).to(have_been_called, with_args('foo'));
+        expect(record.other_method).to(have_been_called, with_args("foo"));
+
+        var expected_changeset = {
+          name: {
+            column: Blog.name_,
+            old_value: name_before,
+            new_value: record.name()
+          },
+          fun_profit_name: {
+            column: Blog.fun_profit_name,
+            old_value: fun_profit_name_before,
+            new_value: record.fun_profit_name()
+          },
+          user_id: {
+            column: Blog.user_id,
+            old_value: user_id_before,
+            new_value: record.user_id()
+          }
+        };
+
+        expect(table_update_callback).to(have_been_called, once);
+        expect(table_update_callback).to(have_been_called, with_args(record, expected_changeset));
+        expect(record_update_callback).to(have_been_called, with_args(expected_changeset));
+        expect(record.after_local_update).to(have_been_called, with_args(expected_changeset));
       });
     });
 
-    describe("when a synthetic field changes", function() {
-      it("triggers update callbacks on the table of its record", function() {
-        var record = Blog.find('recipes');
-        var update_callback = mock_function('update_callback');
-        record.table().on_update(update_callback);
-
-        record.name("Farming");
-        record.save();
-
-        expect(update_callback).to(have_been_called, once);
-      });
-    });
-
-    describe("column accessor functions", function() {
+    describe("field value accessor functions", function() {
       var record;
       before(function() {
         record = Blog.find('recipes');
       });
 
-      they("trigger update callbacks on the Record's table when a new value is assigned", function() {
-        var update_callback = mock_function('update callback')
-        Blog.on_update(update_callback);
+      they("trigger optional on_local_update hooks on the record and on_local_update callbacks the record and its table when a new value is assigned", function() {
+        var table_update_callback = mock_function('table update callback')
+        var record_update_callback = mock_function('record update callback')
+        Blog.on_local_update(table_update_callback);
+        record.on_local_update(record_update_callback);
+        record.after_local_update = mock_function("optional after_local_update hook");
 
         record.name('Pesticides');
-        record.save();
 
-        expect(update_callback).to(have_been_called, once);
-        expect(update_callback).to(have_been_called, with_args(record, {
+        var expected_changeset = {
           fun_profit_name: {
             column: Blog.fun_profit_name,
             old_value: 'Recipes from the Front for Fun and Profit',
@@ -275,16 +282,23 @@ Screw.Unit(function(c) { with(c) {
             old_value: 'Recipes from the Front',
             new_value: 'Pesticides'
           }
-        }));
+        };
 
-        update_callback.clear();
+        expect(table_update_callback).to(have_been_called, once);
+        expect(table_update_callback).to(have_been_called, with_args(record, expected_changeset));
+        expect(record_update_callback).to(have_been_called, with_args(expected_changeset));
+        expect(record.after_local_update).to(have_been_called, with_args(expected_changeset));
 
+        table_update_callback.clear();
+        record_update_callback.clear();
+        record.after_local_update.clear();
         record.name('Pesticides');
-        record.save();
-        
-        expect(update_callback).to_not(have_been_called);
+
+        expect(table_update_callback).to_not(have_been_called);
+        expect(record_update_callback).to_not(have_been_called);
+        expect(record.after_local_update).to_not(have_been_called);
       });
-      
+
       they("can assign null", function() {
         record.name(null);
         expect(record.name()).to(be_null);
@@ -297,6 +311,69 @@ Screw.Unit(function(c) { with(c) {
       they("can write synthetic fields if a setter method is defined for the column", function() {
         record.fun_profit_name("Eating Fortune Cookies");
         expect(record.fun_profit_name()).to(equal, "Eating Fortune Cookies in Bed for Fun and Profit");
+      });
+    });
+
+    describe("#local_destroy", function() {
+      it("causes the record to be dirty and no longer appear in queries or finds", function() {
+        var record = User.find('jan');
+        record.local_destroy();
+        expect(record.dirty()).to(be_true);
+        expect(User.any(function(user) { return user === record; })).to(be_false);
+        expect(User.find('jan')).to(be_null);
+      });
+    });
+
+    describe("#remotely_destroyed", function() {
+      it("removes the Record from its Table and calls #after_remote_destroy if it is defined", function() {
+        var record = User.find('jan');
+        record.after_remote_destroy = mock_function('after destroy hook');
+
+        record.remotely_destroyed();
+        expect(User.find('jan')).to(be_null);
+
+        expect(record.after_remote_destroy).to(have_been_called);
+      });
+    });
+
+    describe("#on_dirty and #on_clean", function() {
+      they("cause the given callback to be triggered when the record becomes dirty or clean relative to the remote fieldset", function() {
+        var record = User.find('jan');
+        
+        expect(record.dirty()).to(be_false);
+        expect(record.local._dirty).to(be_false);
+
+        var on_dirty_callback = mock_function("on_dirty_callback");
+        var on_clean_callback = mock_function("on_clean_callback");
+        record.on_dirty(on_dirty_callback);
+        record.on_clean(on_clean_callback);
+
+        var full_name_before = record.full_name();
+        record.full_name("Johan Sebastian Bach");
+        expect(on_dirty_callback).to(have_been_called, once);
+        on_dirty_callback.clear();
+
+        record.full_name(full_name_before);
+        expect(on_clean_callback).to(have_been_called, once);
+        on_clean_callback.clear();
+
+        record.full_name("Karl Jung");
+        record.save();
+        expect(on_clean_callback).to(have_been_called, once);
+        on_clean_callback.clear();
+      });
+    });
+
+    describe("when a synthetic field changes", function() {
+      it("triggers update callbacks on the table of its record", function() {
+        var record = Blog.find('recipes');
+        var update_callback = mock_function('update_callback');
+        record.table.on_remote_update(update_callback);
+
+        record.name("Farming");
+        record.save();
+
+        expect(update_callback).to(have_been_called, once);
       });
     });
 
@@ -324,6 +401,32 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+    describe("#assign_validation_errors(errors_by_field_name)", function() {
+      it("triggers #on_invalid callbacks and assigns the validation errors to the specified fields", function() {
+        var record = Blog.find('recipes');
+        var on_invalid_callback = mock_function('on_invalid_callback', function() {
+          expect(record.field("name").validation_errors).to(equal, ["name error 1", "name error 2"]);
+          expect(record.field("user_id").validation_errors).to(equal, ["user error"]);
+        });
+        var subscription = record.on_invalid(on_invalid_callback);
+
+        record.assign_validation_errors({
+          name: ["name error 1", "name error 2"],
+          user_id: ["user error"]
+        });
+
+        expect(on_invalid_callback).to(have_been_called);
+        subscription.destroy();
+
+        record.assign_validation_errors({
+          name: ["name error 3"]
+        });
+
+        expect(record.field("name").validation_errors).to(equal, ["name error 3"]);
+        expect(record.field("user_id").validation_errors).to(be_empty);
+      });
+    });
+
     describe("#field(field_name_or_column)", function() {
       it("returns the field for the given column name or Column", function() {
         var record = Blog.find('recipes');
@@ -335,6 +438,22 @@ Screw.Unit(function(c) { with(c) {
         field = record.field('id');
         expect(field.fieldset.record).to(equal, record);
         expect(field.column).to(equal, Blog.id);
+      });
+    });
+
+    describe("#remotely_updated", function() {
+      it("does not cause a record to become valid unless the updated field values cause invalid local fields to become clean", function() {
+        var record = Blog.find('recipes');
+        record.name("Sharon's Sad Laptop");
+        record.assign_validation_errors({name: ['It no good name']});
+
+        expect(record.valid()).to(be_false);
+
+        record.remotely_updated({ user_id: 'sharon' });
+        expect(record.valid()).to(be_false);
+
+        record.remotely_updated({ name: "Sharon's Brand New Laptop" });
+        expect(record.valid()).to(be_true);
       });
     });
   });

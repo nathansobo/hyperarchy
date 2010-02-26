@@ -40,9 +40,9 @@ Screw.Unit(function(c) { with(c) {
         insert_callback = mock_function("insert_callback");
         update_callback = mock_function("update_callback");
         remove_callback = mock_function("remove_callback");
-        difference.on_insert(insert_callback);
-        difference.on_update(update_callback);
-        difference.on_remove(remove_callback);
+        difference.on_remote_insert(insert_callback);
+        difference.on_remote_update(update_callback);
+        difference.on_remote_remove(remove_callback);
       });
 
       function expect_no_callbacks_to_have_been_called() {
@@ -193,9 +193,9 @@ Screw.Unit(function(c) { with(c) {
         update_callback = mock_function('update_callback');
         remove_callback = mock_function('remove_callback');
 
-        difference.on_insert(insert_callback);
-        difference.on_update(update_callback);
-        difference.on_remove(remove_callback);
+        difference.on_remote_insert(insert_callback);
+        difference.on_remote_update(update_callback);
+        difference.on_remote_remove(remove_callback);
       });
 
       after(function() {

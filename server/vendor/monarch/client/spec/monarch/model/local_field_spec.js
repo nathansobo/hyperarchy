@@ -19,5 +19,27 @@ Screw.Unit(function(c) { with(c) {
         });
       });
     });
+
+    describe("#value(new_value)", function() {
+      context("when the local field value becomes the same as the remote field value", function() {
+        it("marks the field as clean, clears its validation errors, and triggers on_valid callbacks on its record if this was the last invalid field to become valid", function() {
+          field = record.field('age');
+          field.value(50);
+          field.assign_validation_errors(["some error"]);
+
+          var on_valid_callback = mock_function();
+          record.on_valid(on_valid_callback);
+
+          expect(field.dirty()).to(be_true);
+          expect(field.valid()).to(be_false);
+
+          field.value(record.remote.age());
+
+          expect(on_valid_callback).to(have_been_called);
+          expect(field.dirty()).to(be_false);
+          expect(field.valid()).to(be_true);
+        });
+      });
+    });
   });
 }});

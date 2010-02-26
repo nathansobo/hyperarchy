@@ -57,61 +57,61 @@ Monarch.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations
 
   subscribe_to_operands: function() {
     var self = this;
-    this.operands_subscription_bundle.add(this.left_operand.on_insert(function(left_tuple) {
+    this.operands_subscription_bundle.add(this.left_operand.on_remote_insert(function(left_tuple) {
       Monarch.Util.each(self.right_operand.all_tuples(), function(right_tuple) {
         var composite_tuple = new Monarch.Model.CompositeTuple(left_tuple, right_tuple);
-        if (self.predicate.evaluate(composite_tuple)) self.tuple_inserted(composite_tuple);
+        if (self.predicate.evaluate(composite_tuple)) self.tuple_inserted_remotely(composite_tuple);
       });
     }));
 
-    this.operands_subscription_bundle.add(this.right_operand.on_insert(function(right_tuple) {
+    this.operands_subscription_bundle.add(this.right_operand.on_remote_insert(function(right_tuple) {
       Monarch.Util.each(self.left_operand.all_tuples(), function(left_tuple) {
         var composite_tuple = new Monarch.Model.CompositeTuple(left_tuple, right_tuple);
-        if (self.predicate.evaluate(composite_tuple)) self.tuple_inserted(composite_tuple);
+        if (self.predicate.evaluate(composite_tuple)) self.tuple_inserted_remotely(composite_tuple);
       });
     }));
 
-    this.operands_subscription_bundle.add(this.left_operand.on_remove(function(left_tuple) {
+    this.operands_subscription_bundle.add(this.left_operand.on_remote_remove(function(left_tuple) {
       Monarch.Util.each(self.all_tuples(), function(composite_tuple) {
-        if (composite_tuple.left_tuple == left_tuple) self.tuple_removed(composite_tuple);
+        if (composite_tuple.left_tuple == left_tuple) self.tuple_removed_remotely(composite_tuple);
       });
     }));
 
-    this.operands_subscription_bundle.add(this.right_operand.on_remove(function(right_tuple) {
+    this.operands_subscription_bundle.add(this.right_operand.on_remote_remove(function(right_tuple) {
       Monarch.Util.each(self.all_tuples(), function(composite_tuple) {
-        if (composite_tuple.right_tuple == right_tuple) self.tuple_removed(composite_tuple);
+        if (composite_tuple.right_tuple == right_tuple) self.tuple_removed_remotely(composite_tuple);
       });
     }));
 
-    this.operands_subscription_bundle.add(this.left_operand.on_update(function(left_tuple, changeset) {
+    this.operands_subscription_bundle.add(this.left_operand.on_remote_update(function(left_tuple, changeset) {
       Monarch.Util.each(self.right_operand.all_tuples(), function(right_tuple) {
         var new_composite_tuple = new Monarch.Model.CompositeTuple(left_tuple, right_tuple);
         var extant_composite_tuple = self.find_composite_tuple_that_matches(new_composite_tuple);
         if (self.predicate.evaluate(new_composite_tuple)) {
           if (extant_composite_tuple) {
-            self.tuple_updated(extant_composite_tuple, changeset);
+            self.tuple_updated_remotely(extant_composite_tuple, changeset);
           } else {
-            self.tuple_inserted(new_composite_tuple);
+            self.tuple_inserted_remotely(new_composite_tuple);
           }
         } else {
-          if (extant_composite_tuple) self.tuple_removed(extant_composite_tuple);
+          if (extant_composite_tuple) self.tuple_removed_remotely(extant_composite_tuple);
         }
       });
     }));
 
-    this.operands_subscription_bundle.add(this.right_operand.on_update(function(right_tuple, changeset) {
+    this.operands_subscription_bundle.add(this.right_operand.on_remote_update(function(right_tuple, changeset) {
 
       Monarch.Util.each(self.left_operand.all_tuples(), function(left_tuple) {
         var new_composite_tuple = new Monarch.Model.CompositeTuple(left_tuple, right_tuple);
         var extant_composite_tuple = self.find_composite_tuple_that_matches(new_composite_tuple);
         if (self.predicate.evaluate(new_composite_tuple)) {
           if (extant_composite_tuple) {
-            self.tuple_updated(extant_composite_tuple, changeset);
+            self.tuple_updated_remotely(extant_composite_tuple, changeset);
           } else {
-            self.tuple_inserted(new_composite_tuple);
+            self.tuple_inserted_remotely(new_composite_tuple);
           }
         } else {
-          if (extant_composite_tuple) self.tuple_removed(extant_composite_tuple);
+          if (extant_composite_tuple) self.tuple_removed_remotely(extant_composite_tuple);
         }
       })
     }));

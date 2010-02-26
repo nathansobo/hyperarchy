@@ -1,6 +1,10 @@
 module Http
   class Resource
-    attr_accessor :current_comet_client, :current_session_id
+    attr_accessor :current_comet_client, :current_request
+
+    def current_session_id
+      current_request.session_id
+    end
 
     def current_session
       Session.find(Session[:session_id].eq(current_session_id))
@@ -10,7 +14,6 @@ module Http
       current_session.user
     end
 
-    #TODO: Test this directly
     def ajax_success(data)
       ajax_response(true, data)
     end

@@ -2,20 +2,71 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 
 module Http
   describe Dispatcher do
-    attr_reader :client
+    attr_reader :client, :hub
 
     before do
-      @client = CometClient.new("sample-comet-client-id", nil)
+      @hub = Object.new
+      @client = CometClient.new("sample-comet-client-id", hub)
+      publicize client, :went_offline
     end
 
-    describe "#subscribe(relation)" do
-      it "causes all inserts on the given relation to send a message to the client" do
-        client.subscribe(BlogPost)
+    after do
+      client.unsubscribe_all
+    end
 
-        expected_message = ['create', 'blog_posts', { :blog_id => "grain", :title => "FiberForce Muffins", :body => "Betcha can't eat these.", :created_at => nil }].to_json
-        mock(client.send(expected_message))
+    describe "#subscribe and #unsubscribe" do
+      specify "#subscribe causes all insert, update, and remove events on the given relation to send a message to the client and #unsubscribe cancels those events" do
+        subscription_1_id = client.subscribe(BlogPost.table)
 
-        relation.create(:title => "FiberForce Muffins", :body => "Betcha can't eat these.")
+        sent_message = nil
+        stub(client).send do |message|
+          sent_message = message
+        end
+
+        record = BlogPost.create(:title => "FiberForce Muffins", :body => "Betcha can't eat these.")
+        sent_message.should == ["create", "blog_posts", {"created_at"=>nil, "title"=>"FiberForce Muffins", "body"=>"Betcha can't eat these.", "featured"=>nil, "blog_id"=>nil, "id" => record.id }]
+
+        RR.reset_double(client, :send)
+
+        expected_message = ["update", "blog_posts", record.id, { "title" => "Tejava", "body" => "I love this tea and so does Brian Takita!" }]
+        mock(client).send(expected_message)
+        record.update(:title => "Tejava", :body => "I love this tea and so does Brian Takita!")
+        record.save
+
+        expected_message = ["destroy", "blog_posts", record.id]
+        mock(client).send(expected_message)
+        record.destroy
+
+        client.subscribe(Blog.table)
+        client.unsubscribe(subscription_1_id)
+
+        dont_allow(client).send
+        blog_post = BlogPost.create(:title => "This one should have no event", :body => "Event free")
+
+        blog = Blog.find("grain")
+        expected_message = ["update", "blogs", blog.id, { "title" => "My new title" }]
+        mock(client).send(expected_message)
+        blog.title = "My new title"
+        blog.save
+
+        subscription_3_id = client.subscribe(BlogPost.table)
+        subscription_3_id.should_not == subscription_1_id
+
+        expected_message = ["update", "blog_posts", blog_post.id, { "title" => "Kukicha" }]
+        mock(client).send(expected_message)
+        blog_post.title = "Kukicha"
+        blog_post.save
+      end
+    end
+
+    describe "#went_offline" do
+      it "removes itself from the hub and destroys all of its subscriptions" do
+        mock(hub).remove_client(client.id)
+        client.subscribe(BlogPost.table)
+
+        lambda do
+          client.went_offline
+        end.should change { BlogPost.table.num_subscriptions }.by(-3)
       end
     end
   end

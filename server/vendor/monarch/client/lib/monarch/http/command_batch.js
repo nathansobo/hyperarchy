@@ -11,7 +11,6 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
     this.future = new Monarch.Http.RepositoryUpdateFuture();
 
     if (this.commands.length > 0) {
-      this.requested_at = new Date();
       this.server.post(Repository.origin_url + "/mutate", { operations: this.wire_representation() })
         .on_success(function(response_data) {
           self.handle_successful_response(response_data);
@@ -38,7 +37,7 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
   handle_successful_response: function(response_data) {
     Repository.pause_events();
     Monarch.Util.each(this.commands, function(command, index) {
-      command.complete(response_data.primary[index], this.requested_at);
+      command.complete(response_data.primary[index]);
     }.bind(this));
     Repository.mutate(response_data.secondary);
     this.future.trigger_before_events(this.commands[0].record);
@@ -49,7 +48,7 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
   handle_unsuccessful_response: function(response_data) {
     Monarch.Util.each(this.commands, function(command, index) {
       if (index == response_data.index) {
-        command.handle_failure(response_data.errors, this.requested_at);
+        command.handle_failure(response_data.errors);
         this.future.trigger_on_failure(command.record);
       } else {
         command.handle_failure(null);

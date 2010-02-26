@@ -1,14 +1,15 @@
-Monarch = {
-  constructor: function() {
-    Monarch.ModuleSystem.constructor.apply(Monarch.ModuleSystem, arguments);
-  },
-
-  module: function() {
-    Monarch.ModuleSystem.module.apply(Monarch.ModuleSystem, arguments);
-  }
-};
+Monarch = {};
 
 (function(Monarch) {
+
+Monarch.constructor = function() {
+  Monarch.ModuleSystem.constructor.apply(Monarch.ModuleSystem, arguments);
+};
+
+Monarch.module = function() {
+  Monarch.ModuleSystem.module.apply(Monarch.ModuleSystem, arguments);
+};
+
 Monarch.ModuleSystem = {
   constructor: function() {
     var constructor_basename, containing_module;

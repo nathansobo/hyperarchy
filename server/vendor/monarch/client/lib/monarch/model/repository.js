@@ -3,6 +3,7 @@
 Monarch.constructor("Monarch.Model.Repository", {
   initialize: function() {
     this.tables = {};
+    this.mutations_paused = false;
   },
 
   pause_events: function() {
@@ -17,10 +18,21 @@ Monarch.constructor("Monarch.Model.Repository", {
     });
   },
 
+  pause_mutations: function() {
+    this.mutations_paused = true;
+    this.enqueued_mutations = [];
+  },
+
+  resume_mutations: function() {
+    this.mutations_paused = false;
+    this.mutate(this.enqueued_mutations);
+    this.enqueued_mutations = null;
+  },
+
   update: function(dataset) {
     var self = this;
     Monarch.Util.each(dataset, function(table_name, table_dataset) {
-      self.tables[table_name].update(table_dataset);
+      self.tables[table_name].update_contents(table_dataset);
     });
   },
 
@@ -28,23 +40,27 @@ Monarch.constructor("Monarch.Model.Repository", {
     var self = this;
     Monarch.Util.each(this.tables, function(table_name, table) {
       var table_dataset = dataset[table_name] || {};
-      table.delta(table_dataset);
+      table.delta_contents(table_dataset);
     });
   },
 
   mutate: function(commands) {
     var self = this;
-    Monarch.Util.each(commands, function(command) {
-      var type = command.shift();-
-      self["perform_" + type + "_command"].apply(self, command);
-    });
+    if (this.mutations_paused) {
+      this.enqueued_mutations.push.apply(this.enqueued_mutations, commands);
+    } else {
+      Monarch.Util.each(commands, function(command) {
+        var type = command.shift();-
+        self["perform_" + type + "_command"].apply(self, command);
+      });
+    }
   },
 
   perform_create_command: function(table_name, field_values) {
     var table = this.tables[table_name];
     if (table && !table.find(field_values.id)) {
       var record = table.local_create(field_values);
-      record.finalize_local_create(field_values);
+      record.remotely_created(field_values);
     }
   },
 
@@ -59,7 +75,7 @@ Monarch.constructor("Monarch.Model.Repository", {
     var table = this.tables[table_name];
     if (!table) return;
     var record = table.find(id);
-    if (record) record.finalize_local_destroy();
+    if (record) record.remotely_destroyed();
   },
 
   register_table: function(table) {
@@ -68,16 +84,12 @@ Monarch.constructor("Monarch.Model.Repository", {
 
   fixtures: function(fixture_definitions) {
     var self = this;
-    Monarch.Util.each(fixture_definitions, function(table_name, fixtures) {
-      self.tables[table_name].fixtures(fixtures);
-    });
   },
 
   load_fixtures: function(fixture_definitions) {
-    if (fixture_definitions) this.fixtures(fixture_definitions);
-    Monarch.Util.each(this.tables, function(global_name, table) {
-      table.load_fixtures();
-    });
+    Monarch.Util.each(fixture_definitions, function(table_name, fixtures) {
+      this.tables[table_name].load_fixtures(fixtures);
+    }.bind(this));
   },
 
   clear: function() {

@@ -8,24 +8,20 @@ Monarch.constructor("Monarch.Model.RemoteFieldset", Monarch.Model.Fieldset, {
     this.batch_update_in_progress = false;
   },
 
-  update: function(field_values, requested_at) {
-    if (!requested_at) requested_at = new Date();
+  update: function(field_values) {
     this.batched_updates = {};
 
     Monarch.Util.each(field_values, function(column_name, field_value) {
       var field = this.field(column_name);
-      if (field) field.value(field_value, requested_at);
+      if (field) field.value(field_value);
     }.bind(this));
 
     var changeset = this.batched_updates;
     this.batched_updates = null;
     if (this.update_events_enabled && Monarch.Util.keys(changeset).length > 0) {
-      if (this.record.on_update_node) this.record.on_update_node.publish(changeset);
-      this.record.table().tuple_updated(this.record, changeset);
+      if (this.record.on_remote_update_node) this.record.on_remote_update_node.publish(changeset);
+      this.record.table.tuple_updated_remotely(this.record, changeset);
     }
-
-    this.record.remotely_created = true;
-    this.update_events_enabled = true;
   },
 
   field_updated: function(field, new_value, old_value) {

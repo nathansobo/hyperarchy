@@ -1,0 +1,12 @@
+ordering needs to be honored by relations above it, including for records inserted or relocated by events.
+	track index on events traveling through ordering? for instance an update may change the location, which should be reflected in relations above it.
+
+has_many et al need to be based on fields, not concrete ids, so that they update as
+
+propagate secondary mutations in the response to primary mutations
+
+finish events on union
+
+camelize everything and deal with non-camelized global field names correctly
+
+switch everything over to underscore.js

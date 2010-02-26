@@ -5,6 +5,8 @@ Monarch.constructor("FakeServer", Monarch.Http.Server, {
     this.deletes = [];
     this.gets = [];
     this.fetches = [];
+    this.subscribes = [];
+    this.unsubscribes = [];
     this.creates = [];
     this.updates = [];
     this.destroys = [];
@@ -18,7 +20,7 @@ Monarch.constructor("FakeServer", Monarch.Http.Server, {
   },
 
   fetch: function(relations) {
-    var fake_fetch = new FakeServer.FakeFetch(Repository.origin_url, relations, this.Repository);
+    var fake_fetch = new FakeServer.FakeFetch(Repository.origin_url, relations, this);
     if (this.auto) {
       fake_fetch.simulate_success();
     } else {
@@ -35,6 +37,30 @@ Monarch.constructor("FakeServer", Monarch.Http.Server, {
     this.auto = prev_auto_value;
   },
 
+  subscribe: function(relations) {
+    var fake_subscribe = new FakeServer.FakeSubscribe(Repository.origin_url, relations, this);
+
+    if (this.auto) {
+      fake_subscribe.simulate_success();
+    } else {
+      this.subscribes.push(fake_subscribe);
+      this.last_subscribe = fake_subscribe;
+    }
+    return fake_subscribe.future;
+  },
+
+  unsubscribe: function(remote_subscriptions) {
+    var fake_unsubscribe = new FakeServer.FakeUnsubscribe(Repository.origin_url, remote_subscriptions, this);
+
+    if (this.auto) {
+      fake_unsubscribe.simulate_success();
+    } else {
+      this.unsubscribes.push(fake_unsubscribe);
+      this.last_unsubscribe = fake_unsubscribe;
+      return fake_unsubscribe.future;
+    }
+  },
+  
   save: function() {
     var commands = Monarch.Util.map(this.extract_dirty_records(arguments), function(dirty_record) {
       return this.build_appropriate_command(dirty_record);

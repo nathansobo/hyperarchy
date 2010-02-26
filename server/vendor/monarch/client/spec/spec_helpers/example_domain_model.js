@@ -58,9 +58,9 @@ Screw.Unit(function(c) {
     if (between_before_and_after) between_before_and_after();
 
     c.after(function() {
-      delete Repository.tables['blogs'];
-      delete Repository.tables['users'];
+      Repository.tables = {};
       delete window['Blog'];
+      delete window['BlogPost'];
       delete window['User'];
     });
   };

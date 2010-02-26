@@ -5,13 +5,13 @@ class User < Model::Record
   column :has_hair, :boolean
 
   synthetic_column :great_name, :string do
-    signal(:full_name) do |new_value, old_value|
-      full_name + " The Great"
+    signal(:full_name) do |full_name|
+      "#{full_name} The Great"
     end
   end
 
   synthetic_column :human, :boolean do
-    signal(:full_name) do |new_value, old_value|
+    signal(:full_name) do |full_name|
       true
     end
   end

@@ -21,7 +21,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       context("if update events are enabled on the Field's record", function() {
-        it("triggers #on_update callbacks with the new and old value", function() {
+        it("triggers #on_remote_update callbacks with the new and old value", function() {
           expect(update_callback).to(have_been_called, with_args("Barbie", old_value));
         });
       });
@@ -31,7 +31,7 @@ Screw.Unit(function(c) { with(c) {
 //          record.remote.disable_update_events();
 //        });
 //
-//        it("does not trigger #on_update callbacks with the new and old value", function() {
+//        it("does not trigger #on_remote_update callbacks with the new and old value", function() {
 //          expect(update_callback).to_not(have_been_called);
 //        });
 //      });

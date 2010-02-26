@@ -23,6 +23,7 @@ Spec::Runner.configure do |config|
   end
 
   config.after do
+#    raise "Test pollution! Subscriptions must be destroyed after each test" if Model::Repository.num_subscriptions == 0
     Model::Repository.clear_local_identity_map unless manually_manage_identity_map?
   end
 end
