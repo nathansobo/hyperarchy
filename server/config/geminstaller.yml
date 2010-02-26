@@ -1,4 +1,6 @@
 gems:
+  - name: thin
+    version: '1.2.5'
   - name: sequel
     version: '2.12.0'
   - name: guid
@@ -10,6 +12,8 @@ gems:
   - name: json
   - name: activesupport
     version: '2.3.4'
+  - name: builder
+    version: '2.1.2'
   - name: collections
     version: '0.1.4'
   - name: bcrypt-ruby
@@ -21,3 +25,4 @@ gems:
   - name: thor
     version: '0.11.5'
   - name: rr
+    version: '0.10.9'

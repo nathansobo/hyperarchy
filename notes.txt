@@ -1,9 +1,0 @@
-The problems seem to be ejabberd's fault, or something I'm not understanding about its configuration. With openfire it just works. Turned on the component and sent it a presence, and it immediately got it. It could send messages to the web client with no problems. I've also switched to blather as a ruby xmpp framework and so far it seems a little nicer too. Now I'm in a position to again take a stab at what I was originally trying for.
-
-Right now I have two servers: http and xmpp. The http server handles the low level server interaction as well as more abstract model-oriented things. It was the easiest place to put it so it could be mocked out. If I follow the same pattern with the xmpp server, it will be in charge of receiving messages from the dispatcher. I presume they will be iq stanzas with subscription_update nodes in them that contain the json snapshot of any data the user wanted to be informed of changes for. So the xmpp server object will handle all messages coming in on xmpp and does not need to expose a callback interface for that for the foreseeable future.
-
-X - create a combined server that forwards to xmpp or http servers for appropriate operations
-- add subscribe to xmpp server, which initially acts as a fetch of the relations in question
-- figure out how to get presence unavailable messages for clients when they go offline
-- add event system to server side to actually service subscriptions
-- why is cpu 100% with openfire?
