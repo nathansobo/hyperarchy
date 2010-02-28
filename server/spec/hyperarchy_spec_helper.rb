@@ -4,6 +4,8 @@ ENVIRONMENT = "test"
 require "#{dir}/../config/environment"
 require "spec"
 require "#{dir}/spec_helpers/fixtures"
+require "#{MONARCH_SERVER_ROOT}/spec/spec_helpers/resource_example_group"
+require "#{MONARCH_SERVER_ROOT}/spec/spec_helpers/test_request"
 
 Spec::Runner.configure do |config|
   config.mock_with :rr
@@ -25,14 +27,6 @@ module Spec::Example::Subject::ExampleGroupMethods
 
     after do
       Model::Repository.clear_tables
-    end
-  end
-end
-
-module Http
-  class TestRequest < Http::Request
-    def initialize
-      super({})
     end
   end
 end

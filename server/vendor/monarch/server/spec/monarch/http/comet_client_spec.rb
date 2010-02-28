@@ -39,12 +39,13 @@ module Http
 
         client.subscribe(Blog.table)
         client.unsubscribe(subscription_1_id)
-
+        
         dont_allow(client).send
         blog_post = BlogPost.create(:title => "This one should have no event", :body => "Event free")
 
         blog = Blog.find("grain")
         expected_message = ["update", "blogs", blog.id, { "title" => "My new title" }]
+        RR.reset_double(client, :send)
         mock(client).send(expected_message)
         blog.title = "My new title"
         blog.save

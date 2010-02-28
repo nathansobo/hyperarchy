@@ -1,14 +1,7 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper")
 
 module Resources
-  describe Users do
-    attr_reader :resource
-
-    before do
-      @resource = Users.new
-      resource.current_session_id = Session.create.id
-    end
-
+  describe Users, :type => :resource do
     describe "#post" do
       it "creates a new User with the given email address, full name, and password and assigns it to the current Session" do
         params = {
@@ -22,13 +15,13 @@ module Resources
           created_user = user
         end
 
-        response = Http::Response.new(*resource.post(params))
+        post "/users", params
 
         created_user.email_address.should == 'nathan@example.com'
         created_user.full_name.should == 'Nathan Sobo'
         created_user.password.should == 'password'
 
-        response.status.should == 200
+        response.should be_ok
         response.body_from_json.should == {
           "successful" => true,
           "data" => {
@@ -36,8 +29,8 @@ module Resources
           }
         }
 
-        resource.current_session.user.should == created_user
-        resource.current_session.should_not be_dirty
+        current_user.should == created_user
+        current_session.should_not be_dirty
       end
     end
   end

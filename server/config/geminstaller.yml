@@ -10,6 +10,7 @@ gems:
   - name: erector
     version: '0.6.7'
   - name: json
+    version: '1.2.0'
   - name: activesupport
     version: '2.3.4'
   - name: builder
@@ -25,4 +26,4 @@ gems:
   - name: thor
     version: '0.11.5'
   - name: rr
-    version: '0.10.9'
+    version: '0.10.10'
