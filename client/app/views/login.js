@@ -19,7 +19,7 @@ constructor("Views.Login", View.Template, {
       Server.post('/login', this.field_values())
         .on_success(function(data) {
           Application.current_user_id_established(data.current_user_id);
-          History.load('elections');
+          History.load('organization');
         })
         .on_failure(function(data) {
           self.find("#errors").html(Views.ErrorList.to_view(data.errors)).show();

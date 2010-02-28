@@ -3,7 +3,7 @@ constructor("Views.Application", View.Template, {
     div({id: 'application_view'}, function() {
       h1("hyperarchy");
       subview('main_views', Monarch.View.Templates.Multiview, {
-        elections: Views.Elections,
+        organization: Views.Organization,
         login: Views.Login,
         signup: Views.Signup
       })
