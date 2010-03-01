@@ -6,8 +6,11 @@ Monarch.constructor("Monarch.View.History", {
   },
 
   load: function(path) {
+    this.path = "";
     jQuery.historyLoad(path);
-  }
+  },
+
+  path: ""
 });
 
 })(Monarch, jQuery);

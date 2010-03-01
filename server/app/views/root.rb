@@ -5,16 +5,23 @@ module Views
         head do
           title "Hyperarchy"
           link :rel => "stylesheet", :type => "text/css", :href => "http://yui.yahooapis.com/2.7.0/build/reset/reset-min.css"
+          link :rel => "stylesheet", :type => "text/css", :href => "stylesheets/960.css"
+          link :rel => "stylesheet", :type => "text/css", :href => "stylesheets/text.css"
           link :rel => "stylesheet", :type => "text/css", :href => "stylesheets/hyperarchy.css"
           application_javascript_tags
+          
+          link :rel => "stylesheet", :type => "text/css", :href => "stylesheets/hyperarchy.css"
+
+          application_javascript_tags
           script :type => "text/javascript", :language => "javascript" do
-            rawtext %[window.COMET_CLIENT_ID = #{Guid.new.to_s.to_json};]
-            rawtext %[jQuery(function() { jQuery("#placeholder").replaceWith(Views.Application.to_view()); });]
+            rawtext %[
+              window.COMET_CLIENT_ID = #{Guid.new.to_s.to_json};
+              $(function() { window.Application = new Controllers.Application() });
+            ]
           end
         end
 
         body do
-          div :id => "placeholder"
         end
       end
     end

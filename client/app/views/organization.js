@@ -1,21 +1,26 @@
 constructor("Views.Organization", View.Template, {
   content: function() { with(this.builder) {
-    div({id: 'organization_view'}, function() {
-      span("Organization:");
-      select()
-        .change(function(view) {
-          view.organization_changed();
-        })
-        .ref("organization_select");
-      br();
-      br();
+    div({id: "organization_view", 'class': "container_12"}, function() {
+      div({id: "header", 'class': "grid_12"}, function() {
+        div({'class': "grid_2 alpha"}, function() {
+          h1({id: "title"}, "hyperarchy");
+        });
+        div({'class': "grid_2 prefix_8 omega"}, function() {
+          span("organization:");
+          select()
+            .change(function(view) {
+              view.organization_changed();
+            })
+            .ref("organization_select");
+        });
+      });
 
-      div({id: 'elections'}, function() {
-        input().ref("create_election_input");
-        button("Ask").click(function(view) {
-          view.create_election();
-        })
-        ul().ref("elections_ul")
+      div({'class': "grid_4"}, function() {
+        subview('elections_view', Views.Elections)
+      });
+
+      div({'class': "grid_4"}, function() {
+        subview('candidates_view', Views.Candidates);
       });
     });
   }},
@@ -40,21 +45,7 @@ constructor("Views.Organization", View.Template, {
 
     organization_changed: function() {
       var self = this;
-      this.elections = this.selected_organization().elections()
-      this.elections.fetch()
-        .after_events(function() {
-          self.elections.each(self.hitch('add_election_to_list'));
-          self.elections.on_remote_insert(self.hitch('add_election_to_list')); 
-        });
-    },
-
-    add_election_to_list: function(election) {
-      this.elections_ul.append_view(function(b) {
-        b.li(election.body())
-      });
-    },
-    create_election: function() {
-      this.selected_organization().elections().create({body: this.create_election_input.val()});
+      this.elections_view.elections(this.selected_organization().elections());
     }
   }
 });

@@ -1,7 +1,7 @@
 //= require "../../hyperarchy_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("Views.Application", function() {
+  describe("Controllers.Application", function() {
     use_fake_server();
     use_remote_fixtures();
 

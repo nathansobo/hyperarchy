@@ -2,7 +2,6 @@ module Resources
   class Login < Http::Resource
     def post(attributes)
       if user = User.find(User[:email_address].eq(attributes[:email_address]))
-        p attributes[:password]
         if user.password == attributes[:password]
           current_session.user_id = user.id
           current_session.save
