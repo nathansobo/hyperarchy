@@ -1,12 +1,12 @@
 //= require "../../hyperarchy_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("Views.Elections", function() {
+  describe("Views.Organization", function() {
     use_remote_fixtures();
 
     var view;
     before(function() {
-      view = Views.Elections.to_view();
+      view = Views.Organization.to_view();
     });
 
     describe("#initialize", function() {
@@ -21,7 +21,7 @@ Screw.Unit(function(c) { with(c) {
         expect(Organization.empty()).to(be_false);
 
         Organization.each(function(organization) {
-          expect(view.organizations_select.find("option:contains('" + organization.name() + "')")).to_not(be_empty);
+          expect(view.organization_select.find("option:contains('" + organization.name() + "')")).to_not(be_empty);
         });
       });
     });

@@ -5,73 +5,50 @@ Screw.Unit(function(c) { with(c) {
     use_fake_server();
     use_remote_fixtures();
 
-    var view;
+    var controller, mock_body;
     before(function() {
-      view = Views.Application.to_view();
-    });
-
-    after(function() {
-      delete window['Application'];
-    });
-
-    describe("#initialize", function() {
-      it("assigns the view to the window.Application global", function() {
-        expect(window.Application).to(equal, view);
-      });
-
-      it("registers its #navigate method with History.load", function() {
-        mock(view, 'navigate');
-        History.load("bar");
-        expect(view.navigate).to(have_been_called, with_args("bar"));
-      });
+      controller = new Controllers.Application($("<div/>"));
     });
 
     describe("#navigate", function() {
-      before(function() {
-        mock(view.main_views.login, 'show');
-        mock(view.main_views.login, 'hide');
-        mock(view.main_views.signup, 'show');
-        mock(view.main_views.signup, 'hide');
-        mock(view.main_views.elections, 'show');
-        mock(view.main_views.elections, 'hide');
-      });
-
       context("when called with '' (empty string)", function() {
         it("shows the login view and hides the others", function() {
-          view.navigate("");
+          controller.navigate("");
+          expect(controller.body.children().length).to(equal, 1);
+          expect(controller.body.children("#login").length).to(equal, 1);
+        });
+      });
 
-          expect(view.main_views.login.show).to(have_been_called);
-          expect(view.main_views.signup.hide).to(have_been_called);
-          expect(view.main_views.elections.hide).to(have_been_called);
+      context("when called with 'login'", function() {
+        it("shows the login view and hides the others", function() {
+          controller.navigate("login");
+          expect(controller.body.children().length).to(equal, 1);
+          expect(controller.body.children("#login").length).to(equal, 1);
         });
       });
 
       context("when called with 'signup'", function() {
         it("shows the signup view and hides the others", function() {
-          view.navigate("signup");
-
-          expect(view.main_views.login.hide).to(have_been_called);
-          expect(view.main_views.signup.show).to(have_been_called);
-          expect(view.main_views.elections.hide).to(have_been_called);
+          controller.navigate("signup");
+          expect(controller.body.children().length).to(equal, 1);
+          expect(controller.body.children("#signup").length).to(equal, 1);
         });
       });
 
-      context("when called with 'elections'", function() {
+      context("when called with 'organization'", function() {
         it("shows the elections view and hides the others", function() {
-          view.navigate("elections");
-
-          expect(view.main_views.login.hide).to(have_been_called);
-          expect(view.main_views.signup.hide).to(have_been_called);
-          expect(view.main_views.elections.show).to(have_been_called);
+          controller.navigate("organization");
+          expect(controller.body.children().length).to(equal, 1);
+          expect(controller.body.children("#organization").length).to(equal, 1);
         });
       });
     });
 
     describe("#current_user_id_established", function() {
       it("assigns #current_user_id to the given id", function() {
-        expect(view.current_user_id).to(be_null);
-        view.current_user_id_established('billy');
-        expect(view.current_user_id).to(equal, 'billy');
+        expect(controller.current_user_id).to(be_null);
+        controller.current_user_id_established('billy');
+        expect(controller.current_user_id).to(equal, 'billy');
       });
     });
   });

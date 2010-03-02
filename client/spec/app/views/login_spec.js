@@ -31,7 +31,7 @@ Screw.Unit(function(c) { with(c) {
 
 
       context("when the result is successful", function() {
-        it("calls Application.current_user_id_established with the User's id and navigates to #elections", function() {
+        it("calls Application.current_user_id_established with the User's id and navigates to the organization view", function() {
 
           mock(Application, 'current_user_id_established');
           mock(History, 'load', function() {
@@ -40,7 +40,7 @@ Screw.Unit(function(c) { with(c) {
           Server.last_post.simulate_success({
             current_user_id: "billy"
           });
-          expect(History.load).to(have_been_called, with_args("elections"));
+          expect(History.load).to(have_been_called, with_args("organization"));
         });
       })
 

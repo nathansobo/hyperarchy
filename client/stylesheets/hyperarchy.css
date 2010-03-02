@@ -18,35 +18,35 @@ ol.error_list {
 
 /* login_view.js */
 
-#login_view {
+#login {
   margin: 20px auto;
   text-align: center;
   width: 600px;
 }
 
-#login_view #login_form {
+#login #login_form {
   -moz-border-radius: 10px;
   border: 1px #666666 solid;
   margin-bottom: 10px;
   padding: 10px;
 }
 
-#login_view label {
+#login label {
   margin-right: 5px;
 }
 
-#login_view input {
+#login input {
   margin-right: 5px;
   width: 150px;
 }
 
-#login_view button {
+#login button {
   margin-left: 10px;
 }
 
-/* signup_view.js */
+/* signup.js */
 
-#signup_view {
+#signup {
   -moz-border-radius: 10px;
   border: 1px #666666 solid;
   margin: 20px auto;
@@ -55,20 +55,20 @@ ol.error_list {
   position: relative;
 }
 
-#signup_view li {
+#signup li {
   margin-bottom: 5px;
 }
 
-#signup_view label {
+#signup label {
   display: inline-block;
   width: 120px;
 }
 
-#signup_view input {
+#signup input {
   width: 200px;
 }
 
-#signup_view button {
+#signup button {
   width: 80px;
   margin-left: 240px;
 }

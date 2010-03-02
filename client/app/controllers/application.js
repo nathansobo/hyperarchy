@@ -1,12 +1,11 @@
 constructor("Controllers.Application", {
-  initialize: function() {
-    this.body = $('body');
+  initialize: function(body) {
+    this.body = body || $('body');
     this.views = {
       login: Views.Login.to_view(),
       signup: Views.Signup.to_view(),
       organization: Views.Organization.to_view()
     };
-    window.Application = this;
     History.on_change(function(path) {
       this.navigate(path);
     }.bind(this));

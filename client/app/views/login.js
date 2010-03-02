@@ -1,6 +1,6 @@
 constructor("Views.Login", View.Template, {
   content: function() { with(this.builder) {
-    div({id: 'login_view'}, function() {
+    div({id: 'login'}, function() {
       div({id: 'errors', style: 'display:none'});
       div({id: 'login_form'}, function() {
         label({ 'for': 'email_address' }, "email address:");

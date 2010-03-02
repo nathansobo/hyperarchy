@@ -1,6 +1,6 @@
 constructor("Views.Organization", View.Template, {
   content: function() { with(this.builder) {
-    div({id: "organization_view", 'class': "container_12"}, function() {
+    div({id: "organization", 'class': "container_12"}, function() {
       div({id: "header", 'class': "grid_12"}, function() {
         div({'class': "grid_2 alpha"}, function() {
           h1({id: "title"}, "hyperarchy");

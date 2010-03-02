@@ -1,6 +1,6 @@
 constructor("Views.Signup", View.Template, {
   content: function() { with(this.builder) {
-    div({id: 'signup_view'}, function() {
+    div({id: 'signup'}, function() {
       ol(function() {
         li(function() {
           label({ 'for': 'full_name' }, "full name:");
