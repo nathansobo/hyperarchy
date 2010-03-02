@@ -60,6 +60,20 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+    describe(".build(content_fn)", function() {
+      it("instantiates an anonymous Template with the given function as its content method (except it is passed the builder as a param), then returns the result of calling #to_jquery on it", function() {
+        var view = Monarch.View.Template.build(function(b) { with(b) {
+          div({id: "foo"}, function() {
+            div("BAR", {id: "bar"});
+          });
+        }});
+
+        expect(view.attr('id')).to(equal, 'foo');
+        expect(view.find('div#bar')).to_not(be_empty);
+      });
+    });
+
+
     describe("#to_view", function() {
       it("assigns .builder to a new Builder, calls #content, then returns #builder.to_view", function() {
         var view = template.to_view({ name: "Nathan", gender: "male"});
@@ -72,7 +86,7 @@ Screw.Unit(function(c) { with(c) {
         expect(view.gender).to(equal, "male");
         expect(view.bold_name).to(equal, template.view_properties.bold_name);
       });
-
+      
       it("assigns #template on the returned view", function() {
         var view = template.to_view({});
         expect(view.template).to(equal, template);

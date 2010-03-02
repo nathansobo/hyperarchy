@@ -2,6 +2,14 @@
 
 Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
   constructor_properties: {
+    build: function(content_fn) {
+      var template = new this();
+      template.content = function() {
+        content_fn.call(this, this.builder);
+      }
+      return template.to_view();
+    },
+
     to_view: function(properties) {
       return new this().to_view(properties);
     },
@@ -13,7 +21,7 @@ Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
     }
   },
 
-  to_jquery: function(properties) {
+  to_view: function(properties) {
     var builder = new Monarch.View.Builder(this);
     this.builder = builder;
     this.content(properties);
@@ -24,10 +32,6 @@ Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
     if (this.view_properties) Monarch.ModuleSystem.mixin(view_properties, this.view_properties);
     if (properties) Monarch.ModuleSystem.mixin(view_properties, properties);
     return builder.to_view(view_properties);
-  },
-
-  to_view: function(properties) {
-    return this.to_jquery(properties);
   },
 
   default_view_properties: {
