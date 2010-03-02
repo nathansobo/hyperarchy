@@ -1,6 +1,6 @@
 (function(Monarch, jQuery) {
 
-Monarch.constructor("Monarch.View.Template", Monarch.Xml.Template, {
+Monarch.constructor("Monarch.View.Template", {
   constructor_properties: {
     build: function(content_fn) {
       var template = new this();

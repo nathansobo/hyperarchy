@@ -269,7 +269,7 @@ Screw.Unit(function(c) { with(c) {
 
           it("returns the SelfClosingTag instruction", function() {
             var instruction = builder.tag("br")
-            expect(instruction.constructor).to(equal, Monarch.Xml.SelfClosingTag);
+            expect(instruction.constructor).to(equal, Monarch.View.SelfClosingTag);
             expect(instruction.name).to(equal, "br");
           });
         });
@@ -282,10 +282,10 @@ Screw.Unit(function(c) { with(c) {
 
           it("returns the CloseTag instruction with a reference to the OpenTag instruction", function() {
             var instruction = builder.tag("div");
-            expect(instruction.constructor).to(equal, Monarch.Xml.CloseTag);
+            expect(instruction.constructor).to(equal, Monarch.View.CloseTag);
             expect(instruction.name).to(equal, "div");
             var open_tag_instruction = instruction.open_tag_instruction;
-            expect(open_tag_instruction.constructor).to(equal, Monarch.Xml.OpenTag);
+            expect(open_tag_instruction.constructor).to(equal, Monarch.View.OpenTag);
             expect(open_tag_instruction.name).to(equal, "div");
           });
         });
@@ -349,10 +349,10 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("returns the CloseTag instruction with a reference to the OpenTag instruction", function() {
-            expect(instruction.constructor).to(equal, Monarch.Xml.CloseTag);
+            expect(instruction.constructor).to(equal, Monarch.View.CloseTag);
             expect(instruction.name).to(equal, "div");
             var open_tag_instruction = instruction.open_tag_instruction;
-            expect(open_tag_instruction.constructor).to(equal, Monarch.Xml.OpenTag);
+            expect(open_tag_instruction.constructor).to(equal, Monarch.View.OpenTag);
             expect(open_tag_instruction.name).to(equal, "div");
           });
         });

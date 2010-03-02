@@ -140,17 +140,17 @@ Monarch.constructor("Monarch.View.Builder", {
 
   self_closing_tag: function(tag_args) {
     if (tag_args.text || tag_args.body) throw new Error("Self-closing tag " + tag_args.name + " cannot contain text or have body content");
-    var tag_instruction = new Monarch.Xml.SelfClosingTag(tag_args.name, tag_args.attributes);
+    var tag_instruction = new Monarch.View.SelfClosingTag(tag_args.name, tag_args.attributes);
     this.instructions.push(tag_instruction);
     return tag_instruction;
   },
 
   standard_tag_sequence: function(tag_args) {
-    var open_tag_instruction = new Monarch.Xml.OpenTag(tag_args.name, tag_args.attributes);
+    var open_tag_instruction = new Monarch.View.OpenTag(tag_args.name, tag_args.attributes);
     this.instructions.push(open_tag_instruction);
-    if (tag_args.text) this.instructions.push(new Monarch.Xml.TextNode(tag_args.text));
+    if (tag_args.text) this.instructions.push(new Monarch.View.TextNode(tag_args.text));
     if (tag_args.body) tag_args.body();
-    var close_tag_instruction = new Monarch.Xml.CloseTag(tag_args.name);
+    var close_tag_instruction = new Monarch.View.CloseTag(tag_args.name);
     close_tag_instruction.open_tag_instruction = open_tag_instruction;
     this.instructions.push(close_tag_instruction);
     return close_tag_instruction;

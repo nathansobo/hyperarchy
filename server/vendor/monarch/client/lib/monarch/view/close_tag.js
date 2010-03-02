@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Xml.CloseTag", {
+Monarch.constructor("Monarch.View.CloseTag", {
   constructor_properties: {
     initialize: function() {
       this.generate_event_methods();

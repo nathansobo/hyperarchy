@@ -17,7 +17,6 @@
 //= require "monarch/future"
 //= require "monarch/queue"
 //= require "monarch/inflection"
-//= require "monarch/xml"
 //= require "monarch/view"
 //= require "monarch/http"
 //= require "monarch/model"

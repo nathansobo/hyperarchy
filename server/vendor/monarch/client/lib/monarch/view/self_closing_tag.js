@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Xml.SelfClosingTag", Monarch.Xml.CloseTag.prototype, Monarch.Xml.OpenTag.prototype, {
+Monarch.constructor("Monarch.View.SelfClosingTag", Monarch.View.CloseTag.prototype, Monarch.View.OpenTag.prototype, {
   to_xml: function() {
     return "<" + this.name + this.attributes_html() + "/>"
   },
