@@ -22,5 +22,6 @@ class Hash
 end
 
 Util::AssetManager.add_js_location("/javascript/app", "#{CLIENT_ROOT}/app")
+Util::AssetManager.add_js_location("/javascript/vendor", "#{CLIENT_ROOT}/vendor")
 Util::AssetManager.add_location("/stylesheets", "#{CLIENT_ROOT}/stylesheets")
 require "#{dir}/environments/#{ENVIRONMENT}"
