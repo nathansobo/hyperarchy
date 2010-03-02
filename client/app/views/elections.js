@@ -31,9 +31,18 @@ constructor("Views.Elections", View.Template, {
     },
 
     add_election_to_list: function(election) {
+      var self = this;
       this.elections_ul.append_view(function(b) {
-        b.li(election.body())
+        b.li(election.body()).click(function(li) {
+          self.election_selected(election, li);
+        });
       });
+    },
+
+    election_selected: function(election, li) {
+      this.elections_ul.find('li').removeClass('selected');
+      li.addClass('selected');
+      this.candidates_view.candidates(election.candidates());
     },
 
     create_election: function() {

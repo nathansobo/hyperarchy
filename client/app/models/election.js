@@ -4,5 +4,7 @@ constructor("Election", Model.Record, {
       organization_id: 'string',
       body: 'string'
     });
+
+    this.has_many('candidates');
   }
 });

@@ -28,6 +28,8 @@ constructor("Views.Organization", View.Template, {
   view_properties: {
     initialize: function() {
       var self = this;
+      this.elections_view.candidates_view = this.candidates_view;
+
       Organization.fetch()
         .after_events(function() {
           Organization.each(function(organization) {

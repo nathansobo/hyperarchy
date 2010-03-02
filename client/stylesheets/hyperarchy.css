@@ -6,7 +6,8 @@
 .elections_candidates .create { float: right; }
 .elections_candidates .create:after { clear: both; }
 .elections_candidates .widget_content { clear: both; padding-top: 5px; }
-.elections_candidates .widget_content li { padding: 5px; border: 1px solid #d6d3d3; }
+.elections_candidates .widget_content li { padding: 5px; border: 1px solid #d6d3d3; cursor: default; }
+.elections_candidates .widget_content li.selected { background: #dbdada; }
 
 
 /* ------------------ */

@@ -12,5 +12,9 @@ module Resources
     expose :elections do
       Election.table
     end
+
+    expose :candidates do
+      Candidate.table
+    end
   end
 end

@@ -7,8 +7,8 @@ constructor("Views.Candidates", View.Template, {
           view.create_candidate();
         });
       });
-      div({'class': "widget_body"}, function() {
-        ul().ref("candidates_ul")
+      div({'class': "widget_content"}, function() {
+        ul().ref("candidates_ul");
       });
     });
   }},
