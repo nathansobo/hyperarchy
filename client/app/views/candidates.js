@@ -16,6 +16,17 @@ constructor("Views.Candidates", View.Template, {
   view_properties: {
     initialize: function() {
       var self = this;
+      this.register_resize_callbacks();
+
+//      _.defer(function() {
+//        self.candidates_ol.sortable({
+//          connectWith: "#ranking ol"
+//        })
+//      });
+    },
+
+    register_resize_callbacks: function() {
+      var self = this;
       $(window).resize(function() {
         self.fill_height();
       });
@@ -25,9 +36,10 @@ constructor("Views.Candidates", View.Template, {
       });
     },
 
+
     fill_height: function() {
       var height = $(window).height() - this.widget_content.offset().top - 10;
-      this.widget_content.height(height);
+      this.candidates_ol.height(height);
     },
 
     candidates: function(candidates) {
@@ -36,19 +48,28 @@ constructor("Views.Candidates", View.Template, {
       } else {
         var self = this;
         this._candidates = candidates;
-        this.candidates_ol.html("");
         candidates.fetch()
           .after_events(function() {
-            candidates.each(self.hitch('add_candidate_to_list'));
+            self.populate_candidates();
             candidates.on_remote_insert(self.hitch('add_candidate_to_list'));
           });
       }
     },
 
+    populate_candidates: function() {
+      this.candidates_ol.html("");
+      this.candidates().each(this.hitch('add_candidate_to_list'));
+    },
+
     add_candidate_to_list: function(candidate) {
-      this.candidates_ol.append_view(function(b) {
-        b.li(candidate.body())
+      var candidate_li = View.build(function(b) {
+        b.li({candidate_id: candidate.id()}, candidate.body());
       });
+      candidate_li.draggable({
+        connectToSortable: "#ranking ol",
+        revert: "invalid"
+      });
+      this.candidates_ol.append(candidate_li);
     },
 
     create_candidate: function() {

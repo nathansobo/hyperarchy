@@ -20,6 +20,10 @@ constructor("Views.Organization", View.Template, {
       });
 
       div({'class': "grid_4"}, function() {
+        subview('ranking_view', Views.Ranking);
+      });
+
+      div({'class': "grid_4"}, function() {
         subview('candidates_view', Views.Candidates);
       });
     });
