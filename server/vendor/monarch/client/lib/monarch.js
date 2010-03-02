@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-//= require <jquery-1.3.2>
+//= require <jquery-1.4.2>
 //= require <jquery.history>
 //= require <jquery.cookie>
 //= require <htmlescape>
