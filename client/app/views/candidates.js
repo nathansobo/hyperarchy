@@ -18,11 +18,24 @@ constructor("Views.Candidates", View.Template, {
       var self = this;
       this.register_resize_callbacks();
 
-//      _.defer(function() {
-//        self.candidates_ol.sortable({
-//          connectWith: "#ranking ol"
-//        })
-//      });
+      _.defer(function() {
+        var cancel_sort = true;
+
+        self.candidates_ol.sortable({
+          connectWith: "#ranking ol",
+          stop: function() {
+            if (cancel_sort) {
+              self.candidates_ol.sortable('cancel');
+            } else {
+              cancel_sort = true;
+            }
+          },
+
+          remove: function() {
+            cancel_sort = false;
+          }
+        })
+      });
     },
 
     register_resize_callbacks: function() {
@@ -64,10 +77,6 @@ constructor("Views.Candidates", View.Template, {
     add_candidate_to_list: function(candidate) {
       var candidate_li = View.build(function(b) {
         b.li({candidate_id: candidate.id()}, candidate.body());
-      });
-      candidate_li.draggable({
-        connectToSortable: "#ranking ol",
-        revert: "invalid"
       });
       this.candidates_ol.append(candidate_li);
     },

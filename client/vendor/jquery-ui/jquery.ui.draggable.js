@@ -544,19 +544,22 @@ $.ui.plugin.add("draggable", "connectToSortable", {
 					//Now we fake the start of dragging for the sortable instance,
 					//by cloning the list group item, appending it to the sortable and using it as inst.currentItem
 					//We can then fire the start event of the sortable with our passed browser event, and our own helper (so it doesn't create a new one)
-					this.instance.currentItem = $(self).clone().appendTo(this.instance.element).data("sortable-item", true);
-					this.instance.options._helper = this.instance.options.helper; //Store helper option to later restore it
+          this.instance.currentItem = $(self).clone().appendTo(this.instance.element).data("sortable-item", true);
+          this.instance.currentItem.offset().top = $(self).offset().top;
+
+          this.instance.options._helper = this.instance.options.helper; //Store helper option to later restore it
 					this.instance.options.helper = function() { return ui.helper[0]; };
 
 					event.target = this.instance.currentItem[0];
+
 					this.instance._mouseCapture(event, true);
 					this.instance._mouseStart(event, true, true);
 
 					//Because the browser event is way off the new appended portlet, we modify a couple of variables to reflect the changes
-					//this.instance.offset.click.top = inst.offset.click.top;
-					//this.instance.offset.click.left = inst.offset.click.left;
-					//this.instance.offset.parent.left -= inst.offset.parent.left - this.instance.offset.parent.left;
-					//this.instance.offset.parent.top -= inst.offset.parent.top - this.instance.offset.parent.top;
+					this.instance.offset.click.top = inst.offset.click.top;
+					this.instance.offset.click.left = inst.offset.click.left;
+					this.instance.offset.parent.left -= inst.offset.parent.left - this.instance.offset.parent.left;
+					this.instance.offset.parent.top -= inst.offset.parent.top - this.instance.offset.parent.top;
 
 					inst._trigger("toSortable", event);
 					inst.dropped = this.instance.element; //draggable revert needs that

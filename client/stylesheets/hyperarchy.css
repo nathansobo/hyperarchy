@@ -9,6 +9,8 @@
 .item_list .widget_content li { padding: 5px; border: 1px solid #d6d3d3; cursor: default; background: white; }
 .item_list .widget_content li.selected { background: #dbdada; }
 
+#candidates .ui-sortable-placeholder { display: none; }
+
 /* ------------------ */
 
 ol.error_list {

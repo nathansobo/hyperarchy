@@ -224,7 +224,6 @@ $.widget("ui.sortable", $.ui.mouse, {
 	},
 
 	_mouseDrag: function(event) {
-
 		//Compute the helpers position
 		this.position = this._generatePosition(event);
 		this.positionAbs = this._convertPositionTo("absolute");
