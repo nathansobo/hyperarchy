@@ -1,0 +1,6 @@
+convert javascript to camel-case
+  need to inflect global names of columns
+convert id's to integers
+  introduce identifier, need to convert always string id to an integer in test mode
+make elections bookmarkable
+rankings are persisted across page refreshes

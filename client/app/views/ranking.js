@@ -15,8 +15,9 @@ constructor("Views.Ranking", View.Template, {
       _.defer(function() {
         self.ranking_ol.sortable({
           connectWith: "#candidates ol",
+
           update: function(event, ui) {
-            console.debug(ui);
+            console.debug(ui.item.attr('candidate_id'));
           }
         });
       });
