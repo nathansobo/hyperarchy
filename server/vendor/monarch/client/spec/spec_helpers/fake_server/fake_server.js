@@ -101,7 +101,6 @@ Monarch.constructor("FakeServer", Monarch.Http.Server, {
 
   addRequest: function(request) {
     var requestsArray = this[Monarch.Inflection.pluralize(request.type)];
-    debugger;
     requestsArray.push(request);
     this["last" + Monarch.Inflection.capitalize(request.type)] = request;
   }

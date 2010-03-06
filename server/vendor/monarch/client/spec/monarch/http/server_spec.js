@@ -39,7 +39,6 @@ Screw.Unit(function(c) { with(c) {
           var future = server.fetch([Blog.table, User.table]);
 
           expect(server.gets).to(haveLength, 1);
-          console.debug(server);
           expect(server.lastGet.url).to(equal, "/repository/fetch");
           expect(server.lastGet.data).to(equal, {
             relations: [Blog.table.wireRepresentation(), User.table.wireRepresentation()]
