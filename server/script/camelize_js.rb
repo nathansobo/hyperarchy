@@ -8,7 +8,7 @@ Find.find(ARGV[0]) do |file_name|
     changed = false
     lines.each do |line|
       next if line =~ %r{^//=}
-      if line.gsub!(/(_)(.)/) { $2.upcase }
+      if line.gsub!(/(_)([^.])/) { $2.upcase }
         changed = true 
         puts line
       end
