@@ -2,52 +2,52 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.CombinedSignal", function() {
-    use_local_fixtures();
-    var record, signal_a, signal_b, combined_signal, transformer;
+    useLocalFixtures();
+    var record, signalA, signalB, combinedSignal, transformer;
 
     init(function() {
-      transformer = mock_function('transformer', function() {
+      transformer = mockFunction('transformer', function() {
         return 'mock transformed value';
       });
     });
 
     before(function() {
       record = Blog.find('recipes');
-      signal_a = record.signal('name');
-      signal_b = record.signal('user_id');
-      combined_signal = new Monarch.Model.CombinedSignal(signal_a, signal_b, transformer);
+      signalA = record.signal('name');
+      signalB = record.signal('userId');
+      combinedSignal = new Monarch.Model.CombinedSignal(signalA, signalB, transformer);
     });
 
     describe("value methods", function() {
       before(function() {
         record.name('Driving Carefully');
-        record.user_id('mom');
-        expect(signal_a.local_value()).to_not(equal, signal_a.remote_value());
-        expect(signal_b.local_value()).to_not(equal, signal_b.remote_value());
+        record.userId('mom');
+        expect(signalA.localValue()).toNot(equal, signalA.remoteValue());
+        expect(signalB.localValue()).toNot(equal, signalB.remoteValue());
       });
 
-      describe("#local_value()", function() {
-        it("returns the value of the transformer applied to the #local_values of the combined signals", function() {
-          expect(combined_signal.local_value()).to(equal, 'mock transformed value');
-          expect(transformer).to(have_been_called, with_args(signal_a.local_value(), signal_b.local_value()));
+      describe("#localValue()", function() {
+        it("returns the value of the transformer applied to the #localValues of the combined signals", function() {
+          expect(combinedSignal.localValue()).to(equal, 'mock transformed value');
+          expect(transformer).to(haveBeenCalled, withArgs(signalA.localValue(), signalB.localValue()));
         });
       });
 
-      describe("#remote_value()", function() {
-        it("returns the value of the transformer applied to the #local_values of the combined signals", function() {
-          expect(combined_signal.remote_value()).to(equal, 'mock transformed value');
-          expect(transformer).to(have_been_called, with_args(signal_a.remote_value(), signal_b.remote_value()));
+      describe("#remoteValue()", function() {
+        it("returns the value of the transformer applied to the #localValues of the combined signals", function() {
+          expect(combinedSignal.remoteValue()).to(equal, 'mock transformed value');
+          expect(transformer).to(haveBeenCalled, withArgs(signalA.remoteValue(), signalB.remoteValue()));
         });
       });
     });
 
     describe("when the remote value of one of the operand signals changes", function() {
-      use_fake_server();
+      useFakeServer();
 
-      var on_remote_update_callback;
+      var onRemoteUpdateCallback;
       before(function() {
-        on_remote_update_callback = mock_function('on_remote_update_callback');
-        combined_signal.on_remote_update(on_remote_update_callback);
+        onRemoteUpdateCallback = mockFunction('onRemoteUpdateCallback');
+        combinedSignal.onRemoteUpdate(onRemoteUpdateCallback);
       });
 
       context("if the transformer applied to the new operand's remote value returns a different result", function() {
@@ -57,28 +57,28 @@ Screw.Unit(function(c) { with(c) {
           }
         })
 
-        it("fires on_remote_update handlers", function() {
+        it("fires onRemoteUpdate handlers", function() {
           record.save();
-          var expected_old_value = transformer(signal_a.remote_value(), signal_b.remote_value())
+          var expectedOldValue = transformer(signalA.remoteValue(), signalB.remoteValue())
           record.update({name: 'June'});
-          var expected_new_value = transformer(signal_a.remote_value(), signal_b.remote_value());
-          expect(on_remote_update_callback).to(have_been_called, once);
-          expect(on_remote_update_callback).to(have_been_called, with_args(expected_new_value, expected_old_value));
-          on_remote_update_callback.clear();
+          var expectedNewValue = transformer(signalA.remoteValue(), signalB.remoteValue());
+          expect(onRemoteUpdateCallback).to(haveBeenCalled, once);
+          expect(onRemoteUpdateCallback).to(haveBeenCalled, withArgs(expectedNewValue, expectedOldValue));
+          onRemoteUpdateCallback.clear();
 
-          expected_old_value = transformer(signal_a.remote_value(), signal_b.remote_value())
-          record.update({user_id: 'nathan'});
-          expected_new_value = transformer(signal_a.remote_value(), signal_b.remote_value());
-          expect(on_remote_update_callback).to(have_been_called, with_args(expected_new_value, expected_old_value));
+          expectedOldValue = transformer(signalA.remoteValue(), signalB.remoteValue())
+          record.update({userId: 'nathan'});
+          expectedNewValue = transformer(signalA.remoteValue(), signalB.remoteValue());
+          expect(onRemoteUpdateCallback).to(haveBeenCalled, withArgs(expectedNewValue, expectedOldValue));
         });
       });
 
       context("if the transformer applied to the new operand's remote value returns the same result", function() {
         // mock transformer function returns constant value
 
-        it("does not fire on_remote_update handlers", function() {
-          record.update({name: 'June', user_id: 'nathan'});
-          expect(on_remote_update_callback).to_not(have_been_called);
+        it("does not fire onRemoteUpdate handlers", function() {
+          record.update({name: 'June', userId: 'nathan'});
+          expect(onRemoteUpdateCallback).toNot(haveBeenCalled);
         });
       });
     });

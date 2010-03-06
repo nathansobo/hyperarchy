@@ -2,69 +2,69 @@
 
 Monarch.constructor("Monarch.Http.RepositoryUpdateFuture", {
   initialize: function() {
-    this.before_events_node = new Monarch.SubscriptionNode();
-    this.after_events_node = new Monarch.SubscriptionNode();
-    this.on_failure_node = new Monarch.SubscriptionNode();
-    this.on_complete_node = new Monarch.SubscriptionNode();
+    this.beforeEventsNode = new Monarch.SubscriptionNode();
+    this.afterEventsNode = new Monarch.SubscriptionNode();
+    this.onFailureNode = new Monarch.SubscriptionNode();
+    this.onCompleteNode = new Monarch.SubscriptionNode();
   },
 
-  trigger_before_events: function(data) {
-    this.triggered_before_events = true;
-    this.before_events_data = data;
-    this.before_events_node.publish(data);
+  triggerBeforeEvents: function(data) {
+    this.triggeredBeforeEvents = true;
+    this.beforeEventsData = data;
+    this.beforeEventsNode.publish(data);
   },
 
-  trigger_after_events: function(data) {
-    this.triggered_after_events = true;
-    this.after_events_data = data;
-    this.after_events_node.publish(data);
-    this.trigger_on_complete(data);
+  triggerAfterEvents: function(data) {
+    this.triggeredAfterEvents = true;
+    this.afterEventsData = data;
+    this.afterEventsNode.publish(data);
+    this.triggerOnComplete(data);
   },
 
-  trigger_on_failure: function(data) {
-    this.triggered_on_failure = true;
-    this.failure_data = data;
-    this.on_failure_node.publish(data);
-    this.trigger_on_complete(data);
+  triggerOnFailure: function(data) {
+    this.triggeredOnFailure = true;
+    this.failureData = data;
+    this.onFailureNode.publish(data);
+    this.triggerOnComplete(data);
   },
 
-  trigger_on_complete: function(data) {
-    this.triggered_on_complete = true;
-    this.complete_data = data;
-    this.on_complete_node.publish(data);
+  triggerOnComplete: function(data) {
+    this.triggeredOnComplete = true;
+    this.completeData = data;
+    this.onCompleteNode.publish(data);
   },
 
-  before_events: function(callback) {
-    if (this.triggered_before_events) {
-      callback(this.before_events_data);
+  beforeEvents: function(callback) {
+    if (this.triggeredBeforeEvents) {
+      callback(this.beforeEventsData);
     } else {
-      this.before_events_node.subscribe(callback);
+      this.beforeEventsNode.subscribe(callback);
     }
     return this;
   },
 
-  after_events: function(callback) {
-    if (this.triggered_after_events) {
-      callback(this.after_events_data);
+  afterEvents: function(callback) {
+    if (this.triggeredAfterEvents) {
+      callback(this.afterEventsData);
     } else {
-      this.after_events_node.subscribe(callback);
+      this.afterEventsNode.subscribe(callback);
     }
     return this;
   },
 
-  on_failure: function(callback) {
-    if (this.triggered_on_failure) {
-      callback(this.failure_data);
+  onFailure: function(callback) {
+    if (this.triggeredOnFailure) {
+      callback(this.failureData);
     } else {
-      this.on_failure_node.subscribe(callback);
+      this.onFailureNode.subscribe(callback);
     }
   },
 
-  on_complete: function(callback) {
-    if (this.triggered_on_complete) {
-      callback(this.complete_data);
+  onComplete: function(callback) {
+    if (this.triggeredOnComplete) {
+      callback(this.completeData);
     } else {
-      this.on_complete_node.subscribe(callback);
+      this.onCompleteNode.subscribe(callback);
     }
   }
 });

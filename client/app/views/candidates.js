@@ -1,88 +1,88 @@
 constructor("Views.Candidates", View.Template, {
   content: function() { with(this.builder) {
-    div({id: "candidates", 'class': "widget item_list"}, function() {
-      div({'class': "widget_header"}, function() {
-        textarea().ref("create_candidate_input");
-        button({id: "create_candidate", 'class': "create"}, "propose answer").click(function(view) {
-          view.create_candidate();
+    div({id: "candidates", 'class': "widget itemList"}, function() {
+      div({'class': "widgetHeader"}, function() {
+        textarea().ref("createCandidateInput");
+        button({id: "createCandidate", 'class': "create"}, "propose answer").click(function(view) {
+          view.createCandidate();
         });
       });
-      div({'class': "widget_content"}, function() {
-        ol().ref("candidates_ol");
-      }).ref('widget_content');
+      div({'class': "widgetContent"}, function() {
+        ol().ref("candidatesOl");
+      }).ref('widgetContent');
     });
   }},
 
-  view_properties: {
+  viewProperties: {
     initialize: function() {
       var self = this;
-      this.register_resize_callbacks();
+      this.registerResizeCallbacks();
 
       _.defer(function() {
-        var cancel_sort = true;
+        var cancelSort = true;
 
-        self.candidates_ol.sortable({
+        self.candidatesOl.sortable({
           connectWith: "#ranking ol",
           stop: function() {
-            if (cancel_sort) {
-              self.candidates_ol.sortable('cancel');
+            if (cancelSort) {
+              self.candidatesOl.sortable('cancel');
             } else {
-              cancel_sort = true;
+              cancelSort = true;
             }
           },
 
           remove: function() {
-            cancel_sort = false;
+            cancelSort = false;
           }
         })
       });
     },
 
-    register_resize_callbacks: function() {
+    registerResizeCallbacks: function() {
       var self = this;
       $(window).resize(function() {
-        self.fill_height();
+        self.fillHeight();
       });
 
       _.defer(function() {
-        self.fill_height();
+        self.fillHeight();
       });
     },
 
 
-    fill_height: function() {
-      var height = $(window).height() - this.widget_content.offset().top - 10;
-      this.candidates_ol.height(height);
+    fillHeight: function() {
+      var height = $(window).height() - this.widgetContent.offset().top - 10;
+      this.candidatesOl.height(height);
     },
 
     candidates: function(candidates) {
       if (arguments.length == 0) {
-        return this._candidates;
+        return this.Candidates;
       } else {
         var self = this;
-        this._candidates = candidates;
+        this.Candidates = candidates;
         candidates.fetch()
-          .after_events(function() {
-            self.populate_candidates();
-            candidates.on_remote_insert(self.hitch('add_candidate_to_list'));
+          .afterEvents(function() {
+            self.populateCandidates();
+            candidates.onRemoteInsert(self.hitch('addCandidateToList'));
           });
       }
     },
 
-    populate_candidates: function() {
-      this.candidates_ol.html("");
-      this.candidates().each(this.hitch('add_candidate_to_list'));
+    populateCandidates: function() {
+      this.candidatesOl.html("");
+      this.candidates().each(this.hitch('addCandidateToList'));
     },
 
-    add_candidate_to_list: function(candidate) {
-      var candidate_li = View.build(function(b) {
-        b.li({candidate_id: candidate.id()}, candidate.body());
+    addCandidateToList: function(candidate) {
+      var candidateLi = View.build(function(b) {
+        b.li({candidateId: candidate.id()}, candidate.body());
       });
-      this.candidates_ol.append(candidate_li);
+      this.candidatesOl.append(candidateLi);
     },
 
-    create_candidate: function() {
-      this.candidates().create({body: this.create_candidate_input.val()});
+    createCandidate: function() {
+      this.candidates().create({body: this.createCandidateInput.val()});
     }
   }
 });

@@ -1,8 +1,8 @@
 Screw.Unit(function(c) {
-  c.use_remote_fixtures = function() {
-    c.use_fake_server();
+  c.useRemoteFixtures = function() {
+    c.useFakeServer();
     c.init(function() {
-      Server.Repository.load_fixtures({
+      Server.Repository.loadFixtures({
         organizations: {
           meta: {
             name: "Meta Hyperarchy"

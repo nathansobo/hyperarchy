@@ -1,46 +1,46 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Tuple", {
-  constructor_properties: {
-    initialize_field_readers: function() {
+  constructorProperties: {
+    initializeFieldReaders: function() {
       var self = this;
-      Monarch.Util.each(this.projected_columns_by_name, function(name, projected_column) {
+      Monarch.Util.each(this.projectedColumnsByName, function(name, projectedColumn) {
         self.prototype[name] = function() {
-          return this.field(projected_column).value();
+          return this.field(projectedColumn).value();
         };
       });
     }
   },
 
-  initialize: function(operand_record) {
-    this.operand_record = operand_record;
+  initialize: function(operandRecord) {
+    this.operandRecord = operandRecord;
   },
 
-  field: function(projected_column_or_name) {
-    var projected_column;
-    if (typeof projected_column_or_name == "string") {
-      projected_column = this.constructor.projected_columns_by_name[projected_column_or_name];
+  field: function(projectedColumnOrName) {
+    var projectedColumn;
+    if (typeof projectedColumnOrName == "string") {
+      projectedColumn = this.constructor.projectedColumnsByName[projectedColumnOrName];
     } else {
-      projected_column = projected_column_or_name;
+      projectedColumn = projectedColumnOrName;
     }
 
-    return this.operand_record.field(projected_column.column);
+    return this.operandRecord.field(projectedColumn.column);
   },
 
-  evaluate: function(column_or_constant) {
-    if (column_or_constant instanceof Monarch.Model.ProjectedColumn) {
-      return this.field(column_or_constant).value();
+  evaluate: function(columnOrConstant) {
+    if (columnOrConstant instanceof Monarch.Model.ProjectedColumn) {
+      return this.field(columnOrConstant).value();
     } else {
-      return column_or_constant;
+      return columnOrConstant;
     }
   },
 
-  hash_code: function() {
-    var digest_input = [];
-    _.each(_(this.constructor.projected_columns_by_name).keys().sort(), function(key) {
-      digest_input.push(key, this.field(key).value_wire_representation());
+  hashCode: function() {
+    var digestInput = [];
+    _.each(_(this.constructor.projectedColumnsByName).keys().sort(), function(key) {
+      digestInput.push(key, this.field(key).valueWireRepresentation());
     }, this);
-    return b64_md5(digest_input.join(""));
+    return b64_md5(digestInput.join(""));
   }
 });
 

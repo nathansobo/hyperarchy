@@ -1,119 +1,119 @@
 (function(Monarch, jQuery) {
 
 Monarch.constructor("Monarch.Http.Server", {
-  comet_hub_url: "/comet",
+  cometHubUrl: "/comet",
 
   initialize: function() {
-    this.pending_commands = [];
+    this.pendingCommands = [];
   },
 
   fetch: function(relations) {
-    var fetch_future = new Monarch.Http.RepositoryUpdateFuture();
+    var fetchFuture = new Monarch.Http.RepositoryUpdateFuture();
 
-    this.get(Repository.origin_url + "/fetch", {
+    this.get(Repository.originUrl + "/fetch", {
       relations: Monarch.Util.map(relations, function(relation) {
-        return relation.wire_representation();
+        return relation.wireRepresentation();
       })
     })
-      .on_success(function(data) {
-        Repository.pause_events();
+      .onSuccess(function(data) {
+        Repository.pauseEvents();
         Repository.update(data);
-        fetch_future.trigger_before_events();
-        Repository.resume_events();
-        fetch_future.trigger_after_events();
+        fetchFuture.triggerBeforeEvents();
+        Repository.resumeEvents();
+        fetchFuture.triggerAfterEvents();
       });
 
-    return fetch_future;
+    return fetchFuture;
   },
 
   subscribe: function(relations) {
-    if (!this.comet_client) {
-      this.comet_client = this.new_comet_client();
-      this.comet_client.connect();
-      this.comet_client.on_receive(function(mutation) {
-        if (window.debug_events) console.debug(mutation);
+    if (!this.cometClient) {
+      this.cometClient = this.newCometClient();
+      this.cometClient.connect();
+      this.cometClient.onReceive(function(mutation) {
+        if (window.debugEvents) console.debug(mutation);
         Repository.mutate([mutation]);
       });
     }
 
-    var subscribe_future = new Monarch.Http.AjaxFuture();
-    this.post(Repository.origin_url + "/subscribe", {
+    var subscribeFuture = new Monarch.Http.AjaxFuture();
+    this.post(Repository.originUrl + "/subscribe", {
       relations: Monarch.Util.map(relations, function(relation) {
-        return relation.wire_representation();
+        return relation.wireRepresentation();
       })
-    }).on_success(function(subscription_ids) {
-      subscribe_future.trigger_success(Monarch.Util.map(subscription_ids, function(subscription_id, index) {
-        return new Monarch.Http.RemoteSubscription(subscription_id, relations[index]);
+    }).onSuccess(function(subscriptionIds) {
+      subscribeFuture.triggerSuccess(Monarch.Util.map(subscriptionIds, function(subscriptionId, index) {
+        return new Monarch.Http.RemoteSubscription(subscriptionId, relations[index]);
       }));
     });
 
-    return subscribe_future;
+    return subscribeFuture;
   },
 
-  unsubscribe: function(remote_subscriptions) {
-    return this.post(Repository.origin_url + "/unsubscribe", {
-      subscription_ids: Monarch.Util.map(remote_subscriptions, function(remote_subscription) {
-        return remote_subscription.id;
+  unsubscribe: function(remoteSubscriptions) {
+    return this.post(Repository.originUrl + "/unsubscribe", {
+      subscriptionIds: Monarch.Util.map(remoteSubscriptions, function(remoteSubscription) {
+        return remoteSubscription.id;
       })
     });
   },
 
   save: function() {
-    var commands = Monarch.Util.map(this.extract_dirty_records(arguments), function(dirty_record) {
-      return this.build_appropriate_command(dirty_record);
+    var commands = Monarch.Util.map(this.extractDirtyRecords(arguments), function(dirtyRecord) {
+      return this.buildAppropriateCommand(dirtyRecord);
     }.bind(this));
     var batch = new Monarch.Http.CommandBatch(this, commands);
 
-    Repository.pause_mutations();
-    var save_future = batch.perform();
-    save_future.on_complete(function() {
-      Repository.resume_mutations();
+    Repository.pauseMutations();
+    var saveFuture = batch.perform();
+    saveFuture.onComplete(function() {
+      Repository.resumeMutations();
     });
-    return save_future;
+    return saveFuture;
   },
 
   post: function(url, data) {
-    return this.request('POST', url, this.add_comet_id(data));
+    return this.request('POST', url, this.addCometId(data));
   },
 
   get: function(url, data) {
-    return this.request('GET', url, this.add_comet_id(data));
+    return this.request('GET', url, this.addCometId(data));
   },
 
   put: function(url, data) {
-    return this.request('PUT', url, this.add_comet_id(data));
+    return this.request('PUT', url, this.addCometId(data));
   },
 
   delete_: function(url, data) {
-    var url_encoded_data = jQuery.param(this.stringify_json_data(this.add_comet_id(data)));
-    return this.request('DELETE', url + "?" + url_encoded_data);
+    var urlEncodedData = jQuery.param(this.stringifyJsonData(this.addCometId(data)));
+    return this.request('DELETE', url + "?" + urlEncodedData);
   },
 
   // private
-  new_comet_client: function() {
+  newCometClient: function() {
     return new Monarch.Http.CometClient();
   },
 
-  add_comet_id: function(data) {
-    return Monarch.Util.extend({ comet_client_id: window.COMET_CLIENT_ID }, data);
+  addCometId: function(data) {
+    return Monarch.Util.extend({ cometClientId: window.COMETCLIENTID }, data);
   },
 
-  extract_dirty_records: function(records_or_relations) {
-    var dirty_records = []
-    Monarch.Util.each(records_or_relations, function(arg) {
-      if (arg.__relation__) {
-        dirty_records.push.apply(dirty_records, arg.dirty_tuples());
+  extractDirtyRecords: function(recordsOrRelations) {
+    var dirtyRecords = []
+    Monarch.Util.each(recordsOrRelations, function(arg) {
+      if (arg._relation_) {
+        dirtyRecords.push.apply(dirtyRecords, arg.dirtyTuples());
       } else {
-        if (arg.dirty()) dirty_records.push(arg);
+        if (arg.dirty()) dirtyRecords.push(arg);
       }
     });
-    return dirty_records;
+    return dirtyRecords;
   },
 
-  build_appropriate_command: function(record) {
-    if (record.locally_destroyed) {
+  buildAppropriateCommand: function(record) {
+    if (record.locallyDestroyed) {
       return new Monarch.Http.DestroyCommand(record);
-    } else if (!record.is_remotely_created) {
+    } else if (!record.isRemotelyCreated) {
       return new Monarch.Http.CreateCommand(record);
     } else {
       return new Monarch.Http.UpdateCommand(record);
@@ -126,22 +126,22 @@ Monarch.constructor("Monarch.Http.Server", {
       url: url,
       type: type,
       dataType: 'json',
-      data: this.stringify_json_data(data),
+      data: this.stringifyJsonData(data),
       success: function(response) {
-        future.handle_response(response);
+        future.handleResponse(response);
       }
     });
     return future;
   },
 
-  stringify_json_data: function(data) {
+  stringifyJsonData: function(data) {
     if (!data) return null;
-    var stringified_data = {};
+    var stringifiedData = {};
     Monarch.Util.each(data, function(key, value) {
       if (typeof value != "string") value = JSON.stringify(value);
-      stringified_data[key] = value;
+      stringifiedData[key] = value;
     });
-    return stringified_data;
+    return stringifiedData;
   }
 });
 

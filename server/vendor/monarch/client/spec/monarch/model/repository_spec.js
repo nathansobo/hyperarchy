@@ -2,60 +2,60 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Repository", function() {
-    use_local_fixtures();
+    useLocalFixtures();
 
     var repository;
     before(function() {
       repository = Repository;
     });
 
-    describe("#pause_events", function() {
-      it("calls .pause_events on all Tables", function() {
-        mock(Blog.table, 'pause_events');
-        mock(User.table, 'pause_events');
+    describe("#pauseEvents", function() {
+      it("calls .pauseEvents on all Tables", function() {
+        mock(Blog.table, 'pauseEvents');
+        mock(User.table, 'pauseEvents');
 
-        repository.pause_events();
+        repository.pauseEvents();
 
-        expect(Blog.table.pause_events).to(have_been_called, once);
-        expect(User.table.pause_events).to(have_been_called, once);
+        expect(Blog.table.pauseEvents).to(haveBeenCalled, once);
+        expect(User.table.pauseEvents).to(haveBeenCalled, once);
       });
     });
 
-    describe("#resume_events", function() {
-      it("calls .resume_events on all Tables", function() {
-        repository.pause_events();
+    describe("#resumeEvents", function() {
+      it("calls .resumeEvents on all Tables", function() {
+        repository.pauseEvents();
 
-        mock(Blog.table, 'resume_events');
-        mock(User.table, 'resume_events');
+        mock(Blog.table, 'resumeEvents');
+        mock(User.table, 'resumeEvents');
 
-        repository.resume_events();
+        repository.resumeEvents();
 
-        expect(Blog.table.resume_events).to(have_been_called, once);
-        expect(User.table.resume_events).to(have_been_called, once);
+        expect(Blog.table.resumeEvents).to(haveBeenCalled, once);
+        expect(User.table.resumeEvents).to(haveBeenCalled, once);
       });
     });
 
-    describe("#pause_mutations and #resume_mutations", function() {
+    describe("#pauseMutations and #resumeMutations", function() {
       they("enqueue mutations while they are paused and execute enqueued mutations plus any further mutations after resuming", function() {
-        repository.pause_mutations();
+        repository.pauseMutations();
 
         repository.mutate([
           ['create', 'blog_posts', { id: 'running', name: "It Keeps You Running" }],
           ['update', 'blogs', 'recipes', { name: "Absolutely Disgusting Food"}]
         ]);
 
-        expect(BlogPost.find('running')).to(be_null);
-        expect(Blog.find('recipes').name()).to_not(equal, "Absolutely Disgusting Food");
+        expect(BlogPost.find('running')).to(beNull);
+        expect(Blog.find('recipes').name()).toNot(equal, "Absolutely Disgusting Food");
 
         repository.mutate([['destroy', 'users', 'jan']]);
 
-        expect(User.find('jan')).to_not(be_null);
+        expect(User.find('jan')).toNot(beNull);
 
-        repository.resume_mutations();
+        repository.resumeMutations();
 
-        expect(BlogPost.find('running')).to_not(be_null);
+        expect(BlogPost.find('running')).toNot(beNull);
         expect(Blog.find('recipes').name()).to(equal, "Absolutely Disgusting Food");
-        expect(User.find('jan')).to(be_null);
+        expect(User.find('jan')).to(beNull);
 
         repository.mutate([['update', 'blogs', 'recipes', { name: "Chicken Aint So Bad" }]]);
         
@@ -65,34 +65,34 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#update", function() {
       it("inserts tuples that don't exist and updates those that do", function() {
-        expect(User.find('nathan')).to(be_null);
-        expect(Blog.find('metacircular')).to(be_null);
-        expect(Blog.find('travel')).to(be_null);
+        expect(User.find('nathan')).to(beNull);
+        expect(Blog.find('metacircular')).to(beNull);
+        expect(Blog.find('travel')).to(beNull);
 
         var jan = User.find('jan');
-        expect(jan.full_name()).to(equal, 'Jan Nelson');
+        expect(jan.fullName()).to(equal, 'Jan Nelson');
 
         repository.update({
           users: {
             nathan: {
               id: 'nathan',
-              full_name: 'Nathan Sobo',
-              bogus_column: 'Should not cause exception'
+              fullName: 'Nathan Sobo',
+              bogusColumn: 'Should not cause exception'
             },
             jan: {
               id: 'jan',
-              full_name: 'Jan Christian Nelson'
+              fullName: 'Jan Christian Nelson'
             }
           },
           blogs: {
             metacircular: {
               id: 'metacircular',
-              user_id: 'nathan',
+              userId: 'nathan',
               name: 'Metacircular'
             },
             travel: {
               id: 'travel',
-              user_id: 'nathan',
+              userId: 'nathan',
               name: "Nathan's Travels"
             }
           }
@@ -102,48 +102,48 @@ Screw.Unit(function(c) { with(c) {
         var metacircular = Blog.find('metacircular');
         var travel = Blog.find('travel');
 
-        expect(nathan.full_name()).to(equal, 'Nathan Sobo');
+        expect(nathan.fullName()).to(equal, 'Nathan Sobo');
         expect(metacircular.name()).to(equal, 'Metacircular');
-        expect(metacircular.user_id()).to(equal, 'nathan');
+        expect(metacircular.userId()).to(equal, 'nathan');
         expect(travel.name()).to(equal, "Nathan's Travels");
-        expect(travel.user_id()).to(equal, 'nathan');
-        expect(jan.full_name()).to(equal, 'Jan Christian Nelson');
+        expect(travel.userId()).to(equal, 'nathan');
+        expect(jan.fullName()).to(equal, 'Jan Christian Nelson');
       });
     });
 
     describe("#delta", function() {
       it("inserts tuples that don't exist, updates those that do, and removes tuples that are not present in the given snapshot", function() {
-        expect(User.find('nathan')).to(be_null);
-        expect(Blog.find('metacircular')).to(be_null);
-        expect(Blog.find('travel')).to(be_null);
+        expect(User.find('nathan')).to(beNull);
+        expect(Blog.find('metacircular')).to(beNull);
+        expect(Blog.find('travel')).to(beNull);
 
         var jan = User.find('jan');
-        expect(jan.full_name()).to(equal, 'Jan Nelson');
-        expect(User.find('mike')).to_not(be_null);
-        expect(User.find('wil')).to_not(be_null);
-        expect(Blog.find('recipes')).to_not(be_null);
-        expect(Blog.find('motorcycle')).to_not(be_null);
+        expect(jan.fullName()).to(equal, 'Jan Nelson');
+        expect(User.find('mike')).toNot(beNull);
+        expect(User.find('wil')).toNot(beNull);
+        expect(Blog.find('recipes')).toNot(beNull);
+        expect(Blog.find('motorcycle')).toNot(beNull);
 
         repository.delta({
           users: {
             nathan: {
               id: 'nathan',
-              full_name: 'Nathan Sobo'
+              fullName: 'Nathan Sobo'
             },
             jan: {
               id: 'jan',
-              full_name: 'Jan Christian Nelson'
+              fullName: 'Jan Christian Nelson'
             }
           },
           blogs: {
             metacircular: {
               id: 'metacircular',
-              user_id: 'nathan',
+              userId: 'nathan',
               name: 'Metacircular'
             },
             travel: {
               id: 'travel',
-              user_id: 'nathan',
+              userId: 'nathan',
               name: "Nathan's Travels"
             }
           }
@@ -153,28 +153,28 @@ Screw.Unit(function(c) { with(c) {
         var metacircular = Blog.find('metacircular');
         var travel = Blog.find('travel');
 
-        expect(User.find('mike')).to(be_null);
-        expect(User.find('wil')).to(be_null);
-        expect(Blog.find('recipes')).to(be_null);
-        expect(Blog.find('motorcycle')).to(be_null);
-        expect(nathan.full_name()).to(equal, 'Nathan Sobo');
+        expect(User.find('mike')).to(beNull);
+        expect(User.find('wil')).to(beNull);
+        expect(Blog.find('recipes')).to(beNull);
+        expect(Blog.find('motorcycle')).to(beNull);
+        expect(nathan.fullName()).to(equal, 'Nathan Sobo');
         expect(metacircular.name()).to(equal, 'Metacircular');
-        expect(metacircular.user_id()).to(equal, 'nathan');
+        expect(metacircular.userId()).to(equal, 'nathan');
         expect(travel.name()).to(equal, "Nathan's Travels");
-        expect(travel.user_id()).to(equal, 'nathan');
-        expect(jan.full_name()).to(equal, 'Jan Christian Nelson');
+        expect(travel.userId()).to(equal, 'nathan');
+        expect(jan.fullName()).to(equal, 'Jan Christian Nelson');
       });
     });
 
     describe("#mutate", function() {
       it("takes an array of mutation commands, and executes them if their effects are not redundant", function() {
-        var insert_callback = mock_function('insert_callback');
-        var update_callback = mock_function('update_callback');
-        var remove_callback = mock_function('remove_callback');
+        var insertCallback = mockFunction('insertCallback');
+        var updateCallback = mockFunction('updateCallback');
+        var removeCallback = mockFunction('removeCallback');
 
-        Blog.on_remote_insert(insert_callback);
-        User.on_remote_update(update_callback);
-        User.on_remote_remove(remove_callback);
+        Blog.onRemoteInsert(insertCallback);
+        User.onRemoteUpdate(updateCallback);
+        User.onRemoteRemove(removeCallback);
 
         repository.mutate([
           ['create', 'blogs', { id: "malathion", name: "Recipes From The Makers of Malathion"}],
@@ -185,49 +185,49 @@ Screw.Unit(function(c) { with(c) {
           ['destroy', 'users', 'wil']
         ]);
 
-        expect(insert_callback).to(have_been_called, once);
-        expect(update_callback).to(have_been_called, once);
-        expect(remove_callback).to(have_been_called, once);
+        expect(insertCallback).to(haveBeenCalled, once);
+        expect(updateCallback).to(haveBeenCalled, once);
+        expect(removeCallback).to(haveBeenCalled, once);
 
         expect(Blog.find('malathion').name()).to(equal, "Recipes From The Makers of Malathion");
         expect(User.find('jan').age()).to(equal, 88);
-        expect(User.find('wil')).to(be_null);
+        expect(User.find('wil')).to(beNull);
       });
     });
 
     describe("#clear", function() {
       it("removes all data from all tables", function() {
-        expect(Blog.tuples()).to_not(be_empty);
-        expect(User.tuples()).to_not(be_empty);
+        expect(Blog.tuples()).toNot(beEmpty);
+        expect(User.tuples()).toNot(beEmpty);
         repository.clear();
-        expect(User.tuples()).to(be_empty);
-        expect(Blog.tuples()).to(be_empty);
+        expect(User.tuples()).to(beEmpty);
+        expect(Blog.tuples()).to(beEmpty);
       });
     });
 
-    describe("#clone_schema", function() {
+    describe("#cloneSchema", function() {
       it("makes another Repository with the cloned schemas of all its Tables", function() {
-        expect(repository.tables.users).to_not(be_null);
-        expect(repository.tables.users.tuples()).to_not(be_empty);
-        expect(repository.tables.blogs).to_not(be_null);
-        expect(repository.tables.blogs.tuples()).to_not(be_empty);
+        expect(repository.tables.users).toNot(beNull);
+        expect(repository.tables.users.tuples()).toNot(beEmpty);
+        expect(repository.tables.blogs).toNot(beNull);
+        expect(repository.tables.blogs.tuples()).toNot(beEmpty);
 
-        var clone = repository.clone_schema();
+        var clone = repository.cloneSchema();
 
         // same tables
-        expect(clone.tables.users).to_not(be_null);
-        expect(clone.tables.users.tuples()).to(be_empty);
-        expect(clone.tables.blogs).to_not(be_null);
-        expect(clone.tables.blogs.tuples()).to(be_empty);
+        expect(clone.tables.users).toNot(beNull);
+        expect(clone.tables.users.tuples()).to(beEmpty);
+        expect(clone.tables.blogs).toNot(beNull);
+        expect(clone.tables.blogs.tuples()).to(beEmpty);
 
         // with same columns (schema)
-        expect(clone.tables.users.columns_by_name).to(equal, repository.tables.users.columns_by_name);
-        expect(clone.tables.users.column('full_name')).to(equal, repository.tables.users.column('full_name'));
+        expect(clone.tables.users.columnsByName).to(equal, repository.tables.users.columnsByName);
+        expect(clone.tables.users.column('fullName')).to(equal, repository.tables.users.column('fullName'));
 
         // but different data stores
-        var num_users_in_original_repository = repository.tables.users.tuples().length;
-        clone.tables.users.local_create({full_name: "Wil Bierbaum"});
-        expect(repository.tables.users.tuples().length).to(equal, num_users_in_original_repository);
+        var numUsersInOriginalRepository = repository.tables.users.tuples().length;
+        clone.tables.users.localCreate({fullName: "Wil Bierbaum"});
+        expect(repository.tables.users.tuples().length).to(equal, numUsersInOriginalRepository);
       });
     });
   });

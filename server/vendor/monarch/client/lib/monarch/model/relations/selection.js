@@ -5,79 +5,79 @@ Monarch.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations
   initialize: function(operand, predicate) {
     this.operand = operand;
     this.predicate = predicate;
-    this.initialize_events_system();
+    this.initializeEventsSystem();
   },
 
-  all_tuples: function() {
-    if (this._tuples) return this._tuples;
-    return Monarch.Util.select(this.operand.all_tuples(), function(tuple) {
+  allTuples: function() {
+    if (this.Tuples) return this.Tuples;
+    return Monarch.Util.select(this.operand.allTuples(), function(tuple) {
       return this.predicate.evaluate(tuple);
     }.bind(this));
   },
 
-  create: function(field_values) {
-    return this.operand.create(this.predicate.force_matching_field_values(field_values));
+  create: function(fieldValues) {
+    return this.operand.create(this.predicate.forceMatchingFieldValues(fieldValues));
   },
 
-  local_create: function(field_values) {
-    return this.operand.local_create(this.predicate.force_matching_field_values(field_values));
+  localCreate: function(fieldValues) {
+    return this.operand.localCreate(this.predicate.forceMatchingFieldValues(fieldValues));
   },
 
-  wire_representation: function() {
+  wireRepresentation: function() {
     return {
       type: "selection",
-      operand: this.operand.wire_representation(),
-      predicate: this.predicate.wire_representation()
+      operand: this.operand.wireRepresentation(),
+      predicate: this.predicate.wireRepresentation()
     };
   },
 
-  evaluate_in_repository: function(repository) {
-    return new Monarch.Model.Relations.Selection(this.operand.evaluate_in_repository(repository), this.predicate);
+  evaluateInRepository: function(repository) {
+    return new Monarch.Model.Relations.Selection(this.operand.evaluateInRepository(repository), this.predicate);
   },
 
-  primary_table: function() {
-    return this.operand.primary_table();
+  primaryTable: function() {
+    return this.operand.primaryTable();
   },
 
   column: function(name) {
     return this.operand.column(name);
   },
 
-  surface_tables: function() {
-    return this.operand.surface_tables();
+  surfaceTables: function() {
+    return this.operand.surfaceTables();
   },
 
   // private
 
-  subscribe_to_operands: function() {
+  subscribeToOperands: function() {
     var self = this;
 
-    this.operands_subscription_bundle.add(this.operand.on_remote_insert(function(record) {
-      if (self.predicate.evaluate(record)) self.tuple_inserted_remotely(record);
+    this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(record) {
+      if (self.predicate.evaluate(record)) self.tupleInsertedRemotely(record);
     }));
 
-    this.operands_subscription_bundle.add(this.operand.on_remote_remove(function(record) {
-      if (self.predicate.evaluate(record)) self.tuple_removed_remotely(record);
+    this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(record) {
+      if (self.predicate.evaluate(record)) self.tupleRemovedRemotely(record);
     }));
 
-    this.operands_subscription_bundle.add(this.operand.on_remote_update(function(record, changed_fields) {
+    this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(record, changedFields) {
       if (self.contains(record)) {
         if (self.predicate.evaluate(record)) {
-          self.tuple_updated_remotely(record, changed_fields);
+          self.tupleUpdatedRemotely(record, changedFields);
         } else {
-          self.tuple_removed_remotely(record);
+          self.tupleRemovedRemotely(record);
         }
       } else {
-        if (self.predicate.evaluate(record)) self.tuple_inserted_remotely(record);
+        if (self.predicate.evaluate(record)) self.tupleInsertedRemotely(record);
       }
     }));
 
-    this.operands_subscription_bundle.add(this.operand.on_dirty(function(record) {
-      if (self.contains(record)) self.record_made_dirty(record);
+    this.operandsSubscriptionBundle.add(this.operand.onDirty(function(record) {
+      if (self.contains(record)) self.recordMadeDirty(record);
     }));
 
-    this.operands_subscription_bundle.add(this.operand.on_clean(function(record) {
-      if (self.contains(record)) self.record_made_clean(record);
+    this.operandsSubscriptionBundle.add(this.operand.onClean(function(record) {
+      if (self.contains(record)) self.recordMadeClean(record);
     }));
   }
 });

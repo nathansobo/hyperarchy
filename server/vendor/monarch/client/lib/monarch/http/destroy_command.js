@@ -3,19 +3,19 @@
 Monarch.constructor("Monarch.Http.DestroyCommand", Monarch.Http.Command, {
   initialize: function(record) {
     this.record = record;
-    this.table_name = record.table.global_name;
+    this.tableName = record.table.globalName;
     this.id = record.id();
   },
 
-  wire_representation: function() {
-    return ['destroy', this.table_name, this.id];
+  wireRepresentation: function() {
+    return ['destroy', this.tableName, this.id];
   },
 
   complete: function() {
-    this.record.remotely_destroyed();
+    this.record.remotelyDestroyed();
   },
 
-  handle_failure: function() {
+  handleFailure: function() {
   }
 });
 

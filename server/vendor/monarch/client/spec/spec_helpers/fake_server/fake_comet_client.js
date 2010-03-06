@@ -1,6 +1,6 @@
 Monarch.constructor("FakeServer.FakeCometClient", {
   initialize: function() {
-    this.on_receive_node = new Monarch.SubscriptionNode();
+    this.onReceiveNode = new Monarch.SubscriptionNode();
     this.connected = false;
   },
   
@@ -8,11 +8,11 @@ Monarch.constructor("FakeServer.FakeCometClient", {
     this.connected = true;
   },
 
-  on_receive: function(callback) {
-    return this.on_receive_node.subscribe(callback);
+  onReceive: function(callback) {
+    return this.onReceiveNode.subscribe(callback);
   },
 
-  simulate_receive: function(message) {
-    this.on_receive_node.publish(message);
+  simulateReceive: function(message) {
+    this.onReceiveNode.publish(message);
   }
 });

@@ -2,11 +2,11 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Views.Organization", function() {
-    use_remote_fixtures();
+    useRemoteFixtures();
 
     var view;
     before(function() {
-      view = Views.Organization.to_view();
+      view = Views.Organization.toView();
     });
 
     describe("#initialize", function() {
@@ -14,14 +14,14 @@ Screw.Unit(function(c) { with(c) {
         Server.auto = false;
       });
 
-      it("fetches the Organizations and populates the organization_select with them", function() {
+      it("fetches the Organizations and populates the organizationSelect with them", function() {
         expect(Server.fetches.length).to(equal, 1);
-        Server.fetches.shift().simulate_success();
+        Server.fetches.shift().simulateSuccess();
 
-        expect(Organization.empty()).to(be_false);
+        expect(Organization.empty()).to(beFalse);
 
         Organization.each(function(organization) {
-          expect(view.organization_select.find("option:contains('" + organization.name() + "')")).to_not(be_empty);
+          expect(view.organizationSelect.find("option:contains('" + organization.name() + "')")).toNot(beEmpty);
         });
       });
     });

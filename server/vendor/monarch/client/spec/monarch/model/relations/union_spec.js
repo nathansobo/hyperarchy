@@ -2,56 +2,56 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Relations.Union", function() {
-    use_example_domain_model();
+    useExampleDomainModel();
 
-    var left_operand, right_operand, union;
+    var leftOperand, rightOperand, union;
     before(function() {
-      left_operand = User.where({full_name: "John"});
-      right_operand = User.where({age: 32});
-      union = new Monarch.Model.Relations.Union(left_operand, right_operand);
+      leftOperand = User.where({fullName: "John"});
+      rightOperand = User.where({age: 32});
+      union = new Monarch.Model.Relations.Union(leftOperand, rightOperand);
     });
 
 
-    describe("#all_tuples", function() {
+    describe("#allTuples", function() {
       it("returns the union tuples in the left operand and right operand", function() {
-        var user_1 = User.local_create({age: 22, full_name: "Mackrel"});
-        var user_2 = User.local_create({age: 32, full_name: "Jonie"});
-        var user_3 = User.local_create({age: 32, full_name: "John"});
-        var user_4 = User.local_create({full_name: "John"});
-        var user_5 = User.local_create({full_name: "Mark"});
+        var user1 = User.localCreate({age: 22, fullName: "Mackrel"});
+        var user2 = User.localCreate({age: 32, fullName: "Jonie"});
+        var user3 = User.localCreate({age: 32, fullName: "John"});
+        var user4 = User.localCreate({fullName: "John"});
+        var user5 = User.localCreate({fullName: "Mark"});
 
         Server.save(User.table);
 
-        var tuples = union.all_tuples();
+        var tuples = union.allTuples();
         expect(tuples.length).to(equal, 3);
-        expect(_.include(tuples, user_2)).to(be_true);
-        expect(_.include(tuples, user_3)).to(be_true);
-        expect(_.include(tuples, user_4)).to(be_true);
+        expect(_.include(tuples, user2)).to(beTrue);
+        expect(_.include(tuples, user3)).to(beTrue);
+        expect(_.include(tuples, user4)).to(beTrue);
       });
     });
 
     describe("event handling", function() {
-      var table_1, table_2, difference, record, insert_callback, update_callback, remove_callback;
+      var table1, table2, difference, record, insertCallback, updateCallback, removeCallback;
       init(function() {
-        left_operand = Blog.table;
-        right_operand = Blog.table;
+        leftOperand = Blog.table;
+        rightOperand = Blog.table;
       });
 
       before(function() {
-        difference = new Monarch.Model.Relations.Difference(left_operand, right_operand);
+        difference = new Monarch.Model.Relations.Difference(leftOperand, rightOperand);
 
-        insert_callback = mock_function("insert_callback");
-        update_callback = mock_function("update_callback");
-        remove_callback = mock_function("remove_callback");
-        difference.on_remote_insert(insert_callback);
-        difference.on_remote_update(update_callback);
-        difference.on_remote_remove(remove_callback);
+        insertCallback = mockFunction("insertCallback");
+        updateCallback = mockFunction("updateCallback");
+        removeCallback = mockFunction("removeCallback");
+        difference.onRemoteInsert(insertCallback);
+        difference.onRemoteUpdate(updateCallback);
+        difference.onRemoteRemove(removeCallback);
       });
 
-      function expect_no_callbacks_to_have_been_called() {
-        expect(insert_callback).to_not(have_been_called);
-        expect(update_callback).to_not(have_been_called);
-        expect(remove_callback).to_not(have_been_called);
+      function expectNoCallbacksToHaveBeenCalled() {
+        expect(insertCallback).toNot(haveBeenCalled);
+        expect(updateCallback).toNot(haveBeenCalled);
+        expect(removeCallback).toNot(haveBeenCalled);
       }
 
       describe("when a record is inserted in the left operand", function() {

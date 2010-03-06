@@ -2,18 +2,18 @@
 
 Monarch.constructor("Monarch.Http.CometClient", {
   initialize: function() {
-    this.on_receive_node = new Monarch.SubscriptionNode();
+    this.onReceiveNode = new Monarch.SubscriptionNode();
   },
 
   connect: function() {
     var self = this;
     var len = 0
-    session_id = "fake_client_id";
+    sessionId = "fakeClientId";
 
     var xhr = jQuery.ajax({
       type: "post",
-      url: Server.comet_hub_url,
-      data: { comet_client_id: window.COMET_CLIENT_ID, transport: "xhr_stream" },
+      url: Server.cometHubUrl,
+      data: { cometClientId: window.COMETCLIENTID, transport: "xhrStream" },
       complete: function() { self.connect() }
     });
 
@@ -22,16 +22,16 @@ Monarch.constructor("Monarch.Http.CometClient", {
         var data = Monarch.Util.trim(xhr.responseText.slice(len));
         len = xhr.responseText.length;
         if (data.length > 0) {
-          Monarch.Util.each(data.split("\n"), function(data_chunk) {
-            self.on_receive_node.publish(JSON.parse(data_chunk));
+          Monarch.Util.each(data.split("\n"), function(dataChunk) {
+            self.onReceiveNode.publish(JSON.parse(dataChunk));
           });
         }
       }
     }
   },
 
-  on_receive: function(callback) {
-    return this.on_receive_node.subscribe(callback);
+  onReceive: function(callback) {
+    return this.onReceiveNode.subscribe(callback);
   }
 });
 

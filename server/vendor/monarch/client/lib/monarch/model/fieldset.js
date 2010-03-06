@@ -1,33 +1,33 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Fieldset", {
-  field: function(column_or_name) {
-    var column_name = (typeof column_or_name == 'string') ? column_or_name : column_or_name.name;
-    return this.fields_by_column_name[column_name] || this.synthetic_fields_by_column_name[column_name];
+  field: function(columnOrName) {
+    var columnName = (typeof columnOrName == 'string') ? columnOrName : columnOrName.name;
+    return this.fieldsByColumnName[columnName] || this.syntheticFieldsByColumnName[columnName];
   },
 
   // protected
 
-  initialize_synthetic_fields: function() {
+  initializeSyntheticFields: function() {
     var self = this;
-    this.synthetic_fields_by_column_name = {};
-    Monarch.Util.each(this.record.table.synthetic_columns_by_name, function(column_name, column) {
+    this.syntheticFieldsByColumnName = {};
+    Monarch.Util.each(this.record.table.syntheticColumnsByName, function(columnName, column) {
       var signal = column.definition.call(self.record);
-      self.synthetic_fields_by_column_name[column_name] = new Monarch.Model.SyntheticField(self, column, signal);
-      self[column_name] = function() {
-        var field = self.field(column_name);
+      self.syntheticFieldsByColumnName[columnName] = new Monarch.Model.SyntheticField(self, column, signal);
+      self[columnName] = function() {
+        var field = self.field(columnName);
         return field.value.apply(field, arguments);
       }
     });
   },
 
-  initialize_fields: function() {
+  initializeFields: function() {
     var self = this;
-    this.fields_by_column_name = {};
-    Monarch.Util.each(this.record.table.columns_by_name, function(column_name, column) {
-      this.fields_by_column_name[column_name] = this.create_new_field(column);
-      this[column_name] = function() {
-        var field = this.field(column_name);
+    this.fieldsByColumnName = {};
+    Monarch.Util.each(this.record.table.columnsByName, function(columnName, column) {
+      this.fieldsByColumnName[columnName] = this.createNewField(column);
+      this[columnName] = function() {
+        var field = this.field(columnName);
         return field.value.apply(field, arguments);
       }
     }.bind(this));

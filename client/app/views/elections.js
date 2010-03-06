@@ -1,68 +1,68 @@
 constructor("Views.Elections", View.Template, {
   content: function() { with(this.builder) {
-    div({id: "elections", 'class': "widget item_list"}, function() {
-      div({'class': "widget_header"}, function() {
-        textarea().ref("create_election_input");
-        button({id: "create_election", 'class': "create"}, "raise question").click(function(view) {
-          view.create_election();
+    div({id: "elections", 'class': "widget itemList"}, function() {
+      div({'class': "widgetHeader"}, function() {
+        textarea().ref("createElectionInput");
+        button({id: "createElection", 'class': "create"}, "raise question").click(function(view) {
+          view.createElection();
         });
       });
 
-      div({'class': "widget_content"}, function() {
-        ol().ref("elections_ol")
-      }).ref('widget_content');
+      div({'class': "widgetContent"}, function() {
+        ol().ref("electionsOl")
+      }).ref('widgetContent');
     });
   }},
 
-  view_properties: {
+  viewProperties: {
     initialize: function() {
       var self = this;
       $(window).resize(function() {
-        self.fill_height();
+        self.fillHeight();
       });
 
       _.defer(function() {
-        self.fill_height();
+        self.fillHeight();
       });
     },
 
-    fill_height: function() {
-      var height = $(window).height() - this.widget_content.offset().top - 10;
-      this.widget_content.height(height);
+    fillHeight: function() {
+      var height = $(window).height() - this.widgetContent.offset().top - 10;
+      this.widgetContent.height(height);
     },
 
     elections: function(elections) {
       if (arguments.length == 0) {
-        return this._elections;
+        return this.Elections;
       } else {
         var self = this;
-        this._elections = elections;
-        this.elections_ol.html("");
+        this.Elections = elections;
+        this.electionsOl.html("");
         elections.fetch()
-          .after_events(function() {
-            elections.each(self.hitch('add_election_to_list'));
-            elections.on_remote_insert(self.hitch('add_election_to_list'));
+          .afterEvents(function() {
+            elections.each(self.hitch('addElectionToList'));
+            elections.onRemoteInsert(self.hitch('addElectionToList'));
           });
       }
     },
 
-    add_election_to_list: function(election) {
+    addElectionToList: function(election) {
       var self = this;
-      this.elections_ol.append_view(function(b) {
+      this.electionsOl.appendView(function(b) {
         b.li(election.body()).click(function(li) {
-          self.election_selected(election, li);
+          self.electionSelected(election, li);
         });
       });
     },
 
-    election_selected: function(election, li) {
-      this.elections_ol.find('li').removeClass('selected');
+    electionSelected: function(election, li) {
+      this.electionsOl.find('li').removeClass('selected');
       li.addClass('selected');
-      this.candidates_view.candidates(election.candidates());
+      this.candidatesView.candidates(election.candidates());
     },
 
-    create_election: function() {
-      this.elections().create({body: this.create_election_input.val()});
+    createElection: function() {
+      this.elections().create({body: this.createElectionInput.val()});
     }
   }
 });

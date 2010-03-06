@@ -11,18 +11,18 @@ Monarch.constructor("Monarch.Model.Predicates.And", Monarch.Model.Predicates.Pre
     });
   },
 
-  wire_representation: function() {
+  wireRepresentation: function() {
     return {
       type: "and",
       operands: Monarch.Util.map(this.operands, function(operand) {
-        return operand.wire_representation();
+        return operand.wireRepresentation();
       })
     };
   },
 
-  force_matching_field_values: function(field_values) {
-    return Monarch.Util.inject(this.operands, field_values, function(accumulated_field_values, operand) {
-      return operand.force_matching_field_values(accumulated_field_values);
+  forceMatchingFieldValues: function(fieldValues) {
+    return Monarch.Util.inject(this.operands, fieldValues, function(accumulatedFieldValues, operand) {
+      return operand.forceMatchingFieldValues(accumulatedFieldValues);
     });
   }
 });

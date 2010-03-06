@@ -8,93 +8,93 @@ Screw.Unit(function(c) { with(c) {
       future = new Monarch.Http.AjaxFuture();
     });
 
-    describe("#handle_response", function() {
+    describe("#handleResponse", function() {
       context("when the 'successful' key is true in the given response", function() {
         it("invokes success callbacks  and does not invoke failure callbacks", function() {
-          var success_callback = mock_function("success callback");
-          var failure_callback = mock_function("failure callback");
-          future.on_success(success_callback);
-          future.on_failure(failure_callback);
+          var successCallback = mockFunction("success callback");
+          var failureCallback = mockFunction("failure callback");
+          future.onSuccess(successCallback);
+          future.onFailure(failureCallback);
 
           var data = { foo: "bar" };
-          future.handle_response({
+          future.handleResponse({
             successful: true,
             data: data
           });
 
-          expect(success_callback).to(have_been_called, with_args(data));
-          expect(failure_callback).to_not(have_been_called);
+          expect(successCallback).to(haveBeenCalled, withArgs(data));
+          expect(failureCallback).toNot(haveBeenCalled);
         });
       });
 
       context("when the 'successful' key is false in the given response", function() {
         it("invokes failure callbacks and does not invoke success callbacks", function() {
-          var success_callback = mock_function("success callback");
-          var failure_callback = mock_function("failure callback");
-          future.on_success(success_callback);
-          future.on_failure(failure_callback);
+          var successCallback = mockFunction("success callback");
+          var failureCallback = mockFunction("failure callback");
+          future.onSuccess(successCallback);
+          future.onFailure(failureCallback);
 
           var data = { foo: "bar" };
-          future.handle_response({
+          future.handleResponse({
             success: false,
             data: data
           });
 
-          expect(failure_callback).to(have_been_called, with_args(data));
-          expect(success_callback).to_not(have_been_called);
+          expect(failureCallback).to(haveBeenCalled, withArgs(data));
+          expect(successCallback).toNot(haveBeenCalled);
         });
       });
     });
 
-    describe("#on_success and #on_failure", function() {
+    describe("#onSuccess and #onFailure", function() {
       they("return the future object for method chaining", function() {
-        expect(future.on_success(mock_function())).to(equal, future);
-        expect(future.on_failure(mock_function())).to(equal, future);
+        expect(future.onSuccess(mockFunction())).to(equal, future);
+        expect(future.onFailure(mockFunction())).to(equal, future);
       });
 
-      context("when #handle_response has already been called with a successful response", function() {
+      context("when #handleResponse has already been called with a successful response", function() {
         var data;
         before(function() {
           data = { foo: "bar" };
-          future.handle_response({
+          future.handleResponse({
             successful: true,
             data: data
           });
         });
 
-        it("invokes an #on_success callback immediately with the response's data", function() {
-          var success_callback = mock_function("success callback");
-          future.on_success(success_callback);
-          expect(success_callback).to(have_been_called, with_args(data));
+        it("invokes an #onSuccess callback immediately with the response's data", function() {
+          var successCallback = mockFunction("success callback");
+          future.onSuccess(successCallback);
+          expect(successCallback).to(haveBeenCalled, withArgs(data));
         });
 
-        it("does not invoke an #on_failure callback", function() {
-          var failure_callback = mock_function("failure callback");
-          future.on_failure(failure_callback);
-          expect(failure_callback).to_not(have_been_called);
+        it("does not invoke an #onFailure callback", function() {
+          var failureCallback = mockFunction("failure callback");
+          future.onFailure(failureCallback);
+          expect(failureCallback).toNot(haveBeenCalled);
         });
       });
 
-      context("when #handle_response has already been called with a unsuccessful response", function() {
+      context("when #handleResponse has already been called with a unsuccessful response", function() {
         var data;
         before(function() {
           data = { foo: "bar" };
-          future.handle_response({
+          future.handleResponse({
             successful: false,
             data: data
           });
         });
 
-        it("invokes an #on_failure callback immediately with the response's data", function() {
-          var failure_callback = mock_function("failure callback");
-          future.on_failure(failure_callback);
-          expect(failure_callback).to(have_been_called, with_args(data));
+        it("invokes an #onFailure callback immediately with the response's data", function() {
+          var failureCallback = mockFunction("failure callback");
+          future.onFailure(failureCallback);
+          expect(failureCallback).to(haveBeenCalled, withArgs(data));
         });
 
-        it("does not invoke an #on_success callback", function() {
-          var success_callback = mock_function("success callback");
-          future.on_success(success_callback);
-          expect(success_callback).to_not(have_been_called);
+        it("does not invoke an #onSuccess callback", function() {
+          var successCallback = mockFunction("success callback");
+          future.onSuccess(successCallback);
+          expect(successCallback).toNot(haveBeenCalled);
         });
       });
     });

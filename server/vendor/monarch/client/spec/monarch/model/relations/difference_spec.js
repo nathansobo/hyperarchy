@@ -2,73 +2,73 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Relations.Difference", function() {
-    use_local_fixtures();
+    useLocalFixtures();
 
     describe("#tuples", function() {
-      var left_operand, right_operand, difference;
+      var leftOperand, rightOperand, difference;
       before(function() {
-        left_operand = User.table;
-        right_operand = User.where(User.age.eq(28));
-        expect(left_operand.tuples()).to_not(be_empty);
-        expect(right_operand.tuples()).to_not(be_empty);
+        leftOperand = User.table;
+        rightOperand = User.where(User.age.eq(28));
+        expect(leftOperand.tuples()).toNot(beEmpty);
+        expect(rightOperand.tuples()).toNot(beEmpty);
 
-        difference = new Monarch.Model.Relations.Difference(left_operand, right_operand);
+        difference = new Monarch.Model.Relations.Difference(leftOperand, rightOperand);
       });
 
       it("returns the tuples in the left operand which do not correspond to tuples with the same id in the right operand", function() {
-        var difference_tuples = difference.tuples();
+        var differenceTuples = difference.tuples();
 
-        expect(difference_tuples).to_not(be_empty);
-        expect(difference_tuples.length).to(equal, left_operand.size() - right_operand.size());
+        expect(differenceTuples).toNot(beEmpty);
+        expect(differenceTuples.length).to(equal, leftOperand.size() - rightOperand.size());
 
-        Monarch.Util.each(difference_tuples, function(record) {
-          expect(right_operand.find(record.id())).to(be_null);
+        Monarch.Util.each(differenceTuples, function(record) {
+          expect(rightOperand.find(record.id())).to(beNull);
         });
       });
     });
 
     describe("event handling", function() {
-      var table_1, table_2, difference, record, insert_callback, update_callback, remove_callback;
+      var table1, table2, difference, record, insertCallback, updateCallback, removeCallback;
       init(function() {
-        left_operand = Blog.table;
-        right_operand = Blog.table;
+        leftOperand = Blog.table;
+        rightOperand = Blog.table;
       });
 
       before(function() {
-        difference = new Monarch.Model.Relations.Difference(left_operand, right_operand);
+        difference = new Monarch.Model.Relations.Difference(leftOperand, rightOperand);
 
-        insert_callback = mock_function("insert_callback");
-        update_callback = mock_function("update_callback");
-        remove_callback = mock_function("remove_callback");
-        difference.on_remote_insert(insert_callback);
-        difference.on_remote_update(update_callback);
-        difference.on_remote_remove(remove_callback);
+        insertCallback = mockFunction("insertCallback");
+        updateCallback = mockFunction("updateCallback");
+        removeCallback = mockFunction("removeCallback");
+        difference.onRemoteInsert(insertCallback);
+        difference.onRemoteUpdate(updateCallback);
+        difference.onRemoteRemove(removeCallback);
       });
 
-      function expect_no_callbacks_to_have_been_called() {
-        expect(insert_callback).to_not(have_been_called);
-        expect(update_callback).to_not(have_been_called);
-        expect(remove_callback).to_not(have_been_called);
+      function expectNoCallbacksToHaveBeenCalled() {
+        expect(insertCallback).toNot(haveBeenCalled);
+        expect(updateCallback).toNot(haveBeenCalled);
+        expect(removeCallback).toNot(haveBeenCalled);
       }
 
       describe("when a record is inserted in the left operand", function() {
         context("if the record is not present in the right operand", function() {
           init(function() {
-            right_operand = Blog.where({user_id: "jim"});
+            rightOperand = Blog.where({userId: "jim"});
           });
 
           it("triggers insert callbacks with the record", function() {
-            left_operand.create({user_id: "johan"})
-              .after_events(function(record) {
-                expect(insert_callback).to(have_been_called, with_args(record));
+            leftOperand.create({userId: "johan"})
+              .afterEvents(function(record) {
+                expect(insertCallback).to(haveBeenCalled, withArgs(record));
               });
           });
         });
 
         context("if the record is present in the right operand", function() {
           it("does not trigger any callbacks", function() {
-            left_operand.create({});
-            expect_no_callbacks_to_have_been_called();
+            leftOperand.create({});
+            expectNoCallbacksToHaveBeenCalled();
           });
         });
       });
@@ -76,26 +76,26 @@ Screw.Unit(function(c) { with(c) {
       describe("when a record is inserted in the right operand", function() {
         context("if the record is not present in the left operand", function() {
           init(function() {
-            left_operand = Blog.where({user_id: "jim"});
+            leftOperand = Blog.where({userId: "jim"});
           });
 
           it("does not trigger any callbacks", function() {
-            right_operand.create({user_id: "johan"});
-            expect_no_callbacks_to_have_been_called();
+            rightOperand.create({userId: "johan"});
+            expectNoCallbacksToHaveBeenCalled();
           });
         });
 
         context("if the record is present in the left operand", function() {
           init(function() {
-            right_operand = Blog.where({user_id: "jim"});
+            rightOperand = Blog.where({userId: "jim"});
           });
 
           it("triggers remove callbacks with the record", function() {
-            left_operand.create({user_id: "willy"})
-              .after_events(function(record) {
-                record.update({user_id: "jim"})
-                  .after_events(function() {
-                    expect(remove_callback).to(have_been_called, with_args(record));
+            leftOperand.create({userId: "willy"})
+              .afterEvents(function(record) {
+                record.update({userId: "jim"})
+                  .afterEvents(function() {
+                    expect(removeCallback).to(haveBeenCalled, withArgs(record));
                   });
               });
           });
@@ -105,23 +105,23 @@ Screw.Unit(function(c) { with(c) {
       describe("when a record is updated in the left operand", function() {
         context("if the record is not present in the right operand", function() {
           init(function() {
-            right_operand = Blog.where({user_id: 'jim'});
+            rightOperand = Blog.where({userId: 'jim'});
           });
 
           it("triggers update callbacks with the record", function() {
-            var record = left_operand.find('recipes');
-            var user_id_before_update = record.user_id();
-            record.update({user_id: "bingcrosby"});
-            expect(update_callback).to(have_been_called, once);
-            expect(update_callback).to(have_been_called, with_args(record, {user_id: {column: Blog.user_id, old_value: user_id_before_update, new_value: "bingcrosby" }}));
+            var record = leftOperand.find('recipes');
+            var userIdBeforeUpdate = record.userId();
+            record.update({userId: "bingcrosby"});
+            expect(updateCallback).to(haveBeenCalled, once);
+            expect(updateCallback).to(haveBeenCalled, withArgs(record, {userId: {column: Blog.userId, oldValue: userIdBeforeUpdate, newValue: "bingcrosby" }}));
           });
         });
 
         context("if the record is present in the right operand", function() {
           it("does not trigger any callbacks", function() {
             var record = Blog.find('recipes');
-            record.update({user_id: "mojo"});
-            expect_no_callbacks_to_have_been_called();
+            record.update({userId: "mojo"});
+            expectNoCallbacksToHaveBeenCalled();
           });
         });
       });
@@ -129,13 +129,13 @@ Screw.Unit(function(c) { with(c) {
       describe("when a record is removed from the left operand", function() {
         context("if the record is not present in the right operand", function() {
           init(function() {
-            right_operand = Blog.where({user_id: 'jim'});
+            rightOperand = Blog.where({userId: 'jim'});
           });
 
           it("triggers remove callbacks with the record", function() {
             var record = Blog.find('recipes');
             record.destroy();
-            expect(remove_callback).to(have_been_called, with_args(record));
+            expect(removeCallback).to(haveBeenCalled, withArgs(record));
           });
         });
 
@@ -143,7 +143,7 @@ Screw.Unit(function(c) { with(c) {
           it("does not trigger any callbacks", function() {
             var record = Blog.find('recipes');
             record.destroy();
-            expect_no_callbacks_to_have_been_called();
+            expectNoCallbacksToHaveBeenCalled();
           });
         });
       });
@@ -151,51 +151,51 @@ Screw.Unit(function(c) { with(c) {
       describe("when a record is removed from the right operand", function() {
         context("if the record is not present in the left operand", function() {
           init(function() {
-            left_operand = Blog.where({user_id: 'jim'});
+            leftOperand = Blog.where({userId: 'jim'});
           });
 
           it("does not trigger any callbacks", function() {
             var record = Blog.find('recipes');
             record.destroy();
-            expect_no_callbacks_to_have_been_called();
+            expectNoCallbacksToHaveBeenCalled();
           });
         });
 
         context("if the record is present in the left operand", function() {
           init(function() {
-            right_operand = Blog.where({user_id: 'jan'});
+            rightOperand = Blog.where({userId: 'jan'});
           });
 
           it("triggers insert callbacks with the record", function() {
-            var record = Blog.find({user_id: 'jan'});
-            record.update({user_id: 'jonah'})
-            expect(insert_callback).to(have_been_called, with_args(record));
+            var record = Blog.find({userId: 'jan'});
+            record.update({userId: 'jonah'})
+            expect(insertCallback).to(haveBeenCalled, withArgs(record));
           });
         });
       });
     });
 
     describe("when the difference is between two distinct but compatible relations", function() {
-      var difference, left_operand, right_operand, insert_callback, update_callback, remove_callback;
+      var difference, leftOperand, rightOperand, insertCallback, updateCallback, removeCallback;
 
       before(function() {
         Monarch.constructor('A', Monarch.Model.Record);
         Monarch.constructor('B', Monarch.Model.Record);
-        A.columns({ projected_id: "string", baz: "string" });
-        B.columns({ projected_id: "string", baz: "string" });
+        A.columns({ projectedId: "string", baz: "string" });
+        B.columns({ projectedId: "string", baz: "string" });
 
-        left_operand = A.project(A.projected_id.as('id'), A.baz);
-        right_operand = B.project(B.projected_id.as('id'), B.baz);
+        leftOperand = A.project(A.projectedId.as('id'), A.baz);
+        rightOperand = B.project(B.projectedId.as('id'), B.baz);
 
-        difference = new Monarch.Model.Relations.Difference(left_operand, right_operand);
+        difference = new Monarch.Model.Relations.Difference(leftOperand, rightOperand);
 
-        insert_callback = mock_function('insert_callback');
-        update_callback = mock_function('update_callback');
-        remove_callback = mock_function('remove_callback');
+        insertCallback = mockFunction('insertCallback');
+        updateCallback = mockFunction('updateCallback');
+        removeCallback = mockFunction('removeCallback');
 
-        difference.on_remote_insert(insert_callback);
-        difference.on_remote_update(update_callback);
-        difference.on_remote_remove(remove_callback);
+        difference.onRemoteInsert(insertCallback);
+        difference.onRemoteUpdate(updateCallback);
+        difference.onRemoteRemove(removeCallback);
       });
 
       after(function() {
@@ -206,30 +206,30 @@ Screw.Unit(function(c) { with(c) {
       });
 
       it("only considers the 'id' property when performing the difference", function() {
-        A.create({projected_id: "foo", baz: "quux"});
-        expect(insert_callback).to(have_been_called, once);
+        A.create({projectedId: "foo", baz: "quux"});
+        expect(insertCallback).to(haveBeenCalled, once);
 
-        A.find({projected_id: 'foo'}).update({baz: "morning"});
-        expect(update_callback).to(have_been_called, once);
+        A.find({projectedId: 'foo'}).update({baz: "morning"});
+        expect(updateCallback).to(haveBeenCalled, once);
 
-        B.create({projected_id: "foo"});
-        expect(remove_callback).to(have_been_called, once);
+        B.create({projectedId: "foo"});
+        expect(removeCallback).to(haveBeenCalled, once);
 
-        update_callback.clear();
-        var a_record = A.find({projected_id: 'foo'});
-        a_record.update({baz: "evening"});
-        expect(update_callback).to_not(have_been_called);
+        updateCallback.clear();
+        var aRecord = A.find({projectedId: 'foo'});
+        aRecord.update({baz: "evening"});
+        expect(updateCallback).toNot(haveBeenCalled);
 
-        remove_callback.clear();
-        a_record.destroy();
-        expect(remove_callback).to_not(have_been_called);
+        removeCallback.clear();
+        aRecord.destroy();
+        expect(removeCallback).toNot(haveBeenCalled);
 
-        insert_callback.clear();
-        A.create({projected_id: "foo", baz: "quux"});
-        expect(insert_callback).to_not(have_been_called);
+        insertCallback.clear();
+        A.create({projectedId: "foo", baz: "quux"});
+        expect(insertCallback).toNot(haveBeenCalled);
         
-        B.find({projected_id: 'foo'}).destroy();
-        expect(insert_callback).to(have_been_called, once);
+        B.find({projectedId: 'foo'}).destroy();
+        expect(insertCallback).to(haveBeenCalled, once);
       });
     });
   });

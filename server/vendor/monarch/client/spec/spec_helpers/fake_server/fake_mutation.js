@@ -1,6 +1,6 @@
 Monarch.constructor("FakeServer.FakeMutation", {
-  constructor_initialize: function() {
-    this.id_counter = 1;
+  constructorInitialize: function() {
+    this.idCounter = 1;
   },
 
   initialize: function(url, command, batch) {
@@ -8,38 +8,39 @@ Monarch.constructor("FakeServer.FakeMutation", {
     this.command = command;
     this.batch = batch;
 
+    debugger;
     this.type = Monarch.Inflection.underscore(command.constructor.basename).split("_")[0];
     this.table = command.table;
     this.record = command.record;
-    this.field_values = command.field_values;
+    this.fieldValues = command.fieldValues;
 
-    this.table_name = command.table_name;
+    this.tableName = command.tableName;
   },
 
-  complete: function(field_values) {
-    this.command.complete(field_values);
+  complete: function(fieldValues) {
+    this.command.complete(fieldValues);
   },
 
-  trigger_before_events: function() {
-    this.command.trigger_before_events();
+  triggerBeforeEvents: function() {
+    this.command.triggerBeforeEvents();
   },
 
-  trigger_after_events: function() {
-    this.command.trigger_after_events();
+  triggerAfterEvents: function() {
+    this.command.triggerAfterEvents();
   },
 
-  response_wire_representation: function() {
+  responseWireRepresentation: function() {
     switch (this.type) {
       case "update":
-        return this.field_values;
+        return this.fieldValues;
       case "create":
-        return jQuery.extend({}, this.field_values, { id: (this.constructor.id_counter++).toString() });
+        return jQuery.extend({}, this.fieldValues, { id: (this.constructor.idCounter++).toString() });
       case "destroy":
         return null;
     }
   },
 
-  simulate_success: function(fake_response) {
-    this.batch.simulate_success(fake_response ? { primary: [fake_response], secondary: []} : null);
+  simulateSuccess: function(fakeResponse) {
+    this.batch.simulateSuccess(fakeResponse ? { primary: [fakeResponse], secondary: []} : null);
   }
 });

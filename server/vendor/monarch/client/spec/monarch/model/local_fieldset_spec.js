@@ -2,33 +2,33 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.LocalFieldset", function() {
-    use_local_fixtures();
+    useLocalFixtures();
 
-    describe("#dirty_wire_representation", function() {
+    describe("#dirtyWireRepresentation", function() {
       it("returns the dirty field values by column name", function() {
         var record = Blog.find('recipes');
         record.name("Booboo");
-        record.user_id("farb");
+        record.userId("farb");
 
 
-        expect(record.local.dirty_wire_representation()).to(equal, {
+        expect(record.local.dirtyWireRepresentation()).to(equal, {
           name: 'Booboo',
-          user_id: 'farb'
+          userId: 'farb'
         });
       });
     });
 
-    describe("#wire_representation", function() {
+    describe("#wireRepresentation", function() {
       it("returns all field values by column name", function() {
         var record = Blog.find('recipes');
 
 
-        expect(record.local.wire_representation()).to(equal, {
+        expect(record.local.wireRepresentation()).to(equal, {
           id: 'recipes',
           name: 'Recipes from the Front',
-          user_id: 'mike',
-          started_at: 1253742029201,
-          owner_id: undefined
+          userId: 'mike',
+          startedAt: 1253742029201,
+          ownerId: undefined
         });
       });
     });
@@ -40,27 +40,27 @@ Screw.Unit(function(c) { with(c) {
 //    });
 //
 //    describe("#initialize(record)", function() {
-//      it("instantiates a Field in #fields_by_column_name for each Column on the given tuples's .table", function() {
-//        var name_field = fieldset.field('name');
-//        var user_id_field = fieldset.field('user_id');
+//      it("instantiates a Field in #fieldsByColumnName for each Column on the given tuples's .table", function() {
+//        var nameField = fieldset.field('name');
+//        var userIdField = fieldset.field('userId');
 //
-//        expect(name_field).to(be_an_instance_of, Monarch.Model.LocalField);
-//        expect(name_field.fieldset).to(equal, local);
-//        expect(name_field.column).to(equal, Blog.name_);
+//        expect(nameField).to(beAnInstanceOf, Monarch.Model.LocalField);
+//        expect(nameField.fieldset).to(equal, local);
+//        expect(nameField.column).to(equal, Blog.name_);
 //
-//        expect(user_id_field).to(be_an_instance_of, Monarch.Model.LocalField);
-//        expect(user_id_field.fieldset).to(equal, local);
-//        expect(user_id_field.column).to(equal, Blog.user_id);
+//        expect(userIdField).to(beAnInstanceOf, Monarch.Model.LocalField);
+//        expect(userIdField.fieldset).to(equal, local);
+//        expect(userIdField.column).to(equal, Blog.userId);
 //      });
 //    });
 //
-//    describe("#batch_update_in_progress", function() {
+//    describe("#batchUpdateInProgress", function() {
 //      it("returns true if a batch update is in progress", function() {
-//        expect(fieldset.batch_update_in_progress()).to(be_false);
-//        fieldset.begin_batch_update();
-//        expect(fieldset.batch_update_in_progress()).to(be_true);
-//        fieldset.finish_batch_update();
-//        expect(fieldset.batch_update_in_progress()).to(be_false);
+//        expect(fieldset.batchUpdateInProgress()).to(beFalse);
+//        fieldset.beginBatchUpdate();
+//        expect(fieldset.batchUpdateInProgress()).to(beTrue);
+//        fieldset.finishBatchUpdate();
+//        expect(fieldset.batchUpdateInProgress()).to(beFalse);
 //      });
 //    });
   });

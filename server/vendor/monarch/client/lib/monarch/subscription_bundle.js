@@ -9,11 +9,11 @@ Monarch.constructor("Monarch.SubscriptionBundle", {
     this.subscriptions.push(subscription);
   },
 
-  add_all: function(subscriptions) {
+  addAll: function(subscriptions) {
     this.subscriptions.push.apply(this.subscriptions, subscriptions);
   },
 
-  destroy_all: function() {
+  destroyAll: function() {
     Monarch.Util.each(this.subscriptions, function(subscription) {
       subscription.destroy();
     });

@@ -2,22 +2,22 @@
 
 Monarch.constructor("Monarch.Future", {
   initialize: function() {
-    this.on_complete_node = new Monarch.SubscriptionNode();
+    this.onCompleteNode = new Monarch.SubscriptionNode();
   },
 
-  on_complete: function(callback) {
+  onComplete: function(callback) {
     if (this.completed) {
       callback(this.value)
     } else {
-      return this.on_complete_node.subscribe(callback);
+      return this.onCompleteNode.subscribe(callback);
     }
   },
 
-  propagate_completion: function(future) {
+  propagateCompletion: function(future) {
     if (this.completed) {
       future.complete(this.value)
     } else {
-      return this.on_complete_node.subscribe(function(value) {
+      return this.onCompleteNode.subscribe(function(value) {
         future.complete(value);
       });
     }
@@ -26,7 +26,7 @@ Monarch.constructor("Monarch.Future", {
   complete: function(value) {
     this.completed = true;
     this.value = value;
-    this.on_complete_node.publish(value);
+    this.onCompleteNode.publish(value);
   }
 });
 

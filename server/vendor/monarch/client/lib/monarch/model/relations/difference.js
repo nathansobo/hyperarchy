@@ -1,39 +1,39 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relations.Relation, {
-  initialize: function(left_operand, right_operand) {
-    this.left_operand = left_operand;
-    this.right_operand = right_operand;
-    this.initialize_events_system();
+  initialize: function(leftOperand, rightOperand) {
+    this.leftOperand = leftOperand;
+    this.rightOperand = rightOperand;
+    this.initializeEventsSystem();
   },
 
   contains: function(record) {
-    return record.id() in this.tuples_by_id;
+    return record.id() in this.tuplesById;
   },
 
-  all_tuples: function() {
-    if (this.tuples_by_id) return Monarch.Util.values(this.tuples_by_id);
+  allTuples: function() {
+    if (this.tuplesById) return Monarch.Util.values(this.tuplesById);
     var tuples = [];
 
-    var left_tuples = this.left_operand.all_tuples().sort(function(a, b) {
+    var leftTuples = this.leftOperand.allTuples().sort(function(a, b) {
       if (a.id() < b.id()) return -1;
       if (a.id() > b.id()) return 1;
       return 0;
     });
 
-    var right_tuples = this.right_operand.all_tuples().sort(function(a, b) {
+    var rightTuples = this.rightOperand.allTuples().sort(function(a, b) {
       if (a.id() < b.id()) return -1;
       if (a.id() > b.id()) return 1;
       return 0;
     });
 
-    var right_index = 0;
+    var rightIndex = 0;
 
-    Monarch.Util.each(left_tuples, function(left_record, index) {
-      if (right_tuples[right_index] && left_record.id() === right_tuples[right_index].id()) {
-        right_index++;
+    Monarch.Util.each(leftTuples, function(leftRecord, index) {
+      if (rightTuples[rightIndex] && leftRecord.id() === rightTuples[rightIndex].id()) {
+        rightIndex++;
       } else {
-        tuples.push(left_record);
+        tuples.push(leftRecord);
       }
     });
 
@@ -41,58 +41,58 @@ Monarch.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relation
   },
 
   column: function(name) {
-    return this.left_operand.column(name);
+    return this.leftOperand.column(name);
   },
 
-  surface_tables: function() {
-    return this.left_operand.surface_tables();
+  surfaceTables: function() {
+    return this.leftOperand.surfaceTables();
   },
 
   // private
 
-  subscribe_to_operands: function() {
+  subscribeToOperands: function() {
     var self = this;
-    this.operands_subscription_bundle.add(this.left_operand.on_remote_insert(function(record) {
-      if (!self.right_operand.find(record.id())) self.tuple_inserted_remotely(record);
+    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteInsert(function(record) {
+      if (!self.rightOperand.find(record.id())) self.tupleInsertedRemotely(record);
     }));
 
-    this.operands_subscription_bundle.add(this.left_operand.on_remote_update(function(record, changes) {
-      if (self.contains(record)) self.tuple_updated_remotely(record, changes);
+    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteUpdate(function(record, changes) {
+      if (self.contains(record)) self.tupleUpdatedRemotely(record, changes);
     }));
 
-    this.operands_subscription_bundle.add(this.left_operand.on_remote_remove(function(record) {
-      if (self.contains(record)) self.tuple_removed_remotely(record);
+    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteRemove(function(record) {
+      if (self.contains(record)) self.tupleRemovedRemotely(record);
     }));
 
-    this.operands_subscription_bundle.add(this.right_operand.on_remote_insert(function(record) {
-      if (self.contains(record)) self.tuple_removed_remotely(record);
+    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteInsert(function(record) {
+      if (self.contains(record)) self.tupleRemovedRemotely(record);
     }));
 
-    this.operands_subscription_bundle.add(this.right_operand.on_remote_remove(function(record) {
-      if (self.left_operand.find(record.id())) self.tuple_inserted_remotely(record);
+    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteRemove(function(record) {
+      if (self.leftOperand.find(record.id())) self.tupleInsertedRemotely(record);
     }));
   },
 
-  memoize_tuples: function() {
-    var tuples_by_id = {};
+  memoizeTuples: function() {
+    var tuplesById = {};
     this.each(function(record) {
-      tuples_by_id[record.id()] = record;
+      tuplesById[record.id()] = record;
     }.bind(this));
-    this.tuples_by_id = tuples_by_id;
+    this.tuplesById = tuplesById;
   },
 
-  tuple_inserted_remotely: function(record, options) {
-    this.tuples_by_id[record.id()] = record;
-    this.on_remote_insert_node.publish(record);
+  tupleInsertedRemotely: function(record, options) {
+    this.tuplesById[record.id()] = record;
+    this.onRemoteInsertNode.publish(record);
   },
 
-  tuple_updated_remotely: function(record, update_data) {
-    this.on_remote_update_node.publish(record, update_data);
+  tupleUpdatedRemotely: function(record, updateData) {
+    this.onRemoteUpdateNode.publish(record, updateData);
   },
 
-  tuple_removed_remotely: function(record) {
-    delete this.tuples_by_id[record.id()];
-    this.on_remote_remove_node.publish(record);
+  tupleRemovedRemotely: function(record) {
+    delete this.tuplesById[record.id()];
+    this.onRemoteRemoveNode.publish(record);
   }
 });
 

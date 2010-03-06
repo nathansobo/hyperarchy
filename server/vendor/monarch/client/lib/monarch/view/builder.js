@@ -1,23 +1,23 @@
 (function(Monarch, jQuery) {
 
 Monarch.constructor("Monarch.View.Builder", {
-  constructor_properties: {
+  constructorProperties: {
     initialize: function() {
-      this.generate_tag_methods();
+      this.generateTagMethods();
     },
 
-    generate_tag_methods: function() {
+    generateTagMethods: function() {
       var self = this;
 
-      Monarch.Util.each(this.supported_tags, function(tag_name) {
-        self.prototype[tag_name] = function() {
-          var tag_args = [tag_name].concat(Monarch.Util.to_array(arguments));
-          return this.tag.apply(this, tag_args);
+      Monarch.Util.each(this.supportedTags, function(tagName) {
+        self.prototype[tagName] = function() {
+          var tagArgs = [tagName].concat(Monarch.Util.toArray(arguments));
+          return this.tag.apply(this, tagArgs);
         }
       });
     },
 
-    supported_tags: [
+    supportedTags: [
       'acronym', 'address', 'area', 'b', 'base', 'bdo', 'big', 'blockquote', 'body',
       'br', 'button', 'caption', 'cite', 'code', 'dd', 'del', 'div', 'dl', 'dt', 'em',
       'fieldset', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'html', 'i',
@@ -27,58 +27,58 @@ Monarch.constructor("Monarch.View.Builder", {
       'table', 'tbody', 'td', 'textarea', 'th', 'thead', 'title', 'tr', 'tt', 'ul', 'var'
     ],
 
-    self_closing_tags: { 'br': 1, 'hr': 1, 'input': 1, 'img': 1 }
+    selfClosingTags: { 'br': 1, 'hr': 1, 'input': 1, 'img': 1 }
   },
 
   initialize: function(template) {
     this.template = template;
     this.instructions = [];
-    this.preceding_element_path = [0];
+    this.precedingElementPath = [0];
   },
 
 
-  hash_regex: /^.*#/,
+  hashRegex: /^.*#/,
 
-  to_view: function(view_properties) {
-    var view = jQuery(this.to_html());
-    if (view_properties) this.extend_with_properties(view, view_properties);
-    this.post_process(view);
+  toView: function(viewProperties) {
+    var view = jQuery(this.toHtml());
+    if (viewProperties) this.extendWithProperties(view, viewProperties);
+    this.postProcess(view);
     if (view.initialize) view.initialize();
     return view;
   },
 
-  to_html: function() {
+  toHtml: function() {
     var xml = [];
     Monarch.Util.each(this.instructions, function(instruction) {
-      xml.push(instruction.to_xml());
+      xml.push(instruction.toXml());
     });
     return xml.join("");
   },
 
   a: function() {
     var self = this;
-    var close_tag_instruction = this.tag.apply(this, ["a"].concat(Monarch.Util.to_array(arguments)));
-    var open_tag_instruction = close_tag_instruction.open_tag_instruction;
+    var closeTagInstruction = this.tag.apply(this, ["a"].concat(Monarch.Util.toArray(arguments)));
+    var openTagInstruction = closeTagInstruction.openTagInstruction;
 
-    if (open_tag_instruction.attributes && open_tag_instruction.attributes.local) {
-      close_tag_instruction.click(function(view) {
+    if (openTagInstruction.attributes && openTagInstruction.attributes.local) {
+      closeTagInstruction.click(function(view) {
         var href = this.attr('href');
-        var following_hash = href.replace(self.hash_regex, '');
-        History.load(following_hash);
+        var followingHash = href.replace(self.hashRegex, '');
+        History.load(followingHash);
         return false;
       });
     }
-    return close_tag_instruction;
+    return closeTagInstruction;
   },
 
   subview: function() {
-    var args = this.parse_subview_arguments(arguments);
+    var args = this.parseSubviewArguments(arguments);
 
-    this.div().on_build(function(element, view) {
-      var subview = args.template.to_view(jQuery.extend({parent_view: view}, args.properties));
-      if (args.collection_name) {
-        if (!view[args.collection_name]) view[args.collection_name] = {};
-        view[args.collection_name][args.index] = subview;
+    this.div().onBuild(function(element, view) {
+      var subview = args.template.toView(jQuery.extend({parentView: view}, args.properties));
+      if (args.collectionName) {
+        if (!view[args.collectionName]) view[args.collectionName] = {};
+        view[args.collectionName][args.index] = subview;
       } else {
         view[args.name] = subview;
       }
@@ -86,112 +86,112 @@ Monarch.constructor("Monarch.View.Builder", {
     });
   },
 
-  parse_subview_arguments: function(args) {
-    var args = Monarch.Util.to_array(args);
-    var subview_arguments = {};
+  parseSubviewArguments: function(args) {
+    var args = Monarch.Util.toArray(args);
+    var subviewArguments = {};
 
     if (args[1] === undefined) throw new Error("Undefined second argument for subview '" + args[0] + "'.");
-    if (args[1].to_view) {
-      subview_arguments.name = args[0];
-      subview_arguments.template = args[1];
-      if (args[2]) subview_arguments.properties = args[2];
+    if (args[1].toView) {
+      subviewArguments.name = args[0];
+      subviewArguments.template = args[1];
+      if (args[2]) subviewArguments.properties = args[2];
     } else {
       if (args[2] === undefined) throw new Error("Undefined third argument for subview '" + args[0] + "['" + args[1] + "'].");
-      subview_arguments.collection_name = args[0];
-      subview_arguments.index = args[1];
-      subview_arguments.template = args[2];
-      if (args[3]) subview_arguments.properties = args[3];
+      subviewArguments.collectionName = args[0];
+      subviewArguments.index = args[1];
+      subviewArguments.template = args[2];
+      if (args[3]) subviewArguments.properties = args[3];
     }
-    return subview_arguments;
+    return subviewArguments;
   },
 
-  extend_with_properties: function(jquery_fragment, properties) {
+  extendWithProperties: function(jqueryFragment, properties) {
     Monarch.Util.keys(properties, function(key) {
-      if (jquery_fragment[key]) jquery_fragment["_" + key] = jquery_fragment[key];
+      if (jqueryFragment[key]) jqueryFragment["_" + key] = jqueryFragment[key];
     });
-    jQuery.extend(jquery_fragment, properties);
+    jQuery.extend(jqueryFragment, properties);
   },
 
-  post_process: function(jquery_fragment) {
+  postProcess: function(jqueryFragment) {
     var self = this;
-    this.jquery_fragment = jquery_fragment;
+    this.jqueryFragment = jqueryFragment;
     Monarch.Util.each(this.instructions, function(instruction) {
-      instruction.post_process(self);
+      instruction.postProcess(self);
     });
-    if (!this.has_single_top_level_element()) {
+    if (!this.hasSingleTopLevelElement()) {
       throw new Error("Template content must have a single top-level element.");
     }
-    this.jquery_fragment = null;
+    this.jqueryFragment = null;
   },
 
-  has_single_top_level_element: function() {
-    return this.preceding_element_path.length == 1 && this.preceding_element_path[0] == 1
+  hasSingleTopLevelElement: function() {
+    return this.precedingElementPath.length == 1 && this.precedingElementPath[0] == 1
   },
 
   tag: function() {
-    var args = this.parse_tag_arguments(arguments);
+    var args = this.parseTagArguments(arguments);
     if (args.text && args.body) throw new Error("Tags cannot have both text and body content");
-    if (this.constructor.self_closing_tags[args.name]) {
-      return this.self_closing_tag(args);
+    if (this.constructor.selfClosingTags[args.name]) {
+      return this.selfClosingTag(args);
     } else {
-      return this.standard_tag_sequence(args);
+      return this.standardTagSequence(args);
     }
   },
 
-  self_closing_tag: function(tag_args) {
-    if (tag_args.text || tag_args.body) throw new Error("Self-closing tag " + tag_args.name + " cannot contain text or have body content");
-    var tag_instruction = new Monarch.View.SelfClosingTag(tag_args.name, tag_args.attributes);
-    this.instructions.push(tag_instruction);
-    return tag_instruction;
+  selfClosingTag: function(tagArgs) {
+    if (tagArgs.text || tagArgs.body) throw new Error("Self-closing tag " + tagArgs.name + " cannot contain text or have body content");
+    var tagInstruction = new Monarch.View.SelfClosingTag(tagArgs.name, tagArgs.attributes);
+    this.instructions.push(tagInstruction);
+    return tagInstruction;
   },
 
-  standard_tag_sequence: function(tag_args) {
-    var open_tag_instruction = new Monarch.View.OpenTag(tag_args.name, tag_args.attributes);
-    this.instructions.push(open_tag_instruction);
-    if (tag_args.text) this.instructions.push(new Monarch.View.TextNode(tag_args.text));
-    if (tag_args.body) tag_args.body();
-    var close_tag_instruction = new Monarch.View.CloseTag(tag_args.name);
-    close_tag_instruction.open_tag_instruction = open_tag_instruction;
-    this.instructions.push(close_tag_instruction);
-    return close_tag_instruction;
+  standardTagSequence: function(tagArgs) {
+    var openTagInstruction = new Monarch.View.OpenTag(tagArgs.name, tagArgs.attributes);
+    this.instructions.push(openTagInstruction);
+    if (tagArgs.text) this.instructions.push(new Monarch.View.TextNode(tagArgs.text));
+    if (tagArgs.body) tagArgs.body();
+    var closeTagInstruction = new Monarch.View.CloseTag(tagArgs.name);
+    closeTagInstruction.openTagInstruction = openTagInstruction;
+    this.instructions.push(closeTagInstruction);
+    return closeTagInstruction;
   },
 
-  parse_tag_arguments: function(args) {
-    var args = Monarch.Util.to_array(args);
-    var tag_arguments = {
+  parseTagArguments: function(args) {
+    var args = Monarch.Util.toArray(args);
+    var tagArguments = {
       name: args.shift()
     }
     Monarch.Util.each(args, function(arg) {
-      if (typeof arg == "string") tag_arguments.text = arg;
-      if (typeof arg == "object") tag_arguments.attributes = arg;
-      if (typeof arg == "function") tag_arguments.body = arg;
+      if (typeof arg == "string") tagArguments.text = arg;
+      if (typeof arg == "object") tagArguments.attributes = arg;
+      if (typeof arg == "function") tagArguments.body = arg;
     })
-    return tag_arguments;
+    return tagArguments;
   },
 
-  push_child: function() {
-    this.preceding_element_path[this.preceding_element_path.length - 1]++;
-    this.preceding_element_path.push(0);
+  pushChild: function() {
+    this.precedingElementPath[this.precedingElementPath.length - 1]++;
+    this.precedingElementPath.push(0);
   },
 
-  pop_child: function() {
-    this.preceding_element_path.pop();
+  popChild: function() {
+    this.precedingElementPath.pop();
   },
 
-  find_preceding_element: function() {
-    if (this.preceding_element_path.length == 1) {
-      return this.jquery_fragment;
+  findPrecedingElement: function() {
+    if (this.precedingElementPath.length == 1) {
+      return this.jqueryFragment;
     } else {
-      return this.jquery_fragment.find(this.preceding_element_selector());
+      return this.jqueryFragment.find(this.precedingElementSelector());
     }
   },
 
-  preceding_element_selector: function() {
-    var selector_fragments = [];
-    for(i = 1; i < this.preceding_element_path.length; i++) {
-      selector_fragments.push(":eq(" + (this.preceding_element_path[i] - 1) + ")");
+  precedingElementSelector: function() {
+    var selectorFragments = [];
+    for(i = 1; i < this.precedingElementPath.length; i++) {
+      selectorFragments.push(":eq(" + (this.precedingElementPath[i] - 1) + ")");
     }
-    return "> " + selector_fragments.join(" > ");
+    return "> " + selectorFragments.join(" > ");
   }
 });
 

@@ -1,30 +1,30 @@
 Screw.Unit(function(c) {
-  c.use_fake_history = function() {
-    var original_history;
+  c.useFakeHistory = function() {
+    var originalHistory;
 
     c.init(function() {
-      original_history = History;
+      originalHistory = History;
       History = new FakeHistory();
     });
 
     c.after(function() {
-      History = original_history;
+      History = originalHistory;
     })
   };
 });
 
 Monarch.constructor("FakeHistory", {
   initialize: function() {
-    this.on_change_node = new Monarch.SubscriptionNode();
+    this.onChangeNode = new Monarch.SubscriptionNode();
     this.path = "";
   },
 
-  on_change: function(callback) {
-    this.on_change_node.subscribe(callback);
+  onChange: function(callback) {
+    this.onChangeNode.subscribe(callback);
     callback(this.path);
   },
 
   load: function(path) {
-    this.on_change_node.publish(path)
+    this.onChangeNode.publish(path)
   }
 });

@@ -4,82 +4,82 @@ Monarch.constructor("Monarch.Model.LocalField", Monarch.Model.ConcreteField, {
   initialize: function(fieldset, column) {
     this.fieldset = fieldset;
     this.column = column;
-    this.validation_errors = [];
-    this.update_events_enabled = true;
+    this.validationErrors = [];
+    this.updateEventsEnabled = true;
   },
 
-  remote_field: function(remote_field) {
+  remoteField: function(remoteField) {
     if (arguments.length == 0) {
-      return this._remote_field
+      return this.RemoteField
     } else {
-      return this._remote_field = remote_field;
+      return this.RemoteField = remoteField;
     }
   },
 
-  on_remote_update: function(callback) {
-    return this._remote_field.on_update(callback);
+  onRemoteUpdate: function(callback) {
+    return this.RemoteField.onUpdate(callback);
   },
 
   dirty: function() {
-    return this._dirty;
+    return this.Dirty;
   },
 
-  mark_dirty: function() {
-    if (!this._dirty) {
-      this._dirty = true;
-      this.fieldset.field_marked_dirty();
+  markDirty: function() {
+    if (!this.Dirty) {
+      this.Dirty = true;
+      this.fieldset.fieldMarkedDirty();
     }
   },
 
-  mark_clean: function() {
-    this.clear_validation_errors();
-    if (this._dirty) {
-      this._dirty = false;
-      this.fieldset.field_marked_clean();
+  markClean: function() {
+    this.clearValidationErrors();
+    if (this.Dirty) {
+      this.Dirty = false;
+      this.fieldset.fieldMarkedClean();
     }
   },
 
-  assign_validation_errors: function(errors) {
-    this.validation_errors = errors;
+  assignValidationErrors: function(errors) {
+    this.validationErrors = errors;
   },
 
-  clear_validation_errors: function() {
-    var was_invalid = !this.fieldset.valid();
-    this.validation_errors = [];
-    if (this.fieldset.record.on_valid_node && was_invalid && this.fieldset.valid()) this.fieldset.record.on_valid_node.publish();
+  clearValidationErrors: function() {
+    var wasInvalid = !this.fieldset.valid();
+    this.validationErrors = [];
+    if (this.fieldset.record.onValidNode && wasInvalid && this.fieldset.valid()) this.fieldset.record.onValidNode.publish();
   },
 
-  not_modified_after: function(date) {
-    return !this.last_modified_at || this.last_modified_at.getTime() <= date.getTime();
+  notModifiedAfter: function(date) {
+    return !this.lastModifiedAt || this.lastModifiedAt.getTime() <= date.getTime();
   },
 
-  signal: function(optional_transformer) {
-    return new Monarch.Model.Signal(this, this.remote_field(), optional_transformer);
+  signal: function(optionalTransformer) {
+    return new Monarch.Model.Signal(this, this.remoteField(), optionalTransformer);
   },
 
-  value_wire_representation: function() {
-    return this.column.convert_value_for_wire(this.value());
+  valueWireRepresentation: function() {
+    return this.column.convertValueForWire(this.value());
   },
 
   valid: function() {
-    return this.validation_errors.length == 0;
+    return this.validationErrors.length == 0;
   },
 
   // private
   
-  value_assigned: function(new_value, old_value) {
-    if (this.value_equals(this._remote_field.value())) {
-      this.mark_clean();
+  valueAssigned: function(newValue, oldValue) {
+    if (this.valueEquals(this.RemoteField.value())) {
+      this.markClean();
     } else {
-      this.mark_dirty();
+      this.markDirty();
     }
 
-    if (this.update_events_enabled) {
-      var batch_already_in_progress = this.fieldset.batch_in_progress;
-      if (!batch_already_in_progress) this.fieldset.begin_batch_update();
-      this.fieldset.field_updated(this, new_value, old_value);
-      if (this.on_update_node) this.on_update_node.publish(new_value, old_value);
-      if (!batch_already_in_progress) this.fieldset.finish_batch_update();
+    if (this.updateEventsEnabled) {
+      var batchAlreadyInProgress = this.fieldset.batchInProgress;
+      if (!batchAlreadyInProgress) this.fieldset.beginBatchUpdate();
+      this.fieldset.fieldUpdated(this, newValue, oldValue);
+      if (this.onUpdateNode) this.onUpdateNode.publish(newValue, oldValue);
+      if (!batchAlreadyInProgress) this.fieldset.finishBatchUpdate();
     }
   }
 });

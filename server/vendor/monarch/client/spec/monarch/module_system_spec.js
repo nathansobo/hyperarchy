@@ -3,13 +3,13 @@
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.ModuleSystem", function() {
     before(function() {
-      Monarch.ModuleSystem.__disabled__Object = Monarch.ModuleSystem.Object;
+      Monarch.ModuleSystem._disabled_Object = Monarch.ModuleSystem.Object;
       delete Monarch.ModuleSystem.Object;
     });
 
     after(function() {
-      Monarch.ModuleSystem.Object = Monarch.ModuleSystem.__disabled__Object;
-      delete Monarch.ModuleSystem.__disabled__Object;
+      Monarch.ModuleSystem.Object = Monarch.ModuleSystem._disabled_Object;
+      delete Monarch.ModuleSystem._disabled_Object;
       delete window.Foo;
     });
 
@@ -24,7 +24,7 @@ Screw.Unit(function(c) { with(c) {
 
       context("when not given a name", function() {
         before(function() {
-          Monarch.ModuleSystem.Object = Monarch.ModuleSystem.__disabled__Object;
+          Monarch.ModuleSystem.Object = Monarch.ModuleSystem._disabled_Object;
         })
 
         it("creates an anonymous constructor which inherits from Object, defining the given properties on its prototype", function() {
@@ -33,7 +33,7 @@ Screw.Unit(function(c) { with(c) {
             bar: "bar"
           });
 
-          expect(constructor.prototype instanceof Monarch.ModuleSystem.Object).to(be_true);
+          expect(constructor.prototype instanceof Monarch.ModuleSystem.Object).to(beTrue);
           expect(constructor.prototype.foo).to(equal, "foo");
           expect(constructor.prototype.bar).to(equal, "bar");
         });
@@ -41,19 +41,19 @@ Screw.Unit(function(c) { with(c) {
 
       context("when given a top-level name and a properties hash", function() {
         before(function() {
-          Monarch.ModuleSystem.Object = Monarch.ModuleSystem.__disabled__Object;
+          Monarch.ModuleSystem.Object = Monarch.ModuleSystem._disabled_Object;
         })
 
         it("creates a constructor with that name which inherits from Object, defining the given properties on its prototype", function() {
-          expect(window['Foo']).to(be_undefined);
+          expect(window['Foo']).to(beUndefined);
 
           Monarch.ModuleSystem.constructor("Foo", {
             foo: "foo",
             bar: "bar"
           });
 
-          expect(Foo).to_not(be_undefined);
-          expect(Foo.prototype instanceof Monarch.ModuleSystem.Object).to(be_true);
+          expect(Foo).toNot(beUndefined);
+          expect(Foo.prototype instanceof Monarch.ModuleSystem.Object).to(beTrue);
           expect(Foo.prototype.foo).to(equal, "foo");
           expect(Foo.prototype.bar).to(equal, "bar");
         });
@@ -62,16 +62,16 @@ Screw.Unit(function(c) { with(c) {
       context("when given a qualified name and a properties hash", function() {
         context("when no modules along the given path exist", function() {
           it("creates all modules along the path and creates the constructor at its terminus whose prototype has the given properties", function() {
-            expect(window['Foo']).to(be_undefined);
+            expect(window['Foo']).to(beUndefined);
 
             Monarch.ModuleSystem.constructor("Foo.Bar.Baz", {
               foo: "foo",
               bar: "bar"
             });
 
-            expect(Foo).to_not(be_undefined);
-            expect(Foo.Bar).to_not(be_undefined);
-            expect(Foo.Bar.Baz).to_not(be_undefined);
+            expect(Foo).toNot(beUndefined);
+            expect(Foo.Bar).toNot(beUndefined);
+            expect(Foo.Bar.Baz).toNot(beUndefined);
             expect(Foo.Bar.Baz.prototype.foo).to(equal, "foo");
             expect(Foo.Bar.Baz.prototype.bar).to(equal, "bar");
           });
@@ -90,8 +90,8 @@ Screw.Unit(function(c) { with(c) {
               bar: "bar"
             });
 
-            expect(Foo.foo).to_not(be_undefined);
-            expect(Foo.Bar.Baz).to_not(be_undefined);
+            expect(Foo.foo).toNot(beUndefined);
+            expect(Foo.Bar.Baz).toNot(beUndefined);
             expect(Foo.Bar.Baz.prototype.foo).to(equal, "foo");
             expect(Foo.Bar.Baz.prototype.bar).to(equal, "bar");
           });
@@ -110,22 +110,22 @@ Screw.Unit(function(c) { with(c) {
         it("extends the constructor being defined from the given superconstructor", function() {
           mock(Monarch.ModuleSystem, 'extend');
           Monarch.ModuleSystem.constructor("Foo", Super, {});
-          expect(Monarch.ModuleSystem.extend).to(have_been_called, with_args(Super, Foo));
+          expect(Monarch.ModuleSystem.extend).to(haveBeenCalled, withArgs(Super, Foo));
         });
 
         context("if .extended is defined as a constructor property on the superconstructor", function() {
           it("it calls the method with the subconstructor after the subconstructor has been fully defined", function() {
             var constructor;
-            Super.extended = mock_function("Super.extended", function() {
-              expect(window.Foo).to_not(be_undefined);
+            Super.extended = mockFunction("Super.extended", function() {
+              expect(window.Foo).toNot(beUndefined);
               expect(window.Foo.foo).to(equal, "foo");
             });
             constructor = Monarch.ModuleSystem.constructor("Foo", Super, {
-              constructor_properties: {
+              constructorProperties: {
                 foo: "foo"
               }
             });
-            expect(Super.extended).to(have_been_called, with_args(Foo));
+            expect(Super.extended).to(haveBeenCalled, withArgs(Foo));
           });
         });
       });
@@ -146,49 +146,49 @@ Screw.Unit(function(c) { with(c) {
 
           Monarch.ModuleSystem.constructor("Foo", Bar, Baz, { quux: 'quux' });
 
-          expect(Monarch.ModuleSystem.mixin).to(have_been_called, thrice);
-          expect(Monarch.ModuleSystem.mixin.call_args[0]).to(equal, [Foo.prototype, Bar]);
-          expect(Monarch.ModuleSystem.mixin.call_args[1]).to(equal, [Foo.prototype, Baz]);
+          expect(Monarch.ModuleSystem.mixin).to(haveBeenCalled, thrice);
+          expect(Monarch.ModuleSystem.mixin.callArgs[0]).to(equal, [Foo.prototype, Bar]);
+          expect(Monarch.ModuleSystem.mixin.callArgs[1]).to(equal, [Foo.prototype, Baz]);
         });
       });
 
       context("when an #initialize method is defined on the prototype", function() {
         before(function() {
           Monarch.ModuleSystem.constructor("Foo", {
-            initialize: mock_function("initialize method")
+            initialize: mockFunction("initialize method")
           });
         });
 
         it("causes the constructor to invoke #initialize with its arguments", function() {
           new Foo("foo", "bar");
-          expect(Foo.prototype.initialize).to(have_been_called, with_args("foo", "bar"));
+          expect(Foo.prototype.initialize).to(haveBeenCalled, withArgs("foo", "bar"));
         });
       });
 
-      context("when a #constructor_initialize property is defined on the prototype", function() {
-        var constructor_initialize;
+      context("when a #constructorInitialize property is defined on the prototype", function() {
+        var constructorInitialize;
 
         before(function() {
-          constructor_initialize = mock_function('constructor_initialize')
+          constructorInitialize = mockFunction('constructorInitialize')
           Monarch.ModuleSystem.constructor("Foo", {
-            constructor_initialize: constructor_initialize
+            constructorInitialize: constructorInitialize
           });
         });
 
         it("calls it on the constructor", function() {
-          expect(constructor_initialize).to(have_been_called, on_object(Foo));
+          expect(constructorInitialize).to(haveBeenCalled, onObject(Foo));
         });
 
-        it("moves it to the #constructor_properties hash and deletes it from the prototype", function() {
-          expect(Foo.prototype.constructor_initialize).to(be_undefined);
-          expect(Foo.prototype.constructor_properties.initialize).to(equal, constructor_initialize);
+        it("moves it to the #constructorProperties hash and deletes it from the prototype", function() {
+          expect(Foo.prototype.constructorInitialize).to(beUndefined);
+          expect(Foo.prototype.constructorProperties.initialize).to(equal, constructorInitialize);
         });
       });
 
-      context("when a #constructor_properties property is defined on the prototype", function() {
+      context("when a #constructorProperties property is defined on the prototype", function() {
         it("defines those properties on the constructor itself", function() {
           Monarch.ModuleSystem.constructor("Foo", {
-            constructor_properties: {
+            constructorProperties: {
               foo: "foo"
             }
           });
@@ -199,49 +199,49 @@ Screw.Unit(function(c) { with(c) {
         context("when there is an #initialize constructor property", function() {
           it("invokes the initializer after the constructor is fully assembled", function() {
             Monarch.ModuleSystem.constructor("Foo", {
-              constructor_properties: {
+              constructorProperties: {
                 initialize: function() {
                   if (!this.prototype.foo) throw new Error("prototype should be assembled");
-                  this.eigen_initialize_called = true;
+                  this.eigenInitializeCalled = true;
                 }
               },
               
               foo: "foo"
             });
 
-            expect(Foo.eigen_initialize_called).to(be_true);
+            expect(Foo.eigenInitializeCalled).to(beTrue);
           });
         });
       });
 
-      context("when a #constructor_properties properties are defined on the superconstructor and the mixed-in modules", function() {
-        var mixin_module, subconstructor_prototype;
+      context("when a #constructorProperties properties are defined on the superconstructor and the mixed-in modules", function() {
+        var mixinModule, subconstructorPrototype;
 
         before(function() {
           Monarch.ModuleSystem.constructor("Super", {
-            constructor_properties: {
+            constructorProperties: {
               foo: "foo super",
               bar: "bar super",
               boing: "boing"
             }
           });
 
-          mixin_module = {
-            constructor_properties: {
+          mixinModule = {
+            constructorProperties: {
               bar: "bar module",
               baz: "baz module"
             }
           };
 
-          subconstructor_prototype = {
-            constructor_properties: {
+          subconstructorPrototype = {
+            constructorProperties: {
               foo: "foo sub",
               baz: "baz sub",
               bop: "bop"
             }
           };
 
-          Monarch.ModuleSystem.constructor("Sub", Super, mixin_module, subconstructor_prototype);
+          Monarch.ModuleSystem.constructor("Sub", Super, mixinModule, subconstructorPrototype);
         });
 
         after(function() {
@@ -249,8 +249,8 @@ Screw.Unit(function(c) { with(c) {
           delete window['Sub'];
         });
 
-        it("combines the constructor properties into a 'constructor_properties' hash on the prototype of the defined constructor, giving precmonarchce to modules included later", function() {
-          expect(Sub.prototype.constructor_properties).to(equal, {
+        it("combines the constructor properties into a 'constructorProperties' hash on the prototype of the defined constructor, giving precmonarchce to modules included later", function() {
+          expect(Sub.prototype.constructorProperties).to(equal, {
             foo: "foo sub",
             bar: "bar module",
             baz: "baz sub",
@@ -267,19 +267,19 @@ Screw.Unit(function(c) { with(c) {
           expect(Sub.boing).to(equal, "boing");
         });
         
-        it("does not mutate the 'constructor_properties' hashes on the superconstructor or any of the included modules", function() {
-          expect(Super.prototype.constructor_properties).to(equal, {
+        it("does not mutate the 'constructorProperties' hashes on the superconstructor or any of the included modules", function() {
+          expect(Super.prototype.constructorProperties).to(equal, {
             foo: "foo super",
             bar: "bar super",
             boing: "boing"
           });
 
-          expect(mixin_module.constructor_properties).to(equal, {
+          expect(mixinModule.constructorProperties).to(equal, {
             bar: "bar module",
             baz: "baz module"
           });;
 
-          expect(subconstructor_prototype.constructor_properties).to(equal, {
+          expect(subconstructorPrototype.constructorProperties).to(equal, {
             foo: "foo sub",
             baz: "baz sub",
             bop: "bop"
@@ -292,12 +292,12 @@ Screw.Unit(function(c) { with(c) {
       context("when given a top-level name and a properties hash", function() {
         context("when no module with that name is defined", function() {
           it("defines a new top level module by the given name with the properties", function() {
-            expect(window['Foo']).to(be_undefined);
+            expect(window['Foo']).to(beUndefined);
             Monarch.ModuleSystem.module("Foo", {
               foo: "foo",
               bar: "bar"
             });
-            expect(Foo).to_not(be_undefined);
+            expect(Foo).toNot(beUndefined);
             expect(Foo.foo).to(equal, "foo");
             expect(Foo.bar).to(equal, "bar");
           });
@@ -305,7 +305,7 @@ Screw.Unit(function(c) { with(c) {
 
         context("when a module with that name is already defined", function() {
           before(function() {
-            expect(window['Foo']).to(be_undefined);
+            expect(window['Foo']).to(beUndefined);
             Monarch.ModuleSystem.module("Foo", {
               foo: "foo",
               bar: "bar"
@@ -327,16 +327,16 @@ Screw.Unit(function(c) { with(c) {
       context("when given a qualified module name and a properties hash", function() {
         context("when no modules along the given path exist", function() {
           it("creates all modules along the path and installs the properties at its terminus", function() {
-            expect(window['Foo']).to(be_undefined);
+            expect(window['Foo']).to(beUndefined);
 
             Monarch.ModuleSystem.module("Foo.Bar.Baz", {
               foo: "foo",
               bar: "bar"
             });
 
-            expect(Foo).to_not(be_undefined);
-            expect(Foo.Bar).to_not(be_undefined);
-            expect(Foo.Bar.Baz).to_not(be_undefined);
+            expect(Foo).toNot(beUndefined);
+            expect(Foo.Bar).toNot(beUndefined);
+            expect(Foo.Bar.Baz).toNot(beUndefined);
             expect(Foo.Bar.Baz.foo).to(equal, "foo");
             expect(Foo.Bar.Baz.bar).to(equal, "bar");
           });
@@ -355,8 +355,8 @@ Screw.Unit(function(c) { with(c) {
               bar: "bar"
             });
             
-            expect(Foo.foo).to_not(be_undefined);
-            expect(Foo.Bar.Baz).to_not(be_undefined);
+            expect(Foo.foo).toNot(beUndefined);
+            expect(Foo.Bar.Baz).toNot(beUndefined);
             expect(Foo.Bar.Baz.foo).to(equal, "foo");
             expect(Foo.Bar.Baz.bar).to(equal, "bar");
           });
@@ -389,45 +389,45 @@ Screw.Unit(function(c) { with(c) {
 
       before(function() {
         Monarch.ModuleSystem.constructor("Super", {
-          constructor_properties: {
-            superconstructor_property: "superconstructor_property",
-            extended: mock_function()
+          constructorProperties: {
+            superconstructorProperty: "superconstructorProperty",
+            extended: mockFunction()
           },
 
-          initialize: mock_function(),
+          initialize: mockFunction(),
 
-          not_overridden_function: function() {
-            return "not_overridden_function";
+          notOverriddenFunction: function() {
+            return "notOverriddenFunction";
           },
 
-          overridden_function: function() {
-            return "overridden_function superconstructor version";
+          overriddenFunction: function() {
+            return "overriddenFunction superconstructor version";
           },
 
-          overridden_property: "overridden_property superconstructor version",
-          not_overridden_property: "not_overridden_property"
+          overriddenProperty: "overriddenProperty superconstructor version",
+          notOverriddenProperty: "notOverriddenProperty"
         });
 
         Monarch.ModuleSystem.constructor("Sub", {
-          constructor_properties: {
-            subconstructor_property: 'subconstructor_property'
+          constructorProperties: {
+            subconstructorProperty: 'subconstructorProperty'
           },
 
-          overridden_function: function() {
-            return "overridden_function";
+          overriddenFunction: function() {
+            return "overriddenFunction";
           },
 
-          overridden_function: function() {
-            return "overridden_function subconstructor version";
+          overriddenFunction: function() {
+            return "overriddenFunction subconstructor version";
           },
 
-          overridden_property: "overridden_property subconstructor version",
+          overriddenProperty: "overriddenProperty subconstructor version",
 
-          sub_only_function: function() {
-            return "sub_only_function";
+          subOnlyFunction: function() {
+            return "subOnlyFunction";
           },
 
-          sub_only_property: "sub_only_property"
+          subOnlyProperty: "subOnlyProperty"
         });
 
         Monarch.ModuleSystem.extend(Super, Sub);
@@ -443,33 +443,33 @@ Screw.Unit(function(c) { with(c) {
       it("does not invoke the superconstructor's initialize method when creating the prototypical object", function() {
         Super.prototype.initialize.clear();
         Monarch.ModuleSystem.extend(Super, Sub);
-        expect(Super.prototype.initialize).to_not(have_been_called);
+        expect(Super.prototype.initialize).toNot(haveBeenCalled);
       });
 
       describe("functions and properties on the superconstructor prototype that are not overridden in the subconstructor prototype", function() {
         they("are inherited by objects created by the subconstructor", function() {
-          expect(object.not_overridden_function()).to(equal, "not_overridden_function");
-          expect(object.not_overridden_property).to(equal, "not_overridden_property");
+          expect(object.notOverriddenFunction()).to(equal, "notOverriddenFunction");
+          expect(object.notOverriddenProperty).to(equal, "notOverriddenProperty");
         });
       });
 
       describe("functions and properties on the superconstructor prototype that are overridden in the subconstructor prototype", function() {
         they("are overridden for objects created by the subconstructor", function() {
-          expect(object.overridden_function()).to(equal, "overridden_function subconstructor version");
-          expect(object.overridden_property).to(equal, "overridden_property subconstructor version");
+          expect(object.overriddenFunction()).to(equal, "overriddenFunction subconstructor version");
+          expect(object.overriddenProperty).to(equal, "overriddenProperty subconstructor version");
         });
       });
 
-      context("if an 'constructor_properties' property is defined on the superconstructor's prototype", function() {
-        it("merges the the constructor_properties of the subconstructor into a copy of those defined on the superconstructor, without mutating the constructor_properties of the superconstructor", function() {
-          expect(Sub.prototype.constructor_properties).to(equal, {
-            superconstructor_property: 'superconstructor_property',
-            subconstructor_property: 'subconstructor_property',
+      context("if an 'constructorProperties' property is defined on the superconstructor's prototype", function() {
+        it("merges the the constructorProperties of the subconstructor into a copy of those defined on the superconstructor, without mutating the constructorProperties of the superconstructor", function() {
+          expect(Sub.prototype.constructorProperties).to(equal, {
+            superconstructorProperty: 'superconstructorProperty',
+            subconstructorProperty: 'subconstructorProperty',
             extended: Super.extended
           });
 
-          expect(Super.prototype.constructor_properties).to(equal, {
-            superconstructor_property: 'superconstructor_property',
+          expect(Super.prototype.constructorProperties).to(equal, {
+            superconstructorProperty: 'superconstructorProperty',
             extended: Super.extended
           });
         });
@@ -499,25 +499,25 @@ Screw.Unit(function(c) { with(c) {
         expect(a.baz).to(equal, "baz");
       });
 
-      it("mixes constructor_properties defined in the second module into constructor_properties defined on the first, rather than overwriting them", function() {
+      it("mixes constructorProperties defined in the second module into constructorProperties defined on the first, rather than overwriting them", function() {
         var a = {
-          constructor_properties: {
+          constructorProperties: {
             foo: "foo",
             bar: "bar"
           }
         };
 
         var b =  {
-          constructor_properties: {
+          constructorProperties: {
             bar: "bar2",
             baz: "baz"
           }
         };
 
         Monarch.ModuleSystem.mixin(a, b);
-        expect(a.constructor_properties.foo).to(equal, "foo");
-        expect(a.constructor_properties.bar).to(equal, "bar2");
-        expect(a.constructor_properties.baz).to(equal, "baz");
+        expect(a.constructorProperties.foo).to(equal, "foo");
+        expect(a.constructorProperties.bar).to(equal, "bar2");
+        expect(a.constructorProperties.baz).to(equal, "baz");
       });
     });
   });

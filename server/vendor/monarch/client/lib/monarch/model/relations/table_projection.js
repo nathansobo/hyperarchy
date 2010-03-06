@@ -1,64 +1,64 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations.Relation, {
-  initialize: function(operand, projected_table) {
+  initialize: function(operand, projectedTable) {
     this.operand = operand;
-    this.projected_table = projected_table;
-    this.initialize_events_system();
+    this.projectedTable = projectedTable;
+    this.initializeEventsSystem();
   },
 
-  has_operands: true,
+  hasOperands: true,
 
-  all_tuples: function() {
-    if (this._tuples) return this._tuples;
+  allTuples: function() {
+    if (this.Tuples) return this.Tuples;
 
-    var all_tuples = [];
-    Monarch.Util.each(this.operand.all_tuples(), function(composite_tuple) {
-      var record = composite_tuple.record(this.projected_table);
-      if (!Monarch.Util.contains(all_tuples, record)) all_tuples.push(record);
+    var allTuples = [];
+    Monarch.Util.each(this.operand.allTuples(), function(compositeTuple) {
+      var record = compositeTuple.record(this.projectedTable);
+      if (!Monarch.Util.contains(allTuples, record)) allTuples.push(record);
     }.bind(this));
-    return all_tuples;
+    return allTuples;
   },
 
-  surface_tables: function() {
-    return [this.projected_table];
+  surfaceTables: function() {
+    return [this.projectedTable];
   },
 
   // private
 
-  subscribe_to_operands: function() {
+  subscribeToOperands: function() {
     var self = this;
-    this.operands_subscription_bundle.add(this.operand.on_remote_insert(function(composite_tuple) {
-      var tuple = composite_tuple.record(self.projected_table);
-      if (!self.contains(tuple)) self.tuple_inserted_remotely(tuple);
+    this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(compositeTuple) {
+      var tuple = compositeTuple.record(self.projectedTable);
+      if (!self.contains(tuple)) self.tupleInsertedRemotely(tuple);
     }));
 
-    this.operands_subscription_bundle.add(this.operand.on_remote_update(function(composite_tuple, changeset) {
-      var updated_column_in_projected_table = Monarch.Util.detect(changeset, function(column_name, change) {
-        return change.column.table == self.projected_table;
+    this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(compositeTuple, changeset) {
+      var updatedColumnInProjectedTable = Monarch.Util.detect(changeset, function(columnName, change) {
+        return change.column.table == self.projectedTable;
       });
-      var record = composite_tuple.record(self.projected_table);
+      var record = compositeTuple.record(self.projectedTable);
 
-      if (updated_column_in_projected_table && !self.duplicates_last_update_event(record, changeset)) {
-        self.last_update_event = [record, changeset];
-        self.tuple_updated_remotely(record, changeset);
+      if (updatedColumnInProjectedTable && !self.duplicatesLastUpdateEvent(record, changeset)) {
+        self.lastUpdateEvent = [record, changeset];
+        self.tupleUpdatedRemotely(record, changeset);
       }
     }));
 
-    this.operands_subscription_bundle.add(this.operand.on_remote_remove(function(composite_tuple) {
-      var tuple = composite_tuple.record(self.projected_table);
-      if (!self.operand.find(self.projected_table.column('id').eq(tuple.id()))) {
-        self.tuple_removed_remotely(tuple);
+    this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(compositeTuple) {
+      var tuple = compositeTuple.record(self.projectedTable);
+      if (!self.operand.find(self.projectedTable.column('id').eq(tuple.id()))) {
+        self.tupleRemovedRemotely(tuple);
       }
     }));
   },
 
-  duplicates_last_update_event: function(record, changeset) {
-    if (!this.last_update_event) return false;
-    var last_record = this.last_update_event[0];
-    var last_changset = this.last_update_event[1];
-    if (last_record !== record) return false;
-    if (!_(last_changset).isEqual(changeset)) return false;
+  duplicatesLastUpdateEvent: function(record, changeset) {
+    if (!this.lastUpdateEvent) return false;
+    var lastRecord = this.lastUpdateEvent[0];
+    var lastChangset = this.lastUpdateEvent[1];
+    if (lastRecord !== record) return false;
+    if (!_(lastChangset).isEqual(changeset)) return false;
     return true;
   }
 });

@@ -1,52 +1,52 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Predicates.Eq", Monarch.Model.Predicates.Predicate, {
-  initialize: function(left_operand, right_operand) {
-    this.left_operand = left_operand;
-    this.right_operand = right_operand;
+  initialize: function(leftOperand, rightOperand) {
+    this.leftOperand = leftOperand;
+    this.rightOperand = rightOperand;
   },
 
   evaluate: function(tuple) {
-    return tuple.evaluate(this.left_operand) == tuple.evaluate(this.right_operand);
+    return tuple.evaluate(this.leftOperand) == tuple.evaluate(this.rightOperand);
   },
 
-  wire_representation: function() {
+  wireRepresentation: function() {
     return {
       type: "eq",
-      left_operand: this.operand_wire_representation(this.left_operand),
-      right_operand: this.operand_wire_representation(this.right_operand)
+      leftOperand: this.operandWireRepresentation(this.leftOperand),
+      rightOperand: this.operandWireRepresentation(this.rightOperand)
     };
   },
 
-  force_matching_field_values: function(field_values) {
-    var matching_field_values = Monarch.Util.extend({}, field_values);
-    matching_field_values[this.column_operand().name] = this.scalar_operand();
-    return matching_field_values;
+  forceMatchingFieldValues: function(fieldValues) {
+    var matchingFieldValues = Monarch.Util.extend({}, fieldValues);
+    matchingFieldValues[this.columnOperand().name] = this.scalarOperand();
+    return matchingFieldValues;
   },
 
-  column_operand: function() {
-    if (this.left_operand instanceof Monarch.Model.Column) {
-      return this.left_operand;
-    } else if (this.right_operand instanceof Monarch.Model.Column) {
-      return this.right_operand;
+  columnOperand: function() {
+    if (this.leftOperand instanceof Monarch.Model.Column) {
+      return this.leftOperand;
+    } else if (this.rightOperand instanceof Monarch.Model.Column) {
+      return this.rightOperand;
     } else {
       throw new Error("No operands are columns on this predicate");
     }
   },
 
-  scalar_operand: function() {
-    if (!(this.left_operand instanceof Monarch.Model.Column)) {
-      return this.left_operand;
-    } else if (!(this.right_operand instanceof Monarch.Model.Column)) {
-      return this.right_operand;
+  scalarOperand: function() {
+    if (!(this.leftOperand instanceof Monarch.Model.Column)) {
+      return this.leftOperand;
+    } else if (!(this.rightOperand instanceof Monarch.Model.Column)) {
+      return this.rightOperand;
     } else {
       throw new Error("No operands are scalars on this predicate");
     }
   },
 
-  operand_wire_representation: function(operand) {
+  operandWireRepresentation: function(operand) {
     if (operand instanceof Monarch.Model.Column) {
-      return operand.wire_representation();
+      return operand.wireRepresentation();
     } else {
       return {
         type: 'scalar',

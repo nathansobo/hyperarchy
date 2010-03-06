@@ -5,117 +5,117 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
     this.record = record;
     this.remote = remote;
     remote.local = this;
-    this.initialize_fields();
-    this.connect_local_and_remote_fields();
+    this.initializeFields();
+    this.connectLocalAndRemoteFields();
   },
 
   valid: function() {
-    return Monarch.Util.all(this.fields_by_column_name, function(column_name, field) {
+    return Monarch.Util.all(this.fieldsByColumnName, function(columnName, field) {
       return field.valid();
     });
   },
 
-  all_validation_errors: function() {
-    var all_validation_errors = [];
-    Monarch.Util.each(this.fields_by_column_name, function(column_name, field) {
-      all_validation_errors = all_validation_errors.concat(field.validation_errors);
+  allValidationErrors: function() {
+    var allValidationErrors = [];
+    Monarch.Util.each(this.fieldsByColumnName, function(columnName, field) {
+      allValidationErrors = allValidationErrors.concat(field.validationErrors);
     });
-    return all_validation_errors;
+    return allValidationErrors;
   },
 
-  dirty_wire_representation: function() {
-    return this.wire_representation(true)
+  dirtyWireRepresentation: function() {
+    return this.wireRepresentation(true)
   },
 
-  wire_representation: function(only_dirty) {
-    var wire_representation = {};
-    Monarch.Util.each(this.fields_by_column_name, function(column_name, field) {
-      if (!only_dirty || field.dirty()) wire_representation[column_name] = field.value_wire_representation();
+  wireRepresentation: function(onlyDirty) {
+    var wireRepresentation = {};
+    Monarch.Util.each(this.fieldsByColumnName, function(columnName, field) {
+      if (!onlyDirty || field.dirty()) wireRepresentation[columnName] = field.valueWireRepresentation();
     });
-    return wire_representation;
+    return wireRepresentation;
   },
 
-  clear_validation_errors: function() {
-    Monarch.Util.each(this.fields_by_column_name, function(name, field) {
-      field.clear_validation_errors();
+  clearValidationErrors: function() {
+    Monarch.Util.each(this.fieldsByColumnName, function(name, field) {
+      field.clearValidationErrors();
     });
   },
 
-  assign_validation_errors: function(errors_by_field_name) {
-    Monarch.Util.each(this.fields_by_column_name, function(name, field) {
-      if (errors_by_field_name[name]) {
-        field.assign_validation_errors(errors_by_field_name[name]);
+  assignValidationErrors: function(errorsByFieldName) {
+    Monarch.Util.each(this.fieldsByColumnName, function(name, field) {
+      if (errorsByFieldName[name]) {
+        field.assignValidationErrors(errorsByFieldName[name]);
       } else {
-        field.clear_validation_errors();
+        field.clearValidationErrors();
       }
 
     }.bind(this));
   },
 
   dirty: function() {
-    return Monarch.Util.any(this.fields_by_column_name, function(name, field) {
+    return Monarch.Util.any(this.fieldsByColumnName, function(name, field) {
       return field.dirty();
     });
   },
 
-  field_marked_dirty: function() {
-    if (!this._dirty) {
-      this._dirty = true;
-      this.record.made_dirty();
+  fieldMarkedDirty: function() {
+    if (!this.Dirty) {
+      this.Dirty = true;
+      this.record.madeDirty();
     }
   },
 
-  field_marked_clean: function() {
+  fieldMarkedClean: function() {
     if (!this.dirty()) {
-      this._dirty = false;
-      this.record.made_clean();
+      this.Dirty = false;
+      this.record.madeClean();
     }
   },
 
-  begin_batch_update: function() {
-    this.batch_in_progress = true;
-    this.batched_updates = {};
+  beginBatchUpdate: function() {
+    this.batchInProgress = true;
+    this.batchedUpdates = {};
   },
 
-  finish_batch_update: function() {
-    this.batch_in_progress = false;
-    var changeset = this.batched_updates;
-    this.batched_updates = null;
+  finishBatchUpdate: function() {
+    this.batchInProgress = false;
+    var changeset = this.batchedUpdates;
+    this.batchedUpdates = null;
 
-    if (this.update_events_enabled && Monarch.Util.keys(changeset).length > 0) {
-      if (this.record.on_local_update_node) this.record.on_local_update_node.publish(changeset);
-      if (this.record.after_local_update) this.record.after_local_update(changeset);
-      this.record.table.tuple_updated_locally(this.record, changeset);
+    if (this.updateEventsEnabled && Monarch.Util.keys(changeset).length > 0) {
+      if (this.record.onLocalUpdateNode) this.record.onLocalUpdateNode.publish(changeset);
+      if (this.record.afterLocalUpdate) this.record.afterLocalUpdate(changeset);
+      this.record.table.tupleUpdatedLocally(this.record, changeset);
     }
   },
 
-  field_updated: function(field, new_value, old_value) {
-    var batch_was_in_progress = this.batch_in_progress;
-    if (!batch_was_in_progress) this.begin_batch_update();
+  fieldUpdated: function(field, newValue, oldValue) {
+    var batchWasInProgress = this.batchInProgress;
+    if (!batchWasInProgress) this.beginBatchUpdate();
 
-    var change_data = {};
-    change_data[field.column.name] = {
+    var changeData = {};
+    changeData[field.column.name] = {
       column: field.column,
-      old_value: old_value,
-      new_value: new_value
+      oldValue: oldValue,
+      newValue: newValue
     };
 
-    Monarch.Util.extend(this.batched_updates, change_data);
+    Monarch.Util.extend(this.batchedUpdates, changeData);
 
-    if (!batch_was_in_progress) this.finish_batch_update();
+    if (!batchWasInProgress) this.finishBatchUpdate();
   },
 
   // private
 
-  connect_local_and_remote_fields: function() {
-    Monarch.Util.each(this.fields_by_column_name, function(column_name, local_field) {
-      var remote_field = this.remote.field(column_name);
-      local_field.remote_field(remote_field);
-      remote_field.local_field(local_field);
+  connectLocalAndRemoteFields: function() {
+    Monarch.Util.each(this.fieldsByColumnName, function(columnName, localField) {
+      var remoteField = this.remote.field(columnName);
+      localField.remoteField(remoteField);
+      remoteField.localField(localField);
     }.bind(this));
   },
 
-  create_new_field: function(column) {
+  createNewField: function(column) {
     return new Monarch.Model.LocalField(this, column);
   }
 });

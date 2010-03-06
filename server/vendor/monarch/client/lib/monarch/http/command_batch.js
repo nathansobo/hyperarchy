@@ -11,16 +11,16 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
     this.future = new Monarch.Http.RepositoryUpdateFuture();
 
     if (this.commands.length > 0) {
-      this.server.post(Repository.origin_url + "/mutate", { operations: this.wire_representation() })
-        .on_success(function(response_data) {
-          self.handle_successful_response(response_data);
+      this.server.post(Repository.originUrl + "/mutate", { operations: this.wireRepresentation() })
+        .onSuccess(function(responseData) {
+          self.handleSuccessfulResponse(responseData);
         })
-        .on_failure(function(response_data) {
-          self.handle_unsuccessful_response(response_data);
+        .onFailure(function(responseData) {
+          self.handleUnsuccessfulResponse(responseData);
         });
     } else {
-      this.future.trigger_before_events();
-      this.future.trigger_after_events();
+      this.future.triggerBeforeEvents();
+      this.future.triggerAfterEvents();
     }
 
     return this.future;
@@ -28,30 +28,30 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
 
   // private
 
-  wire_representation: function() {
+  wireRepresentation: function() {
     return Monarch.Util.map(this.commands, function(command) {
-      return command.wire_representation();
+      return command.wireRepresentation();
     });
   },
 
-  handle_successful_response: function(response_data) {
-    Repository.pause_events();
+  handleSuccessfulResponse: function(responseData) {
+    Repository.pauseEvents();
     Monarch.Util.each(this.commands, function(command, index) {
-      command.complete(response_data.primary[index]);
+      command.complete(responseData.primary[index]);
     }.bind(this));
-    Repository.mutate(response_data.secondary);
-    this.future.trigger_before_events(this.commands[0].record);
-    Repository.resume_events();
-    this.future.trigger_after_events(this.commands[0].record);
+    Repository.mutate(responseData.secondary);
+    this.future.triggerBeforeEvents(this.commands[0].record);
+    Repository.resumeEvents();
+    this.future.triggerAfterEvents(this.commands[0].record);
   },
 
-  handle_unsuccessful_response: function(response_data) {
+  handleUnsuccessfulResponse: function(responseData) {
     Monarch.Util.each(this.commands, function(command, index) {
-      if (index == response_data.index) {
-        command.handle_failure(response_data.errors);
-        this.future.trigger_on_failure(command.record);
+      if (index == responseData.index) {
+        command.handleFailure(responseData.errors);
+        this.future.triggerOnFailure(command.record);
       } else {
-        command.handle_failure(null);
+        command.handleFailure(null);
       }
     }.bind(this));
   }

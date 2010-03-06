@@ -2,166 +2,161 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("FakeServer", function() {
-    use_example_domain_model();
+    useExampleDomainModel();
 
-    var fake_server;
+    var fakeServer;
     before(function() {
-      Repository.origin_url = "/users/bob/sandbox"
-      fake_server = new FakeServer(false);
-
-      fake_server.Repository.tables.users.on_fake_repo = true;
-      fake_server.Repository.tables.blogs.on_fake_repo = true;
-      fake_server.Repository.tables.blog_posts.on_fake_repo = true;
-
-      fake_server.Repository.load_fixtures({
+      Repository.originUrl = "/users/bob/sandbox"
+      fakeServer = new FakeServer(false);
+      fakeServer.Repository.loadFixtures({
         users: {
           sharon: {
-            full_name: "Sharon Ly"
+            fullName: "Sharon Ly"
           },
           stephanie: {
-            full_name: "Stephanie Wambach"
+            fullName: "Stephanie Wambach"
           }
         },
         blogs: {
           guns: {
             name: "Guns, Ammo, and Me",
-            user_id: "sharon"
+            userId: "sharon"
           },
           aircraft: {
             name: "My Favorite Aircraft",
-            user_id: "stephanie"
+            userId: "stephanie"
           }
         }
       });
     });
 
     describe("#fetch", function() {
-      it("adds a FakeFetch to a #fetches array, then executes the fetch against its fixture repository and triggers the returned future when #simulate_success is called on it", function() {
-        var before_events_callback = mock_function("before delta events callback", function() {
-          expect(User.find("sharon")).to_not(be_null);
-          expect(insert_callback).to_not(have_been_called);
+      it("adds a FakeFetch to a #fetches array, then executes the fetch against its fixture repository and triggers the returned future when #simulateSuccess is called on it", function() {
+        var beforeEventsCallback = mockFunction("before delta events callback", function() {
+          expect(User.find("sharon")).toNot(beNull);
+          expect(insertCallback).toNot(haveBeenCalled);
         });
-        var insert_callback = mock_function("on insert callback");
-        var after_events_callback = mock_function("after delta events callback", function() {
-          expect(User.find("sharon")).to_not(be_null);
-          expect(insert_callback).to(have_been_called, twice);
+        var insertCallback = mockFunction("on insert callback");
+        var afterEventsCallback = mockFunction("after delta events callback", function() {
+          expect(User.find("sharon")).toNot(beNull);
+          expect(insertCallback).to(haveBeenCalled, twice);
         });
 
-        User.on_remote_insert(insert_callback);
+        User.onRemoteInsert(insertCallback);
 
-        expect(fake_server.fetches).to(be_empty);
-        expect(User.find('sharon')).to(be_null);
-        expect(Blog.find('guns')).to(be_null);
+        expect(fakeServer.fetches).to(beEmpty);
+        expect(User.find('sharon')).to(beNull);
+        expect(Blog.find('guns')).to(beNull);
 
-        var future = fake_server.fetch([Blog.table, User.table]);
+        var future = fakeServer.fetch([Blog.table, User.table]);
 
-        future.before_events(before_events_callback);
-        future.after_events(after_events_callback);
+        future.beforeEvents(beforeEventsCallback);
+        future.afterEvents(afterEventsCallback);
 
-        expect(fake_server.fetches).to(have_length, 1);
-        expect(User.find('sharon')).to(be_null);
-        expect(Blog.find('guns')).to(be_null);
+        expect(fakeServer.fetches).to(haveLength, 1);
+        expect(User.find('sharon')).to(beNull);
+        expect(Blog.find('guns')).to(beNull);
 
-        fake_server.last_fetch.simulate_success();
-        expect(fake_server.fetches).to(be_empty);
+        fakeServer.lastFetch.simulateSuccess();
+        expect(fakeServer.fetches).to(beEmpty);
 
-        expect(before_events_callback).to(have_been_called);
-        expect(insert_callback).to(have_been_called);
-        expect(after_events_callback).to(have_been_called);
+        expect(beforeEventsCallback).to(haveBeenCalled);
+        expect(insertCallback).to(haveBeenCalled);
+        expect(afterEventsCallback).to(haveBeenCalled);
 
-        expect(User.find('sharon').full_name()).to(equal, 'Sharon Ly');
-        expect(Blog.find('guns').user_id()).to(equal, 'sharon');
+        expect(User.find('sharon').fullName()).to(equal, 'Sharon Ly');
+        expect(Blog.find('guns').userId()).to(equal, 'sharon');
       });
     });
 
-    describe("#auto_fetch", function() {
+    describe("#autoFetch", function() {
       it("immediately fetches tuples from the FakeServer's repository to the local repository", function() {
-        expect(Blog.tuples()).to(be_empty);
-        fake_server.auto_fetch([Blog.table]);
-        expect(Blog.tuples()).to_not(be_empty);
+        expect(Blog.tuples()).to(beEmpty);
+        fakeServer.autoFetch([Blog.table]);
+        expect(Blog.tuples()).toNot(beEmpty);
       });
     });
 
     describe("#subscribe", function() {
-      it("adds a FakeSubscribe to the #subscribes array and triggers the returned future with synthetic subscription ids when #simulate_success is called on it", function() {
-        expect(fake_server.subscribes).to(be_empty);
+      it("adds a FakeSubscribe to the #subscribes array and triggers the returned future with synthetic subscription ids when #simulateSuccess is called on it", function() {
+        expect(fakeServer.subscribes).to(beEmpty);
 
-        var future = fake_server.subscribe([Blog.table, User.table]);
+        var future = fakeServer.subscribe([Blog.table, User.table]);
 
-        expect(fake_server.subscribes).to(have_length, 1);
-        expect(fake_server.last_subscribe).to(equal, fake_server.subscribes[0]);
-        expect(fake_server.last_subscribe.relations).to(equal, [Blog.table, User.table]);
+        expect(fakeServer.subscribes).to(haveLength, 1);
+        expect(fakeServer.lastSubscribe).to(equal, fakeServer.subscribes[0]);
+        expect(fakeServer.lastSubscribe.relations).to(equal, [Blog.table, User.table]);
 
 
-        var success_callback = mock_function('success_callback');
-        future.on_success(success_callback);
+        var successCallback = mockFunction('successCallback');
+        future.onSuccess(successCallback);
 
-        fake_server.last_subscribe.simulate_success();
+        fakeServer.lastSubscribe.simulateSuccess();
 
-        expect(fake_server.subscribes.length).to(equal, 0);
-        expect(fake_server.last_subscribe).to(be_null);
+        expect(fakeServer.subscribes.length).to(equal, 0);
+        expect(fakeServer.lastSubscribe).to(beNull);
 
-        expect(success_callback).to(have_been_called, once);
-        expect(success_callback.most_recent_args[0][0].id).to_not(be_null);
-        expect(success_callback.most_recent_args[0][0].relation).to(equal, Blog.table);
-        expect(success_callback.most_recent_args[0][1].id).to_not(equal, success_callback.most_recent_args[0].id);
-        expect(success_callback.most_recent_args[0][1].relation).to(equal, User.table);
+        expect(successCallback).to(haveBeenCalled, once);
+        expect(successCallback.mostRecentArgs[0][0].id).toNot(beNull);
+        expect(successCallback.mostRecentArgs[0][0].relation).to(equal, Blog.table);
+        expect(successCallback.mostRecentArgs[0][1].id).toNot(equal, successCallback.mostRecentArgs[0].id);
+        expect(successCallback.mostRecentArgs[0][1].relation).to(equal, User.table);
       });
     });
 
     describe("#unsubscribe", function() {
-      it("adds a FakeUnsubscribe to the #unsubscribes array and triggers the returned future when #simulate_success is called on it", function() {
-        expect(fake_server.unsubscribes).to(be_empty);
+      it("adds a FakeUnsubscribe to the #unsubscribes array and triggers the returned future when #simulateSuccess is called on it", function() {
+        expect(fakeServer.unsubscribes).to(beEmpty);
         
-        var remote_subscription_1 = new Monarch.Http.RemoteSubscription("1", Blog.table);
-        var remote_subscription_2 = new Monarch.Http.RemoteSubscription("2", User.table);
+        var remoteSubscription1 = new Monarch.Http.RemoteSubscription("1", Blog.table);
+        var remoteSubscription2 = new Monarch.Http.RemoteSubscription("2", User.table);
 
-        var future = fake_server.unsubscribe([remote_subscription_1, remote_subscription_2]);
+        var future = fakeServer.unsubscribe([remoteSubscription1, remoteSubscription2]);
 
-        expect(fake_server.unsubscribes).to(have_length, 1);
-        expect(fake_server.last_unsubscribe).to(equal, fake_server.unsubscribes[0]);
-        expect(fake_server.last_unsubscribe.remote_subscriptions).to(equal, [remote_subscription_1, remote_subscription_2]);
+        expect(fakeServer.unsubscribes).to(haveLength, 1);
+        expect(fakeServer.lastUnsubscribe).to(equal, fakeServer.unsubscribes[0]);
+        expect(fakeServer.lastUnsubscribe.remoteSubscriptions).to(equal, [remoteSubscription1, remoteSubscription2]);
 
-        var success_callback = mock_function('success_callback');
-        future.on_success(success_callback);
+        var successCallback = mockFunction('successCallback');
+        future.onSuccess(successCallback);
 
-        fake_server.last_unsubscribe.simulate_success();
+        fakeServer.lastUnsubscribe.simulateSuccess();
 
-        expect(fake_server.unsubscribes.length).to(equal, 0);
-        expect(fake_server.last_unsubscribe).to(be_null);
-        expect(success_callback).to(have_been_called, once);
+        expect(fakeServer.unsubscribes.length).to(equal, 0);
+        expect(fakeServer.lastUnsubscribe).to(beNull);
+        expect(successCallback).to(haveBeenCalled, once);
       });
     });
 
-    describe("#get, #put, #post, and #delete_", function() {
+    describe("#get, #put, #post, and #delete", function() {
       they("add fake requests to the fake server, which fire future callbacks and removes themselves when their success is simulated", function() {
-        var success_callback = mock_function('success_callback');
-        var failure_callback = mock_function('failure_callback');
+        var successCallback = mockFunction('successCallback');
+        var failureCallback = mockFunction('failureCallback');
 
-        fake_server.get('/foo', {foo: 'bar'})
-          .on_failure(failure_callback);
-        fake_server.get('/bang', {glorp: 'buzz'})
-          .on_success(success_callback);
+        fakeServer.get('/foo', {foo: 'bar'})
+          .onFailure(failureCallback);
+        fakeServer.get('/bang', {glorp: 'buzz'})
+          .onSuccess(successCallback);
 
 
-        expect(fake_server.gets.length).to(equal, 2);
-        expect(fake_server.last_get).to(equal, fake_server.gets[1]);
-        expect(fake_server.last_get.url).to(equal, '/bang');
-        expect(fake_server.last_get.data).to(equal, {glorp: 'buzz'});
+        expect(fakeServer.gets.length).to(equal, 2);
+        expect(fakeServer.lastGet).to(equal, fakeServer.gets[1]);
+        expect(fakeServer.lastGet.url).to(equal, '/bang');
+        expect(fakeServer.lastGet.data).to(equal, {glorp: 'buzz'});
 
-        fake_server.last_get.simulate_success({baz: 'quux'});
-        expect(success_callback).to(have_been_called, with_args({baz: 'quux'}));
+        fakeServer.lastGet.simulateSuccess({baz: 'quux'});
+        expect(successCallback).to(haveBeenCalled, withArgs({baz: 'quux'}));
 
-        expect(fake_server.gets.length).to(equal, 1);
-        expect(fake_server.last_get).to(equal, fake_server.gets[0]);
-        expect(fake_server.last_get.url).to(equal, '/foo');
-        expect(fake_server.last_get.data).to(equal, {foo: 'bar'});
+        expect(fakeServer.gets.length).to(equal, 1);
+        expect(fakeServer.lastGet).to(equal, fakeServer.gets[0]);
+        expect(fakeServer.lastGet.url).to(equal, '/foo');
+        expect(fakeServer.lastGet.data).to(equal, {foo: 'bar'});
 
-        fake_server.last_get.simulate_failure({bar: 'foo'});
-        expect(failure_callback).to(have_been_called, with_args({bar: 'foo'}));
+        fakeServer.lastGet.simulateFailure({bar: 'foo'});
+        expect(failureCallback).to(haveBeenCalled, withArgs({bar: 'foo'}));
 
-        expect(fake_server.gets).to(be_empty);
-        expect(fake_server.last_get).to(be_null);
+        expect(fakeServer.gets).to(beEmpty);
+        expect(fakeServer.lastGet).to(beNull);
       });
     });
   });

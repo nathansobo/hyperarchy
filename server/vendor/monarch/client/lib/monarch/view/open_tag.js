@@ -6,22 +6,22 @@ Monarch.constructor("Monarch.View.OpenTag", {
     this.attributes = attributes;
   },
 
-  to_xml: function() {
-    return "<" + this.name + this.attributes_html() + ">"
+  toXml: function() {
+    return "<" + this.name + this.attributesHtml() + ">"
   },
 
-  attributes_html: function() {
-    var attribute_pairs = [];
-    for (var attribute_name in this.attributes) {
-      if (this.attributes[attribute_name]) {
-        attribute_pairs.push(attribute_name + '="' + this.attributes[attribute_name] + '"');
+  attributesHtml: function() {
+    var attributePairs = [];
+    for (var attributeName in this.attributes) {
+      if (this.attributes[attributeName]) {
+        attributePairs.push(attributeName + '="' + this.attributes[attributeName] + '"');
       }
     }
-    return (attribute_pairs.length > 0) ? " " + attribute_pairs.join(" ") : "";
+    return (attributePairs.length > 0) ? " " + attributePairs.join(" ") : "";
   },
 
-  post_process: function(builder) {
-    builder.push_child();
+  postProcess: function(builder) {
+    builder.pushChild();
   }
 });
 

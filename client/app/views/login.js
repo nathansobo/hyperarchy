@@ -2,27 +2,27 @@ constructor("Views.Login", View.Template, {
   content: function() { with(this.builder) {
     div({id: 'login'}, function() {
       div({id: 'errors', style: 'display:none'});
-      div({id: 'login_form'}, function() {
-        label({ 'for': 'email_address' }, "email address:");
-        input({ id: 'email_address', name: 'email_address' });
+      div({id: 'loginForm'}, function() {
+        label({ 'for': 'emailAddress' }, "email address:");
+        input({ id: 'emailAddress', name: 'emailAddress' });
         label({ 'for': 'password' }, "password:");
         input({ id: 'password', name: 'password', type: 'password' });
-        button({id: 'login_submit'}, "log in").click(function(view) { view.login_submitted(); });
+        button({id: 'loginSubmit'}, "log in").click(function(view) { view.loginSubmitted(); });
       });
-      a({id: "sign_up", href: "#signup", local: true}, "sign up");
+      a({id: "signUp", href: "#signup", local: true}, "sign up");
     });
   }},
 
-  view_properties: {
-    login_submitted: function() {
+  viewProperties: {
+    loginSubmitted: function() {
       var self = this;
-      Server.post('/login', this.field_values())
-        .on_success(function(data) {
-          Application.current_user_id_established(data.current_user_id);
+      Server.post('/login', this.fieldValues())
+        .onSuccess(function(data) {
+          Application.currentUserIdEstablished(data.currentUserId);
           History.load('organization');
         })
-        .on_failure(function(data) {
-          self.find("#errors").html(Views.ErrorList.to_view(data.errors)).show();
+        .onFailure(function(data) {
+          self.find("#errors").html(Views.ErrorList.toView(data.errors)).show();
         });
     }
   }

@@ -1,61 +1,61 @@
 Screw.Unit(function(c) {
-  c.use_example_domain_model = function(between_before_and_after) {
+  c.useExampleDomainModel = function(betweenBeforeAndAfter) {
     c.init(function() {
       Monarch.ModuleSystem.constructor("Blog", Monarch.Model.Record, {
-        constructor_initialize: function() {
+        constructorInitialize: function() {
           this.columns({
             name: "string",
-            user_id: "string",
-            owner_id: "string",
-            started_at: "datetime"
+            userId: "string",
+            ownerId: "string",
+            startedAt: "datetime"
           });
 
-          this.synthetic_column("fun_profit_name", function() {
+          this.syntheticColumn("funProfitName", function() {
             return this.signal('name', function(name) {
               return name + " for Fun and Profit";
             });
           });
 
-          this.fun_profit_name.setter = function(name) {
+          this.funProfitName.setter = function(name) {
             this.name(name + " in Bed");
           };
 
-          this.has_many("blog_posts");
+          this.hasMany("blogPosts");
         },
 
-        crazy_name: function(name) {
+        crazyName: function(name) {
           this.name("CRAZY " + name);
         }
       });
 
       Monarch.ModuleSystem.constructor("BlogPost", Monarch.Model.Record, {
-        constructor_initialize: function() {
+        constructorInitialize: function() {
           this.columns({
             name: "string",
-            blog_id: "string",
+            blogId: "string",
             body: "string"
           });
         }
       });
 
       Monarch.ModuleSystem.constructor("User", Monarch.Model.Record, {
-        constructor_initialize: function() {
+        constructorInitialize: function() {
           this.columns({
-            full_name: "string",
+            fullName: "string",
             age: "integer",
-            signed_up_at: "datetime"
+            signedUpAt: "datetime"
           });
 
-          this.has_many("blogs");
+          this.hasMany("blogs");
 
-          this.relates_to_many("blogs2", function() {
-            return Blog.where(Blog.user_id.eq(this.id()));
+          this.relatesToMany("blogs2", function() {
+            return Blog.where(Blog.userId.eq(this.id()));
           });
         }
       });
     });
 
-    if (between_before_and_after) between_before_and_after();
+    if (betweenBeforeAndAfter) betweenBeforeAndAfter();
 
     c.after(function() {
       Repository.tables = {};

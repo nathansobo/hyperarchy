@@ -1,29 +1,29 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.ModuleSystem.Object", {
-  constructor_properties: {
-    delegate_constructor_methods: function() {
-      var args = Monarch.Util.to_array(arguments);
-      var delegate_name = args.pop();
+  constructorProperties: {
+    delegateConstructorMethods: function() {
+      var args = Monarch.Util.toArray(arguments);
+      var delegateName = args.pop();
 
-      var new_constructor_methods = {};
-      this.setup_delegate_methods(new_constructor_methods, args, delegate_name);
-      if (!this.prototype.constructor_properties) this.prototype.constructor_properties = {};
-      Monarch.Util.extend(this.prototype.constructor_properties, new_constructor_methods);
-      Monarch.Util.extend(this, new_constructor_methods);
+      var newConstructorMethods = {};
+      this.setupDelegateMethods(newConstructorMethods, args, delegateName);
+      if (!this.prototype.constructorProperties) this.prototype.constructorProperties = {};
+      Monarch.Util.extend(this.prototype.constructorProperties, newConstructorMethods);
+      Monarch.Util.extend(this, newConstructorMethods);
     },
 
     delegate: function(source) {
-      var args = Monarch.Util.to_array(arguments);
-      var delegate_name = args.pop();
-      this.setup_delegate_methods(this.prototype, args, delegate_name);
+      var args = Monarch.Util.toArray(arguments);
+      var delegateName = args.pop();
+      this.setupDelegateMethods(this.prototype, args, delegateName);
     },
 
-    setup_delegate_methods: function(delegator, method_names, delegate_name) {
-      Monarch.Util.each(method_names, function(method_name) {
-        delegator[method_name] = function() {
-          var delegate = this[delegate_name];
-          return delegate[method_name].apply(delegate, arguments);
+    setupDelegateMethods: function(delegator, methodNames, delegateName) {
+      Monarch.Util.each(methodNames, function(methodName) {
+        delegator[methodName] = function() {
+          var delegate = this[delegateName];
+          return delegate[methodName].apply(delegate, arguments);
         };
       });
     }
@@ -31,10 +31,10 @@ Monarch.constructor("Monarch.ModuleSystem.Object", {
 
   hitch: function() {
     var args = _.toArray(arguments);
-    var method_name = args.shift();
-    var bind_args = [this].concat(args);
-    var method = this[method_name]; 
-    return method.bind.apply(method, bind_args);
+    var methodName = args.shift();
+    var bindArgs = [this].concat(args);
+    var method = this[methodName]; 
+    return method.bind.apply(method, bindArgs);
   }
 });
 

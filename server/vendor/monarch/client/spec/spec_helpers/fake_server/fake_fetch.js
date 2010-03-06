@@ -1,39 +1,39 @@
 Monarch.constructor("FakeServer.FakeFetch", {
   type: 'fetch',
 
-  initialize: function(url, relations, fake_server) {
+  initialize: function(url, relations, fakeServer) {
     this.url = url;
     this.relations = relations;
-    this.fake_server = fake_server;
+    this.fakeServer = fakeServer;
     this.future = new Monarch.Http.RepositoryUpdateFuture();
   },
 
-  simulate_success: function() {
-    var dataset = this.fetch_dataset_from_fixture_repository();
-    Repository.pause_events();
+  simulateSuccess: function() {
+    var dataset = this.fetchDatasetFromFixtureRepository();
+    Repository.pauseEvents();
     Repository.update(dataset);
-    this.future.trigger_before_events();
-    Repository.resume_events();
-    this.future.trigger_after_events();
-    this.fake_server.remove_request(this);
+    this.future.triggerBeforeEvents();
+    Repository.resumeEvents();
+    this.future.triggerAfterEvents();
+    this.fakeServer.removeRequest(this);
   },
 
-  fetch_dataset_from_fixture_repository: function() {
+  fetchDatasetFromFixtureRepository: function() {
     var self = this;
     var dataset = {};
     Monarch.Util.each(this.relations, function(relation) {
-      self.add_relation_to_dataset(relation, dataset);
+      self.addRelationToDataset(relation, dataset);
     });
     return dataset;
   },
 
-  add_relation_to_dataset: function(relation, dataset) {
-    var tuples = relation.evaluate_in_repository(this.fake_server.Repository).tuples();
-    var table_name = relation.primary_table().global_name;
+  addRelationToDataset: function(relation, dataset) {
+    var tuples = relation.evaluateInRepository(this.fakeServer.Repository).tuples();
+    var tableName = relation.primaryTable().globalName;
 
-    if (!dataset[table_name]) dataset[table_name] = {};
+    if (!dataset[tableName]) dataset[tableName] = {};
     Monarch.Util.each(tuples, function(record) {
-      dataset[table_name][record.id()] = record.wire_representation();
+      dataset[tableName][record.id()] = record.wireRepresentation();
     });
   }
 });

@@ -1,30 +1,30 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.CompositeTuple", {
-  initialize: function(left_tuple, right_tuple) {
-    this.left_tuple = left_tuple;
-    this.right_tuple = right_tuple;
+  initialize: function(leftTuple, rightTuple) {
+    this.leftTuple = leftTuple;
+    this.rightTuple = rightTuple;
   },
 
-  evaluate: function(column_or_constant) {
-    if (column_or_constant instanceof Monarch.Model.Column) {
-      return this.field(column_or_constant).value();
+  evaluate: function(columnOrConstant) {
+    if (columnOrConstant instanceof Monarch.Model.Column) {
+      return this.field(columnOrConstant).value();
     } else {
-      return column_or_constant;
+      return columnOrConstant;
     }
   },
 
   field: function(column) {
-    return this.left_tuple.field(column) || this.right_tuple.field(column); 
+    return this.leftTuple.field(column) || this.rightTuple.field(column); 
   },
 
   record: function(table) {
-    return this.left_tuple.record(table) || this.right_tuple.record(table);
+    return this.leftTuple.record(table) || this.rightTuple.record(table);
   },
 
   equals: function(other) {
     if (!other.constructor === this.constructor) return false;
-    return this.left_tuple.equals(other.left_tuple) && this.right_tuple.equals(other.right_tuple);
+    return this.leftTuple.equals(other.leftTuple) && this.rightTuple.equals(other.rightTuple);
   }
 });
 

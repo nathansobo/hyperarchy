@@ -17,8 +17,8 @@ Screw.Unit(function(c) { with(c) {
           });
         }},
 
-        view_properties: {
-          bold_name: function() {
+        viewProperties: {
+          boldName: function() {
             this.find("dt:contains('Name')").css("font-weight", "bold");
           },
           name: "Unknown",
@@ -38,30 +38,30 @@ Screw.Unit(function(c) { with(c) {
         delete window.ExampleSubtemplate
       });
 
-      specify("the subtemplate's view_properties are merged with those of the supertemplate", function() {
+      specify("the subtemplate's viewProperties are merged with those of the supertemplate", function() {
         Monarch.ModuleSystem.constructor("ExampleSubtemplate", ExampleTemplate, {
-          view_properties: {
+          viewProperties: {
             age: "Unknown",
             name: "Joe"
           }
         });
 
-        expect(ExampleSubtemplate.prototype.view_properties.bold_name).to(equal, ExampleTemplate.prototype.view_properties.bold_name);
-        expect(ExampleSubtemplate.prototype.view_properties.name).to(equal, "Joe");
-        expect(ExampleSubtemplate.prototype.view_properties.gender).to(equal, "Unknown");
-        expect(ExampleSubtemplate.prototype.view_properties.age).to(equal, "Unknown");
+        expect(ExampleSubtemplate.prototype.viewProperties.boldName).to(equal, ExampleTemplate.prototype.viewProperties.boldName);
+        expect(ExampleSubtemplate.prototype.viewProperties.name).to(equal, "Joe");
+        expect(ExampleSubtemplate.prototype.viewProperties.gender).to(equal, "Unknown");
+        expect(ExampleSubtemplate.prototype.viewProperties.age).to(equal, "Unknown");
       });
     });
 
-    describe(".to_view", function() {
-      it("calls #to_view on an instance of the Template", function() {
-        var view = ExampleTemplate.to_view({});
+    describe(".toView", function() {
+      it("calls #toView on an instance of the Template", function() {
+        var view = ExampleTemplate.toView({});
         expect(view.template.constructor).to(equal, ExampleTemplate);
       });
     });
 
-    describe(".build(content_fn)", function() {
-      it("instantiates an anonymous Template with the given function as its content method (except it is passed the builder as a param), then returns the result of calling #to_jquery on it", function() {
+    describe(".build(contentFn)", function() {
+      it("instantiates an anonymous Template with the given function as its content method (except it is passed the builder as a param), then returns the result of calling #toJquery on it", function() {
         var view = Monarch.View.Template.build(function(b) { with(b) {
           div({id: "foo"}, function() {
             div("BAR", {id: "bar"});
@@ -69,26 +69,26 @@ Screw.Unit(function(c) { with(c) {
         }});
 
         expect(view.attr('id')).to(equal, 'foo');
-        expect(view.find('div#bar')).to_not(be_empty);
+        expect(view.find('div#bar')).toNot(beEmpty);
       });
     });
 
 
-    describe("#to_view", function() {
-      it("assigns .builder to a new Builder, calls #content, then returns #builder.to_view", function() {
-        var view = template.to_view({ name: "Nathan", gender: "male"});
+    describe("#toView", function() {
+      it("assigns .builder to a new Builder, calls #content, then returns #builder.toView", function() {
+        var view = template.toView({ name: "Nathan", gender: "male"});
         expect(view.attr('id')).to(equal, "root");
       });
 
       it("assigns the given properties and the view properties to the returned view, overriding view properties with the given ones", function() {
-        var view = template.to_view({ name: "Nathan", gender: "male"});
+        var view = template.toView({ name: "Nathan", gender: "male"});
         expect(view.name).to(equal, "Nathan");
         expect(view.gender).to(equal, "male");
-        expect(view.bold_name).to(equal, template.view_properties.bold_name);
+        expect(view.boldName).to(equal, template.viewProperties.boldName);
       });
       
       it("assigns #template on the returned view", function() {
-        var view = template.to_view({});
+        var view = template.toView({});
         expect(view.template).to(equal, template);
       });
     });

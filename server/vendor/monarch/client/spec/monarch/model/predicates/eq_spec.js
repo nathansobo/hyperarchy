@@ -2,35 +2,35 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Predicates.Eq", function() {
-    use_local_fixtures();
+    useLocalFixtures();
 
-    var eq, left_operand, right_operand, record;
+    var eq, leftOperand, rightOperand, record;
     before(function() {
-      eq = new Monarch.Model.Predicates.Eq(left_operand, right_operand)
+      eq = new Monarch.Model.Predicates.Eq(leftOperand, rightOperand)
       record = User.find("jan");
     });
 
     describe("#evaluate", function() {
-      context("when #left_operand and #right_operand are scalars", function() {
-        context("when #left_operand and #right_operand are equivalent", function() {
+      context("when #leftOperand and #rightOperand are scalars", function() {
+        context("when #leftOperand and #rightOperand are equivalent", function() {
           init(function() {
-            left_operand = 1;
-            right_operand = 1;
+            leftOperand = 1;
+            rightOperand = 1;
           });
 
           it("returns true", function() {
-            expect(eq.evaluate(record)).to(be_true);
+            expect(eq.evaluate(record)).to(beTrue);
           });
         });
 
-        scenario("when #left_operand and #right_operand are not equivalent", function() {
+        scenario("when #leftOperand and #rightOperand are not equivalent", function() {
           init(function() {
-            left_operand = 4;
-            right_operand = 1;
+            leftOperand = 4;
+            rightOperand = 1;
           });
 
           it("returns false", function() {
-            expect(eq.evaluate(record)).to(be_false);
+            expect(eq.evaluate(record)).to(beFalse);
           });
         });
       });
@@ -38,35 +38,35 @@ Screw.Unit(function(c) { with(c) {
       context("when one operand is a column and one is a scalar", function() {
         scenario("when the left operand is a column", function() {
           init(function() {
-            left_operand = User.full_name;
-            right_operand = "Jan Nelson";
+            leftOperand = User.fullName;
+            rightOperand = "Jan Nelson";
           });
         });
 
         scenario("when the right operand is a column", function() {
           init(function() {
-            right_operand = User.full_name;
-            left_operand = "Jan Nelson";
+            rightOperand = User.fullName;
+            leftOperand = "Jan Nelson";
           });
         });
 
         context("when field value corresponding to the column in the given record is equivalent to the scalar", function() {
           before(function() {
-            expect(record.full_name()).to(equal, "Jan Nelson");
+            expect(record.fullName()).to(equal, "Jan Nelson");
           });
 
           it("returns true", function() {
-            expect(eq.evaluate(record)).to(be_true);
+            expect(eq.evaluate(record)).to(beTrue);
           });
         });
 
         context("when field value corresponding to the column in the given record is NOT equivalent to the scalar", function() {
           before(function() {
-            record.full_name("Jan Christian Nelson");
+            record.fullName("Jan Christian Nelson");
           });
 
           it("returns true", function() {
-            expect(eq.evaluate(record)).to(be_false);
+            expect(eq.evaluate(record)).to(beFalse);
           });
         });
       });

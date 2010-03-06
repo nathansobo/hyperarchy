@@ -2,94 +2,94 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Relations.Projection", function() {
-    use_local_fixtures();
+    useLocalFixtures();
     
-    var operand, projected_columns, projection;
+    var operand, projectedColumns, projection;
     before(function() {
       operand = Blog.table;
-      projected_columns = [new Monarch.Model.ProjectedColumn(Blog.user_id), Blog.name_.as('blog_name')];
-      projection = new Monarch.Model.Relations.Projection(operand, projected_columns);
+      projectedColumns = [new Monarch.Model.ProjectedColumn(Blog.userId), Blog.name_.as('blogName')];
+      projection = new Monarch.Model.Relations.Projection(operand, projectedColumns);
     });
 
 
     describe("#tuples", function() {
-      it("returns ProjectedTuples with fields corresponding only to the #projected_columns", function() {
-        var projection_tuples = projection.tuples();
-        var operand_tuples = operand.tuples();
+      it("returns ProjectedTuples with fields corresponding only to the #projectedColumns", function() {
+        var projectionTuples = projection.tuples();
+        var operandTuples = operand.tuples();
 
-        expect(projection_tuples).to_not(be_empty);
-        expect(projection_tuples.length).to(equal, operand_tuples.length);
+        expect(projectionTuples).toNot(beEmpty);
+        expect(projectionTuples.length).to(equal, operandTuples.length);
 
-        Monarch.Util.each(operand.tuples(), function(operand_record, index) {
-          var projection_record = projection_tuples[index];
-          expect(projection_record.user_id()).to(equal, operand_record.user_id());
-          expect(projection_record.field(projection.column('blog_name')).value()).to(equal, operand_record.name());
-          expect(projection_record.field('blog_name').value()).to(equal, operand_record.name());
-          expect(projection_record.started_at).to(be_null);
+        Monarch.Util.each(operand.tuples(), function(operandRecord, index) {
+          var projectionRecord = projectionTuples[index];
+          expect(projectionRecord.userId()).to(equal, operandRecord.userId());
+          expect(projectionRecord.field(projection.column('blogName')).value()).to(equal, operandRecord.name());
+          expect(projectionRecord.field('blogName').value()).to(equal, operandRecord.name());
+          expect(projectionRecord.startedAt).to(beNull);
         });
       });
     });
 
 
     describe("event handling", function() {
-      var insert_callback, update_callback, remove_callback;
+      var insertCallback, updateCallback, removeCallback;
       before(function() {
-        insert_callback = mock_function("insert_callback");
-        update_callback = mock_function("update_callback");
-        remove_callback = mock_function("remove_callback");
-        projection.on_remote_insert(insert_callback);
-        projection.on_remote_update(update_callback);
-        projection.on_remote_remove(remove_callback);
+        insertCallback = mockFunction("insertCallback");
+        updateCallback = mockFunction("updateCallback");
+        removeCallback = mockFunction("removeCallback");
+        projection.onRemoteInsert(insertCallback);
+        projection.onRemoteUpdate(updateCallback);
+        projection.onRemoteRemove(removeCallback);
       });
 
       describe("when a record is inserted into the operand", function() {
-        it("triggers on_remote_insert callbacks with the inserted record's corresponding ProjectionRecord", function() {
-          var operand_record = operand.create({name: "Radio Flyer"});
+        it("triggers onRemoteInsert callbacks with the inserted record's corresponding ProjectionRecord", function() {
+          var operandRecord = operand.create({name: "Radio Flyer"});
 
-          expect(insert_callback).to(have_been_called, once);
-          expect(insert_callback.most_recent_args[0].blog_name()).to(equal, "Radio Flyer");
-          expect(projection.find(projection.column('blog_name').eq("Radio Flyer"))).to(equal, insert_callback.most_recent_args[0]);
+          expect(insertCallback).to(haveBeenCalled, once);
+          expect(insertCallback.mostRecentArgs[0].blogName()).to(equal, "Radio Flyer");
+          expect(projection.find(projection.column('blogName').eq("Radio Flyer"))).to(equal, insertCallback.mostRecentArgs[0]);
         });
       });
 
       describe("when a record is updated in the operand", function() {
-        context("if any of the updated columns are in #projected_columns", function() {
-          it("triggers on_remote_update callbacks with the record's corresponding ProjectionRecord and the changed columns", function() {
-            var operand_record = operand.find('motorcycle');
-            var old_name = operand_record.name();
-            var projection_record = projection.find(projection.column('blog_name').eq(operand_record.name()));
-            expect(projection_record).to_not(be_null);
+        context("if any of the updated columns are in #projectedColumns", function() {
+          it("triggers onRemoteUpdate callbacks with the record's corresponding ProjectionRecord and the changed columns", function() {
+            var operandRecord = operand.find('motorcycle');
+            var oldName = operandRecord.name();
+            var projectionRecord = projection.find(projection.column('blogName').eq(operandRecord.name()));
+            expect(projectionRecord).toNot(beNull);
             
-            operand_record.update({name: "Motorcycles: Wheee!"});
+            operandRecord.update({name: "Motorcycles: Wheee!"});
 
-            expect(update_callback).to(have_been_called, with_args(projection_record, {
-              blog_name: {
-                column: projection.column('blog_name'),
-                old_value: old_name,
-                new_value: "Motorcycles: Wheee!"
+            expect(updateCallback).to(haveBeenCalled, withArgs(projectionRecord, {
+              blogName: {
+                column: projection.column('blogName'),
+                oldValue: oldName,
+                newValue: "Motorcycles: Wheee!"
               }
             }));
           });
         });
 
-        context("if none of the updated columns are in #projected_columns", function() {
+        context("if none of the updated columns are in #projectedColumns", function() {
           it("does not trigger any callbacks", function() {
-            var operand_record = operand.find('motorcycle');
+            var operandRecord = operand.find('motorcycle');
 
-            operand_record.local_update({started_at: new Date()});
+            operandRecord.localUpdate({startedAt: new Date()});
 
-            expect(update_callback).to_not(have_been_called, once);
+            expect(updateCallback).toNot(haveBeenCalled, once);
           });
         });
       });
 
       describe("when a record is removed from the operand", function() {
-        it("triggers on_remote_remove callbacks with the removed record's corresponding ProjectionRecord", function() {
-          var operand_record = operand.find('motorcycle');
-          var projection_record = projection.find(projection.column('blog_name').eq(operand_record.name()));
-          operand.remove(operand_record);
+        it("triggers onRemoteRemove callbacks with the removed record's corresponding ProjectionRecord", function() {
+          var operandRecord = operand.find('motorcycle');
+          var projectionRecord = projection.find(projection.column('blogName').eq(operandRecord.name()));
+          operand.remove(operandRecord);
 
-          expect(remove_callback).to(have_been_called, with_args(projection_record));
+          expect(removeCallback).to(haveBeenCalled, withArgs(projectionRecord));
         });
       });
     });

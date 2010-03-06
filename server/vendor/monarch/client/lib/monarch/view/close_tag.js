@@ -1,28 +1,28 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.View.CloseTag", {
-  constructor_properties: {
+  constructorProperties: {
     initialize: function() {
-      this.generate_event_methods();
+      this.generateEventMethods();
     },
 
-    supported_events: [
+    supportedEvents: [
       "blur", "change", "click", "dblclick", "error", "focus", "keydown", "keypress",
       "keyup", "load", "mousedown", "mousemove", "mouseout", "mouseover", "mouseup",
       "resize", "scroll", "select", "submit", "unload"
     ],
 
-    generate_event_methods: function() {
+    generateEventMethods: function() {
       var self = this;
-      Monarch.Util.each(this.supported_events, function(event_name) {
-        self.generate_event_method(event_name);
+      Monarch.Util.each(this.supportedEvents, function(eventName) {
+        self.generateEventMethod(eventName);
       });
     },
 
-    generate_event_method: function(event_name) {
-      this.prototype[event_name] = function(callback) {
-        this.on_build(function(element, view) {
-          element[event_name].call(element, function(event) {
+    generateEventMethod: function(eventName) {
+      this.prototype[eventName] = function(callback) {
+        this.onBuild(function(element, view) {
+          element[eventName].call(element, function(event) {
             callback.call(element, view, event);
           });
         });
@@ -35,25 +35,25 @@ Monarch.constructor("Monarch.View.CloseTag", {
     this.name = name;
   },
 
-  to_xml: function() {
+  toXml: function() {
     return "</" + this.name + ">"
   },
 
   ref: function(name) {
-    this.on_build(function(element, view) {
+    this.onBuild(function(element, view) {
       view[name] = element;
     });
     return this;
   },
 
-  on_build: function(callback) {
-    if (!this.on_build_node) this.on_build_node = new Monarch.SubscriptionNode();
-    return this.on_build_node.subscribe(callback);
+  onBuild: function(callback) {
+    if (!this.onBuildNode) this.onBuildNode = new Monarch.SubscriptionNode();
+    return this.onBuildNode.subscribe(callback);
   },
 
-  post_process: function(builder) {
-    builder.pop_child();
-    if (this.on_build_node) this.on_build_node.publish(builder.find_preceding_element(), builder.jquery_fragment);
+  postProcess: function(builder) {
+    builder.popChild();
+    if (this.onBuildNode) this.onBuildNode.publish(builder.findPrecedingElement(), builder.jqueryFragment);
   }
 });
 

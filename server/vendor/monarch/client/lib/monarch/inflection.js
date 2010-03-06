@@ -96,9 +96,9 @@ Monarch.module("Monarch.Inflection", {
     }
     for (var i = 0; i < Monarch.Inflection.plural.length; i++) {
       var regex          = Monarch.Inflection.plural[i][0];
-      var replace_string = Monarch.Inflection.plural[i][1];
+      var replaceString = Monarch.Inflection.plural[i][1];
       if (regex.test(word)) {
-        return word.replace(regex, replace_string);
+        return word.replace(regex, replaceString);
       }
     }
   },
@@ -119,9 +119,9 @@ Monarch.module("Monarch.Inflection", {
     }
     for (var i = 0; i < Monarch.Inflection.singular.length; i++) {
       var regex          = Monarch.Inflection.singular[i][0];
-      var replace_string = Monarch.Inflection.singular[i][1];
+      var replaceString = Monarch.Inflection.singular[i][1];
       if (regex.test(word)) {
-        return word.replace(regex, replace_string);
+        return word.replace(regex, replaceString);
       }
     }
   },
@@ -137,6 +137,10 @@ Monarch.module("Monarch.Inflection", {
       camelized += parts[i].charAt(0).toUpperCase() + parts[i].substring(1);
     }
     return camelized;
+  },
+
+  capitalize: function(word) {
+    return word.charAt(0).toUpperCase() + word.substr(1);
   },
 
   humanize: function(word) {

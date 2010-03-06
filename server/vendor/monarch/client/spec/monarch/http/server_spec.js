@@ -7,7 +7,7 @@ Screw.Unit(function(c) { with(c) {
 
     before(function() {
       server = new Monarch.Http.Server();
-      mock(server, 'new_comet_client', function() {
+      mock(server, 'newCometClient', function() {
         return new FakeServer.FakeCometClient();
       });
     });
@@ -20,50 +20,51 @@ Screw.Unit(function(c) { with(c) {
         server.get = FakeServer.prototype.get;
         server.post = FakeServer.prototype.post;
         server.request = FakeServer.prototype.request;
-        server.add_request = FakeServer.prototype.add_request;
-        server.remove_request = FakeServer.prototype.remove_request;
-        Repository.origin_url = "/repository"
+        server.addRequest = FakeServer.prototype.addRequest;
+        server.removeRequest = FakeServer.prototype.removeRequest;
+        Repository.originUrl = "/repository"
       });
 
       describe("#fetch(relations)", function() {
-        use_example_domain_model();
+        useExampleDomainModel();
 
         before(function() {
           server.request = FakeServer.prototype.request;
-          server.add_request = FakeServer.prototype.add_request;
-          server.remove_request = FakeServer.prototype.remove_request;
+          server.addRequest = FakeServer.prototype.addRequest;
+          server.removeRequest = FakeServer.prototype.removeRequest;
         });
 
 
-        it("performs a GET to {Repository.origin_url}/fetch with the json to fetch the given relations, then merges the results into the Repository with the delta events sandwiched by before_events and after_events callback triggers on the returned future", function() {
+        it("performs a GET to {Repository.originUrl}/fetch with the json to fetch the given relations, then merges the results into the Repository with the delta events sandwiched by beforeEvents and afterEvents callback triggers on the returned future", function() {
           var future = server.fetch([Blog.table, User.table]);
 
-          expect(server.gets).to(have_length, 1);
-          expect(server.last_get.url).to(equal, "/repository/fetch");
-          expect(server.last_get.data).to(equal, {
-            relations: [Blog.table.wire_representation(), User.table.wire_representation()]
+          expect(server.gets).to(haveLength, 1);
+          console.debug(server);
+          expect(server.lastGet.url).to(equal, "/repository/fetch");
+          expect(server.lastGet.data).to(equal, {
+            relations: [Blog.table.wireRepresentation(), User.table.wireRepresentation()]
           });
 
           var dataset = {
             users: {
               nathan: {
                 id: 'nathan',
-                full_name: "Nathan Sobo"
+                fullName: "Nathan Sobo"
               },
               wil: {
                 id: 'wil',
-                full_name: 'Wil Bierbaum'
+                fullName: 'Wil Bierbaum'
               }
             },
             blogs: {
               metacircular: {
                 id: 'metacircular',
-                user_id: 'nathan',
+                userId: 'nathan',
                 name: 'Metacircular'
               },
               canyonero: {
                 id: 'canyonero',
-                user_id: 'wil',
+                userId: 'wil',
                 name: 'Canyonero'
               }
             }
@@ -72,594 +73,594 @@ Screw.Unit(function(c) { with(c) {
           var events = [];
 
           future
-            .before_events(function() {
-            events.push('before_events');
+            .beforeEvents(function() {
+            events.push('beforeEvents');
           })
-            .after_events(function() {
-            events.push('after_events')
+            .afterEvents(function() {
+            events.push('afterEvents')
           });
 
-          mock(Repository, 'pause_events', function() {
-            events.push('Repository.pause_events')
+          mock(Repository, 'pauseEvents', function() {
+            events.push('Repository.pauseEvents')
           });
 
           mock(Repository, 'update', function() {
             events.push('Repository.update')
           });
 
-          mock(Repository, 'resume_events', function() {
-            events.push('Repository.resume_events')
+          mock(Repository, 'resumeEvents', function() {
+            events.push('Repository.resumeEvents')
           });
 
-          server.last_get.simulate_success(dataset);
+          server.lastGet.simulateSuccess(dataset);
 
-          expect(Repository.update).to(have_been_called, with_args(dataset));
+          expect(Repository.update).to(haveBeenCalled, withArgs(dataset));
 
           expect(events).to(equal, [
-            'Repository.pause_events',
+            'Repository.pauseEvents',
             'Repository.update',
-            'before_events',
-            'Repository.resume_events',
-            'after_events'
+            'beforeEvents',
+            'Repository.resumeEvents',
+            'afterEvents'
           ]);
         });
       });
 
       describe("#subscribe(relations)", function() {
-        use_example_domain_model();
+        useExampleDomainModel();
 
         it("if there is no comet client, initializes one and connects it", function() {
-          expect(server.comet_client).to(be_null);
+          expect(server.cometClient).to(beNull);
           server.subscribe([Blog.table, BlogPost.table]);
-          expect(server.comet_client).to_not(be_null);
-          expect(server.comet_client.connected).to(be_true);
+          expect(server.cometClient).toNot(beNull);
+          expect(server.cometClient.connected).to(beTrue);
         });
 
-        it("performs a POST to {Repository.origin_url}/subscribe with the json representation of the given relations and invokes the returned future with RemoteSubscriptions when the post completes successfully", function() {
-          var subscribe_future = server.subscribe([Blog.table, BlogPost.table]);
+        it("performs a POST to {Repository.originUrl}/subscribe with the json representation of the given relations and invokes the returned future with RemoteSubscriptions when the post completes successfully", function() {
+          var subscribeFuture = server.subscribe([Blog.table, BlogPost.table]);
 
           expect(server.posts.length).to(equal, 1);
 
-          expect(server.last_post.type).to(equal, "post");
-          expect(server.last_post.url).to(equal, Repository.origin_url + "/subscribe");
-          expect(server.last_post.data).to(equal, {
-            relations: [Blog.table.wire_representation(), BlogPost.table.wire_representation()]            
+          expect(server.lastPost.type).to(equal, "post");
+          expect(server.lastPost.url).to(equal, Repository.originUrl + "/subscribe");
+          expect(server.lastPost.data).to(equal, {
+            relations: [Blog.table.wireRepresentation(), BlogPost.table.wireRepresentation()]            
           });
 
-          var success_callback = mock_function("success_callback");
-          subscribe_future.on_success(success_callback);
+          var successCallback = mockFunction("successCallback");
+          subscribeFuture.onSuccess(successCallback);
           
-          server.last_post.simulate_success(["mock_subscription_id_1", "mock_subscription_id_2"]);
+          server.lastPost.simulateSuccess(["mockSubscriptionId1", "mockSubscriptionId2"]);
 
-          var remote_subscriptions = success_callback.most_recent_args[0];
-          expect(remote_subscriptions.length).to(equal, 2);
-          expect(remote_subscriptions[0].relation).to(equal, Blog.table);
-          expect(remote_subscriptions[0].id).to(equal, "mock_subscription_id_1");
-          expect(remote_subscriptions[1].relation).to(equal, BlogPost.table);
-          expect(remote_subscriptions[1].id).to(equal, "mock_subscription_id_2");
+          var remoteSubscriptions = successCallback.mostRecentArgs[0];
+          expect(remoteSubscriptions.length).to(equal, 2);
+          expect(remoteSubscriptions[0].relation).to(equal, Blog.table);
+          expect(remoteSubscriptions[0].id).to(equal, "mockSubscriptionId1");
+          expect(remoteSubscriptions[1].relation).to(equal, BlogPost.table);
+          expect(remoteSubscriptions[1].id).to(equal, "mockSubscriptionId2");
         });
 
         it("causes all mutation commands received to be sent to Repository.mutate", function() {
           mock(Repository, "mutate");
 
           server.subscribe([Blog.table, BlogPost.table]);
-          server.comet_client.simulate_receive(['create', 'blogs', { id: 'animals' }]);
+          server.cometClient.simulateReceive(['create', 'blogs', { id: 'animals' }]);
 
-          expect(Repository.mutate).to(have_been_called, with_args([['create', 'blogs', { id: 'animals' }]]));
+          expect(Repository.mutate).to(haveBeenCalled, withArgs([['create', 'blogs', { id: 'animals' }]]));
         });
       });
 
-      describe("#unsubscribe(remote_subscriptions)", function() {
-        use_example_domain_model();
+      describe("#unsubscribe(remoteSubscriptions)", function() {
+        useExampleDomainModel();
         
-        it("performs a POST to {Repository.origin_url/unsubscribe with the ids of the given RemoteSubscriptions", function() {
-          var remote_subscription_1 = new Monarch.Http.RemoteSubscription("fake_subscription_1", Blog.table);
-          var remote_subscription_2 = new Monarch.Http.RemoteSubscription("fake_subscription_2", BlogPost.table);
+        it("performs a POST to {Repository.originUrl/unsubscribe with the ids of the given RemoteSubscriptions", function() {
+          var remoteSubscription1 = new Monarch.Http.RemoteSubscription("fakeSubscription1", Blog.table);
+          var remoteSubscription2 = new Monarch.Http.RemoteSubscription("fakeSubscription2", BlogPost.table);
 
-          server.unsubscribe([remote_subscription_1, remote_subscription_2]);
+          server.unsubscribe([remoteSubscription1, remoteSubscription2]);
           expect(server.posts.length).to(equal, 1);
-          expect(server.last_post.type).to(equal, "post");
-          expect(server.last_post.url).to(equal, Repository.origin_url + "/unsubscribe");
-          expect(server.last_post.data).to(equal, {
-            subscription_ids: [remote_subscription_1.id, remote_subscription_2.id]
+          expect(server.lastPost.type).to(equal, "post");
+          expect(server.lastPost.url).to(equal, Repository.originUrl + "/unsubscribe");
+          expect(server.lastPost.data).to(equal, {
+            subscriptionIds: [remoteSubscription1.id, remoteSubscription2.id]
           });
         });
       });
 
-      describe("#save(records_or_relations...)", function() {
-        use_local_fixtures();
+      describe("#save(recordsOrRelations...)", function() {
+        useLocalFixtures();
 
         context("when given a locally-created record", function() {
-          var record, table_insert_callback, table_update_callback, table_remove_callback,
-              record_create_callback, record_update_callback;
+          var record, tableInsertCallback, tableUpdateCallback, tableRemoveCallback,
+              recordCreateCallback, recordUpdateCallback;
 
           before(function() {
-            record = User.local_create({full_name: "Jesus Chang"});
+            record = User.localCreate({fullName: "Jesus Chang"});
 
-            table_insert_callback = mock_function("table insert callback");
-            User.on_remote_insert(table_insert_callback);
-            table_update_callback = mock_function("table update callback");
-            User.on_remote_update(table_update_callback);
-            record_create_callback = mock_function("record insert callback");
-            record.on_remote_create(record_create_callback);
-            record_update_callback = mock_function("record update callback");
-            record.on_remote_update(record_update_callback);
-            record.after_remote_update = mock_function("optional after update hook");
-            record.after_remote_create = mock_function("optional after create hook");
+            tableInsertCallback = mockFunction("table insert callback");
+            User.onRemoteInsert(tableInsertCallback);
+            tableUpdateCallback = mockFunction("table update callback");
+            User.onRemoteUpdate(tableUpdateCallback);
+            recordCreateCallback = mockFunction("record insert callback");
+            record.onRemoteCreate(recordCreateCallback);
+            recordUpdateCallback = mockFunction("record update callback");
+            record.onRemoteUpdate(recordUpdateCallback);
+            record.afterRemoteUpdate = mockFunction("optional after update hook");
+            record.afterRemoteCreate = mockFunction("optional after create hook");
           });
 
-          it("sends a create command to {Repository.origin_url}/mutate", function() {
-            var record = User.local_create({full_name: "Jesus Chang"});
+          it("sends a create command to {Repository.originUrl}/mutate", function() {
+            var record = User.localCreate({fullName: "Jesus Chang"});
             server.save(record);
 
             expect(server.posts.length).to(equal, 1);
-            expect(server.last_post.url).to(equal, "/repository/mutate");
-            expect(server.last_post.data).to(equal, {
-              operations: [['create', 'users', record.dirty_wire_representation()]]
+            expect(server.lastPost.url).to(equal, "/repository/mutate");
+            expect(server.lastPost.data).to(equal, {
+              operations: [['create', 'users', record.dirtyWireRepresentation()]]
             });
           });
 
           context("when the request is successful", function() {
-            it("finalizes the creation of the record and fires insert handlers between the before_events and after_events callbacks", function() {
-              var save_future = server.save(record);
+            it("finalizes the creation of the record and fires insert handlers between the beforeEvents and afterEvents callbacks", function() {
+              var saveFuture = server.save(record);
 
-              var before_events_callback = mock_function("before events", function() {
-                expect(table_insert_callback).to_not(have_been_called);
-                expect(record_create_callback).to_not(have_been_called);
-                expect(record.after_remote_create).to_not(have_been_called);
+              var beforeEventsCallback = mockFunction("before events", function() {
+                expect(tableInsertCallback).toNot(haveBeenCalled);
+                expect(recordCreateCallback).toNot(haveBeenCalled);
+                expect(record.afterRemoteCreate).toNot(haveBeenCalled);
                 expect(record.id()).to(equal, "jesus");
-                expect(record.full_name()).to(equal, "Jesus H. Chang");
+                expect(record.fullName()).to(equal, "Jesus H. Chang");
               });
 
-              var after_events_callback = mock_function("after events", function() {
-                expect(table_insert_callback).to(have_been_called, with_args(record));
-                expect(record_create_callback).to(have_been_called, with_args(record));
-                expect(record.after_remote_create).to(have_been_called, once);
+              var afterEventsCallback = mockFunction("after events", function() {
+                expect(tableInsertCallback).to(haveBeenCalled, withArgs(record));
+                expect(recordCreateCallback).to(haveBeenCalled, withArgs(record));
+                expect(record.afterRemoteCreate).to(haveBeenCalled, once);
 
-                expect(table_update_callback).to_not(have_been_called);
-                expect(record_update_callback).to_not(have_been_called);
-                expect(record.after_remote_update).to_not(have_been_called);
+                expect(tableUpdateCallback).toNot(haveBeenCalled);
+                expect(recordUpdateCallback).toNot(haveBeenCalled);
+                expect(record.afterRemoteUpdate).toNot(haveBeenCalled);
               });
-              save_future.before_events(before_events_callback);
-              save_future.after_events(after_events_callback);
+              saveFuture.beforeEvents(beforeEventsCallback);
+              saveFuture.afterEvents(afterEventsCallback);
 
-              var post = server.last_post.simulate_success({
+              var post = server.lastPost.simulateSuccess({
                 primary: [{
                   id: "jesus",
-                  full_name: "Jesus H. Chang"
+                  fullName: "Jesus H. Chang"
                 }],
                 secondary: []
               });
 
-              expect(before_events_callback).to(have_been_called, with_args(record));
-              expect(after_events_callback).to(have_been_called, with_args(record));
+              expect(beforeEventsCallback).to(haveBeenCalled, withArgs(record));
+              expect(afterEventsCallback).to(haveBeenCalled, withArgs(record));
             });
           });
 
           context("when the request is unsuccessful", function() {
             it("adds validation errors to the local fields without changing remote fields and calls the on failure callback with the invalid record", function() {
-              var save_future = server.save(record);
+              var saveFuture = server.save(record);
 
-              var failure_callback = mock_function('failure_callback');
-              save_future.on_failure(failure_callback);
+              var failureCallback = mockFunction('failureCallback');
+              saveFuture.onFailure(failureCallback);
 
-              server.last_post.simulate_failure({
+              server.lastPost.simulateFailure({
                 index: 0,
                 errors: {
-                  full_name: ["This name is extremely unlikely"],
+                  fullName: ["This name is extremely unlikely"],
                   age: ["You must enter an age"]
                 }
               });
 
-              expect(failure_callback).to(have_been_called, with_args(record));
-              expect(record.valid()).to(be_false);
-              expect(record.field('full_name').validation_errors).to(equal, ["This name is extremely unlikely"]);
-              expect(record.field('age').validation_errors).to(equal, ["You must enter an age"]);
+              expect(failureCallback).to(haveBeenCalled, withArgs(record));
+              expect(record.valid()).to(beFalse);
+              expect(record.field('fullName').validationErrors).to(equal, ["This name is extremely unlikely"]);
+              expect(record.field('age').validationErrors).to(equal, ["You must enter an age"]);
 
-              expect(table_insert_callback).to_not(have_been_called);
-              expect(record_create_callback).to_not(have_been_called);
-              expect(record.after_remote_create).to_not(have_been_called);
+              expect(tableInsertCallback).toNot(haveBeenCalled);
+              expect(recordCreateCallback).toNot(haveBeenCalled);
+              expect(record.afterRemoteCreate).toNot(haveBeenCalled);
             });
           });
         });
 
         context("when given a locally-updated record", function() {
-          var record, name_before_update, fun_profit_name_before_update, user_id_before_update,
-              table_remote_update_callback, record_remote_update_callback;
+          var record, nameBeforeUpdate, funProfitNameBeforeUpdate, userIdBeforeUpdate,
+              tableRemoteUpdateCallback, recordRemoteUpdateCallback;
 
           before(function() {
             record = Blog.find('recipes');
-            name_before_update = record.name();
-            fun_profit_name_before_update = record.fun_profit_name();
-            user_id_before_update = record.user_id();
+            nameBeforeUpdate = record.name();
+            funProfitNameBeforeUpdate = record.funProfitName();
+            userIdBeforeUpdate = record.userId();
 
-            table_remote_update_callback = mock_function("table update callback");
-            record_remote_update_callback = mock_function("record update callback");
-            Blog.on_remote_update(table_remote_update_callback);
-            record.on_remote_update(record_remote_update_callback);
-            record.after_remote_update = mock_function("optional record on update method");
+            tableRemoteUpdateCallback = mockFunction("table update callback");
+            recordRemoteUpdateCallback = mockFunction("record update callback");
+            Blog.onRemoteUpdate(tableRemoteUpdateCallback);
+            record.onRemoteUpdate(recordRemoteUpdateCallback);
+            record.afterRemoteUpdate = mockFunction("optional record on update method");
           });
 
-          it("sends an update command to {Repository.origin_url}/mutate", function() {
+          it("sends an update command to {Repository.originUrl}/mutate", function() {
             record.name("Bad Bad Children");
             server.save(record);
 
             expect(server.posts.length).to(equal, 1);
-            expect(server.last_post.url).to(equal, "/repository/mutate");
-            expect(server.last_post.data).to(equal, {
-              operations: [['update', 'blogs', 'recipes', record.dirty_wire_representation()]]
+            expect(server.lastPost.url).to(equal, "/repository/mutate");
+            expect(server.lastPost.data).to(equal, {
+              operations: [['update', 'blogs', 'recipes', record.dirtyWireRepresentation()]]
             });
           });
 
           context("when the request is successful", function() {
-            it("marks the record valid, updates the remote and local field values, and fires the remote event callbacks sandwiched between before_events and after_events callbacks", function() {
-              record.assign_validation_errors({
+            it("marks the record valid, updates the remote and local field values, and fires the remote event callbacks sandwiched between beforeEvents and afterEvents callbacks", function() {
+              record.assignValidationErrors({
                 name: "Bad name!"
               });
-              expect(record.valid()).to(be_false);
+              expect(record.valid()).to(beFalse);
 
-              record.local_update({
+              record.localUpdate({
                 name: "Programming",
-                user_id: 'wil'
+                userId: 'wil'
               });
 
-              var table_local_update_callback = mock_function('table_local_update_callback');
-              var record_local_update_callback = mock_function('record_local_update_callback');
-              Blog.on_local_update(table_local_update_callback);
-              record.on_local_update(record_local_update_callback);
-              record.after_local_update = mock_function('optional after_local_update hook');
+              var tableLocalUpdateCallback = mockFunction('tableLocalUpdateCallback');
+              var recordLocalUpdateCallback = mockFunction('recordLocalUpdateCallback');
+              Blog.onLocalUpdate(tableLocalUpdateCallback);
+              record.onLocalUpdate(recordLocalUpdateCallback);
+              record.afterLocalUpdate = mockFunction('optional afterLocalUpdate hook');
 
-              var save_future = server.save(record);
+              var saveFuture = server.save(record);
 
-              expect(record.remote.name()).to(equal, name_before_update);
-              expect(record.remote.fun_profit_name()).to(equal, fun_profit_name_before_update);
-              expect(record.remote.user_id()).to(equal, user_id_before_update);
+              expect(record.remote.name()).to(equal, nameBeforeUpdate);
+              expect(record.remote.funProfitName()).to(equal, funProfitNameBeforeUpdate);
+              expect(record.remote.userId()).to(equal, userIdBeforeUpdate);
 
-              var before_events_callback = mock_function('before events callback', function() {
-                expect(table_remote_update_callback).to_not(have_been_called);
-                expect(record_remote_update_callback).to_not(have_been_called);
-                expect(record.after_remote_update).to_not(have_been_called);
+              var beforeEventsCallback = mockFunction('before events callback', function() {
+                expect(tableRemoteUpdateCallback).toNot(haveBeenCalled);
+                expect(recordRemoteUpdateCallback).toNot(haveBeenCalled);
+                expect(record.afterRemoteUpdate).toNot(haveBeenCalled);
               });
-              var after_events_callback = mock_function('after events callback', function() {
-                var expected_changset = {
-                  user_id: {
-                    column: Blog.user_id,
-                    old_value: user_id_before_update,
-                    new_value: 'wil'
+              var afterEventsCallback = mockFunction('after events callback', function() {
+                var expectedChangset = {
+                  userId: {
+                    column: Blog.userId,
+                    oldValue: userIdBeforeUpdate,
+                    newValue: 'wil'
                   },
                   name: {
                     column: Blog.name_,
-                    old_value: name_before_update,
-                    new_value: 'Programming Prime'
+                    oldValue: nameBeforeUpdate,
+                    newValue: 'Programming Prime'
                   },
-                  fun_profit_name: {
-                    column: Blog.fun_profit_name,
-                    old_value: fun_profit_name_before_update,
-                    new_value: 'Programming Prime for Fun and Profit'
+                  funProfitName: {
+                    column: Blog.funProfitName,
+                    oldValue: funProfitNameBeforeUpdate,
+                    newValue: 'Programming Prime for Fun and Profit'
                   }
                 };
                 
-                expect(record.valid()).to(be_true);
+                expect(record.valid()).to(beTrue);
 
-                expect(table_remote_update_callback).to(have_been_called, with_args(record, expected_changset));
-                expect(record_remote_update_callback).to(have_been_called, with_args(expected_changset));
-                expect(record.after_remote_update).to(have_been_called, with_args(expected_changset));
+                expect(tableRemoteUpdateCallback).to(haveBeenCalled, withArgs(record, expectedChangset));
+                expect(recordRemoteUpdateCallback).to(haveBeenCalled, withArgs(expectedChangset));
+                expect(record.afterRemoteUpdate).to(haveBeenCalled, withArgs(expectedChangset));
 
                 // remote update may change local field values but they should not fire local update callbacks because
                 // the change was initiated remotely
-                expect(table_local_update_callback).to_not(have_been_called);
-                expect(record_local_update_callback).to_not(have_been_called);
-                expect(record.after_local_update).to_not(have_been_called);
+                expect(tableLocalUpdateCallback).toNot(haveBeenCalled);
+                expect(recordLocalUpdateCallback).toNot(haveBeenCalled);
+                expect(record.afterLocalUpdate).toNot(haveBeenCalled);
               });
 
-              save_future.before_events(before_events_callback);
-              save_future.after_events(after_events_callback);
-              server.last_post.simulate_success({
+              saveFuture.beforeEvents(beforeEventsCallback);
+              saveFuture.afterEvents(afterEventsCallback);
+              server.lastPost.simulateSuccess({
                 primary: [{
                   name: "Programming Prime", // server can change field values too
-                  user_id: 'wil'
+                  userId: 'wil'
                 }],
                 secondary: []
               });
 
               expect(record.local.name()).to(equal, "Programming Prime");
-              expect(record.local.fun_profit_name()).to(equal, "Programming Prime for Fun and Profit");
-              expect(record.local.user_id()).to(equal, "wil");
+              expect(record.local.funProfitName()).to(equal, "Programming Prime for Fun and Profit");
+              expect(record.local.userId()).to(equal, "wil");
 
               expect(record.remote.name()).to(equal, "Programming Prime");
-              expect(record.remote.fun_profit_name()).to(equal, "Programming Prime for Fun and Profit");
-              expect(record.remote.user_id()).to(equal, "wil");
+              expect(record.remote.funProfitName()).to(equal, "Programming Prime for Fun and Profit");
+              expect(record.remote.userId()).to(equal, "wil");
 
-              expect(before_events_callback).to(have_been_called);
-              expect(after_events_callback).to(have_been_called);
+              expect(beforeEventsCallback).to(haveBeenCalled);
+              expect(afterEventsCallback).to(haveBeenCalled);
             });
           });
 
           context("when the request is unsuccessful", function() {
             it("adds validation errors to the local fields without changing remote fields and calls the on failure callback with the invalid record", function() {
-              record.local_update({
+              record.localUpdate({
                 name: "Programming",
-                user_id: 'wil'
+                userId: 'wil'
               });
 
-              var on_failure_callback = mock_function("on_failure_callback");
-              server.save(record).on_failure(on_failure_callback);
+              var onFailureCallback = mockFunction("onFailureCallback");
+              server.save(record).onFailure(onFailureCallback);
 
-              var name_errors = ["This name is already taken"];
-              var user_id_errors = ["This name is already taken"];
-              server.last_post.simulate_failure({
+              var nameErrors = ["This name is already taken"];
+              var userIdErrors = ["This name is already taken"];
+              server.lastPost.simulateFailure({
                 index: 0,
                 errors: {
-                  name: name_errors,
-                  user_id: user_id_errors
+                  name: nameErrors,
+                  userId: userIdErrors
                 }
               });
 
               expect(record.local.name()).to(equal, "Programming");
-              expect(record.local.fun_profit_name()).to(equal, "Programming for Fun and Profit");
-              expect(record.local.user_id()).to(equal, "wil");
+              expect(record.local.funProfitName()).to(equal, "Programming for Fun and Profit");
+              expect(record.local.userId()).to(equal, "wil");
 
-              expect(record.remote.name()).to(equal, name_before_update);
-              expect(record.remote.fun_profit_name()).to(equal, fun_profit_name_before_update);
-              expect(record.remote.user_id()).to(equal, user_id_before_update);
+              expect(record.remote.name()).to(equal, nameBeforeUpdate);
+              expect(record.remote.funProfitName()).to(equal, funProfitNameBeforeUpdate);
+              expect(record.remote.userId()).to(equal, userIdBeforeUpdate);
 
-              expect(on_failure_callback).to(have_been_called, with_args(record));
-              expect(record.local.field('name').validation_errors).to(equal, name_errors);
-              expect(record.local.field('user_id').validation_errors).to(equal, user_id_errors);
+              expect(onFailureCallback).to(haveBeenCalled, withArgs(record));
+              expect(record.local.field('name').validationErrors).to(equal, nameErrors);
+              expect(record.local.field('userId').validationErrors).to(equal, userIdErrors);
 
-              expect(table_remote_update_callback).to_not(have_been_called);
-              expect(record_remote_update_callback).to_not(have_been_called);
-              expect(record.on_remote_update).to_not(have_been_called);
+              expect(tableRemoteUpdateCallback).toNot(haveBeenCalled);
+              expect(recordRemoteUpdateCallback).toNot(haveBeenCalled);
+              expect(record.onRemoteUpdate).toNot(haveBeenCalled);
             });
           });
         });
 
         context("when given a locally-destroyed record", function() {
-          var record, table_remove_callback, record_destroy_callback;
+          var record, tableRemoveCallback, recordDestroyCallback;
 
           before(function() {
             record = Blog.find('recipes');
-            table_remove_callback = mock_function("table remove callback");
-            Blog.on_remote_remove(table_remove_callback);
-            record_destroy_callback = mock_function("record remove callback");
-            record.on_remote_destroy(record_destroy_callback)
-            record.after_remote_destroy = mock_function("optional after_remote_destroy method");
+            tableRemoveCallback = mockFunction("table remove callback");
+            Blog.onRemoteRemove(tableRemoveCallback);
+            recordDestroyCallback = mockFunction("record remove callback");
+            record.onRemoteDestroy(recordDestroyCallback)
+            record.afterRemoteDestroy = mockFunction("optional afterRemoteDestroy method");
           });
 
-          it("sends a destroy command to {Repository.origin_url}/mutate", function() {
-            record.local_destroy();
+          it("sends a destroy command to {Repository.originUrl}/mutate", function() {
+            record.localDestroy();
             server.save(record);
 
             expect(server.posts.length).to(equal, 1);
-            expect(server.last_post.url).to(equal, "/repository/mutate");
-            expect(server.last_post.data).to(equal, {
+            expect(server.lastPost.url).to(equal, "/repository/mutate");
+            expect(server.lastPost.data).to(equal, {
               operations: [['destroy', 'blogs', 'recipes']]
             });
           });
 
           context("when the request is successful", function() {
-            it("finalizes the destruction of the record, firing on_remote_remove callbacks in between the before_events and after_events callbacks", function() {
-              record.local_destroy();
-              var save_future = server.save(record);
+            it("finalizes the destruction of the record, firing onRemoteRemove callbacks in between the beforeEvents and afterEvents callbacks", function() {
+              record.localDestroy();
+              var saveFuture = server.save(record);
 
-              var before_events_callback = mock_function("before events", function() {
-                expect(table_remove_callback).to_not(have_been_called);
-                expect(record_destroy_callback).to_not(have_been_called);
-                expect(record.after_remote_destroy).to_not(have_been_called);
+              var beforeEventsCallback = mockFunction("before events", function() {
+                expect(tableRemoveCallback).toNot(haveBeenCalled);
+                expect(recordDestroyCallback).toNot(haveBeenCalled);
+                expect(record.afterRemoteDestroy).toNot(haveBeenCalled);
               });
-              var after_events_callback = mock_function("after events", function() {
-                expect(table_remove_callback).to(have_been_called, once);
-                expect(record_destroy_callback).to(have_been_called, once);
-                expect(record.after_remote_destroy).to(have_been_called, once);
+              var afterEventsCallback = mockFunction("after events", function() {
+                expect(tableRemoveCallback).to(haveBeenCalled, once);
+                expect(recordDestroyCallback).to(haveBeenCalled, once);
+                expect(record.afterRemoteDestroy).to(haveBeenCalled, once);
               });
-              var on_failure_callback = mock_function("on_failure_callback");
-              save_future.before_events(before_events_callback);
-              save_future.after_events(after_events_callback);
-              save_future.on_failure(on_failure_callback);
+              var onFailureCallback = mockFunction("onFailureCallback");
+              saveFuture.beforeEvents(beforeEventsCallback);
+              saveFuture.afterEvents(afterEventsCallback);
+              saveFuture.onFailure(onFailureCallback);
 
-              server.last_post.simulate_success({primary: [null], secondary: []});
+              server.lastPost.simulateSuccess({primary: [null], secondary: []});
 
-              expect(Blog.find('recipes')).to(be_null);
-              expect(Monarch.Util.any(Blog.table._tuples, function(r) { r === record})).to(be_false);
-              expect('recipes' in Blog.table.tuples_by_id).to(be_false);
+              expect(Blog.find('recipes')).to(beNull);
+              expect(Monarch.Util.any(Blog.table.Tuples, function(r) { r === record})).to(beFalse);
+              expect('recipes' in Blog.table.tuplesById).to(beFalse);
 
-              expect(before_events_callback).to(have_been_called);
-              expect(after_events_callback).to(have_been_called);
+              expect(beforeEventsCallback).to(haveBeenCalled);
+              expect(afterEventsCallback).to(haveBeenCalled);
             });
           });
 
           context("when the request is unsuccessful", function() {
-            it("triggers on_failure callbacks and does not trigger removal events", function() {
-              record.local_destroy();
-              var save_future = server.save(record);
+            it("triggers onFailure callbacks and does not trigger removal events", function() {
+              record.localDestroy();
+              var saveFuture = server.save(record);
 
-              var before_events_callback = mock_function('before_events_callback');
-              var after_events_callback = mock_function('after_events_callback');
-              var on_failure_callback = mock_function('on_failure_callback');
-              save_future.before_events(before_events_callback);
-              save_future.after_events(after_events_callback);
-              save_future.on_failure(on_failure_callback);
+              var beforeEventsCallback = mockFunction('beforeEventsCallback');
+              var afterEventsCallback = mockFunction('afterEventsCallback');
+              var onFailureCallback = mockFunction('onFailureCallback');
+              saveFuture.beforeEvents(beforeEventsCallback);
+              saveFuture.afterEvents(afterEventsCallback);
+              saveFuture.onFailure(onFailureCallback);
 
-              server.last_post.simulate_failure({index: 0, errors: {}});
+              server.lastPost.simulateFailure({index: 0, errors: {}});
 
-              expect(before_events_callback).to_not(have_been_called);
-              expect(after_events_callback).to_not(have_been_called);
-              expect(on_failure_callback).to(have_been_called, with_args(record));
+              expect(beforeEventsCallback).toNot(haveBeenCalled);
+              expect(afterEventsCallback).toNot(haveBeenCalled);
+              expect(onFailureCallback).to(haveBeenCalled, withArgs(record));
 
-              expect(table_remove_callback).to_not(have_been_called);
-              expect(record_destroy_callback).to_not(have_been_called);
-              expect(record.after_remote_destroy).to_not(have_been_called);
+              expect(tableRemoveCallback).toNot(haveBeenCalled);
+              expect(recordDestroyCallback).toNot(haveBeenCalled);
+              expect(record.afterRemoteDestroy).toNot(haveBeenCalled);
             });
           });
         });
 
         context("when given a mix of dirty and clean records and relations containing some dirty records", function() {
-          var locally_created, locally_updated, locally_destroyed, insert_callback, update_callback, remove_callback;
+          var locallyCreated, locallyUpdated, locallyDestroyed, insertCallback, updateCallback, removeCallback;
 
           before(function() {
-            locally_created = User.local_create({full_name: "Jesus Chang"});
-            locally_updated = User.find('jan');
-            locally_updated.full_name("Francisco Wu");
-            locally_destroyed = locally_updated.blogs().first();
-            locally_destroyed.local_destroy();
+            locallyCreated = User.localCreate({fullName: "Jesus Chang"});
+            locallyUpdated = User.find('jan');
+            locallyUpdated.fullName("Francisco Wu");
+            locallyDestroyed = locallyUpdated.blogs().first();
+            locallyDestroyed.localDestroy();
 
-            insert_callback = mock_function('insert_callback');
-            update_callback = mock_function('update_callback');
-            remove_callback = mock_function('remove_callback');
+            insertCallback = mockFunction('insertCallback');
+            updateCallback = mockFunction('updateCallback');
+            removeCallback = mockFunction('removeCallback');
 
-            User.on_remote_insert(insert_callback);
-            User.on_remote_update(update_callback);
-            Blog.on_remote_remove(remove_callback);
+            User.onRemoteInsert(insertCallback);
+            User.onRemoteUpdate(updateCallback);
+            Blog.onRemoteRemove(removeCallback);
           });
 
           it("performs a batch mutation representing the state of all the dirty records", function() {
-            server.save(locally_created, locally_updated, locally_updated.blogs());
+            server.save(locallyCreated, locallyUpdated, locallyUpdated.blogs());
 
             expect(server.posts.length).to(equal, 1);
 
-            expect(server.last_post.url).to(equal, "/repository/mutate");
-            expect(server.last_post.data).to(equal, {
+            expect(server.lastPost.url).to(equal, "/repository/mutate");
+            expect(server.lastPost.data).to(equal, {
               operations: [
-                ['create', 'users', locally_created.dirty_wire_representation()],
-                ['update', 'users', locally_updated.id(), locally_updated.dirty_wire_representation()],
-                ['destroy', 'blogs', locally_destroyed.id()]
+                ['create', 'users', locallyCreated.dirtyWireRepresentation()],
+                ['update', 'users', locallyUpdated.id(), locallyUpdated.dirtyWireRepresentation()],
+                ['destroy', 'blogs', locallyDestroyed.id()]
               ]
             });
           });
 
           context("when the request is successful", function() {
             it("finalizes all the local mutations and fires remote event callbacks", function() {
-              var save_future = server.save(locally_created, locally_updated, locally_updated.blogs());
+              var saveFuture = server.save(locallyCreated, locallyUpdated, locallyUpdated.blogs());
 
-              var before_events_callback = mock_function('before_events_callback', function() {
-                expect(insert_callback).to_not(have_been_called);
-                expect(update_callback).to_not(have_been_called);
-                expect(remove_callback).to_not(have_been_called);
+              var beforeEventsCallback = mockFunction('beforeEventsCallback', function() {
+                expect(insertCallback).toNot(haveBeenCalled);
+                expect(updateCallback).toNot(haveBeenCalled);
+                expect(removeCallback).toNot(haveBeenCalled);
               });
 
-              var after_events_callback = mock_function('after_events_callback', function() {
-                expect(insert_callback).to(have_been_called, with_args(locally_created));
-                expect(update_callback).to(have_been_called, with_args(locally_updated, {
-                  full_name: {
-                    column: User.full_name,
-                    old_value: "Jan Nelson",
-                    new_value: "Francisco Wu"
+              var afterEventsCallback = mockFunction('afterEventsCallback', function() {
+                expect(insertCallback).to(haveBeenCalled, withArgs(locallyCreated));
+                expect(updateCallback).to(haveBeenCalled, withArgs(locallyUpdated, {
+                  fullName: {
+                    column: User.fullName,
+                    oldValue: "Jan Nelson",
+                    newValue: "Francisco Wu"
                   }
                 }));
-                expect(remove_callback).to(have_been_called, with_args(locally_destroyed));
+                expect(removeCallback).to(haveBeenCalled, withArgs(locallyDestroyed));
               });
 
-              save_future.before_events(before_events_callback);
-              save_future.after_events(after_events_callback);
+              saveFuture.beforeEvents(beforeEventsCallback);
+              saveFuture.afterEvents(afterEventsCallback);
 
-              server.last_post.simulate_success({
-                primary: [{ id: 'jesus', full_name: "Jesus Chang" }, { full_name: "Francisco Wu" }, null],
+              server.lastPost.simulateSuccess({
+                primary: [{ id: 'jesus', fullName: "Jesus Chang" }, { fullName: "Francisco Wu" }, null],
                 secondary: []
               });
 
-              expect(before_events_callback).to(have_been_called, once);
-              expect(after_events_callback).to(have_been_called, once);
+              expect(beforeEventsCallback).to(haveBeenCalled, once);
+              expect(afterEventsCallback).to(haveBeenCalled, once);
 
-              expect(locally_created.remotely_created).to(be_true);
-              expect(locally_updated.remote.full_name()).to(equal, "Francisco Wu");
-              expect(Monarch.Util.contains(Blog.table.all_tuples(), locally_destroyed)).to(be_false);
+              expect(locallyCreated.remotelyCreated).to(beTrue);
+              expect(locallyUpdated.remote.fullName()).to(equal, "Francisco Wu");
+              expect(Monarch.Util.contains(Blog.table.allTuples(), locallyDestroyed)).to(beFalse);
             });
           });
 
           context("when the request is unsuccessful", function() {
-            it("does not finalize any of the mutations, does not fire events, and calls the on_failure callback with the offending record", function() {
-              var save_future = server.save(locally_created, locally_updated, locally_updated.blogs());
+            it("does not finalize any of the mutations, does not fire events, and calls the onFailure callback with the offending record", function() {
+              var saveFuture = server.save(locallyCreated, locallyUpdated, locallyUpdated.blogs());
 
-              var before_events_callback = mock_function('before_events_callback');
-              var after_events_callback = mock_function('after_events_callback');
-              var on_failure_callback = mock_function('on_failure_callback');
-              save_future.before_events(before_events_callback);
-              save_future.after_events(after_events_callback);
-              save_future.on_failure(on_failure_callback);
+              var beforeEventsCallback = mockFunction('beforeEventsCallback');
+              var afterEventsCallback = mockFunction('afterEventsCallback');
+              var onFailureCallback = mockFunction('onFailureCallback');
+              saveFuture.beforeEvents(beforeEventsCallback);
+              saveFuture.afterEvents(afterEventsCallback);
+              saveFuture.onFailure(onFailureCallback);
 
-              server.last_post.simulate_failure({ index: 1, errors: { full_name: ["That name is taken"]}});
+              server.lastPost.simulateFailure({ index: 1, errors: { fullName: ["That name is taken"]}});
 
-              expect(on_failure_callback).to(have_been_called, with_args(locally_updated));
+              expect(onFailureCallback).to(haveBeenCalled, withArgs(locallyUpdated));
 
-              expect(locally_created.is_remotely_created).to(be_false);
-              expect(locally_updated.field('full_name').validation_errors).to(equal, ["That name is taken"]);
-              expect(locally_updated.remote.full_name()).to(equal, "Jan Nelson");
-              expect(Monarch.Util.contains(Blog.table.all_tuples(), locally_destroyed)).to(be_true);
+              expect(locallyCreated.isRemotelyCreated).to(beFalse);
+              expect(locallyUpdated.field('fullName').validationErrors).to(equal, ["That name is taken"]);
+              expect(locallyUpdated.remote.fullName()).to(equal, "Jan Nelson");
+              expect(Monarch.Util.contains(Blog.table.allTuples(), locallyDestroyed)).to(beTrue);
             });
           });
         });
 
         context("when given only clean records", function() {
           it("does not post to the server, but still triggers before and after events callbacks", function() {
-            var before_events_callback = mock_function('before_events_callback');
-            var after_events_callback = mock_function('after_events_callback');
-            var clean_record = User.find('jan')
-            var future = server.save(clean_record, clean_record.blogs());
+            var beforeEventsCallback = mockFunction('beforeEventsCallback');
+            var afterEventsCallback = mockFunction('afterEventsCallback');
+            var cleanRecord = User.find('jan')
+            var future = server.save(cleanRecord, cleanRecord.blogs());
 
-            future.before_events(before_events_callback);
-            future.after_events(after_events_callback);
+            future.beforeEvents(beforeEventsCallback);
+            future.afterEvents(afterEventsCallback);
 
-            expect(server.posts).to(be_empty);
+            expect(server.posts).to(beEmpty);
 
-            expect(before_events_callback).to(have_been_called, once);
-            expect(after_events_callback).to(have_been_called, once);
+            expect(beforeEventsCallback).to(haveBeenCalled, once);
+            expect(afterEventsCallback).to(haveBeenCalled, once);
           });
         });
 
         it("pauses mutations before sending the save to the server and resumes them once the server responds", function() {
-          var record = User.local_create({id: 'jesus', full_name: "Jesus Chang"});
+          var record = User.localCreate({id: 'jesus', fullName: "Jesus Chang"});
           server.save(record);
 
-          expect(Repository.mutations_paused).to(be_true);
-          server.last_post.simulate_failure({
+          expect(Repository.mutationsPaused).to(beTrue);
+          server.lastPost.simulateFailure({
             index: 0,
-            errors: { full_name: ["Jesus Chang? Come on."]}
+            errors: { fullName: ["Jesus Chang? Come on."]}
           });
-          expect(Repository.mutations_paused).to(be_false);
+          expect(Repository.mutationsPaused).to(beFalse);
 
           server.save(record);
-          expect(Repository.mutations_paused).to(be_true);
-          server.last_post.simulate_success({
+          expect(Repository.mutationsPaused).to(beTrue);
+          server.lastPost.simulateSuccess({
             primary: [{
-              full_name: "Jesus Chang",
-              user_id: 'jesus'
+              fullName: "Jesus Chang",
+              userId: 'jesus'
             }],
             secondary: []
           });
-          expect(Repository.mutations_paused).to(be_false);
+          expect(Repository.mutationsPaused).to(beFalse);
         });
       });
     });
     
 
     describe("request methods", function() {
-      var request_method;
+      var requestMethod;
 
       scenario(".post(url, data)", function() {
         init(function() {
-          request_method = 'post';
+          requestMethod = 'post';
         });
       });
 
       scenario(".get(url, data)", function() {
         init(function() {
-          request_method = 'get';
+          requestMethod = 'get';
         });
       });
 
       scenario(".put(url, data)", function() {
         init(function() {
-          request_method = 'put';
+          requestMethod = 'put';
         });
       });
 
       scenario(".delete(url, data)", function() {
         init(function() {
-          request_method = 'delete_';
+          requestMethod = 'delete_';
         });
       });
 
-      it("calls jQuery.ajax with the correct request type, returning an AjaxFuture whose #handle_response method is called upon receiving a response", function() {
+      it("calls jQuery.ajax with the correct request type, returning an AjaxFuture whose #handleResponse method is called upon receiving a response", function() {
         mock(jQuery, 'ajax');
 
         var data = {
@@ -672,39 +673,39 @@ Screw.Unit(function(c) { with(c) {
           grault: 1
         };
 
-        var future = server[request_method].call(server, "/users", data);
+        var future = server[requestMethod].call(server, "/users", data);
 
-        expect(jQuery.ajax).to(have_been_called, once);
+        expect(jQuery.ajax).to(haveBeenCalled, once);
 
-        var ajax_options = jQuery.ajax.most_recent_args[0];
-        expect(ajax_options.type).to(equal, request_method.toUpperCase().replace("_", ""));
-        expect(ajax_options.dataType).to(equal, 'json');
+        var ajaxOptions = jQuery.ajax.mostRecentArgs[0];
+        expect(ajaxOptions.type).to(equal, requestMethod.toUpperCase().replace("_", ""));
+        expect(ajaxOptions.dataType).to(equal, 'json');
 
         // data is url-encoded and appended as params for delete requests
-        if (request_method == "delete_") {
-          var expected_data = Monarch.Util.extend({comet_client_id: window.COMET_CLIENT_ID}, data)
-          expect(ajax_options.url).to(equal, '/users?' + jQuery.param(server.stringify_json_data(expected_data)));
-          expect(ajax_options.data).to(be_null);
+        if (requestMethod == "delete_") {
+          var expectedData = Monarch.Util.extend({cometClientId: window.COMETCLIENTID}, data)
+          expect(ajaxOptions.url).to(equal, '/users?' + jQuery.param(server.stringifyJsonData(expectedData)));
+          expect(ajaxOptions.data).to(beNull);
         } else {
-          expect(ajax_options.url).to(equal, '/users');
-          expect(JSON.parse(ajax_options.data.foo)).to(equal, data.foo);
-          expect(ajax_options.data.baz).to(equal, data.baz);
-          expect(JSON.parse(ajax_options.data.corge)).to(equal, data.corge);
-          expect(JSON.parse(ajax_options.data.grault)).to(equal, data.grault);
+          expect(ajaxOptions.url).to(equal, '/users');
+          expect(JSON.parse(ajaxOptions.data.foo)).to(equal, data.foo);
+          expect(ajaxOptions.data.baz).to(equal, data.baz);
+          expect(JSON.parse(ajaxOptions.data.corge)).to(equal, data.corge);
+          expect(JSON.parse(ajaxOptions.data.grault)).to(equal, data.grault);
         }
 
         expect(future.constructor).to(equal, Monarch.Http.AjaxFuture);
 
-        mock(future, 'handle_response');
+        mock(future, 'handleResponse');
 
-        var response_json = {
+        var responseJson = {
           success: true,
           data: {
             foo: "bar"
           }
         };
-        ajax_options.success(response_json);
-        expect(future.handle_response).to(have_been_called, with_args(response_json));
+        ajaxOptions.success(responseJson);
+        expect(future.handleResponse).to(haveBeenCalled, withArgs(responseJson));
       });
     });
   });

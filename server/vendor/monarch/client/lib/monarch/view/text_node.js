@@ -5,11 +5,11 @@ Monarch.constructor("Monarch.View.TextNode", {
     this.text = text;
   },
 
-  to_xml: function() {
+  toXml: function() {
     return htmlEscape(this.text);
   },
 
-  post_process: function() {
+  postProcess: function() {
   }
 });
 

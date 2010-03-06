@@ -1,29 +1,29 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Relations.Relation", {
-  has_operands: true,
-  __relation__: true,
+  hasOperands: true,
+  _relation_: true,
 
-  initialize_events_system: function() {
-    this.on_local_update_node = new Monarch.SubscriptionNode();
-    this.on_remote_insert_node = new Monarch.SubscriptionNode();
-    this.on_remote_update_node = new Monarch.SubscriptionNode();
-    this.on_remote_remove_node = new Monarch.SubscriptionNode();
-    this.on_dirty_node = new Monarch.SubscriptionNode();
-    this.on_clean_node = new Monarch.SubscriptionNode();
-    if (this.has_operands) {
-      this.operands_subscription_bundle = new Monarch.SubscriptionBundle();
-      this.unsubscribe_from_operands_when_this_no_longer_has_subscribers();
+  initializeEventsSystem: function() {
+    this.onLocalUpdateNode = new Monarch.SubscriptionNode();
+    this.onRemoteInsertNode = new Monarch.SubscriptionNode();
+    this.onRemoteUpdateNode = new Monarch.SubscriptionNode();
+    this.onRemoteRemoveNode = new Monarch.SubscriptionNode();
+    this.onDirtyNode = new Monarch.SubscriptionNode();
+    this.onCleanNode = new Monarch.SubscriptionNode();
+    if (this.hasOperands) {
+      this.operandsSubscriptionBundle = new Monarch.SubscriptionBundle();
+      this.unsubscribeFromOperandsWhenThisNoLongerHasSubscribers();
     }
   },
 
-  where: function(predicate_or_conditions_hash) {
+  where: function(predicateOrConditionsHash) {
     var predicate;
 
-    if (predicate_or_conditions_hash.constructor.is_predicate) {
-      predicate = predicate_or_conditions_hash;
+    if (predicateOrConditionsHash.constructor.isPredicate) {
+      predicate = predicateOrConditionsHash;
     } else {
-      predicate = this.predicate_from_hash(predicate_or_conditions_hash);
+      predicate = this.predicateFromHash(predicateOrConditionsHash);
     }
     return new Monarch.Model.Relations.Selection(this, predicate);
 
@@ -41,7 +41,7 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
       if (table) return new Monarch.Model.Relations.TableProjection(this, table);
     }
 
-    var projected_columns = Monarch.Util.map(Monarch.Util.to_array(arguments), function(arg) {
+    var projectedColumns = Monarch.Util.map(Monarch.Util.toArray(arguments), function(arg) {
       if (arg instanceof Monarch.Model.ProjectedColumn) {
         return arg;
       } else if (arg instanceof Monarch.Model.Column) {
@@ -50,78 +50,78 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
         throw new Error("#project takes Columns or ProjectedColumns only");
       }
     });
-    return new Monarch.Model.Relations.Projection(this, projected_columns);
+    return new Monarch.Model.Relations.Projection(this, projectedColumns);
   },
 
-  join: function(right_operand) {
-    if (typeof right_operand === 'function') right_operand = right_operand.table;
-    var left_operand = this;
+  join: function(rightOperand) {
+    if (typeof rightOperand === 'function') rightOperand = rightOperand.table;
+    var leftOperand = this;
     return {
       on: function(predicate) {
-        return new Monarch.Model.Relations.InnerJoin(left_operand, right_operand, predicate);
+        return new Monarch.Model.Relations.InnerJoin(leftOperand, rightOperand, predicate);
       }
     };
   },
 
-  join_to: function(right_operand) {
-    if (typeof right_operand === 'function') right_operand = right_operand.table;
-    var left_surface_tables = this.surface_tables();
-    var right_surface_tables = right_operand.surface_tables();
-    var join_columns = this.find_join_columns(_.last(left_surface_tables), _.first(right_surface_tables));
-    return this.join(right_operand).on(join_columns[0].eq(join_columns[1]));
+  joinTo: function(rightOperand) {
+    if (typeof rightOperand === 'function') rightOperand = rightOperand.table;
+    var leftSurfaceTables = this.surfaceTables();
+    var rightSurfaceTables = rightOperand.surfaceTables();
+    var joinColumns = this.findJoinColumns(_.last(leftSurfaceTables), _.first(rightSurfaceTables));
+    return this.join(rightOperand).on(joinColumns[0].eq(joinColumns[1]));
   },
 
-  join_through: function(right_operand) {
-    if (typeof right_operand === 'function') right_operand = right_operand.table;
-    return this.join_to(right_operand).project(right_operand);
+  joinThrough: function(rightOperand) {
+    if (typeof rightOperand === 'function') rightOperand = rightOperand.table;
+    return this.joinTo(rightOperand).project(rightOperand);
   },
 
-  order_by: function() {
+  orderBy: function() {
     var self = this;
-    var order_by_columns = Monarch.Util.map(Monarch.Util.to_array(arguments), function(order_by_column) {
-      if (order_by_column instanceof Monarch.Model.OrderByColumn) {
-        return order_by_column;
-      } else if (order_by_column instanceof Monarch.Model.Column) {
-        return order_by_column.asc();
-      } else if (typeof order_by_column == "string") {
-        var parts = order_by_column.split(/ +/);
-        var column_name = parts[0];
+    var orderByColumns = Monarch.Util.map(Monarch.Util.toArray(arguments), function(orderByColumn) {
+      if (orderByColumn instanceof Monarch.Model.OrderByColumn) {
+        return orderByColumn;
+      } else if (orderByColumn instanceof Monarch.Model.Column) {
+        return orderByColumn.asc();
+      } else if (typeof orderByColumn == "string") {
+        var parts = orderByColumn.split(/ +/);
+        var columnName = parts[0];
         var direction = parts[1] || 'asc';
         if (direction == 'desc') {
-          return self.column(column_name).desc();
+          return self.column(columnName).desc();
         } else {
-          return self.column(column_name).asc();
+          return self.column(columnName).asc();
         }
       } else {
-        throw new Error("You can only order by Columns, OrderByColumns, or 'column_name direction' strings");
+        throw new Error("You can only order by Columns, OrderByColumns, or 'columnName direction' strings");
       }
     });
 
-    return new Monarch.Model.Relations.Ordering(this, order_by_columns);
+    return new Monarch.Model.Relations.Ordering(this, orderByColumns);
   },
 
-  difference: function(right_operand) {
-    return new Monarch.Model.Relations.Difference(this, right_operand);
+  difference: function(rightOperand) {
+    return new Monarch.Model.Relations.Difference(this, rightOperand);
   },
 
   tuples: function() {
-    return this.local_tuples();
+    return this.localTuples();
   },
 
-  local_tuples: function() {
-    return Monarch.Util.select(this.all_tuples(), function(record) {
-      return !record.locally_destroyed;
+  localTuples: function() {
+    return Monarch.Util.select(this.allTuples(), function(record) {
+      return !record.locallyDestroyed;
     });
   },
 
-  dirty_tuples: function() {
-    return Monarch.Util.select(this.all_tuples(), function(record) {
+  dirtyTuples: function() {
+    return Monarch.Util.select(this.allTuples(), function(record) {
       return record.dirty();
     });
   },
 
   dirty: function() {
-    return this.dirty_tuples().length > 0;
+    return this.dirtyTuples().length > 0;
   },
 
   each: function(fn) {
@@ -149,11 +149,11 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     return tuples[tuples.length-1];
   },
 
-  find: function(predicate_or_id_or_hash) {
-    if (typeof predicate_or_id_or_hash === "string") {
-      return this.where(this.column('id').eq(predicate_or_id_or_hash)).first();
+  find: function(predicateOrIdOrHash) {
+    if (typeof predicateOrIdOrHash === "string") {
+      return this.where(this.column('id').eq(predicateOrIdOrHash)).first();
     } else {
-      return this.where(predicate_or_id_or_hash).first();
+      return this.where(predicateOrIdOrHash).first();
     }
   },
 
@@ -165,47 +165,47 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     return this.tuples()[i];
   },
 
-  on_local_update: function(callback) {
-    this.subscribe_to_operands_if_needed();
-    return this.on_local_update_node.subscribe(callback);
+  onLocalUpdate: function(callback) {
+    this.subscribeToOperandsIfNeeded();
+    return this.onLocalUpdateNode.subscribe(callback);
   },
 
-  on_remote_insert: function(callback) {
-    this.subscribe_to_operands_if_needed();
-    return this.on_remote_insert_node.subscribe(callback);
+  onRemoteInsert: function(callback) {
+    this.subscribeToOperandsIfNeeded();
+    return this.onRemoteInsertNode.subscribe(callback);
   },
 
-  on_remote_update: function(callback) {
-    this.subscribe_to_operands_if_needed();
-    return this.on_remote_update_node.subscribe(callback);
+  onRemoteUpdate: function(callback) {
+    this.subscribeToOperandsIfNeeded();
+    return this.onRemoteUpdateNode.subscribe(callback);
   },
 
-  on_remote_remove: function(callback) {
-    this.subscribe_to_operands_if_needed();
-    return this.on_remote_remove_node.subscribe(callback);
+  onRemoteRemove: function(callback) {
+    this.subscribeToOperandsIfNeeded();
+    return this.onRemoteRemoveNode.subscribe(callback);
   },
 
-  on_dirty: function(callback) {
-    this.subscribe_to_operands_if_needed();
-    return this.on_dirty_node.subscribe(callback);
+  onDirty: function(callback) {
+    this.subscribeToOperandsIfNeeded();
+    return this.onDirtyNode.subscribe(callback);
   },
 
-  on_clean: function(callback) {
-    this.subscribe_to_operands_if_needed();
-    return this.on_clean_node.subscribe(callback);
+  onClean: function(callback) {
+    this.subscribeToOperandsIfNeeded();
+    return this.onCleanNode.subscribe(callback);
   },
 
-  record_made_dirty: function(record) {
-    this.on_dirty_node.publish(record);
+  recordMadeDirty: function(record) {
+    this.onDirtyNode.publish(record);
   },
 
-  record_made_clean: function(record) {
-    this.on_clean_node.publish(record);
+  recordMadeClean: function(record) {
+    this.onCleanNode.publish(record);
   },
 
-  has_subscribers: function() {
-    return !(this.on_remote_insert_node.empty() && this.on_remote_remove_node.empty()
-        && this.on_remote_update_node.empty() && this.on_dirty_node.empty() && this.on_clean_node.empty());
+  hasSubscribers: function() {
+    return !(this.onRemoteInsertNode.empty() && this.onRemoteRemoveNode.empty()
+        && this.onRemoteUpdateNode.empty() && this.onDirtyNode.empty() && this.onCleanNode.empty());
   },
 
   fetch: function() {
@@ -216,28 +216,28 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     return Server.subscribe([this]);
   },
 
-  memoize_tuples: function() {
-    this._tuples = this.tuples();
+  memoizeTuples: function() {
+    this.Tuples = this.tuples();
   },
 
-  tuple_inserted_remotely: function(record, options) {
+  tupleInsertedRemotely: function(record, options) {
     if (!this.contains(record)) {
-      this._tuples.push(record)
+      this.Tuples.push(record)
     }
-    this.on_remote_insert_node.publish(record);
+    this.onRemoteInsertNode.publish(record);
   },
 
-  tuple_updated_remotely: function(record, update_data) {
-    this.on_remote_update_node.publish(record, update_data);
+  tupleUpdatedRemotely: function(record, updateData) {
+    this.onRemoteUpdateNode.publish(record, updateData);
   },
 
-  tuple_updated_locally: function(record, update_data) {
-    this.on_local_update_node.publish(record, update_data);
+  tupleUpdatedLocally: function(record, updateData) {
+    this.onLocalUpdateNode.publish(record, updateData);
   },
 
-  tuple_removed_remotely: function(record) {
-    Monarch.Util.remove(this._tuples, record);
-    this.on_remote_remove_node.publish(record);
+  tupleRemovedRemotely: function(record) {
+    Monarch.Util.remove(this.Tuples, record);
+    this.onRemoteRemoveNode.publish(record);
   },
 
   contains: function(record) {
@@ -248,42 +248,42 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     return false;
   },
 
-  subscribe_to_operands_if_needed: function() {
-    if (this.has_operands && !this.has_subscribers()) {
-      this.subscribe_to_operands();
-      this.memoize_tuples();
+  subscribeToOperandsIfNeeded: function() {
+    if (this.hasOperands && !this.hasSubscribers()) {
+      this.subscribeToOperands();
+      this.memoizeTuples();
     }
   },
 
-  unsubscribe_from_operands_when_this_no_longer_has_subscribers: function() {
+  unsubscribeFromOperandsWhenThisNoLongerHasSubscribers: function() {
     var self = this;
-    var unsubscribe_callback = function() {
-       if (!self.has_subscribers()) self.unsubscribe_from_operands();
+    var unsubscribeCallback = function() {
+       if (!self.hasSubscribers()) self.unsubscribeFromOperands();
     };
 
-    this.on_remote_insert_node.on_unsubscribe(unsubscribe_callback);
-    this.on_remote_remove_node.on_unsubscribe(unsubscribe_callback);
-    this.on_remote_update_node.on_unsubscribe(unsubscribe_callback);
-    this.on_dirty_node.on_unsubscribe(unsubscribe_callback);
-    this.on_clean_node.on_unsubscribe(unsubscribe_callback);
+    this.onRemoteInsertNode.onUnsubscribe(unsubscribeCallback);
+    this.onRemoteRemoveNode.onUnsubscribe(unsubscribeCallback);
+    this.onRemoteUpdateNode.onUnsubscribe(unsubscribeCallback);
+    this.onDirtyNode.onUnsubscribe(unsubscribeCallback);
+    this.onCleanNode.onUnsubscribe(unsubscribeCallback);
   },
 
-  unsubscribe_from_operands: function() {
-    this.operands_subscription_bundle.destroy_all();
-    this._tuples = null;
+  unsubscribeFromOperands: function() {
+    this.operandsSubscriptionBundle.destroyAll();
+    this.Tuples = null;
   },
 
-  remote_subscribe: function() {
-    var subscribe_future = new Monarch.Http.AjaxFuture();
-    Server.subscribe([this]).on_success(function(remote_subscriptions) {
-      subscribe_future.trigger_success(remote_subscriptions[0]);
+  remoteSubscribe: function() {
+    var subscribeFuture = new Monarch.Http.AjaxFuture();
+    Server.subscribe([this]).onSuccess(function(remoteSubscriptions) {
+      subscribeFuture.triggerSuccess(remoteSubscriptions[0]);
     });
-    return subscribe_future;
+    return subscribeFuture;
   },
 
   // private
 
-  predicate_from_hash: function(hash) {
+  predicateFromHash: function(hash) {
     var self = this;
     var predicates = [];
     Monarch.Util.each(hash, function(key, value) {
@@ -299,14 +299,14 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     }
   },
 
-  find_join_columns: function(left, right) {
-    var foreign_key;
-    if (foreign_key = right.column(Monarch.Inflection.singularize(left.global_name) + "_id")) {
-      return [left.column("id"), foreign_key];
-    } else if (foreign_key = left.column(Monarch.Inflection.singularize(right.global_name) + "_id")) {
-      return [foreign_key, right.column("id")];
+  findJoinColumns: function(left, right) {
+    var foreignKey;
+    if (foreignKey = right.column(Monarch.Inflection.singularize(left.globalName) + "Id")) {
+      return [left.column("id"), foreignKey];
+    } else if (foreignKey = left.column(Monarch.Inflection.singularize(right.globalName) + "Id")) {
+      return [foreignKey, right.column("id")];
     } else {
-      throw new Error("No foreign key found for #join_to operation");
+      throw new Error("No foreign key found for #joinTo operation");
     }
   }
 

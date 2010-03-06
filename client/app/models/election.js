@@ -1,10 +1,10 @@
 constructor("Election", Model.Record, {
-  constructor_initialize: function() {
+  constructorInitialize: function() {
     this.columns({
-      organization_id: 'string',
+      organizationId: 'string',
       body: 'string'
     });
 
-    this.has_many('candidates');
+    this.hasMany('candidates');
   }
 });

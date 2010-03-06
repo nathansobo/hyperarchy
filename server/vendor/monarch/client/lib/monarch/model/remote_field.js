@@ -6,23 +6,23 @@ Monarch.constructor("Monarch.Model.RemoteField", Monarch.Model.ConcreteField, {
     this.column = column;
   },
 
-  local_field: function(local_field) {
+  localField: function(localField) {
     if (arguments.length == 0) {
-      return this._local_field
+      return this.LocalField
     } else {
-      return this._local_field = local_field;
+      return this.LocalField = localField;
     }
   },
 
   // private
 
-  value_assigned: function(new_value, old_value) {
-    this.fieldset.field_updated(this, new_value, old_value);
-    if (this.fieldset.update_events_enabled && this.on_update_node) this.on_update_node.publish(new_value, old_value)
-    this._local_field.update_events_enabled = false;
-    this._local_field.value(new_value);
-    this._local_field.mark_clean();
-    this._local_field.update_events_enabled = true;
+  valueAssigned: function(newValue, oldValue) {
+    this.fieldset.fieldUpdated(this, newValue, oldValue);
+    if (this.fieldset.updateEventsEnabled && this.onUpdateNode) this.onUpdateNode.publish(newValue, oldValue)
+    this.LocalField.updateEventsEnabled = false;
+    this.LocalField.value(newValue);
+    this.LocalField.markClean();
+    this.LocalField.updateEventsEnabled = true;
   }
 });
 

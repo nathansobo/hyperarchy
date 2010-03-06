@@ -1,13 +1,13 @@
 Monarch.constructor("FakeServer.FakeCommandBatch", {
   type: "batch",
 
-  initialize: function(url, fake_server, commands) {
+  initialize: function(url, fakeServer, commands) {
     this.url = url;
-    this.fake_server = fake_server;
+    this.fakeServer = fakeServer;
     this.commands = commands;
   },
 
-  find_update: function(record) {
+  findUpdate: function(record) {
     return Monarch.Util.detect(this.commands, function(mutation) {
       return mutation.record === record
     });
@@ -17,48 +17,48 @@ Monarch.constructor("FakeServer.FakeCommandBatch", {
     this.future = new Monarch.Http.RepositoryUpdateFuture();
 
     if (this.commands.length == 0) {
-      this.future.trigger_before_events();
-      this.future.trigger_after_events();
+      this.future.triggerBeforeEvents();
+      this.future.triggerAfterEvents();
     } else {
-      if (this.fake_server.auto) {
-        this.simulate_success();
+      if (this.fakeServer.auto) {
+        this.simulateSuccess();
       } else {
         if (this.commands.length == 1) {
-          this.fake_mutation = new FakeServer.FakeMutation(this.url, this.commands[0], this);
-          this.fake_server.add_request(this.fake_mutation);
+          this.fakeMutation = new FakeServer.FakeMutation(this.url, this.commands[0], this);
+          this.fakeServer.addRequest(this.fakeMutation);
         }
-        this.fake_server.batches.push(this);
-        this.fake_server.last_batch = this;
+        this.fakeServer.batches.push(this);
+        this.fakeServer.lastBatch = this;
       }
     }
 
     return this.future;
   },
 
-  simulate_success: function(server_response) {
-    if (!server_response) server_response = this.generate_fake_server_response();
+  simulateSuccess: function(serverResponse) {
+    if (!serverResponse) serverResponse = this.generateFakeServerResponse();
 
-    Repository.pause_events();
+    Repository.pauseEvents();
 
     Monarch.Util.each(this.commands, function(command, index) {
-      command.complete(server_response.primary[index]);
+      command.complete(serverResponse.primary[index]);
     });
-    Repository.mutate(server_response.secondary)
+    Repository.mutate(serverResponse.secondary)
 
-    this.future.trigger_before_events(this.commands[0].record);
-    Repository.resume_events();
-    this.future.trigger_after_events(this.commands[0].record);
+    this.future.triggerBeforeEvents(this.commands[0].record);
+    Repository.resumeEvents();
+    this.future.triggerAfterEvents(this.commands[0].record);
 
-    if (this.fake_mutation) this.fake_server.remove_request(this.fake_mutation);
-    this.fake_server.remove_request(this);
+    if (this.fakeMutation) this.fakeServer.removeRequest(this.fakeMutation);
+    this.fakeServer.removeRequest(this);
   },
 
-  generate_fake_server_response: function() {
+  generateFakeServerResponse: function() {
     var primary = Monarch.Util.map(this.commands, function(command) {
       if (command instanceof Monarch.Http.CreateCommand) {
-        return Monarch.Util.extend({id: "generated_by_fake_server_" + this.fake_server.id_counter++}, command.field_values);
+        return Monarch.Util.extend({id: "generatedByFakeServer" + this.fakeServer.idCounter++}, command.fieldValues);
       } else if (command instanceof Monarch.Http.UpdateCommand) {
-        return Monarch.Util.extend({}, command.field_values);
+        return Monarch.Util.extend({}, command.fieldValues);
       } else {
         return null;
       }

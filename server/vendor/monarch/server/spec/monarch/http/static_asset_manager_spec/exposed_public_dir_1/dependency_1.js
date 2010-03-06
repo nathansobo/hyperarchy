@@ -1,1 +1,1 @@
-var dependency_1;
+var dependency1;

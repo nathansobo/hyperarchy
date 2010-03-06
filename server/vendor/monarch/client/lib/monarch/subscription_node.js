@@ -1,14 +1,14 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.SubscriptionNode", {
-  constructor_properties: {
-    total_subscriptions: 0
+  constructorProperties: {
+    totalSubscriptions: 0
   },
 
   initialize: function() {
     this.subscriptions = [];
     this.paused = false;
-    this.delayed_events = [];
+    this.delayedEvents = [];
   },
 
   subscribe: function(callback) {
@@ -19,21 +19,21 @@ Monarch.constructor("Monarch.SubscriptionNode", {
 
   unsubscribe: function(subscription) {
     Monarch.Util.remove(this.subscriptions, subscription);
-    if (this.on_unsubscribe_node) this.on_unsubscribe_node.publish(subscription);
+    if (this.onUnsubscribeNode) this.onUnsubscribeNode.publish(subscription);
   },
 
-  on_unsubscribe: function(callback) {
-    if (!this.on_unsubscribe_node) this.on_unsubscribe_node = new Monarch.SubscriptionNode();
-    return this.on_unsubscribe_node.subscribe(callback);
+  onUnsubscribe: function(callback) {
+    if (!this.onUnsubscribeNode) this.onUnsubscribeNode = new Monarch.SubscriptionNode();
+    return this.onUnsubscribeNode.subscribe(callback);
   },
 
   publish: function() {
-    var publish_arguments = arguments;
+    var publishArguments = arguments;
     if (this.paused) {
-      this.delayed_events.push(publish_arguments)
+      this.delayedEvents.push(publishArguments)
     } else {
       Monarch.Util.each(this.subscriptions, function(subscription) {
-        subscription.trigger(publish_arguments);
+        subscription.trigger(publishArguments);
       })
     }
   },
@@ -42,16 +42,16 @@ Monarch.constructor("Monarch.SubscriptionNode", {
     return this.subscriptions.length == 0;
   },
 
-  pause_events: function() {
+  pauseEvents: function() {
     this.paused = true;
   },
 
-  resume_events: function() {
+  resumeEvents: function() {
     var self = this;
     this.paused = false;
-    var delayed_events = this.delayed_events;
-    this.delayed_events = [];
-    Monarch.Util.each(delayed_events, function(event) {
+    var delayedEvents = this.delayedEvents;
+    this.delayedEvents = [];
+    Monarch.Util.each(delayedEvents, function(event) {
       self.publish.apply(self, event);
     });
   }

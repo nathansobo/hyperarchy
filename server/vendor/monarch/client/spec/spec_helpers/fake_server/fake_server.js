@@ -14,58 +14,58 @@ Monarch.constructor("FakeServer", Monarch.Http.Server, {
 
     this.auto = (auto === undefined) ? true : auto;
 
-    this.Repository = Repository.clone_schema();
+    this.Repository = Repository.cloneSchema();
 
-    this.id_counter = 1;
+    this.idCounter = 1;
   },
 
   fetch: function(relations) {
-    var fake_fetch = new FakeServer.FakeFetch(Repository.origin_url, relations, this);
+    var fakeFetch = new FakeServer.FakeFetch(Repository.originUrl, relations, this);
     if (this.auto) {
-      fake_fetch.simulate_success();
+      fakeFetch.simulateSuccess();
     } else {
-      this.last_fetch = fake_fetch;
-      this.fetches.push(fake_fetch);
+      this.lastFetch = fakeFetch;
+      this.fetches.push(fakeFetch);
     }
-    return fake_fetch.future;
+    return fakeFetch.future;
   },
 
-  auto_fetch: function(relations) {
-    var prev_auto_value = this.auto;
+  autoFetch: function(relations) {
+    var prevAutoValue = this.auto;
     this.auto = true;
     this.fetch(relations);
-    this.auto = prev_auto_value;
+    this.auto = prevAutoValue;
   },
 
   subscribe: function(relations) {
-    var fake_subscribe = new FakeServer.FakeSubscribe(Repository.origin_url, relations, this);
+    var fakeSubscribe = new FakeServer.FakeSubscribe(Repository.originUrl, relations, this);
 
     if (this.auto) {
-      fake_subscribe.simulate_success();
+      fakeSubscribe.simulateSuccess();
     } else {
-      this.subscribes.push(fake_subscribe);
-      this.last_subscribe = fake_subscribe;
+      this.subscribes.push(fakeSubscribe);
+      this.lastSubscribe = fakeSubscribe;
     }
-    return fake_subscribe.future;
+    return fakeSubscribe.future;
   },
 
-  unsubscribe: function(remote_subscriptions) {
-    var fake_unsubscribe = new FakeServer.FakeUnsubscribe(Repository.origin_url, remote_subscriptions, this);
+  unsubscribe: function(remoteSubscriptions) {
+    var fakeUnsubscribe = new FakeServer.FakeUnsubscribe(Repository.originUrl, remoteSubscriptions, this);
 
     if (this.auto) {
-      fake_unsubscribe.simulate_success();
+      fakeUnsubscribe.simulateSuccess();
     } else {
-      this.unsubscribes.push(fake_unsubscribe);
-      this.last_unsubscribe = fake_unsubscribe;
-      return fake_unsubscribe.future;
+      this.unsubscribes.push(fakeUnsubscribe);
+      this.lastUnsubscribe = fakeUnsubscribe;
+      return fakeUnsubscribe.future;
     }
   },
   
   save: function() {
-    var commands = Monarch.Util.map(this.extract_dirty_records(arguments), function(dirty_record) {
-      return this.build_appropriate_command(dirty_record);
+    var commands = Monarch.Util.map(this.extractDirtyRecords(arguments), function(dirtyRecord) {
+      return this.buildAppropriateCommand(dirtyRecord);
     }.bind(this));
-    var batch = new FakeServer.FakeCommandBatch(Repository.origin_url, this, commands);
+    var batch = new FakeServer.FakeCommandBatch(Repository.originUrl, this, commands);
     return batch.perform();
   },
 
@@ -85,23 +85,24 @@ Monarch.constructor("FakeServer", Monarch.Http.Server, {
     return this.request('delete', url, data);
   },
 
-  remove_request: function(request) {
-    var requests_array = this[Monarch.Inflection.pluralize(request.type)];
-    Monarch.Util.remove(requests_array, request);
-    this["last_" + request.type] = requests_array[requests_array.length - 1];
+  removeRequest: function(request) {
+    var requestsArray = this[Monarch.Inflection.pluralize(request.type)];
+    Monarch.Util.remove(requestsArray, request);
+    this["last" + Monarch.Inflection.capitalize(request.type)] = requestsArray[requestsArray.length - 1];
   },
 
   // private
 
   request: function(type, url, data) {
-    var fake_request = new FakeServer.FakeRequest(type, url, data, this);
-    this.add_request(fake_request);
-    return fake_request.future;
+    var fakeRequest = new FakeServer.FakeRequest(type, url, data, this);
+    this.addRequest(fakeRequest);
+    return fakeRequest.future;
   },
 
-  add_request: function(request) {
-    var requests_array = this[Monarch.Inflection.pluralize(request.type)];
-    requests_array.push(request);
-    this["last_" + request.type] = request;
+  addRequest: function(request) {
+    var requestsArray = this[Monarch.Inflection.pluralize(request.type)];
+    debugger;
+    requestsArray.push(request);
+    this["last" + Monarch.Inflection.capitalize(request.type)] = request;
   }
 });

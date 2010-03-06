@@ -2,62 +2,62 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Predicates.And", function() {
-    use_local_fixtures();
+    useLocalFixtures();
 
-    var and, operand_1, operand_2, record;
+    var and, operand1, operand2, record;
     before(function() {
-      operand_1 = User.id.eq("jan");
-      and = new Monarch.Model.Predicates.And([operand_1, operand_2])
+      operand1 = User.id.eq("jan");
+      and = new Monarch.Model.Predicates.And([operand1, operand2])
       record = User.find("jan");
     });
 
     init(function() {
-      operand_2 = User.full_name.eq("Jan Nelson");
+      operand2 = User.fullName.eq("Jan Nelson");
     })
 
     describe("#evaluate", function() {
       context("when both predicates evaluate to true", function() {
         it("returns true", function() {
-          expect(operand_1.evaluate(record)).to(be_true);
-          expect(operand_2.evaluate(record)).to(be_true);
-          expect(and.evaluate(record)).to(be_true);
+          expect(operand1.evaluate(record)).to(beTrue);
+          expect(operand2.evaluate(record)).to(beTrue);
+          expect(and.evaluate(record)).to(beTrue);
         });
       });
 
       context("when a predicate evaluets to false", function() {
         init(function() {
-          operand_2 = User.full_name.eq("Evil Evil Man");
+          operand2 = User.fullName.eq("Evil Evil Man");
         });
 
         it("returns false", function() {
-          expect(operand_1.evaluate(record)).to(be_true);
-          expect(operand_2.evaluate(record)).to(be_false);
-          expect(and.evaluate(record)).to(be_false);
+          expect(operand1.evaluate(record)).to(beTrue);
+          expect(operand2.evaluate(record)).to(beFalse);
+          expect(and.evaluate(record)).to(beFalse);
         });
       });
     });
 
-    describe("#wire_representation", function() {
+    describe("#wireRepresentation", function() {
       it("contains the wire representations of the operands", function() {
-        expect(and.wire_representation()).to(equal, {
+        expect(and.wireRepresentation()).to(equal, {
           type: 'and',
           operands: [
-            operand_1.wire_representation(),
-            operand_2.wire_representation()
+            operand1.wireRepresentation(),
+            operand2.wireRepresentation()
           ]
         });
       });
     });
     
-    describe("#force_matching_field_values", function() {
+    describe("#forceMatchingFieldValues", function() {
       it("returns a hash that matches the required field values of all the operands", function() {
         var hash = {
           foo: "narnar"
         }
-        expect(and.force_matching_field_values(hash)).to(equal, {
+        expect(and.forceMatchingFieldValues(hash)).to(equal, {
           foo: "narnar",
           id: "jan",
-          full_name: "Jan Nelson"
+          fullName: "Jan Nelson"
         });
         expect(hash).to(equal, {
           foo: "narnar"

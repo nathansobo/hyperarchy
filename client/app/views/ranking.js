@@ -1,42 +1,42 @@
 constructor("Views.Ranking", View.Template, {
   content: function() { with(this.builder) {
-    div({id: "ranking", 'class': "widget item_list"}, function() {
-      div({'class': "widget_content"}, function() {
-        ol().ref("ranking_ol");
-      }).ref('widget_content');
+    div({id: "ranking", 'class': "widget itemList"}, function() {
+      div({'class': "widgetContent"}, function() {
+        ol().ref("rankingOl");
+      }).ref('widgetContent');
     });
   }},
 
-  view_properties: {
+  viewProperties: {
     initialize: function() {
       var self = this;
-      this.register_resize_callbacks();
+      this.registerResizeCallbacks();
 
       _.defer(function() {
-        self.ranking_ol.sortable({
+        self.rankingOl.sortable({
           connectWith: "#candidates ol",
 
           update: function(event, ui) {
-            console.debug(ui.item.attr('candidate_id'));
+            console.debug(ui.item.attr('candidateId'));
           }
         });
       });
     },
 
-    register_resize_callbacks: function() {
+    registerResizeCallbacks: function() {
       var self = this;
       $(window).resize(function() {
-        self.fill_height();
+        self.fillHeight();
       });
 
       _.defer(function() {
-        self.fill_height();
+        self.fillHeight();
       });
     },
 
-    fill_height: function() {
-      var height = $(window).height() - this.widget_content.offset().top - 10;
-      this.ranking_ol.height(height);
+    fillHeight: function() {
+      var height = $(window).height() - this.widgetContent.offset().top - 10;
+      this.rankingOl.height(height);
     }
   }
 });

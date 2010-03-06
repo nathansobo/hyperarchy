@@ -1,14 +1,14 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.View.SelfClosingTag", Monarch.View.CloseTag.prototype, Monarch.View.OpenTag.prototype, {
-  to_xml: function() {
-    return "<" + this.name + this.attributes_html() + "/>"
+  toXml: function() {
+    return "<" + this.name + this.attributesHtml() + "/>"
   },
 
-  post_process: function(builder) {
-    builder.push_child();
-    builder.pop_child();
-    if (this.on_build_node) this.on_build_node.publish(builder.find_preceding_element(), builder.jquery_fragment);
+  postProcess: function(builder) {
+    builder.pushChild();
+    builder.popChild();
+    if (this.onBuildNode) this.onBuildNode.publish(builder.findPrecedingElement(), builder.jqueryFragment);
   }
 });
 

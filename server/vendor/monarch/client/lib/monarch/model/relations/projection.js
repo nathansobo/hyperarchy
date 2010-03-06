@@ -1,76 +1,76 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relations.Relation, {
-  initialize: function(operand, projected_columns) {
+  initialize: function(operand, projectedColumns) {
     var self = this;
     this.operand = operand;
-    this.projected_columns_by_name = {};
-    Monarch.Util.each(projected_columns, function(projected_column) {
-      self.projected_columns_by_name[projected_column.name()] = projected_column;
+    this.projectedColumnsByName = {};
+    Monarch.Util.each(projectedColumns, function(projectedColumn) {
+      self.projectedColumnsByName[projectedColumn.name()] = projectedColumn;
     });
 
-    this.tuple_constructor = Monarch.ModuleSystem.constructor(Monarch.Model.Tuple);
-    this.tuple_constructor.projected_columns_by_name = this.projected_columns_by_name;
-    this.tuple_constructor.initialize_field_readers();
+    this.tupleConstructor = Monarch.ModuleSystem.constructor(Monarch.Model.Tuple);
+    this.tupleConstructor.projectedColumnsByName = this.projectedColumnsByName;
+    this.tupleConstructor.initializeFieldReaders();
 
-    this.initialize_events_system();
+    this.initializeEventsSystem();
   },
 
-  all_tuples: function() {
-    if (this._tuples) return this._tuples;
+  allTuples: function() {
+    if (this.Tuples) return this.Tuples;
 
-    this.tuples_by_operand_record_id = {};
-    return Monarch.Util.map(this.operand.all_tuples(), function(operand_tuple) {
-      return this.tuples_by_operand_record_id[operand_tuple.id()] = new this.tuple_constructor(operand_tuple);
+    this.tuplesByOperandRecordId = {};
+    return Monarch.Util.map(this.operand.allTuples(), function(operandTuple) {
+      return this.tuplesByOperandRecordId[operandTuple.id()] = new this.tupleConstructor(operandTuple);
     }.bind(this));
   },
 
   column: function(name) {
-    return this.projected_columns_by_name[name];
+    return this.projectedColumnsByName[name];
   },
 
-  surface_tables: function() {
+  surfaceTables: function() {
     throw new Error("Projections do not have surface tables");
   },
   
   // private
 
-  subscribe_to_operands: function() {
+  subscribeToOperands: function() {
     var self = this;
-    this.operands_subscription_bundle.add(this.operand.on_remote_insert(function(operand_record) {
-      var record = new self.tuple_constructor(operand_record);
-      self.tuples_by_operand_record_id[operand_record.id()] = record;
-      self.tuple_inserted_remotely(record);
+    this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(operandRecord) {
+      var record = new self.tupleConstructor(operandRecord);
+      self.tuplesByOperandRecordId[operandRecord.id()] = record;
+      self.tupleInsertedRemotely(record);
     }));
-    this.operands_subscription_bundle.add(this.operand.on_remote_update(function(operand_record, operand_changes) {
-      var changes = self.translate_update_changes(operand_changes);
-      if (Monarch.Util.is_empty(changes)) return;
-      self.tuple_updated_remotely(self.tuples_by_operand_record_id[operand_record.id()], changes);
+    this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(operandRecord, operandChanges) {
+      var changes = self.translateUpdateChanges(operandChanges);
+      if (Monarch.Util.isEmpty(changes)) return;
+      self.tupleUpdatedRemotely(self.tuplesByOperandRecordId[operandRecord.id()], changes);
     }));
-    this.operands_subscription_bundle.add(this.operand.on_remote_remove(function(operand_record) {
-      self.tuple_removed_remotely(self.tuples_by_operand_record_id[operand_record.id()]);
+    this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(operandRecord) {
+      self.tupleRemovedRemotely(self.tuplesByOperandRecordId[operandRecord.id()]);
     }));
   },
 
-  translate_update_changes: function(changes) {
+  translateUpdateChanges: function(changes) {
     var self = this;
-    var translated_changes = {};
-    Monarch.Util.each(changes, function(operand_column_name, operand_column_changes) {
-      var projected_column = self.projected_column_from_operand_column(operand_column_changes.column);
-      if (projected_column) {
-        translated_changes[projected_column.name()] = {
-          column: projected_column,
-          old_value: operand_column_changes.old_value,
-          new_value: operand_column_changes.new_value
+    var translatedChanges = {};
+    Monarch.Util.each(changes, function(operandColumnName, operandColumnChanges) {
+      var projectedColumn = self.projectedColumnFromOperandColumn(operandColumnChanges.column);
+      if (projectedColumn) {
+        translatedChanges[projectedColumn.name()] = {
+          column: projectedColumn,
+          oldValue: operandColumnChanges.oldValue,
+          newValue: operandColumnChanges.newValue
         }
       }
     });
-    return translated_changes;
+    return translatedChanges;
   },
 
-  projected_column_from_operand_column: function(operand_column) {
-    return Monarch.Util.detect(this.projected_columns_by_name, function(name, projected_column) {
-      return projected_column.column === operand_column;
+  projectedColumnFromOperandColumn: function(operandColumn) {
+    return Monarch.Util.detect(this.projectedColumnsByName, function(name, projectedColumn) {
+      return projectedColumn.column === operandColumn;
     });
   }
 });

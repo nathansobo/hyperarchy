@@ -1,21 +1,21 @@
 Monarch.constructor("FakeServer.FakeSubscribe", {
   type: "subscribe",
 
-  constructor_initialize: function() {
-    this.id_counter = 1;
+  constructorInitialize: function() {
+    this.idCounter = 1;
   },
 
-  initialize: function(url, relations, fake_server) {
+  initialize: function(url, relations, fakeServer) {
     this.url = url;
     this.relations = relations;
-    this.fake_server = fake_server;
+    this.fakeServer = fakeServer;
     this.future = new Monarch.Http.AjaxFuture();
   },
 
-  simulate_success: function() {
-    this.future.trigger_success(Monarch.Util.map(this.relations, function(relation) {
-      return new Monarch.Http.RemoteSubscription("fake_subscription_" + this.constructor.id_counter++, relation);
+  simulateSuccess: function() {
+    this.future.triggerSuccess(Monarch.Util.map(this.relations, function(relation) {
+      return new Monarch.Http.RemoteSubscription("fakeSubscription" + this.constructor.idCounter++, relation);
     }));
-    this.fake_server.remove_request(this);
+    this.fakeServer.removeRequest(this);
   }
 });

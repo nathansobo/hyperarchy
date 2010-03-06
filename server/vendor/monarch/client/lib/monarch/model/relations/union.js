@@ -1,56 +1,56 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Relations.Union", Monarch.Model.Relations.Relation, {
-  initialize: function(left_operand, right_operand) {
-    this.left_operand = left_operand;
-    this.right_operand = right_operand;
-    this.initialize_events_system();
+  initialize: function(leftOperand, rightOperand) {
+    this.leftOperand = leftOperand;
+    this.rightOperand = rightOperand;
+    this.initializeEventsSystem();
   },
 
   contains: function(record) {
-    return record.id() in this.tuples_by_id;
+    return record.id() in this.tuplesById;
   },
 
-  all_tuples: function() {
-    if (this._tuples) return this._tuples;
+  allTuples: function() {
+    if (this.Tuples) return this.Tuples;
 
-    var tuples_by_hash_code = {};
+    var tuplesByHashCode = {};
 
-    _.each(this.left_operand.all_tuples(), function(tuple) {
-      tuples_by_hash_code[tuple.hash_code()] = tuple;
+    _.each(this.leftOperand.allTuples(), function(tuple) {
+      tuplesByHashCode[tuple.hashCode()] = tuple;
     });
-    _.each(this.right_operand.all_tuples(), function(tuple) {
-      tuples_by_hash_code[tuple.hash_code()] = tuple;
+    _.each(this.rightOperand.allTuples(), function(tuple) {
+      tuplesByHashCode[tuple.hashCode()] = tuple;
     });
-    return _.values(tuples_by_hash_code);
+    return _.values(tuplesByHashCode);
   },
 
-  surface_tables: function() {
-    return this.left_operand.surface_tables();
+  surfaceTables: function() {
+    return this.leftOperand.surfaceTables();
   },
   
   // private
 
-  subscribe_to_operands: function() {
+  subscribeToOperands: function() {
     var self = this;
-    this.operands_subscription_bundle.add(this.left_operand.on_remote_insert(function(record) {
-      if (!self.right_operand.find(record.id())) self.tuple_inserted_remotely(record);
+    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteInsert(function(record) {
+      if (!self.rightOperand.find(record.id())) self.tupleInsertedRemotely(record);
     }));
 
-    this.operands_subscription_bundle.add(this.left_operand.on_remote_update(function(record, changes) {
-      if (self.contains(record)) self.tuple_updated_remotely(record, changes);
+    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteUpdate(function(record, changes) {
+      if (self.contains(record)) self.tupleUpdatedRemotely(record, changes);
     }));
 
-    this.operands_subscription_bundle.add(this.left_operand.on_remote_remove(function(record) {
-      if (self.contains(record)) self.tuple_removed_remotely(record);
+    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteRemove(function(record) {
+      if (self.contains(record)) self.tupleRemovedRemotely(record);
     }));
 
-    this.operands_subscription_bundle.add(this.right_operand.on_remote_insert(function(record) {
-      if (self.contains(record)) self.tuple_removed_remotely(record);
+    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteInsert(function(record) {
+      if (self.contains(record)) self.tupleRemovedRemotely(record);
     }));
 
-    this.operands_subscription_bundle.add(this.right_operand.on_remote_remove(function(record) {
-      if (self.left_operand.find(record.id())) self.tuple_inserted_remotely(record);
+    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteRemove(function(record) {
+      if (self.leftOperand.find(record.id())) self.tupleInsertedRemotely(record);
     }));
   }
 });

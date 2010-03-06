@@ -1,17 +1,17 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.ProjectedColumn", {
-  initialize: function(column, column_alias) {
+  initialize: function(column, columnAlias) {
     this.column = column;
-    this.column_alias = column_alias;
+    this.columnAlias = columnAlias;
   },
 
   name: function() {
-    return this.column_alias || this.column.name;
+    return this.columnAlias || this.column.name;
   },
 
-  eq: function(right_operand) {
-    return new Monarch.Model.Predicates.Eq(this, right_operand);
+  eq: function(rightOperand) {
+    return new Monarch.Model.Predicates.Eq(this, rightOperand);
   },
 
   asc: function() {

@@ -1,54 +1,54 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.CombinedSignal", {
-  initialize: function(left_operand, right_operand, transformer) {
+  initialize: function(leftOperand, rightOperand, transformer) {
     var self = this;
 
-    this.left_operand = left_operand;
-    this.right_operand = right_operand;
+    this.leftOperand = leftOperand;
+    this.rightOperand = rightOperand;
     this.transformer = transformer;
-    this.on_remote_update_node = new Monarch.SubscriptionNode();
-    this.on_local_update_node = new Monarch.SubscriptionNode();
+    this.onRemoteUpdateNode = new Monarch.SubscriptionNode();
+    this.onLocalUpdateNode = new Monarch.SubscriptionNode();
 
-    this.left_operand.on_remote_update(function(new_value, old_value) {
-      var old_value = self.transformer(old_value, self.right_operand.remote_value());
-      var new_value = self.transformer(new_value, self.right_operand.remote_value());
-      if (new_value !== old_value) self.on_remote_update_node.publish(new_value, old_value);
+    this.leftOperand.onRemoteUpdate(function(newValue, oldValue) {
+      var oldValue = self.transformer(oldValue, self.rightOperand.remoteValue());
+      var newValue = self.transformer(newValue, self.rightOperand.remoteValue());
+      if (newValue !== oldValue) self.onRemoteUpdateNode.publish(newValue, oldValue);
     });
 
-    this.right_operand.on_remote_update(function(new_value, old_value) {
-      var old_value = self.transformer(self.left_operand.remote_value(), old_value);
-      var new_value = self.transformer(self.left_operand.remote_value(), new_value);
-      if (new_value !== old_value) self.on_remote_update_node.publish(new_value, old_value);
+    this.rightOperand.onRemoteUpdate(function(newValue, oldValue) {
+      var oldValue = self.transformer(self.leftOperand.remoteValue(), oldValue);
+      var newValue = self.transformer(self.leftOperand.remoteValue(), newValue);
+      if (newValue !== oldValue) self.onRemoteUpdateNode.publish(newValue, oldValue);
     });
 
-    this.left_operand.on_local_update(function(new_value, old_value) {
-      var old_value = self.transformer(old_value, self.right_operand.remote_value());
-      var new_value = self.transformer(new_value, self.right_operand.remote_value());
-      if (new_value !== old_value) self.on_local_update_node.publish(new_value, old_value);
+    this.leftOperand.onLocalUpdate(function(newValue, oldValue) {
+      var oldValue = self.transformer(oldValue, self.rightOperand.remoteValue());
+      var newValue = self.transformer(newValue, self.rightOperand.remoteValue());
+      if (newValue !== oldValue) self.onLocalUpdateNode.publish(newValue, oldValue);
     });
 
-    this.right_operand.on_local_update(function(new_value, old_value) {
-      var old_value = self.transformer(self.left_operand.remote_value(), old_value);
-      var new_value = self.transformer(self.left_operand.remote_value(), new_value);
-      if (new_value !== old_value) self.on_local_update_node.publish(new_value, old_value);
+    this.rightOperand.onLocalUpdate(function(newValue, oldValue) {
+      var oldValue = self.transformer(self.leftOperand.remoteValue(), oldValue);
+      var newValue = self.transformer(self.leftOperand.remoteValue(), newValue);
+      if (newValue !== oldValue) self.onLocalUpdateNode.publish(newValue, oldValue);
     });
   },
 
-  local_value: function() {
-    return this.transformer(this.left_operand.local_value(), this.right_operand.local_value());
+  localValue: function() {
+    return this.transformer(this.leftOperand.localValue(), this.rightOperand.localValue());
   },
 
-  remote_value: function() {
-    return this.transformer(this.left_operand.remote_value(), this.right_operand.remote_value());
+  remoteValue: function() {
+    return this.transformer(this.leftOperand.remoteValue(), this.rightOperand.remoteValue());
   },
 
-  on_remote_update: function(callback) {
-    return this.on_remote_update_node.subscribe(callback);
+  onRemoteUpdate: function(callback) {
+    return this.onRemoteUpdateNode.subscribe(callback);
   },
 
-  on_local_update: function(callback) {
-    return this.on_local_update_node.subscribe(callback);
+  onLocalUpdate: function(callback) {
+    return this.onLocalUpdateNode.subscribe(callback);
   }
 });
 

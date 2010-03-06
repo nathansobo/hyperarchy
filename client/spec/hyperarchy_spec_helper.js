@@ -4,10 +4,10 @@
 //= require "spec_helpers/fixtures"
 
 Screw.Unit(function(c) { with(c) {
-  use_fake_history();
+  useFakeHistory();
 
   init(function() {
-    window.COMET_CLIENT_ID = "fake-from-spec-helper";
+    window.COMETCLIENTID = "fake-from-spec-helper";
   });
 
   before(function() {
@@ -16,7 +16,7 @@ Screw.Unit(function(c) { with(c) {
         throw new Error("Mock this function in spec");
       },
 
-      current_user_id_established: function() {
+      currentUserIdEstablished: function() {
         throw new Error("Mock this function in spec");
       }
     }

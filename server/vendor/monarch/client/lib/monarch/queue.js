@@ -1,12 +1,12 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Queue", {
-  constructor_initialize: function() {
+  constructorInitialize: function() {
     this.synchronous = false;
   },
 
-  initialize: function(segment_size, delay) {
-    this.segment_size = segment_size || 1;
+  initialize: function(segmentSize, delay) {
+    this.segmentSize = segmentSize || 1;
     this.delay = delay || 0;
     this.fns = [];
     this.started = false;
@@ -16,48 +16,48 @@ Monarch.constructor("Monarch.Queue", {
     this.fns.push(fn)
   },
 
-  add_time_critical: function(fn) {
-    fn.time_critical = true;
+  addTimeCritical: function(fn) {
+    fn.timeCritical = true;
     this.fns.push(fn)
   },
 
   start: function() {
     if (Monarch.Queue.synchronous) {
-      this.synchronous_start();
+      this.synchronousStart();
     } else {
-      this.asynchronous_start();
+      this.asynchronousStart();
     }
   },
 
-  synchronous_start: function() {
+  synchronousStart: function() {
     var fns = this.fns;
     while(fns.length > 0) {
       fns.shift()();
     }
   },
 
-  asynchronous_start: function() {
+  asynchronousStart: function() {
     if (this.started) return;
     var self = this;
     var delay = this.delay;
-    var segment_size = this.segment_size;
+    var segmentSize = this.segmentSize;
     var fns = this.fns;
 
-    var process_next_segment = function() {
-      for (var i = 0; i < segment_size && fns.length > 0; i++) {
+    var processNextSegment = function() {
+      for (var i = 0; i < segmentSize && fns.length > 0; i++) {
         var fn = fns.shift()
         fn();
-        if (fn.time_critical) break;
+        if (fn.timeCritical) break;
       }
       if (fns.length > 0) {
-        setTimeout(function() { process_next_segment(); }, delay);
+        setTimeout(function() { processNextSegment(); }, delay);
       } else {
         self.started = false;
       }
     };
 
     this.started = true;
-    process_next_segment();
+    processNextSegment();
   },
 
   clear: function() {

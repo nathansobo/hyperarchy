@@ -4,40 +4,40 @@ Monarch.constructor("Monarch.Model.RemoteFieldset", Monarch.Model.Fieldset, {
   initialize: function(record) {
     this.record = record;
     this.local = null;
-    this.initialize_fields();
-    this.batch_update_in_progress = false;
+    this.initializeFields();
+    this.batchUpdateInProgress = false;
   },
 
-  update: function(field_values) {
-    this.batched_updates = {};
+  update: function(fieldValues) {
+    this.batchedUpdates = {};
 
-    Monarch.Util.each(field_values, function(column_name, field_value) {
-      var field = this.field(column_name);
-      if (field) field.value(field_value);
+    Monarch.Util.each(fieldValues, function(columnName, fieldValue) {
+      var field = this.field(columnName);
+      if (field) field.value(fieldValue);
     }.bind(this));
 
-    var changeset = this.batched_updates;
-    this.batched_updates = null;
-    if (this.update_events_enabled && Monarch.Util.keys(changeset).length > 0) {
-      if (this.record.on_remote_update_node) this.record.on_remote_update_node.publish(changeset);
-      this.record.table.tuple_updated_remotely(this.record, changeset);
+    var changeset = this.batchedUpdates;
+    this.batchedUpdates = null;
+    if (this.updateEventsEnabled && Monarch.Util.keys(changeset).length > 0) {
+      if (this.record.onRemoteUpdateNode) this.record.onRemoteUpdateNode.publish(changeset);
+      this.record.table.tupleUpdatedRemotely(this.record, changeset);
     }
   },
 
-  field_updated: function(field, new_value, old_value) {
-    var change_data = {};
-    change_data[field.column.name] = {
+  fieldUpdated: function(field, newValue, oldValue) {
+    var changeData = {};
+    changeData[field.column.name] = {
       column: field.column,
-      old_value: old_value,
-      new_value: new_value
+      oldValue: oldValue,
+      newValue: newValue
     };
 
-    Monarch.Util.extend(this.batched_updates, change_data);
+    Monarch.Util.extend(this.batchedUpdates, changeData);
   },
 
   // private
 
-  create_new_field: function(column) {
+  createNewField: function(column) {
     return new Monarch.Model.RemoteField(this, column);
   }
 });

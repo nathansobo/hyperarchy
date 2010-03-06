@@ -2,10 +2,10 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Controllers.Application", function() {
-    use_fake_server();
-    use_remote_fixtures();
+    useFakeServer();
+    useRemoteFixtures();
 
-    var controller, mock_body;
+    var controller, mockBody;
     before(function() {
       controller = new Controllers.Application($("<div/>"));
     });
@@ -44,11 +44,11 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#current_user_id_established", function() {
-      it("assigns #current_user_id to the given id", function() {
-        expect(controller.current_user_id).to(be_null);
-        controller.current_user_id_established('billy');
-        expect(controller.current_user_id).to(equal, 'billy');
+    describe("#currentUserIdEstablished", function() {
+      it("assigns #currentUserId to the given id", function() {
+        expect(controller.currentUserId).to(beNull);
+        controller.currentUserIdEstablished('billy');
+        expect(controller.currentUserId).to(equal, 'billy');
       });
     });
   });

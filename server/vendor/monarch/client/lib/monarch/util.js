@@ -1,23 +1,23 @@
 (function(Monarch, jQuery) {
 
 Monarch.module("Monarch.Util", {
-  each: function(array_or_hash, fn) {
-    if (array_or_hash.length) {
-      this.array_each(array_or_hash, fn);
+  each: function(arrayOrHash, fn) {
+    if (arrayOrHash.length) {
+      this.arrayEach(arrayOrHash, fn);
     } else {
-      this.hash_each(array_or_hash, fn);
+      this.hashEach(arrayOrHash, fn);
     }
   },
 
-  detect: function(array_or_hash, fn) {
-    if (array_or_hash.length) {
-      return this.array_detect(array_or_hash, fn);
+  detect: function(arrayOrHash, fn) {
+    if (arrayOrHash.length) {
+      return this.arrayDetect(arrayOrHash, fn);
     } else {
-      return this.hash_detect(array_or_hash, fn);
+      return this.hashDetect(arrayOrHash, fn);
     }
   },
 
-  index_of: function(array, element) {
+  indexOf: function(array, element) {
     for(var i = 0; i < array.length; i++) {
       if (array[i] == element) return i;
     }
@@ -25,67 +25,67 @@ Monarch.module("Monarch.Util", {
   },
 
   contains: function(array, element) {
-    return this.index_of(array, element) != -1;
+    return this.indexOf(array, element) != -1;
   },
 
   map: function(array, fn) {
-    var new_array = [];
+    var newArray = [];
     this.each(array, function(element, index) {
-      new_array.push(fn.call(element, element, index));
+      newArray.push(fn.call(element, element, index));
     });
-    return new_array;
+    return newArray;
   },
 
-  to_array: function(arguments_object) {
-    return Array.prototype.slice.call(arguments_object, 0);
+  toArray: function(argumentsObject) {
+    return Array.prototype.slice.call(argumentsObject, 0);
   },
 
   remove: function(array, element) {
-    var record_index = array.indexOf(element);
-    if (record_index == -1) return null;
-    array.splice(record_index, 1);
+    var recordIndex = array.indexOf(element);
+    if (recordIndex == -1) return null;
+    array.splice(recordIndex, 1);
     return element;
   },
 
-  is_empty: function(array_or_hash) {
-    if (array_or_hash.length) {
-      return array_or_hash.length == 0;
+  isEmpty: function(arrayOrHash) {
+    if (arrayOrHash.length) {
+      return arrayOrHash.length == 0;
     } else {
-      return this.keys(array_or_hash).length == 0;
+      return this.keys(arrayOrHash).length == 0;
     }
   },
 
-  keys: function(hash, optional_each_function) {
+  keys: function(hash, optionalEachFunction) {
     var keys = [];
     for (key in hash) keys.push(key);
-    if (optional_each_function) {
-      Monarch.Util.each(keys, optional_each_function);
+    if (optionalEachFunction) {
+      Monarch.Util.each(keys, optionalEachFunction);
     }
     return keys;
   },
 
-  values: function(hash, optional_each_function) {
+  values: function(hash, optionalEachFunction) {
     var values = [];
     for (key in hash) values.push(hash[key]);
-    if (optional_each_function) {
-      Monarch.Util.each(values, optional_each_function);
+    if (optionalEachFunction) {
+      Monarch.Util.each(values, optionalEachFunction);
     }
     return values;
   },
 
-  all: function(array_or_hash, fn) {
-    if (array_or_hash.length) {
-      return this.array_all(array_or_hash, fn);
+  all: function(arrayOrHash, fn) {
+    if (arrayOrHash.length) {
+      return this.arrayAll(arrayOrHash, fn);
     } else {
-      return this.hash_all(array_or_hash, fn);
+      return this.hashAll(arrayOrHash, fn);
     }
   },
 
-  any: function(array_or_hash, fn) {
-    if (array_or_hash.length) {
-      return this.array_any(array_or_hash, fn);
+  any: function(arrayOrHash, fn) {
+    if (arrayOrHash.length) {
+      return this.arrayAny(arrayOrHash, fn);
     } else {
-      return this.hash_any(array_or_hash, fn);
+      return this.hashAny(arrayOrHash, fn);
     }
   },
 
@@ -102,11 +102,11 @@ Monarch.module("Monarch.Util", {
   },
 
   inject: function(array, init, fn) {
-    var current_val = init;
+    var currentVal = init;
     this.each(array, function(elt) {
-      current_val = fn(current_val, elt);
+      currentVal = fn(currentVal, elt);
     });
-    return current_val;
+    return currentVal;
   },
 
   trim: function(string) {
@@ -115,54 +115,54 @@ Monarch.module("Monarch.Util", {
 
   // private
 
-  array_each: function(array, fn) {
+  arrayEach: function(array, fn) {
     for(var i = 0; i < array.length; i++) {
       fn.call(array[i], array[i], i);
     }
   },
 
-  hash_each: function(hash, fn) {
+  hashEach: function(hash, fn) {
     for (key in hash) {
       fn.call(hash[key], key, hash[key]);
     }
   },
 
-  array_detect: function(array, fn) {
+  arrayDetect: function(array, fn) {
     for(var i = 0; i < array.length; i++) {
       if (fn.call(array[i], array[i])) return array[i];
     }
     return null;
   },
 
-  hash_detect: function(hash, fn) {
+  hashDetect: function(hash, fn) {
     for (key in hash) {
       if (fn.call(hash[key], key, hash[key])) return hash[key];
     }
     return null;
   },
   
-  array_all: function(array, fn) {
+  arrayAll: function(array, fn) {
     for(var i = 0; i < array.length; i++) {
       if (!fn(array[i])) return false;
     }
     return true;
   },
 
-  hash_all: function(hash, fn) {
+  hashAll: function(hash, fn) {
     for(var key in hash) {
       if (!fn(key, hash[key])) return false;
     }
     return true;
   },
 
-  array_any: function(array, fn) {
+  arrayAny: function(array, fn) {
     for(var i = 0; i < array.length; i++) {
       if (fn(array[i])) return true;
     }
     return false;
   },
 
-  hash_any: function(hash, fn) {
+  hashAny: function(hash, fn) {
     for(var key in hash) {
       if (fn(key, hash[key])) return true;
     }

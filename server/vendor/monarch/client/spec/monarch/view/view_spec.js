@@ -1,7 +1,7 @@
 //= require "../../monarch_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("Views constructed with Monarch.View.Template#to_view", function() {
+  describe("Views constructed with Monarch.View.Template#toView", function() {
     after(function() {
       delete window['TestTemplate'];
       delete window['SampleModel'];
@@ -28,10 +28,10 @@ Screw.Unit(function(c) { with(c) {
           }}
         });
 
-        view = TestTemplate.to_view();
+        view = TestTemplate.toView();
 
         Monarch.constructor("SampleModel", Monarch.Model.Record, {
-          constructor_initialize: function() {
+          constructorInitialize: function() {
             this.columns({
               foo: "string",
               bar: "string",
@@ -42,13 +42,13 @@ Screw.Unit(function(c) { with(c) {
         })
 
 
-        model = SampleModel.local_create({
+        model = SampleModel.localCreate({
           foo: "foo",
           bar: "bar",
           baz: true,
           quux: 3
         });
-        model.remotely_created({
+        model.remotelyCreated({
           foo: "foo",
           bar: "bar",
           baz: true,
@@ -56,9 +56,9 @@ Screw.Unit(function(c) { with(c) {
         });  
       });
 
-      describe("#field_values", function() {
+      describe("#fieldValues", function() {
         it("returns a hash of name value pairs for all input elements on the view", function() {
-          expect(view.field_values()).to(equal, {
+          expect(view.fieldValues()).to(equal, {
             foo: "Foo",
             bar: "Bar",
             baz: false,
@@ -66,13 +66,13 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        it("if a custom_field_values method is present, merges its results into the returned field_values", function() {
-          view.custom_field_values = function() {
+        it("if a customFieldValues method is present, merges its results into the returned fieldValues", function() {
+          view.customFieldValues = function() {
             return {
               corge: "hi there"
             }
           }
-          expect(view.field_values()).to(equal, {
+          expect(view.fieldValues()).to(equal, {
             foo: "Foo",
             bar: "Bar",
             baz: false,
@@ -95,11 +95,11 @@ Screw.Unit(function(c) { with(c) {
         });
 
         it("populates checkbox fields by calling methods on the given model corresponding to their names and keeps them updated as model changes", function() {
-          expect(view.baz.attr('checked')).to(be_false);
+          expect(view.baz.attr('checked')).to(beFalse);
           view.model(model);
-          expect(view.baz.attr('checked')).to(be_true);
+          expect(view.baz.attr('checked')).to(beTrue);
           model.update({baz: false});
-          expect(view.baz.attr('checked')).to(be_false);
+          expect(view.baz.attr('checked')).to(beFalse);
         });
         
         it("populates select fields by calling methods on the given model corresponding to their name and keeps them updated as model changes", function() {
@@ -110,35 +110,35 @@ Screw.Unit(function(c) { with(c) {
           expect(view.quux.val()).to(equal, '1');
         });
 
-        it("calls the .model_assigned hook if it's defined", function() {
-          view.model_assigned = mock_function("model_assigned");
+        it("calls the .modelAssigned hook if it's defined", function() {
+          view.modelAssigned = mockFunction("modelAssigned");
           view.model(model);
-          expect(view.model_assigned).to(have_been_called, with_args(model));
+          expect(view.modelAssigned).to(haveBeenCalled, withArgs(model));
         });
 
         it("cancels previous update subscriptions when a new model is assigned", function() {
           view.model(model);
-          view.model(SampleModel.local_create({foo: "new foo"}));
+          view.model(SampleModel.localCreate({foo: "new foo"}));
 
           expect(view.foo.val()).to(equal, 'new foo');
-          model.local_update({foo: "old model foo new value"});
+          model.localUpdate({foo: "old model foo new value"});
           expect(view.foo.val()).to(equal, 'new foo');
         });
       });
 
       describe("#save()", function() {
 
-        it("calls #update on #model with the results of #field_values", function() {
+        it("calls #update on #model with the results of #fieldValues", function() {
           mock(model, 'update');
           view.model(model);
           view.save();
-          expect(model.update).to(have_been_called, with_args(view.field_values()));
+          expect(model.update).to(haveBeenCalled, withArgs(view.fieldValues()));
         });
       });
     });
 
     describe("#show and #hide", function() {
-      var view, view_properties;
+      var view, viewProperties;
 
       before(function() {
         Monarch.ModuleSystem.constructor("TestTemplate", Monarch.View.Template, {
@@ -146,22 +146,22 @@ Screw.Unit(function(c) { with(c) {
             div("Hello");
           }},
 
-          view_properties: view_properties
+          viewProperties: viewProperties
         });
-        view = TestTemplate.to_view();
-        jQuery("#test_content").html(view);
+        view = TestTemplate.toView();
+        jQuery("#testContent").html(view);
       });
 
       after(function() {
-        jQuery("#test_content").html("");
+        jQuery("#testContent").html("");
       });
 
 
-      context("when #before_show is defined on the view", function() {
+      context("when #beforeShow is defined on the view", function() {
         init(function() {
-          view_properties = {
-            before_show: mock_function("before_show", function() {
-              expect(view.is(':visible')).to(be_false);
+          viewProperties = {
+            beforeShow: mockFunction("beforeShow", function() {
+              expect(view.is(':visible')).to(beFalse);
             })
           };
         });
@@ -169,62 +169,62 @@ Screw.Unit(function(c) { with(c) {
         it("calls it before showing the view", function() {
           view.hide();
 
-          expect(view.is(':visible')).to(be_false);
+          expect(view.is(':visible')).to(beFalse);
           view.show();
-          expect(view.is(':visible')).to(be_true);
-          expect(view.before_show).to(have_been_called);
+          expect(view.is(':visible')).to(beTrue);
+          expect(view.beforeShow).to(haveBeenCalled);
         });
       });
 
-      context("when #after_show is defined on the view", function() {
+      context("when #afterShow is defined on the view", function() {
         init(function() {
-          view_properties = {
-            after_show: mock_function("after_show", function() {
-              expect(view.is(':visible')).to(be_true);
+          viewProperties = {
+            afterShow: mockFunction("afterShow", function() {
+              expect(view.is(':visible')).to(beTrue);
             })
           };
         });
 
         it("calls it after showing the view", function() {
           view.hide();
-          expect(view.is(':visible')).to(be_false);
+          expect(view.is(':visible')).to(beFalse);
           view.show();
-          expect(view.is(':visible')).to(be_true);
-          expect(view.after_show).to(have_been_called);
+          expect(view.is(':visible')).to(beTrue);
+          expect(view.afterShow).to(haveBeenCalled);
         });
       });
 
-      context("when #before_hide is defined on the view", function() {
+      context("when #beforeHide is defined on the view", function() {
         init(function() {
-          view_properties = {
-            before_hide: mock_function("before_hide", function() {
-              expect(view.is(':visible')).to(be_true);
+          viewProperties = {
+            beforeHide: mockFunction("beforeHide", function() {
+              expect(view.is(':visible')).to(beTrue);
             })
           };
         });
 
         it("calls it before hiding the view", function() {
-          expect(view.is(':visible')).to(be_true);
+          expect(view.is(':visible')).to(beTrue);
           view.hide();
-          expect(view.before_hide).to(have_been_called);
-          expect(view.is(':visible')).to(be_false);
+          expect(view.beforeHide).to(haveBeenCalled);
+          expect(view.is(':visible')).to(beFalse);
         });
       });
 
-      context("when #before_hide is defined on the view", function() {
+      context("when #beforeHide is defined on the view", function() {
         init(function() {
-          view_properties = {
-            after_hide: mock_function("after_hide", function() {
-              expect(view.is(':visible')).to(be_false);
+          viewProperties = {
+            afterHide: mockFunction("afterHide", function() {
+              expect(view.is(':visible')).to(beFalse);
             })
           };
         });
 
         it("calls it before hiding the view", function() {
-          expect(view.is(':visible')).to(be_true);
+          expect(view.is(':visible')).to(beTrue);
           view.hide();
-          expect(view.is(':visible')).to(be_false);
-          expect(view.after_hide).to(have_been_called);
+          expect(view.is(':visible')).to(beFalse);
+          expect(view.afterHide).to(haveBeenCalled);
         });
       });
     });

@@ -12,8 +12,8 @@
 
 
 Monarch.module("Monarch.View", {
-  build: function(content_fn) {
-    return Monarch.View.Template.build(content_fn);
+  build: function(contentFn) {
+    return Monarch.View.Template.build(contentFn);
   }
 });
 

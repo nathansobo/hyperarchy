@@ -1,57 +1,57 @@
 constructor("Views.Organization", View.Template, {
   content: function() { with(this.builder) {
-    div({id: "organization", 'class': "container_12"}, function() {
-      div({id: "header", 'class': "grid_12"}, function() {
-        div({'class': "grid_2 alpha"}, function() {
+    div({id: "organization", 'class': "container12"}, function() {
+      div({id: "header", 'class': "grid12"}, function() {
+        div({'class': "grid2 alpha"}, function() {
           h1({id: "title"}, "hyperarchy");
         });
-        div({'class': "grid_2 prefix_8 omega"}, function() {
+        div({'class': "grid2 prefix8 omega"}, function() {
           span("organization:");
           select()
             .change(function(view) {
-              view.organization_changed();
+              view.organizationChanged();
             })
-            .ref("organization_select");
+            .ref("organizationSelect");
         });
       });
 
-      div({'class': "grid_4"}, function() {
-        subview('elections_view', Views.Elections)
+      div({'class': "grid4"}, function() {
+        subview('electionsView', Views.Elections)
       });
 
-      div({'class': "grid_4"}, function() {
-        subview('ranking_view', Views.Ranking);
+      div({'class': "grid4"}, function() {
+        subview('rankingView', Views.Ranking);
       });
 
-      div({'class': "grid_4"}, function() {
-        subview('candidates_view', Views.Candidates);
+      div({'class': "grid4"}, function() {
+        subview('candidatesView', Views.Candidates);
       });
     });
   }},
 
-  view_properties: {
+  viewProperties: {
     initialize: function() {
       var self = this;
-      this.elections_view.candidates_view = this.candidates_view;
+      this.electionsView.candidatesView = this.candidatesView;
 
       Organization.fetch()
-        .after_events(function() {
+        .afterEvents(function() {
           Organization.each(function(organization) {
-            self.organization_select.append_view(function(b) {
+            self.organizationSelect.appendView(function(b) {
               b.option({value: organization.id()}, organization.name());
             });
           });
-          self.organization_changed();  
+          self.organizationChanged();  
         });
     },
 
-    selected_organization: function() {
-      return Organization.find(this.organization_select.val());
+    selectedOrganization: function() {
+      return Organization.find(this.organizationSelect.val());
     },
 
-    organization_changed: function() {
+    organizationChanged: function() {
       var self = this;
-      this.elections_view.elections(this.selected_organization().elections());
+      this.electionsView.elections(this.selectedOrganization().elections());
     }
   }
 });

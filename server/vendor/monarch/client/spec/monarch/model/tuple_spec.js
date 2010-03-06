@@ -2,14 +2,14 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Tuple", function() {
-    use_local_fixtures();
+    useLocalFixtures();
     
-    describe("#hash_code()", function() {
+    describe("#hashCode()", function() {
       var relation;
       before(function() {
       });
 
-      var a_projection, b_projection;
+      var aProjection, bProjection;
 
       before(function() {
         Monarch.ModuleSystem.constructor("A", Monarch.Model.Record);
@@ -19,8 +19,8 @@ Screw.Unit(function(c) { with(c) {
         A.create({ a: '1', b: '2', c: '3', d: '4' });
         B.create({ a: '1', b: '2', c: '3', d: '4' });
 
-        a_projection = A.project(A.a, A.b, A.d);
-        b_projection = B.project(B.a, B.b, B.d);
+        aProjection = A.project(A.a, A.b, A.d);
+        bProjection = B.project(B.a, B.b, B.d);
       });
 
       after(function() {
@@ -31,7 +31,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       it("returns an md5 digest of a canonical ordering of its column-value pairs", function() {
-        expect(a_projection.first().hash_code()).to(equal, b_projection.first().hash_code());
+        expect(aProjection.first().hashCode()).to(equal, bProjection.first().hashCode());
       });
     });
   });

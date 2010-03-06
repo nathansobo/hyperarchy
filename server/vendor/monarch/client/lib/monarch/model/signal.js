@@ -1,33 +1,33 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Signal", {
-  initialize: function(local_field, remote_field, optional_transformer) {
-    this.local_field = local_field;
-    this.remote_field = remote_field;
-    this.transformer = optional_transformer;
+  initialize: function(localField, remoteField, optionalTransformer) {
+    this.localField = localField;
+    this.remoteField = remoteField;
+    this.transformer = optionalTransformer;
 
-    this.on_local_update_node = new Monarch.SubscriptionNode();
-    this.on_remote_update_node = new Monarch.SubscriptionNode();
+    this.onLocalUpdateNode = new Monarch.SubscriptionNode();
+    this.onRemoteUpdateNode = new Monarch.SubscriptionNode();
 
-    this.local_field.on_update(function(new_value, old_value) {
+    this.localField.onUpdate(function(newValue, oldValue) {
       if (this.transformer) {
-        new_value = this.transformer(new_value);
-        old_value = this.transformer(old_value);
+        newValue = this.transformer(newValue);
+        oldValue = this.transformer(oldValue);
       }
-      this.on_local_update_node.publish(new_value, old_value);
+      this.onLocalUpdateNode.publish(newValue, oldValue);
     }.bind(this));
 
-    this.remote_field.on_update(function(new_value, old_value) {
+    this.remoteField.onUpdate(function(newValue, oldValue) {
       if (this.transformer) {
-        new_value = this.transformer(new_value);
-        old_value = this.transformer(old_value);
+        newValue = this.transformer(newValue);
+        oldValue = this.transformer(oldValue);
       }
-      this.on_remote_update_node.publish(new_value, old_value);
+      this.onRemoteUpdateNode.publish(newValue, oldValue);
     }.bind(this));
   },
 
-  local_value: function() {
-    var value = this.local_field.value();
+  localValue: function() {
+    var value = this.localField.value();
     if (this.transformer) {
       return this.transformer(value);
     } else {
@@ -35,8 +35,8 @@ Monarch.constructor("Monarch.Model.Signal", {
     }
   },
 
-  remote_value: function() {
-    var value = this.remote_field.value();
+  remoteValue: function() {
+    var value = this.remoteField.value();
     if (this.transformer) {
       return this.transformer(value);
     } else {
@@ -44,16 +44,16 @@ Monarch.constructor("Monarch.Model.Signal", {
     }
   },
 
-  on_local_update: function(callback) {
-    return this.on_local_update_node.subscribe(callback);
+  onLocalUpdate: function(callback) {
+    return this.onLocalUpdateNode.subscribe(callback);
   },
 
-  on_remote_update: function(callback) {
-    return this.on_remote_update_node.subscribe(callback);
+  onRemoteUpdate: function(callback) {
+    return this.onRemoteUpdateNode.subscribe(callback);
   },
 
-  combine: function(other_signal, transformer) {
-    return new Monarch.Model.CombinedSignal(this, other_signal, transformer);
+  combine: function(otherSignal, transformer) {
+    return new Monarch.Model.CombinedSignal(this, otherSignal, transformer);
   }
 });
 

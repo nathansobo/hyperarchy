@@ -1,1 +1,1 @@
-//require "dependency_2"
+//require "dependency2"

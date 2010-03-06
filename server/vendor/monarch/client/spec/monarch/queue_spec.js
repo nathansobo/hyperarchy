@@ -2,62 +2,62 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Queue", function() {
-    var queue, fn_1, fn_2, fn_3;
+    var queue, fn1, fn2, fn3;
 
     before(function() {
       Monarch.Queue.synchronous = false;
       mock(window, 'setTimeout');
       queue = new Monarch.Queue(2, 2);
 
-      fn_1 = mock_function('fn 1');
-      fn_2 = mock_function('fn 2');
-      fn_3 = mock_function('fn 3');
+      fn1 = mockFunction('fn 1');
+      fn2 = mockFunction('fn 2');
+      fn3 = mockFunction('fn 3');
     });
 
     describe("#start", function() {
       before(function() {
-        queue.add(fn_1);
-        queue.add(fn_2);
-        queue.add(fn_3);
+        queue.add(fn1);
+        queue.add(fn2);
+        queue.add(fn3);
       });
 
       context("when the Monarch.Queue has not yet started", function() {
-        it("processes each enqueued function, separating segments (based on #segment_size) with a setTimeout delay (based on #delay)", function() {
+        it("processes each enqueued function, separating segments (based on #segmentSize) with a setTimeout delay (based on #delay)", function() {
           queue.start();
-          expect(queue.started).to(be_true);
+          expect(queue.started).to(beTrue);
           
-          expect(fn_1).to(have_been_called, once);
-          expect(fn_2).to(have_been_called, once);
+          expect(fn1).to(haveBeenCalled, once);
+          expect(fn2).to(haveBeenCalled, once);
 
-          expect(fn_3).to_not(have_been_called);
+          expect(fn3).toNot(haveBeenCalled);
 
-          expect(window.setTimeout).to(have_been_called, once);
-          expect(window.setTimeout.most_recent_args[1]).to(equal, 2);
+          expect(window.setTimeout).to(haveBeenCalled, once);
+          expect(window.setTimeout.mostRecentArgs[1]).to(equal, 2);
 
-          window.setTimeout.most_recent_args[0]();
+          window.setTimeout.mostRecentArgs[0]();
 
-          expect(fn_3).to(have_been_called);
-          expect(queue.started).to(be_false);
+          expect(fn3).to(haveBeenCalled);
+          expect(queue.started).to(beFalse);
         });
       });
 
       context("when the Monarch.Queue has already been started", function() {
         it("does not start it again", function() {
           queue.start();
-          expect(queue.started).to(be_true);
+          expect(queue.started).to(beTrue);
 
-          expect(fn_1).to(have_been_called, once);
-          expect(fn_2).to(have_been_called, once);
+          expect(fn1).to(haveBeenCalled, once);
+          expect(fn2).to(haveBeenCalled, once);
 
-          expect(fn_3).to_not(have_been_called);
-          expect(window.setTimeout).to(have_been_called, once);
+          expect(fn3).toNot(haveBeenCalled);
+          expect(window.setTimeout).to(haveBeenCalled, once);
 
           // starting a second time does not add another setTimeout
           queue.start();
-          expect(window.setTimeout).to(have_been_called, once);
+          expect(window.setTimeout).to(haveBeenCalled, once);
 
-          window.setTimeout.most_recent_args[0]();
-          expect(fn_3).to(have_been_called, once);
+          window.setTimeout.mostRecentArgs[0]();
+          expect(fn3).to(haveBeenCalled, once);
         });
       });
 
@@ -68,58 +68,58 @@ Screw.Unit(function(c) { with(c) {
 
         it("does not call setTimeout between segments", function() {
           queue.start();
-          expect(fn_1).to(have_been_called, once);
-          expect(fn_2).to(have_been_called, once);
-          expect(fn_3).to(have_been_called, once);
-          expect(window.setTimeout).to_not(have_been_called);
+          expect(fn1).to(haveBeenCalled, once);
+          expect(fn2).to(haveBeenCalled, once);
+          expect(fn3).to(haveBeenCalled, once);
+          expect(window.setTimeout).toNot(haveBeenCalled);
         });
       });
     });
 
     describe("#clear", function() {
       before(function() {
-        queue.add(fn_1);
-        queue.add(fn_2);
-        queue.add(fn_3);
+        queue.add(fn1);
+        queue.add(fn2);
+        queue.add(fn3);
       });
 
       it("stops empties the queue, stopping it from processing any remaining functions added before the call to #clear", function() {
         queue.start();
-        expect(fn_1).to(have_been_called, once);
-        expect(fn_2).to(have_been_called, once);
-        expect(fn_3).to_not(have_been_called);
+        expect(fn1).to(haveBeenCalled, once);
+        expect(fn2).to(haveBeenCalled, once);
+        expect(fn3).toNot(haveBeenCalled);
 
         // simulate a clear and add called in the pause between segments
         queue.clear();
-        var fn_4 = mock_function("fn 4");
-        queue.add(fn_4)
+        var fn4 = mockFunction("fn 4");
+        queue.add(fn4)
 
-        window.setTimeout.most_recent_args[0]();
+        window.setTimeout.mostRecentArgs[0]();
 
         // the function added after the clear is still called
-        expect(fn_3).to_not(have_been_called);
-        expect(fn_4).to(have_been_called, once);
+        expect(fn3).toNot(haveBeenCalled);
+        expect(fn4).to(haveBeenCalled, once);
 
-        fn_4.clear();
+        fn4.clear();
         queue.start();
-        expect(fn_4).to_not(have_been_called);
+        expect(fn4).toNot(haveBeenCalled);
       });
     });
 
-    describe("#add_time_critical", function() {
+    describe("#addTimeCritical", function() {
       it("causes the Monarch.Queue to yield immediately after executing the added function", function() {
-        queue.add_time_critical(fn_1);
-        queue.add(fn_2);
-        queue.add(fn_3);
+        queue.addTimeCritical(fn1);
+        queue.add(fn2);
+        queue.add(fn3);
 
         queue.start();
-        expect(fn_1).to(have_been_called, once);
-        expect(fn_2).to_not(have_been_called);
+        expect(fn1).to(haveBeenCalled, once);
+        expect(fn2).toNot(haveBeenCalled);
 
-        window.setTimeout.most_recent_args[0]();
-        expect(fn_2).to(have_been_called, once);
-        expect(fn_3).to(have_been_called, once);
-        expect(queue.started).to(be_false);
+        window.setTimeout.mostRecentArgs[0]();
+        expect(fn2).to(haveBeenCalled, once);
+        expect(fn3).to(haveBeenCalled, once);
+        expect(queue.started).to(beFalse);
       });
     });
   });

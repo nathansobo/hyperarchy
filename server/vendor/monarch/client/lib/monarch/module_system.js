@@ -12,19 +12,19 @@ Monarch.module = function() {
 
 Monarch.ModuleSystem = {
   constructor: function() {
-    var constructor_basename, containing_module;
-    var args = this.extract_constructor_arguments(arguments);
+    var constructorBasename, containingModule;
+    var args = this.extractConstructorArguments(arguments);
 
-    if (args.qualified_constructor_name) {
-      constructor_basename = args.qualified_constructor_name.split(".").pop();
-      containing_module = this.create_module_containing_constructor(args.qualified_constructor_name);
+    if (args.qualifiedConstructorName) {
+      constructorBasename = args.qualifiedConstructorName.split(".").pop();
+      containingModule = this.createModuleContainingConstructor(args.qualifiedConstructorName);
     }
 
     var constructor = function() {
-      if (this.initialize && !constructor.__initialize_disabled__) this.initialize.apply(this, arguments);
+      if (this.initialize && !constructor._initializeDisabled_) this.initialize.apply(this, arguments);
     }
 
-    if (constructor_basename) constructor.basename = constructor_basename;
+    if (constructorBasename) constructor.basename = constructorBasename;
 
     if (args.superconstructor) {
       this.extend(args.superconstructor, constructor);
@@ -32,20 +32,20 @@ Monarch.ModuleSystem = {
       this.extend(Monarch.ModuleSystem.Object, constructor);
     }
 
-    for(var i = 0; i < args.mixin_modules.length; i++) {
-      this.mixin(constructor.prototype, args.mixin_modules[i]);
+    for(var i = 0; i < args.mixinModules.length; i++) {
+      this.mixin(constructor.prototype, args.mixinModules[i]);
     }
 
-    if (constructor.prototype.constructor_initialize) {
-      if (!constructor.prototype.constructor_properties) constructor.prototype.constructor_properties = {};
-      constructor.prototype.constructor_properties.initialize = constructor.prototype.constructor_initialize;
-      delete constructor.prototype.constructor_initialize;
+    if (constructor.prototype.constructorInitialize) {
+      if (!constructor.prototype.constructorProperties) constructor.prototype.constructorProperties = {};
+      constructor.prototype.constructorProperties.initialize = constructor.prototype.constructorInitialize;
+      delete constructor.prototype.constructorInitialize;
     }
-    if (constructor.prototype.constructor_properties) {
-      this.mixin(constructor, constructor.prototype.constructor_properties);
+    if (constructor.prototype.constructorProperties) {
+      this.mixin(constructor, constructor.prototype.constructorProperties);
     }
 
-    if (constructor_basename) containing_module[constructor_basename] = constructor;
+    if (constructorBasename) containingModule[constructorBasename] = constructor;
 
     if (args.superconstructor && args.superconstructor.extended) args.superconstructor.extended(constructor);
     if (constructor.initialize) constructor.initialize();
@@ -53,26 +53,26 @@ Monarch.ModuleSystem = {
     return constructor;
   },
 
-  module: function(qualified_module_name, properties) {
-    var module = this.create_module_path(qualified_module_name.split("."));
+  module: function(qualifiedModuleName, properties) {
+    var module = this.createModulePath(qualifiedModuleName.split("."));
     this.mixin(module, properties);
     return module;
   },
 
   extend: function(superconstructor, subconstructor) {
-    var original_subconstructor_prototype = subconstructor.prototype;
+    var originalSubconstructorPrototype = subconstructor.prototype;
     try {
-      superconstructor.__initialize_disabled__ = true;
+      superconstructor._initializeDisabled_ = true;
       subconstructor.prototype = new superconstructor();
     } finally {
-      superconstructor.__initialize_disabled__ = false;
+      superconstructor._initializeDisabled_ = false;
     }
 
-    if (superconstructor.prototype.constructor_properties) {
-      subconstructor.prototype.constructor_properties = this.clone(superconstructor.prototype.constructor_properties);
+    if (superconstructor.prototype.constructorProperties) {
+      subconstructor.prototype.constructorProperties = this.clone(superconstructor.prototype.constructorProperties);
     }
     subconstructor.prototype.constructor = subconstructor;
-    this.mixin(subconstructor.prototype, original_subconstructor_prototype);
+    this.mixin(subconstructor.prototype, originalSubconstructorPrototype);
     return subconstructor;
   },
 
@@ -83,8 +83,8 @@ Monarch.ModuleSystem = {
   mixin: function(target, module) {
     for (var prop in module) {
       if (prop == "constructor") continue;
-      if (prop == "constructor_properties" && target.constructor_properties) {
-        this.mixin(target.constructor_properties, module.constructor_properties);
+      if (prop == "constructorProperties" && target.constructorProperties) {
+        this.mixin(target.constructorProperties, module.constructorProperties);
         continue;
       }
       target[prop] = module[prop];
@@ -92,40 +92,40 @@ Monarch.ModuleSystem = {
     return target;
   },
 
-  create_module_containing_constructor: function(qualified_constructor_name) {
-    var qualified_constructor_path = qualified_constructor_name.split(".");
-    var containing_module_path = qualified_constructor_path.slice(0, qualified_constructor_path.length - 1);
-    return this.create_module_path(containing_module_path);
+  createModuleContainingConstructor: function(qualifiedConstructorName) {
+    var qualifiedConstructorPath = qualifiedConstructorName.split(".");
+    var containingModulePath = qualifiedConstructorPath.slice(0, qualifiedConstructorPath.length - 1);
+    return this.createModulePath(containingModulePath);
   },
 
-  create_module_path: function(path) {
-    var current_module = window;
+  createModulePath: function(path) {
+    var currentModule = window;
     for (var i = 0; i < path.length; ++i) {
-      var path_fragment = path[i];
-      if (!current_module[path_fragment]) current_module[path_fragment] = {};
-      current_module = current_module[path_fragment];
+      var pathFragment = path[i];
+      if (!currentModule[pathFragment]) currentModule[pathFragment] = {};
+      currentModule = currentModule[pathFragment];
     }
-    return current_module;
+    return currentModule;
   },
 
-  extract_constructor_arguments: function(args) {
+  extractConstructorArguments: function(args) {
     var args = Array.prototype.slice.call(args, 0);
 
-    var constructor_arguments = {
-      mixin_modules: []
+    var constructorArguments = {
+      mixinModules: []
     };
 
     for(var i = 0; i < args.length; i++) {
-      var current_arg = args[i];
-      if (typeof current_arg == "string") {
-        constructor_arguments.qualified_constructor_name = current_arg;
-      } else if (typeof current_arg == "function") {
-        constructor_arguments.superconstructor = current_arg;
+      var currentArg = args[i];
+      if (typeof currentArg == "string") {
+        constructorArguments.qualifiedConstructorName = currentArg;
+      } else if (typeof currentArg == "function") {
+        constructorArguments.superconstructor = currentArg;
       } else {
-        constructor_arguments.mixin_modules.push(current_arg);
+        constructorArguments.mixinModules.push(currentArg);
       }
     }
-    return constructor_arguments;
+    return constructorArguments;
   }
 };
 

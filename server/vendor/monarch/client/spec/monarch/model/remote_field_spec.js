@@ -2,37 +2,37 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.RemoteField", function() {
-    use_local_fixtures();
+    useLocalFixtures();
 
-    var record, remote_field;
+    var record, remoteField;
     init(function() {
       record = User.find('jan');
-      remote_field = record.remote.field('full_name');
+      remoteField = record.remote.field('fullName');
     });
 
     describe("when the #value is updated", function() {
-      var update_callback, old_value;
+      var updateCallback, oldValue;
 
       before(function() {
-        update_callback = mock_function("update callback");
-        remote_field.on_update(update_callback);
-        old_value = remote_field.value();
-        remote_field.value("Barbie");
+        updateCallback = mockFunction("update callback");
+        remoteField.onUpdate(updateCallback);
+        oldValue = remoteField.value();
+        remoteField.value("Barbie");
       });
 
       context("if update events are enabled on the Field's record", function() {
-        it("triggers #on_remote_update callbacks with the new and old value", function() {
-          expect(update_callback).to(have_been_called, with_args("Barbie", old_value));
+        it("triggers #onRemoteUpdate callbacks with the new and old value", function() {
+          expect(updateCallback).to(haveBeenCalled, withArgs("Barbie", oldValue));
         });
       });
 
 //      context("if update events are disabled on the Field's Fieldset", function() {
 //        init(function() {
-//          record.remote.disable_update_events();
+//          record.remote.disableUpdateEvents();
 //        });
 //
-//        it("does not trigger #on_remote_update callbacks with the new and old value", function() {
-//          expect(update_callback).to_not(have_been_called);
+//        it("does not trigger #onRemoteUpdate callbacks with the new and old value", function() {
+//          expect(updateCallback).toNot(haveBeenCalled);
 //        });
 //      });
     });

@@ -1,41 +1,41 @@
 (function(Monarch, jQuery) {
 
 Monarch.constructor("Monarch.View.Template", {
-  constructor_properties: {
-    build: function(content_fn) {
+  constructorProperties: {
+    build: function(contentFn) {
       var template = new this();
       template.content = function() {
-        content_fn.call(this, this.builder);
+        contentFn.call(this, this.builder);
       }
-      return template.to_view();
+      return template.toView();
     },
 
-    to_view: function(properties) {
-      return new this().to_view(properties);
+    toView: function(properties) {
+      return new this().toView(properties);
     },
 
     extended: function(subtemplate) {
-      var superconstructor_view_properties = this.prototype.view_properties || {};
-      var subconstructor_view_properties = subtemplate.prototype.view_properties || {};
-      subtemplate.prototype.view_properties = jQuery.extend({}, superconstructor_view_properties, subconstructor_view_properties);
+      var superconstructorViewProperties = this.prototype.viewProperties || {};
+      var subconstructorViewProperties = subtemplate.prototype.viewProperties || {};
+      subtemplate.prototype.viewProperties = jQuery.extend({}, superconstructorViewProperties, subconstructorViewProperties);
     }
   },
 
-  to_view: function(properties) {
+  toView: function(properties) {
     var builder = new Monarch.View.Builder(this);
     this.builder = builder;
     this.content(properties);
     this.builder = null;
 
-    var view_properties = { template: this };
-    Monarch.ModuleSystem.mixin(view_properties, this.default_view_properties);
-    if (this.view_properties) Monarch.ModuleSystem.mixin(view_properties, this.view_properties);
-    if (properties) Monarch.ModuleSystem.mixin(view_properties, properties);
-    return builder.to_view(view_properties);
+    var viewProperties = { template: this };
+    Monarch.ModuleSystem.mixin(viewProperties, this.defaultViewProperties);
+    if (this.viewProperties) Monarch.ModuleSystem.mixin(viewProperties, this.viewProperties);
+    if (properties) Monarch.ModuleSystem.mixin(viewProperties, properties);
+    return builder.toView(viewProperties);
   },
 
-  default_view_properties: {
-    field_values: function() {
+  defaultViewProperties: {
+    fieldValues: function() {
       var values = {};
       this.find("input,select").each(function() {
         var elt = jQuery(this);
@@ -48,130 +48,130 @@ Monarch.constructor("Monarch.View.Template", {
         }
       });
 
-      if (this.custom_field_values) {
-        jQuery.extend(values, this.custom_field_values());
+      if (this.customFieldValues) {
+        jQuery.extend(values, this.customFieldValues());
       }
 
       return values;
     },
 
     show: function() {
-      if (this.before_show) this.before_show();
+      if (this.beforeShow) this.beforeShow();
       this._show();
-      if (this.after_show) this.after_show();
+      if (this.afterShow) this.afterShow();
     },
 
     hide: function() {
-      if (this.before_hide) this.before_hide();
+      if (this.beforeHide) this.beforeHide();
       this._hide();
-      if (this.after_hide) this.after_hide();
+      if (this.afterHide) this.afterHide();
     },
 
     model: function(model) {
-      if (arguments.length == 0) return this._model;
-      this._model = model;
-      this.populate_form_fields();
-      if (this.update_subscription) {
-        this.update_subscription.destroy();
-        this.update_subscription = null;
+      if (arguments.length == 0) return this.Model;
+      this.Model = model;
+      this.populateFormFields();
+      if (this.updateSubscription) {
+        this.updateSubscription.destroy();
+        this.updateSubscription = null;
       }
 
-      if (model) this.subscribe_to_model_updates();
-      if (this.model_assigned) this.model_assigned(model);
+      if (model) this.subscribeToModelUpdates();
+      if (this.modelAssigned) this.modelAssigned(model);
     },
 
-    subscribe_to_model_updates: function() {
+    subscribeToModelUpdates: function() {
       var self = this;
-      this.update_subscription = this._model.on_remote_update(function(changeset) {
-        Monarch.Util.each(changeset, function(field_name, changes) {
-          self.handle_model_field_update(field_name, changes);
+      this.updateSubscription = this.Model.onRemoteUpdate(function(changeset) {
+        Monarch.Util.each(changeset, function(fieldName, changes) {
+          self.handleModelFieldUpdate(fieldName, changes);
         });
       });
     },
 
-    handle_model_field_update: function(field_name, changes) {
-      var element = this.find("[name='" + field_name + "']");
+    handleModelFieldUpdate: function(fieldName, changes) {
+      var element = this.find("[name='" + fieldName + "']");
       if (!element) return;
 
       if (element.attr('type') == "checkbox") {
-        this.populate_checkbox_field(element, changes.new_value);
+        this.populateCheckboxField(element, changes.newValue);
       } else {
-        element.val(changes.new_value);
+        element.val(changes.newValue);
       }
     },
 
-    populate_form_fields: function() {
-      this.populate_text_fields();
-      this.populate_checkbox_fields();
-      this.populate_select_fields();
+    populateFormFields: function() {
+      this.populateTextFields();
+      this.populateCheckboxFields();
+      this.populateSelectFields();
     },
 
-    observe_form_fields: function() {
-      var assign_field_value = function(name, value) {
+    observeFormFields: function() {
+      var assignFieldValue = function(name, value) {
         if (!(this.model() && name && this.model()[name])) return;
         this.model()[name](value);
       }.bind(this)
 
       this.find("input:text").keyup(function() {
         var elt = $(this);
-        assign_field_value(elt.attr('name'), elt.val());
+        assignFieldValue(elt.attr('name'), elt.val());
       });
       
       this.find("select").change(function() {
         var elt = $(this);
-        assign_field_value(elt.attr('name'), elt.val());
+        assignFieldValue(elt.attr('name'), elt.val());
       });
 
       this.find("input:checkbox").change(function() {
         var elt = $(this);
-        assign_field_value(elt.attr('name'), elt.attr('checked'));
+        assignFieldValue(elt.attr('name'), elt.attr('checked'));
       });
     },
 
     save: function() {
-      if (this.model()) return this.model().update(this.field_values());
+      if (this.model()) return this.model().update(this.fieldValues());
     },
 
-    populate_text_fields: function() {
+    populateTextFields: function() {
       var self = this;
       var model = this.model();
       this.find("input:text").each(function() {
         var elt = jQuery(this);
-        var field_name = elt.attr('name');
-        if (model[field_name]) {
-          elt.val(model[field_name].call(model) || "");
+        var fieldName = elt.attr('name');
+        if (model[fieldName]) {
+          elt.val(model[fieldName].call(model) || "");
         } else {
           elt.val("");
         }
       });
     },
 
-    populate_checkbox_fields: function() {
+    populateCheckboxFields: function() {
       var self = this;
       var model = this.model();
       this.find("input:checkbox").each(function() {
         var elt = jQuery(this);
-        var field_name = elt.attr('name');
-        if (model[field_name]) {
-          self.populate_checkbox_field(elt, model[field_name].call(model));
+        var fieldName = elt.attr('name');
+        if (model[fieldName]) {
+          self.populateCheckboxField(elt, model[fieldName].call(model));
         } else {
-          self.populate_checkbox_field(elt, false);
+          self.populateCheckboxField(elt, false);
         }
       });
     },
 
-    populate_checkbox_field: function(element, new_value) {
-      element.attr('checked', new_value);
+    populateCheckboxField: function(element, newValue) {
+      element.attr('checked', newValue);
     },
 
-    populate_select_fields: function() {
+    populateSelectFields: function() {
       var self = this;
       var model = this.model();
       this.find("select").each(function() {
         var elt = jQuery(this);
-        var field_name = elt.attr('name');
-        if (model[field_name]) {
-          elt.val(model[field_name].call(model) || "");
+        var fieldName = elt.attr('name');
+        if (model[fieldName]) {
+          elt.val(model[fieldName].call(model) || "");
         }
       });
     },

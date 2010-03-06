@@ -7,8 +7,8 @@ Monarch.constructor("Monarch.Model.Column", {
     this.type = type;
   },
 
-  eq: function(right_operand) {
-    return new Monarch.Model.Predicates.Eq(this, right_operand);
+  eq: function(rightOperand) {
+    return new Monarch.Model.Predicates.Eq(this, rightOperand);
   },
 
   asc: function() {
@@ -19,15 +19,15 @@ Monarch.constructor("Monarch.Model.Column", {
     return new Monarch.Model.OrderByColumn(this, 'desc');
   },
 
-  wire_representation: function() {
+  wireRepresentation: function() {
     return {
       type: "column",
-      table: this.table.global_name,
+      table: this.table.globalName,
       name: this.name
     };
   },
 
-  convert_value_for_field: function(value) {
+  convertValueForField: function(value) {
     if (this.type == "datetime" && value && typeof value == "number") {
       return new Date(value);
     } else {
@@ -35,7 +35,7 @@ Monarch.constructor("Monarch.Model.Column", {
     }
   },
 
-  convert_value_for_wire: function(value) {
+  convertValueForWire: function(value) {
     if (this.type == "datetime" && value) {
       return value.getTime();
     } else {
@@ -43,8 +43,8 @@ Monarch.constructor("Monarch.Model.Column", {
     }
   },
 
-  as: function(column_alias) {
-    return new Monarch.Model.ProjectedColumn(this, column_alias);
+  as: function(columnAlias) {
+    return new Monarch.Model.ProjectedColumn(this, columnAlias);
   }
 });
 
