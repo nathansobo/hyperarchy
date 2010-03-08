@@ -21,7 +21,7 @@ Monarch.constructor("Monarch.Model.Predicates.And", Monarch.Model.Predicates.Pre
   },
 
   forceMatchingFieldValues: function(fieldValues) {
-    return Monarch.Util.inject(this.operands, fieldValues, function(accumulatedFieldValues, operand) {
+    return _.inject(this.operands, fieldValues, function(accumulatedFieldValues, operand) {
       return operand.forceMatchingFieldValues(accumulatedFieldValues);
     });
   }

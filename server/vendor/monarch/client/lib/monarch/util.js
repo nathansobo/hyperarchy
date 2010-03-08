@@ -66,14 +66,6 @@ Monarch.module("Monarch.Util", {
     return jQuery.extend.apply(jQuery, arguments);
   },
 
-  inject: function(array, init, fn) {
-    var currentVal = init;
-    _.each(array, function(elt) {
-      currentVal = fn(currentVal, elt);
-    });
-    return currentVal;
-  },
-
   trim: function(string) {
     return jQuery.trim(string);
   },
