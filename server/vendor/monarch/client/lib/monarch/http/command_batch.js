@@ -36,7 +36,7 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
 
   handleSuccessfulResponse: function(responseData) {
     Repository.pauseEvents();
-    Monarch.Util.each(this.commands, function(command, index) {
+    _.each(this.commands, function(command, index) {
       command.complete(responseData.primary[index]);
     }.bind(this));
     Repository.mutate(responseData.secondary);
@@ -46,7 +46,7 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
   },
 
   handleUnsuccessfulResponse: function(responseData) {
-    Monarch.Util.each(this.commands, function(command, index) {
+    _.each(this.commands, function(command, index) {
       if (index == responseData.index) {
         command.handleFailure(responseData.errors);
         this.future.triggerOnFailure(command.record);

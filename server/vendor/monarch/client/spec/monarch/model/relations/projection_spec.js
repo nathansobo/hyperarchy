@@ -20,7 +20,7 @@ Screw.Unit(function(c) { with(c) {
         expect(projectionTuples).toNot(beEmpty);
         expect(projectionTuples.length).to(equal, operandTuples.length);
 
-        Monarch.Util.each(operand.tuples(), function(operandRecord, index) {
+        _.each(operand.tuples(), function(operandRecord, index) {
           var projectionRecord = projectionTuples[index];
           expect(projectionRecord.userId()).to(equal, operandRecord.userId());
           expect(projectionRecord.field(projection.column('blogName')).value()).to(equal, operandRecord.name());

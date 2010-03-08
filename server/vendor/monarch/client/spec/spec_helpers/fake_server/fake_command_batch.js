@@ -40,7 +40,7 @@ Monarch.constructor("FakeServer.FakeCommandBatch", {
 
     Repository.pauseEvents();
 
-    Monarch.Util.each(this.commands, function(command, index) {
+    _.each(this.commands, function(command, index) {
       command.complete(serverResponse.primary[index]);
     });
     Repository.mutate(serverResponse.secondary)

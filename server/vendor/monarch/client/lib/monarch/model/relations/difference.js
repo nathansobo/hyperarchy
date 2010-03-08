@@ -29,7 +29,7 @@ Monarch.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relation
 
     var rightIndex = 0;
 
-    Monarch.Util.each(leftTuples, function(leftRecord, index) {
+    _.each(leftTuples, function(leftRecord, index) {
       if (rightTuples[rightIndex] && leftRecord.id() === rightTuples[rightIndex].id()) {
         rightIndex++;
       } else {
