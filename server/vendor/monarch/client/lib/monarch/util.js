@@ -1,17 +1,6 @@
 (function(Monarch, jQuery) {
 
 Monarch.module("Monarch.Util", {
-  indexOf: function(array, element) {
-    for(var i = 0; i < array.length; i++) {
-      if (array[i] == element) return i;
-    }
-    return -1;
-  },
-
-  contains: function(array, element) {
-    return this.indexOf(array, element) != -1;
-  },
-
   toArray: function(argumentsObject) {
     return Array.prototype.slice.call(argumentsObject, 0);
   },

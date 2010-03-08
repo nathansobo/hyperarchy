@@ -19,7 +19,7 @@ Monarch.constructor("Monarch.View.Templates.Multiview", Monarch.View.Template, {
     hideAllExcept: function() {
       var names = Monarch.Util.toArray(arguments);
       _.each(this.subviews, function(subview, subviewName) {
-        if (Monarch.Util.contains(names, subviewName)) {
+        if (_.include(names, subviewName)) {
           subview.show();
         } else {
           subview.hide();

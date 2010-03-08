@@ -562,7 +562,7 @@ Screw.Unit(function(c) { with(c) {
 
               expect(locallyCreated.remotelyCreated).to(beTrue);
               expect(locallyUpdated.remote.fullName()).to(equal, "Francisco Wu");
-              expect(Monarch.Util.contains(Blog.table.allTuples(), locallyDestroyed)).to(beFalse);
+              expect(_.include(Blog.table.allTuples(), locallyDestroyed)).to(beFalse);
             });
           });
 
@@ -584,7 +584,7 @@ Screw.Unit(function(c) { with(c) {
               expect(locallyCreated.isRemotelyCreated).to(beFalse);
               expect(locallyUpdated.field('fullName').validationErrors).to(equal, ["That name is taken"]);
               expect(locallyUpdated.remote.fullName()).to(equal, "Jan Nelson");
-              expect(Monarch.Util.contains(Blog.table.allTuples(), locallyDestroyed)).to(beTrue);
+              expect(_.include(Blog.table.allTuples(), locallyDestroyed)).to(beTrue);
             });
           });
         });

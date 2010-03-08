@@ -38,10 +38,10 @@ Screw.Unit(function(c) { with(c) {
         it("returns a copy of all records in the table, including those that are locally created and destroyed", function() {
           var tuples = User.table.allTuples();
 
-          expect(Monarch.Util.contains(tuples, cleanRecord)).to(beTrue);
-          expect(Monarch.Util.contains(tuples, locallyUpdated)).to(beTrue);
-          expect(Monarch.Util.contains(tuples, locallyCreated)).to(beTrue);
-          expect(Monarch.Util.contains(tuples, locallyDestroyed)).to(beTrue);
+          expect(_.include(tuples, cleanRecord)).to(beTrue);
+          expect(_.include(tuples, locallyUpdated)).to(beTrue);
+          expect(_.include(tuples, locallyCreated)).to(beTrue);
+          expect(_.include(tuples, locallyDestroyed)).to(beTrue);
 
           tuples.push(1);
           expect(User.table.allTuples()).toNot(equal, tuples);
@@ -52,10 +52,10 @@ Screw.Unit(function(c) { with(c) {
         it("excludes records that are locally destroyed but includes all others", function() {
           var tuples = User.table.localTuples();
 
-          expect(Monarch.Util.contains(tuples, locallyDestroyed)).to(beFalse);
-          expect(Monarch.Util.contains(tuples, cleanRecord)).to(beTrue);
-          expect(Monarch.Util.contains(tuples, locallyUpdated)).to(beTrue);
-          expect(Monarch.Util.contains(tuples, locallyCreated)).to(beTrue);
+          expect(_.include(tuples, locallyDestroyed)).to(beFalse);
+          expect(_.include(tuples, cleanRecord)).to(beTrue);
+          expect(_.include(tuples, locallyUpdated)).to(beTrue);
+          expect(_.include(tuples, locallyCreated)).to(beTrue);
         });
       });
 
@@ -63,10 +63,10 @@ Screw.Unit(function(c) { with(c) {
         it("excludes clean records but includes all others", function() {
           var tuples = User.table.dirtyTuples();
 
-          expect(Monarch.Util.contains(tuples, cleanRecord)).to(beFalse);
-          expect(Monarch.Util.contains(tuples, locallyCreated)).to(beTrue);
-          expect(Monarch.Util.contains(tuples, locallyUpdated)).to(beTrue);
-          expect(Monarch.Util.contains(tuples, locallyDestroyed)).to(beTrue);
+          expect(_.include(tuples, cleanRecord)).to(beFalse);
+          expect(_.include(tuples, locallyCreated)).to(beTrue);
+          expect(_.include(tuples, locallyUpdated)).to(beTrue);
+          expect(_.include(tuples, locallyDestroyed)).to(beTrue);
         });
       });
     });

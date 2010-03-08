@@ -23,8 +23,8 @@ Screw.Unit(function(c) { with(c) {
       it("returns all unique records corresponding to the projected table", function() {
         var allTuples = projection.allTuples();
         expect(allTuples.length).to(equal, 2);
-        expect(Monarch.Util.contains(allTuples, blog1)).to(beTrue);
-        expect(Monarch.Util.contains(allTuples, blog2)).to(beTrue);
+        expect(_.include(allTuples, blog1)).to(beTrue);
+        expect(_.include(allTuples, blog2)).to(beTrue);
       });
     });
 
