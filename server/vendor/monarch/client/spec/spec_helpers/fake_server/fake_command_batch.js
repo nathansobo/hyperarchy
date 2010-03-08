@@ -58,7 +58,7 @@ Monarch.constructor("FakeServer.FakeCommandBatch", {
       if (command instanceof Monarch.Http.CreateCommand) {
         return Monarch.Util.extend({id: "generatedByFakeServer" + this.fakeServer.idCounter++}, command.fieldValues);
       } else if (command instanceof Monarch.Http.UpdateCommand) {
-        return Monarch.Util.extend({}, command.fieldValues);
+        return _.clone(command.fieldValues);
       } else {
         return null;
       }

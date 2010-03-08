@@ -19,7 +19,7 @@ Monarch.constructor("Monarch.Model.Predicates.Eq", Monarch.Model.Predicates.Pred
   },
 
   forceMatchingFieldValues: function(fieldValues) {
-    var matchingFieldValues = Monarch.Util.extend({}, fieldValues);
+    var matchingFieldValues = _.clone(fieldValues);
     matchingFieldValues[this.columnOperand().name] = this.scalarOperand();
     return matchingFieldValues;
   },
