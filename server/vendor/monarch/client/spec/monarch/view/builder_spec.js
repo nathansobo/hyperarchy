@@ -31,21 +31,21 @@ Screw.Unit(function(c) { with(c) {
           div(function() {
             div({id: "hello"}, function() {
               p("Hello").onBuild(function(element, view) {
-                helloPOnBuildArgs = Monarch.Util.toArray(arguments);
+                helloPOnBuildArgs = _.toArray(arguments);
                 valueOfFooWhenHelloPOnBuildIsTriggered = view.foo;
                 valueOfBarWhenHelloPOnBuildIsTriggered = view.bar;
               });
             }).onBuild(function() {
-              helloDivOnBuildArgs =  Monarch.Util.toArray(arguments);
+              helloDivOnBuildArgs =  _.toArray(arguments);
             });
             br().onBuild(function() {
               brOnBuildArgs = arguments;
             });
             p("Goodbye").onBuild(function() {
-              goodbyePOnBuildArgs = Monarch.Util.toArray(arguments);
+              goodbyePOnBuildArgs = _.toArray(arguments);
             });
           }).onBuild(function() {
-            outerDivOnBuildArgs = Monarch.Util.toArray(arguments);
+            outerDivOnBuildArgs = _.toArray(arguments);
           });
         }
       });

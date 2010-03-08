@@ -3,7 +3,7 @@
 Monarch.constructor("Monarch.ModuleSystem.Object", {
   constructorProperties: {
     delegateConstructorMethods: function() {
-      var args = Monarch.Util.toArray(arguments);
+      var args = _.toArray(arguments);
       var delegateName = args.pop();
 
       var newConstructorMethods = {};
@@ -14,7 +14,7 @@ Monarch.constructor("Monarch.ModuleSystem.Object", {
     },
 
     delegate: function(source) {
-      var args = Monarch.Util.toArray(arguments);
+      var args = _.toArray(arguments);
       var delegateName = args.pop();
       this.setupDelegateMethods(this.prototype, args, delegateName);
     },

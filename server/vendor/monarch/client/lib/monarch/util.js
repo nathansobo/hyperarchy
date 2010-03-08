@@ -1,10 +1,6 @@
 (function(Monarch, jQuery) {
 
 Monarch.module("Monarch.Util", {
-  toArray: function(argumentsObject) {
-    return Array.prototype.slice.call(argumentsObject, 0);
-  },
-
   remove: function(array, element) {
     var recordIndex = array.indexOf(element);
     if (recordIndex == -1) return null;
