@@ -1,14 +1,6 @@
 (function(Monarch, jQuery) {
 
 Monarch.module("Monarch.Util", {
-  each: function(arrayOrHash, fn) {
-    if (arrayOrHash.length) {
-      this.arrayEach(arrayOrHash, fn);
-    } else {
-      this.hashEach(arrayOrHash, fn);
-    }
-  },
-
   detect: function(arrayOrHash, fn) {
     if (arrayOrHash.length) {
       return this.arrayDetect(arrayOrHash, fn);
@@ -26,14 +18,6 @@ Monarch.module("Monarch.Util", {
 
   contains: function(array, element) {
     return this.indexOf(array, element) != -1;
-  },
-
-  map: function(array, fn) {
-    var newArray = [];
-    this.each(array, function(element, index) {
-      newArray.push(fn.call(element, element, index));
-    });
-    return newArray;
   },
 
   toArray: function(argumentsObject) {
@@ -91,7 +75,7 @@ Monarch.module("Monarch.Util", {
 
   select: function(array, fn) {
     var selected = [];
-    this.each(array, function(elt) {
+    _.each(array, function(elt) {
       if (fn(elt)) selected.push(elt);
     });
     return selected;
@@ -103,7 +87,7 @@ Monarch.module("Monarch.Util", {
 
   inject: function(array, init, fn) {
     var currentVal = init;
-    this.each(array, function(elt) {
+    _.each(array, function(elt) {
       currentVal = fn(currentVal, elt);
     });
     return currentVal;
@@ -114,18 +98,6 @@ Monarch.module("Monarch.Util", {
   },
 
   // private
-
-  arrayEach: function(array, fn) {
-    for(var i = 0; i < array.length; i++) {
-      fn.call(array[i], array[i], i);
-    }
-  },
-
-  hashEach: function(hash, fn) {
-    for (key in hash) {
-      fn.call(hash[key], key, hash[key]);
-    }
-  },
 
   arrayDetect: function(array, fn) {
     for(var i = 0; i < array.length; i++) {
