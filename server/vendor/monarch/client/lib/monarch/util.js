@@ -1,4 +1,4 @@
-(function(Monarch, jQuery) {
+(function(jQuery) {
 
 _.mixin({
   remove: function(array, element) {
@@ -6,13 +6,11 @@ _.mixin({
     if (recordIndex == -1) return null;
     array.splice(recordIndex, 1);
     return element;
-  }
-});
+  },
 
-Monarch.module("Monarch.Util", {
   trim: function(string) {
     return jQuery.trim(string);
   }
 });
 
-})(Monarch, jQuery);
+})(jQuery);

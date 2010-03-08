@@ -19,7 +19,7 @@ Monarch.constructor("Monarch.Http.CometClient", {
 
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 3) {
-        var data = Monarch.Util.trim(xhr.responseText.slice(len));
+        var data = _.trim(xhr.responseText.slice(len));
         len = xhr.responseText.length;
         if (data.length > 0) {
           _.each(data.split("\n"), function(dataChunk) {
