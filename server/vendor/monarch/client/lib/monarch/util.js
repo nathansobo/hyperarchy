@@ -10,10 +10,6 @@ _.mixin({
 });
 
 Monarch.module("Monarch.Util", {
-  extend: function() {
-    return jQuery.extend.apply(jQuery, arguments);
-  },
-
   trim: function(string) {
     return jQuery.trim(string);
   }
