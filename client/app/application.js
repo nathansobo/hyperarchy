@@ -10,4 +10,4 @@
 //= require "views"
 //= require "controllers"
 
-Repository.originUrl = "/userRepository";
+Repository.originUrl = "/user_repository";

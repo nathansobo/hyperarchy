@@ -20,8 +20,8 @@ Monarch.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations
   wireRepresentation: function() {
     return {
       type: "innerJoin",
-      leftOperand: this.leftOperand.wireRepresentation(),
-      rightOperand: this.rightOperand.wireRepresentation(),
+      left_operand: this.leftOperand.wireRepresentation(),
+      right_operand: this.rightOperand.wireRepresentation(),
       predicate: this.predicate.wireRepresentation()
     };
   },

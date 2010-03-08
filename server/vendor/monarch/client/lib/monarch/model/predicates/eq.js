@@ -13,8 +13,8 @@ Monarch.constructor("Monarch.Model.Predicates.Eq", Monarch.Model.Predicates.Pred
   wireRepresentation: function() {
     return {
       type: "eq",
-      leftOperand: this.operandWireRepresentation(this.leftOperand),
-      rightOperand: this.operandWireRepresentation(this.rightOperand)
+      left_operand: this.operandWireRepresentation(this.leftOperand),
+      right_operand: this.operandWireRepresentation(this.rightOperand)
     };
   },
 

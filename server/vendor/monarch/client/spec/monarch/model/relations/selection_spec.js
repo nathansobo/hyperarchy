@@ -65,12 +65,12 @@ Screw.Unit(function(c) { with(c) {
           },
           predicate: {
             type: "eq",
-            leftOperand: {
+            left_operand: {
               type: "column",
               table: "users",
               name: "age"
             },
-            rightOperand: {
+            right_operand: {
               type: "scalar",
               value: 31
             }
