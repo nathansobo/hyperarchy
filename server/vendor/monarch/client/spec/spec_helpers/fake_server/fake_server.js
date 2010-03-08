@@ -87,7 +87,7 @@ Monarch.constructor("FakeServer", Monarch.Http.Server, {
 
   removeRequest: function(request) {
     var requestsArray = this[_.pluralize(request.type)];
-    Monarch.Util.remove(requestsArray, request);
+    _.remove(requestsArray, request);
     this["last" + _.capitalize(request.type)] = requestsArray[requestsArray.length - 1];
   },
 

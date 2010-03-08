@@ -18,7 +18,7 @@ Monarch.constructor("Monarch.SubscriptionNode", {
   },
 
   unsubscribe: function(subscription) {
-    Monarch.Util.remove(this.subscriptions, subscription);
+    _.remove(this.subscriptions, subscription);
     if (this.onUnsubscribeNode) this.onUnsubscribeNode.publish(subscription);
   },
 

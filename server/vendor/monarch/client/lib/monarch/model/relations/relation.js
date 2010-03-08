@@ -236,7 +236,7 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
   },
 
   tupleRemovedRemotely: function(record) {
-    Monarch.Util.remove(this.Tuples, record);
+    _.remove(this.Tuples, record);
     this.onRemoteRemoveNode.publish(record);
   },
 

@@ -1,12 +1,16 @@
 (function(Monarch, jQuery) {
 
-Monarch.module("Monarch.Util", {
+
+_.mixin({
   remove: function(array, element) {
-    var recordIndex = array.indexOf(element);
+    var recordIndex = _.indexOf(array, element);
     if (recordIndex == -1) return null;
     array.splice(recordIndex, 1);
     return element;
-  },
+  }
+});
+
+Monarch.module("Monarch.Util", {
 
   select: function(array, fn) {
     var selected = [];
