@@ -21,7 +21,7 @@ Monarch.constructor("FakeServer.FakeFetch", {
   fetchDatasetFromFixtureRepository: function() {
     var self = this;
     var dataset = {};
-    Monarch.Util.each(this.relations, function(relation) {
+    _.each(this.relations, function(relation) {
       self.addRelationToDataset(relation, dataset);
     });
     return dataset;
@@ -32,7 +32,7 @@ Monarch.constructor("FakeServer.FakeFetch", {
     var tableName = relation.primaryTable().globalName;
 
     if (!dataset[tableName]) dataset[tableName] = {};
-    Monarch.Util.each(tuples, function(record) {
+    _.each(tuples, function(record) {
       dataset[tableName][record.id()] = record.wireRepresentation();
     });
   }

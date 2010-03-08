@@ -14,7 +14,7 @@ Monarch.constructor("Monarch.View.CloseTag", {
 
     generateEventMethods: function() {
       var self = this;
-      Monarch.Util.each(this.supportedEvents, function(eventName) {
+      _.each(this.supportedEvents, function(eventName) {
         self.generateEventMethod(eventName);
       });
     },

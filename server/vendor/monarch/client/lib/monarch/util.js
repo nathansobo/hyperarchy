@@ -59,7 +59,7 @@ Monarch.module("Monarch.Util", {
     var keys = [];
     for (key in hash) keys.push(key);
     if (optionalEachFunction) {
-      Monarch.Util.each(keys, optionalEachFunction);
+      _.each(keys, optionalEachFunction);
     }
     return keys;
   },
@@ -68,7 +68,7 @@ Monarch.module("Monarch.Util", {
     var values = [];
     for (key in hash) values.push(hash[key]);
     if (optionalEachFunction) {
-      Monarch.Util.each(values, optionalEachFunction);
+      _.each(values, optionalEachFunction);
     }
     return values;
   },

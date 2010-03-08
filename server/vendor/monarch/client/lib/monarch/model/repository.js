@@ -49,7 +49,7 @@ Monarch.constructor("Monarch.Model.Repository", {
     if (this.mutationsPaused) {
       this.enqueuedMutations.push.apply(this.enqueuedMutations, commands);
     } else {
-      Monarch.Util.each(commands, function(command) {
+      _.each(commands, function(command) {
         var type = command.shift();-
         self["perform" + _.capitalize(type) + "Command"].apply(self, command);
       });

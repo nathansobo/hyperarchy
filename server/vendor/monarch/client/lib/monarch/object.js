@@ -20,7 +20,7 @@ Monarch.constructor("Monarch.ModuleSystem.Object", {
     },
 
     setupDelegateMethods: function(delegator, methodNames, delegateName) {
-      Monarch.Util.each(methodNames, function(methodName) {
+      _.each(methodNames, function(methodName) {
         delegator[methodName] = function() {
           var delegate = this[delegateName];
           return delegate[methodName].apply(delegate, arguments);

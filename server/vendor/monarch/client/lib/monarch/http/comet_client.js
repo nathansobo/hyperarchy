@@ -22,7 +22,7 @@ Monarch.constructor("Monarch.Http.CometClient", {
         var data = Monarch.Util.trim(xhr.responseText.slice(len));
         len = xhr.responseText.length;
         if (data.length > 0) {
-          Monarch.Util.each(data.split("\n"), function(dataChunk) {
+          _.each(data.split("\n"), function(dataChunk) {
             self.onReceiveNode.publish(JSON.parse(dataChunk));
           });
         }

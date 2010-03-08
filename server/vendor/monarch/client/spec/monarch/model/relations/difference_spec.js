@@ -21,7 +21,7 @@ Screw.Unit(function(c) { with(c) {
         expect(differenceTuples).toNot(beEmpty);
         expect(differenceTuples.length).to(equal, leftOperand.size() - rightOperand.size());
 
-        Monarch.Util.each(differenceTuples, function(record) {
+        _.each(differenceTuples, function(record) {
           expect(rightOperand.find(record.id())).to(beNull);
         });
       });

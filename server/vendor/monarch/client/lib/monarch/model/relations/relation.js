@@ -125,7 +125,7 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
   },
 
   each: function(fn) {
-    Monarch.Util.each(this.tuples(), fn);
+    _.each(this.tuples(), fn);
   },
 
   map: function(fn) {

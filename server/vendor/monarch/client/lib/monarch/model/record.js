@@ -314,7 +314,7 @@ Monarch.constructor("Monarch.Model.Record", {
   initializeRelations: function() {
     var self = this;
     this.relationsByName = {};
-    Monarch.Util.each(this.constructor.relationDefinitions, function(relationDefinition) {
+    _.each(this.constructor.relationDefinitions, function(relationDefinition) {
       self.relationsByName[relationDefinition.name] = relationDefinition.definition.call(self);
     });
   }

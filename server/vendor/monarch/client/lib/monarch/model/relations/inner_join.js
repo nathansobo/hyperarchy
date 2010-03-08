@@ -47,8 +47,8 @@ Monarch.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations
   cartesianProduct: function() {
     var product = [];
     var self = this;
-    Monarch.Util.each(self.leftOperand.allTuples(), function(leftTuple) {
-      Monarch.Util.each(self.rightOperand.allTuples(), function(rightTuple) {
+    _.each(self.leftOperand.allTuples(), function(leftTuple) {
+      _.each(self.rightOperand.allTuples(), function(rightTuple) {
         product.push(new Monarch.Model.CompositeTuple(leftTuple, rightTuple));
       });
     })
@@ -58,33 +58,33 @@ Monarch.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations
   subscribeToOperands: function() {
     var self = this;
     this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteInsert(function(leftTuple) {
-      Monarch.Util.each(self.rightOperand.allTuples(), function(rightTuple) {
+      _.each(self.rightOperand.allTuples(), function(rightTuple) {
         var compositeTuple = new Monarch.Model.CompositeTuple(leftTuple, rightTuple);
         if (self.predicate.evaluate(compositeTuple)) self.tupleInsertedRemotely(compositeTuple);
       });
     }));
 
     this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteInsert(function(rightTuple) {
-      Monarch.Util.each(self.leftOperand.allTuples(), function(leftTuple) {
+      _.each(self.leftOperand.allTuples(), function(leftTuple) {
         var compositeTuple = new Monarch.Model.CompositeTuple(leftTuple, rightTuple);
         if (self.predicate.evaluate(compositeTuple)) self.tupleInsertedRemotely(compositeTuple);
       });
     }));
 
     this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteRemove(function(leftTuple) {
-      Monarch.Util.each(self.allTuples(), function(compositeTuple) {
+      _.each(self.allTuples(), function(compositeTuple) {
         if (compositeTuple.leftTuple == leftTuple) self.tupleRemovedRemotely(compositeTuple);
       });
     }));
 
     this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteRemove(function(rightTuple) {
-      Monarch.Util.each(self.allTuples(), function(compositeTuple) {
+      _.each(self.allTuples(), function(compositeTuple) {
         if (compositeTuple.rightTuple == rightTuple) self.tupleRemovedRemotely(compositeTuple);
       });
     }));
 
     this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteUpdate(function(leftTuple, changeset) {
-      Monarch.Util.each(self.rightOperand.allTuples(), function(rightTuple) {
+      _.each(self.rightOperand.allTuples(), function(rightTuple) {
         var newCompositeTuple = new Monarch.Model.CompositeTuple(leftTuple, rightTuple);
         var extantCompositeTuple = self.findCompositeTupleThatMatches(newCompositeTuple);
         if (self.predicate.evaluate(newCompositeTuple)) {
@@ -101,7 +101,7 @@ Monarch.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations
 
     this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteUpdate(function(rightTuple, changeset) {
 
-      Monarch.Util.each(self.leftOperand.allTuples(), function(leftTuple) {
+      _.each(self.leftOperand.allTuples(), function(leftTuple) {
         var newCompositeTuple = new Monarch.Model.CompositeTuple(leftTuple, rightTuple);
         var extantCompositeTuple = self.findCompositeTupleThatMatches(newCompositeTuple);
         if (self.predicate.evaluate(newCompositeTuple)) {

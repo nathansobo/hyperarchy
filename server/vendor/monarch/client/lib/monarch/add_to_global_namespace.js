@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.Util.each(Monarch, function(key, value) {
+_.each(Monarch, function(value, key) {
   if (key == "constructor" || key == "module") return;
   window[key] = value;
 });

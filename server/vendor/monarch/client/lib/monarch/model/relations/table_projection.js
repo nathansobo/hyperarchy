@@ -13,7 +13,7 @@ Monarch.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Rel
     if (this.Tuples) return this.Tuples;
 
     var allTuples = [];
-    Monarch.Util.each(this.operand.allTuples(), function(compositeTuple) {
+    _.each(this.operand.allTuples(), function(compositeTuple) {
       var record = compositeTuple.record(this.projectedTable);
       if (!Monarch.Util.contains(allTuples, record)) allTuples.push(record);
     }.bind(this));

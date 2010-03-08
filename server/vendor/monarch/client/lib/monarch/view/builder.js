@@ -9,7 +9,7 @@ Monarch.constructor("Monarch.View.Builder", {
     generateTagMethods: function() {
       var self = this;
 
-      Monarch.Util.each(this.supportedTags, function(tagName) {
+      _.each(this.supportedTags, function(tagName) {
         self.prototype[tagName] = function() {
           var tagArgs = [tagName].concat(Monarch.Util.toArray(arguments));
           return this.tag.apply(this, tagArgs);
@@ -49,7 +49,7 @@ Monarch.constructor("Monarch.View.Builder", {
 
   toHtml: function() {
     var xml = [];
-    Monarch.Util.each(this.instructions, function(instruction) {
+    _.each(this.instructions, function(instruction) {
       xml.push(instruction.toXml());
     });
     return xml.join("");
@@ -115,7 +115,7 @@ Monarch.constructor("Monarch.View.Builder", {
   postProcess: function(jqueryFragment) {
     var self = this;
     this.jqueryFragment = jqueryFragment;
-    Monarch.Util.each(this.instructions, function(instruction) {
+    _.each(this.instructions, function(instruction) {
       instruction.postProcess(self);
     });
     if (!this.hasSingleTopLevelElement()) {
@@ -161,7 +161,7 @@ Monarch.constructor("Monarch.View.Builder", {
     var tagArguments = {
       name: args.shift()
     }
-    Monarch.Util.each(args, function(arg) {
+    _.each(args, function(arg) {
       if (typeof arg == "string") tagArguments.text = arg;
       if (typeof arg == "object") tagArguments.attributes = arg;
       if (typeof arg == "function") tagArguments.body = arg;

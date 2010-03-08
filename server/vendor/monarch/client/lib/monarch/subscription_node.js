@@ -32,7 +32,7 @@ Monarch.constructor("Monarch.SubscriptionNode", {
     if (this.paused) {
       this.delayedEvents.push(publishArguments)
     } else {
-      Monarch.Util.each(this.subscriptions, function(subscription) {
+      _.each(this.subscriptions, function(subscription) {
         subscription.trigger(publishArguments);
       })
     }
@@ -51,7 +51,7 @@ Monarch.constructor("Monarch.SubscriptionNode", {
     this.paused = false;
     var delayedEvents = this.delayedEvents;
     this.delayedEvents = [];
-    Monarch.Util.each(delayedEvents, function(event) {
+    _.each(delayedEvents, function(event) {
       self.publish.apply(self, event);
     });
   }

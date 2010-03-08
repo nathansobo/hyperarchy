@@ -100,7 +100,7 @@ Monarch.constructor("Monarch.Http.Server", {
 
   extractDirtyRecords: function(recordsOrRelations) {
     var dirtyRecords = []
-    Monarch.Util.each(recordsOrRelations, function(arg) {
+    _.each(recordsOrRelations, function(arg) {
       if (arg._relation_) {
         dirtyRecords.push.apply(dirtyRecords, arg.dirtyTuples());
       } else {

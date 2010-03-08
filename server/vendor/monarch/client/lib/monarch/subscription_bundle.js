@@ -14,7 +14,7 @@ Monarch.constructor("Monarch.SubscriptionBundle", {
   },
 
   destroyAll: function() {
-    Monarch.Util.each(this.subscriptions, function(subscription) {
+    _.each(this.subscriptions, function(subscription) {
       subscription.destroy();
     });
     this.subscriptions = [];
