@@ -682,7 +682,7 @@ Screw.Unit(function(c) { with(c) {
 
         // data is url-encoded and appended as params for delete requests
         if (requestMethod == "delete_") {
-          var expectedData = Monarch.Util.extend({cometClientId: window.COMETCLIENTID}, data)
+          var expectedData = _.extend({cometClientId: window.COMETCLIENTID}, data)
           expect(ajaxOptions.url).to(equal, '/users?' + jQuery.param(server.stringifyJsonData(expectedData)));
           expect(ajaxOptions.data).to(beNull);
         } else {

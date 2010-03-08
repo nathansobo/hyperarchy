@@ -32,7 +32,7 @@ Monarch.constructor("Monarch.Model.RemoteFieldset", Monarch.Model.Fieldset, {
       newValue: newValue
     };
 
-    Monarch.Util.extend(this.batchedUpdates, changeData);
+    if (this.batchedUpdates) _.extend(this.batchedUpdates, changeData);
   },
 
   // private

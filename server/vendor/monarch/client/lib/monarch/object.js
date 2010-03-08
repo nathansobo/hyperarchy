@@ -9,8 +9,8 @@ Monarch.constructor("Monarch.ModuleSystem.Object", {
       var newConstructorMethods = {};
       this.setupDelegateMethods(newConstructorMethods, args, delegateName);
       if (!this.prototype.constructorProperties) this.prototype.constructorProperties = {};
-      Monarch.Util.extend(this.prototype.constructorProperties, newConstructorMethods);
-      Monarch.Util.extend(this, newConstructorMethods);
+      _.extend(this.prototype.constructorProperties, newConstructorMethods);
+      _.extend(this, newConstructorMethods);
     },
 
     delegate: function(source) {

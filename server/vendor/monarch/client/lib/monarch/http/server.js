@@ -95,7 +95,7 @@ Monarch.constructor("Monarch.Http.Server", {
   },
 
   addCometId: function(data) {
-    return Monarch.Util.extend({ cometClientId: window.COMETCLIENTID }, data);
+    return _.extend({ cometClientId: window.COMETCLIENTID }, data);
   },
 
   extractDirtyRecords: function(recordsOrRelations) {

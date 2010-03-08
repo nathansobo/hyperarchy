@@ -130,7 +130,7 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
   loadFixtures: function(fixtureDefinitions) {
     var self = this;
     _.each(fixtureDefinitions, function(properties, id) {
-      var fieldValues = Monarch.Util.extend({id: id}, properties)
+      var fieldValues = _.extend({id: id}, properties)
       self.createFromRemote(fieldValues);
     });
   },

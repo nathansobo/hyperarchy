@@ -100,7 +100,7 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
       newValue: newValue
     };
 
-    Monarch.Util.extend(this.batchedUpdates, changeData);
+    _.extend(this.batchedUpdates, changeData);
 
     if (!batchWasInProgress) this.finishBatchUpdate();
   },
