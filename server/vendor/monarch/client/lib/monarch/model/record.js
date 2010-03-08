@@ -5,8 +5,8 @@ Monarch.constructor("Monarch.Model.Record", {
   constructorProperties: {
     initialize: function() {
       this.delegateConstructorMethods('find', 'fetch', 'tuples', 'each', 'any', 'onLocalUpdate', 'onRemoteInsert',
-                                        'onRemoteUpdate', 'onRemoteRemove', 'where', 'orderBy', 'project', 'empty',
-                                        'table');
+                                      'onRemoteUpdate', 'onRemoteRemove', 'where', 'orderBy', 'project', 'empty',
+                                      'table');
     },
 
     extended: function(subconstructor) {
@@ -61,10 +61,6 @@ Monarch.constructor("Monarch.Model.Record", {
 
     localCreate: function(fieldValues) {
       return this.table.localCreate(fieldValues);
-    },
-
-    remotelyCreated: function(fieldValues) {
-      return this.table.remotelyCreated(fieldValues);
     },
 
     humanName: function() {
@@ -145,7 +141,8 @@ Monarch.constructor("Monarch.Model.Record", {
   },
 
   remotelyCreated: function(fieldValues) {
-    this.remote.update(fieldValues);
+    if (fieldValues.id == "jesus") debugger;
+    this.remote.update(this.camelizeKeys(fieldValues));
     this.isRemotelyCreated = true;
     this.remote.updateEventsEnabled = true;
     this.initializeRelations();
@@ -154,7 +151,7 @@ Monarch.constructor("Monarch.Model.Record", {
   },
 
   remotelyUpdated: function(fieldValues) {
-    this.remote.update(fieldValues);
+    this.remote.update(this.camelizeKeys(fieldValues));
   },
 
   remotelyDestroyed: function() {
@@ -208,7 +205,7 @@ Monarch.constructor("Monarch.Model.Record", {
   },
 
   assignValidationErrors: function(errorsByFieldName) {
-    this.local.assignValidationErrors(errorsByFieldName);
+    this.local.assignValidationErrors(this.camelizeKeys(errorsByFieldName));
     if (this.onInvalidNode) this.onInvalidNode.publish();
   },
 
@@ -321,6 +318,22 @@ Monarch.constructor("Monarch.Model.Record", {
     Monarch.Util.each(this.constructor.relationDefinitions, function(relationDefinition) {
       self.relationsByName[relationDefinition.name] = relationDefinition.definition.call(self);
     });
+  },
+
+  underscoreKeys: function(hash) {
+    var newHash = {};
+    _.each(hash, function(value, key) {
+      newHash[Monarch.Inflection.underscore(key)] = value;
+    });
+    return newHash;
+  },
+
+  camelizeKeys: function(hash) {
+    var newHash = {};
+    _.each(hash, function(value, key) {
+      newHash[Monarch.Inflection.camelize(key, true)] = value;
+    });
+    return newHash;
   }
 });
 

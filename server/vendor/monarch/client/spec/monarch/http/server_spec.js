@@ -48,22 +48,22 @@ Screw.Unit(function(c) { with(c) {
             users: {
               nathan: {
                 id: 'nathan',
-                fullName: "Nathan Sobo"
+                full_name: "Nathan Sobo"
               },
               wil: {
                 id: 'wil',
-                fullName: 'Wil Bierbaum'
+                full_name: 'Wil Bierbaum'
               }
             },
             blogs: {
               metacircular: {
                 id: 'metacircular',
-                userId: 'nathan',
+                user_id: 'nathan',
                 name: 'Metacircular'
               },
               canyonero: {
                 id: 'canyonero',
-                userId: 'wil',
+                user_id: 'wil',
                 name: 'Canyonero'
               }
             }
@@ -226,7 +226,7 @@ Screw.Unit(function(c) { with(c) {
               var post = server.lastPost.simulateSuccess({
                 primary: [{
                   id: "jesus",
-                  fullName: "Jesus H. Chang"
+                  full_name: "Jesus H. Chang"
                 }],
                 secondary: []
               });
@@ -246,7 +246,7 @@ Screw.Unit(function(c) { with(c) {
               server.lastPost.simulateFailure({
                 index: 0,
                 errors: {
-                  fullName: ["This name is extremely unlikely"],
+                  full_name: ["This name is extremely unlikely"],
                   age: ["You must enter an age"]
                 }
               });
@@ -338,7 +338,7 @@ Screw.Unit(function(c) { with(c) {
                     newValue: 'Programming Prime for Fun and Profit'
                   }
                 };
-                
+
                 expect(record.valid()).to(beTrue);
 
                 expect(tableRemoteUpdateCallback).to(haveBeenCalled, withArgs(record, expectedChangset));
@@ -357,7 +357,7 @@ Screw.Unit(function(c) { with(c) {
               server.lastPost.simulateSuccess({
                 primary: [{
                   name: "Programming Prime", // server can change field values too
-                  userId: 'wil'
+                  user_id: 'wil'
                 }],
                 secondary: []
               });
@@ -391,7 +391,7 @@ Screw.Unit(function(c) { with(c) {
                 index: 0,
                 errors: {
                   name: nameErrors,
-                  userId: userIdErrors
+                  user_id: userIdErrors
                 }
               });
 
@@ -553,7 +553,7 @@ Screw.Unit(function(c) { with(c) {
               saveFuture.afterEvents(afterEventsCallback);
 
               server.lastPost.simulateSuccess({
-                primary: [{ id: 'jesus', fullName: "Jesus Chang" }, { fullName: "Francisco Wu" }, null],
+                primary: [{ id: 'jesus', full_name: "Jesus Chang" }, { full_name: "Francisco Wu" }, null],
                 secondary: []
               });
 
@@ -577,7 +577,7 @@ Screw.Unit(function(c) { with(c) {
               saveFuture.afterEvents(afterEventsCallback);
               saveFuture.onFailure(onFailureCallback);
 
-              server.lastPost.simulateFailure({ index: 1, errors: { fullName: ["That name is taken"]}});
+              server.lastPost.simulateFailure({ index: 1, errors: { full_name: ["That name is taken"]}});
 
               expect(onFailureCallback).to(haveBeenCalled, withArgs(locallyUpdated));
 
@@ -613,7 +613,7 @@ Screw.Unit(function(c) { with(c) {
           expect(Repository.mutationsPaused).to(beTrue);
           server.lastPost.simulateFailure({
             index: 0,
-            errors: { fullName: ["Jesus Chang? Come on."]}
+            errors: { full_name: ["Jesus Chang? Come on."]}
           });
           expect(Repository.mutationsPaused).to(beFalse);
 
@@ -621,8 +621,8 @@ Screw.Unit(function(c) { with(c) {
           expect(Repository.mutationsPaused).to(beTrue);
           server.lastPost.simulateSuccess({
             primary: [{
-              fullName: "Jesus Chang",
-              userId: 'jesus'
+              full_name: "Jesus Chang",
+              user_id: 'jesus'
             }],
             secondary: []
           });

@@ -130,11 +130,12 @@ Monarch.module("Monarch.Inflection", {
     return word.replace(/([a-zA-Z\d])([A-Z])/g,'$1_$2').toLowerCase();
   },
 
-  camelize: function(word) {
+  camelize: function(word, lowerCaseFirstWord) {
     var parts = word.split('_'), len = parts.length;
     var camelized = "";
     for (var i = 0; i < len; i++) {
-      camelized += parts[i].charAt(0).toUpperCase() + parts[i].substring(1);
+      var firstLetter = (lowerCaseFirstWord && i == 0) ? parts[i].charAt(0) : parts[i].charAt(0).toUpperCase();
+      camelized += firstLetter + parts[i].substring(1);
     }
     return camelized;
   },

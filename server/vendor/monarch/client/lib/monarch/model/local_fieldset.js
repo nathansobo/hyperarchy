@@ -30,7 +30,7 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
   wireRepresentation: function(onlyDirty) {
     var wireRepresentation = {};
     Monarch.Util.each(this.fieldsByColumnName, function(columnName, field) {
-      if (!onlyDirty || field.dirty()) wireRepresentation[columnName] = field.valueWireRepresentation();
+      if (!onlyDirty || field.dirty()) wireRepresentation[Monarch.Inflection.underscore(columnName)] = field.valueWireRepresentation();
     });
     return wireRepresentation;
   },

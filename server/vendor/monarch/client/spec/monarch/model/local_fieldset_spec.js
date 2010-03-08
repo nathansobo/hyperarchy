@@ -5,7 +5,7 @@ Screw.Unit(function(c) { with(c) {
     useLocalFixtures();
 
     describe("#dirtyWireRepresentation", function() {
-      it("returns the dirty field values by column name", function() {
+      it("returns the dirty field values by column name, with column names in an underscored format", function() {
         var record = Blog.find('recipes');
         record.name("Booboo");
         record.userId("farb");
@@ -13,22 +13,21 @@ Screw.Unit(function(c) { with(c) {
 
         expect(record.local.dirtyWireRepresentation()).to(equal, {
           name: 'Booboo',
-          userId: 'farb'
+          user_id: 'farb'
         });
       });
     });
 
     describe("#wireRepresentation", function() {
-      it("returns all field values by column name", function() {
+      it("returns all field values by column name, with column names in an underscored format", function() {
         var record = Blog.find('recipes');
-
 
         expect(record.local.wireRepresentation()).to(equal, {
           id: 'recipes',
           name: 'Recipes from the Front',
-          userId: 'mike',
-          startedAt: 1253742029201,
-          ownerId: undefined
+          user_id: 'mike',
+          started_at: 1253742029201,
+          owner_id: undefined
         });
       });
     });
