@@ -141,7 +141,6 @@ Monarch.constructor("Monarch.Model.Record", {
   },
 
   remotelyCreated: function(fieldValues) {
-    if (fieldValues.id == "jesus") debugger;
     this.remote.update(this.camelizeKeys(fieldValues));
     this.isRemotelyCreated = true;
     this.remote.updateEventsEnabled = true;
