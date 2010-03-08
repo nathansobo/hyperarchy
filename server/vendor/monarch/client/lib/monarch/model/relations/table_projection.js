@@ -34,7 +34,7 @@ Monarch.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Rel
     }));
 
     this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(compositeTuple, changeset) {
-      var updatedColumnInProjectedTable = Monarch.Util.detect(changeset, function(columnName, change) {
+      var updatedColumnInProjectedTable = _.detect(changeset, function(change) {
         return change.column.table == self.projectedTable;
       });
       var record = compositeTuple.record(self.projectedTable);

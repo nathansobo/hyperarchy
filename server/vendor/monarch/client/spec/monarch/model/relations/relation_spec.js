@@ -92,11 +92,11 @@ Screw.Unit(function(c) { with(c) {
             expect(predicate.constructor).to(equal, Monarch.Model.Predicates.And);
             expect(predicate.operands.length).to(equal, 2);
 
-            expect(Monarch.Util.detect(predicate.operands, function(eqPredicate) {
+            expect(_.detect(predicate.operands, function(eqPredicate) {
               return eqPredicate.leftOperand === Blog.userId && eqPredicate.rightOperand == "jan";
             })).toNot(beNull);
 
-            expect(Monarch.Util.detect(predicate.operands, function(eqPredicate) {
+            expect(_.detect(predicate.operands, function(eqPredicate) {
               return eqPredicate.leftOperand === Blog.name_ && eqPredicate.rightOperand == "The Pain of Motorcycle Maintenance";
             })).toNot(beNull);
 

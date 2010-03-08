@@ -69,7 +69,7 @@ Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relation
   },
 
   projectedColumnFromOperandColumn: function(operandColumn) {
-    return Monarch.Util.detect(this.projectedColumnsByName, function(name, projectedColumn) {
+    return _.detect(this.projectedColumnsByName, function(projectedColumn) {
       return projectedColumn.column === operandColumn;
     });
   }

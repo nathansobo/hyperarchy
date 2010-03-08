@@ -1,14 +1,6 @@
 (function(Monarch, jQuery) {
 
 Monarch.module("Monarch.Util", {
-  detect: function(arrayOrHash, fn) {
-    if (arrayOrHash.length) {
-      return this.arrayDetect(arrayOrHash, fn);
-    } else {
-      return this.hashDetect(arrayOrHash, fn);
-    }
-  },
-
   indexOf: function(array, element) {
     for(var i = 0; i < array.length; i++) {
       if (array[i] == element) return i;

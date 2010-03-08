@@ -118,7 +118,7 @@ Monarch.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations
   },
 
   findCompositeTupleThatMatches: function(compositeTuple1) {
-    return Monarch.Util.detect(this.allTuples(), function(compositeTuple2) {
+    return _.detect(this.allTuples(), function(compositeTuple2) {
       return compositeTuple1.equals(compositeTuple2);
     })
   }
