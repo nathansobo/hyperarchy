@@ -5,7 +5,7 @@ Monarch.constructor("Monarch.View.Templates.Multiview", Monarch.View.Template, {
     delete subviewTemplatesByName.parentView;
     var b = this.builder;
     b.div(function() {
-      Monarch.Util.each(subviewTemplatesByName, function(name, template) {
+      _.each(subviewTemplatesByName, function(template, name) {
         b.subview('subviews', name, template);
       })
     });
@@ -18,7 +18,7 @@ Monarch.constructor("Monarch.View.Templates.Multiview", Monarch.View.Template, {
 
     hideAllExcept: function() {
       var names = Monarch.Util.toArray(arguments);
-      Monarch.Util.each(this.subviews, function(subviewName, subview) {
+      _.each(this.subviews, function(subview, subviewName) {
         if (Monarch.Util.contains(names, subviewName)) {
           subview.show();
         } else {
@@ -28,7 +28,7 @@ Monarch.constructor("Monarch.View.Templates.Multiview", Monarch.View.Template, {
     },
 
     hideAll: function() {
-      Monarch.Util.each(this.subviews, function(subviewName, subview) {
+      _.each(this.subviews, function(subview) {
         subview.hide();
       });
     }

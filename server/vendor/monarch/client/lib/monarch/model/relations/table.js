@@ -108,7 +108,7 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
   
   updateContents: function(dataset) {
     var self = this;
-    Monarch.Util.each(dataset, function(id, fieldValues) {
+    _.each(dataset, function(fieldValues, id) {
       var extantRecord = self.find(id);
       if (extantRecord) {
         extantRecord.remotelyUpdated(fieldValues);
@@ -129,7 +129,7 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
   
   loadFixtures: function(fixtureDefinitions) {
     var self = this;
-    Monarch.Util.each(fixtureDefinitions, function(id, properties) {
+    _.each(fixtureDefinitions, function(properties, id) {
       var fieldValues = Monarch.Util.extend({id: id}, properties)
       self.createFromRemote(fieldValues);
     });

@@ -17,7 +17,7 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
 
   allValidationErrors: function() {
     var allValidationErrors = [];
-    Monarch.Util.each(this.fieldsByColumnName, function(columnName, field) {
+    _.each(this.fieldsByColumnName, function(field) {
       allValidationErrors = allValidationErrors.concat(field.validationErrors);
     });
     return allValidationErrors;
@@ -29,20 +29,20 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
 
   wireRepresentation: function(onlyDirty) {
     var wireRepresentation = {};
-    Monarch.Util.each(this.fieldsByColumnName, function(columnName, field) {
+    _.each(this.fieldsByColumnName, function(field, columnName) {
       if (!onlyDirty || field.dirty()) wireRepresentation[_.underscore(columnName)] = field.valueWireRepresentation();
     });
     return wireRepresentation;
   },
 
   clearValidationErrors: function() {
-    Monarch.Util.each(this.fieldsByColumnName, function(name, field) {
+    _.each(this.fieldsByColumnName, function(field) {
       field.clearValidationErrors();
     });
   },
 
   assignValidationErrors: function(errorsByFieldName) {
-    Monarch.Util.each(this.fieldsByColumnName, function(name, field) {
+    _.each(this.fieldsByColumnName, function(field, name) {
       if (errorsByFieldName[name]) {
         field.assignValidationErrors(errorsByFieldName[name]);
       } else {
@@ -108,7 +108,7 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
   // private
 
   connectLocalAndRemoteFields: function() {
-    Monarch.Util.each(this.fieldsByColumnName, function(columnName, localField) {
+    _.each(this.fieldsByColumnName, function(localField, columnName) {
       var remoteField = this.remote.field(columnName);
       localField.remoteField(remoteField);
       remoteField.localField(localField);

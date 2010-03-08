@@ -29,7 +29,7 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
   // private
 
   wireRepresentation: function() {
-    return Monarch.Util.map(this.commands, function(command) {
+    return _.map(this.commands, function(command) {
       return command.wireRepresentation();
     });
   },

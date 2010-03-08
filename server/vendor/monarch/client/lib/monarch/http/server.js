@@ -11,7 +11,7 @@ Monarch.constructor("Monarch.Http.Server", {
     var fetchFuture = new Monarch.Http.RepositoryUpdateFuture();
 
     this.get(Repository.originUrl + "/fetch", {
-      relations: Monarch.Util.map(relations, function(relation) {
+      relations: _.map(relations, function(relation) {
         return relation.wireRepresentation();
       })
     })
@@ -38,11 +38,11 @@ Monarch.constructor("Monarch.Http.Server", {
 
     var subscribeFuture = new Monarch.Http.AjaxFuture();
     this.post(Repository.originUrl + "/subscribe", {
-      relations: Monarch.Util.map(relations, function(relation) {
+      relations: _.map(relations, function(relation) {
         return relation.wireRepresentation();
       })
     }).onSuccess(function(subscriptionIds) {
-      subscribeFuture.triggerSuccess(Monarch.Util.map(subscriptionIds, function(subscriptionId, index) {
+      subscribeFuture.triggerSuccess(_.map(subscriptionIds, function(subscriptionId, index) {
         return new Monarch.Http.RemoteSubscription(subscriptionId, relations[index]);
       }));
     });
@@ -52,14 +52,14 @@ Monarch.constructor("Monarch.Http.Server", {
 
   unsubscribe: function(remoteSubscriptions) {
     return this.post(Repository.originUrl + "/unsubscribe", {
-      subscriptionIds: Monarch.Util.map(remoteSubscriptions, function(remoteSubscription) {
+      subscriptionIds: _.map(remoteSubscriptions, function(remoteSubscription) {
         return remoteSubscription.id;
       })
     });
   },
 
   save: function() {
-    var commands = Monarch.Util.map(this.extractDirtyRecords(arguments), function(dirtyRecord) {
+    var commands = _.map(this.extractDirtyRecords(arguments), function(dirtyRecord) {
       return this.buildAppropriateCommand(dirtyRecord);
     }.bind(this));
     var batch = new Monarch.Http.CommandBatch(this, commands);
@@ -137,7 +137,7 @@ Monarch.constructor("Monarch.Http.Server", {
   stringifyJsonData: function(data) {
     if (!data) return null;
     var stringifiedData = {};
-    Monarch.Util.each(data, function(key, value) {
+    _.each(data, function(value, key) {
       if (typeof value != "string") value = JSON.stringify(value);
       stringifiedData[key] = value;
     });

@@ -4,7 +4,7 @@ Monarch.constructor("Monarch.Model.Tuple", {
   constructorProperties: {
     initializeFieldReaders: function() {
       var self = this;
-      Monarch.Util.each(this.projectedColumnsByName, function(name, projectedColumn) {
+      _.each(this.projectedColumnsByName, function(projectedColumn, name) {
         self.prototype[name] = function() {
           return this.field(projectedColumn).value();
         };

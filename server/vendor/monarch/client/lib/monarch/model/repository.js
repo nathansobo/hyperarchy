@@ -7,13 +7,13 @@ Monarch.constructor("Monarch.Model.Repository", {
   },
 
   pauseEvents: function() {
-    Monarch.Util.each(this.tables, function(name, table) {
+    _.each(this.tables, function(table) {
       table.pauseEvents();
     });
   },
 
   resumeEvents: function() {
-    Monarch.Util.each(this.tables, function(name, table) {
+    _.each(this.tables, function(table) {
       table.resumeEvents();
     });
   },
@@ -31,14 +31,14 @@ Monarch.constructor("Monarch.Model.Repository", {
 
   update: function(dataset) {
     var self = this;
-    Monarch.Util.each(dataset, function(tableName, tableDataset) {
+    _.each(dataset, function(tableDataset, tableName) {
       self.tables[tableName].updateContents(tableDataset);
     });
   },
 
   delta: function(dataset) {
     var self = this;
-    Monarch.Util.each(this.tables, function(tableName, table) {
+    _.each(this.tables, function(table, tableName) {
       var tableDataset = dataset[tableName] || {};
       table.deltaContents(tableDataset);
     });
@@ -87,20 +87,20 @@ Monarch.constructor("Monarch.Model.Repository", {
   },
 
   loadFixtures: function(fixtureDefinitions) {
-    Monarch.Util.each(fixtureDefinitions, function(tableName, fixtures) {
+    _.each(fixtureDefinitions, function(fixtures, tableName) {
       this.tables[tableName].loadFixtures(fixtures);
     }.bind(this));
   },
 
   clear: function() {
-    Monarch.Util.each(this.tables, function(globalName, table) {
+    _.each(this.tables, function(table) {
       table.clear();
     });
   },
 
   cloneSchema: function() {
     var clone = new Monarch.Model.Repository();
-    Monarch.Util.each(this.tables, function(globalName, table) {
+    _.each(this.tables, function(table) {
       clone.registerTable(table.cloneSchema());
     });
     return clone;

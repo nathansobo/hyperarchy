@@ -54,7 +54,7 @@ Monarch.constructor("FakeServer.FakeCommandBatch", {
   },
 
   generateFakeServerResponse: function() {
-    var primary = Monarch.Util.map(this.commands, function(command) {
+    var primary = _.map(this.commands, function(command) {
       if (command instanceof Monarch.Http.CreateCommand) {
         return Monarch.Util.extend({id: "generatedByFakeServer" + this.fakeServer.idCounter++}, command.fieldValues);
       } else if (command instanceof Monarch.Http.UpdateCommand) {

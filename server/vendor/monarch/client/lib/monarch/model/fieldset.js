@@ -11,7 +11,7 @@ Monarch.constructor("Monarch.Model.Fieldset", {
   initializeSyntheticFields: function() {
     var self = this;
     this.syntheticFieldsByColumnName = {};
-    Monarch.Util.each(this.record.table.syntheticColumnsByName, function(columnName, column) {
+    _.each(this.record.table.syntheticColumnsByName, function(column, columnName) {
       var signal = column.definition.call(self.record);
       self.syntheticFieldsByColumnName[columnName] = new Monarch.Model.SyntheticField(self, column, signal);
       self[columnName] = function() {
@@ -24,7 +24,7 @@ Monarch.constructor("Monarch.Model.Fieldset", {
   initializeFields: function() {
     var self = this;
     this.fieldsByColumnName = {};
-    Monarch.Util.each(this.record.table.columnsByName, function(columnName, column) {
+    _.each(this.record.table.columnsByName, function(column, columnName) {
       this.fieldsByColumnName[columnName] = this.createNewField(column);
       this[columnName] = function() {
         var field = this.field(columnName);

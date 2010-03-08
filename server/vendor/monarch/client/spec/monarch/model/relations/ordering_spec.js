@@ -27,7 +27,7 @@ Screw.Unit(function(c) { with(c) {
 
         it("returns the tuples of its #operand in the correct order", function() {
           var expectedIds = ["1", "2", "3", "4"];
-          var actualIds = Monarch.Util.map(ordering.tuples(), function() { return this.id() });
+          var actualIds = _.map(ordering.tuples(), function(tuple) { return tuple.id() });
           expect(actualIds).to(equal, expectedIds);
         });
       });
@@ -40,7 +40,7 @@ Screw.Unit(function(c) { with(c) {
 
         it("returns the tuples of its #operand in the correct order", function() {
           var expectedIds = ["4", "2", "3", "1"];
-          var actualIds = Monarch.Util.map(ordering.tuples(), function() { return this.id() });
+          var actualIds = _.map(ordering.tuples(), function(tuple) { return tuple.id() });
           expect(actualIds).to(equal, expectedIds);
         });
       });

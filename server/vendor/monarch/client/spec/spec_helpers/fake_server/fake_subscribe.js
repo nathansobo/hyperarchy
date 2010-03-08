@@ -13,7 +13,7 @@ Monarch.constructor("FakeServer.FakeSubscribe", {
   },
 
   simulateSuccess: function() {
-    this.future.triggerSuccess(Monarch.Util.map(this.relations, function(relation) {
+    this.future.triggerSuccess(_.map(this.relations, function(relation) {
       return new Monarch.Http.RemoteSubscription("fakeSubscription" + this.constructor.idCounter++, relation);
     }));
     this.fakeServer.removeRequest(this);

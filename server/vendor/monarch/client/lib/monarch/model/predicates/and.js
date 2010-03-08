@@ -14,7 +14,7 @@ Monarch.constructor("Monarch.Model.Predicates.And", Monarch.Model.Predicates.Pre
   wireRepresentation: function() {
     return {
       type: "and",
-      operands: Monarch.Util.map(this.operands, function(operand) {
+      operands: _.map(this.operands, function(operand) {
         return operand.wireRepresentation();
       })
     };

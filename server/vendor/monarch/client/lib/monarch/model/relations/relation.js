@@ -41,7 +41,7 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
       if (table) return new Monarch.Model.Relations.TableProjection(this, table);
     }
 
-    var projectedColumns = Monarch.Util.map(Monarch.Util.toArray(arguments), function(arg) {
+    var projectedColumns = _.map(Monarch.Util.toArray(arguments), function(arg) {
       if (arg instanceof Monarch.Model.ProjectedColumn) {
         return arg;
       } else if (arg instanceof Monarch.Model.Column) {
@@ -78,7 +78,7 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
 
   orderBy: function() {
     var self = this;
-    var orderByColumns = Monarch.Util.map(Monarch.Util.toArray(arguments), function(orderByColumn) {
+    var orderByColumns = _.map(Monarch.Util.toArray(arguments), function(orderByColumn) {
       if (orderByColumn instanceof Monarch.Model.OrderByColumn) {
         return orderByColumn;
       } else if (orderByColumn instanceof Monarch.Model.Column) {
@@ -129,7 +129,7 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
   },
 
   map: function(fn) {
-    return Monarch.Util.map(this.tuples(), fn);
+    return _.map(this.tuples(), fn);
   },
 
   any: function(fn) {
@@ -286,7 +286,7 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
   predicateFromHash: function(hash) {
     var self = this;
     var predicates = [];
-    Monarch.Util.each(hash, function(key, value) {
+    _.each(hash, function(value, key) {
       predicates.push(self.column(key).eq(value))
     });
 

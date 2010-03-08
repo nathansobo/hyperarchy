@@ -20,7 +20,7 @@ Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relation
     if (this.Tuples) return this.Tuples;
 
     this.tuplesByOperandRecordId = {};
-    return Monarch.Util.map(this.operand.allTuples(), function(operandTuple) {
+    return _.map(this.operand.allTuples(), function(operandTuple) {
       return this.tuplesByOperandRecordId[operandTuple.id()] = new this.tupleConstructor(operandTuple);
     }.bind(this));
   },
@@ -55,7 +55,7 @@ Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relation
   translateUpdateChanges: function(changes) {
     var self = this;
     var translatedChanges = {};
-    Monarch.Util.each(changes, function(operandColumnName, operandColumnChanges) {
+    _.each(changes, function(operandColumnChanges) {
       var projectedColumn = self.projectedColumnFromOperandColumn(operandColumnChanges.column);
       if (projectedColumn) {
         translatedChanges[projectedColumn.name()] = {
