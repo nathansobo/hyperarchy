@@ -109,13 +109,13 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
   },
 
   localTuples: function() {
-    return Monarch.Util.select(this.allTuples(), function(record) {
+    return _.filter(this.allTuples(), function(record) {
       return !record.locallyDestroyed;
     });
   },
 
   dirtyTuples: function() {
-    return Monarch.Util.select(this.allTuples(), function(record) {
+    return _.filter(this.allTuples(), function(record) {
       return record.dirty();
     });
   },

@@ -10,7 +10,7 @@ Monarch.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations
 
   allTuples: function() {
     if (this.Tuples) return this.Tuples;
-    return Monarch.Util.select(this.operand.allTuples(), function(tuple) {
+    return _.filter(this.operand.allTuples(), function(tuple) {
       return this.predicate.evaluate(tuple);
     }.bind(this));
   },

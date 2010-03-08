@@ -17,7 +17,7 @@ Screw.Unit(function(c) { with(c) {
         var expectedTuples = [];
         var operandTuples = operand.tuples();
 
-        var expectedTuples = Monarch.Util.select(operand.allTuples(), function(tuple) {
+        var expectedTuples = _.filter(operand.allTuples(), function(tuple) {
           return predicate.evaluate(tuple);
         });
 
