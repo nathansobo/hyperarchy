@@ -12,7 +12,7 @@ Monarch.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relation
   },
 
   allTuples: function() {
-    if (this.tuplesById) return Monarch.Util.values(this.tuplesById);
+    if (this.tuplesById) return _.values(this.tuplesById);
     var tuples = [];
 
     var leftTuples = this.leftOperand.allTuples().sort(function(a, b) {

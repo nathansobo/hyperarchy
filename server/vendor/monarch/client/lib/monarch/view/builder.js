@@ -106,7 +106,7 @@ Monarch.constructor("Monarch.View.Builder", {
   },
 
   extendWithProperties: function(jqueryFragment, properties) {
-    Monarch.Util.keys(properties, function(key) {
+    _.each(properties, function(value, key) {
       if (jqueryFragment[key]) jqueryFragment["_" + key] = jqueryFragment[key];
     });
     jQuery.extend(jqueryFragment, properties);

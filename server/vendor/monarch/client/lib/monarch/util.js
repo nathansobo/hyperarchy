@@ -12,32 +12,6 @@ Monarch.module("Monarch.Util", {
     return element;
   },
 
-  isEmpty: function(arrayOrHash) {
-    if (arrayOrHash.length) {
-      return arrayOrHash.length == 0;
-    } else {
-      return this.keys(arrayOrHash).length == 0;
-    }
-  },
-
-  keys: function(hash, optionalEachFunction) {
-    var keys = [];
-    for (key in hash) keys.push(key);
-    if (optionalEachFunction) {
-      _.each(keys, optionalEachFunction);
-    }
-    return keys;
-  },
-
-  values: function(hash, optionalEachFunction) {
-    var values = [];
-    for (key in hash) values.push(hash[key]);
-    if (optionalEachFunction) {
-      _.each(values, optionalEachFunction);
-    }
-    return values;
-  },
-
   select: function(array, fn) {
     var selected = [];
     _.each(array, function(elt) {

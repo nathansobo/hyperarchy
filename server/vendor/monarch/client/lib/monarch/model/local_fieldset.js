@@ -82,7 +82,7 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
     var changeset = this.batchedUpdates;
     this.batchedUpdates = null;
 
-    if (this.updateEventsEnabled && Monarch.Util.keys(changeset).length > 0) {
+    if (this.updateEventsEnabled && !_.isEmpty(changeset)) {
       if (this.record.onLocalUpdateNode) this.record.onLocalUpdateNode.publish(changeset);
       if (this.record.afterLocalUpdate) this.record.afterLocalUpdate(changeset);
       this.record.table.tupleUpdatedLocally(this.record, changeset);

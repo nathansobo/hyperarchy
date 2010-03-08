@@ -44,7 +44,7 @@ Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relation
     }));
     this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(operandRecord, operandChanges) {
       var changes = self.translateUpdateChanges(operandChanges);
-      if (Monarch.Util.isEmpty(changes)) return;
+      if (_.isEmpty(changes)) return;
       self.tupleUpdatedRemotely(self.tuplesByOperandRecordId[operandRecord.id()], changes);
     }));
     this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(operandRecord) {
