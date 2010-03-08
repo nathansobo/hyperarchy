@@ -6,7 +6,7 @@ Monarch.constructor("Monarch.Model.Predicates.And", Monarch.Model.Predicates.Pre
   },
 
   evaluate: function(record) {
-    return Monarch.Util.all(this.operands, function(operand) {
+    return _.all(this.operands, function(operand) {
       return operand.evaluate(record);
     });
   },

@@ -28,15 +28,15 @@ Screw.Unit(function(c) { with(c) {
 
         expect(allTuples.length).to(equal, 3);
 
-        expect(Monarch.Util.any(allTuples, function(tuple) {
+        expect(_.any(allTuples, function(tuple) {
           return tuple.record(Blog.table) === blog1 && tuple.record(BlogPost.table) === post1;
         })).to(beTrue);
 
-        expect(Monarch.Util.any(allTuples, function(tuple) {
+        expect(_.any(allTuples, function(tuple) {
           return tuple.record(Blog.table) === blog1 && tuple.record(BlogPost.table) === post2;
         })).to(beTrue);
 
-        expect(Monarch.Util.any(allTuples, function(tuple) {
+        expect(_.any(allTuples, function(tuple) {
           return tuple.record(Blog.table) === blog2 && tuple.record(BlogPost.table) === post3;
         })).to(beTrue);
       });

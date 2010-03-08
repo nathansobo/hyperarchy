@@ -38,22 +38,6 @@ Monarch.module("Monarch.Util", {
     return values;
   },
 
-  all: function(arrayOrHash, fn) {
-    if (arrayOrHash.length) {
-      return this.arrayAll(arrayOrHash, fn);
-    } else {
-      return this.hashAll(arrayOrHash, fn);
-    }
-  },
-
-  any: function(arrayOrHash, fn) {
-    if (arrayOrHash.length) {
-      return this.arrayAny(arrayOrHash, fn);
-    } else {
-      return this.hashAny(arrayOrHash, fn);
-    }
-  },
-
   select: function(array, fn) {
     var selected = [];
     _.each(array, function(elt) {
@@ -68,50 +52,6 @@ Monarch.module("Monarch.Util", {
 
   trim: function(string) {
     return jQuery.trim(string);
-  },
-
-  // private
-
-  arrayDetect: function(array, fn) {
-    for(var i = 0; i < array.length; i++) {
-      if (fn.call(array[i], array[i])) return array[i];
-    }
-    return null;
-  },
-
-  hashDetect: function(hash, fn) {
-    for (key in hash) {
-      if (fn.call(hash[key], key, hash[key])) return hash[key];
-    }
-    return null;
-  },
-  
-  arrayAll: function(array, fn) {
-    for(var i = 0; i < array.length; i++) {
-      if (!fn(array[i])) return false;
-    }
-    return true;
-  },
-
-  hashAll: function(hash, fn) {
-    for(var key in hash) {
-      if (!fn(key, hash[key])) return false;
-    }
-    return true;
-  },
-
-  arrayAny: function(array, fn) {
-    for(var i = 0; i < array.length; i++) {
-      if (fn(array[i])) return true;
-    }
-    return false;
-  },
-
-  hashAny: function(hash, fn) {
-    for(var key in hash) {
-      if (fn(key, hash[key])) return true;
-    }
-    return false;
   }
 });
 

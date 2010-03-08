@@ -133,7 +133,7 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
   },
 
   any: function(fn) {
-    return Monarch.Util.any(this.tuples(), fn);
+    return _.any(this.tuples(), fn);
   },
 
   empty: function() {

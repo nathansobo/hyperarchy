@@ -460,7 +460,7 @@ Screw.Unit(function(c) { with(c) {
               server.lastPost.simulateSuccess({primary: [null], secondary: []});
 
               expect(Blog.find('recipes')).to(beNull);
-              expect(Monarch.Util.any(Blog.table.Tuples, function(r) { r === record})).to(beFalse);
+              expect(_.any(Blog.table.Tuples, function(r) { r === record})).to(beFalse);
               expect('recipes' in Blog.table.tuplesById).to(beFalse);
 
               expect(beforeEventsCallback).to(haveBeenCalled);

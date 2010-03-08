@@ -10,7 +10,7 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
   },
 
   valid: function() {
-    return Monarch.Util.all(this.fieldsByColumnName, function(columnName, field) {
+    return _.all(this.fieldsByColumnName, function(field) {
       return field.valid();
     });
   },
@@ -53,7 +53,7 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
   },
 
   dirty: function() {
-    return Monarch.Util.any(this.fieldsByColumnName, function(name, field) {
+    return _.any(this.fieldsByColumnName, function(field) {
       return field.dirty();
     });
   },
