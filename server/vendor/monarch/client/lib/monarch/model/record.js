@@ -42,8 +42,8 @@ Monarch.constructor("Monarch.Model.Record", {
       options = options || {};
       var conditions = options.conditions || {};
 
-      var targetTableName = options.table || Monarch.Inflection.underscore(relationName);
-      var foreignKeyColumnName = options.key || Monarch.Inflection.singularize(this.table.globalName) + "Id";
+      var targetTableName = options.table || _.underscore(relationName);
+      var foreignKeyColumnName = options.key || _.singularize(this.table.globalName) + "Id";
 
       this.relatesToMany(relationName, function() {
         var targetTable = Repository.tables[targetTableName];
@@ -64,7 +64,7 @@ Monarch.constructor("Monarch.Model.Record", {
     },
 
     humanName: function() {
-      return Monarch.Inflection.humanize(this.basename);
+      return _.humanize(this.basename);
     },
 
     // private
@@ -91,7 +91,7 @@ Monarch.constructor("Monarch.Model.Record", {
     },
 
     determineGlobalName: function(recordConstructor) {
-      return Monarch.Inflection.pluralize(Monarch.Inflection.underscore(recordConstructor.basename));
+      return _.pluralize(_.underscore(recordConstructor.basename));
     }
   },
 
@@ -141,7 +141,7 @@ Monarch.constructor("Monarch.Model.Record", {
   },
 
   remotelyCreated: function(fieldValues) {
-    this.remote.update(this.camelizeKeys(fieldValues));
+    this.remote.update(_.camelizeKeys(fieldValues));
     this.isRemotelyCreated = true;
     this.remote.updateEventsEnabled = true;
     this.initializeRelations();
@@ -150,7 +150,7 @@ Monarch.constructor("Monarch.Model.Record", {
   },
 
   remotelyUpdated: function(fieldValues) {
-    this.remote.update(this.camelizeKeys(fieldValues));
+    this.remote.update(_.camelizeKeys(fieldValues));
   },
 
   remotelyDestroyed: function() {
@@ -204,7 +204,7 @@ Monarch.constructor("Monarch.Model.Record", {
   },
 
   assignValidationErrors: function(errorsByFieldName) {
-    this.local.assignValidationErrors(this.camelizeKeys(errorsByFieldName));
+    this.local.assignValidationErrors(_.camelizeKeys(errorsByFieldName));
     if (this.onInvalidNode) this.onInvalidNode.publish();
   },
 
@@ -317,22 +317,6 @@ Monarch.constructor("Monarch.Model.Record", {
     Monarch.Util.each(this.constructor.relationDefinitions, function(relationDefinition) {
       self.relationsByName[relationDefinition.name] = relationDefinition.definition.call(self);
     });
-  },
-
-  underscoreKeys: function(hash) {
-    var newHash = {};
-    _.each(hash, function(value, key) {
-      newHash[Monarch.Inflection.underscore(key)] = value;
-    });
-    return newHash;
-  },
-
-  camelizeKeys: function(hash) {
-    var newHash = {};
-    _.each(hash, function(value, key) {
-      newHash[Monarch.Inflection.camelize(key, true)] = value;
-    });
-    return newHash;
   }
 });
 

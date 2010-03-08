@@ -16,7 +16,7 @@ constructor("Views.Login", View.Template, {
   viewProperties: {
     loginSubmitted: function() {
       var self = this;
-      Server.post('/login', Monarch.Model.Record.prototype.underscoreKeys(this.fieldValues()))
+      Server.post('/login', _.underscoreKeys(this.fieldValues()))
         .onSuccess(function(data) {
           Application.currentUserIdEstablished(data.currentUserId);
           History.load('organization');

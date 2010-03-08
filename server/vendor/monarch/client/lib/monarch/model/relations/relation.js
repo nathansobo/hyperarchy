@@ -301,9 +301,9 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
 
   findJoinColumns: function(left, right) {
     var foreignKey;
-    if (foreignKey = right.column(Monarch.Inflection.singularize(left.globalName) + "Id")) {
+    if (foreignKey = right.column(_.singularize(left.globalName) + "Id")) {
       return [left.column("id"), foreignKey];
-    } else if (foreignKey = left.column(Monarch.Inflection.singularize(right.globalName) + "Id")) {
+    } else if (foreignKey = left.column(_.singularize(right.globalName) + "Id")) {
       return [foreignKey, right.column("id")];
     } else {
       throw new Error("No foreign key found for #joinTo operation");

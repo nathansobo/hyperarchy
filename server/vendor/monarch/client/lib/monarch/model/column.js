@@ -23,7 +23,7 @@ Monarch.constructor("Monarch.Model.Column", {
     return {
       type: "column",
       table: this.table.globalName,
-      name: Monarch.Inflection.underscore(this.name)
+      name: _.underscore(this.name)
     };
   },
 

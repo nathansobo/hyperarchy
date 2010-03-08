@@ -27,14 +27,14 @@ Screw.Unit(function(c) { with(c) {
 
         expect(callback).toNot(haveBeenCalled);
 
-        future["trigger" + Monarch.Inflection.capitalize(eventType)].call(future);
+        future["trigger" + _.capitalize(eventType)].call(future);
         expect(callback).to(haveBeenCalled, once);
       });
     });
 
     context("when the event has already been triggered", function() {
       it("invokes the given callback immediately", function() {
-        future["trigger" + Monarch.Inflection.capitalize(eventType)].call(future);
+        future["trigger" + _.capitalize(eventType)].call(future);
 
         var callback = mockFunction("callback");
         future[eventType].call(future, callback);

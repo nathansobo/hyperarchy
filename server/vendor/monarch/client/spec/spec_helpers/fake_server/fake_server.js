@@ -86,9 +86,9 @@ Monarch.constructor("FakeServer", Monarch.Http.Server, {
   },
 
   removeRequest: function(request) {
-    var requestsArray = this[Monarch.Inflection.pluralize(request.type)];
+    var requestsArray = this[_.pluralize(request.type)];
     Monarch.Util.remove(requestsArray, request);
-    this["last" + Monarch.Inflection.capitalize(request.type)] = requestsArray[requestsArray.length - 1];
+    this["last" + _.capitalize(request.type)] = requestsArray[requestsArray.length - 1];
   },
 
   // private
@@ -100,8 +100,8 @@ Monarch.constructor("FakeServer", Monarch.Http.Server, {
   },
 
   addRequest: function(request) {
-    var requestsArray = this[Monarch.Inflection.pluralize(request.type)];
+    var requestsArray = this[_.pluralize(request.type)];
     requestsArray.push(request);
-    this["last" + Monarch.Inflection.capitalize(request.type)] = request;
+    this["last" + _.capitalize(request.type)] = request;
   }
 });
