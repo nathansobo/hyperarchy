@@ -4,7 +4,7 @@ constructor("Controllers.Application", {
     this.views = {
       login: Views.Login.toView(),
       signup: Views.Signup.toView(),
-      organization: Views.Organization.toView()
+      organizations: Views.Organizations.toView()
     };
     History.onChange(function(path) {
       this.navigate(path);

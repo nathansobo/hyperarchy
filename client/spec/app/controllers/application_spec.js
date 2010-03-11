@@ -35,11 +35,11 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
-      context("when called with 'organization'", function() {
-        it("shows the elections view and hides the others", function() {
-          controller.navigate("organization");
+      context("when called with 'organizations/:organization_id'", function() {
+        it("shows the organizations view and hides the others, then calls #navigate on the view with the given :organization_id", function() {
+          controller.navigate("organizations");
           expect(controller.body.children().length).to(equal, 1);
-          expect(controller.body.children("#organization").length).to(equal, 1);
+          expect(controller.body.children("#organizations").length).to(equal, 1);
         });
       });
     });
