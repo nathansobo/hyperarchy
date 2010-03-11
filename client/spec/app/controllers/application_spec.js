@@ -42,6 +42,10 @@ Screw.Unit(function(c) { with(c) {
           expect(controller.body.children().length).to(equal, 1);
           expect(controller.body.children("#organizations").length).to(equal, 1);
           expect(controller.views.organizations.navigate).to(haveBeenCalled, withArgs("meta"));
+
+          mock(controller.body, 'append');
+          controller.navigate("organizations/restaurant");
+          expect(controller.body.append).toNot(haveBeenCalled);
         });
       });
 

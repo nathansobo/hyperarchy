@@ -1,4 +1,3 @@
-make elections bookmarkable
 rankings are persisted across page refreshes
 add _ to the closure surrounding every monarch file
 attempt to convert comet hub to use the cramp library

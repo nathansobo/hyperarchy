@@ -4,7 +4,7 @@
 Monarch.constructor("Monarch.Model.Record", {
   constructorProperties: {
     initialize: function() {
-      this.delegateConstructorMethods('find', 'fetch', 'tuples', 'each', 'any', 'onLocalUpdate', 'onRemoteInsert',
+      this.delegateConstructorMethods('find', 'fetch', 'tuples', 'first', 'each', 'any', 'onLocalUpdate', 'onRemoteInsert',
                                       'onRemoteUpdate', 'onRemoteRemove', 'where', 'orderBy', 'project', 'empty',
                                       'table');
     },

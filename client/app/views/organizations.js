@@ -8,10 +8,10 @@ constructor("Views.Organizations", View.Template, {
         div({'class': "grid2 prefix8 omega"}, function() {
           span("organization:");
           select()
+            .ref("organizationSelect")
             .change(function(view) {
-              view.organizationChanged();
-            })
-            .ref("organizationSelect");
+              view.organizationSelectChanged();
+            });
         });
       });
 
@@ -33,29 +33,40 @@ constructor("Views.Organizations", View.Template, {
     initialize: function() {
       var self = this;
       this.electionsView.candidatesView = this.candidatesView;
-
-      Organization.fetch()
-        .afterEvents(function() {
-          Organization.each(function(organization) {
-            self.organizationSelect.appendView(function(b) {
-              b.option({value: organization.id()}, organization.name());
-            });
+      this.fetchingOrganizations = Organization.fetch();
+      this.fetchingOrganizations.afterEvents(function() {
+        Organization.each(function(organization) {
+          self.organizationSelect.appendView(function(b) {
+            b.option({value: organization.id()}, organization.name());
           });
-          self.organizationChanged();  
         });
+        delete self.fetchingOrganizations;
+      });
     },
 
     navigate: function(organizationId) {
-      
-    },
-
-    selectedOrganization: function() {
-      return Organization.find(this.organizationSelect.val());
-    },
-
-    organizationChanged: function() {
       var self = this;
-      this.electionsView.elections(this.selectedOrganization().elections());
+      if (this.fetchingOrganizations) {
+        this.fetchingOrganizations.afterEvents(function() {
+          self.navigate(organizationId);
+        });
+        return;
+      }
+
+      if (organizationId) {
+        this.displayOrganization(organizationId);
+      } else {
+        History.load("organizations/" + Organization.first().id());
+      }
+    },
+
+    displayOrganization: function(organizationId) {
+      if (this.organizationSelect.val() != organizationId) this.organizationSelect.val(organizationId);
+      this.electionsView.elections(Organization.find(organizationId).elections());
+    },
+
+    organizationSelectChanged: function() {
+      History.load("organizations/" + this.organizationSelect.val());
     }
   }
 });

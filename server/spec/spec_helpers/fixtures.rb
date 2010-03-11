@@ -17,6 +17,9 @@ FIXTURES = {
   :organizations => {
     :meta => {
       :name => "Meta Hyperarchy"  
+    },
+    :restaurunt => {
+      :name => "Restaurant"
     }
   },
 

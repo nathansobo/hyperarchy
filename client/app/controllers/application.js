@@ -12,15 +12,21 @@ constructor("Controllers.Application", {
   },
 
   navigate: function(path) {
-    this.body.empty();
     if (path == "") {
-      this.body.append(this.views.login);
+      this.switchViews(this.views.login);
     } else {
       var pathParts = path.split("/");
       var view = this.views[pathParts[0]];
-      this.body.append(view);
+      this.switchViews(view)
       if (_.isFunction(view.navigate)) view.navigate(pathParts[1]);
     }
+  },
+
+  switchViews: function(view) {
+    if (this.currentView === view) return;
+    this.body.empty();
+    this.body.append(view);
+    this.currentView = view;
   },
 
   currentUserIdEstablished: function(currentUserId) {

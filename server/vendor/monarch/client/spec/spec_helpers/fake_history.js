@@ -25,6 +25,7 @@ Monarch.constructor("FakeHistory", {
   },
 
   load: function(path) {
-    this.onChangeNode.publish(path)
+    this.path = path;
+    this.onChangeNode.publish(path);
   }
 });
