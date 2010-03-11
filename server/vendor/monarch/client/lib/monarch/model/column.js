@@ -30,6 +30,8 @@ Monarch.constructor("Monarch.Model.Column", {
   convertValueForField: function(value) {
     if (this.type == "datetime" && value && typeof value == "number") {
       return new Date(value);
+    } else if (this.type == "key" && !Monarch.Model.allowStringKeys && typeof value == "string") {
+      return parseInt(value);
     } else {
       return value;
     }

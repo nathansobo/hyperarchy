@@ -21,4 +21,8 @@
 //= require "model/relations"
 //= require "model/predicates"
 
+Monarch.module("Monarch.Model", {
+  allowStringKeys: false
+});
+
 })(Monarch);

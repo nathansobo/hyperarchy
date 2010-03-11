@@ -15,7 +15,7 @@ Screw.Unit(function(c) { with(c) {
       it("automatically gives the subconstructor an 'id' Column with a type of 'string'", function() {
         expect(Blog.id).to(beAnInstanceOf, Monarch.Model.Column);
         expect(Blog.id.name).to(equal, "id");
-        expect(Blog.id.type).to(equal, "string");
+        expect(Blog.id.type).to(equal, "key");
       });
 
       it("is registered in Repository, and has its table registered in Repository.tables by its globalName", function() {

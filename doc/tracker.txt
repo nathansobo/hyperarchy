@@ -6,3 +6,8 @@ add _ to the closure surrounding every monarch file
 attempt to convert comet hub to use the cramp library
 add super to module system
 turn module system into an underscore.js plugin and release it
+
+
+deferred issues
+---------------
+checking for the existence of the session every single request? shouldn't that at least cache it in the identity map?

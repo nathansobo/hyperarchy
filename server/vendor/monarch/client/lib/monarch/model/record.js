@@ -11,7 +11,7 @@ Monarch.constructor("Monarch.Model.Record", {
 
     extended: function(subconstructor) {
       subconstructor.table = new Monarch.Model.Relations.Table(this.determineGlobalName(subconstructor), subconstructor);
-      subconstructor.column("id", "string");
+      subconstructor.column("id", "key");
       subconstructor.relationDefinitions = [];
       Repository.registerTable(subconstructor.table);
     },

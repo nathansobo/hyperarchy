@@ -1,7 +1,7 @@
 constructor("Election", Model.Record, {
   constructorInitialize: function() {
     this.columns({
-      organizationId: 'string',
+      organizationId: 'key',
       body: 'string'
     });
 

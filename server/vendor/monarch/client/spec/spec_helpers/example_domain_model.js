@@ -5,8 +5,8 @@ Screw.Unit(function(c) {
         constructorInitialize: function() {
           this.columns({
             name: "string",
-            userId: "string",
-            ownerId: "string",
+            userId: "key",
+            ownerId: "key",
             startedAt: "datetime"
           });
 
@@ -32,7 +32,7 @@ Screw.Unit(function(c) {
         constructorInitialize: function() {
           this.columns({
             name: "string",
-            blogId: "string",
+            blogId: "key",
             body: "string"
           });
         }

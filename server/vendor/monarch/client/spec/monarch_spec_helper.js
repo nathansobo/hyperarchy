@@ -5,6 +5,7 @@
 
 Screw.Unit(function(c) {
   c.init(function() {
+    Monarch.Model.allowStringKeys = true;
     c.useFakeServer();
     window.COMETCLIENTID = "fake-comet-client-id-from-monarch-spec-helper";
   });

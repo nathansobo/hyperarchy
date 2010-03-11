@@ -10,6 +10,31 @@ Screw.Unit(function(c) { with(c) {
       remoteField = record.remote.field('fullName');
     });
 
+    describe("#value(newValue)", function() {
+      context("when the type of the field is 'datetime'", function() {
+        it("coerces integers to Dates", function() {
+          var timeMillis = new Date().getTime();
+          record.signedUpAt(timeMillis);
+          expect(record.signedUpAt().getTime()).to(equal, timeMillis);
+        });
+      });
+
+      context("when the type of the field is 'key' and Monarch.Model.allow_string_keys is false", function() {
+        before(function() {
+          Monarch.Model.allowStringKeys = false;
+        });
+
+        after(function() {
+          Monarch.Model.allowStringKeys = true;
+        });
+
+        it("coerces strings to integers", function() {
+          var blog = Blog.table.createFromRemote({id: "1"});
+          expect(blog.id() === 1).to(beTrue);
+        });
+      });
+    });
+
     describe("when the #value is updated", function() {
       var updateCallback, oldValue;
 
@@ -25,17 +50,6 @@ Screw.Unit(function(c) { with(c) {
           expect(updateCallback).to(haveBeenCalled, withArgs("Barbie", oldValue));
         });
       });
-
-//      context("if update events are disabled on the Field's Fieldset", function() {
-//        init(function() {
-//          record.remote.disableUpdateEvents();
-//        });
-//
-//        it("does not trigger #onRemoteUpdate callbacks with the new and old value", function() {
-//          expect(updateCallback).toNot(haveBeenCalled);
-//        });
-//      });
     });
-
   });
 }});
