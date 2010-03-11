@@ -81,13 +81,13 @@ module Model
     def schema_type
       case type
       when :key
-        :integer
+        Integer
       when :string
-        :string
+        String
       when :integer
-        :integer
+        Integer
       when :datetime
-        :datetime
+        Time
       end
     end
     

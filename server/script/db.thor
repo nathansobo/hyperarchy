@@ -14,6 +14,7 @@ class Db < Thor
   def load_fixtures
     require "#{dir}/../config/environments/development"
     require "#{dir}/../spec/spec_helpers/fixtures"
+    Model::Repository::clear_tables
     Model::Repository::load_fixtures(FIXTURES)
   end
 

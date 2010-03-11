@@ -3,6 +3,10 @@ class User < Model::Record
   column :email_address, :string
   column :encrypted_password, :string
 
+  def self.encrypt_password(unencrypted_password)
+    BCrypt::Password.create(unencrypted_password).to_s
+  end
+
   relates_to_many :elections do
     Election.table
   end
@@ -12,7 +16,7 @@ class User < Model::Record
   end
 
   def password=(unencrypted_password)
-    self.encrypted_password = BCrypt::Password.create(unencrypted_password).to_s
+    self.encrypted_password = self.class.encrypted_password(unencrypted_password)
   end
 
   def password
