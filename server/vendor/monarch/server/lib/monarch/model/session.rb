@@ -5,6 +5,6 @@ class Session < Model::Record
   belongs_to :user
 
   def before_create
-    self.session_id = id
+    self.session_id = Guid.new.to_s
   end
 end

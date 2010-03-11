@@ -9,7 +9,7 @@ module Http
         @session = Session.create
         @resource = Resource.new
         resource.current_request = Http::TestRequest.new
-        resource.current_request.session_id = session.id
+        resource.current_request.session_id = session.session_id
       end
 
       it "returns the Session with an id of #current_request's session_id" do

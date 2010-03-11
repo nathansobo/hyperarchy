@@ -13,7 +13,7 @@ module Model
 
       describe "#all" do
         it "returns the results of executing the union query" do
-           Set.new(union.all).should == Set.new(operand_1.all | operand_2.all)
+          Set.new(union.all).should == Set.new(operand_1.all | operand_2.all)
         end
       end
 
@@ -35,9 +35,9 @@ module Model
               from
                 blogs, blog_posts
               where
-                blogs.user_id = \"jan\"
+                blogs.user_id = #{"jan".hash}
                 and blogs.id = blog_posts.blog_id
-                and blog_posts.blog_id = \"grain\"
+                and blog_posts.blog_id = #{"grain".hash}
               union
               select distinct
                 blog_posts.id as id,
@@ -49,9 +49,9 @@ module Model
               from
                 blogs, blog_posts
               where
-                blogs.user_id = \"jan\"
+                blogs.user_id = #{"jan".hash}
                 and blogs.id = blog_posts.blog_id
-                and blog_posts.blog_id = \"vegetable\"
+                and blog_posts.blog_id = #{"vegetable".hash}
             }.gsub(/\s+/, " ").strip
           end
         end

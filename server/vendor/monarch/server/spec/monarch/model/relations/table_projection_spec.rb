@@ -61,7 +61,7 @@ module Model
                 blog_posts
               where
                 blogs.id = blog_posts.blog_id
-                and blogs.user_id = "jan"
+                and blogs.user_id = #{"jan".hash}
             }.gsub(/[ \n]+/, " ").strip
           end
         end
@@ -80,7 +80,7 @@ module Model
       describe "#to_sql" do
         context "when the composed relation contains only one TableProjection" do
           it "generates a query that selects the columns of #projected_table and includes all joined tables in its from clause" do
-            projection.to_sql.should == %{select distinct blogs.id as id, blogs.title as title, blogs.user_id as user_id from blogs, blog_posts where blogs.id = blog_posts.blog_id and blogs.id = "grain"}
+            projection.to_sql.should == %{select distinct blogs.id as id, blogs.title as title, blogs.user_id as user_id from blogs, blog_posts where blogs.id = blog_posts.blog_id and blogs.id = #{"grain".hash}}
           end
         end
 
@@ -99,7 +99,7 @@ module Model
                 blog_posts
               where
                 blog_posts.blog_id = blogs.id
-                and blogs.id = "grain"
+                and blogs.id = #{"grain".hash}
             }.gsub(/[ \n]+/, " ").strip
           end
         end

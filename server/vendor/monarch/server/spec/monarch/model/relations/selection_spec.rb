@@ -31,7 +31,7 @@ module Model
             selection.operand.should == repository.resolve_table_name(:blog_posts)
             selection.predicate.class.should == Predicates::Eq
             selection.predicate.left_operand.should == BlogPost[:blog_id]
-            selection.predicate.right_operand.should == "grain"
+            selection.predicate.right_operand.should == "grain".hash
           end
         end
       end
@@ -48,11 +48,11 @@ module Model
       describe "#all" do
         context "when #operand is a Table" do
           it "executes an appropriate SQL query against the database and returns Records corresponding to its results" do
-            BlogPost.table.all.detect {|t| t.blog_id == "grain"}.should_not be_nil
+            BlogPost.table.all.detect {|t| t.blog_id == "grain".hash}.should_not be_nil
             all = selection.all
             all.should_not be_empty
             all.each do |record|
-              record.blog_id.should == "grain"
+              record.blog_id.should == "grain".hash
             end
           end
         end
@@ -61,7 +61,7 @@ module Model
           it "executes an appropriate SQL query against the database and returns Records corresponding to its results" do
             record = composite_selection.all.first
             record.should_not be_nil
-            record.blog_id.should == "grain"
+            record.blog_id.should == "grain".hash
             record.body.should == "Barley"
           end
         end
@@ -69,7 +69,7 @@ module Model
 
       describe "#create(field_values)" do
         it "introduces an additional field value to match its predicate if needed" do
-          mock(operand).create(:blog_id => "grain", :body => "Barley", :title => "Barely Barley")
+          mock(operand).create(:blog_id => "grain".hash, :body => "Barley", :title => "Barely Barley")
           composite_selection.create(:title => "Barely Barley")
         end
       end

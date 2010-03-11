@@ -57,7 +57,7 @@ module Model
       describe "instance methods" do
         describe "#to_sql" do
           it "returns the left_operand.to_sql = right_operand.to_sql" do
-            Eq.new(BlogPost[:blog_id], "grain").to_sql.should == %{blog_posts.blog_id = "grain"}
+            Eq.new(BlogPost[:blog_id], "grain").to_sql.should == %{blog_posts.blog_id = #{"grain".hash}}
           end
 
           context "when one of the operands is nil" do

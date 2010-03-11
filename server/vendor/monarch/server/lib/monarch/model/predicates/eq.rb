@@ -24,6 +24,7 @@ module Model
 
       def initialize(left_operand, right_operand)
         @left_operand, @right_operand = left_operand, right_operand
+        convert_string_to_integer_if_comparing_to_key
       end
 
       def to_sql
@@ -70,6 +71,14 @@ module Model
         return left_operand unless left_operand.instance_of?(ConcreteColumn)
         return right_operand unless right_operand.instance_of?(ConcreteColumn)
         raise "No scalar operands"
+      end
+
+      def convert_string_to_integer_if_comparing_to_key
+        if left_operand.instance_of?(ConcreteColumn) && left_operand.type == :key && right_operand.instance_of?(String)
+          @right_operand = left_operand.convert_value_for_storage(right_operand)
+        elsif right_operand.instance_of?(ConcreteColumn) && right_operand.type == :key && left_operand.instance_of?(String)
+          @left_operand = right_operand.convert_value_for_storage(left_operand)
+        end 
       end
     end
   end

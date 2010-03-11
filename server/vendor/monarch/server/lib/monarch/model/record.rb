@@ -6,7 +6,7 @@ module Model
       attr_accessor :table
       def inherited(subclass)
         subclass.relation = Repository.new_table(subclass.basename.underscore.pluralize.to_sym, subclass)
-        subclass.column(:id, :string)
+        subclass.column(:id, :key)
       end
 
       def table
@@ -80,7 +80,8 @@ module Model
     delegate :table, :to => "self.class"
 
     def initialize(field_values = {})
-      unsafe_initialize(default_field_values.merge(field_values).merge(:id => Guid.new.to_s))
+      field_values.delete(:id)
+      unsafe_initialize(default_field_values.merge(field_values))
     end
 
     def unsafe_initialize(field_values)

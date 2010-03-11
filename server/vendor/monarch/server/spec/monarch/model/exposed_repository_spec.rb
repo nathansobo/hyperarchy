@@ -36,7 +36,8 @@ module Model
 
         response.should be_ok
         response.headers.should == { 'Content-Type' => 'application/json'}
-        JSON.parse(response.body).should == { 'successful' => true, 'data' => dataset}
+
+        JSON.parse(response.body).should == { 'successful' => true, 'data' => JSON.parse(dataset.to_json)}
       end
     end
 
@@ -171,7 +172,7 @@ module Model
           it "returns a security error and does not perform the update" do
             response = Http::Response.new(*exposed_repository.mutate(:operations => [['update', 'blogs', 'grain', { 'user_id' => 'wil' }]].to_json))
             response.body_from_json.should == {"data"=>{"errors"=>"Security violation", "index"=>0}, "successful"=>false}
-            Blog.find('grain').reload.user_id.should == 'jan'
+            Blog.find('grain').reload.user_id.should == 'jan'.hash
           end
         end
       end
@@ -383,7 +384,7 @@ module Model
 
         blogs_dataset_fragment = dataset["blogs"]
         blogs_dataset_fragment.size.should == 1
-        blogs_dataset_fragment["grain"].should == Blog.find("grain").wire_representation
+        blogs_dataset_fragment["grain".hash].should == Blog.find("grain").wire_representation
       end
 
       it "can populate a dataset from exposed projections" do

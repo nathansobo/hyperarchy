@@ -28,7 +28,7 @@ module Model
           predicate = BlogPost[:id].eq("grain_quinoa")
           predicate.class.should == Predicates::Eq
           predicate.left_operand.should == BlogPost[:id]
-          predicate.right_operand.should == "grain_quinoa"
+          predicate.right_operand.should == "grain_quinoa".hash
         end
       end
     end

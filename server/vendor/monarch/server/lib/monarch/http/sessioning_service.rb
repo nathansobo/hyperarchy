@@ -12,7 +12,7 @@ module Http
         request.session_id = Array(request.cookies["_session_id"]).first
         app.call(request.env)
       else
-        session_id = Session.create.id
+        session_id = Session.create.session_id
         request.session_id = session_id
         response = Response.new(*app.call(request.env))
         response.cookies["_session_id"] = session_id

@@ -16,11 +16,9 @@ module Model
     end
 
     def read(relation)
-#      start = Time.now
       records = connection[relation.to_sql].map do |field_values|
         relation.build_record_from_database(field_values)
       end
-#      puts "#{relation.to_sql} #{(Time.now - start) * 1000}"
       records
     end
 

@@ -27,7 +27,7 @@ module Model
         end
 
         it "generates a select with a where clause having all conditions and'ed together" do
-          query.to_sql.should == %{select #{query.select_clause_sql} from blog_posts where blog_posts.blog_id = "grain" and blog_posts.body = "Peaches"}
+          query.to_sql.should == %{select #{query.select_clause_sql} from blog_posts where blog_posts.blog_id = #{"grain".hash} and blog_posts.body = "Peaches"}
         end
       end
     end

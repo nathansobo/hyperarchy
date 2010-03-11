@@ -53,7 +53,7 @@ module Model
       def insert(record)
         record.before_create if record.respond_to?(:before_create)
         return record if !record.valid?
-        Origin.insert(self, record.field_values_by_column_name)
+        record.id = Origin.insert(self, record.field_values_by_column_name)
         on_insert_node.publish(record)
         local_identity_map[record.id] = record if local_identity_map
         record.mark_clean
@@ -98,7 +98,7 @@ module Model
       end
 
       def build_record_from_database(field_values)
-        id = field_values[:id]
+        id = Integer(field_values[:id])
 
         if record_from_global_id_map = global_identity_map[id]
           record_from_global_id_map

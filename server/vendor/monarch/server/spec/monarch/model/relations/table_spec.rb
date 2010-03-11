@@ -10,8 +10,8 @@ module Model
       end
       
       describe "#initialize" do
-        it "automatically has a string-valued :id column" do
-          table.concrete_columns_by_name[:id].type.should == :string
+        it "automatically has an :id column" do
+          table.concrete_columns_by_name[:id].type.should == :key
         end
       end
 
@@ -56,8 +56,9 @@ module Model
       end
 
       describe "#create" do
-        it "instantiates an instance of #tuple_class with the given concrete_columns, #inserts it, and returns it in a non-dirty state" do
+        it "instantiates an instance of #tuple_class with the given concrete_columns, #inserts it, and returns it in a non-dirty state with its id assigned" do
           record = table.create(:body => "Brown Rice", :blog_id => "grain")
+          record.id.should_not be_nil
           table.find(table.column(:body).eq("Brown Rice")).should == record
           record.body.should == "Brown Rice"
           record.should be_valid
@@ -118,15 +119,15 @@ module Model
 
           retrieved_record_1 = all.find {|t| t.id == record_1_id }
           retrieved_record_1.body.should == "Quinoa"
-          retrieved_record_1.blog_id.should == "grain"
+          retrieved_record_1.blog_id.should == "grain".hash
 
           retrieved_record_2 = all.find {|t| t.id == record_2_id }
           retrieved_record_2.body.should == "White Rice"
-          retrieved_record_2.blog_id.should == "grain"
+          retrieved_record_2.blog_id.should == "grain".hash
 
           retrieved_record_3 = all.find {|t| t.id == record_3_id }
           retrieved_record_3.body.should == "Pearled Barley"
-          retrieved_record_3.blog_id.should == "grain"
+          retrieved_record_3.blog_id.should == "grain".hash
         end
       end
 
@@ -207,7 +208,7 @@ module Model
 
             on_update_record, on_update_changeset = on_update_calls.first
             on_update_record.should == record
-            on_update_changeset.wire_representation.should == {"body" => "Actually quinoa is not REALLY a grain, it's a seed", "blog_id" => "vegetable"}
+            on_update_changeset.wire_representation.should == {"body" => "Actually quinoa is not REALLY a grain, it's a seed", "blog_id" => "vegetable".hash}
 
             on_remove_calls.should be_empty
           end

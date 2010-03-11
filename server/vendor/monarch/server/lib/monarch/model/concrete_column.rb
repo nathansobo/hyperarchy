@@ -43,24 +43,17 @@ module Model
     end
 
     def create_column(generator)
-      generator.column name, *column_type_and_options
-    end
-
-    def column_type_and_options
-      case type
-      when :key
-        [:string, { :autoincrement => nil, :null => false }]
-      when :string
-        [:string]
-      when :integer
-        [:integer]
-      when :datetime
-        [:datetime]
+      if name == :id
+        generator.primary_key(name, schema_type)
+      else
+        generator.column(name, schema_type)
       end
     end
 
     def convert_value_for_storage(value)
       case type
+      when :key
+        convert_key_value_for_storage(value)
       when :integer
         value.to_i
       when :datetime
@@ -85,6 +78,34 @@ module Model
     end
 
     protected
+    def schema_type
+      case type
+      when :key
+        :integer
+      when :string
+        :string
+      when :integer
+        :integer
+      when :datetime
+        :datetime
+      end
+    end
+    
+    def convert_key_value_for_storage(value)
+      case value
+      when String
+        if value =~ /^-?\d+$/
+          Integer(value)
+        else
+          value.hash
+        end
+      when Integer, NilClass
+        value
+      else
+        raise "Key assignment to #{value.inspect} invalid. You can only store integers and strings (which are converted to integers via hash) in :key fields"
+      end
+    end
+
     def convert_datetime_value_for_storage(value)
       case value
       when Time

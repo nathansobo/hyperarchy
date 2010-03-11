@@ -15,7 +15,7 @@ module Model
       it "defines an :id ConcreteColumn on the subclass" do
         BlogPost[:id].class.should == ConcreteColumn
         BlogPost[:id].name.should == :id
-        BlogPost[:id].type.should == :string
+        BlogPost[:id].type.should == :key
       end
     end
 
@@ -107,7 +107,7 @@ module Model
       describe ".unsafe_new" do
         it "instantiates a Record with the given field values without overriding the value of :id" do
           record = BlogPost.unsafe_new(:id => "foo", :body => "Rice")
-          record.id.should == "foo"
+          record.id.should == "foo".hash
           record.body.should == "Rice"
         end
       end
@@ -132,10 +132,10 @@ module Model
       describe "#initialize" do
         it "assigns the ConcreteField values in the given hash" do
           record.get_field_value(BlogPost[:body]).should == "Quinoa"
-          record.get_field_value(BlogPost[:blog_id]).should == "grain"
+          record.get_field_value(BlogPost[:blog_id]).should == "grain".hash
         end
 
-        it "assigns #id to a new guid" do
+        it "assigns #id to the auto-generated id" do
           record.id.should_not be_nil
         end
 
