@@ -1,5 +1,5 @@
 class Session < Model::Record
-  column :user_id, :string
+  column :user_id, :key
 
   belongs_to :user
 end
