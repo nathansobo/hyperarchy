@@ -3,5 +3,6 @@ convert id's to integers
 make elections bookmarkable
 rankings are persisted across page refreshes
 add _ to the closure surrounding every monarch file
+attempt to convert comet hub to use the cramp library
 add super to module system
 turn module system into an underscore.js plugin and release it

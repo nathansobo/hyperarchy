@@ -42,14 +42,20 @@ module Model
       AggregationExpression.new('count', self)
     end
 
-    def ruby_type
+    def create_column(generator)
+      generator.column name, *column_type_and_options
+    end
+
+    def column_type_and_options
       case type
+      when :key
+        [:string, { :autoincrement => nil, :null => false }]
       when :string
-        String
+        [:string]
       when :integer
-        Integer
+        [:integer]
       when :datetime
-        Time
+        [:datetime]
       end
     end
 

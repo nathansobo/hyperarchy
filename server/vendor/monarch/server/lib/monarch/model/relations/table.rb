@@ -142,7 +142,7 @@ module Model
         columns_to_generate = concrete_columns
         Origin.create_table(global_name) do
           columns_to_generate.each do |c|
-            column c.name, c.ruby_type
+            c.create_column(self)
           end
         end
       end
