@@ -13,7 +13,7 @@ Monarch.constructor("Monarch.Http.CometClient", {
     var xhr = jQuery.ajax({
       type: "post",
       url: Server.cometHubUrl,
-      data: { cometClientId: window.COMETCLIENTID, transport: "xhrStream" },
+      data: { cometClientId: window.COMET_CLIENT_ID, transport: "xhrStream" },
       complete: function() { self.connect() }
     });
 

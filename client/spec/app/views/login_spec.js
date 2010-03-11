@@ -20,11 +20,11 @@ Screw.Unit(function(c) { with(c) {
 
       });
 
-      it("posts the form field values to /login", function() {
+      it("posts the form field values to /login after underscoring the keys", function() {
         expect(Server.posts.length).to(equal, 1);
         expect(Server.lastPost.url).to(equal, "/login");
         expect(Server.lastPost.data).to(equal, {
-          emailAddress: "cobham@gmail.com",
+          email_address: "cobham@gmail.com",
           password: "spectrum"
         });
       });
