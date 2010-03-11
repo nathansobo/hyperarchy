@@ -21,3 +21,9 @@ require "#{dir}/model/composite_tuple"
 require "#{dir}/model/sql"
 require "#{dir}/model/session"
 require "#{dir}/model/user"
+
+module Model
+  class << self
+    attr_accessor :convert_strings_to_keys
+  end
+end

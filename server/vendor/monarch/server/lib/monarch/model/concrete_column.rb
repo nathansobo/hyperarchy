@@ -93,14 +93,14 @@ module Model
     
     def convert_key_value_for_storage(value)
       case value
-      when String
-        if value =~ /^-?\d+$/
-          Integer(value)
-        else
-          value.hash
-        end
       when Integer, NilClass
         value
+      when String
+        if Model.convert_strings_to_keys
+          value.to_key
+        else
+          Integer(value)
+        end
       else
         raise "Key assignment to #{value.inspect} invalid. You can only store integers and strings (which are converted to integers via hash) in :key fields"
       end

@@ -12,6 +12,7 @@ end
 
 Origin.connection = Sequel.sqlite
 Model::Repository.create_schema
+Model::convert_strings_to_keys = true
 
 Spec::Runner.configure do |config|
   config.mock_with :rr

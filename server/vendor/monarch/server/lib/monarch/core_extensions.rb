@@ -46,6 +46,14 @@ class String
   def path_starts_with?(prefix)
     split('/').starts_with?(prefix.split('/'))
   end
+
+  def to_key
+    if self =~ /^-?\d+$/
+      Integer(self)
+    else
+      hash
+    end
+  end
 end
 
 class Array
