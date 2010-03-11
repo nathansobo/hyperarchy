@@ -37,9 +37,21 @@ Screw.Unit(function(c) { with(c) {
 
       context("when called with 'organizations/:organization_id'", function() {
         it("shows the organizations view and hides the others, then calls #navigate on the view with the given :organization_id", function() {
+          mock(controller.views.organizations, 'navigate');
+          controller.navigate("organizations/meta");
+          expect(controller.body.children().length).to(equal, 1);
+          expect(controller.body.children("#organizations").length).to(equal, 1);
+          expect(controller.views.organizations.navigate).to(haveBeenCalled, withArgs("meta"));
+        });
+      });
+
+      context("when called with 'organizations'", function() {
+        it("shows the organizations view and hides the others, then calls #navigate on the view with null", function() {
+          mock(controller.views.organizations, 'navigate');
           controller.navigate("organizations");
           expect(controller.body.children().length).to(equal, 1);
           expect(controller.body.children("#organizations").length).to(equal, 1);
+          expect(controller.views.organizations.navigate).to(haveBeenCalled, withArgs(null));
         });
       });
     });

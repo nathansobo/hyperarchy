@@ -16,7 +16,10 @@ constructor("Controllers.Application", {
     if (path == "") {
       this.body.append(this.views.login);
     } else {
-      this.body.append(this.views[path]);
+      var pathParts = path.split("/");
+      var view = this.views[pathParts[0]];
+      this.body.append(view);
+      if (_.isFunction(view.navigate)) view.navigate(pathParts[1]);
     }
   },
 

@@ -24,7 +24,7 @@ constructor("Views.Signup", View.Template, {
       Server.post('/users', this.fieldValues())
         .onSuccess(function(data) {
           Application.currentUserIdEstablished(data.currentUserId);
-          History.load('organization');
+          History.load('organizations');
         });
     }
   }

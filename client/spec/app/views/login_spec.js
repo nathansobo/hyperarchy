@@ -40,7 +40,7 @@ Screw.Unit(function(c) { with(c) {
           Server.lastPost.simulateSuccess({
             currentUserId: "billy"
           });
-          expect(History.load).to(haveBeenCalled, withArgs("organization"));
+          expect(History.load).to(haveBeenCalled, withArgs("organizations"));
         });
       })
 

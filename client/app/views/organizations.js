@@ -45,6 +45,10 @@ constructor("Views.Organizations", View.Template, {
         });
     },
 
+    navigate: function(organizationId) {
+      
+    },
+
     selectedOrganization: function() {
       return Organization.find(this.organizationSelect.val());
     },
