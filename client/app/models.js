@@ -1,3 +1,5 @@
+//= require "models/user"
 //= require "models/election"
 //= require "models/organization"
 //= require "models/candidate"
+//= require "models/ranking"

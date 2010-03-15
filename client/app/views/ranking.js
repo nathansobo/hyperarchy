@@ -16,8 +16,16 @@ constructor("Views.Ranking", View.Template, {
         self.rankingOl.sortable({
           connectWith: "#candidates ol",
 
+          receive: function(event, ui) {
+            console.debug("received", ui.item.index());
+          },
+
+          remove: function(event, ui) {
+            console.debug("removed", ui.item.index());
+          },
+          
           update: function(event, ui) {
-            console.debug(ui.item.attr('candidateId'));
+            console.debug("updated", ui.item.index());
           }
         });
       });
