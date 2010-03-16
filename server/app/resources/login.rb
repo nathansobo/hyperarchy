@@ -5,7 +5,7 @@ module Resources
         if user.password == attributes[:password]
           current_session.user_id = user.id
           current_session.save
-          ajax_success("current_user_id" => user.id)
+          ajax_success({ "current_user_id" => user.id }, user)
         else
           ajax_failure(:errors => { :password => "Incorrect password for the given email address." })
         end

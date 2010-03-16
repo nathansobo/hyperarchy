@@ -27,7 +27,7 @@ module Http
         "successful" => successful,
       }
       response_body["data"] = data if data
-      response_body["dataset"] = build_relational_dataset(records_or_relations) if records_or_relations
+      response_body["dataset"] = build_relational_dataset(Array(records_or_relations)) if records_or_relations
       [200, {"Content-Type" => "application/json"}, response_body.to_json]
     end
 

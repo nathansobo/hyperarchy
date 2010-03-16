@@ -16,7 +16,7 @@ class User < Model::Record
   end
 
   def password=(unencrypted_password)
-    self.encrypted_password = self.class.encrypted_password(unencrypted_password)
+    self.encrypted_password = self.class.encrypt_password(unencrypted_password)
   end
 
   def password

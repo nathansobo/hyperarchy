@@ -11,7 +11,7 @@ module Resources
 
       context "if a User with the given email address exists" do
         context "if the given password matches that User" do
-          it "sets the current_user and returns a successful ajax response with the current_user_id" do
+          it "sets the current_user and returns a successful ajax response with the current_user_id and the user record" do
             current_user.should be_nil
             post "/login", :email_address => user.email_address, :password => "spectrum"
             current_user.should == user
@@ -20,6 +20,11 @@ module Resources
               "successful" => true,
               "data" => {
                 "current_user_id" => user.id  
+              },
+              "dataset" => {
+                "users" => {
+                  user.id.to_s => user.wire_representation  
+                }
               }
             }
           end
