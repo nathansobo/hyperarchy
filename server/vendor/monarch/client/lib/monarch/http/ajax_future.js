@@ -3,21 +3,44 @@
 Monarch.constructor("Monarch.Http.AjaxFuture", {
   initialize: function() {
     this.onSuccessNode = new Monarch.SubscriptionNode();
+    this.beforeEventsNode = new Monarch.SubscriptionNode();
+    this.afterEventsNode = new Monarch.SubscriptionNode();
     this.onFailureNode = new Monarch.SubscriptionNode();
+
   },
 
   handleResponse: function(response) {
     if (response.successful) {
-      this.triggerSuccess(response.data);
+      if (response.records) {
+        this.updateRepositoryAndTriggerCallbacks(response.data, function() {
+          Repository.update(response.records);
+        });
+      } else {
+        this.triggerSuccess(response.data);
+      }
     } else {
       this.triggerFailure(response.data);
     }
   },
 
-  triggerSuccess: function(data) {
+  triggerSuccess: function(data, dataset) {
     this.triggered = true;
     this.successful = true;
     this.data = data;
+    this.onSuccessNode.publish(data);
+  },
+
+  updateRepositoryAndTriggerCallbacks: function(data, repositoryOperation) {
+    this.triggered = true;
+    this.repositoryUpdated = true;
+    this.successful = true;
+    this.data = data;
+
+    Repository.pauseEvents();
+    repositoryOperation();
+    this.beforeEventsNode.publish(data);
+    Repository.resumeEvents();
+    this.afterEventsNode.publish(data);
     this.onSuccessNode.publish(data);
   },
 
@@ -28,20 +51,38 @@ Monarch.constructor("Monarch.Http.AjaxFuture", {
     this.onFailureNode.publish(data);
   },
 
-  onSuccess: function(successCallback) {
+  onSuccess: function(callback) {
     if (this.triggered) {
-      if (this.successful) successCallback(this.data);
+      if (this.successful) callback(this.data);
     } else {
-      this.onSuccessNode.subscribe(successCallback);
+      this.onSuccessNode.subscribe(callback);
     }
     return this;
   },
 
-  onFailure: function(failureCallback) {
+  onFailure: function(callback) {
     if (this.triggered) {
-      if (!this.successful) failureCallback(this.data);
+      if (!this.successful) callback(this.data);
     } else {
-      this.onFailureNode.subscribe(failureCallback);
+      this.onFailureNode.subscribe(callback);
+    }
+    return this;
+  },
+
+  beforeEvents: function(callback) {
+    if (this.triggered) {
+      if (this.repositoryUpdated) callback(this.data);
+    } else {
+      this.beforeEventsNode.subscribe(callback);
+    }
+    return this;
+  },
+
+  afterEvents: function(callback) {
+    if (this.triggered) {
+      if (this.repositoryUpdated) callback(this.data);
+    } else {
+      this.afterEventsNode.subscribe(callback);
     }
     return this;
   }

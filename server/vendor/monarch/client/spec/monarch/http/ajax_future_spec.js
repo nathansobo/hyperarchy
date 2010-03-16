@@ -9,21 +9,75 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#handleResponse", function() {
-      context("when the 'successful' key is true in the given response", function() {
-        it("invokes success callbacks  and does not invoke failure callbacks", function() {
-          var successCallback = mockFunction("success callback");
-          var failureCallback = mockFunction("failure callback");
-          future.onSuccess(successCallback);
-          future.onFailure(failureCallback);
+      context("when the 'successful' key is true in the given response and it also (optionally) includes a 'records' dataset", function() {
+        useExampleDomainModel();
 
-          var data = { foo: "bar" };
-          future.handleResponse({
-            successful: true,
-            data: data
+        context("when the response also includes records", function() {
+          it("invokes success callbacks with the response's 'data' hash after updating the repository with the dataset and does not invoke failure callbacks", function() {
+            var insertCallback = mockFunction("create callback");
+            User.onRemoteInsert(insertCallback);
+
+            var beforeEventsCallback = mockFunction("before events callback", function() {
+              expect(User.find('stephanie').fullName()).to(equal, "Stephanie Wambach");
+              expect(insertCallback).toNot(haveBeenCalled);
+            });
+
+            var afterEventsCallback = mockFunction("after events callback", function() {
+              expect(insertCallback).to(haveBeenCalled);
+            });
+
+            var successCallback = mockFunction("success callback", function() {
+              expect(afterEventsCallback).to(haveBeenCalled);
+              expect(User.find('stephanie').fullName()).to(equal, "Stephanie Wambach");
+            });
+
+            var failureCallback = mockFunction("failure callback");
+            future.beforeEvents(beforeEventsCallback);
+            future.afterEvents(afterEventsCallback);
+            future.onSuccess(successCallback);
+            future.onFailure(failureCallback);
+
+            var data = { foo: "bar" };
+            future.handleResponse({
+              successful: true,
+              data: data,
+              records: {
+                users: {
+                  stephanie: { id: "stephanie", fullName: "Stephanie Wambach" }
+                }
+              }
+            });
+
+            expect(beforeEventsCallback).to(haveBeenCalled, withArgs(data));
+            expect(afterEventsCallback).to(haveBeenCalled, withArgs(data));
+            expect(successCallback).to(haveBeenCalled, withArgs(data));
+            expect(failureCallback).toNot(haveBeenCalled);
           });
+        });
 
-          expect(successCallback).to(haveBeenCalled, withArgs(data));
-          expect(failureCallback).toNot(haveBeenCalled);
+        context("when the response does not include records", function() {
+          it("invokes only success callbacks with the response's 'data' hash and does not invoke failure, beforeEvents, or afterEvents callbacks", function() {
+            var beforeEventsCallback = mockFunction("before events callback");
+            var afterEventsCallback = mockFunction("after events callback");
+            var successCallback = mockFunction("success callback");
+            var failureCallback = mockFunction("failure callback");
+
+            future.beforeEvents(beforeEventsCallback);
+            future.afterEvents(afterEventsCallback);
+            future.onSuccess(successCallback);
+            future.onFailure(failureCallback);
+
+            var data = { foo: "bar" };
+            future.handleResponse({
+              successful: true,
+              data: data
+            });
+
+            expect(successCallback).to(haveBeenCalled, withArgs(data));
+            expect(beforeEventsCallback).toNot(haveBeenCalled);
+            expect(afterEventsCallback).toNot(haveBeenCalled);
+            expect(failureCallback).toNot(haveBeenCalled);
+          });
         });
       });
 

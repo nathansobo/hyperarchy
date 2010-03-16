@@ -635,25 +635,25 @@ Screw.Unit(function(c) { with(c) {
     describe("request methods", function() {
       var requestMethod;
 
-      scenario(".post(url, data)", function() {
+      scenario("#post(url, data)", function() {
         init(function() {
           requestMethod = 'post';
         });
       });
 
-      scenario(".get(url, data)", function() {
+      scenario("#get(url, data)", function() {
         init(function() {
           requestMethod = 'get';
         });
       });
 
-      scenario(".put(url, data)", function() {
+      scenario("#put(url, data)", function() {
         init(function() {
           requestMethod = 'put';
         });
       });
 
-      scenario(".delete(url, data)", function() {
+      scenario("#delete(url, data)", function() {
         init(function() {
           requestMethod = 'delete_';
         });
