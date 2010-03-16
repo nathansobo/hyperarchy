@@ -16,19 +16,31 @@ constructor("Views.Ranking", View.Template, {
         self.rankingOl.sortable({
           connectWith: "#candidates ol",
 
-          receive: function(event, ui) {
-            console.debug("received", ui.item.index());
-          },
-
-          remove: function(event, ui) {
-            console.debug("removed", ui.item.index());
-          },
-          
           update: function(event, ui) {
-            console.debug("updated", ui.item.index());
+            self.handleUpdate(ui.item);
           }
         });
       });
+    },
+
+    handleUpdate: function(item) {
+      if (item.parents("#ranking").length > 0) return this.handleRemoval(item);
+
+      var candidateId = item.attr('candidateId');
+      var predecessorId = item.prev().attr('candidateId');
+      var successorId = item.next().attr('candidateId');
+
+      var candidate = candidateId ? Candidate.find(candidateId) : null;
+      var predecessor = predecessorId ? Candidate.find(predecessorId) : null;
+      var successor = successorId ? Candidate.find(successorId) : null;
+
+      
+
+
+    },
+
+    handleRemoval: function(item) {
+      console.debug("REMOVAL", item.attr('candidateId'));
     },
 
     registerResizeCallbacks: function() {
