@@ -8,22 +8,11 @@ Monarch.constructor("Monarch.Http.Server", {
   },
 
   fetch: function(relations) {
-    var fetchFuture = new Monarch.Http.RepositoryUpdateFuture();
-
-    this.get(Repository.originUrl + "/fetch", {
+    return this.get(Repository.originUrl + "/fetch", {
       relations: _.map(relations, function(relation) {
         return relation.wireRepresentation();
       })
-    })
-      .onSuccess(function(data) {
-        Repository.pauseEvents();
-        Repository.update(data);
-        fetchFuture.triggerBeforeEvents();
-        Repository.resumeEvents();
-        fetchFuture.triggerAfterEvents();
-      });
-
-    return fetchFuture;
+    });
   },
 
   subscribe: function(relations) {

@@ -9,7 +9,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#handleResponse", function() {
-      context("when the 'successful' key is true in the given response and it also (optionally) includes a 'records' dataset", function() {
+      context("when the 'successful' key is true in the given response and it also (optionally) includes a dataset", function() {
         useExampleDomainModel();
 
         context("when the response also includes records", function() {
@@ -41,7 +41,7 @@ Screw.Unit(function(c) { with(c) {
             future.handleResponse({
               successful: true,
               data: data,
-              records: {
+              dataset: {
                 users: {
                   stephanie: { id: "stephanie", fullName: "Stephanie Wambach" }
                 }

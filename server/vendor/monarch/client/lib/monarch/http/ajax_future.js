@@ -11,9 +11,9 @@ Monarch.constructor("Monarch.Http.AjaxFuture", {
 
   handleResponse: function(response) {
     if (response.successful) {
-      if (response.records) {
+      if (response.dataset) {
         this.updateRepositoryAndTriggerCallbacks(response.data, function() {
-          Repository.update(response.records);
+          Repository.update(response.dataset);
         });
       } else {
         this.triggerSuccess(response.data);
@@ -23,7 +23,7 @@ Monarch.constructor("Monarch.Http.AjaxFuture", {
     }
   },
 
-  triggerSuccess: function(data, dataset) {
+  triggerSuccess: function(data) {
     this.triggered = true;
     this.successful = true;
     this.data = data;

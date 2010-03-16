@@ -91,7 +91,7 @@ Screw.Unit(function(c) { with(c) {
             events.push('Repository.resumeEvents')
           });
 
-          server.lastGet.simulateSuccess(dataset);
+          server.lastGet.simulateSuccess(null, dataset);
 
           expect(Repository.update).to(haveBeenCalled, withArgs(dataset));
 

@@ -7,11 +7,12 @@ Monarch.constructor("FakeServer.FakeRequest", {
     this.future = new Monarch.Http.AjaxFuture();
   },
 
-  simulateSuccess: function(data) {
+  simulateSuccess: function(data, dataset) {
     this.fakeServer.removeRequest(this);
     this.future.handleResponse({
       successful: true,
-      data: data
+      data: data,
+      dataset: dataset
     });
   },
 
