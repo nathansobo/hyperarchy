@@ -8,7 +8,7 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
 
   perform: function() {
     var self = this;
-    this.future = new Monarch.Http.RepositoryUpdateFuture();
+    this.future = new Monarch.Http.AjaxFuture();
 
     if (this.commands.length > 0) {
       this.server.post(Repository.originUrl + "/mutate", { operations: this.wireRepresentation() })
@@ -19,8 +19,7 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
           self.handleUnsuccessfulResponse(responseData);
         });
     } else {
-      this.future.triggerBeforeEvents();
-      this.future.triggerAfterEvents();
+      this.future.updateRepositoryAndTriggerCallbacks(null, _.identity);
     }
 
     return this.future;
@@ -35,21 +34,20 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
   },
 
   handleSuccessfulResponse: function(responseData) {
-    Repository.pauseEvents();
-    _.each(this.commands, function(command, index) {
-      command.complete(responseData.primary[index]);
-    }.bind(this));
-    Repository.mutate(responseData.secondary);
-    this.future.triggerBeforeEvents(this.commands[0].record);
-    Repository.resumeEvents();
-    this.future.triggerAfterEvents(this.commands[0].record);
+    var self = this;
+    this.future.updateRepositoryAndTriggerCallbacks(this.commands[0].record, function() {
+      _.each(self.commands, function(command, index) {
+        command.complete(responseData.primary[index]);
+      });
+      Repository.mutate(responseData.secondary);
+    });
   },
 
   handleUnsuccessfulResponse: function(responseData) {
     _.each(this.commands, function(command, index) {
       if (index == responseData.index) {
         command.handleFailure(responseData.errors);
-        this.future.triggerOnFailure(command.record);
+        this.future.triggerFailure(command.record);
       } else {
         command.handleFailure(null);
       }

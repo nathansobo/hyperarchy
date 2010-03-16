@@ -5,16 +5,14 @@ Monarch.constructor("FakeServer.FakeFetch", {
     this.url = url;
     this.relations = relations;
     this.fakeServer = fakeServer;
-    this.future = new Monarch.Http.RepositoryUpdateFuture();
+    this.future = new Monarch.Http.AjaxFuture();
   },
 
   simulateSuccess: function() {
-    var dataset = this.fetchDatasetFromFixtureRepository();
-    Repository.pauseEvents();
-    Repository.update(dataset);
-    this.future.triggerBeforeEvents();
-    Repository.resumeEvents();
-    this.future.triggerAfterEvents();
+    this.future.handleResponse({
+      successful: true,
+      dataset: this.fetchDatasetFromFixtureRepository()
+    })
     this.fakeServer.removeRequest(this);
   },
 

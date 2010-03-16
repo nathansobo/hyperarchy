@@ -6,7 +6,7 @@ Monarch.constructor("Monarch.Http.AjaxFuture", {
     this.beforeEventsNode = new Monarch.SubscriptionNode();
     this.afterEventsNode = new Monarch.SubscriptionNode();
     this.onFailureNode = new Monarch.SubscriptionNode();
-
+    this.onCompleteNode = new Monarch.SubscriptionNode();
   },
 
   handleResponse: function(response) {
@@ -28,6 +28,7 @@ Monarch.constructor("Monarch.Http.AjaxFuture", {
     this.successful = true;
     this.data = data;
     this.onSuccessNode.publish(data);
+    this.onCompleteNode.publish(data);
   },
 
   updateRepositoryAndTriggerCallbacks: function(data, repositoryOperation) {
@@ -42,13 +43,15 @@ Monarch.constructor("Monarch.Http.AjaxFuture", {
     Repository.resumeEvents();
     this.afterEventsNode.publish(data);
     this.onSuccessNode.publish(data);
+    this.onCompleteNode.publish(data);
   },
-
+  
   triggerFailure: function(data) {
     this.triggered = true;
     this.successful = false;
     this.data = data;
     this.onFailureNode.publish(data);
+    this.onCompleteNode.publish(data);
   },
 
   onSuccess: function(callback) {
@@ -65,6 +68,15 @@ Monarch.constructor("Monarch.Http.AjaxFuture", {
       if (!this.successful) callback(this.data);
     } else {
       this.onFailureNode.subscribe(callback);
+    }
+    return this;
+  },
+
+  onComplete: function(callback) {
+    if (this.triggered) {
+      callback(this.data);
+    } else {
+      this.onCompleteNode.subscribe(callback);
     }
     return this;
   },

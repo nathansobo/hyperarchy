@@ -14,11 +14,10 @@ Monarch.constructor("FakeServer.FakeCommandBatch", {
   },
 
   perform: function() {
-    this.future = new Monarch.Http.RepositoryUpdateFuture();
+    this.future = new Monarch.Http.AjaxFuture();
 
     if (this.commands.length == 0) {
-      this.future.triggerBeforeEvents();
-      this.future.triggerAfterEvents();
+      this.future.updateRepositoryAndTriggerCallbacks(null, _.identity);
     } else {
       if (this.fakeServer.auto) {
         this.simulateSuccess();
@@ -36,18 +35,15 @@ Monarch.constructor("FakeServer.FakeCommandBatch", {
   },
 
   simulateSuccess: function(serverResponse) {
+    var self = this;
     if (!serverResponse) serverResponse = this.generateFakeServerResponse();
 
-    Repository.pauseEvents();
-
-    _.each(this.commands, function(command, index) {
-      command.complete(serverResponse.primary[index]);
+    this.future.updateRepositoryAndTriggerCallbacks(this.commands[0].record, function() {
+      _.each(self.commands, function(command, index) {
+        command.complete(serverResponse.primary[index]);
+      });
+      Repository.mutate(serverResponse.secondary)
     });
-    Repository.mutate(serverResponse.secondary)
-
-    this.future.triggerBeforeEvents(this.commands[0].record);
-    Repository.resumeEvents();
-    this.future.triggerAfterEvents(this.commands[0].record);
 
     if (this.fakeMutation) this.fakeServer.removeRequest(this.fakeMutation);
     this.fakeServer.removeRequest(this);
