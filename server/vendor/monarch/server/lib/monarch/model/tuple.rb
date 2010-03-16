@@ -104,6 +104,15 @@ module Model
       end
     end
 
+    def add_to_relational_dataset(dataset)
+      dataset[exposed_name.to_s] ||= {}
+      dataset[exposed_name.to_s][id] = wire_representation
+    end
+
+    def exposed_name
+      relation.exposed_name
+    end
+
     protected
     attr_reader :concrete_fields_by_column
     def initialize_fields

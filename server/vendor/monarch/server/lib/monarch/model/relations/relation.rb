@@ -97,9 +97,8 @@ module Model
       end
 
       def add_to_relational_dataset(dataset)
-        dataset[exposed_name] ||= {}
         all.each do |record|
-          dataset[exposed_name][record.id] = record.wire_representation
+          record.add_to_relational_dataset(dataset)
         end
       end
 

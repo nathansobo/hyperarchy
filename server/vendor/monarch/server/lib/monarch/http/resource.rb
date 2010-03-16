@@ -14,20 +14,30 @@ module Http
       current_session.user
     end
 
-    def ajax_success(data)
-      ajax_response(true, data)
+    def ajax_success(data, records_or_relations=nil)
+      ajax_response(true, data, records_or_relations)
     end
 
-    def ajax_failure(data)
-      ajax_response(false, data)
+    def ajax_failure(data, records_or_relations=nil)
+      ajax_response(false, data, records_or_relations)
     end
 
-    def ajax_response(successful, data)
-      response = {
+    def ajax_response(successful, data, records_or_relations=nil)
+      response_body = {
         "successful" => successful,
         "data" => data
       }
-      [200, {}, response.to_json]
+      response_body["records"] = build_relational_dataset(records_or_relations) if records_or_relations
+      [200, {}, response_body.to_json]
     end
+
+    def build_relational_dataset(records_or_relations)
+      dataset = {}
+      records_or_relations.each do |r|
+        r.add_to_relational_dataset(dataset)
+      end
+      dataset
+    end
+
   end
 end

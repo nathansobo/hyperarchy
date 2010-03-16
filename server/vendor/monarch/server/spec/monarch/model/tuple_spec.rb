@@ -16,5 +16,23 @@ module Model
         instance_1.should == instance_2
       end
     end
+
+    describe "#add_to_relational_dataset(dataset)" do
+      it "writes the record into the relation keyed by the #exposed_name of its relation and its id" do
+
+        relation = BlogPost.project(BlogPost[:id], BlogPost[:title], BlogPost[:body])
+        relation.exposed_name = "exposed_posts"
+        record = relation.first
+
+        dataset = {}
+        record.add_to_relational_dataset(dataset)
+
+        dataset.should == {
+          'exposed_posts' => {
+            record.id => record.wire_representation
+          }
+        }
+      end
+    end
   end
 end
