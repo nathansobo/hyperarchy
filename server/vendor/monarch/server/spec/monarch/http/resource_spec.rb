@@ -28,13 +28,13 @@ module Http
           status, headers, body = resource.ajax_response(true, { 'foo' => "bar" }, [user, user.blogs])
 
           status.should == 200
-          headers.should == {}
+          headers.should == {"Content-Type" => "application/json"}
           body_from_json = JSON.parse(body)
 
           body_from_json['data'].should == { 'foo' => "bar"}
-          body_from_json['records']['users'][user.id.to_s].should == user.wire_representation
+          body_from_json['dataset']['users'][user.id.to_s].should == user.wire_representation
           user.blogs.each do |blog|
-            body_from_json['records']['blogs'][blog.id.to_s].should == blog.wire_representation
+            body_from_json['dataset']['blogs'][blog.id.to_s].should == blog.wire_representation
           end
         end
       end

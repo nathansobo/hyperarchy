@@ -29,15 +29,17 @@ module Model
 
     describe "#fetch" do
       it "parses the 'relations' parameter from a JSON string into an array of wire representations and performs a #fetch with it, returning the resulting dataset as a JSON string" do
+        publicize exposed_repository, :perform_fetch
         relations = [{ "type" => "table", "name" => "blog_posts"}]
-        dataset = nil
-        mock.proxy(exposed_repository).perform_fetch(relations) {|result| dataset = result}
         response = Http::Response.new(*exposed_repository.fetch({:relations => relations.to_json}))
 
         response.should be_ok
         response.headers.should == { 'Content-Type' => 'application/json'}
 
-        JSON.parse(response.body).should == { 'successful' => true, 'data' => JSON.parse(dataset.to_json)}
+        dataset = exposed_repository.perform_fetch(relations)
+
+        JSON.parse(dataset.to_json)
+        response.body_from_json.should == { 'successful' => true, 'dataset' => JSON.parse(dataset.to_json)}
       end
     end
 

@@ -31,7 +31,7 @@ module Model
 
     def fetch(params)
       relation_wire_representations = JSON.parse(params[:relations])
-      [200, headers, { :successful => true, :data => perform_fetch(relation_wire_representations)}.to_json]
+      ajax_success(nil, build_relations_from_wire_representations(relation_wire_representations))
     end
 
     def mutate(params)
@@ -141,11 +141,7 @@ module Model
     end
 
     def perform_fetch(relation_wire_representations)
-      dataset = {}
-      build_relations_from_wire_representations(relation_wire_representations).each do |relation|
-        relation.add_to_relational_dataset(dataset)
-      end
-      dataset
+      build_relational_dataset(build_relations_from_wire_representations(relation_wire_representations))
     end
 
     def build_relations_from_wire_representations(representations)

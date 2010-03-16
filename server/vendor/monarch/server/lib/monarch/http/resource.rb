@@ -25,10 +25,10 @@ module Http
     def ajax_response(successful, data, records_or_relations=nil)
       response_body = {
         "successful" => successful,
-        "data" => data
       }
-      response_body["records"] = build_relational_dataset(records_or_relations) if records_or_relations
-      [200, {}, response_body.to_json]
+      response_body["data"] = data if data
+      response_body["dataset"] = build_relational_dataset(records_or_relations) if records_or_relations
+      [200, {"Content-Type" => "application/json"}, response_body.to_json]
     end
 
     def build_relational_dataset(records_or_relations)
@@ -38,6 +38,5 @@ module Http
       end
       dataset
     end
-
   end
 end
