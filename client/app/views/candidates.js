@@ -53,13 +53,10 @@ constructor("Views.Candidates", View.Template, {
       var height = $(window).height() - this.widgetContent.offset().top - 10;
       this.candidatesOl.height(height);
     },
-    
-    election: function(election) {
-      if (arguments.length == 0) {
-        return this._election;
-      } else {
-        var self = this;
-        this._election = election;
+
+
+    election: {
+      afterWrite: function(election) {
         election.candidates().fetch()
           .afterEvents(function() {
             self.populateCandidates();

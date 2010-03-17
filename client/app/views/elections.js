@@ -31,12 +31,9 @@ constructor("Views.Elections", View.Template, {
       this.widgetContent.height(height);
     },
 
-    elections: function(elections) {
-      if (arguments.length == 0) {
-        return this.Elections;
-      } else {
+    elections: {
+      afterWrite: function(elections) {
         var self = this;
-        this.Elections = elections;
         this.electionsOl.html("");
         elections.fetch()
           .afterEvents(function() {

@@ -8,6 +8,8 @@ constructor("Views.Rankings", View.Template, {
   }},
 
   viewProperties: {
+    attrAccessors: ["election"],
+
     initialize: function() {
       var self = this;
       this.registerResizeCallbacks();
@@ -21,14 +23,6 @@ constructor("Views.Rankings", View.Template, {
           }
         });
       });
-    },
-
-    election: function(election) {
-      if (arguments.length == 0) {
-        return this._election;
-      } else {
-        return this._election = election;
-      }
     },
 
     handleUpdate: function(item) {

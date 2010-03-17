@@ -1,33 +1,25 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.ConcreteField", Monarch.Model.Field, {
-  value: function(value) {
-    if (arguments.length == 0) {
-      return this.Value;
-    } else {
-      this.assignValue(value)
-      return value;
+  value: {
+    writer: function(value) {
+      value = this.column.convertValueForField(value);
+      if (this.valueEquals(value)) return;
+      var oldValue = this._value;
+      this._value = value;
+      this.valueAssigned(this._value, oldValue);
     }
   },
 
   // protected
 
   valueEquals: function(value) {
-    if (this.column.type == "datetime" && this.Value && value) {
-      return this.Value.getTime() == value.getTime();
+    if (this.column.type == "datetime" && this.value() && value) {
+      return this.value().getTime() == value.getTime();
     }
-    return this.Value == value;
-  },
-
-  assignValue: function(value) {
-    value = this.column.convertValueForField(value);
-    if (!this.valueEquals(value)) {
-      var oldValue = this.Value;
-      this.Value = value;
-      this.valueAssigned(this.Value, oldValue);
-    }
-    return value;
+    return this.value() == value;
   }
+
 });
 
 })(Monarch);

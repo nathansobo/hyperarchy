@@ -2,7 +2,7 @@
 
 make elections bookmarkable and test the result of their selection (assigning to candidates / rankings views)
 
-implement attr reader / writers
+add context parameter to futures / subscription nodes
 add belongsTo, which defines reader method, plus writer method that sets the foreign key, convert id updates to use it when appropriate
 
 add a __ builder object which builds views with a single top-level method call __.li({candidateId: "foo"});
