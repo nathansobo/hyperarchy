@@ -7,7 +7,7 @@ Screw.Unit(function(c) { with(c) {
 
     init(function() {
       localField = Blog.find('recipes').field('name');
-      remoteField = localField.RemoteField;
+      remoteField = localField.remoteField();
       transformer = null;
     });
 

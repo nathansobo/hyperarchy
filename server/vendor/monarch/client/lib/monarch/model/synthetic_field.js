@@ -9,13 +9,15 @@ Monarch.constructor("Monarch.Model.SyntheticField", Monarch.Model.Field, {
     this.subscribeToFieldUpdates();
   },
 
-  value: function(value) {
-    if (arguments.length == 0) {
+
+  value: {
+    reader: function() {
       return this.local ? this.signal.localValue() : this.signal.remoteValue();
-    } else if (this.column.setter) {
-      this.column.setter.call(this.fieldset.record, value);
-    } else {
-      throw new Error("No setter method defined on the synthetic column " + this.column.name);
+    },
+
+    writer: function(value) {
+      if (!this.column.setter) throw new Error("No setter method defined on the synthetic column " + this.column.name);
+      return this.column.setter.call(this.fieldset.record, value);
     }
   },
 

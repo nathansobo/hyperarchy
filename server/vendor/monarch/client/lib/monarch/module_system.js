@@ -127,8 +127,7 @@ Monarch.ModuleSystem = {
         return reader.call(this);
       } else {
         var oldValue = this[fieldName];
-        writer.call(this, value);
-        var newValue = this[fieldName];
+        var newValue = writer.call(this, value) || this[fieldName];
         if (afterWriteHook) afterWriteHook.call(this, newValue, oldValue);
         return newValue;
       }

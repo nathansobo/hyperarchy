@@ -1,6 +1,8 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.LocalField", Monarch.Model.ConcreteField, {
+  attrAccessors: ['remoteField'],
+
   initialize: function(fieldset, column) {
     this.fieldset = fieldset;
     this.column = column;
@@ -8,16 +10,8 @@ Monarch.constructor("Monarch.Model.LocalField", Monarch.Model.ConcreteField, {
     this.updateEventsEnabled = true;
   },
 
-  remoteField: function(remoteField) {
-    if (arguments.length == 0) {
-      return this.RemoteField
-    } else {
-      return this.RemoteField = remoteField;
-    }
-  },
-
   onRemoteUpdate: function(callback) {
-    return this.RemoteField.onUpdate(callback);
+    return this.remoteField().onUpdate(callback);
   },
 
   dirty: function() {
@@ -68,7 +62,7 @@ Monarch.constructor("Monarch.Model.LocalField", Monarch.Model.ConcreteField, {
   // private
   
   valueAssigned: function(newValue, oldValue) {
-    if (this.valueEquals(this.RemoteField.value())) {
+    if (this.valueEquals(this.remoteField().value())) {
       this.markClean();
     } else {
       this.markDirty();

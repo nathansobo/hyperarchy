@@ -67,22 +67,22 @@ Monarch.constructor("Monarch.View.Template", {
       if (this.afterHide) this.afterHide();
     },
 
-    model: function(model) {
-      if (arguments.length == 0) return this.Model;
-      this.Model = model;
-      this.populateFormFields();
-      if (this.updateSubscription) {
-        this.updateSubscription.destroy();
-        this.updateSubscription = null;
-      }
+    model: {
+      afterWrite: function(model) {
+        this.populateFormFields();
+        if (this.updateSubscription) {
+          this.updateSubscription.destroy();
+          this.updateSubscription = null;
+        }
 
-      if (model) this.subscribeToModelUpdates();
-      if (this.modelAssigned) this.modelAssigned(model);
+        if (model) this.subscribeToModelUpdates();
+        if (this.modelAssigned) this.modelAssigned(model);
+      }
     },
 
     subscribeToModelUpdates: function() {
       var self = this;
-      this.updateSubscription = this.Model.onRemoteUpdate(function(changeset) {
+      this.updateSubscription = this.model().onRemoteUpdate(function(changeset) {
         _.each(changeset, function(changes, fieldName) {
           self.handleModelFieldUpdate(fieldName, changes);
         });

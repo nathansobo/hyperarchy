@@ -562,6 +562,7 @@ Screw.Unit(function(c) { with(c) {
               bar: {
                 writer: function(x) {
                   this._bar = "custom bar writer: " + x;
+                  return "custom writer return value";
                 }
               },
 
@@ -581,7 +582,7 @@ Screw.Unit(function(c) { with(c) {
             expect(a.foo("a")).to(equal, "custom foo writer: a");
             expect(a.foo()).to(equal, "custom foo reader: custom foo writer: a");
 
-            expect(a.bar("b")).to(equal, "custom bar writer: b");
+            expect(a.bar("b")).to(equal, "custom writer return value");
             expect(a.bar()).to(equal, "custom bar writer: b");
 
             expect(a.baz("c")).to(equal, "c");
