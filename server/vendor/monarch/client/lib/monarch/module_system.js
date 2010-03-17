@@ -81,15 +81,55 @@ Monarch.ModuleSystem = {
   },
 
   mixin: function(target, module) {
+    this.defineAttrAccessors(module);
     for (var prop in module) {
       if (prop == "constructor") continue;
       if (prop == "constructorProperties" && target.constructorProperties) {
         this.mixin(target.constructorProperties, module.constructorProperties);
         continue;
       }
+      if (this.isAttrAccessorDefinition(module[prop])) this.defineAttrAccessor(module, prop);
+
       target[prop] = module[prop];
     }
     return target;
+  },
+
+  defineAttrAccessors: function(module) {
+    if (module.attrAccessors) {
+      var attrAccessors = module.attrAccessors;
+      delete module.attrAccessors;
+      _.each(attrAccessors, function(attrName) {
+        module[attrName] = this.buildAttrAccessor(attrName)
+      }, this);
+    }
+  },
+
+  isAttrAccessorDefinition: function(value) {
+    if (typeof value !== "object") return false;
+    return _.all(_.keys(value), function(key) {
+      return key === "reader" || key === "writer";
+    });
+  },
+
+  defineAttrAccessor: function(module, name) {
+    var definition = module[name];
+    module[name] = this.buildAttrAccessor(name, definition.reader, definition.writer);
+  },
+
+  buildAttrAccessor: function(name, reader, writer) {
+    var fieldName = "_" + name;
+    if (!reader) reader = function() { return this[fieldName]; };
+    if (!writer) writer = function(value) { this[fieldName] = value; };
+
+    return function(value) {
+      if (arguments.length == 0) {
+        return reader.call(this);
+      } else {
+        writer.call(this, value);
+        return this[fieldName];
+      }
+    };
   },
 
   createModuleContainingConstructor: function(qualifiedConstructorName) {

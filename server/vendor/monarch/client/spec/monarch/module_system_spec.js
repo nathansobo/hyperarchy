@@ -519,6 +519,95 @@ Screw.Unit(function(c) { with(c) {
         expect(a.constructorProperties.bar).to(eq, "bar2");
         expect(a.constructorProperties.baz).to(eq, "baz");
       });
+
+      describe("handling of declarative reader/writer pairs", function() {
+        context("when automatic reader/writer pairs are requested", function() {
+          it("defines jQuery style reader/writer functions for them", function() {
+            var a = {};
+            var b = {
+              attrAccessors: ["foo", "bar"]
+            };
+
+            Monarch.ModuleSystem.mixin(a, b);
+
+            expect(a.foo("foo1")).to(eq, "foo1");
+            expect(a.foo()).to(eq, "foo1");
+            expect(a._foo).to(eq, "foo1");
+
+            expect(a.foo("foo2")).to(eq, "foo2");
+            expect(a.foo()).to(eq, "foo2");
+            expect(a._foo).to(eq, "foo2");
+
+            expect(a.bar("bar1")).to(eq, "bar1");
+            expect(a.bar()).to(eq, "bar1");
+            expect(a._bar).to(eq, "bar1");
+          });
+        });
+
+        context("when custom readers or writers are requested", function() {
+          it("defines jQuery style reader/writer functions that dispatch to the custom handlers", function() {
+            var a = {};
+            var b = {
+              foo: {
+                reader: function() {
+                  return "custom foo reader: " + this._foo;
+                },
+
+                writer: function(x) {
+                  this._foo = "custom foo writer: " + x;
+                }
+              },
+
+              bar: {
+                writer: function(x) {
+                  this._bar = "custom bar writer: " + x;
+                }
+              },
+
+              baz: {
+                reader: function() {
+                  return "custom baz reader: " + this._baz;
+                }
+              }
+            };
+
+            Monarch.ModuleSystem.mixin(a, b);
+
+            expect(a.foo("a")).to(equal, "custom foo writer: a");
+            expect(a.foo()).to(equal, "custom foo reader: custom foo writer: a");
+
+            expect(a.bar("b")).to(equal, "custom bar writer: b");
+            expect(a.bar()).to(equal, "custom bar writer: b");
+
+            expect(a.baz("c")).to(equal, "c");
+            expect(a.baz()).to(equal, "custom baz reader: c");
+          });
+        });
+
+
+      });
+
+      it("converts reader/writer hashes into single functions jQuery-style reader/writer functions", function() {
+        var a = {
+
+        };
+
+        var b = {
+          foo: {
+            reader: true,
+            writer: true
+          }
+        }
+
+        var c = {
+          foo: {
+            reader: function() {  }
+          }
+
+        }
+
+
+      });
     });
   });
 }});
