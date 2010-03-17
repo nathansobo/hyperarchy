@@ -1,4 +1,4 @@
-constructor("Views.Ranking", View.Template, {
+constructor("Views.Rankings", View.Template, {
   content: function() { with(this.builder) {
     div({id: "ranking", 'class': "widget itemList"}, function() {
       div({'class': "widgetContent"}, function() {

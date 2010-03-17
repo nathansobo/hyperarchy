@@ -30,7 +30,7 @@ Screw.Unit(function(c) { with(c) {
 
         it("coerces strings to integers", function() {
           var blog = Blog.table.createFromRemote({id: "1"});
-          expect(blog.id() === 1).to(beTrue);
+          expect(blog.id()).to(eq, 1);
         });
       });
     });

@@ -3,5 +3,5 @@
 //= require "views/organizations"
 //= require "views/elections"
 //= require "views/candidates"
-//= require "views/ranking"
+//= require "views/rankings"
 //= require "views/error_list"

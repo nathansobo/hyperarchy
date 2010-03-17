@@ -2,7 +2,7 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Views.Login", function() {
-    useFakeServer();
+    useFakeApplicationController();
 
     var view;
     before(function() {

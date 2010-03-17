@@ -20,7 +20,7 @@ constructor("Views.Organizations", View.Template, {
       });
 
       div({'class': "grid4"}, function() {
-        subview('rankingView', Views.Ranking);
+        subview('rankingsView', Views.Rankings);
       });
 
       div({'class': "grid4"}, function() {
@@ -33,7 +33,7 @@ constructor("Views.Organizations", View.Template, {
     initialize: function() {
       var self = this;
       this.electionsView.candidatesView = this.candidatesView;
-      this.electionsView.rankingsView = this.rankingView;
+      this.electionsView.rankingsView = this.rankingsView;
       this.fetchingOrganizations = Organization.fetch();
       this.fetchingOrganizations.afterEvents(function() {
         Organization.each(function(organization) {

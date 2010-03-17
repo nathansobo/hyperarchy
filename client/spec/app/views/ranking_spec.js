@@ -1,7 +1,7 @@
 //= require "../../hyperarchy_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("Views.Ranking", function() {
+  describe("Views.Rankings", function() {
     useFakeApplicationController();
     useLocalFixtures();
 
@@ -9,7 +9,7 @@ Screw.Unit(function(c) { with(c) {
     before(function() {
       user = authenticate('nathan');
       election = Election.find('menu');
-      view = Views.Ranking.toView();
+      view = Views.Rankings.toView();
       view.election(election);
     });
 
