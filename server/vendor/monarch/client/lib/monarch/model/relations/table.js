@@ -59,7 +59,7 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
   },
 
   find: function(predicateOrId) {
-    if (typeof predicateOrId === "string") {
+    if (_.isString(predicateOrId) || _.isNumber(predicateOrId)) {
       var record = this.tuplesById[predicateOrId]
       return (record && record.locallyDestroyed) ? null : record;
     } else if (predicateOrId) {

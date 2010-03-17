@@ -1,5 +1,7 @@
 module Http
   class Resource
+    include BuildRelationalDataset
+
     attr_accessor :current_comet_client, :current_request
 
     def current_session_id
@@ -27,16 +29,8 @@ module Http
         "successful" => successful,
       }
       response_body["data"] = data if data
-      response_body["dataset"] = build_relational_dataset(Array(records_or_relations)) if records_or_relations
+      response_body["dataset"] = build_relational_dataset(records_or_relations) if records_or_relations
       [200, {"Content-Type" => "application/json"}, response_body.to_json]
-    end
-
-    def build_relational_dataset(records_or_relations)
-      dataset = {}
-      records_or_relations.each do |r|
-        r.add_to_relational_dataset(dataset)
-      end
-      dataset
     end
   end
 end

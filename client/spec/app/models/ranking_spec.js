@@ -27,7 +27,9 @@ Screw.Unit(function(c) { with(c) {
         });
 
         Ranking.createOrUpdate(user, election, b, null, a).afterEvents(function(ranking) {
-          expect(ranking).to(equal, bRanking);
+          console.debug(ranking.wireRepresentation(), bRanking.wireRepresentation());
+          expect(ranking === bRanking).to(beTrue);
+//          expect(ranking).to(equal, bRanking);
           expect(bRanking.position()).to(equal, 0.5);
         });
       });

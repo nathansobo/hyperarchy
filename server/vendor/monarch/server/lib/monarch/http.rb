@@ -1,4 +1,5 @@
 dir = File.dirname(__FILE__)
+require "#{dir}/http/build_relational_dataset"
 require "#{dir}/http/dispatcher"
 require "#{dir}/http/request"
 require "#{dir}/http/resource"

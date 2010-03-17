@@ -20,7 +20,7 @@ module Resources
     end
 
     def content
-      Views::Root.new.to_pretty
+      Views::Root.new(:current_user => current_user).to_pretty
     end
   end
 end

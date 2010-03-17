@@ -31,5 +31,9 @@ constructor("Controllers.Application", {
 
   currentUserIdEstablished: function(currentUserId) {
     this.currentUserId = currentUserId;
+  },
+
+  currentUser: function() {
+    return User.find(this.currentUserId);
   }
 });

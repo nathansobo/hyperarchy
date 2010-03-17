@@ -13,13 +13,15 @@ constructor("Ranking", Model.Record, {
 
     createOrUpdate: function(user, election, candidate, predecessor, successor) {
       var positions = this.determinePredecessorAndSuccessorPositions(user, election, predecessor, successor);
-      
-      return this.create({
-        userId: user.id(),
-        electionId: election.id(),
-        candidateId: candidate.id(),
-        position: (positions.predecessor + positions.successor) / 2
-      });
+      var newPositionFieldValue = { position: (positions.predecessor + positions.successor) / 2 }
+      var otherFieldValues = {userId: user.id(), electionId: election.id(), candidateId: candidate.id()};
+
+      var existingRanking = Ranking.find(otherFieldValues);
+      if (existingRanking) {
+        return existingRanking.update(newPositionFieldValue)
+      } else {
+        return this.create(_.extend(otherFieldValues, newPositionFieldValue));
+      }
     },
 
     // private

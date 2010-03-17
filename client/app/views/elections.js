@@ -58,7 +58,8 @@ constructor("Views.Elections", View.Template, {
     electionSelected: function(election, li) {
       this.electionsOl.find('li').removeClass('selected');
       li.addClass('selected');
-      this.candidatesView.candidates(election.candidates());
+      this.rankingsView.election(election);
+      this.candidatesView.election(election);
     },
 
     createElection: function() {

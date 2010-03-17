@@ -33,6 +33,7 @@ constructor("Views.Organizations", View.Template, {
     initialize: function() {
       var self = this;
       this.electionsView.candidatesView = this.candidatesView;
+      this.electionsView.rankingsView = this.rankingView;
       this.fetchingOrganizations = Organization.fetch();
       this.fetchingOrganizations.afterEvents(function() {
         Organization.each(function(organization) {

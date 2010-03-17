@@ -5,7 +5,7 @@ Monarch.constructor("Monarch.Model.Record", {
   constructorProperties: {
     initialize: function() {
       this.delegateConstructorMethods('find', 'fetch', 'tuples', 'first', 'each', 'any', 'onLocalUpdate', 'onRemoteInsert',
-                                      'onRemoteUpdate', 'onRemoteRemove', 'where', 'orderBy', 'project', 'empty',
+                                      'onRemoteUpdate', 'onRemoteRemove', 'where', 'orderBy', 'project', 'empty', 'createFromRemote',
                                       'table');
     },
 
@@ -222,6 +222,10 @@ Monarch.constructor("Monarch.Model.Record", {
 
   wireRepresentation: function() {
     return this.local.wireRepresentation();
+  },
+
+  inspect: function() {
+    return this.wireRepresentation();
   },
 
   field: function(column) {

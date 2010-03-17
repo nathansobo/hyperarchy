@@ -49,29 +49,28 @@ constructor("Views.Candidates", View.Template, {
       });
     },
 
-
     fillHeight: function() {
       var height = $(window).height() - this.widgetContent.offset().top - 10;
       this.candidatesOl.height(height);
     },
-
-    candidates: function(candidates) {
+    
+    election: function(election) {
       if (arguments.length == 0) {
-        return this.Candidates;
+        return this._election;
       } else {
         var self = this;
-        this.Candidates = candidates;
-        candidates.fetch()
+        this._election = election;
+        election.candidates().fetch()
           .afterEvents(function() {
             self.populateCandidates();
-            candidates.onRemoteInsert(self.hitch('addCandidateToList'));
+            election.candidates().onRemoteInsert(self.hitch('addCandidateToList'));
           });
       }
     },
 
     populateCandidates: function() {
       this.candidatesOl.html("");
-      this.candidates().each(this.hitch('addCandidateToList'));
+      this.election().candidates().each(this.hitch('addCandidateToList'));
     },
 
     addCandidateToList: function(candidate) {

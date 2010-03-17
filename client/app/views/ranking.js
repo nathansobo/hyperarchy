@@ -23,8 +23,16 @@ constructor("Views.Ranking", View.Template, {
       });
     },
 
+    election: function(election) {
+      if (arguments.length == 0) {
+        return this._election;
+      } else {
+        return this._election = election;
+      }
+    },
+
     handleUpdate: function(item) {
-      if (item.parents("#ranking").length > 0) return this.handleRemoval(item);
+      if (item.parents("#ranking").length == 0) return this.handleRemoval(item);
 
       var candidateId = item.attr('candidateId');
       var predecessorId = item.prev().attr('candidateId');
@@ -34,9 +42,7 @@ constructor("Views.Ranking", View.Template, {
       var predecessor = predecessorId ? Candidate.find(predecessorId) : null;
       var successor = successorId ? Candidate.find(successorId) : null;
 
-      
-
-
+      Ranking.createOrUpdate(Application.currentUser(), this.election(), candidate, predecessor, successor);
     },
 
     handleRemoval: function(item) {

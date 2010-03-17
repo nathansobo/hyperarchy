@@ -1,5 +1,9 @@
 module Views
   class Root < Erector::Widget
+    include Http::BuildRelationalDataset
+
+    needs :current_user
+
     def content
       html do
         head do
@@ -16,7 +20,10 @@ module Views
           script :type => "text/javascript", :language => "javascript" do
             rawtext %[
               window.COMET_CLIENT_ID = #{Guid.new.to_s.to_json};
-              $(function() { window.Application = new Controllers.Application() });
+              $(function() {
+                window.Application = new Controllers.Application();
+                #{reestablish_current_user}
+              });
             ]
           end
         end
@@ -24,6 +31,14 @@ module Views
         body do
         end
       end
+    end
+
+    def reestablish_current_user
+      return "" unless current_user
+      %{
+        Application.currentUserIdEstablished(#{current_user.id});
+        Repository.update(#{build_relational_dataset(current_user).to_json});
+      }
     end
 
 
