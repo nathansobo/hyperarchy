@@ -31,7 +31,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       it("returns an md5 digest of a canonical ordering of its column-value pairs", function() {
-        expect(aProjection.first().hashCode()).to(equal, bProjection.first().hashCode());
+        expect(aProjection.first().hashCode()).to(eq, bProjection.first().hashCode());
       });
     });
   });

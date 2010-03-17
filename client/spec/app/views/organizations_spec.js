@@ -15,7 +15,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       it("fetches the organizations and populates the selector with them", function() {
-        expect(Server.fetches.length).to(equal, 1);
+        expect(Server.fetches.length).to(eq, 1);
         expect(Server.lastFetch.relations).to(equal, [Organization.table]);
         Server.lastFetch.simulateSuccess();
         
@@ -49,7 +49,7 @@ Screw.Unit(function(c) { with(c) {
         context("when called with null", function() {
           it("calls History.load with the path to the first organization", function() {
             view.navigate(null);
-            expect(History.path).to(equal, "organizations/" + Organization.first().id());
+            expect(History.path).to(eq, "organizations/" + Organization.first().id());
           });
         });
 
@@ -57,8 +57,8 @@ Screw.Unit(function(c) { with(c) {
           it("selects the organization in the selector and displays its elections", function() {
             mock(History, 'load');
             view.navigate("restaurant");
-            expect(view.organizationSelect.val()).to(equal, "restaurant");
-            expect(view.electionsView.elections()).to(equal, Organization.find("restaurant").elections());
+            expect(view.organizationSelect.val()).to(eq, "restaurant");
+            expect(view.electionsView.elections()).to(eq, Organization.find("restaurant").elections());
             expect(History.load).toNot(haveBeenCalled);
           });
         });
@@ -69,7 +69,7 @@ Screw.Unit(function(c) { with(c) {
       it("calls History.load with the path to the selected organization", function() {
         view.organizationSelect.val("restaurant");
         view.organizationSelect.change();
-        expect(History.path).to(equal, "organizations/restaurant");
+        expect(History.path).to(eq, "organizations/restaurant");
       });
     });
   });

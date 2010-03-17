@@ -46,17 +46,17 @@ Screw.Unit(function(c) { with(c) {
           }
         });
 
-        expect(ExampleSubtemplate.prototype.viewProperties.boldName).to(equal, ExampleTemplate.prototype.viewProperties.boldName);
-        expect(ExampleSubtemplate.prototype.viewProperties.name).to(equal, "Joe");
-        expect(ExampleSubtemplate.prototype.viewProperties.gender).to(equal, "Unknown");
-        expect(ExampleSubtemplate.prototype.viewProperties.age).to(equal, "Unknown");
+        expect(ExampleSubtemplate.prototype.viewProperties.boldName).to(eq, ExampleTemplate.prototype.viewProperties.boldName);
+        expect(ExampleSubtemplate.prototype.viewProperties.name).to(eq, "Joe");
+        expect(ExampleSubtemplate.prototype.viewProperties.gender).to(eq, "Unknown");
+        expect(ExampleSubtemplate.prototype.viewProperties.age).to(eq, "Unknown");
       });
     });
 
     describe(".toView", function() {
       it("calls #toView on an instance of the Template", function() {
         var view = ExampleTemplate.toView({});
-        expect(view.template.constructor).to(equal, ExampleTemplate);
+        expect(view.template.constructor).to(eq, ExampleTemplate);
       });
     });
 
@@ -68,7 +68,7 @@ Screw.Unit(function(c) { with(c) {
           });
         }});
 
-        expect(view.attr('id')).to(equal, 'foo');
+        expect(view.attr('id')).to(eq, 'foo');
         expect(view.find('div#bar')).toNot(beEmpty);
       });
     });
@@ -77,19 +77,19 @@ Screw.Unit(function(c) { with(c) {
     describe("#toView", function() {
       it("assigns .builder to a new Builder, calls #content, then returns #builder.toView", function() {
         var view = template.toView({ name: "Nathan", gender: "male"});
-        expect(view.attr('id')).to(equal, "root");
+        expect(view.attr('id')).to(eq, "root");
       });
 
       it("assigns the given properties and the view properties to the returned view, overriding view properties with the given ones", function() {
         var view = template.toView({ name: "Nathan", gender: "male"});
-        expect(view.name).to(equal, "Nathan");
-        expect(view.gender).to(equal, "male");
-        expect(view.boldName).to(equal, template.viewProperties.boldName);
+        expect(view.name).to(eq, "Nathan");
+        expect(view.gender).to(eq, "male");
+        expect(view.boldName).to(eq, template.viewProperties.boldName);
       });
       
       it("assigns #template on the returned view", function() {
         var view = template.toView({});
-        expect(view.template).to(equal, template);
+        expect(view.template).to(eq, template);
       });
     });
   });

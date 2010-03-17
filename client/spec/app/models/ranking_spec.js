@@ -13,22 +13,22 @@ Screw.Unit(function(c) { with(c) {
         var c = Candidate.find('salad');
 
         Ranking.createOrUpdate(user, election, a, null, null).afterEvents(function(ranking) {
-          expect(ranking.position()).to(equal, 1);
+          expect(ranking.position()).to(eq, 1);
         });
         
         var bRanking;
         Ranking.createOrUpdate(user, election, b, a, null).afterEvents(function(ranking) {
           bRanking = ranking;
-          expect(ranking.position()).to(equal, 2);
+          expect(ranking.position()).to(eq, 2);
         });
 
         Ranking.createOrUpdate(user, election, c, a, b).afterEvents(function(ranking) {
-          expect(ranking.position()).to(equal, 1.5);
+          expect(ranking.position()).to(eq, 1.5);
         });
 
         Ranking.createOrUpdate(user, election, b, null, a).afterEvents(function(ranking) {
           expect(ranking).to(eq, bRanking);
-          expect(bRanking.position()).to(equal, 0.5);
+          expect(bRanking.position()).to(eq, 0.5);
         });
       });
     });

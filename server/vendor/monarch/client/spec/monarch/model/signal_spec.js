@@ -19,7 +19,7 @@ Screw.Unit(function(c) { with(c) {
     describe("#localValue()", function() {
       context("when no transformer function is supplied", function() {
         it("returns the #value of the local field", function() {
-          expect(signal.localValue()).to(equal, localField.value());
+          expect(signal.localValue()).to(eq, localField.value());
         });
       });
 
@@ -31,7 +31,7 @@ Screw.Unit(function(c) { with(c) {
         })
 
         it("returns the transformed #value of the local field", function() {
-          expect(signal.localValue()).to(equal, transformer(localField.value()));
+          expect(signal.localValue()).to(eq, transformer(localField.value()));
         });
       });
     });

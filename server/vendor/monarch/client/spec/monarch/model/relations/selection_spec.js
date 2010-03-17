@@ -33,11 +33,11 @@ Screw.Unit(function(c) { with(c) {
 
       it("calls #create on its operand with the given attributes extended with an attribute value that satisfies the predicate", function() {
         var createFuture = selection.create({fullName: "John Lennon"});
-        expect(Server.creates.length).to(equal, 1);
+        expect(Server.creates.length).to(eq, 1);
 
         var createCallback = mockFunction('create callback', function(record) {
-          expect(record.age()).to(equal, 31);
-          expect(record.fullName()).to(equal, "John Lennon");
+          expect(record.age()).to(eq, 31);
+          expect(record.fullName()).to(eq, "John Lennon");
         });
         createFuture.afterEvents(createCallback);
 
@@ -82,21 +82,21 @@ Screw.Unit(function(c) { with(c) {
     describe("#onRemoteInsert", function() {
       it("returns a Monarch.Subscription with #onRemoteInsertNode as its #node", function() {
         var subscription = selection.onRemoteInsert(function() {});
-        expect(subscription.node).to(equal, selection.onRemoteInsertNode);
+        expect(subscription.node).to(eq, selection.onRemoteInsertNode);
       });
     });
 
     describe("#onRemoteRemove", function() {
       it("returns a Monarch.Subscription with #onRemoteRemoveNode as its #node", function() {
         var subscription = selection.onRemoteRemove(function() {});
-        expect(subscription.node).to(equal, selection.onRemoteRemoveNode);
+        expect(subscription.node).to(eq, selection.onRemoteRemoveNode);
       });
     });
 
     describe("#onRemoteUpdate", function() {
       it("returns a Monarch.Subscription with #onRemoteUpdateNode as its #node", function() {
         var subscription = selection.onRemoteUpdate(function() {});
-        expect(subscription.node).to(equal, selection.onRemoteUpdateNode);
+        expect(subscription.node).to(eq, selection.onRemoteUpdateNode);
       });
     });
 
@@ -232,10 +232,10 @@ Screw.Unit(function(c) { with(c) {
 
               var updatedRecord = updateCallback.mostRecentArgs[0];
               var updatedAttributes = updateCallback.mostRecentArgs[1];
-              expect(updatedRecord).to(equal, record);
-              expect(updatedAttributes.fullName.column).to(equal, User.fullName);
-              expect(updatedAttributes.fullName.oldValue).to(equal, oldValue);
-              expect(updatedAttributes.fullName.newValue).to(equal, newValue);
+              expect(updatedRecord).to(eq, record);
+              expect(updatedAttributes.fullName.column).to(eq, User.fullName);
+              expect(updatedAttributes.fullName.oldValue).to(eq, oldValue);
+              expect(updatedAttributes.fullName.newValue).to(eq, newValue);
             });
           });
 
@@ -431,11 +431,11 @@ Screw.Unit(function(c) { with(c) {
         var otherRepo = Repository.cloneSchema();
         var selectionInOtherRepo = selection.evaluateInRepository(otherRepo);
 
-        expect(selectionInOtherRepo.operand).to(equal, selection.operand.evaluateInRepository(otherRepo));
-        expect(selectionInOtherRepo.predicate).to(equal, selection.predicate);
+        expect(selectionInOtherRepo.operand).to(eq, selection.operand.evaluateInRepository(otherRepo));
+        expect(selectionInOtherRepo.predicate).to(eq, selection.predicate);
 
         var tableInOtherRepo = User.table.evaluateInRepository(otherRepo);
-        expect(tableInOtherRepo).to(equal, otherRepo.tables.users);
+        expect(tableInOtherRepo).to(eq, otherRepo.tables.users);
       });
     });
   });

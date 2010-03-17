@@ -10,6 +10,8 @@ replace _.defer in initialize with onDomAttach hook
 add _ to the closure surrounding every monarch file
 attempt to convert comet hub to use the cramp library
 
+convert screw unit to use underscore.js _.isEqual for equal matcher?
+
 secure the ranking api against unauthorized writes
 add super to module system
 turn module system into an underscore.js plugin and release it

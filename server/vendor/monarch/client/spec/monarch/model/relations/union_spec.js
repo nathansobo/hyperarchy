@@ -23,7 +23,7 @@ Screw.Unit(function(c) { with(c) {
         Server.save(User.table);
 
         var tuples = union.allTuples();
-        expect(tuples.length).to(equal, 3);
+        expect(tuples.length).to(eq, 3);
         expect(_.include(tuples, user2)).to(beTrue);
         expect(_.include(tuples, user3)).to(beTrue);
         expect(_.include(tuples, user4)).to(beTrue);

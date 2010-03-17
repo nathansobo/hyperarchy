@@ -15,7 +15,7 @@ Screw.Unit(function(c) { with(c) {
         it("coerces integers to Dates", function() {
           var timeMillis = new Date().getTime();
           record.signedUpAt(timeMillis);
-          expect(record.signedUpAt().getTime()).to(equal, timeMillis);
+          expect(record.signedUpAt().getTime()).to(eq, timeMillis);
         });
       });
 

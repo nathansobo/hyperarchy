@@ -7,19 +7,19 @@ Screw.Unit(function(c) { with(c) {
     describe("when a subsconstructor is declared", function() {
       it("associates the subconstructor with a Table whose #globalName is the underscored subconstructor name", function() {
         var table = Blog.table;
-        expect(table.constructor).to(equal, Monarch.Model.Relations.Table);
-        expect(table.globalName).to(equal, "blogs");
-        expect(table.recordConstructor).to(equal, Blog);
+        expect(table.constructor).to(eq, Monarch.Model.Relations.Table);
+        expect(table.globalName).to(eq, "blogs");
+        expect(table.recordConstructor).to(eq, Blog);
       });
 
       it("automatically gives the subconstructor an 'id' Column with a type of 'string'", function() {
         expect(Blog.id).to(beAnInstanceOf, Monarch.Model.Column);
-        expect(Blog.id.name).to(equal, "id");
-        expect(Blog.id.type).to(equal, "key");
+        expect(Blog.id.name).to(eq, "id");
+        expect(Blog.id.type).to(eq, "key");
       });
 
       it("is registered in Repository, and has its table registered in Repository.tables by its globalName", function() {
-        expect(Repository.tables.blogs).to(equal, Blog.table);
+        expect(Repository.tables.blogs).to(eq, Blog.table);
       });
     });
 
@@ -32,12 +32,12 @@ Screw.Unit(function(c) { with(c) {
       });
 
       it("calls #defineColumn on its #table, assigning the returned Column to a constructor property", function() {
-        expect(Blog.userId).to(equal, Blog.table.column('userId'));
+        expect(Blog.userId).to(eq, Blog.table.column('userId'));
       });
 
       it("associates columns named 'name' with 'name' on the constructor to evade 'name' being a read-only property in Safari and Chrome", function() {
         expect(Blog.name_).toNot(equal, Blog.name);
-        expect(Blog.name_).to(equal, Blog.table.column('name'));
+        expect(Blog.name_).to(eq, Blog.table.column('name'));
       });
 
       it("generates a method on .prototype that accesses the field corresponding to the prototype", function() {
@@ -45,9 +45,9 @@ Screw.Unit(function(c) { with(c) {
 
         var field = record.field('userId');
         expect(field.value()).to(beUndefined);
-        expect(record.userId("jan")).to(equal, "jan");
-        expect(field.value()).to(equal, "jan");
-        expect(record.userId()).to(equal, "jan");
+        expect(record.userId("jan")).to(eq, "jan");
+        expect(field.value()).to(eq, "jan");
+        expect(record.userId()).to(eq, "jan");
       });
     });
 
@@ -69,7 +69,7 @@ Screw.Unit(function(c) { with(c) {
     describe(".syntheticColumn(name, definition)", function() {
       it("causes tuples to have synthetic fields that are based on signals returned by the definition", function() {
         var record = Blog.find('recipes')
-        expect(record.funProfitName()).to(equal, record.name() + " for Fun and Profit");
+        expect(record.funProfitName()).to(eq, record.name() + " for Fun and Profit");
       });
     });
 
@@ -92,7 +92,7 @@ Screw.Unit(function(c) { with(c) {
         var user = User.localCreate({name: "Burt Smith"});
         expect(user.blogs().predicate.rightOperand).to(beNull);
         user.save();
-        expect(user.blogs().predicate.rightOperand).to(equal, user.id());
+        expect(user.blogs().predicate.rightOperand).to(eq, user.id());
       });
 
       context("if a single 'orderBy' column is supplied in the options", function() {
@@ -100,9 +100,9 @@ Screw.Unit(function(c) { with(c) {
           User.hasMany('blogs', { orderBy: "name desc" });
           var user = User.localCreate({id: "jerry"});
           var ordering = user.blogs();
-          expect(ordering.constructor).to(equal, Monarch.Model.Relations.Ordering);
-          expect(ordering.orderByColumns[0].column).to(equal, Blog.name_);
-          expect(ordering.orderByColumns[0].direction).to(equal, "desc");
+          expect(ordering.constructor).to(eq, Monarch.Model.Relations.Ordering);
+          expect(ordering.orderByColumns[0].column).to(eq, Blog.name_);
+          expect(ordering.orderByColumns[0].direction).to(eq, "desc");
         });
       });
 
@@ -111,12 +111,12 @@ Screw.Unit(function(c) { with(c) {
           User.hasMany('blogs', { orderBy: ["name desc", "userId"]});
           var user = User.localCreate({id: "jerry"});
           var ordering = user.blogs();
-          expect(ordering.constructor).to(equal, Monarch.Model.Relations.Ordering);
-          expect(ordering.orderByColumns.length).to(equal, 2);
-          expect(ordering.orderByColumns[0].column).to(equal, Blog.name_);
-          expect(ordering.orderByColumns[0].direction).to(equal, "desc");
-          expect(ordering.orderByColumns[1].column).to(equal, Blog.userId);
-          expect(ordering.orderByColumns[1].direction).to(equal, "asc");
+          expect(ordering.constructor).to(eq, Monarch.Model.Relations.Ordering);
+          expect(ordering.orderByColumns.length).to(eq, 2);
+          expect(ordering.orderByColumns[0].column).to(eq, Blog.name_);
+          expect(ordering.orderByColumns[0].direction).to(eq, "desc");
+          expect(ordering.orderByColumns[1].column).to(eq, Blog.userId);
+          expect(ordering.orderByColumns[1].direction).to(eq, "asc");
         });
       });
 
@@ -126,8 +126,8 @@ Screw.Unit(function(c) { with(c) {
           var user = User.localCreate({id: 'jake'});
           expect(user.blogs().empty()).to(beTrue);
           user.blogs().localCreate();
-          expect(user.blogs().size()).to(equal, 1);
-          expect(user.blogs().first().name()).to(equal, "My Blog");
+          expect(user.blogs().size()).to(eq, 1);
+          expect(user.blogs().first().name()).to(eq, "My Blog");
         });
       });
 
@@ -145,7 +145,7 @@ Screw.Unit(function(c) { with(c) {
           User.hasMany('blogs', { key: 'ownerId' });
           var user = User.localCreate({id: 'jake'});
           var blog = user.blogs().localCreate();
-          expect(blog.ownerId()).to(equal, 'jake');
+          expect(blog.ownerId()).to(eq, 'jake');
         });
       });
     });
@@ -158,8 +158,8 @@ Screw.Unit(function(c) { with(c) {
           name: 'Index Cards'
         });
         expect(Blog.table.insert).to(haveBeenCalled, withArgs(record));
-        expect(record.id()).to(equal, 'index');
-        expect(record.name()).to(equal, 'Index Cards');
+        expect(record.id()).to(eq, 'index');
+        expect(record.name()).to(eq, 'Index Cards');
       });
 
       it("calls #afterLocalCreate if it is defined on the record's prototype", function() {
@@ -194,11 +194,11 @@ Screw.Unit(function(c) { with(c) {
           name: 'Ike For President'
         });
 
-        expect(Blog.find('tina')).to(equal, record);
+        expect(Blog.find('tina')).to(eq, record);
         expect(undefined in Blog.table.tuplesById).to(beFalse);
 
         record2.save();
-        expect(Blog.find(record2.id())).to(equal, record2)
+        expect(Blog.find(record2.id())).to(eq, record2)
       });
     });
 
@@ -227,8 +227,8 @@ Screw.Unit(function(c) { with(c) {
           otherMethod: "foo"
         });
 
-        expect(record.name()).to(equal, 'Pesticides');
-        expect(record.userId()).to(equal, 'jan');
+        expect(record.name()).to(eq, 'Pesticides');
+        expect(record.userId()).to(eq, 'jan');
         expect(record.otherMethod).to(haveBeenCalled, withArgs("foo"));
 
         var expectedChangeset = {
@@ -305,12 +305,12 @@ Screw.Unit(function(c) { with(c) {
       });
 
       they("can read synthetic fields", function() {
-        expect(record.funProfitName()).to(equal, record.field('funProfitName').value());
+        expect(record.funProfitName()).to(eq, record.field('funProfitName').value());
       });
 
       they("can write synthetic fields if a setter method is defined for the column", function() {
         record.funProfitName("Eating Fortune Cookies");
-        expect(record.funProfitName()).to(equal, "Eating Fortune Cookies in Bed for Fun and Profit");
+        expect(record.funProfitName()).to(eq, "Eating Fortune Cookies in Bed for Fun and Profit");
       });
     });
 
@@ -383,12 +383,12 @@ Screw.Unit(function(c) { with(c) {
         var record = Blog.find('recipes');
         record.fetch();
 
-        expect(Server.fetches.length).to(equal, 1);
+        expect(Server.fetches.length).to(eq, 1);
         var fetchedRelation = Server.lastFetch.relations[0];
-        expect(fetchedRelation.constructor).to(equal, Monarch.Model.Relations.Selection);
-        expect(fetchedRelation.operand).to(equal, Blog.table);
-        expect(fetchedRelation.predicate.leftOperand).to(equal, Blog.id);
-        expect(fetchedRelation.predicate.rightOperand).to(equal, 'recipes');
+        expect(fetchedRelation.constructor).to(eq, Monarch.Model.Relations.Selection);
+        expect(fetchedRelation.operand).to(eq, Blog.table);
+        expect(fetchedRelation.predicate.leftOperand).to(eq, Blog.id);
+        expect(fetchedRelation.predicate.rightOperand).to(eq, 'recipes');
       });
     });
 
@@ -432,12 +432,12 @@ Screw.Unit(function(c) { with(c) {
         var record = Blog.find('recipes');
 
         var field = record.field(Blog.id);
-        expect(field.fieldset.record).to(equal, record);
-        expect(field.column).to(equal, Blog.id);
+        expect(field.fieldset.record).to(eq, record);
+        expect(field.column).to(eq, Blog.id);
 
         field = record.field('id');
-        expect(field.fieldset.record).to(equal, record);
-        expect(field.column).to(equal, Blog.id);
+        expect(field.fieldset.record).to(eq, record);
+        expect(field.column).to(eq, Blog.id);
       });
     });
 

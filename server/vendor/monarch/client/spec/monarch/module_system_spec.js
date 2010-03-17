@@ -17,9 +17,9 @@ Screw.Unit(function(c) { with(c) {
     describe(".constructor", function() {
       it("assigns a 'basename' property to the created constructor", function() {
         Monarch.ModuleSystem.constructor("Foo");
-        expect(Foo.basename).to(equal, "Foo");
+        expect(Foo.basename).to(eq, "Foo");
         Monarch.ModuleSystem.constructor("Foo.Bar");
-        expect(Foo.Bar.basename).to(equal, "Bar");
+        expect(Foo.Bar.basename).to(eq, "Bar");
       });
 
       context("when not given a name", function() {
@@ -34,8 +34,8 @@ Screw.Unit(function(c) { with(c) {
           });
 
           expect(constructor.prototype instanceof Monarch.ModuleSystem.Object).to(beTrue);
-          expect(constructor.prototype.foo).to(equal, "foo");
-          expect(constructor.prototype.bar).to(equal, "bar");
+          expect(constructor.prototype.foo).to(eq, "foo");
+          expect(constructor.prototype.bar).to(eq, "bar");
         });
       });
 
@@ -54,8 +54,8 @@ Screw.Unit(function(c) { with(c) {
 
           expect(Foo).toNot(beUndefined);
           expect(Foo.prototype instanceof Monarch.ModuleSystem.Object).to(beTrue);
-          expect(Foo.prototype.foo).to(equal, "foo");
-          expect(Foo.prototype.bar).to(equal, "bar");
+          expect(Foo.prototype.foo).to(eq, "foo");
+          expect(Foo.prototype.bar).to(eq, "bar");
         });
       });
 
@@ -72,8 +72,8 @@ Screw.Unit(function(c) { with(c) {
             expect(Foo).toNot(beUndefined);
             expect(Foo.Bar).toNot(beUndefined);
             expect(Foo.Bar.Baz).toNot(beUndefined);
-            expect(Foo.Bar.Baz.prototype.foo).to(equal, "foo");
-            expect(Foo.Bar.Baz.prototype.bar).to(equal, "bar");
+            expect(Foo.Bar.Baz.prototype.foo).to(eq, "foo");
+            expect(Foo.Bar.Baz.prototype.bar).to(eq, "bar");
           });
         });
 
@@ -92,8 +92,8 @@ Screw.Unit(function(c) { with(c) {
 
             expect(Foo.foo).toNot(beUndefined);
             expect(Foo.Bar.Baz).toNot(beUndefined);
-            expect(Foo.Bar.Baz.prototype.foo).to(equal, "foo");
-            expect(Foo.Bar.Baz.prototype.bar).to(equal, "bar");
+            expect(Foo.Bar.Baz.prototype.foo).to(eq, "foo");
+            expect(Foo.Bar.Baz.prototype.bar).to(eq, "bar");
           });
         });
       });
@@ -118,7 +118,7 @@ Screw.Unit(function(c) { with(c) {
             var constructor;
             Super.extended = mockFunction("Super.extended", function() {
               expect(window.Foo).toNot(beUndefined);
-              expect(window.Foo.foo).to(equal, "foo");
+              expect(window.Foo.foo).to(eq, "foo");
             });
             constructor = Monarch.ModuleSystem.constructor("Foo", Super, {
               constructorProperties: {
@@ -181,7 +181,7 @@ Screw.Unit(function(c) { with(c) {
 
         it("moves it to the #constructorProperties hash and deletes it from the prototype", function() {
           expect(Foo.prototype.constructorInitialize).to(beUndefined);
-          expect(Foo.prototype.constructorProperties.initialize).to(equal, constructorInitialize);
+          expect(Foo.prototype.constructorProperties.initialize).to(eq, constructorInitialize);
         });
       });
 
@@ -193,7 +193,7 @@ Screw.Unit(function(c) { with(c) {
             }
           });
 
-          expect(Foo.foo).to(equal, "foo");
+          expect(Foo.foo).to(eq, "foo");
         });
 
         context("when there is an #initialize constructor property", function() {
@@ -260,11 +260,11 @@ Screw.Unit(function(c) { with(c) {
         });
 
         it("defines the merged constructor properties as properties on the defined constructor itself", function() {
-          expect(Sub.foo).to(equal, "foo sub");
-          expect(Sub.bar).to(equal, "bar module");
-          expect(Sub.baz).to(equal, "baz sub");
-          expect(Sub.bop).to(equal, "bop");
-          expect(Sub.boing).to(equal, "boing");
+          expect(Sub.foo).to(eq, "foo sub");
+          expect(Sub.bar).to(eq, "bar module");
+          expect(Sub.baz).to(eq, "baz sub");
+          expect(Sub.bop).to(eq, "bop");
+          expect(Sub.boing).to(eq, "boing");
         });
         
         it("does not mutate the 'constructorProperties' hashes on the superconstructor or any of the included modules", function() {
@@ -298,8 +298,8 @@ Screw.Unit(function(c) { with(c) {
               bar: "bar"
             });
             expect(Foo).toNot(beUndefined);
-            expect(Foo.foo).to(equal, "foo");
-            expect(Foo.bar).to(equal, "bar");
+            expect(Foo.foo).to(eq, "foo");
+            expect(Foo.bar).to(eq, "bar");
           });
         });
 
@@ -317,9 +317,9 @@ Screw.Unit(function(c) { with(c) {
               bar: "bar2",
               baz: "baz"
             });
-            expect(Foo.foo).to(equal, "foo");
-            expect(Foo.bar).to(equal, "bar2");
-            expect(Foo.baz).to(equal, "baz");
+            expect(Foo.foo).to(eq, "foo");
+            expect(Foo.bar).to(eq, "bar2");
+            expect(Foo.baz).to(eq, "baz");
           });
         });
       });
@@ -337,8 +337,8 @@ Screw.Unit(function(c) { with(c) {
             expect(Foo).toNot(beUndefined);
             expect(Foo.Bar).toNot(beUndefined);
             expect(Foo.Bar.Baz).toNot(beUndefined);
-            expect(Foo.Bar.Baz.foo).to(equal, "foo");
-            expect(Foo.Bar.Baz.bar).to(equal, "bar");
+            expect(Foo.Bar.Baz.foo).to(eq, "foo");
+            expect(Foo.Bar.Baz.bar).to(eq, "bar");
           });
         });
 
@@ -357,8 +357,8 @@ Screw.Unit(function(c) { with(c) {
             
             expect(Foo.foo).toNot(beUndefined);
             expect(Foo.Bar.Baz).toNot(beUndefined);
-            expect(Foo.Bar.Baz.foo).to(equal, "foo");
-            expect(Foo.Bar.Baz.bar).to(equal, "bar");
+            expect(Foo.Bar.Baz.foo).to(eq, "foo");
+            expect(Foo.Bar.Baz.bar).to(eq, "bar");
           });
         });
 
@@ -376,9 +376,9 @@ Screw.Unit(function(c) { with(c) {
               baz: "baz"
             });
 
-            expect(Foo.Bar.Baz.foo).to(equal, "foo");
-            expect(Foo.Bar.Baz.bar).to(equal, "bar2");
-            expect(Foo.Bar.Baz.baz).to(equal, "baz");
+            expect(Foo.Bar.Baz.foo).to(eq, "foo");
+            expect(Foo.Bar.Baz.bar).to(eq, "bar2");
+            expect(Foo.Bar.Baz.baz).to(eq, "baz");
           });
         });
       });
@@ -448,15 +448,15 @@ Screw.Unit(function(c) { with(c) {
 
       describe("functions and properties on the superconstructor prototype that are not overridden in the subconstructor prototype", function() {
         they("are inherited by objects created by the subconstructor", function() {
-          expect(object.notOverriddenFunction()).to(equal, "notOverriddenFunction");
-          expect(object.notOverriddenProperty).to(equal, "notOverriddenProperty");
+          expect(object.notOverriddenFunction()).to(eq, "notOverriddenFunction");
+          expect(object.notOverriddenProperty).to(eq, "notOverriddenProperty");
         });
       });
 
       describe("functions and properties on the superconstructor prototype that are overridden in the subconstructor prototype", function() {
         they("are overridden for objects created by the subconstructor", function() {
-          expect(object.overriddenFunction()).to(equal, "overriddenFunction subconstructor version");
-          expect(object.overriddenProperty).to(equal, "overriddenProperty subconstructor version");
+          expect(object.overriddenFunction()).to(eq, "overriddenFunction subconstructor version");
+          expect(object.overriddenProperty).to(eq, "overriddenProperty subconstructor version");
         });
       });
 
@@ -491,12 +491,12 @@ Screw.Unit(function(c) { with(c) {
         };
 
         var result = Monarch.ModuleSystem.mixin(a, b);
-        expect(result).to(equal, a);
+        expect(result).to(eq, a);
 
-        expect(a.constructor).to(equal, 1);
-        expect(a.foo).to(equal, "foo");
-        expect(a.bar).to(equal, "bar2");
-        expect(a.baz).to(equal, "baz");
+        expect(a.constructor).to(eq, '1');
+        expect(a.foo).to(eq, "foo");
+        expect(a.bar).to(eq, "bar2");
+        expect(a.baz).to(eq, "baz");
       });
 
       it("mixes constructorProperties defined in the second module into constructorProperties defined on the first, rather than overwriting them", function() {
@@ -515,9 +515,9 @@ Screw.Unit(function(c) { with(c) {
         };
 
         Monarch.ModuleSystem.mixin(a, b);
-        expect(a.constructorProperties.foo).to(equal, "foo");
-        expect(a.constructorProperties.bar).to(equal, "bar2");
-        expect(a.constructorProperties.baz).to(equal, "baz");
+        expect(a.constructorProperties.foo).to(eq, "foo");
+        expect(a.constructorProperties.bar).to(eq, "bar2");
+        expect(a.constructorProperties.baz).to(eq, "baz");
       });
     });
   });

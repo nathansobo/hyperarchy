@@ -16,10 +16,10 @@ Screw.Unit(function(c) { with(c) {
       });
 
       it("adds a Column with the given name and type to #columnsByName and returns it", function() {
-        expect(column).to(equal, table.columnsByName.familyId);
-        expect(column.constructor).to(equal, Monarch.Model.Column);
-        expect(column.name).to(equal, 'familyId');
-        expect(column.type).to(equal, 'string');
+        expect(column).to(eq, table.columnsByName.familyId);
+        expect(column.constructor).to(eq, Monarch.Model.Column);
+        expect(column.name).to(eq, 'familyId');
+        expect(column.type).to(eq, 'string');
       });
     });
 
@@ -84,7 +84,7 @@ Screw.Unit(function(c) { with(c) {
       describe("#onRemoteInsert(callback)", function() {
         it("returns a Monarch.Subscription for the #onRemoteInsertNode", function() {
           var subscription = User.table.onRemoteInsert(mockFunction);
-          expect(subscription.node).to(equal, User.table.onRemoteInsertNode);
+          expect(subscription.node).to(eq, User.table.onRemoteInsertNode);
         });
       });
 
@@ -92,7 +92,7 @@ Screw.Unit(function(c) { with(c) {
         it("returns a Monarch.Subscription for the #onRemoteRemoveNode", function() {
           var subscription = User.table.onRemoteRemove(function() {
           });
-          expect(subscription.node).to(equal, User.table.onRemoteRemoveNode);
+          expect(subscription.node).to(eq, User.table.onRemoteRemoveNode);
         });
       });
 
@@ -100,7 +100,7 @@ Screw.Unit(function(c) { with(c) {
         it("returns a Monarch.Subscription for the #onRemoteUpdateNode", function() {
           var subscription = User.table.onRemoteUpdate(function() {
           });
-          expect(subscription.node).to(equal, User.table.onRemoteUpdateNode);
+          expect(subscription.node).to(eq, User.table.onRemoteUpdateNode);
         });
       });
     });
@@ -281,7 +281,7 @@ Screw.Unit(function(c) { with(c) {
       it("returns the equivalent Table from the given repository", function() {
         var otherRepo = Repository.cloneSchema();
         var tableInOtherRepo = User.table.evaluateInRepository(otherRepo);
-        expect(tableInOtherRepo).to(equal, otherRepo.tables.users);
+        expect(tableInOtherRepo).to(eq, otherRepo.tables.users);
       });
     });
 

@@ -13,9 +13,9 @@ Screw.Unit(function(c) { with(c) {
       context("when the #column's type is 'datetime'", function() {
         it("returns the milliseconds integer for the Field's #value or null", function() {
           field = record.field('signedUpAt')
-          expect(field.valueWireRepresentation()).to(equal, field.value().getTime());
+          expect(field.valueWireRepresentation()).to(eq, field.value().getTime());
           field.value(null);
-          expect(field.valueWireRepresentation()).to(equal, null);
+          expect(field.valueWireRepresentation()).to(eq, null);
         });
       });
     });

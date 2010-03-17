@@ -18,7 +18,7 @@ Screw.Unit(function(c) { with(c) {
             User.onRemoteInsert(insertCallback);
 
             var beforeEventsCallback = mockFunction("before events callback", function() {
-              expect(User.find('stephanie').fullName()).to(equal, "Stephanie Wambach");
+              expect(User.find('stephanie').fullName()).to(eq, "Stephanie Wambach");
               expect(insertCallback).toNot(haveBeenCalled);
             });
 
@@ -28,7 +28,7 @@ Screw.Unit(function(c) { with(c) {
 
             var successCallback = mockFunction("success callback", function() {
               expect(afterEventsCallback).to(haveBeenCalled);
-              expect(User.find('stephanie').fullName()).to(equal, "Stephanie Wambach");
+              expect(User.find('stephanie').fullName()).to(eq, "Stephanie Wambach");
             });
 
             var failureCallback = mockFunction("failure callback");
@@ -102,8 +102,8 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#onSuccess and #onFailure", function() {
       they("return the future object for method chaining", function() {
-        expect(future.onSuccess(mockFunction())).to(equal, future);
-        expect(future.onFailure(mockFunction())).to(equal, future);
+        expect(future.onSuccess(mockFunction())).to(eq, future);
+        expect(future.onFailure(mockFunction())).to(eq, future);
       });
 
       context("when #handleResponse has already been called with a successful response", function() {

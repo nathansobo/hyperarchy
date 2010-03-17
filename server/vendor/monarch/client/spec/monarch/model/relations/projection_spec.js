@@ -18,13 +18,13 @@ Screw.Unit(function(c) { with(c) {
         var operandTuples = operand.tuples();
 
         expect(projectionTuples).toNot(beEmpty);
-        expect(projectionTuples.length).to(equal, operandTuples.length);
+        expect(projectionTuples.length).to(eq, operandTuples.length);
 
         _.each(operand.tuples(), function(operandRecord, index) {
           var projectionRecord = projectionTuples[index];
-          expect(projectionRecord.userId()).to(equal, operandRecord.userId());
-          expect(projectionRecord.field(projection.column('blogName')).value()).to(equal, operandRecord.name());
-          expect(projectionRecord.field('blogName').value()).to(equal, operandRecord.name());
+          expect(projectionRecord.userId()).to(eq, operandRecord.userId());
+          expect(projectionRecord.field(projection.column('blogName')).value()).to(eq, operandRecord.name());
+          expect(projectionRecord.field('blogName').value()).to(eq, operandRecord.name());
           expect(projectionRecord.startedAt).to(beNull);
         });
       });
@@ -47,8 +47,8 @@ Screw.Unit(function(c) { with(c) {
           var operandRecord = operand.create({name: "Radio Flyer"});
 
           expect(insertCallback).to(haveBeenCalled, once);
-          expect(insertCallback.mostRecentArgs[0].blogName()).to(equal, "Radio Flyer");
-          expect(projection.find(projection.column('blogName').eq("Radio Flyer"))).to(equal, insertCallback.mostRecentArgs[0]);
+          expect(insertCallback.mostRecentArgs[0].blogName()).to(eq, "Radio Flyer");
+          expect(projection.find(projection.column('blogName').eq("Radio Flyer"))).to(eq, insertCallback.mostRecentArgs[0]);
         });
       });
 

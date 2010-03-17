@@ -12,7 +12,7 @@ Screw.Unit(function(c) { with(c) {
         mock(builder, 'tag', function() {
           return "result";
         });
-        expect(builder.p({'class': "coolParagraph"}, "This is a paragraph")).to(equal, "result");
+        expect(builder.p({'class': "coolParagraph"}, "This is a paragraph")).to(eq, "result");
         expect(builder.tag).to(haveBeenCalled, withArgs("p", {'class': "coolParagraph"}, "This is a paragraph"));
       });
     });
@@ -64,29 +64,29 @@ Screw.Unit(function(c) { with(c) {
             bar: "bar"
           });
 
-          expect(valueOfFooWhenHelloPOnBuildIsTriggered).to(equal, "foo");
-          expect(valueOfBarWhenHelloPOnBuildIsTriggered).to(equal, "bar");
-          expect(jqueryFragment.foo).to(equal, "foo");
-          expect(jqueryFragment.bar).to(equal, "bar");
+          expect(valueOfFooWhenHelloPOnBuildIsTriggered).to(eq, "foo");
+          expect(valueOfBarWhenHelloPOnBuildIsTriggered).to(eq, "bar");
+          expect(jqueryFragment.foo).to(eq, "foo");
+          expect(jqueryFragment.bar).to(eq, "bar");
         });
       });
 
       it("invokes onBuild instructions defined on the elements with a jQuery wrapper for that element and the jqueryFragment", function() {
         var jqueryFragment = builder.toView();
         expect(helloPOnBuildArgs[0].is("p:contains('Hello')")).to(beTrue);
-        expect(helloPOnBuildArgs[1]).to(equal, jqueryFragment);
+        expect(helloPOnBuildArgs[1]).to(eq, jqueryFragment);
 
         expect(helloDivOnBuildArgs[0].is("div#hello")).to(beTrue);
-        expect(helloDivOnBuildArgs[1]).to(equal, jqueryFragment);
+        expect(helloDivOnBuildArgs[1]).to(eq, jqueryFragment);
 
         expect(goodbyePOnBuildArgs[0].is("p:contains('Goodbye')")).to(beTrue);
-        expect(goodbyePOnBuildArgs[1]).to(equal, jqueryFragment);
+        expect(goodbyePOnBuildArgs[1]).to(eq, jqueryFragment);
 
         expect(brOnBuildArgs[0].is("br")).to(beTrue);
-        expect(brOnBuildArgs[1]).to(equal, jqueryFragment);
+        expect(brOnBuildArgs[1]).to(eq, jqueryFragment);
 
-        expect(outerDivOnBuildArgs[0]).to(equal, jqueryFragment);
-        expect(outerDivOnBuildArgs[1]).to(equal, jqueryFragment);
+        expect(outerDivOnBuildArgs[0]).to(eq, jqueryFragment);
+        expect(outerDivOnBuildArgs[1]).to(eq, jqueryFragment);
       });
 
       it("invokes the 'initialize' method on the view if it supplied as a property after onBuild callbacks have been triggered", function() {
@@ -134,18 +134,18 @@ Screw.Unit(function(c) { with(c) {
       they("attach jQuery event callbacks to the generated view that call the given callback with the view and the event", function() {
         view.click();
         expect(rootCallbackForClick).to(haveBeenCalled, once);
-        expect(rootCallbackForClick.mostRecentArgs[0]).to(equal, view);
-        expect(rootCallbackForClick.mostRecentArgs[1].type).to(equal, "click");
+        expect(rootCallbackForClick.mostRecentArgs[0]).to(eq, view);
+        expect(rootCallbackForClick.mostRecentArgs[1].type).to(eq, "click");
 
         view.find("#child").mouseover();
         expect(childCallback).to(haveBeenCalled, once);
-        expect(childCallback.mostRecentArgs[0]).to(equal, view);
-        expect(childCallback.mostRecentArgs[1].type).to(equal, "mouseover");
+        expect(childCallback.mostRecentArgs[0]).to(eq, view);
+        expect(childCallback.mostRecentArgs[1].type).to(eq, "mouseover");
 
         view.find("br").click();
         expect(selfClosingTagCallback).to(haveBeenCalled, once);
-        expect(selfClosingTagCallback.mostRecentArgs[0]).to(equal, view);
-        expect(selfClosingTagCallback.mostRecentArgs[1].type).to(equal, "click");
+        expect(selfClosingTagCallback.mostRecentArgs[0]).to(eq, view);
+        expect(selfClosingTagCallback.mostRecentArgs[1].type).to(eq, "click");
       });
 
       they("allow other declarations to be chained after them", function() {
@@ -168,8 +168,8 @@ Screw.Unit(function(c) { with(c) {
       });
 
       they("create fields on the generated view that point to the element on which .ref was called", function() {
-        expect(view.root.attr('id')).to(equal, 'root');
-        expect(view.child.attr('id')).to(equal, 'child');
+        expect(view.root.attr('id')).to(eq, 'root');
+        expect(view.child.attr('id')).to(eq, 'child');
       });
 
       they("allow other declarations to be chained after them", function() {
@@ -231,17 +231,17 @@ Screw.Unit(function(c) { with(c) {
 
           var view = builder.toView();
 
-          expect(view.subview1.html()).to(equal, view.find(".subview:contains('Subview 1')").html());
-          expect(view.subview1.foo).to(equal, "foo");
-          expect(view.subview1.bar).to(equal, "bar");
-          expect(view.subview1.subviewNumber).to(equal, 1);
-          expect(view.subview1.parentView).to(equal, view);
+          expect(view.subview1.html()).to(eq, view.find(".subview:contains('Subview 1')").html());
+          expect(view.subview1.foo).to(eq, "foo");
+          expect(view.subview1.bar).to(eq, "bar");
+          expect(view.subview1.subviewNumber).to(eq, 1);
+          expect(view.subview1.parentView).to(eq, view);
 
-          expect(view.subview2.html()).to(equal, view.find(".subview:contains('Subview 2')").html());
-          expect(view.subview2.foo).to(equal, "foo");
-          expect(view.subview2.bar).to(equal, "bar");
-          expect(view.subview2.subviewNumber).to(equal, 2);
-          expect(view.subview2.parentView).to(equal, view);
+          expect(view.subview2.html()).to(eq, view.find(".subview:contains('Subview 2')").html());
+          expect(view.subview2.foo).to(eq, "foo");
+          expect(view.subview2.bar).to(eq, "bar");
+          expect(view.subview2.subviewNumber).to(eq, 2);
+          expect(view.subview2.parentView).to(eq, view);
         });
       });
 
@@ -253,8 +253,8 @@ Screw.Unit(function(c) { with(c) {
           });
 
           var view = builder.toView();
-          expect(view.subviews.one.subviewNumber).to(equal, 1);
-          expect(view.subviews.two.subviewNumber).to(equal, 2);
+          expect(view.subviews.one.subviewNumber).to(eq, 1);
+          expect(view.subviews.two.subviewNumber).to(eq, 2);
         });
       });
     });
@@ -269,24 +269,24 @@ Screw.Unit(function(c) { with(c) {
 
           it("returns the SelfClosingTag instruction", function() {
             var instruction = builder.tag("br")
-            expect(instruction.constructor).to(equal, Monarch.View.SelfClosingTag);
-            expect(instruction.name).to(equal, "br");
+            expect(instruction.constructor).to(eq, Monarch.View.SelfClosingTag);
+            expect(instruction.name).to(eq, "br");
           });
         });
 
         context("if the tag is not self-closing", function() {
           it("generates an empty open tag and a close tag", function() {
             builder.tag("div");
-            expect(builder.toHtml()).to(equal, "<div></div>");
+            expect(builder.toHtml()).to(eq, "<div></div>");
           });
 
           it("returns the CloseTag instruction with a reference to the OpenTag instruction", function() {
             var instruction = builder.tag("div");
-            expect(instruction.constructor).to(equal, Monarch.View.CloseTag);
-            expect(instruction.name).to(equal, "div");
+            expect(instruction.constructor).to(eq, Monarch.View.CloseTag);
+            expect(instruction.name).to(eq, "div");
             var openTagInstruction = instruction.openTagInstruction;
-            expect(openTagInstruction.constructor).to(equal, Monarch.View.OpenTag);
-            expect(openTagInstruction.name).to(equal, "div");
+            expect(openTagInstruction.constructor).to(eq, Monarch.View.OpenTag);
+            expect(openTagInstruction.name).to(eq, "div");
           });
         });
       });
@@ -295,14 +295,14 @@ Screw.Unit(function(c) { with(c) {
         context("if the tag is self-closing", function() {
           it("generates a self-closing tag with the given attributes", function() {
             builder.tag("br", { 'id': "foo", 'class': "bar"});
-            expect(builder.toHtml()).to(equal, '<br id="foo" class="bar"/>');
+            expect(builder.toHtml()).to(eq, '<br id="foo" class="bar"/>');
           });
         });
 
         context("if the tag is not self-closing", function() {
           it("generates an open tag with the given attributes and a close tag", function() {
             builder.tag("div", { 'id': "foo", 'class': "bar"});
-            expect(builder.toHtml()).to(equal, '<div id="foo" class="bar"></div>');
+            expect(builder.toHtml()).to(eq, '<div id="foo" class="bar"></div>');
           });
         });
       });
@@ -319,7 +319,7 @@ Screw.Unit(function(c) { with(c) {
         context("if the tag is not self-closing", function() {
           it("generates an open tag and a close tag surrounding the xml escaping of the given text", function() {
             builder.tag("div", "& hello");
-            expect(builder.toHtml()).to(equal, "<div>&amp; hello</div>");
+            expect(builder.toHtml()).to(eq, "<div>&amp; hello</div>");
           });
         });
       });
@@ -345,15 +345,15 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("generates an open tag, calls the function, then generates a close tag", function() {
-            expect(builder.toHtml()).to(equal, '<div><div></div></div>');
+            expect(builder.toHtml()).to(eq, '<div><div></div></div>');
           });
 
           it("returns the CloseTag instruction with a reference to the OpenTag instruction", function() {
-            expect(instruction.constructor).to(equal, Monarch.View.CloseTag);
-            expect(instruction.name).to(equal, "div");
+            expect(instruction.constructor).to(eq, Monarch.View.CloseTag);
+            expect(instruction.name).to(eq, "div");
             var openTagInstruction = instruction.openTagInstruction;
-            expect(openTagInstruction.constructor).to(equal, Monarch.View.OpenTag);
-            expect(openTagInstruction.name).to(equal, "div");
+            expect(openTagInstruction.constructor).to(eq, Monarch.View.OpenTag);
+            expect(openTagInstruction.name).to(eq, "div");
           });
         });
       });
@@ -382,14 +382,14 @@ Screw.Unit(function(c) { with(c) {
           builder.pushChild();
           builder.popChild();
 
-          expect(builder.findPrecedingElement()).to(equal, "find result");
+          expect(builder.findPrecedingElement()).to(eq, "find result");
           expect(builder.jqueryFragment.find).to(haveBeenCalled, withArgs("> :eq(0)"));
           builder.jqueryFragment.find.clear();
 
           builder.pushChild();
           builder.pushChild();
           builder.popChild();
-          expect(builder.findPrecedingElement()).to(equal, "find result");
+          expect(builder.findPrecedingElement()).to(eq, "find result");
           expect(builder.jqueryFragment.find).to(haveBeenCalled, withArgs("> :eq(1) > :eq(0)"));
         });
       });
@@ -401,7 +401,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         it("returns the Builder's current #jqueryFragment", function() {
-          expect(builder.findPrecedingElement()).to(equal, builder.jqueryFragment);
+          expect(builder.findPrecedingElement()).to(eq, builder.jqueryFragment);
         });
       });
     });

@@ -39,7 +39,7 @@ Screw.Unit(function(c) { with(c) {
           var future = server.fetch([Blog.table, User.table]);
 
           expect(server.gets).to(haveLength, 1);
-          expect(server.lastGet.url).to(equal, "/repository/fetch");
+          expect(server.lastGet.url).to(eq, "/repository/fetch");
           expect(server.lastGet.data).to(equal, {
             relations: [Blog.table.wireRepresentation(), User.table.wireRepresentation()]
           });
@@ -118,10 +118,10 @@ Screw.Unit(function(c) { with(c) {
         it("performs a POST to {Repository.originUrl}/subscribe with the json representation of the given relations and invokes the returned future with RemoteSubscriptions when the post completes successfully", function() {
           var subscribeFuture = server.subscribe([Blog.table, BlogPost.table]);
 
-          expect(server.posts.length).to(equal, 1);
+          expect(server.posts.length).to(eq, 1);
 
-          expect(server.lastPost.type).to(equal, "post");
-          expect(server.lastPost.url).to(equal, Repository.originUrl + "/subscribe");
+          expect(server.lastPost.type).to(eq, "post");
+          expect(server.lastPost.url).to(eq, Repository.originUrl + "/subscribe");
           expect(server.lastPost.data).to(equal, {
             relations: [Blog.table.wireRepresentation(), BlogPost.table.wireRepresentation()]            
           });
@@ -132,11 +132,11 @@ Screw.Unit(function(c) { with(c) {
           server.lastPost.simulateSuccess(["mockSubscriptionId1", "mockSubscriptionId2"]);
 
           var remoteSubscriptions = successCallback.mostRecentArgs[0];
-          expect(remoteSubscriptions.length).to(equal, 2);
-          expect(remoteSubscriptions[0].relation).to(equal, Blog.table);
-          expect(remoteSubscriptions[0].id).to(equal, "mockSubscriptionId1");
-          expect(remoteSubscriptions[1].relation).to(equal, BlogPost.table);
-          expect(remoteSubscriptions[1].id).to(equal, "mockSubscriptionId2");
+          expect(remoteSubscriptions.length).to(eq, 2);
+          expect(remoteSubscriptions[0].relation).to(eq, Blog.table);
+          expect(remoteSubscriptions[0].id).to(eq, "mockSubscriptionId1");
+          expect(remoteSubscriptions[1].relation).to(eq, BlogPost.table);
+          expect(remoteSubscriptions[1].id).to(eq, "mockSubscriptionId2");
         });
 
         it("causes all mutation commands received to be sent to Repository.mutate", function() {
@@ -157,9 +157,9 @@ Screw.Unit(function(c) { with(c) {
           var remoteSubscription2 = new Monarch.Http.RemoteSubscription("fakeSubscription2", BlogPost.table);
 
           server.unsubscribe([remoteSubscription1, remoteSubscription2]);
-          expect(server.posts.length).to(equal, 1);
-          expect(server.lastPost.type).to(equal, "post");
-          expect(server.lastPost.url).to(equal, Repository.originUrl + "/unsubscribe");
+          expect(server.posts.length).to(eq, 1);
+          expect(server.lastPost.type).to(eq, "post");
+          expect(server.lastPost.url).to(eq, Repository.originUrl + "/unsubscribe");
           expect(server.lastPost.data).to(equal, {
             subscriptionIds: [remoteSubscription1.id, remoteSubscription2.id]
           });
@@ -192,8 +192,8 @@ Screw.Unit(function(c) { with(c) {
             var record = User.localCreate({fullName: "Jesus Chang"});
             server.save(record);
 
-            expect(server.posts.length).to(equal, 1);
-            expect(server.lastPost.url).to(equal, "/repository/mutate");
+            expect(server.posts.length).to(eq, 1);
+            expect(server.lastPost.url).to(eq, "/repository/mutate");
             expect(server.lastPost.data).to(equal, {
               operations: [['create', 'users', record.dirtyWireRepresentation()]]
             });
@@ -207,8 +207,8 @@ Screw.Unit(function(c) { with(c) {
                 expect(tableInsertCallback).toNot(haveBeenCalled);
                 expect(recordCreateCallback).toNot(haveBeenCalled);
                 expect(record.afterRemoteCreate).toNot(haveBeenCalled);
-                expect(record.id()).to(equal, "jesus");
-                expect(record.fullName()).to(equal, "Jesus H. Chang");
+                expect(record.id()).to(eq, "jesus");
+                expect(record.fullName()).to(eq, "Jesus H. Chang");
               });
 
               var afterEventsCallback = mockFunction("after events", function() {
@@ -284,8 +284,8 @@ Screw.Unit(function(c) { with(c) {
             record.name("Bad Bad Children");
             server.save(record);
 
-            expect(server.posts.length).to(equal, 1);
-            expect(server.lastPost.url).to(equal, "/repository/mutate");
+            expect(server.posts.length).to(eq, 1);
+            expect(server.lastPost.url).to(eq, "/repository/mutate");
             expect(server.lastPost.data).to(equal, {
               operations: [['update', 'blogs', 'recipes', record.dirtyWireRepresentation()]]
             });
@@ -311,9 +311,9 @@ Screw.Unit(function(c) { with(c) {
 
               var saveFuture = server.save(record);
 
-              expect(record.remote.name()).to(equal, nameBeforeUpdate);
-              expect(record.remote.funProfitName()).to(equal, funProfitNameBeforeUpdate);
-              expect(record.remote.userId()).to(equal, userIdBeforeUpdate);
+              expect(record.remote.name()).to(eq, nameBeforeUpdate);
+              expect(record.remote.funProfitName()).to(eq, funProfitNameBeforeUpdate);
+              expect(record.remote.userId()).to(eq, userIdBeforeUpdate);
 
               var beforeEventsCallback = mockFunction('before events callback', function() {
                 expect(tableRemoteUpdateCallback).toNot(haveBeenCalled);
@@ -362,13 +362,13 @@ Screw.Unit(function(c) { with(c) {
                 secondary: []
               });
 
-              expect(record.local.name()).to(equal, "Programming Prime");
-              expect(record.local.funProfitName()).to(equal, "Programming Prime for Fun and Profit");
-              expect(record.local.userId()).to(equal, "wil");
+              expect(record.local.name()).to(eq, "Programming Prime");
+              expect(record.local.funProfitName()).to(eq, "Programming Prime for Fun and Profit");
+              expect(record.local.userId()).to(eq, "wil");
 
-              expect(record.remote.name()).to(equal, "Programming Prime");
-              expect(record.remote.funProfitName()).to(equal, "Programming Prime for Fun and Profit");
-              expect(record.remote.userId()).to(equal, "wil");
+              expect(record.remote.name()).to(eq, "Programming Prime");
+              expect(record.remote.funProfitName()).to(eq, "Programming Prime for Fun and Profit");
+              expect(record.remote.userId()).to(eq, "wil");
 
               expect(beforeEventsCallback).to(haveBeenCalled);
               expect(afterEventsCallback).to(haveBeenCalled);
@@ -395,17 +395,17 @@ Screw.Unit(function(c) { with(c) {
                 }
               });
 
-              expect(record.local.name()).to(equal, "Programming");
-              expect(record.local.funProfitName()).to(equal, "Programming for Fun and Profit");
-              expect(record.local.userId()).to(equal, "wil");
+              expect(record.local.name()).to(eq, "Programming");
+              expect(record.local.funProfitName()).to(eq, "Programming for Fun and Profit");
+              expect(record.local.userId()).to(eq, "wil");
 
-              expect(record.remote.name()).to(equal, nameBeforeUpdate);
-              expect(record.remote.funProfitName()).to(equal, funProfitNameBeforeUpdate);
-              expect(record.remote.userId()).to(equal, userIdBeforeUpdate);
+              expect(record.remote.name()).to(eq, nameBeforeUpdate);
+              expect(record.remote.funProfitName()).to(eq, funProfitNameBeforeUpdate);
+              expect(record.remote.userId()).to(eq, userIdBeforeUpdate);
 
               expect(onFailureCallback).to(haveBeenCalled, withArgs(record));
-              expect(record.local.field('name').validationErrors).to(equal, nameErrors);
-              expect(record.local.field('userId').validationErrors).to(equal, userIdErrors);
+              expect(record.local.field('name').validationErrors).to(eq, nameErrors);
+              expect(record.local.field('userId').validationErrors).to(eq, userIdErrors);
 
               expect(tableRemoteUpdateCallback).toNot(haveBeenCalled);
               expect(recordRemoteUpdateCallback).toNot(haveBeenCalled);
@@ -430,8 +430,8 @@ Screw.Unit(function(c) { with(c) {
             record.localDestroy();
             server.save(record);
 
-            expect(server.posts.length).to(equal, 1);
-            expect(server.lastPost.url).to(equal, "/repository/mutate");
+            expect(server.posts.length).to(eq, 1);
+            expect(server.lastPost.url).to(eq, "/repository/mutate");
             expect(server.lastPost.data).to(equal, {
               operations: [['destroy', 'blogs', 'recipes']]
             });
@@ -515,9 +515,9 @@ Screw.Unit(function(c) { with(c) {
           it("performs a batch mutation representing the state of all the dirty records", function() {
             server.save(locallyCreated, locallyUpdated, locallyUpdated.blogs());
 
-            expect(server.posts.length).to(equal, 1);
+            expect(server.posts.length).to(eq, 1);
 
-            expect(server.lastPost.url).to(equal, "/repository/mutate");
+            expect(server.lastPost.url).to(eq, "/repository/mutate");
             expect(server.lastPost.data).to(equal, {
               operations: [
                 ['create', 'users', locallyCreated.dirtyWireRepresentation()],
@@ -561,7 +561,7 @@ Screw.Unit(function(c) { with(c) {
               expect(afterEventsCallback).to(haveBeenCalled, once);
 
               expect(locallyCreated.remotelyCreated).to(beTrue);
-              expect(locallyUpdated.remote.fullName()).to(equal, "Francisco Wu");
+              expect(locallyUpdated.remote.fullName()).to(eq, "Francisco Wu");
               expect(_.include(Blog.table.allTuples(), locallyDestroyed)).to(beFalse);
             });
           });
@@ -583,7 +583,7 @@ Screw.Unit(function(c) { with(c) {
 
               expect(locallyCreated.isRemotelyCreated).to(beFalse);
               expect(locallyUpdated.field('fullName').validationErrors).to(equal, ["That name is taken"]);
-              expect(locallyUpdated.remote.fullName()).to(equal, "Jan Nelson");
+              expect(locallyUpdated.remote.fullName()).to(eq, "Jan Nelson");
               expect(_.include(Blog.table.allTuples(), locallyDestroyed)).to(beTrue);
             });
           });
@@ -677,23 +677,23 @@ Screw.Unit(function(c) { with(c) {
         expect(jQuery.ajax).to(haveBeenCalled, once);
 
         var ajaxOptions = jQuery.ajax.mostRecentArgs[0];
-        expect(ajaxOptions.type).to(equal, requestMethod.toUpperCase().replace("_", ""));
-        expect(ajaxOptions.dataType).to(equal, 'json');
+        expect(ajaxOptions.type).to(eq, requestMethod.toUpperCase().replace("_", ""));
+        expect(ajaxOptions.dataType).to(eq, 'json');
 
         // data is url-encoded and appended as params for delete requests
         if (requestMethod == "delete_") {
           var expectedData = _.extend({cometClientId: window.COMET_CLIENT_ID}, data)
-          expect(ajaxOptions.url).to(equal, '/users?' + jQuery.param(server.stringifyJsonData(expectedData)));
+          expect(ajaxOptions.url).to(eq, '/users?' + jQuery.param(server.stringifyJsonData(expectedData)));
           expect(ajaxOptions.data).to(beNull);
         } else {
-          expect(ajaxOptions.url).to(equal, '/users');
+          expect(ajaxOptions.url).to(eq, '/users');
           expect(JSON.parse(ajaxOptions.data.foo)).to(equal, data.foo);
-          expect(ajaxOptions.data.baz).to(equal, data.baz);
+          expect(ajaxOptions.data.baz).to(eq, data.baz);
           expect(JSON.parse(ajaxOptions.data.corge)).to(equal, data.corge);
           expect(JSON.parse(ajaxOptions.data.grault)).to(equal, data.grault);
         }
 
-        expect(future.constructor).to(equal, Monarch.Http.AjaxFuture);
+        expect(future.constructor).to(eq, Monarch.Http.AjaxFuture);
 
         mock(future, 'handleResponse');
 

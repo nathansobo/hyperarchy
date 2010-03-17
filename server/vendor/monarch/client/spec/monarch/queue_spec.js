@@ -32,7 +32,7 @@ Screw.Unit(function(c) { with(c) {
           expect(fn3).toNot(haveBeenCalled);
 
           expect(window.setTimeout).to(haveBeenCalled, once);
-          expect(window.setTimeout.mostRecentArgs[1]).to(equal, 2);
+          expect(window.setTimeout.mostRecentArgs[1]).to(eq, 2);
 
           window.setTimeout.mostRecentArgs[0]();
 

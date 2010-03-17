@@ -64,8 +64,8 @@ Screw.Unit(function(c) { with(c) {
         expect(insertCallback).to(haveBeenCalled);
         expect(afterEventsCallback).to(haveBeenCalled);
 
-        expect(User.find('sharon').fullName()).to(equal, 'Sharon Ly');
-        expect(Blog.find('guns').userId()).to(equal, 'sharon');
+        expect(User.find('sharon').fullName()).to(eq, 'Sharon Ly');
+        expect(Blog.find('guns').userId()).to(eq, 'sharon');
       });
     });
 
@@ -84,7 +84,7 @@ Screw.Unit(function(c) { with(c) {
         var future = fakeServer.subscribe([Blog.table, User.table]);
 
         expect(fakeServer.subscribes).to(haveLength, 1);
-        expect(fakeServer.lastSubscribe).to(equal, fakeServer.subscribes[0]);
+        expect(fakeServer.lastSubscribe).to(eq, fakeServer.subscribes[0]);
         expect(fakeServer.lastSubscribe.relations).to(equal, [Blog.table, User.table]);
 
 
@@ -93,14 +93,14 @@ Screw.Unit(function(c) { with(c) {
 
         fakeServer.lastSubscribe.simulateSuccess();
 
-        expect(fakeServer.subscribes.length).to(equal, 0);
+        expect(fakeServer.subscribes.length).to(eq, 0);
         expect(fakeServer.lastSubscribe).to(beNull);
 
         expect(successCallback).to(haveBeenCalled, once);
         expect(successCallback.mostRecentArgs[0][0].id).toNot(beNull);
-        expect(successCallback.mostRecentArgs[0][0].relation).to(equal, Blog.table);
+        expect(successCallback.mostRecentArgs[0][0].relation).to(eq, Blog.table);
         expect(successCallback.mostRecentArgs[0][1].id).toNot(equal, successCallback.mostRecentArgs[0].id);
-        expect(successCallback.mostRecentArgs[0][1].relation).to(equal, User.table);
+        expect(successCallback.mostRecentArgs[0][1].relation).to(eq, User.table);
       });
     });
 
@@ -114,7 +114,7 @@ Screw.Unit(function(c) { with(c) {
         var future = fakeServer.unsubscribe([remoteSubscription1, remoteSubscription2]);
 
         expect(fakeServer.unsubscribes).to(haveLength, 1);
-        expect(fakeServer.lastUnsubscribe).to(equal, fakeServer.unsubscribes[0]);
+        expect(fakeServer.lastUnsubscribe).to(eq, fakeServer.unsubscribes[0]);
         expect(fakeServer.lastUnsubscribe.remoteSubscriptions).to(equal, [remoteSubscription1, remoteSubscription2]);
 
         var successCallback = mockFunction('successCallback');
@@ -122,7 +122,7 @@ Screw.Unit(function(c) { with(c) {
 
         fakeServer.lastUnsubscribe.simulateSuccess();
 
-        expect(fakeServer.unsubscribes.length).to(equal, 0);
+        expect(fakeServer.unsubscribes.length).to(eq, 0);
         expect(fakeServer.lastUnsubscribe).to(beNull);
         expect(successCallback).to(haveBeenCalled, once);
       });
@@ -139,17 +139,17 @@ Screw.Unit(function(c) { with(c) {
           .onSuccess(successCallback);
 
 
-        expect(fakeServer.gets.length).to(equal, 2);
-        expect(fakeServer.lastGet).to(equal, fakeServer.gets[1]);
-        expect(fakeServer.lastGet.url).to(equal, '/bang');
+        expect(fakeServer.gets.length).to(eq, 2);
+        expect(fakeServer.lastGet).to(eq, fakeServer.gets[1]);
+        expect(fakeServer.lastGet.url).to(eq, '/bang');
         expect(fakeServer.lastGet.data).to(equal, {glorp: 'buzz'});
 
         fakeServer.lastGet.simulateSuccess({baz: 'quux'});
         expect(successCallback).to(haveBeenCalled, withArgs({baz: 'quux'}));
 
-        expect(fakeServer.gets.length).to(equal, 1);
-        expect(fakeServer.lastGet).to(equal, fakeServer.gets[0]);
-        expect(fakeServer.lastGet.url).to(equal, '/foo');
+        expect(fakeServer.gets.length).to(eq, 1);
+        expect(fakeServer.lastGet).to(eq, fakeServer.gets[0]);
+        expect(fakeServer.lastGet.url).to(eq, '/foo');
         expect(fakeServer.lastGet.data).to(equal, {foo: 'bar'});
 
         fakeServer.lastGet.simulateFailure({bar: 'foo'});

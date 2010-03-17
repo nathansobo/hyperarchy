@@ -28,14 +28,14 @@ Screw.Unit(function(c) { with(c) {
 
       describe("#localValue()", function() {
         it("returns the value of the transformer applied to the #localValues of the combined signals", function() {
-          expect(combinedSignal.localValue()).to(equal, 'mock transformed value');
+          expect(combinedSignal.localValue()).to(eq, 'mock transformed value');
           expect(transformer).to(haveBeenCalled, withArgs(signalA.localValue(), signalB.localValue()));
         });
       });
 
       describe("#remoteValue()", function() {
         it("returns the value of the transformer applied to the #localValues of the combined signals", function() {
-          expect(combinedSignal.remoteValue()).to(equal, 'mock transformed value');
+          expect(combinedSignal.remoteValue()).to(eq, 'mock transformed value');
           expect(transformer).to(haveBeenCalled, withArgs(signalA.remoteValue(), signalB.remoteValue()));
         });
       });

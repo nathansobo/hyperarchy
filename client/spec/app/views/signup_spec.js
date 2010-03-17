@@ -18,8 +18,8 @@ Screw.Unit(function(c) { with(c) {
         expect(Server.posts).to(beEmpty);
         view.find('#signupSubmit').click();
 
-        expect(Server.posts.length).to(equal, 1);
-        expect(Server.lastPost.url).to(equal, "/users");
+        expect(Server.posts.length).to(eq, 1);
+        expect(Server.lastPost.url).to(eq, "/users");
         expect(Server.lastPost.data).to(equal, {
           fullName: "Billy Cobham",
           emailAddress: "cobham@gmail.com",

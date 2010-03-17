@@ -19,7 +19,7 @@ Screw.Unit(function(c) { with(c) {
         var differenceTuples = difference.tuples();
 
         expect(differenceTuples).toNot(beEmpty);
-        expect(differenceTuples.length).to(equal, leftOperand.size() - rightOperand.size());
+        expect(differenceTuples.length).to(eq, leftOperand.size() - rightOperand.size());
 
         _.each(differenceTuples, function(record) {
           expect(rightOperand.find(record.id())).to(beNull);

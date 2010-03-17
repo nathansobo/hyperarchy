@@ -54,12 +54,12 @@ Screw.Unit(function(c) { with(c) {
         repository.resumeMutations();
 
         expect(BlogPost.find('running')).toNot(beNull);
-        expect(Blog.find('recipes').name()).to(equal, "Absolutely Disgusting Food");
+        expect(Blog.find('recipes').name()).to(eq, "Absolutely Disgusting Food");
         expect(User.find('jan')).to(beNull);
 
         repository.mutate([['update', 'blogs', 'recipes', { name: "Chicken Aint So Bad" }]]);
         
-        expect(Blog.find('recipes').name()).to(equal, "Chicken Aint So Bad");
+        expect(Blog.find('recipes').name()).to(eq, "Chicken Aint So Bad");
       });
     });
 
@@ -70,7 +70,7 @@ Screw.Unit(function(c) { with(c) {
         expect(Blog.find('travel')).to(beNull);
 
         var jan = User.find('jan');
-        expect(jan.fullName()).to(equal, 'Jan Nelson');
+        expect(jan.fullName()).to(eq, 'Jan Nelson');
 
         repository.update({
           users: {
@@ -102,12 +102,12 @@ Screw.Unit(function(c) { with(c) {
         var metacircular = Blog.find('metacircular');
         var travel = Blog.find('travel');
 
-        expect(nathan.fullName()).to(equal, 'Nathan Sobo');
-        expect(metacircular.name()).to(equal, 'Metacircular');
-        expect(metacircular.userId()).to(equal, 'nathan');
-        expect(travel.name()).to(equal, "Nathan's Travels");
-        expect(travel.userId()).to(equal, 'nathan');
-        expect(jan.fullName()).to(equal, 'Jan Christian Nelson');
+        expect(nathan.fullName()).to(eq, 'Nathan Sobo');
+        expect(metacircular.name()).to(eq, 'Metacircular');
+        expect(metacircular.userId()).to(eq, 'nathan');
+        expect(travel.name()).to(eq, "Nathan's Travels");
+        expect(travel.userId()).to(eq, 'nathan');
+        expect(jan.fullName()).to(eq, 'Jan Christian Nelson');
       });
     });
 
@@ -118,7 +118,7 @@ Screw.Unit(function(c) { with(c) {
         expect(Blog.find('travel')).to(beNull);
 
         var jan = User.find('jan');
-        expect(jan.fullName()).to(equal, 'Jan Nelson');
+        expect(jan.fullName()).to(eq, 'Jan Nelson');
         expect(User.find('mike')).toNot(beNull);
         expect(User.find('wil')).toNot(beNull);
         expect(Blog.find('recipes')).toNot(beNull);
@@ -157,12 +157,12 @@ Screw.Unit(function(c) { with(c) {
         expect(User.find('wil')).to(beNull);
         expect(Blog.find('recipes')).to(beNull);
         expect(Blog.find('motorcycle')).to(beNull);
-        expect(nathan.fullName()).to(equal, 'Nathan Sobo');
-        expect(metacircular.name()).to(equal, 'Metacircular');
-        expect(metacircular.userId()).to(equal, 'nathan');
-        expect(travel.name()).to(equal, "Nathan's Travels");
-        expect(travel.userId()).to(equal, 'nathan');
-        expect(jan.fullName()).to(equal, 'Jan Christian Nelson');
+        expect(nathan.fullName()).to(eq, 'Nathan Sobo');
+        expect(metacircular.name()).to(eq, 'Metacircular');
+        expect(metacircular.userId()).to(eq, 'nathan');
+        expect(travel.name()).to(eq, "Nathan's Travels");
+        expect(travel.userId()).to(eq, 'nathan');
+        expect(jan.fullName()).to(eq, 'Jan Christian Nelson');
       });
     });
 
@@ -189,8 +189,8 @@ Screw.Unit(function(c) { with(c) {
         expect(updateCallback).to(haveBeenCalled, once);
         expect(removeCallback).to(haveBeenCalled, once);
 
-        expect(Blog.find('malathion').name()).to(equal, "Recipes From The Makers of Malathion");
-        expect(User.find('jan').age()).to(equal, 88);
+        expect(Blog.find('malathion').name()).to(eq, "Recipes From The Makers of Malathion");
+        expect(User.find('jan').age()).to(eq, 88);
         expect(User.find('wil')).to(beNull);
       });
     });
@@ -221,13 +221,13 @@ Screw.Unit(function(c) { with(c) {
         expect(clone.tables.blogs.tuples()).to(beEmpty);
 
         // with same columns (schema)
-        expect(clone.tables.users.columnsByName).to(equal, repository.tables.users.columnsByName);
-        expect(clone.tables.users.column('fullName')).to(equal, repository.tables.users.column('fullName'));
+        expect(clone.tables.users.columnsByName).to(eq, repository.tables.users.columnsByName);
+        expect(clone.tables.users.column('fullName')).to(eq, repository.tables.users.column('fullName'));
 
         // but different data stores
         var numUsersInOriginalRepository = repository.tables.users.tuples().length;
         clone.tables.users.localCreate({fullName: "Wil Bierbaum"});
-        expect(repository.tables.users.tuples().length).to(equal, numUsersInOriginalRepository);
+        expect(repository.tables.users.tuples().length).to(eq, numUsersInOriginalRepository);
       });
     });
   });

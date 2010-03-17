@@ -26,7 +26,7 @@ Screw.Unit(function(c) { with(c) {
       it("returns all composite tuples from the cartesian product of the operands that match the predicate", function() {
         var allTuples = join.allTuples();
 
-        expect(allTuples.length).to(equal, 3);
+        expect(allTuples.length).to(eq, 3);
 
         expect(_.any(allTuples, function(tuple) {
           return tuple.record(Blog.table) === blog1 && tuple.record(BlogPost.table) === post1;
@@ -75,29 +75,29 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#column", function() {
       it("returns the first matching column from either operand", function() {
-        expect(join.column('name')).to(equal, Blog.name_);
-        expect(join.column('body')).to(equal, BlogPost.body);
+        expect(join.column('name')).to(eq, Blog.name_);
+        expect(join.column('body')).to(eq, BlogPost.body);
       });
     });
 
     describe("#onRemoteInsert", function() {
       it("returns a Monarch.Subscription with #onRemoteInsertNode as its #node", function() {
         var subscription = join.onRemoteInsert(function() {});
-        expect(subscription.node).to(equal, join.onRemoteInsertNode);
+        expect(subscription.node).to(eq, join.onRemoteInsertNode);
       });
     });
 
     describe("#onRemoteUpdate", function() {
       it("returns a Monarch.Subscription with #onRemoteUpdateNode as its #node", function() {
         var subscription = join.onRemoteUpdate(function() {});
-        expect(subscription.node).to(equal, join.onRemoteUpdateNode);
+        expect(subscription.node).to(eq, join.onRemoteUpdateNode);
       });
     });
 
     describe("#onRemoteRemove", function() {
       it("returns a Monarch.Subscription with #onRemoteRemoveNode as its #node", function() {
         var subscription = join.onRemoteRemove(function() {});
-        expect(subscription.node).to(equal, join.onRemoteRemoveNode);
+        expect(subscription.node).to(eq, join.onRemoteRemoveNode);
       });
     });
 
@@ -162,8 +162,8 @@ Screw.Unit(function(c) { with(c) {
               user.blogs().create({id: "blog3"}).afterEvents(function(blog) {
                 expect(insertHandler).to(haveBeenCalled, once);
                 var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(equal, blog);
-                expect(compositeTuple.rightTuple).to(equal, blogPost);
+                expect(compositeTuple.leftTuple).to(eq, blog);
+                expect(compositeTuple.rightTuple).to(eq, blogPost);
               });
             });
           });
@@ -173,7 +173,7 @@ Screw.Unit(function(c) { with(c) {
               var sizeBeforeBlogCreate = join.size();
               user.blogs().create().afterEvents(function() {
                 expect(insertHandler).toNot(haveBeenCalled);
-                expect(join.size()).to(equal, sizeBeforeBlogCreate);
+                expect(join.size()).to(eq, sizeBeforeBlogCreate);
               });
             });
           });
@@ -185,8 +185,8 @@ Screw.Unit(function(c) { with(c) {
               blog1.blogPosts().create().afterEvents(function(blogPost) {
                 expect(insertHandler).to(haveBeenCalled, once);
                 var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(equal, blog1);
-                expect(compositeTuple.rightTuple).to(equal, blogPost);
+                expect(compositeTuple.leftTuple).to(eq, blog1);
+                expect(compositeTuple.rightTuple).to(eq, blogPost);
               });
             });
           });
@@ -200,7 +200,7 @@ Screw.Unit(function(c) { with(c) {
             it("does not modify the contents of #allTuples", function() {
               var numTuplesBeforeInsertion = join.allTuples().length;
               BlogPost.create();
-              expect(join.allTuples().length).to(equal, numTuplesBeforeInsertion);
+              expect(join.allTuples().length).to(eq, numTuplesBeforeInsertion);
             });
           });
         });
@@ -214,8 +214,8 @@ Screw.Unit(function(c) { with(c) {
 
               expect(removeHandler).to(haveBeenCalled, once);
               var removedCompositeTuple = removeHandler.mostRecentArgs[0];
-              expect(removedCompositeTuple.leftTuple).to(equal, blog2);
-              expect(removedCompositeTuple.rightTuple).to(equal, post3);
+              expect(removedCompositeTuple.leftTuple).to(eq, blog2);
+              expect(removedCompositeTuple.rightTuple).to(eq, post3);
             });
           });
 
@@ -226,7 +226,7 @@ Screw.Unit(function(c) { with(c) {
                 blog.destroy();
               })
               expect(removeHandler).toNot(haveBeenCalled);
-              expect(join.size()).to(equal, sizeBefore);
+              expect(join.size()).to(eq, sizeBefore);
             });
           });
         });
@@ -237,8 +237,8 @@ Screw.Unit(function(c) { with(c) {
               post3.destroy();
               expect(removeHandler).to(haveBeenCalled, once);
               var removedCompositeTuple = removeHandler.mostRecentArgs[0];
-              expect(removedCompositeTuple.leftTuple).to(equal, blog2);
-              expect(removedCompositeTuple.rightTuple).to(equal, post3);
+              expect(removedCompositeTuple.leftTuple).to(eq, blog2);
+              expect(removedCompositeTuple.rightTuple).to(eq, post3);
             });
           });
 
@@ -249,7 +249,7 @@ Screw.Unit(function(c) { with(c) {
                 post.destroy();
               });
               expect(removeHandler).toNot(haveBeenCalled);
-              expect(join.size()).to(equal, sizeBefore);
+              expect(join.size()).to(eq, sizeBefore);
             });
           });
         });
@@ -273,14 +273,14 @@ Screw.Unit(function(c) { with(c) {
                 var updatedTuple = updateHandler.mostRecentArgs[0];
                 var changedAttributes = updateHandler.mostRecentArgs[1];
 
-                expect(updatedTuple.leftTuple).to(equal, blog2);
-                expect(updatedTuple.rightTuple).to(equal, post3);
+                expect(updatedTuple.leftTuple).to(eq, blog2);
+                expect(updatedTuple.rightTuple).to(eq, post3);
 
-                expect(changedAttributes.name.column).to(equal, Blog.name_);
-                expect(changedAttributes.name.oldValue).to(equal, oldValue);
-                expect(changedAttributes.name.newValue).to(equal, newValue);
+                expect(changedAttributes.name.column).to(eq, Blog.name_);
+                expect(changedAttributes.name.oldValue).to(eq, oldValue);
+                expect(changedAttributes.name.newValue).to(eq, newValue);
 
-                expect(join.size()).to(equal, sizeBefore);
+                expect(join.size()).to(eq, sizeBefore);
               });
             });
 
@@ -288,8 +288,8 @@ Screw.Unit(function(c) { with(c) {
               it("triggers only #onRemoteRemove handlers with the updated CompositeTuple", function() {
                 blog2.update({id: "booboo"});
                 expect(removeHandler).to(haveBeenCalled, once);
-                expect(removeHandler.mostRecentArgs[0].leftTuple).to(equal, blog2);
-                expect(removeHandler.mostRecentArgs[0].rightTuple).to(equal, post3);
+                expect(removeHandler.mostRecentArgs[0].leftTuple).to(eq, blog2);
+                expect(removeHandler.mostRecentArgs[0].rightTuple).to(eq, post3);
                 expect(insertHandler).toNot(haveBeenCalled);
                 expect(updateHandler).toNot(haveBeenCalled);
               });
@@ -309,8 +309,8 @@ Screw.Unit(function(c) { with(c) {
                 expect(removeHandler).toNot(haveBeenCalled);
 
                 var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(equal, blog);
-                expect(compositeTuple.rightTuple).to(equal, blogPost);
+                expect(compositeTuple.leftTuple).to(eq, blog);
+                expect(compositeTuple.rightTuple).to(eq, blogPost);
               });
             });
 
@@ -345,13 +345,13 @@ Screw.Unit(function(c) { with(c) {
                 var updatedTuple = updateHandler.mostRecentArgs[0];
                 var changedAttributes = updateHandler.mostRecentArgs[1];
 
-                expect(updatedTuple.leftTuple).to(equal, blog2);
-                expect(updatedTuple.rightTuple).to(equal, post3);
-                expect(changedAttributes.body.column).to(equal, BlogPost.body);
-                expect(changedAttributes.body.oldValue).to(equal, oldValue);
-                expect(changedAttributes.body.newValue).to(equal, newValue);
+                expect(updatedTuple.leftTuple).to(eq, blog2);
+                expect(updatedTuple.rightTuple).to(eq, post3);
+                expect(changedAttributes.body.column).to(eq, BlogPost.body);
+                expect(changedAttributes.body.oldValue).to(eq, oldValue);
+                expect(changedAttributes.body.newValue).to(eq, newValue);
 
-                expect(join.size()).to(equal, sizeBefore);
+                expect(join.size()).to(eq, sizeBefore);
               });
             });
 
@@ -362,8 +362,8 @@ Screw.Unit(function(c) { with(c) {
                 expect(removeHandler).to(haveBeenCalled, once);
                 expect(insertHandler).toNot(haveBeenCalled);
                 expect(updateHandler).toNot(haveBeenCalled);
-                expect(removeHandler.mostRecentArgs[0].leftTuple).to(equal, blog2);
-                expect(removeHandler.mostRecentArgs[0].rightTuple).to(equal, post3);
+                expect(removeHandler.mostRecentArgs[0].leftTuple).to(eq, blog2);
+                expect(removeHandler.mostRecentArgs[0].rightTuple).to(eq, post3);
               });
             });
           });
@@ -385,8 +385,8 @@ Screw.Unit(function(c) { with(c) {
                 expect(removeHandler).toNot(haveBeenCalled);
 
                 var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(equal, blog2);
-                expect(compositeTuple.rightTuple).to(equal, post);
+                expect(compositeTuple.leftTuple).to(eq, blog2);
+                expect(compositeTuple.rightTuple).to(eq, post);
               });
             });
 
@@ -408,14 +408,14 @@ Screw.Unit(function(c) { with(c) {
             expect(insertHandler).to(haveBeenCalled, once);
 
             var insertedTuple = insertHandler.mostRecentArgs[0];
-            expect(insertedTuple.leftTuple).to(equal, blog1);
-            expect(insertedTuple.rightTuple).to(equal, post3);
+            expect(insertedTuple.leftTuple).to(eq, blog1);
+            expect(insertedTuple.rightTuple).to(eq, post3);
 
 
             expect(removeHandler).to(haveBeenCalled, once);
             var removedTuple = removeHandler.mostRecentArgs[0];
-            expect(removedTuple.leftTuple).to(equal, blog2);
-            expect(removedTuple.rightTuple).to(equal, post3);
+            expect(removedTuple.leftTuple).to(eq, blog2);
+            expect(removedTuple.rightTuple).to(eq, post3);
           });
         });
       });
@@ -477,10 +477,10 @@ Screw.Unit(function(c) { with(c) {
         var otherRepo = Repository.cloneSchema();
         var joinInOtherRepo = join.evaluateInRepository(otherRepo);
 
-        expect(joinInOtherRepo.predicate).to(equal, join.predicate);
-        expect(joinInOtherRepo.leftOperand.operand).to(equal, join.leftOperand.operand.evaluateInRepository(otherRepo));
-        expect(joinInOtherRepo.leftOperand.predicate).to(equal, join.leftOperand.predicate);
-        expect(joinInOtherRepo.rightOperand).to(equal, join.rightOperand.evaluateInRepository(otherRepo));
+        expect(joinInOtherRepo.predicate).to(eq, join.predicate);
+        expect(joinInOtherRepo.leftOperand.operand).to(eq, join.leftOperand.operand.evaluateInRepository(otherRepo));
+        expect(joinInOtherRepo.leftOperand.predicate).to(eq, join.leftOperand.predicate);
+        expect(joinInOtherRepo.rightOperand).to(eq, join.rightOperand.evaluateInRepository(otherRepo));
       });
     });
   });

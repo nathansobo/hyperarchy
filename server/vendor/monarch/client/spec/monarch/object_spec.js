@@ -20,12 +20,12 @@ Screw.Unit(function(c) { with(c) {
     describe(".delegateConstructorMethods", function() {
       it("makes a constructor method that will delegate to a method on another object", function() {
         Foo.delegateConstructorMethods('foo', 'bar', 'constructorDelegateTarget');
-        expect(Foo.foo("foo")).to(equal, 'fooPrime');
+        expect(Foo.foo("foo")).to(eq, 'fooPrime');
         expect(Foo.constructorDelegateTarget.foo).to(haveBeenCalled, withArgs('foo'));
         expect(Foo.constructorDelegateTarget.foo).to(haveBeenCalled, onObject(Foo.constructorDelegateTarget));
         expect(Foo.constructorDelegateTarget.bar).toNot(haveBeenCalled);
 
-        expect(Foo.bar("bar")).to(equal, 'barPrime');
+        expect(Foo.bar("bar")).to(eq, 'barPrime');
         expect(Foo.constructorDelegateTarget.bar).to(haveBeenCalled, withArgs('bar'));
         expect(Foo.constructorDelegateTarget.bar).to(haveBeenCalled, onObject(Foo.constructorDelegateTarget));
       });
@@ -40,12 +40,12 @@ Screw.Unit(function(c) { with(c) {
           bar: mockFunction('constructor bar', function() { return "barPrime" })
         }
 
-        expect(object.foo("foo")).to(equal, 'fooPrime');
+        expect(object.foo("foo")).to(eq, 'fooPrime');
         expect(object.instanceDelegateTarget.foo).to(haveBeenCalled, withArgs('foo'));
         expect(object.instanceDelegateTarget.foo).to(haveBeenCalled, onObject(object.instanceDelegateTarget));
         expect(object.instanceDelegateTarget.bar).toNot(haveBeenCalled);
 
-        expect(object.bar("bar")).to(equal, 'barPrime');
+        expect(object.bar("bar")).to(eq, 'barPrime');
         expect(object.instanceDelegateTarget.bar).to(haveBeenCalled, withArgs('bar'));
         expect(object.instanceDelegateTarget.bar).to(haveBeenCalled, onObject(object.instanceDelegateTarget));
       });

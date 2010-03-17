@@ -4,9 +4,9 @@ Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Predicates.Eq", function() {
     useLocalFixtures();
 
-    var eq, leftOperand, rightOperand, record;
+    var eqPredicate, leftOperand, rightOperand, record;
     before(function() {
-      eq = new Monarch.Model.Predicates.Eq(leftOperand, rightOperand)
+      eqPredicate = new Monarch.Model.Predicates.Eq(leftOperand, rightOperand)
       record = User.find("jan");
     });
 
@@ -19,7 +19,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("returns true", function() {
-            expect(eq.evaluate(record)).to(beTrue);
+            expect(eqPredicate.evaluate(record)).to(beTrue);
           });
         });
 
@@ -30,7 +30,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("returns false", function() {
-            expect(eq.evaluate(record)).to(beFalse);
+            expect(eqPredicate.evaluate(record)).to(beFalse);
           });
         });
       });
@@ -52,11 +52,11 @@ Screw.Unit(function(c) { with(c) {
 
         context("when field value corresponding to the column in the given record is equivalent to the scalar", function() {
           before(function() {
-            expect(record.fullName()).to(equal, "Jan Nelson");
+            expect(record.fullName()).to(eq, "Jan Nelson");
           });
 
           it("returns true", function() {
-            expect(eq.evaluate(record)).to(beTrue);
+            expect(eqPredicate.evaluate(record)).to(beTrue);
           });
         });
 
@@ -66,7 +66,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("returns true", function() {
-            expect(eq.evaluate(record)).to(beFalse);
+            expect(eqPredicate.evaluate(record)).to(beFalse);
           });
         });
       });

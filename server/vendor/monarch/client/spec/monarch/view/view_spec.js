@@ -84,14 +84,14 @@ Screw.Unit(function(c) { with(c) {
 
       describe("#model(model)", function() {
         it("populates text fields by calling methods on the given model corresponding to their names and keeps them updated as model changes", function() {
-          expect(view.foo.val()).to(equal, "Foo");
-          expect(view.bar.val()).to(equal, "Bar");
+          expect(view.foo.val()).to(eq, "Foo");
+          expect(view.bar.val()).to(eq, "Bar");
           view.model(model);
-          expect(view.foo.val()).to(equal, "foo");
-          expect(view.bar.val()).to(equal, "bar");
+          expect(view.foo.val()).to(eq, "foo");
+          expect(view.bar.val()).to(eq, "bar");
           model.update({foo: "FOO!", bar: "BAR!"});
-          expect(view.foo.val()).to(equal, "FOO!");
-          expect(view.bar.val()).to(equal, "BAR!");
+          expect(view.foo.val()).to(eq, "FOO!");
+          expect(view.bar.val()).to(eq, "BAR!");
         });
 
         it("populates checkbox fields by calling methods on the given model corresponding to their names and keeps them updated as model changes", function() {
@@ -103,11 +103,11 @@ Screw.Unit(function(c) { with(c) {
         });
         
         it("populates select fields by calling methods on the given model corresponding to their name and keeps them updated as model changes", function() {
-          expect(view.quux.val()).to(equal, '2');
+          expect(view.quux.val()).to(eq, '2');
           view.model(model);
-          expect(view.quux.val()).to(equal, '3');
+          expect(view.quux.val()).to(eq, '3');
           model.update({quux: 1});
-          expect(view.quux.val()).to(equal, '1');
+          expect(view.quux.val()).to(eq, '1');
         });
 
         it("calls the .modelAssigned hook if it's defined", function() {
@@ -120,9 +120,9 @@ Screw.Unit(function(c) { with(c) {
           view.model(model);
           view.model(SampleModel.localCreate({foo: "new foo"}));
 
-          expect(view.foo.val()).to(equal, 'new foo');
+          expect(view.foo.val()).to(eq, 'new foo');
           model.localUpdate({foo: "old model foo new value"});
-          expect(view.foo.val()).to(equal, 'new foo');
+          expect(view.foo.val()).to(eq, 'new foo');
         });
       });
 

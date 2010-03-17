@@ -40,12 +40,12 @@ Screw.Unit(function(c) { with(c) {
         expect(view.find("#template2")).toNot(beEmpty);
         expect(view.find("#template3")).toNot(beEmpty);
 
-        expect(view.subviews.view1.attr('id')).to(equal, "template1");
-        expect(view.subviews.view2.attr('id')).to(equal, "template2");
-        expect(view.subviews.view3.attr('id')).to(equal, "template3");
-        expect(view.view1).to(equal, view.subviews.view1);
-        expect(view.view2).to(equal, view.subviews.view2);
-        expect(view.view3).to(equal, view.subviews.view3);
+        expect(view.subviews.view1.attr('id')).to(eq, "template1");
+        expect(view.subviews.view2.attr('id')).to(eq, "template2");
+        expect(view.subviews.view3.attr('id')).to(eq, "template3");
+        expect(view.view1).to(eq, view.subviews.view1);
+        expect(view.view2).to(eq, view.subviews.view2);
+        expect(view.view3).to(eq, view.subviews.view3);
       });
     });
 
