@@ -108,16 +108,16 @@ Monarch.ModuleSystem = {
   isAttrAccessorDefinition: function(value) {
     if (typeof value !== "object") return false;
     return _.all(_.keys(value), function(key) {
-      return key === "reader" || key === "writer";
+      return key === "reader" || key === "writer" || key == "afterWrite";
     });
   },
 
   defineAttrAccessor: function(module, name) {
     var definition = module[name];
-    module[name] = this.buildAttrAccessor(name, definition.reader, definition.writer);
+    module[name] = this.buildAttrAccessor(name, definition.reader, definition.writer, definition.afterWrite);
   },
 
-  buildAttrAccessor: function(name, reader, writer) {
+  buildAttrAccessor: function(name, reader, writer, afterWriteHook) {
     var fieldName = "_" + name;
     if (!reader) reader = function() { return this[fieldName]; };
     if (!writer) writer = function(value) { this[fieldName] = value; };
@@ -126,8 +126,11 @@ Monarch.ModuleSystem = {
       if (arguments.length == 0) {
         return reader.call(this);
       } else {
+        var oldValue = this[fieldName];
         writer.call(this, value);
-        return this[fieldName];
+        var newValue = this[fieldName];
+        if (afterWriteHook) afterWriteHook.call(this, newValue, oldValue);
+        return newValue;
       }
     };
   },

@@ -544,8 +544,9 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        context("when custom readers or writers are requested", function() {
+        context("when custom readers, writers or hooks are requested", function() {
           it("defines jQuery style reader/writer functions that dispatch to the custom handlers", function() {
+            var quuxAfterWriteHook = mockFunction("afterWriteHook");
             var a = {};
             var b = {
               foo: {
@@ -568,6 +569,10 @@ Screw.Unit(function(c) { with(c) {
                 reader: function() {
                   return "custom baz reader: " + this._baz;
                 }
+              },
+
+              quux: {
+                afterWrite: quuxAfterWriteHook
               }
             };
 
@@ -581,6 +586,11 @@ Screw.Unit(function(c) { with(c) {
 
             expect(a.baz("c")).to(equal, "c");
             expect(a.baz()).to(equal, "custom baz reader: c");
+
+            a.quux("d");
+            expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("d", undefined));
+            a.quux("e");
+            expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("e", "d"));
           });
         });
 
