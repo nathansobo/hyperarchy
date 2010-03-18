@@ -56,7 +56,8 @@ constructor("Views.Candidates", View.Template, {
 
 
     election: {
-      afterWrite: function(election) {
+      afterWrite: function(election, previousElection) {
+        if (election === previousElection) return;
         var self = this;
         election.candidates().fetch()
           .afterEvents(function() {

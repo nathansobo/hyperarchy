@@ -32,7 +32,9 @@ constructor("Views.Elections", View.Template, {
     },
 
     elections: {
-      afterWrite: function(elections) {
+      afterWrite: function(elections, previousElections) {
+        if (elections === previousElections) return;
+        
         var self = this;
         this.electionsOl.html("");
         this.fetchingElections = elections.fetch();

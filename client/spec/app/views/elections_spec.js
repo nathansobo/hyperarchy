@@ -8,7 +8,7 @@ Screw.Unit(function(c) { with(c) {
     before(function() {
       view = Views.Elections.toView();
       Server.autoFetch([Organization.table]);
-      elections = Organization.find('restaurant').elections();
+      elections = Organization.fixture('restaurant').elections();
     });
 
     describe("#elections(electionsRelation)", function() {
@@ -16,14 +16,27 @@ Screw.Unit(function(c) { with(c) {
         Server.auto = false;
       });
 
-      it("causes the assigned elections relation to be fetched, then the elections to be rendered", function() {
-        view.elections(elections);
-        expect(Server.fetches.length).to(eq, 1);
-        expect(Server.lastFetch.relations).to(equal, [elections]);
 
-        Server.lastFetch.simulateSuccess();
-        elections.each(function(election) {
-          expect(view.electionsOl.find("li[electionId='" + election.id() +"']")).toNot(beEmpty);
+      context("if the view is not currently displaying the given relation", function() {
+        it("causes the assigned elections relation to be fetched, then the elections to be rendered", function() {
+          view.elections(elections);
+          expect(Server.fetches.length).to(eq, 1);
+          expect(Server.lastFetch.relations).to(equal, [elections]);
+
+          Server.lastFetch.simulateSuccess();
+          elections.each(function(election) {
+            expect(view.electionsOl.find("li[electionId='" + election.id() +"']")).toNot(beEmpty);
+          });
+        });
+      });
+
+      context("if the view is already displaying the given relation", function() {
+        it("does not refetch or redraw the elections list", function() {
+          view.elections(elections);
+          Server.lastFetch.simulateSuccess();
+
+          view.elections(elections);
+          expect(Server.fetches).to(beEmpty);
         });
       });
     });
@@ -48,7 +61,7 @@ Screw.Unit(function(c) { with(c) {
           Server.lastFetch.simulateSuccess();
           mock(view, 'electionSelected');
           view.navigate('menu');
-          expect(view.electionSelected).to(haveBeenCalled, withArgs(Election.find('menu')));
+          expect(view.electionSelected).to(haveBeenCalled, withArgs(Election.fixture('menu')));
         });
       });
     });

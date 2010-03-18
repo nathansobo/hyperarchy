@@ -1,6 +1,4 @@
 constructor("Ranking", Model.Record, {
-
-
   constructorProperties: {
     initialize: function() {
       this.columns({

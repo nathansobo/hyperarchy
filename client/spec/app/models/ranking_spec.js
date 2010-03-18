@@ -6,11 +6,11 @@ Screw.Unit(function(c) { with(c) {
 
     describe(".createOrUpdate(candidate, predecessor, successor)", function() {
       it("creates or updates the ranking for the candidate, with a position that places it between the predecessor and successor", function() {
-        var user = User.find('nathan');
-        var election = Election.find('menu');
-        var a = Candidate.find('rice');
-        var b = Candidate.find('fish');
-        var c = Candidate.find('salad');
+        var user = User.fixture('nathan');
+        var election = Election.fixture('menu');
+        var a = Candidate.fixture('rice');
+        var b = Candidate.fixture('fish');
+        var c = Candidate.fixture('salad');
 
         Ranking.createOrUpdate(user, election, a, null, null).afterEvents(function(ranking) {
           expect(ranking.position()).to(eq, 1);

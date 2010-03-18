@@ -12,6 +12,8 @@ convert screw unit to use underscore.js _.isEqual for equal matcher?
 secure the ranking api against unauthorized writes
 add super to module system
 turn module system into an underscore.js plugin and release it
+make relations work with beEmpty matcher, possibly by tying into or creating some general underscore facility for determining emptyness
+rename table.globalName to name
 
 deferred issues / open questions
 ---------------

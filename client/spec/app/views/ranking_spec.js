@@ -8,7 +8,7 @@ Screw.Unit(function(c) { with(c) {
     var view, user, election;
     before(function() {
       user = authenticate('nathan');
-      election = Election.find('menu');
+      election = Election.fixture('menu');
       view = Views.Rankings.toView();
       view.election(election);
     });

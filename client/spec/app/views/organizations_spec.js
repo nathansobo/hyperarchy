@@ -58,7 +58,7 @@ Screw.Unit(function(c) { with(c) {
             mock(History, 'load');
             view.navigate("restaurant");
             expect(view.organizationSelect.val()).to(eq, "restaurant");
-            expect(view.electionsView.elections()).to(eq, Organization.find("restaurant").elections());
+            expect(view.electionsView.elections()).to(eq, Organization.fixture("restaurant").elections());
             expect(History.load).toNot(haveBeenCalled);
           });
         });
@@ -69,7 +69,7 @@ Screw.Unit(function(c) { with(c) {
 
             view.navigate("restaurant/elections/menu");
             expect(view.organizationSelect.val()).to(eq, "restaurant");
-            expect(view.electionsView.elections()).to(eq, Organization.find("restaurant").elections());
+            expect(view.electionsView.elections()).to(eq, Organization.fixture("restaurant").elections());
             expect(view.electionsView.navigate).to(haveBeenCalled, withArgs('menu'));
           });
         });
