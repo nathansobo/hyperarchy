@@ -77,7 +77,6 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
   },
 
   orderBy: function() {
-    var self = this;
     var orderByColumns = _.map(arguments, function(orderByColumn) {
       if (orderByColumn instanceof Monarch.Model.OrderByColumn) {
         return orderByColumn;
@@ -88,14 +87,14 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
         var columnName = parts[0];
         var direction = parts[1] || 'asc';
         if (direction == 'desc') {
-          return self.column(columnName).desc();
+          return this.column(columnName).desc();
         } else {
-          return self.column(columnName).asc();
+          return this.column(columnName).asc();
         }
       } else {
         throw new Error("You can only order by Columns, OrderByColumns, or 'columnName direction' strings");
       }
-    });
+    }, this);
 
     return new Monarch.Model.Relations.Ordering(this, orderByColumns);
   },
@@ -256,10 +255,9 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
   },
 
   unsubscribeFromOperandsWhenThisNoLongerHasSubscribers: function() {
-    var self = this;
-    var unsubscribeCallback = function() {
-       if (!self.hasSubscribers()) self.unsubscribeFromOperands();
-    };
+    var unsubscribeCallback = _.bind(function() {
+       if (!this.hasSubscribers()) this.unsubscribeFromOperands();
+    }, this);
 
     this.onRemoteInsertNode.onUnsubscribe(unsubscribeCallback);
     this.onRemoteRemoveNode.onUnsubscribe(unsubscribeCallback);
@@ -284,11 +282,10 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
   // private
 
   predicateFromHash: function(hash) {
-    var self = this;
     var predicates = [];
     _.each(hash, function(value, key) {
-      predicates.push(self.column(key).eq(value))
-    });
+      predicates.push(this.column(key).eq(value))
+    }, this);
 
     if (_.isEmpty(predicates)) throw new Error("No key value pairs provided for predication");
 

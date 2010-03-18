@@ -107,15 +107,14 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
   },
   
   updateContents: function(dataset) {
-    var self = this;
     _.each(dataset, function(fieldValues, id) {
-      var extantRecord = self.find(id);
+      var extantRecord = this.find(id);
       if (extantRecord) {
         extantRecord.remotelyUpdated(fieldValues);
       } else {
-        self.createFromRemote(fieldValues)
+        this.createFromRemote(fieldValues)
       }
-    });
+    }, this);
   },
   
   deltaContents: function(dataset) {
@@ -128,11 +127,10 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
   },
   
   loadFixtures: function(fixtureDefinitions) {
-    var self = this;
     _.each(fixtureDefinitions, function(properties, id) {
       var fieldValues = _.extend({id: id}, properties)
-      self.createFromRemote(fieldValues);
-    });
+      this.createFromRemote(fieldValues);
+    }, this);
   },
 
   clear: function() {

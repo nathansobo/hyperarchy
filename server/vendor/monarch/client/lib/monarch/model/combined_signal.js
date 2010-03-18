@@ -2,8 +2,6 @@
 
 Monarch.constructor("Monarch.Model.CombinedSignal", {
   initialize: function(leftOperand, rightOperand, transformer) {
-    var self = this;
-
     this.leftOperand = leftOperand;
     this.rightOperand = rightOperand;
     this.transformer = transformer;
@@ -11,28 +9,28 @@ Monarch.constructor("Monarch.Model.CombinedSignal", {
     this.onLocalUpdateNode = new Monarch.SubscriptionNode();
 
     this.leftOperand.onRemoteUpdate(function(newValue, oldValue) {
-      var oldValue = self.transformer(oldValue, self.rightOperand.remoteValue());
-      var newValue = self.transformer(newValue, self.rightOperand.remoteValue());
-      if (newValue !== oldValue) self.onRemoteUpdateNode.publish(newValue, oldValue);
-    });
+      var oldValue = this.transformer(oldValue, this.rightOperand.remoteValue());
+      var newValue = this.transformer(newValue, this.rightOperand.remoteValue());
+      if (newValue !== oldValue) this.onRemoteUpdateNode.publish(newValue, oldValue);
+    }, this);
 
     this.rightOperand.onRemoteUpdate(function(newValue, oldValue) {
-      var oldValue = self.transformer(self.leftOperand.remoteValue(), oldValue);
-      var newValue = self.transformer(self.leftOperand.remoteValue(), newValue);
-      if (newValue !== oldValue) self.onRemoteUpdateNode.publish(newValue, oldValue);
-    });
+      var oldValue = this.transformer(this.leftOperand.remoteValue(), oldValue);
+      var newValue = this.transformer(this.leftOperand.remoteValue(), newValue);
+      if (newValue !== oldValue) this.onRemoteUpdateNode.publish(newValue, oldValue);
+    }, this);
 
     this.leftOperand.onLocalUpdate(function(newValue, oldValue) {
-      var oldValue = self.transformer(oldValue, self.rightOperand.remoteValue());
-      var newValue = self.transformer(newValue, self.rightOperand.remoteValue());
-      if (newValue !== oldValue) self.onLocalUpdateNode.publish(newValue, oldValue);
-    });
+      var oldValue = this.transformer(oldValue, this.rightOperand.remoteValue());
+      var newValue = this.transformer(newValue, this.rightOperand.remoteValue());
+      if (newValue !== oldValue) this.onLocalUpdateNode.publish(newValue, oldValue);
+    }, this);
 
     this.rightOperand.onLocalUpdate(function(newValue, oldValue) {
-      var oldValue = self.transformer(self.leftOperand.remoteValue(), oldValue);
-      var newValue = self.transformer(self.leftOperand.remoteValue(), newValue);
-      if (newValue !== oldValue) self.onLocalUpdateNode.publish(newValue, oldValue);
-    });
+      var oldValue = this.transformer(this.leftOperand.remoteValue(), oldValue);
+      var newValue = this.transformer(this.leftOperand.remoteValue(), newValue);
+      if (newValue !== oldValue) this.onLocalUpdateNode.publish(newValue, oldValue);
+    }, this);
   },
 
   localValue: function() {

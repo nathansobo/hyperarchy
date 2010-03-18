@@ -51,26 +51,25 @@ Monarch.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relation
   // private
 
   subscribeToOperands: function() {
-    var self = this;
     this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteInsert(function(record) {
-      if (!self.rightOperand.find(record.id())) self.tupleInsertedRemotely(record);
-    }));
+      if (!this.rightOperand.find(record.id())) this.tupleInsertedRemotely(record);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteUpdate(function(record, changes) {
-      if (self.contains(record)) self.tupleUpdatedRemotely(record, changes);
-    }));
+      if (this.contains(record)) this.tupleUpdatedRemotely(record, changes);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteRemove(function(record) {
-      if (self.contains(record)) self.tupleRemovedRemotely(record);
-    }));
+      if (this.contains(record)) this.tupleRemovedRemotely(record);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteInsert(function(record) {
-      if (self.contains(record)) self.tupleRemovedRemotely(record);
-    }));
+      if (this.contains(record)) this.tupleRemovedRemotely(record);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteRemove(function(record) {
-      if (self.leftOperand.find(record.id())) self.tupleInsertedRemotely(record);
-    }));
+      if (this.leftOperand.find(record.id())) this.tupleInsertedRemotely(record);
+    }, this));
   },
 
   memoizeTuples: function() {

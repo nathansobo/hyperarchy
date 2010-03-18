@@ -81,12 +81,11 @@ Monarch.constructor("Monarch.View.Template", {
     },
 
     subscribeToModelUpdates: function() {
-      var self = this;
       this.updateSubscription = this.model().onRemoteUpdate(function(changeset) {
         _.each(changeset, function(changes, fieldName) {
-          self.handleModelFieldUpdate(fieldName, changes);
-        });
-      });
+          this.handleModelFieldUpdate(fieldName, changes);
+        }, this);
+      }, this);
     },
 
     handleModelFieldUpdate: function(fieldName, changes) {
@@ -133,7 +132,6 @@ Monarch.constructor("Monarch.View.Template", {
     },
 
     populateTextFields: function() {
-      var self = this;
       var model = this.model();
       this.find("input:text").each(function() {
         var elt = jQuery(this);

@@ -3,12 +3,11 @@
 Monarch.constructor("Monarch.Model.Tuple", {
   constructorProperties: {
     initializeFieldReaders: function() {
-      var self = this;
       _.each(this.projectedColumnsByName, function(projectedColumn, name) {
-        self.prototype[name] = function() {
+        this.prototype[name] = function() {
           return this.field(projectedColumn).value();
         };
-      });
+      }, this);
     }
   },
 

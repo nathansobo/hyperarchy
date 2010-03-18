@@ -7,14 +7,12 @@ Monarch.constructor("Monarch.View.Builder", {
     },
 
     generateTagMethods: function() {
-      var self = this;
-
       _.each(this.supportedTags, function(tagName) {
-        self.prototype[tagName] = function() {
+        this.prototype[tagName] = function() {
           var tagArgs = [tagName].concat(_.toArray(arguments));
           return this.tag.apply(this, tagArgs);
         }
-      });
+      }, this);
     },
 
     supportedTags: [
@@ -56,14 +54,14 @@ Monarch.constructor("Monarch.View.Builder", {
   },
 
   a: function() {
-    var self = this;
+    var hashRegex = this.hashRegex;
     var closeTagInstruction = this.tag.apply(this, ["a"].concat(_.toArray(arguments)));
     var openTagInstruction = closeTagInstruction.openTagInstruction;
 
     if (openTagInstruction.attributes && openTagInstruction.attributes.local) {
       closeTagInstruction.click(function(view) {
         var href = this.attr('href');
-        var followingHash = href.replace(self.hashRegex, '');
+        var followingHash = href.replace(hashRegex, '');
         History.load(followingHash);
         return false;
       });
@@ -113,11 +111,10 @@ Monarch.constructor("Monarch.View.Builder", {
   },
 
   postProcess: function(jqueryFragment) {
-    var self = this;
     this.jqueryFragment = jqueryFragment;
     _.each(this.instructions, function(instruction) {
-      instruction.postProcess(self);
-    });
+      instruction.postProcess(this);
+    }, this);
     if (!this.hasSingleTopLevelElement()) {
       throw new Error("Template content must have a single top-level element.");
     }

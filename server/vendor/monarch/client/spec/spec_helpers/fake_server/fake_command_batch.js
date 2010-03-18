@@ -35,15 +35,14 @@ Monarch.constructor("FakeServer.FakeCommandBatch", {
   },
 
   simulateSuccess: function(serverResponse) {
-    var self = this;
     if (!serverResponse) serverResponse = this.generateFakeServerResponse();
 
-    this.future.updateRepositoryAndTriggerCallbacks(this.commands[0].record, function() {
-      _.each(self.commands, function(command, index) {
+    this.future.updateRepositoryAndTriggerCallbacks(this.commands[0].record, _.bind(function() {
+      _.each(this.commands, function(command, index) {
         command.complete(serverResponse.primary[index]);
       });
       Repository.mutate(serverResponse.secondary)
-    });
+    }, this));
 
     if (this.fakeMutation) this.fakeServer.removeRequest(this.fakeMutation);
     this.fakeServer.removeRequest(this);

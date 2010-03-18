@@ -298,18 +298,17 @@ Monarch.constructor("Monarch.Model.Record", {
 
   // private
   initializeSubscriptionNodes: function() {
-    var self = this;
     this.onRemoteUpdateNode = new Monarch.SubscriptionNode();
     this.onRemoteDestroyNode = new Monarch.SubscriptionNode();
     this.onRemoteCreateNode = new Monarch.SubscriptionNode();
 
     this.subscriptions.add(this.table.onPauseEvents(function() {
-      self.pauseEvents();
-    }));
+      this.pauseEvents();
+    }, this));
 
     this.subscriptions.add(this.table.onResumeEvents(function() {
-      self.resumeEvents();
-    }));
+      this.resumeEvents();
+    }, this));
   },
 
   subscribeToSelfMutations: function() {
@@ -328,11 +327,10 @@ Monarch.constructor("Monarch.Model.Record", {
   },
 
   initializeRelations: function() {
-    var self = this;
     this.relationsByName = {};
     _.each(this.constructor.relationDefinitions, function(relationDefinition) {
-      self.relationsByName[relationDefinition.name] = relationDefinition.definition.call(self);
-    });
+      this.relationsByName[relationDefinition.name] = relationDefinition.definition.call(this);
+    }, this);
   }
 });
 

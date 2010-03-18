@@ -7,17 +7,16 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
   },
 
   perform: function() {
-    var self = this;
     this.future = new Monarch.Http.AjaxFuture();
 
     if (this.commands.length > 0) {
       this.server.post(Repository.originUrl + "/mutate", { operations: this.wireRepresentation() })
         .onSuccess(function(responseData) {
-          self.handleSuccessfulResponse(responseData);
-        })
+          this.handleSuccessfulResponse(responseData);
+        }, this)
         .onFailure(function(responseData) {
-          self.handleUnsuccessfulResponse(responseData);
-        });
+          this.handleUnsuccessfulResponse(responseData);
+        }, this);
     } else {
       this.future.updateRepositoryAndTriggerCallbacks(null, _.identity);
     }
@@ -34,13 +33,12 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
   },
 
   handleSuccessfulResponse: function(responseData) {
-    var self = this;
-    this.future.updateRepositoryAndTriggerCallbacks(this.commands[0].record, function() {
-      _.each(self.commands, function(command, index) {
+    this.future.updateRepositoryAndTriggerCallbacks(this.commands[0].record, _.bind(function() {
+      _.each(this.commands, function(command, index) {
         command.complete(responseData.primary[index]);
       });
       Repository.mutate(responseData.secondary);
-    });
+    }, this));
   },
 
   handleUnsuccessfulResponse: function(responseData) {

@@ -9,10 +9,9 @@ Monarch.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.
     this.operand = operand;
     this.orderByColumns = orderByColumns;
 
-    var self = this;
-    this.comparator = function(a, b) {
-      for(var i = 0; i < self.orderByColumns.length; i++) {
-        var orderByColumn = self.orderByColumns[i]
+    this.comparator = _.bind(function(a, b) {
+      for(var i = 0; i < this.orderByColumns.length; i++) {
+        var orderByColumn = this.orderByColumns[i]
         var column = orderByColumn.column;
         var directionCoefficient = orderByColumn.directionCoefficient;
 
@@ -23,7 +22,7 @@ Monarch.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.
         else if (aValue > bValue) return 1 * directionCoefficient;
       }
       return 0;
-    }
+    }, this);
     this.initializeEventsSystem();
   },
 
@@ -54,26 +53,25 @@ Monarch.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.
   // private
 
   subscribeToOperands: function() {
-    var self = this;
     this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(record) {
-      self.tupleInsertedRemotely(record);
-    }));
+      this.tupleInsertedRemotely(record);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(record) {
-      self.tupleRemovedRemotely(record);
-    }));
+      this.tupleRemovedRemotely(record);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(record, changedFields) {
-      self.tupleUpdatedRemotely(record, changedFields);
-    }));
+      this.tupleUpdatedRemotely(record, changedFields);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.operand.onDirty(function(record) {
-      self.recordMadeDirty(record);
-    }));
+      this.recordMadeDirty(record);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.operand.onClean(function(record) {
-      self.recordMadeClean(record);
-    }));
+      this.recordMadeClean(record);
+    }, this));
   }
 })
 

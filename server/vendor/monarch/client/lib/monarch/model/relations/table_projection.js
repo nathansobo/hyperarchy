@@ -27,30 +27,29 @@ Monarch.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Rel
   // private
 
   subscribeToOperands: function() {
-    var self = this;
     this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(compositeTuple) {
-      var tuple = compositeTuple.record(self.projectedTable);
-      if (!self.contains(tuple)) self.tupleInsertedRemotely(tuple);
-    }));
+      var tuple = compositeTuple.record(this.projectedTable);
+      if (!this.contains(tuple)) this.tupleInsertedRemotely(tuple);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(compositeTuple, changeset) {
       var updatedColumnInProjectedTable = _.detect(changeset, function(change) {
-        return change.column.table == self.projectedTable;
-      });
-      var record = compositeTuple.record(self.projectedTable);
+        return change.column.table == this.projectedTable;
+      }, this);
+      var record = compositeTuple.record(this.projectedTable);
 
-      if (updatedColumnInProjectedTable && !self.duplicatesLastUpdateEvent(record, changeset)) {
-        self.lastUpdateEvent = [record, changeset];
-        self.tupleUpdatedRemotely(record, changeset);
+      if (updatedColumnInProjectedTable && !this.duplicatesLastUpdateEvent(record, changeset)) {
+        this.lastUpdateEvent = [record, changeset];
+        this.tupleUpdatedRemotely(record, changeset);
       }
-    }));
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(compositeTuple) {
-      var tuple = compositeTuple.record(self.projectedTable);
-      if (!self.operand.find(self.projectedTable.column('id').eq(tuple.id()))) {
-        self.tupleRemovedRemotely(tuple);
+      var tuple = compositeTuple.record(this.projectedTable);
+      if (!this.operand.find(this.projectedTable.column('id').eq(tuple.id()))) {
+        this.tupleRemovedRemotely(tuple);
       }
-    }));
+    }, this));
   },
 
   duplicatesLastUpdateEvent: function(record, changeset) {

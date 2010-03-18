@@ -17,11 +17,10 @@ Monarch.constructor("FakeServer.FakeFetch", {
   },
 
   fetchDatasetFromFixtureRepository: function() {
-    var self = this;
     var dataset = {};
     _.each(this.relations, function(relation) {
-      self.addRelationToDataset(relation, dataset);
-    });
+      this.addRelationToDataset(relation, dataset);
+    }, this);
     return dataset;
   },
 

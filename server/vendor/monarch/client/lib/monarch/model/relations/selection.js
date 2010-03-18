@@ -54,35 +54,33 @@ Monarch.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations
   // private
 
   subscribeToOperands: function() {
-    var self = this;
-
     this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(record) {
-      if (self.predicate.evaluate(record)) self.tupleInsertedRemotely(record);
-    }));
+      if (this.predicate.evaluate(record)) this.tupleInsertedRemotely(record);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(record) {
-      if (self.predicate.evaluate(record)) self.tupleRemovedRemotely(record);
-    }));
+      if (this.predicate.evaluate(record)) this.tupleRemovedRemotely(record);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(record, changedFields) {
-      if (self.contains(record)) {
-        if (self.predicate.evaluate(record)) {
-          self.tupleUpdatedRemotely(record, changedFields);
+      if (this.contains(record)) {
+        if (this.predicate.evaluate(record)) {
+          this.tupleUpdatedRemotely(record, changedFields);
         } else {
-          self.tupleRemovedRemotely(record);
+          this.tupleRemovedRemotely(record);
         }
       } else {
-        if (self.predicate.evaluate(record)) self.tupleInsertedRemotely(record);
+        if (this.predicate.evaluate(record)) this.tupleInsertedRemotely(record);
       }
-    }));
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.operand.onDirty(function(record) {
-      if (self.contains(record)) self.recordMadeDirty(record);
-    }));
+      if (this.contains(record)) this.recordMadeDirty(record);
+    }, this));
 
     this.operandsSubscriptionBundle.add(this.operand.onClean(function(record) {
-      if (self.contains(record)) self.recordMadeClean(record);
-    }));
+      if (this.contains(record)) this.recordMadeClean(record);
+    }, this));
   }
 });
 

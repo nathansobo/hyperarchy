@@ -2,12 +2,11 @@
 
 Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relations.Relation, {
   initialize: function(operand, projectedColumns) {
-    var self = this;
     this.operand = operand;
     this.projectedColumnsByName = {};
     _.each(projectedColumns, function(projectedColumn) {
-      self.projectedColumnsByName[projectedColumn.name()] = projectedColumn;
-    });
+      this.projectedColumnsByName[projectedColumn.name()] = projectedColumn;
+    }, this);
 
     this.tupleConstructor = Monarch.ModuleSystem.constructor(Monarch.Model.Tuple);
     this.tupleConstructor.projectedColumnsByName = this.projectedColumnsByName;
@@ -36,27 +35,25 @@ Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relation
   // private
 
   subscribeToOperands: function() {
-    var self = this;
     this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(operandRecord) {
-      var record = new self.tupleConstructor(operandRecord);
-      self.tuplesByOperandRecordId[operandRecord.id()] = record;
-      self.tupleInsertedRemotely(record);
-    }));
+      var record = new this.tupleConstructor(operandRecord);
+      this.tuplesByOperandRecordId[operandRecord.id()] = record;
+      this.tupleInsertedRemotely(record);
+    }, this));
     this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(operandRecord, operandChanges) {
-      var changes = self.translateUpdateChanges(operandChanges);
+      var changes = this.translateUpdateChanges(operandChanges);
       if (_.isEmpty(changes)) return;
-      self.tupleUpdatedRemotely(self.tuplesByOperandRecordId[operandRecord.id()], changes);
-    }));
+      this.tupleUpdatedRemotely(this.tuplesByOperandRecordId[operandRecord.id()], changes);
+    }, this));
     this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(operandRecord) {
-      self.tupleRemovedRemotely(self.tuplesByOperandRecordId[operandRecord.id()]);
-    }));
+      this.tupleRemovedRemotely(this.tuplesByOperandRecordId[operandRecord.id()]);
+    }, this));
   },
 
   translateUpdateChanges: function(changes) {
-    var self = this;
     var translatedChanges = {};
     _.each(changes, function(operandColumnChanges) {
-      var projectedColumn = self.projectedColumnFromOperandColumn(operandColumnChanges.column);
+      var projectedColumn = this.projectedColumnFromOperandColumn(operandColumnChanges.column);
       if (projectedColumn) {
         translatedChanges[projectedColumn.name()] = {
           column: projectedColumn,
@@ -64,7 +61,7 @@ Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relation
           newValue: operandColumnChanges.newValue
         }
       }
-    });
+    }, this);
     return translatedChanges;
   },
 

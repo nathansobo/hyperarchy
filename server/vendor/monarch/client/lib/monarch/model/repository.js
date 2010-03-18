@@ -30,14 +30,12 @@ Monarch.constructor("Monarch.Model.Repository", {
   },
 
   update: function(dataset) {
-    var self = this;
     _.each(dataset, function(tableDataset, tableName) {
-      self.tables[tableName].updateContents(tableDataset);
-    });
+      this.tables[tableName].updateContents(tableDataset);
+    }, this);
   },
 
   delta: function(dataset) {
-    var self = this;
     _.each(this.tables, function(table, tableName) {
       var tableDataset = dataset[tableName] || {};
       table.deltaContents(tableDataset);
@@ -45,14 +43,13 @@ Monarch.constructor("Monarch.Model.Repository", {
   },
 
   mutate: function(commands) {
-    var self = this;
     if (this.mutationsPaused) {
       this.enqueuedMutations.push.apply(this.enqueuedMutations, commands);
     } else {
       _.each(commands, function(command) {
-        var type = command.shift();-
-        self["perform" + _.capitalize(type) + "Command"].apply(self, command);
-      });
+        var type = command.shift();
+        this["perform" + _.capitalize(type) + "Command"].apply(this, command);
+      }, this);
     }
   },
 
@@ -80,10 +77,6 @@ Monarch.constructor("Monarch.Model.Repository", {
 
   registerTable: function(table) {
     this.tables[table.globalName] = table;
-  },
-
-  fixtures: function(fixtureDefinitions) {
-    var self = this;
   },
 
   loadFixtures: function(fixtureDefinitions) {

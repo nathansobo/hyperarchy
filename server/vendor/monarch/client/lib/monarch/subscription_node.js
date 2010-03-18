@@ -47,13 +47,12 @@ Monarch.constructor("Monarch.SubscriptionNode", {
   },
 
   resumeEvents: function() {
-    var self = this;
     this.paused = false;
     var delayedEvents = this.delayedEvents;
     this.delayedEvents = [];
     _.each(delayedEvents, function(event) {
-      self.publish.apply(self, event);
-    });
+      this.publish.apply(this, event);
+    }, this);
   }
 });
 
