@@ -12,7 +12,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     before(function() {
-      record = Blog.find('recipes');
+      record = Blog.fixture('recipes');
       signalA = record.signal('name');
       signalB = record.signal('userId');
       combinedSignal = new Monarch.Model.CombinedSignal(signalA, signalB, transformer);

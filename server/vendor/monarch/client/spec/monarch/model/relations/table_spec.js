@@ -26,11 +26,11 @@ Screw.Unit(function(c) { with(c) {
     describe("query methods", function() {
       var locallyCreated, locallyUpdated, locallyDestroyed, cleanRecord;
       before(function() {
-        cleanRecord = User.find('mike');
+        cleanRecord = User.fixture('mike');
         locallyCreated = User.localCreate({ id: 'barbara' });
-        locallyUpdated = User.find('wil');
+        locallyUpdated = User.fixture('wil');
         locallyUpdated.localUpdate({fullName: "Kaiser Wilhelm"});
-        locallyDestroyed = User.find('jan');
+        locallyDestroyed = User.fixture('jan');
         locallyDestroyed.localDestroy();
       });
 
@@ -170,7 +170,7 @@ Screw.Unit(function(c) { with(c) {
           var removeCallback = mockFunction("remove callback");
           User.table.onRemoteRemove(removeCallback);
 
-          var record = User.find("jan");
+          var record = User.fixture("jan");
           User.table.remove(record);
 
           expect(removeCallback).to(haveBeenCalled, once);
@@ -183,7 +183,7 @@ Screw.Unit(function(c) { with(c) {
           var updateCallback = mockFunction("update callback");
           User.table.onRemoteUpdate(updateCallback);
 
-          var record = User.find("jan");
+          var record = User.fixture("jan");
 
           var oldValue = record.fullName();
           var newValue = oldValue + " The Third";
@@ -213,7 +213,7 @@ Screw.Unit(function(c) { with(c) {
         User.table.onDirty(dirtyCallback);
         User.table.onClean(cleanCallback);
 
-        var user = User.find('jan');
+        var user = User.fixture('jan');
         var fullNameBefore = user.fullName();
 
         user.fullName("Mahatma Ghandi");

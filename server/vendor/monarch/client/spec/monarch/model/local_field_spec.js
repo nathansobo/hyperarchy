@@ -6,7 +6,7 @@ Screw.Unit(function(c) { with(c) {
 
     var record, field;
     init(function() {
-      record = User.find('jan');
+      record = User.fixture('jan');
     });
 
     describe("#valueWireRepresentation()", function() {

@@ -6,7 +6,7 @@ Screw.Unit(function(c) { with(c) {
 
     var record, remoteField;
     init(function() {
-      record = User.find('jan');
+      record = User.fixture('jan');
       remoteField = record.remote.field('fullName');
     });
 

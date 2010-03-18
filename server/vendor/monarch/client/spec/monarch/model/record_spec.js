@@ -68,14 +68,14 @@ Screw.Unit(function(c) { with(c) {
 
     describe(".syntheticColumn(name, definition)", function() {
       it("causes tuples to have synthetic fields that are based on signals returned by the definition", function() {
-        var record = Blog.find('recipes')
+        var record = Blog.fixture('recipes')
         expect(record.funProfitName()).to(eq, record.name() + " for Fun and Profit");
       });
     });
 
     describe(".relatesToMany(name, definition)", function() {
       it("associates a method with the relation returned by the definition function", function() {
-        var user = User.find('jan');
+        var user = User.fixture('jan');
         var relation = user.blogs2();
         expect(relation.predicate).to(equal, Blog.userId.eq("jan"));
       });
@@ -83,7 +83,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe(".hasMany(pluralTargetTableName)", function() {
       it("uses .relatesToMany to make a has-many relation", function() {
-        var user = User.find('jan');
+        var user = User.fixture('jan');
         var relation = user.blogs();
         expect(relation.predicate).to(equal, Blog.userId.eq("jan"));
       });
@@ -216,7 +216,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#localUpdate(valuesByMethod)", function() {
       it("calls setter methods for each key in the given hash and fires update callbacks with all changes", function() {
-        var record = Blog.find('recipes');
+        var record = Blog.fixture('recipes');
 
         var tableUpdateCallback = mockFunction('tableUpdateCallback');
         var recordUpdateCallback = mockFunction('recordUpdateCallback');
@@ -271,7 +271,7 @@ Screw.Unit(function(c) { with(c) {
     describe("field value accessor functions", function() {
       var record;
       before(function() {
-        record = Blog.find('recipes');
+        record = Blog.fixture('recipes');
       });
 
       they("trigger optional onLocalUpdate hooks on the record and onLocalUpdate callbacks the record and its table when a new value is assigned", function() {
@@ -328,7 +328,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#localDestroy", function() {
       it("causes the record to be dirty and no longer appear in queries or finds", function() {
-        var record = User.find('jan');
+        var record = User.fixture('jan');
         record.localDestroy();
         expect(record.dirty()).to(beTrue);
         expect(User.any(function(user) { return user === record; })).to(beFalse);
@@ -338,7 +338,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#remotelyDestroyed", function() {
       it("removes the Record from its Table and calls #afterRemoteDestroy if it is defined", function() {
-        var record = User.find('jan');
+        var record = User.fixture('jan');
         record.afterRemoteDestroy = mockFunction('after destroy hook');
 
         record.remotelyDestroyed();
@@ -350,7 +350,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#onDirty and #onClean", function() {
       they("cause the given callback to be triggered when the record becomes dirty or clean relative to the remote fieldset", function() {
-        var record = User.find('jan');
+        var record = User.fixture('jan');
         
         expect(record.dirty()).to(beFalse);
         expect(record.local.Dirty).to(beFalse);
@@ -378,7 +378,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("when a synthetic field changes", function() {
       it("triggers update callbacks on the table of its record", function() {
-        var record = Blog.find('recipes');
+        var record = Blog.fixture('recipes');
         var updateCallback = mockFunction('updateCallback');
         record.table.onRemoteUpdate(updateCallback);
 
@@ -392,7 +392,7 @@ Screw.Unit(function(c) { with(c) {
     describe("#fetch", function() {
       it("fetches just the current record from the server", function() {
         Server.auto = false;
-        var record = Blog.find('recipes');
+        var record = Blog.fixture('recipes');
         record.fetch();
 
         expect(Server.fetches.length).to(eq, 1);
@@ -406,7 +406,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#valid()", function() {
       it("returns false if there are any validation errors", function() {
-        var record = Blog.find('recipes');
+        var record = Blog.fixture('recipes');
         expect(record.valid()).to(beTrue);
         record.local.field('name').validationErrors = ["Bad name"];
         expect(record.valid()).to(beFalse);
@@ -415,7 +415,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#assignValidationErrors(errorsByFieldName)", function() {
       it("triggers #onInvalid callbacks and assigns the validation errors to the specified fields", function() {
-        var record = Blog.find('recipes');
+        var record = Blog.fixture('recipes');
         var onInvalidCallback = mockFunction('onInvalidCallback', function() {
           expect(record.field("name").validationErrors).to(equal, ["name error 1", "name error 2"]);
           expect(record.field("userId").validationErrors).to(equal, ["user error"]);
@@ -441,7 +441,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#field(fieldNameOrColumn)", function() {
       it("returns the field for the given column name or Column", function() {
-        var record = Blog.find('recipes');
+        var record = Blog.fixture('recipes');
 
         var field = record.field(Blog.id);
         expect(field.fieldset.record).to(eq, record);
@@ -455,7 +455,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#remotelyUpdated", function() {
       it("does not cause a record to become valid unless the updated field values cause invalid local fields to become clean", function() {
-        var record = Blog.find('recipes');
+        var record = Blog.fixture('recipes');
         record.name("Sharon's Sad Laptop");
         record.assignValidationErrors({name: ['It no good name']});
 

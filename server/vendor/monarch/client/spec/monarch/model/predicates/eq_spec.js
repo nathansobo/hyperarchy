@@ -7,7 +7,7 @@ Screw.Unit(function(c) { with(c) {
     var eqPredicate, leftOperand, rightOperand, record;
     before(function() {
       eqPredicate = new Monarch.Model.Predicates.Eq(leftOperand, rightOperand)
-      record = User.find("jan");
+      record = User.fixture("jan");
     });
 
     describe("#evaluate", function() {

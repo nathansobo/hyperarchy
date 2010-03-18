@@ -69,7 +69,7 @@ Screw.Unit(function(c) { with(c) {
         expect(Blog.find('metacircular')).to(beNull);
         expect(Blog.find('travel')).to(beNull);
 
-        var jan = User.find('jan');
+        var jan = User.fixture('jan');
         expect(jan.fullName()).to(eq, 'Jan Nelson');
 
         repository.update({
@@ -98,9 +98,9 @@ Screw.Unit(function(c) { with(c) {
           }
         });
 
-        var nathan = User.find('nathan');
-        var metacircular = Blog.find('metacircular');
-        var travel = Blog.find('travel');
+        var nathan = User.fixture('nathan');
+        var metacircular = Blog.fixture('metacircular');
+        var travel = Blog.fixture('travel');
 
         expect(nathan.fullName()).to(eq, 'Nathan Sobo');
         expect(metacircular.name()).to(eq, 'Metacircular');
@@ -117,7 +117,7 @@ Screw.Unit(function(c) { with(c) {
         expect(Blog.find('metacircular')).to(beNull);
         expect(Blog.find('travel')).to(beNull);
 
-        var jan = User.find('jan');
+        var jan = User.fixture('jan');
         expect(jan.fullName()).to(eq, 'Jan Nelson');
         expect(User.find('mike')).toNot(beNull);
         expect(User.find('wil')).toNot(beNull);
@@ -149,9 +149,9 @@ Screw.Unit(function(c) { with(c) {
           }
         });
 
-        var nathan = User.find('nathan');
-        var metacircular = Blog.find('metacircular');
-        var travel = Blog.find('travel');
+        var nathan = User.fixture('nathan');
+        var metacircular = Blog.fixture('metacircular');
+        var travel = Blog.fixture('travel');
 
         expect(User.find('mike')).to(beNull);
         expect(User.find('wil')).to(beNull);

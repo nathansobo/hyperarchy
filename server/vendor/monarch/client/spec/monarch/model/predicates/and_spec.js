@@ -8,7 +8,7 @@ Screw.Unit(function(c) { with(c) {
     before(function() {
       operand1 = User.id.eq("jan");
       and = new Monarch.Model.Predicates.And([operand1, operand2])
-      record = User.find("jan");
+      record = User.fixture("jan");
     });
 
     init(function() {

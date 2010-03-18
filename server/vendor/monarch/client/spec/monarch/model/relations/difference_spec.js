@@ -119,7 +119,7 @@ Screw.Unit(function(c) { with(c) {
 
         context("if the record is present in the right operand", function() {
           it("does not trigger any callbacks", function() {
-            var record = Blog.find('recipes');
+            var record = Blog.fixture('recipes');
             record.update({userId: "mojo"});
             expectNoCallbacksToHaveBeenCalled();
           });
@@ -133,7 +133,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("triggers remove callbacks with the record", function() {
-            var record = Blog.find('recipes');
+            var record = Blog.fixture('recipes');
             record.destroy();
             expect(removeCallback).to(haveBeenCalled, withArgs(record));
           });
@@ -141,7 +141,7 @@ Screw.Unit(function(c) { with(c) {
 
         context("if the record is present in the right operand", function() {
           it("does not trigger any callbacks", function() {
-            var record = Blog.find('recipes');
+            var record = Blog.fixture('recipes');
             record.destroy();
             expectNoCallbacksToHaveBeenCalled();
           });
@@ -155,7 +155,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("does not trigger any callbacks", function() {
-            var record = Blog.find('recipes');
+            var record = Blog.fixture('recipes');
             record.destroy();
             expectNoCallbacksToHaveBeenCalled();
           });
@@ -167,7 +167,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("triggers insert callbacks with the record", function() {
-            var record = Blog.find({userId: 'jan'});
+            var record = Blog.fixture({userId: 'jan'});
             record.update({userId: 'jonah'})
             expect(insertCallback).to(haveBeenCalled, withArgs(record));
           });

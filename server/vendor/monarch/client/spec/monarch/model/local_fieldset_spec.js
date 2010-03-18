@@ -6,7 +6,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#dirtyWireRepresentation", function() {
       it("returns the dirty field values by column name, with column names in an underscored format", function() {
-        var record = Blog.find('recipes');
+        var record = Blog.fixture('recipes');
         record.name("Booboo");
         record.userId("farb");
 
@@ -20,7 +20,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#wireRepresentation", function() {
       it("returns all field values by column name, with column names in an underscored format", function() {
-        var record = Blog.find('recipes');
+        var record = Blog.fixture('recipes');
 
         expect(record.local.wireRepresentation()).to(equal, {
           id: 'recipes',

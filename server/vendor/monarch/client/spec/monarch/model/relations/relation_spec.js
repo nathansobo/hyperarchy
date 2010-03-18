@@ -135,7 +135,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#joinTo(rightOperand)", function() {
       it("constructs an inner join using self as the left operand, plus the given right operand and an inferred predicate", function() {
-        var user = User.find("jan");
+        var user = User.fixture("jan");
         var join = user.blogs().joinTo(BlogPost);
         expect(join.constructor).to(eq, Monarch.Model.Relations.InnerJoin);
         expect(join.leftOperand).to(eq, user.blogs());
@@ -148,7 +148,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#joinThrough(table)", function() {
       it("constructs an inner join to the given table with #joinTo, then projects the given table", function() {
-        var user = User.find("jan");
+        var user = User.fixture("jan");
         var projection = user.blogs().joinThrough(BlogPost);
         expect(projection.constructor).to(eq, Monarch.Model.Relations.TableProjection);
         expect(projection.projectedTable).to(eq, BlogPost.table);

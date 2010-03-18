@@ -358,7 +358,7 @@ Screw.Unit(function(c) { with(c) {
 
         context("when the record does not match the selection's predicate", function() {
           it("does not trigger onDirty / onClean callbacks on the selection", function() {
-            var record = User.find('mike');
+            var record = User.fixture('mike');
             expect(selection.contains(record)).to(beFalse);
             var fullNameBefore = record.fullName();
             record.fullName("Igor Smith");

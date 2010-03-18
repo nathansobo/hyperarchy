@@ -6,7 +6,7 @@ Screw.Unit(function(c) { with(c) {
     var localField, remoteField, signal, transformer;
 
     init(function() {
-      localField = Blog.find('recipes').field('name');
+      localField = Blog.fixture('recipes').field('name');
       remoteField = localField.remoteField();
       transformer = null;
     });
