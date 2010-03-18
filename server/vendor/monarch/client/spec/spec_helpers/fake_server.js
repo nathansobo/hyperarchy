@@ -20,4 +20,14 @@ Screw.Unit(function(c) {
       Server = originalServer;
     })
   };
+
+  Monarch.Model.Relations.Table.prototype.fixture = function(id) {
+    var fixture = this.find(id);
+    if (!fixture && Server.autoFetch) {
+      Server.autoFetch([this.where({id: id})]);
+      fixture = this.find(id);
+    }
+    if (!fixture) throw new Error("No fixture found in  " + this.globalName + " table with id " + id + ".");
+    return fixture;
+  }
 });
