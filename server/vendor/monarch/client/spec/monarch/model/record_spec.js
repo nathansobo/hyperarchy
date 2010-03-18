@@ -149,7 +149,19 @@ Screw.Unit(function(c) { with(c) {
         });
       });
     });
-    
+
+    describe(".belongsTo", function() {
+      it("defines a reader/writer for the model referred to by the foreign key", function() {
+        var blog = Blog.fixture('recipes');
+        var newUser = User.fixture('wil');
+        expect(blog.user()).to(eq, User.find(blog.userId()));
+        expect(blog.user()).toNot(eq, newUser);
+        expect(blog.user(newUser)).to(eq, newUser);
+        expect(blog.userId()).to(eq, newUser.id());
+        expect(blog.user()).to(eq, newUser);
+      });
+    });
+
     describe(".localCreate(fieldValues)", function() {
       it("builds an instance of the Record with the given fieldValues and inserts it in .table before returning it", function() {
         mock(Blog.table, 'insert');

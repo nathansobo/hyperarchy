@@ -55,6 +55,20 @@ Monarch.constructor("Monarch.Model.Record", {
       });
     },
 
+    belongsTo: function(name) {
+      var keyName = name + "Id";
+      var tableName = _.underscoreAndPluralize(name);
+      this.prototype[name] = function(model) {
+        if (arguments.length == 0) {
+          var table = Repository.tables[tableName];
+          return table.find(this[keyName]());
+        } else {
+          this[keyName](model.id());
+          return model;
+        }
+      };
+    },
+
     create: function(fieldValues) {
       return this.table.create(fieldValues);
     },

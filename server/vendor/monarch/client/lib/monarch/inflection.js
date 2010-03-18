@@ -131,6 +131,10 @@
       return word.replace(/([a-zA-Z\d])([A-Z])/g,'$1_$2').toLowerCase();
     },
 
+    underscoreAndPluralize: function(word) {
+      return this.underscore(this.pluralize(word));
+    },
+
     camelize: function(word, lowFirstLetter) {
       var parts = word.split('_'), len = parts.length;
       var camelized = "";

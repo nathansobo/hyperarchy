@@ -21,6 +21,7 @@ Screw.Unit(function(c) {
           };
 
           this.hasMany("blogPosts");
+          this.belongsTo("user");
         },
 
         crazyName: function(name) {
