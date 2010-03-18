@@ -17,6 +17,10 @@ Screw.Unit(function(c) {
     },
 
     elections: {
+      features: {
+        organizationId: 'meta',
+        body: "What features should we add to Hyperarchy?"
+      },
       menu: {
         organizationId: 'restaurant',
         body: "What items should be on the menu?"

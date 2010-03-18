@@ -17,6 +17,9 @@ constructor("Views.Elections", View.Template, {
   viewProperties: {
     initialize: function() {
       var self = this;
+
+      this.electionsSubscriptions = new Monarch.SubscriptionBundle();
+
       $(window).resize(function() {
         self.fillHeight();
       });
@@ -34,13 +37,14 @@ constructor("Views.Elections", View.Template, {
     elections: {
       afterWrite: function(elections, previousElections) {
         if (elections === previousElections) return;
-        
+
         var self = this;
+        this.electionsSubscriptions.destroyAll();
         this.electionsOl.html("");
         this.fetchingElections = elections.fetch();
         this.fetchingElections.afterEvents(function() {
           elections.each(self.hitch('addElectionToList'));
-          elections.onRemoteInsert(self.hitch('addElectionToList'));
+          self.electionsSubscriptions.add(elections.onRemoteInsert(self.hitch('addElectionToList')));
           delete self.fetchingElections;
         });
       }

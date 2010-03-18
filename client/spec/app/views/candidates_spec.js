@@ -28,6 +28,16 @@ Screw.Unit(function(c) { with(c) {
             expect(view.candidatesOl.find("li[candidateId='" + candidate.id() + "']")).toNot(beEmpty);
           });
         });
+
+        it("cancels subscriptions to the previous relation", function() {
+          Server.auto = true;
+          view.election(election);
+          var newElection = Election.fixture('features');
+          view.election(newElection);
+
+          election.candidates().createFromRemote({id: "newCandidate", body: "Thish should not appear in the list"});
+          expect(view.candidatesOl.find("li[candidateId='newCandidate']")).to(beEmpty);
+        });
       });
 
       context("if the given election is currently being displayed", function() {

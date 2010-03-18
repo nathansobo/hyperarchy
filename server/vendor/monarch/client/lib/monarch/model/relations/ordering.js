@@ -1,6 +1,10 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relation, {
+  constructorInitialize: function() {
+    this.delegate('create', 'localCreate', 'createFromRemote', 'operand');
+  },
+
   initialize: function(operand, orderByColumns) {
     this.operand = operand;
     this.orderByColumns = orderByColumns;
@@ -25,14 +29,6 @@ Monarch.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.
 
   allTuples: function() {
     return this.operand.allTuples().sort(this.comparator);
-  },
-
-  create: function(fieldValues) {
-    return this.operand.create(fieldValues);
-  },
-
-  localCreate: function(fieldValues) {
-    return this.operand.localCreate(fieldValues);
   },
 
   evaluateInRepository: function(repository) {

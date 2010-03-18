@@ -22,6 +22,10 @@ Monarch.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations
   localCreate: function(fieldValues) {
     return this.operand.localCreate(this.predicate.forceMatchingFieldValues(fieldValues));
   },
+  
+  createFromRemote: function(fieldValues) {
+    return this.operand.createFromRemote(this.predicate.forceMatchingFieldValues(fieldValues));
+  },
 
   wireRepresentation: function() {
     return {

@@ -17,6 +17,7 @@ constructor("Views.Candidates", View.Template, {
     initialize: function() {
       var self = this;
       this.registerResizeCallbacks();
+      this.candidatesSubscriptions = new Monarch.SubscriptionBundle();
 
       _.defer(function() {
         var cancelSort = true;
@@ -59,10 +60,11 @@ constructor("Views.Candidates", View.Template, {
       afterWrite: function(election, previousElection) {
         if (election === previousElection) return;
         var self = this;
+        this.candidatesSubscriptions.destroyAll();
         election.candidates().fetch()
           .afterEvents(function() {
             self.populateCandidates();
-            election.candidates().onRemoteInsert(self.hitch('addCandidateToList'));
+            self.candidatesSubscriptions.add(election.candidates().onRemoteInsert(self.hitch('addCandidateToList')));
           });
       }
     },

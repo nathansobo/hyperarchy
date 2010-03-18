@@ -16,7 +16,6 @@ Screw.Unit(function(c) { with(c) {
         Server.auto = false;
       });
 
-
       context("if the view is not currently displaying the given relation", function() {
         it("causes the assigned elections relation to be fetched, then the elections to be rendered", function() {
           view.elections(elections);
@@ -27,6 +26,16 @@ Screw.Unit(function(c) { with(c) {
           elections.each(function(election) {
             expect(view.electionsOl.find("li[electionId='" + election.id() +"']")).toNot(beEmpty);
           });
+        });
+
+        it("cancels event subscriptions to the previous relation", function() {
+          Server.auto = true;
+          view.elections(elections);
+          var newElections = Organization.fixture('meta').elections();
+          view.elections(newElections);
+          
+          elections.createFromRemote({id: "newRestaurantElection", body: "Thish should not appear in the list"});
+          expect(view.electionsOl.find("li[electionId='newRestaurantElection']")).to(beEmpty);
         });
       });
 
