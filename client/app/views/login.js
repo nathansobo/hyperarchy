@@ -17,7 +17,7 @@ constructor("Views.Login", View.Template, {
     loginSubmitted: function() {
       Server.post('/login', _.underscoreKeys(this.fieldValues()))
         .onSuccess(function(data) {
-          Application.currentUserIdEstablished(data.currentUserId);
+          Application.currentUserIdEstablished(data.current_user_id);
           History.load('organizations');
         })
         .onFailure(function(data) {

@@ -56,6 +56,8 @@ module Model
         convert_key_value_for_storage(value)
       when :integer
         value.to_i
+      when :float
+        value.to_f
       when :datetime
         convert_datetime_value_for_storage(value)
       when :boolean
@@ -86,6 +88,8 @@ module Model
         String
       when :integer
         Integer
+      when :float
+        Float
       when :datetime
         Time
       end

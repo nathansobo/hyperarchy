@@ -1,8 +1,8 @@
 (function(Monarch, jQuery) {
 
 Monarch.constructor("Monarch.View.History", {
-  onChange: function(callback) {
-    jQuery.historyInit(callback);
+  onChange: function(callback, context) {
+    jQuery.historyInit(context ? _.bind(callback, context) : callback);
   },
 
   load: function(path) {

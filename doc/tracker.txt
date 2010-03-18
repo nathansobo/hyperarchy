@@ -1,14 +1,15 @@
 * rankings are persisted across page refreshes
-add context parameter to futures / subscription nodes
-add a __ builder object which builds views with a single top-level method call __.li({candidateId: "foo"});
+if current user is null, direct to login screen always
 replace _.defer in initialize with onDomAttach hook
 add _ to the closure surrounding every monarch file
 attempt to convert comet hub to use the cramp library
-convert screw unit to use underscore.js _.isEqual for equal matcher?
 secure the ranking api against unauthorized writes
 refactor client side list code into a single generic widget 
 add super to module system
 turn module system into an underscore.js plugin and release it
+add a _._ underscore builder object which builds views with a single top-level method call _._li({candidateId: "foo"});
+convert screw unit to use underscore.js _.isEqual for equal matcher?
+document and release screw unit
 make relations work with beEmpty matcher, possibly by tying into or creating some general underscore facility for determining emptyness
 rename table.globalName to name
 

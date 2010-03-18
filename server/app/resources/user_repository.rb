@@ -16,5 +16,9 @@ module Resources
     expose :candidates do
       Candidate.table
     end
+
+    expose :rankings do
+      Ranking.table
+    end
   end
 end
