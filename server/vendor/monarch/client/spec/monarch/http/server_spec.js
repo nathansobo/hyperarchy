@@ -268,7 +268,7 @@ Screw.Unit(function(c) { with(c) {
               tableRemoteUpdateCallback, recordRemoteUpdateCallback;
 
           before(function() {
-            record = Blog.find('recipes');
+            record = Blog.fixture('recipes');
             nameBeforeUpdate = record.name();
             funProfitNameBeforeUpdate = record.funProfitName();
             userIdBeforeUpdate = record.userId();
@@ -418,7 +418,7 @@ Screw.Unit(function(c) { with(c) {
           var record, tableRemoveCallback, recordDestroyCallback;
 
           before(function() {
-            record = Blog.find('recipes');
+            record = Blog.fixture('recipes');
             tableRemoveCallback = mockFunction("table remove callback");
             Blog.onRemoteRemove(tableRemoveCallback);
             recordDestroyCallback = mockFunction("record remove callback");
@@ -498,7 +498,7 @@ Screw.Unit(function(c) { with(c) {
 
           before(function() {
             locallyCreated = User.localCreate({fullName: "Jesus Chang"});
-            locallyUpdated = User.find('jan');
+            locallyUpdated = User.fixture('jan');
             locallyUpdated.fullName("Francisco Wu");
             locallyDestroyed = locallyUpdated.blogs().first();
             locallyDestroyed.localDestroy();
@@ -593,7 +593,7 @@ Screw.Unit(function(c) { with(c) {
           it("does not post to the server, but still triggers before and after events callbacks", function() {
             var beforeEventsCallback = mockFunction('beforeEventsCallback');
             var afterEventsCallback = mockFunction('afterEventsCallback');
-            var cleanRecord = User.find('jan')
+            var cleanRecord = User.fixture('jan')
             var future = server.save(cleanRecord, cleanRecord.blogs());
 
             future.beforeEvents(beforeEventsCallback);
