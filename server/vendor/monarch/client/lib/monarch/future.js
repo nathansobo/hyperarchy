@@ -5,11 +5,11 @@ Monarch.constructor("Monarch.Future", {
     this.onCompleteNode = new Monarch.SubscriptionNode();
   },
 
-  onComplete: function(callback) {
+  onComplete: function(callback, context) {
     if (this.completed) {
       callback(this.value)
     } else {
-      return this.onCompleteNode.subscribe(callback);
+      return this.onCompleteNode.subscribe(callback, context);
     }
   },
 

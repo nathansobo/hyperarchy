@@ -172,41 +172,41 @@ Monarch.constructor("Monarch.Model.Record", {
     this.onRemoteDestroyNode.publish(this);
   },
 
-  onRemoteUpdate: function(callback) {
-    return this.onRemoteUpdateNode.subscribe(callback);
+  onRemoteUpdate: function(callback, context) {
+    return this.onRemoteUpdateNode.subscribe(callback, context);
   },
 
-  onLocalUpdate: function(callback) {
+  onLocalUpdate: function(callback, context) {
     if (!this.onLocalUpdateNode) this.onLocalUpdateNode = new Monarch.SubscriptionNode();
-    return this.onLocalUpdateNode.subscribe(callback);
+    return this.onLocalUpdateNode.subscribe(callback, context);
   },
 
-  onRemoteDestroy: function(callback) {
-    return this.onRemoteDestroyNode.subscribe(callback);
+  onRemoteDestroy: function(callback, context) {
+    return this.onRemoteDestroyNode.subscribe(callback, context);
   },
 
-  onRemoteCreate: function(callback) {
-    return this.onRemoteCreateNode.subscribe(callback)
+  onRemoteCreate: function(callback, context) {
+    return this.onRemoteCreateNode.subscribe(callback, context)
   },
 
-  onDirty: function(callback) {
+  onDirty: function(callback, context) {
     if (!this.onDirtyNode) this.onDirtyNode = new Monarch.SubscriptionNode();
-    return this.onDirtyNode.subscribe(callback);
+    return this.onDirtyNode.subscribe(callback, context);
   },
 
-  onClean: function(callback) {
+  onClean: function(callback, context) {
     if (!this.onCleanNode) this.onCleanNode = new Monarch.SubscriptionNode();
-    return this.onCleanNode.subscribe(callback);
+    return this.onCleanNode.subscribe(callback, context);
   },
 
-  onInvalid: function(callback) {
+  onInvalid: function(callback, context) {
     if (!this.onInvalidNode) this.onInvalidNode = new Monarch.SubscriptionNode();
-    return this.onInvalidNode.subscribe(callback);
+    return this.onInvalidNode.subscribe(callback, context);
   },
 
-  onValid: function(callback) {
+  onValid: function(callback, context) {
     if (!this.onValidNode) this.onValidNode = new Monarch.SubscriptionNode();
-    return this.onValidNode.subscribe(callback);
+    return this.onValidNode.subscribe(callback, context);
   },
 
   valid: function() {
@@ -313,20 +313,18 @@ Monarch.constructor("Monarch.Model.Record", {
   },
 
   subscribeToSelfMutations: function() {
-    var self = this;
-
     this.onRemoteCreateNode.subscribe(function(changeset) {
-      if (self.afterRemoteCreate) self.afterRemoteCreate();
-    });
+      if (this.afterRemoteCreate) this.afterRemoteCreate();
+    }, this);
 
     this.onRemoteUpdateNode.subscribe(function(changeset) {
-      if (self.afterRemoteUpdate) self.afterRemoteUpdate(changeset);
-    });
+      if (this.afterRemoteUpdate) this.afterRemoteUpdate(changeset);
+    }, this);
 
     this.onRemoteDestroyNode.subscribe(function() {
-      if (self.afterRemoteDestroy) self.afterRemoteDestroy();
-      self.cleanup();
-    });
+      if (this.afterRemoteDestroy) this.afterRemoteDestroy();
+      this.cleanup();
+    }, this);
   },
 
   initializeRelations: function() {

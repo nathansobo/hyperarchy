@@ -165,34 +165,34 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     return this.tuples()[i];
   },
 
-  onLocalUpdate: function(callback) {
+  onLocalUpdate: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onLocalUpdateNode.subscribe(callback);
+    return this.onLocalUpdateNode.subscribe(callback, context);
   },
 
-  onRemoteInsert: function(callback) {
+  onRemoteInsert: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onRemoteInsertNode.subscribe(callback);
+    return this.onRemoteInsertNode.subscribe(callback, context);
   },
 
-  onRemoteUpdate: function(callback) {
+  onRemoteUpdate: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onRemoteUpdateNode.subscribe(callback);
+    return this.onRemoteUpdateNode.subscribe(callback, context);
   },
 
-  onRemoteRemove: function(callback) {
+  onRemoteRemove: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onRemoteRemoveNode.subscribe(callback);
+    return this.onRemoteRemoveNode.subscribe(callback, context);
   },
 
-  onDirty: function(callback) {
+  onDirty: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onDirtyNode.subscribe(callback);
+    return this.onDirtyNode.subscribe(callback, context);
   },
 
-  onClean: function(callback) {
+  onClean: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onCleanNode.subscribe(callback);
+    return this.onCleanNode.subscribe(callback, context);
   },
 
   recordMadeDirty: function(record) {

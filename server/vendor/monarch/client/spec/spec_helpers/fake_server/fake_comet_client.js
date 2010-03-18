@@ -8,8 +8,8 @@ Monarch.constructor("FakeServer.FakeCometClient", {
     this.connected = true;
   },
 
-  onReceive: function(callback) {
-    return this.onReceiveNode.subscribe(callback);
+  onReceive: function(callback, context) {
+    return this.onReceiveNode.subscribe(callback, context);
   },
 
   simulateReceive: function(message) {

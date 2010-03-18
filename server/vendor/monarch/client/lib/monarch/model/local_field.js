@@ -10,8 +10,8 @@ Monarch.constructor("Monarch.Model.LocalField", Monarch.Model.ConcreteField, {
     this.updateEventsEnabled = true;
   },
 
-  onRemoteUpdate: function(callback) {
-    return this.remoteField().onUpdate(callback);
+  onRemoteUpdate: function(callback, context) {
+    return this.remoteField().onUpdate(callback, context);
   },
 
   dirty: function() {

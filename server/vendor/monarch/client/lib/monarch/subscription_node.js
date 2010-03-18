@@ -22,9 +22,9 @@ Monarch.constructor("Monarch.SubscriptionNode", {
     if (this.onUnsubscribeNode) this.onUnsubscribeNode.publish(subscription);
   },
 
-  onUnsubscribe: function(callback) {
+  onUnsubscribe: function(callback, context) {
     if (!this.onUnsubscribeNode) this.onUnsubscribeNode = new Monarch.SubscriptionNode();
-    return this.onUnsubscribeNode.subscribe(callback);
+    return this.onUnsubscribeNode.subscribe(callback, context);
   },
 
   publish: function() {

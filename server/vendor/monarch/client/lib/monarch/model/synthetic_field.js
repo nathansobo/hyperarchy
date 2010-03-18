@@ -27,12 +27,12 @@ Monarch.constructor("Monarch.Model.SyntheticField", Monarch.Model.Field, {
     var updateHandler = function(newValue, oldValue) {
       this.fieldset.fieldUpdated(this, newValue, oldValue);
       if (this.fieldset.updateEventsEnabled && this.onUpdateNode) this.onUpdateNode.publish(newValue, oldValue);
-    }.bind(this);
+    };
 
     if (this.local) {
-      this.signal.onLocalUpdate(updateHandler);
+      this.signal.onLocalUpdate(updateHandler, this);
     } else {
-      this.signal.onRemoteUpdate(updateHandler);
+      this.signal.onRemoteUpdate(updateHandler, this);
     }
   }
 });

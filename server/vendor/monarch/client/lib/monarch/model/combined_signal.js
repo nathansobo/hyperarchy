@@ -43,12 +43,12 @@ Monarch.constructor("Monarch.Model.CombinedSignal", {
     return this.transformer(this.leftOperand.remoteValue(), this.rightOperand.remoteValue());
   },
 
-  onRemoteUpdate: function(callback) {
-    return this.onRemoteUpdateNode.subscribe(callback);
+  onRemoteUpdate: function(callback, context) {
+    return this.onRemoteUpdateNode.subscribe(callback, context);
   },
 
   onLocalUpdate: function(callback) {
-    return this.onLocalUpdateNode.subscribe(callback);
+    return this.onLocalUpdateNode.subscribe(callback, context);
   }
 });
 

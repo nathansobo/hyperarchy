@@ -107,10 +107,10 @@ Monarch.constructor("Monarch.View.Template", {
     },
 
     observeFormFields: function() {
-      var assignFieldValue = function(name, value) {
+      var assignFieldValue = _.bind(function(name, value) {
         if (!(this.model() && name && this.model()[name])) return;
         this.model()[name](value);
-      }.bind(this);
+      }, this);
 
       this.find("input:text").keyup(function() {
         var elt = $(this);

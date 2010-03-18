@@ -30,8 +30,8 @@ Monarch.constructor("Monarch.Http.CometClient", {
     }
   },
 
-  onReceive: function(callback) {
-    return this.onReceiveNode.subscribe(callback);
+  onReceive: function(callback, context) {
+    return this.onReceiveNode.subscribe(callback, context);
   }
 });
 

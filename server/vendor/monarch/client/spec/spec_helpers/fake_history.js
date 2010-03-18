@@ -19,8 +19,8 @@ Monarch.constructor("FakeHistory", {
     this.path = "";
   },
 
-  onChange: function(callback) {
-    this.onChangeNode.subscribe(callback);
+  onChange: function(callback, context) {
+    this.onChangeNode.subscribe(callback, context);
     callback(this.path);
   },
 

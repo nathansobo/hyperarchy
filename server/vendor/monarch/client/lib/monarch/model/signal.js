@@ -15,7 +15,7 @@ Monarch.constructor("Monarch.Model.Signal", {
         oldValue = this.transformer(oldValue);
       }
       this.onLocalUpdateNode.publish(newValue, oldValue);
-    }.bind(this));
+    }, this);
 
     this.remoteField.onUpdate(function(newValue, oldValue) {
       if (this.transformer) {
@@ -23,7 +23,7 @@ Monarch.constructor("Monarch.Model.Signal", {
         oldValue = this.transformer(oldValue);
       }
       this.onRemoteUpdateNode.publish(newValue, oldValue);
-    }.bind(this));
+    }, this);
   },
 
   localValue: function() {
@@ -44,12 +44,12 @@ Monarch.constructor("Monarch.Model.Signal", {
     }
   },
 
-  onLocalUpdate: function(callback) {
-    return this.onLocalUpdateNode.subscribe(callback);
+  onLocalUpdate: function(callback, context) {
+    return this.onLocalUpdateNode.subscribe(callback, context);
   },
 
-  onRemoteUpdate: function(callback) {
-    return this.onRemoteUpdateNode.subscribe(callback);
+  onRemoteUpdate: function(callback, context) {
+    return this.onRemoteUpdateNode.subscribe(callback, context);
   },
 
   combine: function(otherSignal, transformer) {

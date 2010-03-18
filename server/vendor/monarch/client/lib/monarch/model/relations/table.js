@@ -98,12 +98,12 @@ Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Rel
     this.onResumeEventsNode.publish();
   },
 
-  onPauseEvents: function(callback) {
-    return this.onPauseEventsNode.subscribe(callback);
+  onPauseEvents: function(callback, context) {
+    return this.onPauseEventsNode.subscribe(callback, context);
   },
 
-  onResumeEvents: function(callback) {
-    return this.onResumeEventsNode.subscribe(callback);
+  onResumeEvents: function(callback, context) {
+    return this.onResumeEventsNode.subscribe(callback, context);
   },
   
   updateContents: function(dataset) {
