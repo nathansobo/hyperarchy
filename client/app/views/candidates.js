@@ -57,12 +57,17 @@ constructor("Views.Candidates", View.Template, {
 
     election: {
       afterWrite: function(election) {
+        var self = this;
         election.candidates().fetch()
           .afterEvents(function() {
             self.populateCandidates();
             election.candidates().onRemoteInsert(self.hitch('addCandidateToList'));
           });
       }
+    },
+
+    candidates: function() {
+      return this.election().candidates();
     },
 
     populateCandidates: function() {

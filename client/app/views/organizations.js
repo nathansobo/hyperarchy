@@ -45,17 +45,23 @@ constructor("Views.Organizations", View.Template, {
       });
     },
 
-    navigate: function(organizationId) {
+    navigate: function(path) {
       var self = this;
+
       if (this.fetchingOrganizations) {
         this.fetchingOrganizations.afterEvents(function() {
-          self.navigate(organizationId);
+          self.navigate(path);
         });
         return;
       }
 
-      if (organizationId) {
+      if (path) {
+        var fragments = path.split("/");
+        var organizationId = fragments[0];
         this.displayOrganization(organizationId);
+        if (fragments[1] == "elections" && fragments[2]) {
+          this.electionsView.navigate(fragments[2]);
+        } 
       } else {
         History.load("organizations/" + Organization.first().id());
       }

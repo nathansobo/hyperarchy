@@ -15,7 +15,7 @@ constructor("Controllers.Application", {
     if (path == "") {
       this.switchViews(this.views.login);
     } else {
-      var pathParts = path.split("/");
+      var pathParts = _.splitAtFirstSlash(path);
       var view = this.views[pathParts[0]];
       this.switchViews(view)
       if (_.isFunction(view.navigate)) view.navigate(pathParts[1]);

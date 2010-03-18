@@ -62,6 +62,17 @@ Screw.Unit(function(c) { with(c) {
             expect(History.load).toNot(haveBeenCalled);
           });
         });
+
+        context("when called with an organization id and an election id", function() {
+          it("calls #navigate on elections with the election id", function() {
+            mock(view.electionsView, 'navigate');
+
+            view.navigate("restaurant/elections/menu");
+            expect(view.organizationSelect.val()).to(eq, "restaurant");
+            expect(view.electionsView.elections()).to(eq, Organization.find("restaurant").elections());
+            expect(view.electionsView.navigate).to(haveBeenCalled, withArgs('menu'));
+          });
+        });
       });
     });
 

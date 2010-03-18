@@ -1,17 +1,14 @@
 * rankings are persisted across page refreshes
-
+if an organization or election is already selected, don't do anything to reload it (like fetching, redrawing, etc)
+cancel event handlers when relations on a list change
 make elections bookmarkable and test the result of their selection (assigning to candidates / rankings views)
-
-add context parameter to futures / subscription nodes
 add belongsTo, which defines reader method, plus writer method that sets the foreign key, convert id updates to use it when appropriate
-
+add context parameter to futures / subscription nodes
 add a __ builder object which builds views with a single top-level method call __.li({candidateId: "foo"});
 replace _.defer in initialize with onDomAttach hook
 add _ to the closure surrounding every monarch file
 attempt to convert comet hub to use the cramp library
-
 convert screw unit to use underscore.js _.isEqual for equal matcher?
-
 secure the ranking api against unauthorized writes
 add super to module system
 turn module system into an underscore.js plugin and release it

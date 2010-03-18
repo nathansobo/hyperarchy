@@ -35,32 +35,45 @@ constructor("Views.Elections", View.Template, {
       afterWrite: function(elections) {
         var self = this;
         this.electionsOl.html("");
-        elections.fetch()
-          .afterEvents(function() {
-            elections.each(self.hitch('addElectionToList'));
-            elections.onRemoteInsert(self.hitch('addElectionToList'));
-          });
+        this.fetchingElections = elections.fetch();
+        this.fetchingElections.afterEvents(function() {
+          elections.each(self.hitch('addElectionToList'));
+          elections.onRemoteInsert(self.hitch('addElectionToList'));
+          delete self.fetchingElections;
+        });
       }
     },
 
     addElectionToList: function(election) {
       var self = this;
       this.electionsOl.appendView(function(b) {
-        b.li(election.body()).click(function(li) {
-          self.electionSelected(election, li);
+        b.li({electionId: election.id()}, election.body()).click(function(li) {
+          History.load(Routes.electionPath(election));
         });
       });
     },
 
-    electionSelected: function(election, li) {
+    electionSelected: function(election) {
       this.electionsOl.find('li').removeClass('selected');
-      li.addClass('selected');
+      this.electionsOl.find("li[electionId='" + election.id() + "']").addClass('selected');
       this.rankingsView.election(election);
       this.candidatesView.election(election);
     },
 
     createElection: function() {
       this.elections().create({body: this.createElectionInput.val()});
+    },
+
+    navigate: function(electionId) {
+      var self = this;
+      if (this.fetchingElections) {
+        this.fetchingElections.afterEvents(function() {
+          self.navigate(electionId);
+        });
+        return;
+      }
+
+      this.electionSelected(Election.find(electionId));
     }
   }
 });

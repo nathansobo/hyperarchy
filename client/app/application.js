@@ -9,5 +9,6 @@
 //= require "models"
 //= require "views"
 //= require "controllers"
+//= require "routes"
 
 Repository.originUrl = "/user_repository";
