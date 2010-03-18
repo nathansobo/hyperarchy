@@ -59,13 +59,12 @@ constructor("Views.Candidates", View.Template, {
     election: {
       afterWrite: function(election, previousElection) {
         if (election === previousElection) return;
-        var self = this;
         this.candidatesSubscriptions.destroyAll();
         election.candidates().fetch()
           .afterEvents(function() {
-            self.populateCandidates();
-            self.candidatesSubscriptions.add(election.candidates().onRemoteInsert(self.hitch('addCandidateToList')));
-          });
+            this.populateCandidates();
+            this.candidatesSubscriptions.add(election.candidates().onRemoteInsert(this.hitch('addCandidateToList')));
+          }, this);
       }
     },
 

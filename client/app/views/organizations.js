@@ -31,27 +31,24 @@ constructor("Views.Organizations", View.Template, {
 
   viewProperties: {
     initialize: function() {
-      var self = this;
       this.electionsView.candidatesView = this.candidatesView;
       this.electionsView.rankingsView = this.rankingsView;
       this.fetchingOrganizations = Organization.fetch();
       this.fetchingOrganizations.afterEvents(function() {
         Organization.each(function(organization) {
-          self.organizationSelect.appendView(function(b) {
+          this.organizationSelect.appendView(function(b) {
             b.option({value: organization.id()}, organization.name());
           });
-        });
-        delete self.fetchingOrganizations;
-      });
+        }, this);
+        delete this.fetchingOrganizations;
+      }, this);
     },
 
     navigate: function(path) {
-      var self = this;
-
       if (this.fetchingOrganizations) {
         this.fetchingOrganizations.afterEvents(function() {
-          self.navigate(path);
-        });
+          this.navigate(path);
+        }, this);
         return;
       }
 

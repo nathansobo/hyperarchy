@@ -51,7 +51,7 @@ Monarch.constructor("Monarch.Http.CommandBatch", {
       } else {
         command.handleFailure(null);
       }
-    }.bind(this));
+    }, this);
   }
 });
 

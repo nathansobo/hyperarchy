@@ -15,15 +15,14 @@ constructor("Views.Login", View.Template, {
 
   viewProperties: {
     loginSubmitted: function() {
-      var self = this;
       Server.post('/login', _.underscoreKeys(this.fieldValues()))
         .onSuccess(function(data) {
           Application.currentUserIdEstablished(data.currentUserId);
           History.load('organizations');
         })
         .onFailure(function(data) {
-          self.find("#errors").html(Views.ErrorList.toView(data.errors)).show();
-        });
+          this.find("#errors").html(Views.ErrorList.toView(data.errors)).show();
+        }, this);
     }
   }
 });

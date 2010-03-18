@@ -49,7 +49,7 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
         field.clearValidationErrors();
       }
 
-    }.bind(this));
+    }, this);
   },
 
   dirty: function() {
@@ -112,7 +112,7 @@ Monarch.constructor("Monarch.Model.LocalFieldset", Monarch.Model.Fieldset, {
       var remoteField = this.remote.field(columnName);
       localField.remoteField(remoteField);
       remoteField.localField(localField);
-    }.bind(this));
+    }, this);
   },
 
   createNewField: function(column) {

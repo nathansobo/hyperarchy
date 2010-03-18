@@ -1,13 +1,14 @@
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Subscription", {
-  initialize: function(node, callback) {
+  initialize: function(node, callback, context) {
     this.node = node;
     this.callback = callback;
+    this.context = context
   },
 
   trigger: function(args) {
-    this.callback.apply(null, args);
+    this.callback.apply(this.context, args);
   },
 
   destroy: function() {

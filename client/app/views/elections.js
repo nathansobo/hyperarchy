@@ -37,23 +37,20 @@ constructor("Views.Elections", View.Template, {
     elections: {
       afterWrite: function(elections, previousElections) {
         if (elections === previousElections) return;
-
-        var self = this;
         this.electionsSubscriptions.destroyAll();
         this.electionsOl.html("");
         this.fetchingElections = elections.fetch();
         this.fetchingElections.afterEvents(function() {
-          elections.each(self.hitch('addElectionToList'));
-          self.electionsSubscriptions.add(elections.onRemoteInsert(self.hitch('addElectionToList')));
-          delete self.fetchingElections;
-        });
+          elections.each(this.hitch('addElectionToList'));
+          this.electionsSubscriptions.add(elections.onRemoteInsert(this.hitch('addElectionToList')));
+          delete this.fetchingElections;
+        }, this);
       }
     },
 
     addElectionToList: function(election) {
-      var self = this;
       this.electionsOl.appendView(function(b) {
-        b.li({electionId: election.id()}, election.body()).click(function(li) {
+        b.li({electionId: election.id()}, election.body()).click(function() {
           History.load(Routes.electionPath(election));
         });
       });
@@ -71,11 +68,10 @@ constructor("Views.Elections", View.Template, {
     },
 
     navigate: function(electionId) {
-      var self = this;
       if (this.fetchingElections) {
         this.fetchingElections.afterEvents(function() {
-          self.navigate(electionId);
-        });
+          this.navigate(electionId);
+        }, this);
         return;
       }
 

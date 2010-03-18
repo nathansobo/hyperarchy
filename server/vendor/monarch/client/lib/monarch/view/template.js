@@ -110,7 +110,7 @@ Monarch.constructor("Monarch.View.Template", {
       var assignFieldValue = function(name, value) {
         if (!(this.model() && name && this.model()[name])) return;
         this.model()[name](value);
-      }.bind(this)
+      }.bind(this);
 
       this.find("input:text").keyup(function() {
         var elt = $(this);

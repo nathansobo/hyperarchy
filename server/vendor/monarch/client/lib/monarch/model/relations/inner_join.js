@@ -14,7 +14,7 @@ Monarch.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations
 
     return _.filter(this.cartesianProduct(), function(compositeTuple) {
       return this.predicate.evaluate(compositeTuple);
-    }.bind(this));
+    }, this);
   },
 
   wireRepresentation: function() {

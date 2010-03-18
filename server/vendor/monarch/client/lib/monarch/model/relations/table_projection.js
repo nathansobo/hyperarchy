@@ -16,7 +16,7 @@ Monarch.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Rel
     _.each(this.operand.allTuples(), function(compositeTuple) {
       var record = compositeTuple.record(this.projectedTable);
       if (!_.include(allTuples, record)) allTuples.push(record);
-    }.bind(this));
+    }, this);
     return allTuples;
   },
 

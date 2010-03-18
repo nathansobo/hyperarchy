@@ -8,7 +8,7 @@ constructor("Controllers.Application", {
     };
     History.onChange(function(path) {
       this.navigate(path);
-    }.bind(this));
+    }, this);
   },
 
   navigate: function(path) {

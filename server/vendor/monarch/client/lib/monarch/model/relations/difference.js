@@ -77,7 +77,7 @@ Monarch.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relation
     var tuplesById = {};
     this.each(function(record) {
       tuplesById[record.id()] = record;
-    }.bind(this));
+    }, this);
     this.tuplesById = tuplesById;
   },
 

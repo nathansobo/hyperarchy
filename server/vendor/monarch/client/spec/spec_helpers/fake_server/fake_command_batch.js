@@ -58,7 +58,7 @@ Monarch.constructor("FakeServer.FakeCommandBatch", {
       } else {
         return null;
       }
-    }.bind(this));
+    }, this);
 
     return { primary: primary, secondary: [] }
   }

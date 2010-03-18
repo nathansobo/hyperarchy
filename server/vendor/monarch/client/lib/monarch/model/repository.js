@@ -89,7 +89,7 @@ Monarch.constructor("Monarch.Model.Repository", {
   loadFixtures: function(fixtureDefinitions) {
     _.each(fixtureDefinitions, function(fixtures, tableName) {
       this.tables[tableName].loadFixtures(fixtures);
-    }.bind(this));
+    }, this);
   },
 
   clear: function() {

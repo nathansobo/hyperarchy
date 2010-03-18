@@ -9,7 +9,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#handleResponse", function() {
-      context("when the 'successful' key is true in the given response and it also (optionally) includes a dataset", function() {
+      context("when the 'successful' key is true in the given response", function() {
         useExampleDomainModel();
 
         context("when the response also includes records", function() {
@@ -55,7 +55,7 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        context("when the response does not include records", function() {
+        context("when the response does not include a dataset", function() {
           it("invokes only success callbacks with the response's 'data' hash and does not invoke failure, beforeEvents, or afterEvents callbacks", function() {
             var beforeEventsCallback = mockFunction("before events callback");
             var afterEventsCallback = mockFunction("after events callback");
@@ -129,7 +129,7 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
-      context("when #handleResponse has already been called with a unsuccessful response", function() {
+      context("when #handleResponse has already been called with an unsuccessful response", function() {
         var data;
         before(function() {
           data = { foo: "bar" };

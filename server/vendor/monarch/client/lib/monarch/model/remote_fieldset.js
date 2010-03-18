@@ -14,7 +14,7 @@ Monarch.constructor("Monarch.Model.RemoteFieldset", Monarch.Model.Fieldset, {
     _.each(fieldValues, function(fieldValue, columnName) {
       var field = this.field(columnName);
       if (field) field.value(fieldValue);
-    }.bind(this));
+    }, this);
 
     var changeset = this.batchedUpdates;
     this.batchedUpdates = null;

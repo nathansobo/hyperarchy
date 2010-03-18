@@ -55,47 +55,47 @@ Monarch.constructor("Monarch.Http.AjaxFuture", {
     this.onCompleteNode.publish(data);
   },
 
-  onSuccess: function(callback) {
+  onSuccess: function(callback, context) {
     if (this.triggered) {
-      if (this.successful) callback(this.data);
+      if (this.successful) callback.call(context, this.data);
     } else {
-      this.onSuccessNode.subscribe(callback);
+      this.onSuccessNode.subscribe(callback, context);
     }
     return this;
   },
 
-  onFailure: function(callback) {
+  onFailure: function(callback, context) {
     if (this.triggered) {
-      if (!this.successful) callback(this.data);
+      if (!this.successful) callback.call(context, this.data);
     } else {
-      this.onFailureNode.subscribe(callback);
+      this.onFailureNode.subscribe(callback, context);
     }
     return this;
   },
 
-  onComplete: function(callback) {
+  onComplete: function(callback, context) {
     if (this.triggered) {
-      callback(this.data);
+      callback.call(context, this.data);
     } else {
-      this.onCompleteNode.subscribe(callback);
+      this.onCompleteNode.subscribe(callback, context);
     }
     return this;
   },
 
-  beforeEvents: function(callback) {
+  beforeEvents: function(callback, context) {
     if (this.triggered) {
-      if (this.repositoryUpdated) callback(this.data);
+      if (this.repositoryUpdated) callback.call(context, this.data);
     } else {
-      this.beforeEventsNode.subscribe(callback);
+      this.beforeEventsNode.subscribe(callback, context);
     }
     return this;
   },
 
-  afterEvents: function(callback) {
+  afterEvents: function(callback, context) {
     if (this.triggered) {
-      if (this.repositoryUpdated) callback(this.data);
+      if (this.repositoryUpdated) callback.call(context, this.data);
     } else {
-      this.afterEventsNode.subscribe(callback);
+      this.afterEventsNode.subscribe(callback, context);
     }
     return this;
   }

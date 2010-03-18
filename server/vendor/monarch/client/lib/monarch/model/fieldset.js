@@ -30,7 +30,7 @@ Monarch.constructor("Monarch.Model.Fieldset", {
         var field = this.field(columnName);
         return field.value.apply(field, arguments);
       }
-    }.bind(this));
+    }, this);
   }
 });
 

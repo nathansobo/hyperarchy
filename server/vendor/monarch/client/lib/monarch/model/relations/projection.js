@@ -22,7 +22,7 @@ Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relation
     this.tuplesByOperandRecordId = {};
     return _.map(this.operand.allTuples(), function(operandTuple) {
       return this.tuplesByOperandRecordId[operandTuple.id()] = new this.tupleConstructor(operandTuple);
-    }.bind(this));
+    }, this);
   },
 
   column: function(name) {

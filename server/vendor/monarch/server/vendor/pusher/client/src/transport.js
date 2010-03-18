@@ -13,7 +13,7 @@ Pusher.Transport = Class.create({
     this.url = url + (url.include('?') ? '&' : '?') + params;
     
     this.callback = callback;
-    this.connect.bind(this).delay(this.CONNECT_DELAY);
+    this.connect, this.delay(this.CONNECT_DELAY);
   },
   
   name: null,
@@ -21,7 +21,7 @@ Pusher.Transport = Class.create({
   connect: Prototype.emptyFunction,
   
   reconnect: function() {
-    this.connect.bind(this).delay(this.RECONNECT_DELAY);
+    this.connect, this.delay(this.RECONNECT_DELAY);
   }
 });
 

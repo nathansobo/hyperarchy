@@ -64,7 +64,7 @@ Monarch.constructor("FakeServer", Monarch.Http.Server, {
   save: function() {
     var commands = _.map(this.extractDirtyRecords(arguments), function(dirtyRecord) {
       return this.buildAppropriateCommand(dirtyRecord);
-    }.bind(this));
+    }, this);
     var batch = new FakeServer.FakeCommandBatch(Repository.originUrl, this, commands);
     return batch.perform();
   },

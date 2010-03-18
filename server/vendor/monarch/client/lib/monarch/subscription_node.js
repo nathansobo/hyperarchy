@@ -11,8 +11,8 @@ Monarch.constructor("Monarch.SubscriptionNode", {
     this.delayedEvents = [];
   },
 
-  subscribe: function(callback) {
-    var subscription = new Monarch.Subscription(this, callback);
+  subscribe: function(callback, context) {
+    var subscription = new Monarch.Subscription(this, callback, context);
     this.subscriptions.push(subscription);
     return subscription;
   },

@@ -124,16 +124,16 @@ Monarch.constructor("Monarch.Model.Relations.Relation", {
     return this.dirtyTuples().length > 0;
   },
 
-  each: function(fn) {
-    _.each(this.tuples(), fn);
+  each: function(fn, context) {
+    _.each(this.tuples(), fn, context);
   },
 
-  map: function(fn) {
-    return _.map(this.tuples(), fn);
+  map: function(fn, context) {
+    return _.map(this.tuples(), fn, context);
   },
 
-  any: function(fn) {
-    return _.any(this.tuples(), fn);
+  any: function(fn, context) {
+    return _.any(this.tuples(), fn, context);
   },
 
   empty: function() {

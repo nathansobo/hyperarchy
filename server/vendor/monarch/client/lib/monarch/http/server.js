@@ -50,7 +50,7 @@ Monarch.constructor("Monarch.Http.Server", {
   save: function() {
     var commands = _.map(this.extractDirtyRecords(arguments), function(dirtyRecord) {
       return this.buildAppropriateCommand(dirtyRecord);
-    }.bind(this));
+    }, this);
     var batch = new Monarch.Http.CommandBatch(this, commands);
 
     Repository.pauseMutations();
