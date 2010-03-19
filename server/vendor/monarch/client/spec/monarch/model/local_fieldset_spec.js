@@ -4,6 +4,16 @@ Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.LocalFieldset", function() {
     useLocalFixtures();
 
+    describe("#field(columnOrName)", function() {
+      it("returns the field corresponding to the column or name or null if no field is present for the name / column", function() {
+        var record = Blog.fixture('recipes');
+        expect(record.local.field('id')).toNot(beNull);
+        expect(record.local.field('bogus')).to(beNull);
+        expect(record.local.field(Blog.id)).toNot(beNull);
+        expect(record.local.field(User.id)).to(beNull);
+      });
+    });
+
     describe("#dirtyWireRepresentation", function() {
       it("returns the dirty field values by column name, with column names in an underscored format", function() {
         var record = Blog.fixture('recipes');

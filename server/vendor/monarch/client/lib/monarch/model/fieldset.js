@@ -2,7 +2,13 @@
 
 Monarch.constructor("Monarch.Model.Fieldset", {
   field: function(columnOrName) {
-    var columnName = (typeof columnOrName == 'string') ? columnOrName : columnOrName.name;
+    var columnName;
+    if (typeof columnOrName == 'string') {
+      columnName =  columnOrName;
+    } else {
+      if (columnOrName.table !== this.record.table) return null;
+      columnName = columnOrName.name;
+    }
     return this.fieldsByColumnName[columnName] || this.syntheticFieldsByColumnName[columnName];
   },
 

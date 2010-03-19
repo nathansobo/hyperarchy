@@ -596,6 +596,8 @@ Screw.Unit(function(c) { with(c) {
             a.quux("e");
             expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("e", "d"));
             expect(quuxAfterChangeHook).to(haveBeenCalled, withArgs("e", "d"));
+            quuxAfterChangeHook.clear();
+            
             a.quux("e");
             expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("e", "e"));
             expect(quuxAfterChangeHook).toNot(haveBeenCalled);

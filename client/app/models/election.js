@@ -14,5 +14,13 @@ constructor("Election", Model.Record, {
         return this.rankingsByUserId[userId];
       }
     });
+
+    this.relatesToMany('rankedCandidates', function() {
+      return this.rankings().joinThrough(Candidate);
+    });
+
+    this.relatesToMany('unrankedCandidates', function() {
+      return this.candidates().difference(this.rankedCandidates());
+    });
   }
 });

@@ -73,7 +73,7 @@ constructor("Views.Candidates", View.Template, {
 
     populateCandidates: function() {
       this.candidatesOl.html("");
-      this.election().candidates().each(this.hitch('addCandidateToList'));
+      this.election().unrankedCandidates().each(this.hitch('addCandidateToList'));
     },
 
     addCandidateToList: function(candidate) {
