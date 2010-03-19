@@ -34,7 +34,11 @@ Screw.Unit(function(c) { with(c) {
       });
 
       context("when the given election does not differ from the current election", function() {
-
+        it("does not fetch rankings again", function() {
+          Server.lastFetch.simulateSuccess();
+          view.election(election);
+          expect(Server.fetches).to(beEmpty);
+        });
       });
     });
 
