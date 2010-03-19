@@ -1,5 +1,8 @@
 * rankings are persisted across page refreshes
+load the rankings for the election. election has ranked candidates and unranked candidates relations. ranked candidates is ordered by position
+make Server.fetch take varargs as well as arrays
 if current user is null, direct to login screen always
+cache the results of fetching the same relation twice within a short period of time
 replace _.defer in initialize with onDomAttach hook
 add _ to the closure surrounding every monarch file
 attempt to convert comet hub to use the cramp library

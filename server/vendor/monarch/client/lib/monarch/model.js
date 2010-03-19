@@ -2,6 +2,7 @@
 
 //= require "model/repository"
 //= require "model/tuple"
+//= require "model/relation_definition"
 //= require "model/record"
 //= require "model/composite_tuple"
 //= require "model/field"

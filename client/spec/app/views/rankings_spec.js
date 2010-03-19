@@ -13,8 +13,36 @@ Screw.Unit(function(c) { with(c) {
       view.election(election);
     });
 
+    describe("#election(election)", function() {
+      init(function() {
+        Server.auto = false;
+      });
+
+      context("when the given election differs from the current election", function() {
+        it("fetches the rankings associated with the current user and displays them in order", function() {
+          var rankings = election.rankings().forUser(user);
+          expect(Server.fetches.length).to(eq, 1);
+          expect(Server.lastFetch.relations).to(equal, [election.candidates(), rankings]);
+
+          Server.lastFetch.simulateSuccess();
+
+          expect(rankings.empty()).to(beFalse);
+          rankings.each(function(ranking, index) {
+            expect(view.rankingsOl.find("li:eq(" + index + ")").attr('candidateId')).to(equal, ranking.candidateId());
+          });
+        });
+      });
+
+      context("when the given election does not differ from the current election", function() {
+
+      });
+    });
+
     describe("#handleUpdate(item), which is invoked by jQuery-ui's sortable", function() {
       it("invokes Ranking.createOrUpdate with the election id of the item, plus the election id of the predecessor and successor if they exist", function() {
+        Ranking.clear();
+        view.rankingsOl.empty();
+
         var candidateA = election.candidates().at(0);
         var candidateB = election.candidates().at(1);
         var candidateC = election.candidates().at(2);
@@ -32,7 +60,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         // simulate insertion with jQuery-UI sortable
-        view.rankingOl.append(itemA);
+        view.rankingsOl.append(itemA);
         view.handleUpdate(itemA);
         expect(Ranking.createOrUpdate).to(haveBeenCalled, withArgs(user, election, candidateA, null, null));
 

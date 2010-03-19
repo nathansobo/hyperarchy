@@ -105,19 +105,21 @@ Monarch.ModuleSystem = {
     }
   },
 
+  permittedAttrAccessorDefinitionKeys: ["reader", "writer", "afterWrite", "afterChange"],
+
   isAttrAccessorDefinition: function(value) {
     if (typeof value !== "object") return false;
     return _.all(_.keys(value), function(key) {
-      return key === "reader" || key === "writer" || key == "afterWrite";
-    });
+      return _.include(this.permittedAttrAccessorDefinitionKeys, key)
+    }, this);
   },
 
   defineAttrAccessor: function(module, name) {
     var definition = module[name];
-    module[name] = this.buildAttrAccessor(name, definition.reader, definition.writer, definition.afterWrite);
+    module[name] = this.buildAttrAccessor(name, definition.reader, definition.writer, definition.afterWrite, definition.afterChange);
   },
 
-  buildAttrAccessor: function(name, reader, writer, afterWriteHook) {
+  buildAttrAccessor: function(name, reader, writer, afterWriteHook, afterChangeHook) {
     var fieldName = "_" + name;
     if (!reader) reader = function() { return this[fieldName]; };
     if (!writer) writer = function(value) { this[fieldName] = value; };
@@ -129,6 +131,7 @@ Monarch.ModuleSystem = {
         var oldValue = this[fieldName];
         var newValue = writer.call(this, value) || this[fieldName];
         if (afterWriteHook) afterWriteHook.call(this, newValue, oldValue);
+        if (afterChangeHook && newValue !== oldValue) afterChangeHook.call(this, newValue, oldValue);
         return newValue;
       }
     };

@@ -35,8 +35,7 @@ constructor("Views.Elections", View.Template, {
     },
 
     elections: {
-      afterWrite: function(elections, previousElections) {
-        if (elections === previousElections) return;
+      afterChange: function(elections) {
         this.electionsSubscriptions.destroyAll();
         this.electionsOl.html("");
         this.fetchingElections = elections.fetch();

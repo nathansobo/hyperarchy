@@ -148,6 +148,18 @@ Screw.Unit(function(c) { with(c) {
           expect(blog.ownerId()).to(eq, 'jake');
         });
       });
+
+      context("if extend is called on the return value of the hasMany", function() {
+        it("extends the defined relation with the properties passed to extend", function() {
+          User.hasMany('blogs').extend({
+            foo: function() {
+              return "foo";
+            }
+          });
+          var user = User.localCreate({id: 'jake'});
+          expect(user.blogs().foo()).to(equal, "foo");
+        });
+      });
     });
 
     describe(".belongsTo", function() {

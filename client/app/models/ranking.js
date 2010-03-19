@@ -7,6 +7,10 @@ constructor("Ranking", Model.Record, {
         userId: 'key',
         position: 'float'
       });
+
+      this.belongsTo('candidate');
+      this.belongsTo('election');
+      this.belongsTo('user');
     },
 
     createOrUpdate: function(user, election, candidate, predecessor, successor) {

@@ -57,8 +57,7 @@ constructor("Views.Candidates", View.Template, {
 
 
     election: {
-      afterWrite: function(election, previousElection) {
-        if (election === previousElection) return;
+      afterChange: function(election) {
         this.candidatesSubscriptions.destroyAll();
         election.candidates().fetch()
           .afterEvents(function() {

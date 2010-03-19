@@ -6,5 +6,13 @@ constructor("Election", Model.Record, {
     });
 
     this.hasMany('candidates');
+    this.hasMany('rankings', {orderBy: 'position'}).extend({
+      forUser: function(user) {
+        var userId = user.id();
+        if (!this.rankingsByUserId) this.rankingsByUserId = {}
+        if (!this.rankingsByUserId[userId]) this.rankingsByUserId[userId] = this.where({userId: userId});
+        return this.rankingsByUserId[userId];
+      }
+    });
   }
 });

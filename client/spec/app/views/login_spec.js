@@ -38,7 +38,7 @@ Screw.Unit(function(c) { with(c) {
             expect(Application.currentUserIdEstablished).to(haveBeenCalled, withArgs("billy"));
           });
           Server.lastPost.simulateSuccess({
-            currentUserId: "billy"
+            current_user_id: "billy"
           });
           expect(History.load).to(haveBeenCalled, withArgs("organizations"));
         });

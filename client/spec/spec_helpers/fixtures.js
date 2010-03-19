@@ -40,6 +40,21 @@ Screw.Unit(function(c) {
         electionId: 'menu',
         body: "Salad"
       }
+    },
+
+    rankings: {
+      nathanFish1: {
+        userId: "nathan",
+        electionId: "menu",
+        candidateId: "fish",
+        position: 1
+      },
+      nathanRice2: {
+        userId: "nathan",
+        electionId: "menu",
+        candidateId: "rice",
+        position: 2
+      }
     }
   };
 

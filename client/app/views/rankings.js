@@ -2,20 +2,18 @@ constructor("Views.Rankings", View.Template, {
   content: function() { with(this.builder) {
     div({id: "ranking", 'class': "widget itemList"}, function() {
       div({'class': "widgetContent"}, function() {
-        ol().ref("rankingOl");
+        ol().ref("rankingsOl");
       }).ref('widgetContent');
     });
   }},
 
   viewProperties: {
-    attrAccessors: ["election"],
-
     initialize: function() {
       var self = this;
       this.registerResizeCallbacks();
 
       _.defer(function() {
-        self.rankingOl.sortable({
+        self.rankingsOl.sortable({
           connectWith: "#candidates ol",
 
           update: function(event, ui) {
@@ -23,6 +21,25 @@ constructor("Views.Rankings", View.Template, {
           }
         });
       });
+    },
+
+    election: {
+      afterChange: function(election) {
+        this.rankings = election.rankings().forUser(Application.currentUser());
+        Server.fetch([election.candidates(), this.rankings])
+          .afterEvents(function() {
+            this.populateRankings();
+          }, this);
+      }
+    },
+    
+    populateRankings: function() {
+      this.rankingsOl.empty();
+      this.rankings.each(function(ranking) {
+        this.rankingsOl.append(View.build(function(b) {
+          b.li({candidateId: ranking.candidateId()}, ranking.candidate().body());
+        }));
+      }, this);
     },
 
     handleUpdate: function(item) {
@@ -56,7 +73,7 @@ constructor("Views.Rankings", View.Template, {
 
     fillHeight: function() {
       var height = $(window).height() - this.widgetContent.offset().top - 10;
-      this.rankingOl.height(height);
+      this.rankingsOl.height(height);
     }
   }
 });

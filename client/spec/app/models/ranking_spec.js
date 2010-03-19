@@ -6,6 +6,8 @@ Screw.Unit(function(c) { with(c) {
 
     describe(".createOrUpdate(candidate, predecessor, successor)", function() {
       it("creates or updates the ranking for the candidate, with a position that places it between the predecessor and successor", function() {
+        Ranking.table.clear();
+
         var user = User.fixture('nathan');
         var election = Election.fixture('menu');
         var a = Candidate.fixture('rice');

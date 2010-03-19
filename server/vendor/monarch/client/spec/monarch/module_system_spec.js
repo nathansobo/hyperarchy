@@ -546,7 +546,8 @@ Screw.Unit(function(c) { with(c) {
 
         context("when custom readers, writers or hooks are requested", function() {
           it("defines jQuery style reader/writer functions that dispatch to the custom handlers", function() {
-            var quuxAfterWriteHook = mockFunction("afterWriteHook");
+            var quuxAfterWriteHook = mockFunction("quuxAfterWriteHook");
+            var quuxAfterChangeHook = mockFunction("quuxAfterChangeHook");
             var a = {};
             var b = {
               foo: {
@@ -573,7 +574,8 @@ Screw.Unit(function(c) { with(c) {
               },
 
               quux: {
-                afterWrite: quuxAfterWriteHook
+                afterWrite: quuxAfterWriteHook,
+                afterChange: quuxAfterChangeHook
               }
             };
 
@@ -590,8 +592,13 @@ Screw.Unit(function(c) { with(c) {
 
             a.quux("d");
             expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("d", undefined));
+            expect(quuxAfterChangeHook).to(haveBeenCalled, withArgs("d", undefined));
             a.quux("e");
             expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("e", "d"));
+            expect(quuxAfterChangeHook).to(haveBeenCalled, withArgs("e", "d"));
+            a.quux("e");
+            expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("e", "e"));
+            expect(quuxAfterChangeHook).toNot(haveBeenCalled);
           });
         });
 

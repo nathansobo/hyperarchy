@@ -1,4 +1,3 @@
-
 (function(Monarch) {
 
 Monarch.constructor("Monarch.Model.Record", {
@@ -6,7 +5,7 @@ Monarch.constructor("Monarch.Model.Record", {
     initialize: function() {
       this.delegateConstructorMethods('find', 'fetch', 'tuples', 'first', 'each', 'any', 'onLocalUpdate', 'onRemoteInsert',
                                       'onRemoteUpdate', 'onRemoteRemove', 'where', 'orderBy', 'project', 'empty',
-                                      'createFromRemote', 'fixture', 'table');
+                                      'createFromRemote', 'fixture', 'clear', 'table');
     },
 
     extended: function(subconstructor) {
@@ -31,10 +30,12 @@ Monarch.constructor("Monarch.Model.Record", {
     },
 
     relatesToMany: function(name, definition) {
-      this.relationDefinitions.push({ name: name, definition: definition });
+      var relationDefinition = new Monarch.Model.RelationDefinition(name, definition);
+      this.relationDefinitions.push(relationDefinition);
       this.prototype[name] = function() {
         return this.relationsByName[name];
       };
+      return relationDefinition;
     },
 
     hasMany: function(relationName, options) {
@@ -45,7 +46,7 @@ Monarch.constructor("Monarch.Model.Record", {
       var targetTableName = options.table || _.underscore(relationName);
       var foreignKeyColumnName = options.key || _.singularize(this.table.globalName) + "Id";
 
-      this.relatesToMany(relationName, function() {
+      return this.relatesToMany(relationName, function() {
         var targetTable = Repository.tables[targetTableName];
         conditions[foreignKeyColumnName] = this.id();
         var relation = targetTable.where(conditions);
@@ -329,7 +330,7 @@ Monarch.constructor("Monarch.Model.Record", {
   initializeRelations: function() {
     this.relationsByName = {};
     _.each(this.constructor.relationDefinitions, function(relationDefinition) {
-      this.relationsByName[relationDefinition.name] = relationDefinition.definition.call(this);
+      this.relationsByName[relationDefinition.name] = relationDefinition.build(this);
     }, this);
   }
 });
