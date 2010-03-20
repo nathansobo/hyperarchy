@@ -59,7 +59,7 @@ constructor("Views.Candidates", View.Template, {
     election: {
       afterChange: function(election) {
         this.candidatesSubscriptions.destroyAll();
-        election.candidates().fetch()
+        Server.fetch([election.candidates(), election.rankings().forUser(Application.currentUser())])
           .afterEvents(function() {
             this.populateCandidates();
             this.candidatesSubscriptions.add(election.candidates().onRemoteInsert(this.hitch('addCandidateToList')));
@@ -77,10 +77,7 @@ constructor("Views.Candidates", View.Template, {
     },
 
     addCandidateToList: function(candidate) {
-      var candidateLi = View.build(function(b) {
-        b.li({candidateId: candidate.id()}, candidate.body());
-      });
-      this.candidatesOl.append(candidateLi);
+      this.candidatesOl.append(Views.Candidate.toView({candidate: candidate}));
     },
 
     createCandidate: function() {

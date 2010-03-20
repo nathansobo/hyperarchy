@@ -13,8 +13,6 @@ module Views
           link :rel => "stylesheet", :type => "text/css", :href => "stylesheets/text.css"
           link :rel => "stylesheet", :type => "text/css", :href => "stylesheets/hyperarchy.css"
           application_javascript_tags
-          
-          link :rel => "stylesheet", :type => "text/css", :href => "stylesheets/hyperarchy.css"
 
           application_javascript_tags
           script :type => "text/javascript", :language => "javascript" do

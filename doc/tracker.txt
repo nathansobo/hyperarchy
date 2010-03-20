@@ -1,5 +1,13 @@
 * rankings are persisted across page refreshes
-load the rankings for the election. election has ranked candidates and unranked candidates relations. ranked candidates is ordered by position
+turn module system into an underscore.js plugin and release it
+add super to module system
+view attributes should check for an accessor function and call it with the value if one is present
+
+replace aliasing of view key to underscored property with super infrastructure
+test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
+ranking removal x is only visible when a candidate is ranked and hovered over
+candidates can be unranked when the x is clicked and return to the unranked candidates list
+rename candidates view to unranked_candidates
 make Server.fetch take varargs as well as arrays
 if current user is null, direct to login screen always
 cache the results of fetching the same relation twice within a short period of time
@@ -8,8 +16,7 @@ add _ to the closure surrounding every monarch file
 attempt to convert comet hub to use the cramp library
 secure the ranking api against unauthorized writes
 refactor client side list code into a single generic widget 
-add super to module system
-turn module system into an underscore.js plugin and release it
+
 add a _._ underscore builder object which builds views with a single top-level method call _._li({candidateId: "foo"});
 convert screw unit to use underscore.js _.isEqual for equal matcher?
 document and release screw unit

@@ -36,14 +36,12 @@ constructor("Views.Rankings", View.Template, {
     populateRankings: function() {
       this.rankingsOl.empty();
       this.rankings.each(function(ranking) {
-        this.rankingsOl.append(View.build(function(b) {
-          b.li({candidateId: ranking.candidateId()}, ranking.candidate().body());
-        }));
+        this.rankingsOl.append(Views.Candidate.toView({candidate: ranking.candidate(), ranking: ranking}));
       }, this);
     },
 
     handleUpdate: function(item) {
-      if (item.parents("#ranking").length == 0) return this.handleRemoval(item);
+      if (item.parents("#ranking").length == 0) this.rankingsOl.sortable('cancel');
 
       var candidateId = item.attr('candidateId');
       var predecessorId = item.prev().attr('candidateId');
@@ -54,10 +52,6 @@ constructor("Views.Rankings", View.Template, {
       var successor = successorId ? Candidate.find(successorId) : null;
 
       Ranking.createOrUpdate(Application.currentUser(), this.election(), candidate, predecessor, successor);
-    },
-
-    handleRemoval: function(item) {
-      console.debug("REMOVAL", item.attr('candidateId'));
     },
 
     registerResizeCallbacks: function() {

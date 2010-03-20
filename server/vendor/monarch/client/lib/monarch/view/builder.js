@@ -39,6 +39,7 @@ Monarch.constructor("Monarch.View.Builder", {
 
   toView: function(viewProperties) {
     var view = jQuery(this.toHtml());
+    view.data('view', view);
     if (viewProperties) this.extendWithProperties(view, viewProperties);
     this.postProcess(view);
     if (view.initialize) view.initialize();
@@ -103,11 +104,11 @@ Monarch.constructor("Monarch.View.Builder", {
     return subviewArguments;
   },
 
-  extendWithProperties: function(jqueryFragment, properties) {
+  extendWithProperties: function(view, properties) {
     _.each(properties, function(value, key) {
-      if (jqueryFragment[key]) jqueryFragment["_" + key] = jqueryFragment[key];
+      if (view[key]) view["_" + key] = view[key];
     });
-    jQuery.extend(jqueryFragment, properties);
+    jQuery.extend(view, properties);
   },
 
   postProcess: function(jqueryFragment) {
@@ -133,6 +134,10 @@ Monarch.constructor("Monarch.View.Builder", {
     } else {
       return this.standardTagSequence(args);
     }
+  },
+
+  text: function(text) {
+    this.instructions.push(new Monarch.View.TextNode(text));
   },
 
   selfClosingTag: function(tagArgs) {

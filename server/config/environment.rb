@@ -24,4 +24,5 @@ end
 Util::AssetManager.add_js_location("/javascript/app", "#{CLIENT_ROOT}/app")
 Util::AssetManager.add_js_location("/javascript/vendor", "#{CLIENT_ROOT}/vendor")
 Util::AssetManager.add_location("/stylesheets", "#{CLIENT_ROOT}/stylesheets")
+Util::AssetManager.add_location("/images", "#{CLIENT_ROOT}/images")
 require "#{dir}/environments/#{ENVIRONMENT}"
