@@ -17,6 +17,8 @@ attempt to convert comet hub to use the cramp library
 secure the ranking api against unauthorized writes
 refactor client side list code into a single generic widget 
 
+when a constructor is declared with the same name as an extant module, extend the constructor with the module
+
 add a _._ underscore builder object which builds views with a single top-level method call _._li({candidateId: "foo"});
 convert screw unit to use underscore.js _.isEqual for equal matcher?
 document and release screw unit
