@@ -55,15 +55,15 @@ _.constructor("Monarch.View.Template", {
       return values;
     },
 
-    show: function() {
+    show: function($super) {
       if (this.beforeShow) this.beforeShow();
-      this._show();
+      $super();
       if (this.afterShow) this.afterShow();
     },
 
-    hide: function() {
+    hide: function($super) {
       if (this.beforeHide) this.beforeHide();
-      this._hide();
+      $super();
       if (this.afterHide) this.afterHide();
     },
 

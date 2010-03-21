@@ -40,7 +40,7 @@ _.constructor("Monarch.View.Builder", {
   toView: function(viewProperties) {
     var view = jQuery(this.toHtml());
     view.data('view', view);
-    if (viewProperties) this.extendWithProperties(view, viewProperties);
+    if (viewProperties) _.addMethods(view, viewProperties);
     this.postProcess(view);
     if (view.initialize) view.initialize();
     return view;
@@ -102,13 +102,6 @@ _.constructor("Monarch.View.Builder", {
       if (args[3]) subviewArguments.properties = args[3];
     }
     return subviewArguments;
-  },
-
-  extendWithProperties: function(view, properties) {
-    _.each(properties, function(value, key) {
-      if (view[key]) view["_" + key] = view[key];
-    });
-    jQuery.extend(view, properties);
   },
 
   postProcess: function(jqueryFragment) {

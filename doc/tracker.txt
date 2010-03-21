@@ -1,6 +1,4 @@
 * rankings are persisted across page refreshes
-add super to module system
-support for anonymous modules
 view attributes should check for an accessor function and call it with the value if one is present
 replace aliasing of view key to underscored property with super infrastructure
 election.ranked/unranked candidates must be by user
@@ -28,6 +26,7 @@ rename table.globalName to name
 
 deferred issues / open questions
 ---------------
+support for anonymous modules
 checking for the existence of the session every single request? shouldn't that at least cache it in the identity map?
 should exposed repository be in the http package, so nothing in model is dependent on http?
 what to do if creating an object fails with an error? call error callback? should the element be in the local repository
