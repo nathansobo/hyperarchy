@@ -74,13 +74,30 @@ _.mixin({
     _.each(source, function(value, key) {
       if (key == "constructor") return;
       if (key == "constructorProperties" && target.constructorProperties) {
-        _.extend(target.constructorProperties, source.constructorProperties);
+        _.imbue(target.constructorProperties, source.constructorProperties);
         return;
+      }
+
+      if (target[key] && _.isFunction(target[key]) && _.isFunction(value) && _.argumentNames(value)[0] == "$super") {
+        value = _.wrapMethod(target[key], value);
       }
       target[key] = value;
     });
     
     return target;
+  },
+
+  argumentNames: function(fn) {
+    var names = fn.toString().match(/^[\s\(]*function[^(]*\(([^)]*)\)/)[1]
+      .replace(/\/\/.*?[\r\n]|\/\*(?:.|[\r\n])*?\*\//g, '')
+      .replace(/\s+/g, '').split(',');
+    return names.length == 1 && !names[0] ? [] : names;
+  },
+
+  wrapMethod: function(original, wrapper) {
+    return function() {
+      return wrapper.apply(this, [_.bind(original, this)].concat(_.toArray(arguments)));
+    };
   }
 });
 
@@ -188,7 +205,7 @@ _.constructor("_.Object", {
       });
     }
   },
-
+  
   hitch: function() {
     var args = _.toArray(arguments);
     var methodName = args.shift();

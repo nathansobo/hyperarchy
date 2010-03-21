@@ -13,7 +13,7 @@ Screw.Unit(function(c) { with(c) {
       _.Object = rootObject;
     }
 
-    before(function() {
+    init(function() {
       disableRootObject();
     });
 
@@ -419,6 +419,10 @@ Screw.Unit(function(c) { with(c) {
             return "overriddenFunction superconstructor version";
           },
 
+          superTest: mockFunction("superTest", function() {
+            return "superTest return value";
+          }),
+
           overriddenProperty: "overriddenProperty superconstructor version",
           notOverriddenProperty: "notOverriddenProperty"
         });
@@ -434,6 +438,10 @@ Screw.Unit(function(c) { with(c) {
 
           overriddenFunction: function() {
             return "overriddenFunction subconstructor version";
+          },
+
+          superTest: function($super, arg1, arg2) {
+            return $super(arg1, arg2);
           },
 
           overriddenProperty: "overriddenProperty subconstructor version",
@@ -472,6 +480,11 @@ Screw.Unit(function(c) { with(c) {
         they("are overridden for objects created by the subconstructor", function() {
           expect(object.overriddenFunction()).to(eq, "overriddenFunction subconstructor version");
           expect(object.overriddenProperty).to(eq, "overriddenProperty subconstructor version");
+        });
+
+        they("can be invoked by calling this.ancestor(optionalDifferentArguments) within the overriding function", function() {
+          expect(object.superTest("foo", "bar")).to(eq, "superTest return value");
+          expect(Super.prototype.superTest).to(haveBeenCalled, withArgs("foo", "bar"));
         });
       });
 
@@ -632,6 +645,50 @@ Screw.Unit(function(c) { with(c) {
 
             a.definedTwice("hello");
             expect(definedTwiceWriteHook).to(haveBeenCalled, withArgs("hello", undefined));
+          });
+        });
+
+        context("when a chain of methods all invoke super", function() {
+          it("invokes the methods in the reverse order they were overridden", function() {
+            var calls, a, b, c;
+
+            calls = [];
+
+            a = {
+              foo: function() {
+                calls.push("foo 1");
+              }
+            };
+
+            b = {
+              foo: function($super) {
+                calls.push("foo 2");
+                $super();
+              }
+            };
+
+            c = {
+              foo: function($super) {
+                calls.push("foo 3");
+                $super();
+              }
+            };
+
+            var x = {};
+            _.imbue(x, a);
+            _.imbue(x, b);
+            _.imbue(x, c);
+            x.foo();
+            expect(calls).to(equal, ["foo 3", "foo 2", "foo 1"]);
+
+            calls = [];
+            
+            var y = {}
+            _.imbue(y, a);
+            _.imbue(y, c);
+            _.imbue(y, b);
+            y.foo();
+            expect(calls).to(equal, ["foo 2", "foo 3", "foo 1"]);
           });
         });
       });
