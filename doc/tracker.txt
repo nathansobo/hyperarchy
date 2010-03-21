@@ -1,13 +1,11 @@
 * rankings are persisted across page refreshes
-array properties seem to be get turned into attr accessors
-turn module system into an underscore.js plugin and release it
 add super to module system
-
 support for anonymous modules
 view attributes should check for an accessor function and call it with the value if one is present
-election.ranked/unranked candidates must be by user
 replace aliasing of view key to underscored property with super infrastructure
+election.ranked/unranked candidates must be by user
 test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
+release foundation.js
 ranking removal x is only visible when a candidate is ranked and hovered over
 candidates can be unranked when the x is clicked and return to the unranked candidates list
 rename candidates view to unranked_candidates
@@ -18,8 +16,8 @@ replace _.defer in initialize with onDomAttach hook
 add _ to the closure surrounding every monarch file
 attempt to convert comet hub to use the cramp library
 secure the ranking api against unauthorized writes
-refactor client side list code into a single generic widget 
-
+refactor client side list code into a single generic widget
+add the suite keyword to screw unit so that hyperarchy and monarch spec suites can be run together on a single page
 when a constructor is declared with the same name as an extant module, extend the constructor with the module
 
 add a _._ underscore builder object which builds views with a single top-level method call _._li({candidateId: "foo"});

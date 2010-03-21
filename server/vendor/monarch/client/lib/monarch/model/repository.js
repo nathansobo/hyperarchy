@@ -81,6 +81,7 @@ _.constructor("Monarch.Model.Repository", {
 
   loadFixtures: function(fixtureDefinitions) {
     _.each(fixtureDefinitions, function(fixtures, tableName) {
+      if (!this.tables[tableName]) throw new Error("No table named " + tableName + " to load fixtures into.");
       this.tables[tableName].loadFixtures(fixtures);
     }, this);
   },
