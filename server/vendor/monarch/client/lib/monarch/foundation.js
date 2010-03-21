@@ -22,8 +22,8 @@ _.mixin({
       this.inherit(_.Object, constructor);
     }
 
-    _.each(args.imbueModules, function(module) {
-      _.imbue(constructor.prototype, module);
+    _.each(args.mixins, function(module) {
+      _.addMethods(constructor.prototype, module);
     });
 
     if (constructor.prototype.constructorInitialize) {
@@ -32,7 +32,7 @@ _.mixin({
       delete constructor.prototype.constructorInitialize;
     }
     if (constructor.prototype.constructorProperties) {
-      this.imbue(constructor, constructor.prototype.constructorProperties);
+      this.addMethods(constructor, constructor.prototype.constructorProperties);
     }
 
     if (constructorBasename) containingModule[constructorBasename] = constructor;
@@ -45,7 +45,7 @@ _.mixin({
 
   module: function(qualifiedModuleName, properties) {
     var module = createModulePath(qualifiedModuleName.split("."));
-    this.imbue(module, properties);
+    this.addMethods(module, properties);
     return module;
   },
 
@@ -62,11 +62,11 @@ _.mixin({
       subconstructor.prototype.constructorProperties = _.clone(superconstructor.prototype.constructorProperties);
     }
     subconstructor.prototype.constructor = subconstructor;
-    this.imbue(subconstructor.prototype, originalSubconstructorPrototype);
+    this.addMethods(subconstructor.prototype, originalSubconstructorPrototype);
     return subconstructor;
   },
 
-  imbue: function(target, source) {
+  addMethods: function(target, source) {
     if (!target) throw new Error("Target module or constructor is null");
     if (!source) throw new Error("Source module is null");
     defineAttrAccessors(source);
@@ -74,7 +74,7 @@ _.mixin({
     _.each(source, function(value, key) {
       if (key == "constructor") return;
       if (key == "constructorProperties" && target.constructorProperties) {
-        _.imbue(target.constructorProperties, source.constructorProperties);
+        _.addMethods(target.constructorProperties, source.constructorProperties);
         return;
       }
 
@@ -161,7 +161,7 @@ function createModulePath(path) {
 
 function extractConstructorArguments(args) {
   var constructorArguments = {
-    imbueModules: []
+    mixins: []
   };
 
   _.each(args, function(currentArg) {
@@ -170,7 +170,7 @@ function extractConstructorArguments(args) {
     } else if (_.isFunction(currentArg)) {
       constructorArguments.superconstructor = currentArg;
     } else {
-      constructorArguments.imbueModules.push(currentArg);
+      constructorArguments.mixins.push(currentArg);
     }
   });
 

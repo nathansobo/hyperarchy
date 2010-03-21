@@ -149,15 +149,15 @@ Screw.Unit(function(c) { with(c) {
           delete window.Baz;
         });
 
-        it("imbues the constructor's prototype with the given modules", function() {
-          mock(_, "imbue");
+        it("adds methods to the constructor's prototype from the given modules", function() {
+          mock(_, "addMethods");
           
           _.constructor("Foo", Bar, Baz, { quux: 'quux' });
 
-          expect(_.imbue).to(haveBeenCalled, thrice);
-          expect(_.imbue.callArgs[0]).to(equal, [Foo.prototype, Bar]);
-          expect(_.imbue.callArgs[1]).to(equal, [Foo.prototype, Baz]);
-          expect(_.imbue.callArgs[2]).to(equal, [Foo.prototype, { quux: 'quux' }]);
+          expect(_.addMethods).to(haveBeenCalled, thrice);
+          expect(_.addMethods.callArgs[0]).to(equal, [Foo.prototype, Bar]);
+          expect(_.addMethods.callArgs[1]).to(equal, [Foo.prototype, Baz]);
+          expect(_.addMethods.callArgs[2]).to(equal, [Foo.prototype, { quux: 'quux' }]);
         });
       });
 
@@ -320,15 +320,15 @@ Screw.Unit(function(c) { with(c) {
             });
           });
 
-          it("imbues the existing module with the given properties", function() {
-            mockProxy(_, 'imbue');
+          it("adds methods from the given hash to the existing module", function() {
+            mockProxy(_, 'addMethods');
             var newPropertiesHash = {
               bar: "bar2",
               baz: "baz"
             };
             _.module("Foo", newPropertiesHash);
 
-            expect(_.imbue).to(haveBeenCalled, withArgs(Foo, newPropertiesHash));
+            expect(_.addMethods).to(haveBeenCalled, withArgs(Foo, newPropertiesHash));
             expect(Foo.foo).to(eq, "foo");
             expect(Foo.bar).to(eq, "bar2");
             expect(Foo.baz).to(eq, "baz");
@@ -382,15 +382,15 @@ Screw.Unit(function(c) { with(c) {
             });
           });
 
-          it("imbues the existing module with the given properties hash", function() {
-            mockProxy(_, 'imbue');
+          it("adds methods from the given hash to the existing module", function() {
+            mockProxy(_, 'addMethods');
             var newPropertiesHash = {
               bar: "bar2",
               baz: "baz"
             };
             _.module("Foo.Bar.Baz", newPropertiesHash);
 
-            expect(_.imbue).to(haveBeenCalled, withArgs(Foo.Bar.Baz, newPropertiesHash));
+            expect(_.addMethods).to(haveBeenCalled, withArgs(Foo.Bar.Baz, newPropertiesHash));
             expect(Foo.Bar.Baz.foo).to(eq, "foo");
             expect(Foo.Bar.Baz.bar).to(eq, "bar2");
             expect(Foo.Bar.Baz.baz).to(eq, "baz");
@@ -504,7 +504,7 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe(".imbue(targetModule, sourceModule)", function() {
+    describe(".addMethods(targetModule, sourceModule)", function() {
       it("adds all the properties in the second module to the first, overwriting any with the same name, with the exception of the 'constructor' property", function() {
         var a = {
           foo: "foo",
@@ -518,7 +518,7 @@ Screw.Unit(function(c) { with(c) {
           constructor: '2'
         };
 
-        var result = _.imbue(a, b);
+        var result = _.addMethods(a, b);
         expect(result).to(eq, a);
 
         expect(a.constructor).to(eq, '1');
@@ -542,7 +542,7 @@ Screw.Unit(function(c) { with(c) {
           }
         };
 
-        _.imbue(a, b);
+        _.addMethods(a, b);
         expect(a.constructorProperties.foo).to(eq, "foo");
         expect(a.constructorProperties.bar).to(eq, "bar2");
         expect(a.constructorProperties.baz).to(eq, "baz");
@@ -556,7 +556,7 @@ Screw.Unit(function(c) { with(c) {
               attrAccessors: ["foo", "bar"]
             };
 
-            _.imbue(a, b);
+            _.addMethods(a, b);
 
             expect(a.foo("foo1")).to(eq, "foo1");
             expect(a.foo()).to(eq, "foo1");
@@ -617,7 +617,7 @@ Screw.Unit(function(c) { with(c) {
               }
             };
 
-            _.imbue(a, b);
+            _.addMethods(a, b);
 
             expect(a.foo("a")).to(equal, "custom foo writer: a");
             expect(a.foo()).to(equal, "custom foo reader: custom foo writer: a");
@@ -675,18 +675,18 @@ Screw.Unit(function(c) { with(c) {
             };
 
             var x = {};
-            _.imbue(x, a);
-            _.imbue(x, b);
-            _.imbue(x, c);
+            _.addMethods(x, a);
+            _.addMethods(x, b);
+            _.addMethods(x, c);
             x.foo();
             expect(calls).to(equal, ["foo 3", "foo 2", "foo 1"]);
 
             calls = [];
             
             var y = {}
-            _.imbue(y, a);
-            _.imbue(y, c);
-            _.imbue(y, b);
+            _.addMethods(y, a);
+            _.addMethods(y, c);
+            _.addMethods(y, b);
             y.foo();
             expect(calls).to(equal, ["foo 2", "foo 3", "foo 1"]);
           });

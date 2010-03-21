@@ -28,9 +28,9 @@ _.constructor("Monarch.View.Template", {
     this.builder = null;
 
     var viewProperties = { template: this };
-    _.imbue(viewProperties, this.defaultViewProperties);
-    if (this.viewProperties) _.imbue(viewProperties, this.viewProperties);
-    if (properties) _.imbue(viewProperties, properties);
+    _.addMethods(viewProperties, this.defaultViewProperties);
+    if (this.viewProperties) _.addMethods(viewProperties, this.viewProperties);
+    if (properties) _.addMethods(viewProperties, properties);
     return builder.toView(viewProperties);
   },
 
