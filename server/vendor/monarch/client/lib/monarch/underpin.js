@@ -90,9 +90,14 @@ _.mixin({
       var attrAccessors = module.attrAccessors;
       delete module.attrAccessors;
       _.each(attrAccessors, function(attrName) {
-        module[attrName] = this.buildAttrAccessor(attrName)
+        if (module[attrName] === undefined) module[attrName] = this.buildAttrAccessor(attrName)
       }, this);
     }
+    _.each(module, function(value, key) {
+      if (_.isAttrAccessorDefinition(value)) {
+        module[key] = _.buildAttrAccessor(key, value.reader, value.writer, value.afterWrite, value.afterChange);
+      }
+    });
   },
 
   isAttrAccessorDefinition: function(value) {

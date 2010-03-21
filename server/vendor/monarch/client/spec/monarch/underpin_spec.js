@@ -563,8 +563,11 @@ Screw.Unit(function(c) { with(c) {
           it("defines jQuery style reader/writer functions in the target module that dispatch to the custom handlers and call the appropriate hooks", function() {
             var quuxAfterWriteHook = mockFunction("quuxAfterWriteHook");
             var quuxAfterChangeHook = mockFunction("quuxAfterChangeHook");
+            var definedTwiceWriteHook = mockFunction("doubleDefinedWriteHook");
             var a = {};
             var b = {
+              attrAccessors: ["definedTwice"],
+
               foo: {
                 reader: function() {
                   return "custom foo reader: " + this._foo;
@@ -594,7 +597,11 @@ Screw.Unit(function(c) { with(c) {
               },
 
               emptyHash: {},
-              emptyArray: []
+              emptyArray: [],
+
+              definedTwice: {
+                afterWrite: definedTwiceWriteHook
+              }
             };
 
             _.imbue(a, b);
@@ -622,6 +629,9 @@ Screw.Unit(function(c) { with(c) {
 
             expect(a.emptyHash).to(equal, {});
             expect(a.emptyArray).to(equal, []);
+
+            a.definedTwice("hello");
+            expect(definedTwiceWriteHook).to(haveBeenCalled, withArgs("hello", undefined));
           });
         });
       });
