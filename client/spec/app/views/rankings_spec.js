@@ -2,7 +2,6 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Views.Rankings", function() {
-    useFakeApplicationController();
     useLocalFixtures();
 
     var view, user, election;

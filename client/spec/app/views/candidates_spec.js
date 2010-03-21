@@ -7,12 +7,13 @@ Screw.Unit(function(c) { with(c) {
     var view, election;
     before(function() {
       view = Views.Candidates.toView();
-
       election = Election.fixture('menu');
     });
 
     describe("#election(election)", function() {
+      var user;
       before(function() {
+        user = authenticate("nathan");
         Server.auto = false;
       });
 
@@ -20,11 +21,11 @@ Screw.Unit(function(c) { with(c) {
         it("fetches and displays the election's candidates", function() {
           view.election(election);
           expect(Server.fetches.length).to(eq, 1);
-          expect(Server.lastFetch.relations).to(equal, [election.candidates()]);
+          expect(Server.lastFetch.relations).to(equal, [election.candidates(), election.rankings().forUser(user)]);
           Server.lastFetch.simulateSuccess();
 
           expect(election.candidates().empty()).to(beFalse);
-          election.candidates().each(function(candidate) {
+          election.unrankedCandidates().each(function(candidate) {
             expect(view.candidatesOl.find("li[candidateId='" + candidate.id() + "']")).toNot(beEmpty);
           });
         });
@@ -35,7 +36,7 @@ Screw.Unit(function(c) { with(c) {
           var newElection = Election.fixture('features');
           view.election(newElection);
 
-          election.candidates().createFromRemote({id: "newCandidate", body: "Thish should not appear in the list"});
+          election.candidates().createFromRemote({id: "newCandidate", body: "This should not appear in the list"});
           expect(view.candidatesOl.find("li[candidateId='newCandidate']")).to(beEmpty);
         });
       });

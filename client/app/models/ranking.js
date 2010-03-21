@@ -20,7 +20,7 @@ constructor("Ranking", Model.Record, {
 
       var existingRanking = Ranking.find(otherFieldValues);
       if (existingRanking) {
-        return existingRanking.update(newPositionFieldValue)
+        return existingRanking.update(newPositionFieldValue);
       } else {
         return this.create(_.extend(otherFieldValues, newPositionFieldValue));
       }

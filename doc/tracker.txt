@@ -1,8 +1,9 @@
 * rankings are persisted across page refreshes
+array properties seem to be get turned into attr accessors
 turn module system into an underscore.js plugin and release it
 add super to module system
 view attributes should check for an accessor function and call it with the value if one is present
-
+election.ranked/unranked candidates must be by user
 replace aliasing of view key to underscored property with super infrastructure
 test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
 ranking removal x is only visible when a candidate is ranked and hovered over

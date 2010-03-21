@@ -6,6 +6,7 @@
 
 Screw.Unit(function(c) { with(c) {
   useFakeHistory();
+  useFakeApplicationController();
 
   init(function() {
     Monarch.Model.allowStringKeys = true;

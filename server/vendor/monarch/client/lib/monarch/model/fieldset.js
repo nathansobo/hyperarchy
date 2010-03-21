@@ -6,7 +6,7 @@ Monarch.constructor("Monarch.Model.Fieldset", {
     if (typeof columnOrName == 'string') {
       columnName =  columnOrName;
     } else {
-      if (columnOrName.table !== this.record.table) return null;
+      if (columnOrName.table.globalName !== this.record.table.globalName) return null;
       columnName = columnOrName.name;
     }
     return this.fieldsByColumnName[columnName] || this.syntheticFieldsByColumnName[columnName];

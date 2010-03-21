@@ -2,8 +2,6 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Views.Login", function() {
-    useFakeApplicationController();
-
     var view;
     before(function() {
       view = Views.Login.toView();

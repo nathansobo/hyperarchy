@@ -70,6 +70,7 @@ _.mixin({
   },
 
   imbue: function(target, module) {
+    if (!module) throw new Error("Module is null");
     this.defineAttrAccessors(module);
     for (var prop in module) {
       if (prop == "constructor") continue;
@@ -93,7 +94,6 @@ _.mixin({
       }, this);
     }
   },
-
 
   isAttrAccessorDefinition: function(value) {
     if (typeof value !== "object") return false;
