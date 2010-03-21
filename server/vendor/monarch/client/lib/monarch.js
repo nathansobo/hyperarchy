@@ -10,7 +10,7 @@
 //= require "monarch/language_extensions"
 //= require "monarch/underscore_extensions"
 //= require "monarch/module_system"
-//= require "monarch/underpin"
+//= require "monarch/foundation"
 //= require "monarch/util"
 //= require "monarch/object"
 //= require "monarch/subscription_node"

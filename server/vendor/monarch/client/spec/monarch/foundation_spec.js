@@ -1,7 +1,7 @@
 //= require "../monarch_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("The underpin extensions to underscore.js", function() {
+  describe("The foundation.js extensions to underscore.js", function() {
     var rootObject;
 
     function disableRootObject() {
