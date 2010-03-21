@@ -97,6 +97,7 @@ _.mixin({
 
   isAttrAccessorDefinition: function(value) {
     if (typeof value !== "object") return false;
+    if (_.isEmpty(value)) return false;
     return _.all(_.keys(value), function(key) {
       return _.include(permittedAttrAccessorDefinitionKeys, key)
     });

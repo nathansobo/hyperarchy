@@ -591,7 +591,10 @@ Screw.Unit(function(c) { with(c) {
               quux: {
                 afterWrite: quuxAfterWriteHook,
                 afterChange: quuxAfterChangeHook
-              }
+              },
+
+              emptyHash: {},
+              emptyArray: []
             };
 
             _.imbue(a, b);
@@ -616,6 +619,9 @@ Screw.Unit(function(c) { with(c) {
             a.quux("e");
             expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("e", "e"));
             expect(quuxAfterChangeHook).toNot(haveBeenCalled);
+
+            expect(a.emptyHash).to(equal, {});
+            expect(a.emptyArray).to(equal, []);
           });
         });
       });
