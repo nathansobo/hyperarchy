@@ -1,4 +1,4 @@
-Monarch.constructor("FakeServer.FakeCometClient", {
+_.constructor("FakeServer.FakeCometClient", {
   initialize: function() {
     this.onReceiveNode = new Monarch.SubscriptionNode();
     this.connected = false;

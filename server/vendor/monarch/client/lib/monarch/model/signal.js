@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Signal", {
+_.constructor("Monarch.Model.Signal", {
   initialize: function(localField, remoteField, optionalTransformer) {
     this.localField = localField;
     this.remoteField = remoteField;

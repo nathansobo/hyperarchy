@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Http.CometClient", {
+_.constructor("Monarch.Http.CometClient", {
   initialize: function() {
     this.onReceiveNode = new Monarch.SubscriptionNode();
   },

@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Http.CommandBatch", {
+_.constructor("Monarch.Http.CommandBatch", {
   initialize: function(server, commands) {
     this.server = server;
     this.commands = commands;

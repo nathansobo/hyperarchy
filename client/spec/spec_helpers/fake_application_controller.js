@@ -15,6 +15,6 @@ Screw.Unit(function(c) {
   };
 });
 
-constructor("FakeApplicationController", Controllers.Application, {
+_.constructor("FakeApplicationController", Controllers.Application, {
   initialize: _.identity
 });

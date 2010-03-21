@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relation, {
+_.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relation, {
   constructorInitialize: function() {
     this.delegate('create', 'localCreate', 'createFromRemote', 'operand');
   },

@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Fieldset", {
+_.constructor("Monarch.Model.Fieldset", {
   field: function(columnOrName) {
     var columnName;
     if (typeof columnOrName == 'string') {

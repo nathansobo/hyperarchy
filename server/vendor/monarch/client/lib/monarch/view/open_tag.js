@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.View.OpenTag", {
+_.constructor("Monarch.View.OpenTag", {
   initialize: function(name, attributes) {
     this.name = name;
     this.attributes = attributes;

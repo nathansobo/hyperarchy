@@ -1,4 +1,4 @@
-Monarch.constructor("FakeServer", Monarch.Http.Server, {
+_.constructor("FakeServer", Monarch.Http.Server, {
   initialize: function(auto) {
     this.posts = [];
     this.puts = [];

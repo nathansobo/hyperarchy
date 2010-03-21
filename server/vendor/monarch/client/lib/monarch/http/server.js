@@ -1,6 +1,6 @@
 (function(Monarch, jQuery) {
 
-Monarch.constructor("Monarch.Http.Server", {
+_.constructor("Monarch.Http.Server", {
   cometHubUrl: "/comet",
 
   initialize: function() {

@@ -1,4 +1,4 @@
-constructor("Views.Signup", View.Template, {
+_.constructor("Views.Signup", View.Template, {
   content: function() { with(this.builder) {
     div({id: 'signup'}, function() {
       ol(function() {

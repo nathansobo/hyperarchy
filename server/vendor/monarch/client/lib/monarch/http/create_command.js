@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Http.CreateCommand", Monarch.Http.Command, {
+_.constructor("Monarch.Http.CreateCommand", Monarch.Http.Command, {
   initialize: function(record) {
     this.record = record;
     this.table = this.record.table;

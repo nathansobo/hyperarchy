@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation, {
+_.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation, {
   hasOperands: false,
 
   initialize: function(globalName, recordConstructor) {

@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relation, {
+_.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relation, {
 
   initialize: function(operand, predicate) {
     this.operand = operand;

@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.CompositeTuple", {
+_.constructor("Monarch.Model.CompositeTuple", {
   initialize: function(leftTuple, rightTuple) {
     this.leftTuple = leftTuple;
     this.rightTuple = rightTuple;

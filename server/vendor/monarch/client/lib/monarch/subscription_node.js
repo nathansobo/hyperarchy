@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.SubscriptionNode", {
+_.constructor("Monarch.SubscriptionNode", {
   constructorProperties: {
     totalSubscriptions: 0
   },

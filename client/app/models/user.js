@@ -1,4 +1,4 @@
-constructor("User", Model.Record, {
+_.constructor("User", Model.Record, {
   constructorInitialize: function() {
     this.columns({
       full_name: 'string'

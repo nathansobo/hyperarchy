@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Http.Command", {
+_.constructor("Monarch.Http.Command", {
 });
 
 })(Monarch);

@@ -11,7 +11,7 @@ Screw.Unit(function(c) { with(c) {
       var view, model;
 
       before(function() {
-        Monarch.ModuleSystem.constructor("TestTemplate", Monarch.View.Template, {
+        _.constructor("TestTemplate", Monarch.View.Template, {
           content: function() { with(this.builder) {
             div(function() {
               input({name: "foo", value: "Foo"}).ref('foo');
@@ -30,7 +30,7 @@ Screw.Unit(function(c) { with(c) {
 
         view = TestTemplate.toView();
 
-        Monarch.constructor("SampleModel", Monarch.Model.Record, {
+        _.constructor("SampleModel", Monarch.Model.Record, {
           constructorInitialize: function() {
             this.columns({
               foo: "string",
@@ -141,7 +141,7 @@ Screw.Unit(function(c) { with(c) {
       var view, viewProperties;
 
       before(function() {
-        Monarch.ModuleSystem.constructor("TestTemplate", Monarch.View.Template, {
+        _.constructor("TestTemplate", Monarch.View.Template, {
           content: function() { with(this.builder) {
             div("Hello");
           }},

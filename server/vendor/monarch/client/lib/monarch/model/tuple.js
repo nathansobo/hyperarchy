@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Tuple", {
+_.constructor("Monarch.Model.Tuple", {
   constructorProperties: {
     initializeFieldReaders: function() {
       _.each(this.projectedColumnsByName, function(projectedColumn, name) {

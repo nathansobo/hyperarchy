@@ -1,4 +1,4 @@
-Monarch.constructor("FakeServer.FakeUnsubscribe", {
+_.constructor("FakeServer.FakeUnsubscribe", {
   type: "unsubscribe",
   
   initialize: function(url, remoteSubscriptions, fakeServer) {

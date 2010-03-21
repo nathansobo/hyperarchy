@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Predicates.Eq", Monarch.Model.Predicates.Predicate, {
+_.constructor("Monarch.Model.Predicates.Eq", Monarch.Model.Predicates.Predicate, {
   initialize: function(leftOperand, rightOperand) {
     this.leftOperand = leftOperand;
     this.rightOperand = rightOperand;

@@ -179,8 +179,8 @@ Screw.Unit(function(c) { with(c) {
       var difference, leftOperand, rightOperand, insertCallback, updateCallback, removeCallback;
 
       before(function() {
-        Monarch.constructor('A', Monarch.Model.Record);
-        Monarch.constructor('B', Monarch.Model.Record);
+        _.constructor('A', Monarch.Model.Record);
+        _.constructor('B', Monarch.Model.Record);
         A.columns({ projectedId: "string", baz: "string" });
         B.columns({ projectedId: "string", baz: "string" });
 

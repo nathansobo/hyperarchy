@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.SyntheticColumn", Monarch.Model.Column, {
+_.constructor("Monarch.Model.SyntheticColumn", Monarch.Model.Column, {
   initialize: function(table, name, definition) {
     this.table = table;
     this.name = name;

@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations.Relation, {
+_.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations.Relation, {
 
   initialize: function(leftOperand, rightOperand, predicate) {
     this.leftOperand = leftOperand;

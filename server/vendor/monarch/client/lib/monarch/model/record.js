@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Record", {
+_.constructor("Monarch.Model.Record", {
   constructorProperties: {
     initialize: function() {
       this.delegateConstructorMethods('find', 'fetch', 'tuples', 'first', 'each', 'any', 'onLocalUpdate', 'onRemoteInsert',
@@ -8,7 +8,7 @@ Monarch.constructor("Monarch.Model.Record", {
                                       'createFromRemote', 'fixture', 'clear', 'table');
     },
 
-    extended: function(subconstructor) {
+    inherited: function(subconstructor) {
       subconstructor.table = new Monarch.Model.Relations.Table(this.determineGlobalName(subconstructor), subconstructor);
       subconstructor.column("id", "key");
       subconstructor.relationDefinitions = [];

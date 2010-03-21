@@ -200,7 +200,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#subview", function() {
       before(function() {
-        Monarch.ModuleSystem.constructor("ExampleSubviewTemplate", Monarch.View.Template, {
+        _.constructor("ExampleSubviewTemplate", Monarch.View.Template, {
           content: function(props) { with (this.builder) {
             div({'class': "subview"}, function() {
               h1("Subview " + props.subviewNumber);

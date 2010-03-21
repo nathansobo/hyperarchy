@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Predicates.Predicate", {
+_.constructor("Monarch.Model.Predicates.Predicate", {
   constructorProperties: {
     isPredicate: true
   }

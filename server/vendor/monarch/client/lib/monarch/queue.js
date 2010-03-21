@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Queue", {
+_.constructor("Monarch.Queue", {
   constructorInitialize: function() {
     this.synchronous = false;
   },

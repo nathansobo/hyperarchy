@@ -1,6 +1,6 @@
 (function(Monarch, jQuery) {
 
-Monarch.constructor("Monarch.View.Template", {
+_.constructor("Monarch.View.Template", {
   constructorProperties: {
     build: function(contentFn) {
       var template = new this();
@@ -14,7 +14,7 @@ Monarch.constructor("Monarch.View.Template", {
       return new this().toView(properties);
     },
 
-    extended: function(subtemplate) {
+    inherited: function(subtemplate) {
       var superconstructorViewProperties = this.prototype.viewProperties || {};
       var subconstructorViewProperties = subtemplate.prototype.viewProperties || {};
       subtemplate.prototype.viewProperties = jQuery.extend({}, superconstructorViewProperties, subconstructorViewProperties);
@@ -28,9 +28,9 @@ Monarch.constructor("Monarch.View.Template", {
     this.builder = null;
 
     var viewProperties = { template: this };
-    Monarch.ModuleSystem.mixin(viewProperties, this.defaultViewProperties);
-    if (this.viewProperties) Monarch.ModuleSystem.mixin(viewProperties, this.viewProperties);
-    if (properties) Monarch.ModuleSystem.mixin(viewProperties, properties);
+    _.imbue(viewProperties, this.defaultViewProperties);
+    if (this.viewProperties) _.imbue(viewProperties, this.viewProperties);
+    if (properties) _.imbue(viewProperties, properties);
     return builder.toView(viewProperties);
   },
 
@@ -174,7 +174,7 @@ Monarch.constructor("Monarch.View.Template", {
       });
     },
 
-    hitch: Monarch.ModuleSystem.Object.prototype.hitch
+    hitch: _.Object.prototype.hitch
   }
 });
 

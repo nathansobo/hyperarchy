@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.ConcreteField", Monarch.Model.Field, {
+_.constructor("Monarch.Model.ConcreteField", Monarch.Model.Field, {
   value: {
     writer: function(value) {
       value = this.column.convertValueForField(value);

@@ -1,4 +1,4 @@
-Monarch.constructor("FakeServer.FakeCommandBatch", {
+_.constructor("FakeServer.FakeCommandBatch", {
   type: "batch",
 
   initialize: function(url, fakeServer, commands) {

@@ -1,6 +1,6 @@
 (function(Monarch, jQuery) {
 
-Monarch.constructor("Monarch.View.Templates.Multiview", Monarch.View.Template, {
+_.constructor("Monarch.View.Templates.Multiview", Monarch.View.Template, {
   content: function(subviewTemplatesByName) {
     delete subviewTemplatesByName.parentView;
     var b = this.builder;

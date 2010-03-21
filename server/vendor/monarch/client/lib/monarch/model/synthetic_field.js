@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.SyntheticField", Monarch.Model.Field, {
+_.constructor("Monarch.Model.SyntheticField", Monarch.Model.Field, {
   initialize: function(fieldset, column, signal) {
     this.fieldset = fieldset;
     this.local = (fieldset instanceof Monarch.Model.LocalFieldset);

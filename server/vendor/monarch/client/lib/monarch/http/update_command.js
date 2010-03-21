@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Http.UpdateCommand", Monarch.Http.Command, {
+_.constructor("Monarch.Http.UpdateCommand", Monarch.Http.Command, {
   initialize: function(record) {
     this.record = record;
     this.tableName = this.record.table.globalName;

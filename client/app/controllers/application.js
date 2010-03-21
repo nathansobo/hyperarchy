@@ -1,4 +1,4 @@
-constructor("Controllers.Application", {
+_.constructor("Controllers.Application", {
   initialize: function(body) {
     this.body = body || $('body');
     this.views = {

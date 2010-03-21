@@ -12,9 +12,9 @@ Screw.Unit(function(c) { with(c) {
       var aProjection, bProjection;
 
       before(function() {
-        Monarch.ModuleSystem.constructor("A", Monarch.Model.Record);
+        _.constructor("A", Monarch.Model.Record);
         A.columns({ a: "string", b: "string", c: "string", d: "string" });
-        Monarch.ModuleSystem.constructor("B", Monarch.Model.Record);
+        _.constructor("B", Monarch.Model.Record);
         B.columns({ a: "string", b: "string", c: "string", d: "string" });
         A.create({ a: '1', b: '2', c: '3', d: '4' });
         B.create({ a: '1', b: '2', c: '3', d: '4' });

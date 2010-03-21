@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Column", {
+_.constructor("Monarch.Model.Column", {
   initialize: function(table, name, type) {
     this.table = table;
     this.name = name;

@@ -1,4 +1,4 @@
-constructor("Views.Elections", View.Template, {
+_.constructor("Views.Elections", View.Template, {
   content: function() { with(this.builder) {
     div({id: "elections", 'class': "widget itemList"}, function() {
       div({'class': "widgetHeader"}, function() {

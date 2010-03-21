@@ -11,7 +11,7 @@
 //= require "view/text_node"
 
 
-Monarch.module("Monarch.View", {
+_.module("Monarch.View", {
   build: function(contentFn) {
     return Monarch.View.Template.build(contentFn);
   }

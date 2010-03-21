@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations.Relation, {
+_.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations.Relation, {
   initialize: function(operand, projectedTable) {
     this.operand = operand;
     this.projectedTable = projectedTable;

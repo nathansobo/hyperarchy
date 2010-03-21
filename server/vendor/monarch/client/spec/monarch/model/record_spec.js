@@ -26,7 +26,7 @@ Screw.Unit(function(c) { with(c) {
     describe(".column(name, type)", function() {
       before(function() {
         delete window['Blog'];
-        Monarch.ModuleSystem.constructor("Blog", Monarch.Model.Record);
+        _.constructor("Blog", Monarch.Model.Record);
         Blog.column("userId", "string");
         Blog.column("name", "string");
       });

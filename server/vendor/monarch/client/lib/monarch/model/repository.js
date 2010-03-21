@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Repository", {
+_.constructor("Monarch.Model.Repository", {
   initialize: function() {
     this.tables = {};
     this.mutationsPaused = false;

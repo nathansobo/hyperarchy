@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.RemoteFieldset", Monarch.Model.Fieldset, {
+_.constructor("Monarch.Model.RemoteFieldset", Monarch.Model.Fieldset, {
   initialize: function(record) {
     this.record = record;
     this.local = null;

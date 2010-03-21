@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Future", {
+_.constructor("Monarch.Future", {
   initialize: function() {
     this.onCompleteNode = new Monarch.SubscriptionNode();
   },

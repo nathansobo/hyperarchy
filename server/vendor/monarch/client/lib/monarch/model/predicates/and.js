@@ -1,6 +1,6 @@
 (function(Monarch, jQuery) {
 
-Monarch.constructor("Monarch.Model.Predicates.And", Monarch.Model.Predicates.Predicate, {
+_.constructor("Monarch.Model.Predicates.And", Monarch.Model.Predicates.Predicate, {
   initialize: function(operands) {
     this.operands = operands;
   },

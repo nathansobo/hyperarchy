@@ -1,4 +1,4 @@
-Monarch.constructor("FakeServer.FakeSubscribe", {
+_.constructor("FakeServer.FakeSubscribe", {
   type: "subscribe",
 
   constructorInitialize: function() {

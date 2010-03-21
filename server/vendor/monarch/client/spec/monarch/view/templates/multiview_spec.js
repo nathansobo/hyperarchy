@@ -3,19 +3,19 @@
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.View.Templates.Multiview", function() {
     before(function() {
-      Monarch.ModuleSystem.constructor("Template1", Monarch.View.Template, {
+      _.constructor("Template1", Monarch.View.Template, {
         content: function() {
           this.builder.div({id: "template1"});
         }
       });
 
-      Monarch.ModuleSystem.constructor("Template2", Monarch.View.Template, {
+      _.constructor("Template2", Monarch.View.Template, {
         content: function() {
           this.builder.div({id: "template2"});
         }
       });
 
-      Monarch.ModuleSystem.constructor("Template3", Monarch.View.Template, {
+      _.constructor("Template3", Monarch.View.Template, {
         content: function() {
           this.builder.div({id: "template3"});
         }

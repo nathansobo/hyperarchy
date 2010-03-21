@@ -1,3 +1,5 @@
+var Monarch = {};
+
 (function(jQuery) {
 
 _.mixin({

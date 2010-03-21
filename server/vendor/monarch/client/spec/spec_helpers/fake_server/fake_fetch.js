@@ -1,4 +1,4 @@
-Monarch.constructor("FakeServer.FakeFetch", {
+_.constructor("FakeServer.FakeFetch", {
   type: 'fetch',
 
   initialize: function(url, relations, fakeServer) {

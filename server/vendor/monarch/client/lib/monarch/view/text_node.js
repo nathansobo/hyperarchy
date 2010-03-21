@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.View.TextNode", {
+_.constructor("Monarch.View.TextNode", {
   initialize: function(text) {
     this.text = text;
   },

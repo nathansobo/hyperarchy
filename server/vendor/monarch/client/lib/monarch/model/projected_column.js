@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.ProjectedColumn", {
+_.constructor("Monarch.Model.ProjectedColumn", {
   initialize: function(column, columnAlias) {
     this.column = column;
     this.columnAlias = columnAlias;

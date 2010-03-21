@@ -1,6 +1,6 @@
 (function(Monarch, jQuery) {
 
-Monarch.constructor("Monarch.View.Builder", {
+_.constructor("Monarch.View.Builder", {
   constructorProperties: {
     initialize: function() {
       this.generateTagMethods();

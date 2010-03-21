@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relations.Relation, {
+_.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relations.Relation, {
   initialize: function(operand, projectedColumns) {
     this.operand = operand;
     this.projectedColumnsByName = {};
@@ -8,7 +8,7 @@ Monarch.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relation
       this.projectedColumnsByName[projectedColumn.name()] = projectedColumn;
     }, this);
 
-    this.tupleConstructor = Monarch.ModuleSystem.constructor(Monarch.Model.Tuple);
+    this.tupleConstructor = _.constructor(Monarch.Model.Tuple);
     this.tupleConstructor.projectedColumnsByName = this.projectedColumnsByName;
     this.tupleConstructor.initializeFieldReaders();
 

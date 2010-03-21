@@ -55,7 +55,7 @@ _.mixin({
       superconstructor._initializeDisabled_ = true;
       subconstructor.prototype = new superconstructor();
     } finally {
-      delete superconstructor._initializeDisabled_; 
+      delete superconstructor._initializeDisabled_;
     }
 
     if (superconstructor.prototype.constructorProperties) {

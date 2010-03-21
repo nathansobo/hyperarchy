@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Http.RemoteSubscription", {
+_.constructor("Monarch.Http.RemoteSubscription", {
   initialize: function(subscriptionId, relation) {
     this.id = subscriptionId;
     this.relation = relation;

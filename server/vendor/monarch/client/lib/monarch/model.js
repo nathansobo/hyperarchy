@@ -22,7 +22,7 @@
 //= require "model/relations"
 //= require "model/predicates"
 
-Monarch.module("Monarch.Model", {
+_.module("Monarch.Model", {
   allowStringKeys: false
 });
 

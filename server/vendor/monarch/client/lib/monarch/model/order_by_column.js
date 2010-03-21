@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.OrderByColumn", {
+_.constructor("Monarch.Model.OrderByColumn", {
   initialize: function(column, direction) {
     this.column = column;
     this.direction = direction;

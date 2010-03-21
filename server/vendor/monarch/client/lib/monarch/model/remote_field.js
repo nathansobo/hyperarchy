@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.RemoteField", Monarch.Model.ConcreteField, {
+_.constructor("Monarch.Model.RemoteField", Monarch.Model.ConcreteField, {
   attrAccessors: ['localField'],
 
   initialize: function(fieldset, column) {

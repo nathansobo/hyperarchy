@@ -1,4 +1,4 @@
-constructor("Election", Model.Record, {
+_.constructor("Election", Model.Record, {
   constructorInitialize: function() {
     this.columns({
       organizationId: 'key',

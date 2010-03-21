@@ -13,7 +13,7 @@ Screw.Unit(function(c) {
   };
 });
 
-Monarch.constructor("FakeHistory", {
+_.constructor("FakeHistory", {
   initialize: function() {
     this.onChangeNode = new Monarch.SubscriptionNode();
     this.path = "";

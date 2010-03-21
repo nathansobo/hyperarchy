@@ -1,4 +1,4 @@
-Monarch.constructor("FakeServer.FakeRequest", {
+_.constructor("FakeServer.FakeRequest", {
   initialize: function(type, url, data, fakeServer) {
     this.type = type;
     this.url = url;

@@ -1,4 +1,4 @@
-constructor("Views.Login", View.Template, {
+_.constructor("Views.Login", View.Template, {
   content: function() { with(this.builder) {
     div({id: 'login'}, function() {
       div({id: 'errors', style: 'display:none'});

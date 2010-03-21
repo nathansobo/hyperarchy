@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Http.AjaxFuture", {
+_.constructor("Monarch.Http.AjaxFuture", {
   initialize: function() {
     this.onSuccessNode = new Monarch.SubscriptionNode();
     this.beforeEventsNode = new Monarch.SubscriptionNode();

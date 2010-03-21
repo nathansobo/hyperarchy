@@ -1,6 +1,6 @@
 (function(Monarch) {
 
-Monarch.constructor("Monarch.Model.CombinedSignal", {
+_.constructor("Monarch.Model.CombinedSignal", {
   initialize: function(leftOperand, rightOperand, transformer) {
     this.leftOperand = leftOperand;
     this.rightOperand = rightOperand;

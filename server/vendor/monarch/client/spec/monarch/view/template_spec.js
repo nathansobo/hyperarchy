@@ -5,7 +5,7 @@ Screw.Unit(function(c) { with(c) {
     var template;
 
     before(function() {
-      Monarch.ModuleSystem.constructor("ExampleTemplate", Monarch.View.Template, {
+      _.constructor("ExampleTemplate", Monarch.View.Template, {
         content: function(props) { with(this.builder) {
           div({'id': "root"}, function() {
             dl(function() {
@@ -33,13 +33,13 @@ Screw.Unit(function(c) { with(c) {
       delete window.ExampleTemplate
     });
 
-    describe("when the template is extended", function() {
+    describe("when the template is inherited", function() {
       after(function() {
         delete window.ExampleSubtemplate
       });
 
       specify("the subtemplate's viewProperties are merged with those of the supertemplate", function() {
-        Monarch.ModuleSystem.constructor("ExampleSubtemplate", ExampleTemplate, {
+        _.constructor("ExampleSubtemplate", ExampleTemplate, {
           viewProperties: {
             age: "Unknown",
             name: "Joe"
