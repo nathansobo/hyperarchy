@@ -13,13 +13,18 @@ _.constructor("Views.Candidate", View.Template, {
     propertyAccessors: ["candidate", "ranking"],
 
     ranking: {
-      afterChange: function() {
-        this.destroyRankingButton.show();
+      afterChange: function(ranking) {
+        if (ranking) {
+          this.destroyRankingButton.show();
+        } else {
+          this.destroyRankingButton.hide();
+        }
       }
     },
 
     destroyRanking: function() {
-      this.ranking().destroy();
+      this.ranking().destroy()
+        .onSuccess(this.hitch('ranking', null));
     }
   }
 });
