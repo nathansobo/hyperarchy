@@ -221,10 +221,9 @@ _.constructor("_.Object", {
   
   hitch: function() {
     var args = _.toArray(arguments);
-    var methodName = args.shift();
-    var bindArgs = [this].concat(args);
-    var method = this[methodName];
-    return method.bind.apply(method, bindArgs);
+    var methodName = _.first(args);
+    var otherArgs = _.rest(args);
+    return _.bind.apply(_, [this[methodName], this].concat(otherArgs));
   }
 });
 
