@@ -149,7 +149,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   find: function(predicateOrIdOrHash) {
-    if (typeof predicateOrIdOrHash === "string") {
+    if (_.isString(predicateOrIdOrHash) || _.isNumber(predicateOrIdOrHash)) {
       return this.where(this.column('id').eq(predicateOrIdOrHash)).first();
     } else {
       return this.where(predicateOrIdOrHash).first();
