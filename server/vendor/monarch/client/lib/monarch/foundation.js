@@ -69,7 +69,7 @@ _.mixin({
   addMethods: function(target, source) {
     if (!target) throw new Error("Target module or constructor is null");
     if (!source) throw new Error("Source module is null");
-    defineAttrAccessors(source);
+    definePropertyAccessors(source);
 
     _.each(source, function(value, key) {
       if (key == "constructor") return;
@@ -87,6 +87,17 @@ _.mixin({
     return target;
   },
 
+  assignProperties: function(target, source) {
+    _.each(source, function(value, key) {
+      if (target[key] && _.isFunction(target[key]) && target[key]._accessor_) {
+        target[key](value);
+        delete source[key];
+      }
+    });
+    _.addMethods(target, source);
+    return target;
+  },
+
   argumentNames: function(fn) {
     var names = fn.toString().match(/^[\s\(]*function[^(]*\(([^)]*)\)/)[1]
       .replace(/\/\/.*?[\r\n]|\/\*(?:.|[\r\n])*?\*\//g, '')
@@ -101,37 +112,37 @@ _.mixin({
   }
 });
 
-var permittedAttrAccessorDefinitionKeys = ["reader", "writer", "afterWrite", "afterChange"];
+var permittedPropertyAccessorDefinitionKeys = ["reader", "writer", "afterWrite", "afterChange"];
 
-function defineAttrAccessors(module) {
-  if (module.attrAccessors) {
-    var attrAccessors = module.attrAccessors;
-    delete module.attrAccessors;
-    _.each(attrAccessors, function(attrName) {
-      if (module[attrName] === undefined) module[attrName] = buildAttrAccessor(attrName)
+function definePropertyAccessors(module) {
+  if (module.propertyAccessors) {
+    var propertyAccessors = module.propertyAccessors;
+    delete module.propertyAccessors;
+    _.each(propertyAccessors, function(attrName) {
+      if (module[attrName] === undefined) module[attrName] = buildPropertyAccessor(attrName)
     }, this);
   }
   _.each(module, function(value, key) {
-    if (isAttrAccessorDefinition(value)) {
-      module[key] = buildAttrAccessor(key, value.reader, value.writer, value.afterWrite, value.afterChange);
+    if (isPropertyAccessorDefinition(value)) {
+      module[key] = buildPropertyAccessor(key, value.reader, value.writer, value.afterWrite, value.afterChange);
     }
   });
 }
 
-function isAttrAccessorDefinition(value) {
+function isPropertyAccessorDefinition(value) {
   if (typeof value !== "object") return false;
   if (_.isEmpty(value)) return false;
   return _.all(_.keys(value), function(key) {
-    return _.include(permittedAttrAccessorDefinitionKeys, key)
+    return _.include(permittedPropertyAccessorDefinitionKeys, key)
   });
 }
 
-function buildAttrAccessor(name, reader, writer, afterWriteHook, afterChangeHook) {
+function buildPropertyAccessor(name, reader, writer, afterWriteHook, afterChangeHook) {
   var fieldName = "_" + name;
   if (!reader) reader = function() { return this[fieldName]; };
   if (!writer) writer = function(value) { this[fieldName] = value; };
 
-  return function(value) {
+  var accessor = function(value) {
     if (arguments.length == 0) {
       return reader.call(this);
     } else {
@@ -142,6 +153,8 @@ function buildAttrAccessor(name, reader, writer, afterWriteHook, afterChangeHook
       return newValue;
     }
   };
+  accessor._accessor_ = true;
+  return accessor;
 }
 
 function createModuleContainingConstructor(qualifiedConstructorName) {

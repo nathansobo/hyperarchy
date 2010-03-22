@@ -1,7 +1,7 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Model.RemoteField", Monarch.Model.ConcreteField, {
-  attrAccessors: ['localField'],
+  propertyAccessors: ['localField'],
 
   initialize: function(fieldset, column) {
     this.fieldset = fieldset;

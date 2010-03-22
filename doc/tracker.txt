@@ -1,6 +1,5 @@
 * rankings are persisted across page refreshes
 view attributes should check for an accessor function and call it with the value if one is present
-replace aliasing of view key to underscored property with super infrastructure
 election.ranked/unranked candidates must be by user
 test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
 release foundation.js

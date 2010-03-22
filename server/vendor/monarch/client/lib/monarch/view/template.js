@@ -28,9 +28,10 @@ _.constructor("Monarch.View.Template", {
     this.builder = null;
 
     var viewProperties = { template: this };
-    _.addMethods(viewProperties, this.defaultViewProperties);
-    if (this.viewProperties) _.addMethods(viewProperties, this.viewProperties);
-    if (properties) _.addMethods(viewProperties, properties);
+
+    _.assignProperties(viewProperties, this.defaultViewProperties);
+    if (this.viewProperties) _.assignProperties(viewProperties, this.viewProperties);
+    if (properties) _.assignProperties(viewProperties, properties);
     return builder.toView(viewProperties);
   },
 

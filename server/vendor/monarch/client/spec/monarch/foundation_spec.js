@@ -553,10 +553,13 @@ Screw.Unit(function(c) { with(c) {
           it("defines jQuery style reader/writer functions for them in the target module", function() {
             var a = {};
             var b = {
-              attrAccessors: ["foo", "bar"]
+              propertyAccessors: ["foo", "bar"]
             };
 
             _.addMethods(a, b);
+
+            expect(a.foo._accessor_).to(beTrue);
+            expect(a.bar._accessor_).to(beTrue);
 
             expect(a.foo("foo1")).to(eq, "foo1");
             expect(a.foo()).to(eq, "foo1");
@@ -579,7 +582,7 @@ Screw.Unit(function(c) { with(c) {
             var definedTwiceWriteHook = mockFunction("doubleDefinedWriteHook");
             var a = {};
             var b = {
-              attrAccessors: ["definedTwice"],
+              propertyAccessors: ["definedTwice"],
 
               foo: {
                 reader: function() {
@@ -619,15 +622,19 @@ Screw.Unit(function(c) { with(c) {
 
             _.addMethods(a, b);
 
+            expect(a.foo._accessor_).to(beTrue);
             expect(a.foo("a")).to(equal, "custom foo writer: a");
             expect(a.foo()).to(equal, "custom foo reader: custom foo writer: a");
 
+            expect(a.bar._accessor_).to(beTrue);
             expect(a.bar("b")).to(equal, "custom writer return value");
             expect(a.bar()).to(equal, "custom bar writer: b");
 
+            expect(a.baz._accessor_).to(beTrue);
             expect(a.baz("c")).to(equal, "c");
             expect(a.baz()).to(equal, "custom baz reader: c");
 
+            expect(a.quux._accessor_).to(beTrue);
             a.quux("d");
             expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("d", undefined));
             expect(quuxAfterChangeHook).to(haveBeenCalled, withArgs("d", undefined));
@@ -642,7 +649,7 @@ Screw.Unit(function(c) { with(c) {
 
             expect(a.emptyHash).to(equal, {});
             expect(a.emptyArray).to(equal, []);
-
+            
             a.definedTwice("hello");
             expect(definedTwiceWriteHook).to(haveBeenCalled, withArgs("hello", undefined));
           });

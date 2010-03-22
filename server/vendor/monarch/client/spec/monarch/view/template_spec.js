@@ -18,6 +18,7 @@ Screw.Unit(function(c) { with(c) {
         }},
 
         viewProperties: {
+          propertyAccessors: ["foo"],
           boldName: function() {
             this.find("dt:contains('Name')").css("font-weight", "bold");
           },
@@ -74,17 +75,18 @@ Screw.Unit(function(c) { with(c) {
     });
 
 
-    describe("#toView", function() {
+    describe("#toView(methodsOrProperties)", function() {
       it("assigns .builder to a new Builder, calls #content, then returns #builder.toView", function() {
         var view = template.toView({ name: "Nathan", gender: "male"});
         expect(view.attr('id')).to(eq, "root");
       });
 
-      it("assigns the given properties and the view properties to the returned view, overriding view properties with the given ones", function() {
-        var view = template.toView({ name: "Nathan", gender: "male"});
+      it("assigns the template.viewProperties to view, then assigns the properties passed to toView, using propertyAccessors if they are present", function() {
+        var view = template.toView({ name: "Nathan", gender: "male", foo: "foo"});
         expect(view.name).to(eq, "Nathan");
         expect(view.gender).to(eq, "male");
         expect(view.boldName).to(eq, template.viewProperties.boldName);
+        expect(view.foo()).to(eq, "foo");
       });
       
       it("assigns #template on the returned view", function() {
