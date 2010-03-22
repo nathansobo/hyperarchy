@@ -62,7 +62,7 @@ _.constructor("Views.Candidates", View.Template, {
         Server.fetch([election.candidates(), election.rankings().forUser(Application.currentUser())])
           .afterEvents(function() {
             this.populateCandidates();
-            this.candidatesSubscriptions.add(election.candidates().onRemoteInsert(this.hitch('addCandidateToList')));
+            this.candidatesSubscriptions.add(election.unrankedCandidates().onRemoteInsert(this.hitch('addCandidateToList')));
           }, this);
       }
     },

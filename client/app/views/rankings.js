@@ -8,6 +8,8 @@ _.constructor("Views.Rankings", View.Template, {
   }},
 
   viewProperties: {
+    propertyAccessors: ['rankings'],
+
     initialize: function() {
       var self = this;
       this.registerResizeCallbacks();
@@ -27,9 +29,7 @@ _.constructor("Views.Rankings", View.Template, {
       afterChange: function(election) {
         this.rankings = election.rankings().forUser(Application.currentUser());
         Server.fetch([election.candidates(), this.rankings])
-          .afterEvents(function() {
-            this.populateRankings();
-          }, this);
+          .onSuccess(this.hitch('populateRankings'));
       }
     },
     
@@ -38,6 +38,9 @@ _.constructor("Views.Rankings", View.Template, {
       this.rankings.each(function(ranking) {
         this.rankingsOl.append(Views.Candidate.toView({ranking: ranking}));
       }, this);
+      this.rankings.onRemoteRemove(function(ranking) {
+        this.rankingsOl.find("li[candidateId='" + ranking.candidateId() + "']").remove();
+      }, this)
     },
 
     handleUpdate: function(item) {
@@ -51,7 +54,10 @@ _.constructor("Views.Rankings", View.Template, {
       var predecessor = predecessorId ? Candidate.find(predecessorId) : null;
       var successor = successorId ? Candidate.find(successorId) : null;
 
-      Ranking.createOrUpdate(Application.currentUser(), this.election(), candidate, predecessor, successor);
+      Ranking.createOrUpdate(Application.currentUser(), this.election(), candidate, predecessor, successor)
+        .onSuccess(function(ranking) {
+          item.view().ranking(ranking);
+        });
     },
 
     registerResizeCallbacks: function() {
