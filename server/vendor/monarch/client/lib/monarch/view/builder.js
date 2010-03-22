@@ -37,12 +37,12 @@ _.constructor("Monarch.View.Builder", {
 
   hashRegex: /^.*#/,
 
-  toView: function(viewProperties) {
+  toView: function(props) {
+    if (props) throw new Error("Builder#toView no longer takes properties")
+
     var view = jQuery(this.toHtml());
     view.data('view', view);
-    if (viewProperties) _.addMethods(view, viewProperties);
     this.postProcess(view);
-    if (view.initialize) view.initialize();
     return view;
   },
 

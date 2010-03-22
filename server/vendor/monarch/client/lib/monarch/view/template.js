@@ -17,7 +17,9 @@ _.constructor("Monarch.View.Template", {
     inherited: function(subtemplate) {
       var superconstructorViewProperties = this.prototype.viewProperties || {};
       var subconstructorViewProperties = subtemplate.prototype.viewProperties || {};
-      subtemplate.prototype.viewProperties = jQuery.extend({}, superconstructorViewProperties, subconstructorViewProperties);
+      subtemplate.prototype.viewProperties = {};
+      _.addMethods(subtemplate.prototype.viewProperties, superconstructorViewProperties);
+      _.addMethods(subtemplate.prototype.viewProperties, subconstructorViewProperties);
     }
   },
 
@@ -27,12 +29,15 @@ _.constructor("Monarch.View.Template", {
     this.content(properties);
     this.builder = null;
 
-    var viewProperties = { template: this };
-
-    _.assignProperties(viewProperties, this.defaultViewProperties);
-    if (this.viewProperties) _.assignProperties(viewProperties, this.viewProperties);
-    if (properties) _.assignProperties(viewProperties, properties);
-    return builder.toView(viewProperties);
+    var view = builder.toView();
+    
+    _.addMethods(view, this.defaultViewProperties);
+    if (this.viewProperties) _.addMethods(view, this.viewProperties);
+    var additionalProperties = { template: this }
+    if (properties) _.extend(additionalProperties, properties);
+    _.assignProperties(view, additionalProperties);
+    if (_.isFunction(view.initialize)) view.initialize();
+    return view;
   },
 
   defaultViewProperties: {

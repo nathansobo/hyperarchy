@@ -21,9 +21,7 @@ Screw.Unit(function(c) { with(c) {
           propertyAccessors: ["foo"],
           boldName: function() {
             this.find("dt:contains('Name')").css("font-weight", "bold");
-          },
-          name: "Unknown",
-          gender: "Unknown"
+          }
         }
       });
       
@@ -39,24 +37,29 @@ Screw.Unit(function(c) { with(c) {
         delete window.ExampleSubtemplate
       });
 
-      specify("the subtemplate's viewProperties are merged with those of the supertemplate", function() {
+      specify("the subtemplate's viewProperties are method-added to those of the supertemplate", function() {
+        mock(ExampleTemplate.prototype.viewProperties, 'boldName');
+        
         _.constructor("ExampleSubtemplate", ExampleTemplate, {
           viewProperties: {
-            age: "Unknown",
-            name: "Joe"
+            propertyAccessors: ["bar"],
+            boldName: function($super) {
+              $super();
+            }
           }
         });
 
-        expect(ExampleSubtemplate.prototype.viewProperties.boldName).to(eq, ExampleTemplate.prototype.viewProperties.boldName);
-        expect(ExampleSubtemplate.prototype.viewProperties.name).to(eq, "Joe");
-        expect(ExampleSubtemplate.prototype.viewProperties.gender).to(eq, "Unknown");
-        expect(ExampleSubtemplate.prototype.viewProperties.age).to(eq, "Unknown");
+        var view = ExampleSubtemplate.toView({});
+        view.boldName()
+        expect(ExampleTemplate.prototype.viewProperties.boldName).to(haveBeenCalled);
+        expect(_.isFunction(view.foo)).to(beTrue);
+        expect(_.isFunction(view.bar)).to(beTrue);
       });
     });
 
     describe(".toView", function() {
       it("calls #toView on an instance of the Template", function() {
-        var view = ExampleTemplate.toView({});
+        var view = ExampleTemplate.toView({name: "Unknown", gender: "Unknown"});
         expect(view.template.constructor).to(eq, ExampleTemplate);
       });
     });
@@ -74,7 +77,6 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-
     describe("#toView(methodsOrProperties)", function() {
       it("assigns .builder to a new Builder, calls #content, then returns #builder.toView", function() {
         var view = template.toView({ name: "Nathan", gender: "male"});
@@ -90,8 +92,13 @@ Screw.Unit(function(c) { with(c) {
       });
       
       it("assigns #template on the returned view", function() {
-        var view = template.toView({});
+        var view = template.toView({name: "Unknown", gender: "Unknown"});
         expect(view.template).to(eq, template);
+      });
+
+      it("calls initialize on the view if it is present", function() {
+        var view = template.toView({initialize: mockFunction('initialize')});
+        expect(view.initialize).to(haveBeenCalled, once);
       });
     });
   });

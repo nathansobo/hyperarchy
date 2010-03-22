@@ -19,10 +19,19 @@ _.constructor("Monarch.View.CloseTag", {
     },
 
     generateEventMethod: function(eventName) {
-      this.prototype[eventName] = function(callback) {
+      this.prototype[eventName] = function() {
+        var args = _.toArray(arguments);
+        var callbackOrMethodName = _.first(args);
+        var callback = _.isFunction(callbackOrMethodName) ? callbackOrMethodName : null;
+        var boundArgs = _.rest(args);
+
         this.onBuild(function(element, view) {
           element[eventName].call(element, function(event) {
-            callback.call(element, view, event);
+            if (callback) {
+              callback.call(element, view, event);
+            } else {
+              view[callbackOrMethodName].apply(view, boundArgs.concat([element, event]));
+            }
           });
         });
         return this;

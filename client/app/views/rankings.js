@@ -36,7 +36,7 @@ _.constructor("Views.Rankings", View.Template, {
     populateRankings: function() {
       this.rankingsOl.empty();
       this.rankings.each(function(ranking) {
-        this.rankingsOl.append(Views.Candidate.toView({candidate: ranking.candidate(), ranking: ranking}));
+        this.rankingsOl.append(Views.Candidate.toView({ranking: ranking}));
       }, this);
     },
 

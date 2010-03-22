@@ -57,20 +57,6 @@ Screw.Unit(function(c) { with(c) {
         expect(jqueryFragment.find("p:contains('Goodbye')")).toNot(beEmpty)
       });
 
-      context("when a properties hash is passed as an argument", function() {
-        it("mixes the given properties into the jqueryFragment before onBuild instructions are processed", function() {
-          var jqueryFragment = builder.toView({
-            foo: "foo",
-            bar: "bar"
-          });
-
-          expect(valueOfFooWhenHelloPOnBuildIsTriggered).to(eq, "foo");
-          expect(valueOfBarWhenHelloPOnBuildIsTriggered).to(eq, "bar");
-          expect(jqueryFragment.foo).to(eq, "foo");
-          expect(jqueryFragment.bar).to(eq, "bar");
-        });
-      });
-
       it("invokes onBuild instructions defined on the elements with a jQuery wrapper for that element and the jqueryFragment", function() {
         var jqueryFragment = builder.toView();
         expect(helloPOnBuildArgs[0].is("p:contains('Hello')")).to(beTrue);
@@ -87,17 +73,6 @@ Screw.Unit(function(c) { with(c) {
 
         expect(outerDivOnBuildArgs[0]).to(eq, jqueryFragment);
         expect(outerDivOnBuildArgs[1]).to(eq, jqueryFragment);
-      });
-
-      it("invokes the 'initialize' method on the view if it supplied as a property after onBuild callbacks have been triggered", function() {
-        var initialize = mockFunction("initialize", function() {
-          expect(outerDivOnBuildArgs).toNot(beNull);
-        });
-        var view = builder.toView({
-          initialize: initialize
-        });
-
-        expect(initialize).to(haveBeenCalled, onObject(view));
       });
 
       it("blows up if there is not a single top-level element", function() {
@@ -125,9 +100,12 @@ Screw.Unit(function(c) { with(c) {
           div({'id': "root"}, function() {
             div({'id': "child"}).mouseover(childCallback);
             br().click(selfClosingTagCallback);
+            div({'id': "methodClickHandler"}).click('clickHandlerMethod');
+            div({'id': "methodClickHandlerWithArgs"}).click('clickHandlerMethod', 'arg1', 'arg2');
           }).click(rootCallbackForClick).mouseover(rootCallbackForMouseover);
         }
         view = builder.toView();
+        view.clickHandlerMethod = mockFunction('clickHandlerMethod');
       });
 
 
@@ -146,6 +124,19 @@ Screw.Unit(function(c) { with(c) {
         expect(selfClosingTagCallback).to(haveBeenCalled, once);
         expect(selfClosingTagCallback.mostRecentArgs[0]).to(eq, view);
         expect(selfClosingTagCallback.mostRecentArgs[1].type).to(eq, "click");
+
+        view.find("#methodClickHandler").click();
+        expect(view.clickHandlerMethod).to(haveBeenCalled, once);
+        expect(view.clickHandlerMethod.mostRecentArgs[0].is("#methodClickHandler")).to(beTrue);
+        expect(view.clickHandlerMethod.mostRecentArgs[1].type).to(eq, "click");
+
+        view.clickHandlerMethod.clear();
+        view.find("#methodClickHandlerWithArgs").click();
+        expect(view.clickHandlerMethod).to(haveBeenCalled, once);
+        expect(view.clickHandlerMethod.mostRecentArgs[0]).to(eq, 'arg1');
+        expect(view.clickHandlerMethod.mostRecentArgs[1]).to(eq, 'arg2');
+        expect(view.clickHandlerMethod.mostRecentArgs[2].is("#methodClickHandlerWithArgs")).to(beTrue);
+        expect(view.clickHandlerMethod.mostRecentArgs[3].type).to(eq, "click");
       });
 
       they("allow other declarations to be chained after them", function() {
