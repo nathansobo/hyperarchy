@@ -27,6 +27,10 @@ FIXTURES = {
     :bottleneck => {
       :organization_id => "meta",
       :body => "What's our biggest bottleneck?"
+    },
+    :menu => {
+      :organization_id => "restaurant",
+      :body => "What should be on the menu?"  
     }
   }
 }

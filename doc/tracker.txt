@@ -1,9 +1,9 @@
-* rankings are persisted across page refreshes
-view attributes should check for an accessor function and call it with the value if one is present
+* when a ranking is created / updated / destroyed, recompute the vote tally
 election.ranked/unranked candidates must be by user
 test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
-release foundation.js
 ranking removal x is only visible when a candidate is ranked and hovered over
+release foundation.js
+implement auto code reloading for the server-side code in development
 candidates can be unranked when the x is clicked and return to the unranked candidates list
 rename candidates view to unranked_candidates
 make Server.fetch take varargs as well as arrays
@@ -16,12 +16,15 @@ secure the ranking api against unauthorized writes
 refactor client side list code into a single generic widget
 add the suite keyword to screw unit so that hyperarchy and monarch spec suites can be run together on a single page
 when a constructor is declared with the same name as an extant module, extend the constructor with the module
+test :class_name option to belongs_to
 
 add a _._ underscore builder object which builds views with a single top-level method call _._li({candidateId: "foo"});
 convert screw unit to use underscore.js _.isEqual for equal matcher?
 document and release screw unit
 make relations work with beEmpty matcher, possibly by tying into or creating some general underscore facility for determining emptyness
 rename table.globalName to name
+
+add a limit operator to the server side and use it for Relation#first
 
 deferred issues / open questions
 ---------------
