@@ -93,7 +93,7 @@ module Model
         it "raises if the record isn't valid" do
           lambda do
             record = User.create!(:age => 2)
-          end.should raise_error
+          end.should raise_error(Model::InvalidRecordException)
           User.create!(:age => 20).should be_valid
         end
       end

@@ -245,6 +245,19 @@ module Model
         end
       end
 
+      describe "#update!(values_by_method_name)" do
+        it "raises an exception if the record becomes invalid" do
+          record = User.find('jan')
+
+          lambda do
+            record.update!(:age => 2)
+          end.should raise_error(Model::InvalidRecordException)
+          
+          record.update!(:age => 300)
+          record.age.should == 300
+        end
+      end
+
       describe "#update_fields(field_values_by_column_name)" do
         def record
           @record ||= User.find('jan')

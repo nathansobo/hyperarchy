@@ -52,6 +52,7 @@ module Model
     def mark_dirty
       @dirty = true
       @validated = false
+      @validation_errors = []
     end
   end
 end

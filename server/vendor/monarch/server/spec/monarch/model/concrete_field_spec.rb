@@ -69,9 +69,11 @@ module Model
         field.value.should == "bar"
       end
 
-      it "sets #dirty? to true if the value changed and leaves it false if it did not change" do
+      it "sets #dirty? to true and clears validation errors if the value changed and leaves them if it did not change" do
+        field.validation_errors.push("test")
         field.value = "adroit"
         field.should be_dirty
+        field.validation_errors.should be_empty
         field.mark_clean
         field.value = "adroit"
         field.should_not be_dirty

@@ -111,6 +111,12 @@ module Model
       dirty_field_values_wire_representation
     end
 
+    def update!(values_by_method_name)
+      result = update(values_by_method_name)
+      raise InvalidRecordException.new(self, validation_errors_by_column_name) unless valid?
+      result
+    end
+
     def update_fields(field_values_by_column_name)
       field_values_by_column_name.each do |column_name, value|
         field = self.field(column_name)
