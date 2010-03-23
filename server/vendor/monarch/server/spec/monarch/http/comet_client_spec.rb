@@ -23,7 +23,7 @@ module Http
           sent_message = message
         end
 
-        record = BlogPost.create(:title => "FiberForce Muffins", :body => "Betcha can't eat these.")
+        record = BlogPost.create!(:title => "FiberForce Muffins", :body => "Betcha can't eat these.")
         sent_message.should == ["create", "blog_posts", {"created_at"=>nil, "title"=>"FiberForce Muffins", "body"=>"Betcha can't eat these.", "featured"=>nil, "blog_id"=>nil, "id" => record.id }]
 
         RR.reset_double(client, :send)
@@ -41,7 +41,7 @@ module Http
         client.unsubscribe(subscription_1_id)
         
         dont_allow(client).send
-        blog_post = BlogPost.create(:title => "This one should have no event", :body => "Event free")
+        blog_post = BlogPost.create!(:title => "This one should have no event", :body => "Event free")
 
         blog = Blog.find("grain")
         expected_message = ["update", "blogs", blog.id, { "title" => "My new title" }]

@@ -46,6 +46,12 @@ module Model
         insert(tuple_class.new(field_values))
       end
 
+      def create!(field_values = {})
+        record = create(field_values)
+        raise InvalidRecordException.new(record, record.validation_errors_by_column_name) unless record.valid?
+        record
+      end
+
       def unsafe_create(field_values = {})
         insert(tuple_class.unsafe_new(field_values))
       end

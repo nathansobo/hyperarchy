@@ -69,17 +69,17 @@ module Model
 
       describe "#create(field_values)" do
         it "introduces an additional field value to match its predicate if needed" do
-          mock(operand).create(:blog_id => "grain".hash, :body => "Barley", :title => "Barely Barley")
-          composite_selection.create(:title => "Barely Barley")
+          mock(operand).create!(:blog_id => "grain".hash, :body => "Barley", :title => "Barely Barley")
+          composite_selection.create!(:title => "Barely Barley")
         end
       end
 
       describe "#update(expression)" do
         it "performs an update to all the records in the relation using the given expression" do
-          user_1 = User.create(:full_name => "John Doe", :age => 11)
-          user_2 = User.create(:full_name => "John Doe", :age => 12)
-          user_3 = User.create(:full_name => "John Doe", :age => 13)
-          user_4 = User.create(:full_name => "Jane Doe", :age => 14)
+          user_1 = User.create!(:full_name => "John Doe", :age => 11)
+          user_2 = User.create!(:full_name => "John Doe", :age => 12)
+          user_3 = User.create!(:full_name => "John Doe", :age => 13)
+          user_4 = User.create!(:full_name => "Jane Doe", :age => 14)
 
           User.where(:full_name => "John Doe").update(:age => User[:age] + 1)
 
@@ -141,7 +141,7 @@ module Model
           describe "when a record is inserted in the operand" do
             describe "when the record is a member of the selection" do
               it "fires #on_insert callbacks with the record" do
-                record = BlogPost.create(:blog_id => "grain")
+                record = BlogPost.create!(:blog_id => "grain")
                 on_insert_calls.should == [record]
                 on_update_calls.should be_empty
                 on_remove_calls.should be_empty
@@ -150,7 +150,7 @@ module Model
 
             describe "when the record is not a member of the selection" do
               it "fires no event callbacks" do
-                BlogPost.create(:blog_id => "recipes")
+                BlogPost.create!(:blog_id => "recipes")
                 on_insert_calls.should be_empty
                 on_update_calls.should be_empty
                 on_remove_calls.should be_empty

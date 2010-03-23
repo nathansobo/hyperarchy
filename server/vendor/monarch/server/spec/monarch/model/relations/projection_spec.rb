@@ -132,7 +132,7 @@ module Model
           describe "when a tuple is inserted into the operand" do
             it "triggers on_insert events with the projection of the tuple" do
               blog = Blog.find('grain')
-              post = blog.blog_posts.create(:title => "Cornflakes", :body => "These aren't actually very good for breakfast")
+              post = blog.blog_posts.create!(:title => "Cornflakes", :body => "These aren't actually very good for breakfast")
 
               on_insert_calls.length.should == 1
               tuple = on_insert_calls.first

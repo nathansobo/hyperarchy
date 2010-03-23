@@ -11,7 +11,7 @@ module Http
       attr_reader :session
 
       before do
-        @session = Session.create
+        @session = Session.create!
         resource.current_request = Http::TestRequest.new
         resource.current_request.session_id = session.session_id
       end

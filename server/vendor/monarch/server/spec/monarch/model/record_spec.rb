@@ -96,11 +96,11 @@ module Model
         end
       end
 
-      describe ".create" do
+      describe ".create!" do
         it "deletages to .table" do
           columns = { :body => "Amaranth" }
-          mock(BlogPost.table).create(columns)
-          BlogPost.create(columns)
+          mock(BlogPost.table).create!(columns)
+          BlogPost.create!(columns)
         end
       end
 
@@ -126,7 +126,7 @@ module Model
 
     describe "instance methods" do
       def record
-        @record ||= BlogPost.create(:body => "Quinoa", :blog_id => "grain", :created_at => 1254162750000)
+        @record ||= BlogPost.create!(:body => "Quinoa", :blog_id => "grain", :created_at => 1254162750000)
       end
 
       describe "#initialize" do
@@ -140,7 +140,7 @@ module Model
         end
 
         it "assigns a field to its column's declared default if no value is assigned" do
-          record = BlogPost.create(:blog_id => "grain", :created_at => 1254162750000)
+          record = BlogPost.create!(:blog_id => "grain", :created_at => 1254162750000)
           record.body.should == BlogPost[:body].default_value
         end
       end

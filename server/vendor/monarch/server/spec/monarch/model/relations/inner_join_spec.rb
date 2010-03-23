@@ -128,8 +128,8 @@ module Model
 
           describe "when a record is inserted into the left operand" do
             it "fires #on_insert events with all composite tuples that are now present in the join" do
-              post_1 = BlogPost.create(:blog_id => "hotdogs")
-              post_2 = BlogPost.create(:blog_id => "hotdogs")
+              post_1 = BlogPost.create!(:blog_id => "hotdogs")
+              post_2 = BlogPost.create!(:blog_id => "hotdogs")
 
               blog = Blog.unsafe_create(:id => "hotdogs")
 
@@ -148,7 +148,7 @@ module Model
 
           describe "when a record is inserted into the right operand" do
             it "fires #on_insert events with all composite tuples that are now present in the join" do
-              blog_post = BlogPost.create(:blog_id => "grain")
+              blog_post = BlogPost.create!(:blog_id => "grain")
               blog = Blog.find("grain")
 
               on_insert_calls.length.should == 1
@@ -163,8 +163,8 @@ module Model
           describe "when a record in left operand is updated" do
             describe "when the update causes some composite tuples to become present in the join" do
               it "fires #on_insert events with all composite tuples that are now present in the join" do
-                post_1 = BlogPost.create(:blog_id => "fun")
-                post_2 = BlogPost.create(:blog_id => "fun")
+                post_1 = BlogPost.create!(:blog_id => "fun")
+                post_2 = BlogPost.create!(:blog_id => "fun")
 
                 blog = Blog.unsafe_create(:id => "misery")
                 blog.id = "fun"
@@ -257,8 +257,8 @@ module Model
 
             describe "when the update causes some composite tuples to stop being present in the join and others to become present" do
               it "fires both #on_remove and #on_insert events" do
-                post_1 = BlogPost.create(:blog_id => "fun")
-                post_2 = BlogPost.create(:blog_id => "fun")
+                post_1 = BlogPost.create!(:blog_id => "fun")
+                post_2 = BlogPost.create!(:blog_id => "fun")
 
                 blog = Blog.find("grain")
                 grain_posts = blog.blog_posts
@@ -281,7 +281,7 @@ module Model
           describe "when a record in right operand is updated" do
             describe "when the update causes some composite tuples to become present in the join" do
               it "fires #on_insert events with all composite tuples that are now present in the join" do
-                post = BlogPost.create(:blog_id => "fun")
+                post = BlogPost.create!(:blog_id => "fun")
                 blog = Blog.unsafe_create(:id => "misery")
 
 
@@ -393,8 +393,8 @@ module Model
             end
 
             it "correctly constructs composite tuples out of the constituents of the inserted composite tuple and the matching tuples in the other operand" do
-              post_1 = BlogPost.create(:title => "Hash rocket", :blog_id => "misc")
-              post_2 = BlogPost.create(:title => "Green tea ice cream", :blog_id => "misc")
+              post_1 = BlogPost.create!(:title => "Hash rocket", :blog_id => "misc")
+              post_2 = BlogPost.create!(:title => "Green tea ice cream", :blog_id => "misc")
               user = User.find('jan')
               blog = user.blogs.unsafe_create(:id => 'misc')
 

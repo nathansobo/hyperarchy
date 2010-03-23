@@ -21,6 +21,10 @@ module Model
         operand.create(predicate.force_matching_field_values(field_values))
       end
 
+      def create!(field_values={})
+        operand.create!(predicate.force_matching_field_values(field_values))
+      end
+
       def unsafe_create(field_values={})
         operand.unsafe_create(predicate.force_matching_field_values(field_values))
       end

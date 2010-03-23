@@ -57,7 +57,7 @@ module Model
 
       describe "#create" do
         it "instantiates an instance of #tuple_class with the given concrete_columns, #inserts it, and returns it in a non-dirty state with its id assigned" do
-          record = table.create(:body => "Brown Rice", :blog_id => "grain")
+          record = table.create!(:body => "Brown Rice", :blog_id => "grain")
           record.id.should_not be_nil
           table.find(table.column(:body).eq("Brown Rice")).should == record
           record.body.should == "Brown Rice"
@@ -68,14 +68,14 @@ module Model
         context "if the #tuple_class defines a #before_create hook" do
           it "calls the after inserting the record" do
             mock.instance_of(BlogPost).before_create
-            table.create(:body => "Couscous")
+            table.create!(:body => "Couscous")
           end
         end
 
         context "if the #tuple_class defines an #after_create hook" do
           it "calls the after inserting the record" do
             mock.instance_of(BlogPost).after_create
-            table.create(:body => "Couscous")
+            table.create!(:body => "Couscous")
           end
         end
 
@@ -86,6 +86,15 @@ module Model
             User.table.create(field_values)
             User.find(User[:full_name].eq("Invalid Bob")).should be_nil
           end
+        end
+      end
+
+      describe "#create!" do
+        it "raises if the record isn't valid" do
+          lambda do
+            record = User.create!(:age => 2)
+          end.should raise_error
+          User.create!(:age => 20).should be_valid
         end
       end
 
@@ -109,9 +118,9 @@ module Model
 
       describe "#all" do
         it "executes a select all SQL query against the database and returns Records corresponding to its results" do
-          record_1_id = table.create(:body => "Quinoa", :blog_id => "grain").id
-          record_2_id = table.create(:body => "White Rice", :blog_id => "grain").id
-          record_3_id = table.create(:body => "Pearled Barley", :blog_id => "grain").id
+          record_1_id = table.create!(:body => "Quinoa", :blog_id => "grain").id
+          record_2_id = table.create!(:body => "White Rice", :blog_id => "grain").id
+          record_3_id = table.create!(:body => "Pearled Barley", :blog_id => "grain").id
 
           mock.proxy(Origin).read(table)
 
@@ -189,7 +198,7 @@ module Model
 
         describe "when a record is inserted into the table" do
           it "triggers #on_insert callbacks with the record" do
-            record = BlogPost.create({:name => "Moo"})
+            record = BlogPost.create!({:name => "Moo"})
 
             on_insert_calls.should == [record]
             on_update_calls.should be_empty

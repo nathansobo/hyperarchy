@@ -22,7 +22,7 @@ module Http
     end
 
     def call_with_new_session(request)
-      session_id = Session.create.session_id
+      session_id = Session.create!.session_id
       request.session_id = session_id
       response = Response.new(*app.call(request.env))
       response.cookies["_session_id"] = session_id

@@ -85,10 +85,10 @@ module Model
 
           describe "when a tuple is inserted into an operand" do
             it "triggers #on_insert events" do
-              grain_post = BlogPost.create(:blog_id => "grain", :title => "Hash rocket")
+              grain_post = BlogPost.create!(:blog_id => "grain", :title => "Hash rocket")
               on_insert_calls.should == [grain_post]
 
-              vegetable_post = BlogPost.create(:blog_id => "vegetable", :title => "Hash rocket")
+              vegetable_post = BlogPost.create!(:blog_id => "vegetable", :title => "Hash rocket")
               on_insert_calls.should == [grain_post, vegetable_post]
 
               on_update_calls.should be_empty

@@ -19,7 +19,7 @@ module Http
           incoming_request.cookies['_session_id'].should be_nil
 
           session_id = nil
-          mock.proxy(Session).create do |session|
+          mock.proxy(Session).create! do |session|
             session_id = session.session_id
             session
           end
@@ -33,9 +33,9 @@ module Http
       context "when a '_session_id' cookie is present in the request" do
         context "when a session corresponding to this id actually exists in the database" do
           it "sets #session_id in the forwarded request without creating a new Session, and does not add a 'Set-Cookie' header to the response" do
-            incoming_request.cookies['_session_id'] = Session.create.session_id
+            incoming_request.cookies['_session_id'] = Session.create!.session_id
 
-            dont_allow(Session).create
+            dont_allow(Session).create!
             response = Response.new(*sessioning_service.call(incoming_request.env))
             forwarded_request.session_id.should == incoming_request.cookies['_session_id']
             response.cookies['_session_id'].should be_nil
@@ -47,7 +47,7 @@ module Http
             incoming_request.cookies['_session_id'] = "bogus-session-id"
 
             session_id = nil
-            mock.proxy(Session).create do |session|
+            mock.proxy(Session).create! do |session|
               session_id = session.session_id
               session
             end

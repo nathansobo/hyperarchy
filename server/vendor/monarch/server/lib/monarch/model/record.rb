@@ -68,7 +68,7 @@ module Model
         @relation_definitions ||= ActiveSupport::OrderedHash.new
       end
 
-      delegate :create, :unsafe_create, :where, :project, :join, :join_to, :join_through, :aggregate, :find,
+      delegate :create, :create!, :unsafe_create, :where, :project, :join, :join_to, :join_through, :aggregate, :find,
                :concrete_columns_by_name, :[], :create_table, :drop_table, :clear_table, :all, :find_or_create,
                :to => :table
 

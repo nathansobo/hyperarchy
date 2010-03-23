@@ -147,12 +147,12 @@ module Model
           describe "when a tuple is inserted in the operand" do
             it "triggers #on_insert callbacks with the record corresponding to the projected table if that record was not previously present in the projection" do
               blog = Blog.unsafe_create(:id => "polygons")
-              blog.blog_posts.create(:body => "triangle")
+              blog.blog_posts.create!(:body => "triangle")
 
               on_insert_calls.length.should == 1
               on_insert_calls.first.should == blog
 
-              blog.blog_posts.create(:body => "square")
+              blog.blog_posts.create!(:body => "square")
               on_insert_calls.length.should == 1
 
               on_update_calls.should be_empty

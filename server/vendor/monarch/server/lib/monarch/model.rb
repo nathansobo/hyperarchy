@@ -20,6 +20,7 @@ require "#{dir}/model/record"
 require "#{dir}/model/changeset"
 require "#{dir}/model/composite_tuple"
 require "#{dir}/model/sql"
+require "#{dir}/model/invalid_record_exception"
 require "#{dir}/model/session"
 require "#{dir}/model/user"
 
