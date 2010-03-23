@@ -125,6 +125,19 @@ module Model
             selection.operand.should == BlogPost.table
             selection.predicate.should == predicate
           end
+
+          context "when passed a hash" do
+            it "converts the hash to a predicate" do
+              BlogPost.table.where(:blog_id => "grain").predicate.should == BlogPost[:blog_id].eq("grain")
+              BlogPost.table.where(:blog => Blog.find("grain")).predicate.should == BlogPost[:blog_id].eq("grain")
+            end
+          end
+
+          context "when passed a string or integer" do
+            it "converts it to a eq predicate comparing the id quality to the given value" do
+              BlogPost.table.where("grain_quinoa").predicate.should == BlogPost[:id].eq("grain_quinoa")
+            end
+          end
         end
 
         describe "#join(relation).on(predicate)" do
@@ -228,13 +241,23 @@ module Model
         describe "#find" do
           context "when passed an id" do
             it "returns the first Record in a Selection where id is equal to the given id" do
-              BlogPost.table.find("grain_quinoa").should == BlogPost.table.where(BlogPost[:id].eq("grain_quinoa")).all.first
+              BlogPost.table.find("grain_quinoa").should == BlogPost.table.where(BlogPost[:id].eq("grain_quinoa")).first
             end
           end
 
           context "when passed a Predicate" do
             it "returns the first Record in the Relation that matches the Predicate" do
-              BlogPost.table.find(BlogPost[:body].eq("Millet")).should == BlogPost.where(BlogPost[:body].eq("Millet")).all.first
+              BlogPost.table.find(BlogPost[:body].eq("Millet")).should == BlogPost.where(BlogPost[:body].eq("Millet")).first
+            end
+          end
+
+          context "when passed a Hash" do
+            it "converts the hash into a conjunction of predicates" do
+              BlogPost.table.find(:body => "Millet").should == BlogPost.where(BlogPost[:body].eq("Millet")).first
+            end
+
+            it "handles conversion of tuple values to queries on the corresponding foreign keys" do
+              BlogPost.table.find(:blog => Blog.find("grain")).should == BlogPost.where(BlogPost[:blog_id].eq("grain")).first
             end
           end
         end

@@ -29,7 +29,7 @@ module Model
       end
 
       def find(id_or_predicate_or_hash)
-        where(convert_to_predicate(id_or_predicate_or_hash)).first
+        where(id_or_predicate_or_hash).first
       end
 
       def find_or_create(predicate)
@@ -51,8 +51,8 @@ module Model
         find(id).destroy
       end
 
-      def where(predicate, &block)
-        Selection.new(self, predicate, &block)
+      def where(predicate_or_id_or_hash, &block)
+        Selection.new(self, convert_to_predicate(predicate_or_id_or_hash), &block)
       end
 
       def join(right_operand, &block)
@@ -207,9 +207,13 @@ module Model
       def hash_to_predicate(hash)
         predicates = []
         hash.each do |column_name, value|
-          predicates.push(column(column_name).eq(value))
+          if value.is_a?(Tuple) && column = column("#{column_name}_id")
+            predicates.push(column.eq(value.id))
+          else
+            predicates.push(column(column_name).eq(value))
+          end
         end
-        Predicates::And.new(predicates)
+        predicates.length == 1 ? predicates.first : Predicates::And.new(predicates)
       end
 
       class PartiallyConstructedInnerJoin
