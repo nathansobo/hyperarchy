@@ -46,11 +46,15 @@ module Model
         end
       end
 
-      def belongs_to(relation_name)
+      def belongs_to(relation_name, options={})
+        foreign_key_name = "#{relation_name}_id".to_sym
         relates_to_one(relation_name) do
-          target_class = relation_name.to_s.classify.constantize
-          foreign_key_field = self.concrete_fields_by_column[self.class["#{relation_name}_id".to_sym]]
+          target_class = options[:class_name] ? options[:class_name].constantize : relation_name.to_s.classify.constantize
+          foreign_key_field = self.concrete_fields_by_column[self.class[foreign_key_name]]
           target_class.where(target_class[:id].eq(foreign_key_field))
+        end
+        define_method "#{relation_name}=" do |value|
+          send("#{foreign_key_name}=", value.id)
         end
       end
 

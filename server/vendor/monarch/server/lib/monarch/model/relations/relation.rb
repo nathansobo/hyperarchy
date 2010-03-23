@@ -28,9 +28,8 @@ module Model
         Origin.read(self)
       end
 
-      def find(id_or_predicate)
-        predicate = (id_or_predicate.is_a?(Predicates::Predicate)? id_or_predicate : column(:id).eq(id_or_predicate))
-        where(predicate).all.first
+      def find(id_or_predicate_or_hash)
+        where(convert_to_predicate(id_or_predicate_or_hash)).first
       end
 
       def find_or_create(predicate)
@@ -72,7 +71,6 @@ module Model
         id_column, foreign_key_column = find_join_columns(left_operand_surface_tables.last, right_surface_table)
         self.join(right_operand).on(id_column.eq(foreign_key_column))
       end
-
 
       def join_through(right_operand)
         right_operand = convert_to_table_if_needed(right_operand)
@@ -194,7 +192,18 @@ module Model
           raise "No viable foreign key column found between #{table_1.global_name} and #{table_2.global_name}"
         end
       end
-      
+
+      def convert_to_predicate(id_or_predicate_or_hash)
+        case id_or_predicate_or_hash
+        when Hash
+          hash_to_predicate(id_or_predicate_or_hash)
+        when Predicates::Predicate
+          id_or_predicate_or_hash
+        else
+          column(:id).eq(id_or_predicate_or_hash)
+        end
+      end
+
       def hash_to_predicate(hash)
         predicates = []
         hash.each do |column_name, value|

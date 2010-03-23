@@ -72,10 +72,10 @@ module Model
       end
 
       describe ".belongs_to" do
-        it "defines a Selection via .relates_to_one based on the given name" do
+        it "defines a Selection via .relates_to_one based on the given name, and also defines a writer method" do
           blog_post = BlogPost.find("grain_quinoa")
           blog_post.blog.should == Blog.find("grain")
-          blog_post.blog_id = "vegetable"
+          blog_post.blog = Blog.find("vegetable")
           blog_post.blog.should == Blog.find("vegetable")
         end
       end
