@@ -49,7 +49,7 @@ module Model
 
       def select_clause_sql
         return '*' unless select_clause_columns
-        select_clause_columns.map {|c| c.select_clause_sql }.join(", ")
+        select_clause_columns.map {|c| c.to_select_clause_sql }.join(", ")
       end
 
       def from_tables_sql

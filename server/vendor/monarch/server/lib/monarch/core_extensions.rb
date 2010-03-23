@@ -5,7 +5,7 @@ class Class
 end
 
 class Object
-  def where_clause_sql
+  def to_sql
     inspect
   end
 
@@ -67,20 +67,29 @@ class Array
   end
 end
 
+class Hash
+  def transform
+    key_values = self.map do |k,v|
+      yield [k, v]
+    end
+    Hash[*key_values.compact.flatten]
+  end
+end
+
 class TrueClass
-  def where_clause_sql
+  def to_sql
     1
   end
 end
 
 class FalseClass
-  def where_clause_sql
+  def to_sql
     0
   end
 end
 
 class NilClass
-  def where_clause_sql
+  def to_sql
     "null"
   end
 end

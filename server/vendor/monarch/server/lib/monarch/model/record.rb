@@ -53,8 +53,8 @@ module Model
           foreign_key_field = self.concrete_fields_by_column[self.class[foreign_key_name]]
           target_class.where(target_class[:id].eq(foreign_key_field))
         end
-        define_method "#{relation_name}=" do |value|
-          send("#{foreign_key_name}=", value.id)
+        define_method "#{relation_name}=" do |record|
+          send("#{foreign_key_name}=", record.id)
         end
       end
 

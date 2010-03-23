@@ -25,6 +25,14 @@ module Model
         operand.unsafe_create(predicate.force_matching_field_values(field_values))
       end
 
+      def update(column_assignments)
+        Origin.execute_dui(build_sql_update(column_assignments).to_sql)
+      end
+
+      def build_sql_update(column_assignments)
+        build_sql_query(Sql::Update.new(convert_keys_to_columns(column_assignments)))
+      end
+
       def build_sql_query(query=Sql::Select.new)
         query.add_condition(predicate)
         operand.build_sql_query(query)

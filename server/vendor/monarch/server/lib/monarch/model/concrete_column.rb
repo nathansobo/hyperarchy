@@ -22,6 +22,10 @@ module Model
       Predicates::Neq.new(self, right_operand)
     end
 
+    def +(right_operand)
+      Expressions::Plus.new(self, right_operand)
+    end
+
     def as(column_alias)
       AliasedColumn.new(self, column_alias.to_sym)
     end
@@ -71,12 +75,8 @@ module Model
       "#{table.global_name}.#{name}"
     end
 
-    def select_clause_sql
+    def to_select_clause_sql
       "#{to_sql} as #{name}"
-    end
-
-    def where_clause_sql
-      to_sql
     end
 
     protected

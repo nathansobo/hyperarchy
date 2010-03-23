@@ -22,8 +22,8 @@ module Model
       update_node.subscribe(&block)
     end
 
-    def where_clause_sql
-      value.where_clause_sql
+    def to_sql
+      value.to_sql
     end
 
     def signal(&block)

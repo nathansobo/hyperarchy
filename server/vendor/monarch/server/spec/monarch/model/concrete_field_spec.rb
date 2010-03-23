@@ -114,10 +114,10 @@ module Model
       end
     end
 
-    describe "#where_clause_sql" do
+    describe "#to_sql" do
       it "proxies to #value" do
         field.value = "hello"
-        field.where_clause_sql.should == field.value.where_clause_sql
+        field.to_sql.should == field.value.to_sql
       end
     end
   end

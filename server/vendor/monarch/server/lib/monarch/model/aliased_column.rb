@@ -1,7 +1,7 @@
 module Model
   class AliasedColumn < ConcreteColumn
     attr_reader :column, :column_alias
-    delegate :convert_value_for_storage, :convert_value_for_wire, :where_clause_sql, :to => :column
+    delegate :convert_value_for_storage, :convert_value_for_wire, :to_sql, :to => :column
 
     def initialize(column, column_alias)
       @column, @column_alias = column, column_alias
@@ -15,7 +15,7 @@ module Model
       column_alias || column.name
     end
 
-    def select_clause_sql
+    def to_select_clause_sql
       "#{column.to_sql} as #{name}"
     end
 

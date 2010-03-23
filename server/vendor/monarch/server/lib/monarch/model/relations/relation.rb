@@ -216,6 +216,16 @@ module Model
         predicates.length == 1 ? predicates.first : Predicates::And.new(predicates)
       end
 
+      def convert_keys_to_columns(hash)
+        hash.transform do |key, value|
+          if key.is_a?(Column)
+            [key, value]
+          elsif column = column(key)
+            [column, value]
+          end
+        end
+      end
+
       class PartiallyConstructedInnerJoin
         attr_reader :left_operand, :right_operand
         def initialize(left_operand, right_operand)
