@@ -12,15 +12,15 @@ module Models
         falafel = election.candidates.create(:body => "Falafel")
         tacos = election.candidates.create(:body => "Tacos")
 
-        Majority.find({ :winner_id => falafel.id, :loser_id => tacos.id }).should_not be_nil
-        Majority.find({ :winner_id => tacos.id, :loser_id => falafel.id }).should_not be_nil
+        Majority.find({ :winner => falafel, :loser => tacos, :election => election }).should_not be_nil
+        Majority.find({ :winner => tacos, :loser => falafel, :election => election }).should_not be_nil
 
         fish = election.candidates.create(:body => "Fish")
         
-        Majority.find({ :winner_id => falafel.id, :loser_id => fish.id }).should_not be_nil
-        Majority.find({ :winner_id => tacos.id, :loser_id => fish.id }).should_not be_nil
-        Majority.find({ :winner_id => fish.id, :loser_id => falafel.id }).should_not be_nil
-        Majority.find({ :winner_id => fish.id, :loser_id => tacos.id }).should_not be_nil
+        Majority.find({ :winner => falafel, :loser => fish, :election => election }).should_not be_nil
+        Majority.find({ :winner => tacos, :loser => fish, :election => election }).should_not be_nil
+        Majority.find({ :winner => fish, :loser => falafel, :election => election }).should_not be_nil
+        Majority.find({ :winner => fish, :loser => tacos, :election => election }).should_not be_nil
       end
     end
   end

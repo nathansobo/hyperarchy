@@ -1,4 +1,6 @@
 * when a ranking is created / updated / destroyed, recompute the vote tally
+add create! and update! operations which raise if the record is not valid
+can Sql::Update share a superclass with Sql::Select?
 election.ranked/unranked candidates must be by user
 test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
 ranking removal x is only visible when a candidate is ranked and hovered over
@@ -28,7 +30,9 @@ add a limit operator to the server side and use it for Relation#first
 
 deferred issues / open questions
 ---------------
-support for anonymous modules
+
+support for anonymous modules in foundation.js
+when an update is performed on a relation, records in the identity map can become stale. should I implement relation#reload for relations that have records (not just tuples), which reloads any records in the id map? could be expensive. may want to implement in memory?
 checking for the existence of the session every single request? shouldn't that at least cache it in the identity map?
 should exposed repository be in the http package, so nothing in model is dependent on http?
 what to do if creating an object fails with an error? call error callback? should the element be in the local repository
