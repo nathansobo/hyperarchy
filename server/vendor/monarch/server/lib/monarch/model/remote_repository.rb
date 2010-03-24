@@ -1,4 +1,4 @@
-module Model
+  module Model
   class RemoteRepository
     attr_accessor :connection
     delegate :transaction, :execute_dui, :to => :connection

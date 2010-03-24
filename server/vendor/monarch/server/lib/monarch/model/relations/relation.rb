@@ -91,9 +91,9 @@ module Model
       end
 
       def to_sql
-        build_sql_query.to_sql
+        sql_query_specification.to_sql
       end
-
+      
       def add_to_relational_dataset(dataset)
         all.each do |record|
           record.add_to_relational_dataset(dataset)
@@ -175,6 +175,8 @@ module Model
         args.map do |arg|
           if arg.is_a?(ConcreteColumn)
             arg
+          elsif arg.instance_of?(Symbol)
+            column(arg)
           elsif table_or_record_class?(arg)
             convert_to_table_if_needed(arg).concrete_columns
           else
@@ -210,7 +212,10 @@ module Model
           if value.is_a?(Tuple) && column = column("#{column_name}_id")
             predicates.push(column.eq(value.id))
           else
-            predicates.push(column(column_name).eq(value))
+            unless column = column(column_name)
+              raise "No such column: #{column_name}"
+            end
+            predicates.push(column.eq(value))
           end
         end
         predicates.length == 1 ? predicates.first : Predicates::And.new(predicates)

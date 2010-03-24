@@ -38,9 +38,19 @@ class Symbol
   end
 end
 
+class Fixnum
+  def sql_expression
+    self
+  end
+end
+
 class String
   def starts_with?(prefix)
     index(prefix) == 0
+  end
+
+  def sql_expression
+    self
   end
 
   def path_starts_with?(prefix)
@@ -64,6 +74,10 @@ class Array
       return false unless self[index] == element
     end
     true
+  end
+
+  def filter_blanks
+    compact.reject {|e| e == ""}
   end
 end
 

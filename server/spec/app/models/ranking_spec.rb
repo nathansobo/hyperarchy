@@ -16,6 +16,10 @@ module Models
         @candidate_3 = election.candidates.create(:body => "3")
       end
 
+      def find_majority(winner, loser)
+        election.majorities.find(:winner => winner, :loser => loser).reload
+      end
+
       it %{increments majorities over unranked candidates and lower-ranked candidates,
            decrements majorities of lower-ranked candidates over the newly ranked candidate,
            and does not affect majorities of higher-ranked candidates} do
@@ -24,10 +28,14 @@ module Models
         end
 
         election.rankings.create(:user => user, :candidate => candidate_1, :position => 1)
-
         election.majorities.where(:winner => candidate_1).each do |majority|
           majority.reload.count.should == 1
         end
+
+        election.rankings.create(:user => user, :candidate => candidate_2, :position => 3)
+        find_majority(candidate_1, candidate_2).count.should == 1
+        find_majority(candidate_2, candidate_1).count.should == 0
+        find_majority(candidate_2, candidate_3).count.should == 1
       end
     end
   end

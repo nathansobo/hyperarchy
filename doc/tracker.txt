@@ -1,5 +1,4 @@
 * when a ranking is created / updated / destroyed, recompute the vote tally
-add create! and update! operations which raise if the record is not valid
 election.ranked/unranked candidates must be by user
 test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
 ranking removal x is only visible when a candidate is ranked and hovered over

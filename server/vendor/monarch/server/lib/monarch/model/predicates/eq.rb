@@ -31,6 +31,10 @@ module Model
         "#{left_operand.to_sql} #{sql_operator} #{right_operand.to_sql}"
       end
 
+      def sql_predicate
+        Sql::Predicates::Eq.new(left_operand.sql_expression, right_operand.sql_expression)
+      end
+
       def ==(other)
         return false unless other.instance_of?(self.class)
         left_operand == other.left_operand && right_operand == other.right_operand ||

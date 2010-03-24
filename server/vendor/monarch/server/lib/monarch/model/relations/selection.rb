@@ -42,6 +42,16 @@ module Model
         operand.build_sql_query(query)
       end
 
+      def sql_query_specification
+
+        Sql::QuerySpecification.new(:all, [Sql::Asterisk.new], operand.sql_table_ref, sql_where_clause_predicates)
+
+      end
+
+      def sql_where_clause_predicates
+        [predicate.sql_predicate] + operand.sql_where_clause_predicates
+      end
+
       def ==(other)
         return false unless other.instance_of?(self.class)
         operand == other.operand && predicate == other.predicate

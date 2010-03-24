@@ -15,6 +15,7 @@ Model::Repository.create_schema
 Model::convert_strings_to_keys = true
 
 Spec::Runner.configure do |config|
+  config.include Matchers 
   config.mock_with :rr
   config.before do
     Model::Repository.clear_tables
@@ -56,4 +57,3 @@ module Spec::Example::ExampleMethods
     self.class.manually_manage_identity_map?
   end
 end
-

@@ -103,6 +103,18 @@ module Model
         query
       end
 
+      def sql_query_specification
+        Sql::QuerySpecification.new(:all, [Sql::Asterisk.new], sql_table_ref)
+      end
+
+      def sql_table_ref
+        Sql::Table.new(self)
+      end
+
+      def sql_where_clause_predicates
+        []
+      end
+
       def build_record_from_database(field_values)
         id = Integer(field_values[:id])
 

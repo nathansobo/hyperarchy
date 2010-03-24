@@ -75,6 +75,10 @@ module Model
       "#{table.global_name}.#{name}"
     end
 
+    def sql_expression
+      Sql::ColumnRef.new(table.sql_table_ref, name)
+    end
+
     def to_select_clause_sql
       "#{to_sql} as #{name}"
     end

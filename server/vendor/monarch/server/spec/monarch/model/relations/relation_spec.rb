@@ -213,6 +213,13 @@ module Model
             end
           end
 
+          context "when passed symbols" do
+            it "returns a projection with the first column in the underlying relation whose name matches each symbol" do
+              projection = join.project(:id, :title, :blog_id)
+              projection.concrete_columns.should == [Blog[:id], Blog[:title], BlogPost[:blog_id]]
+            end
+          end
+
           context "when passed a table and a column" do
             it "returns a Projection with all the columns of the table and the other column" do
               projection = join.project(Blog.table, BlogPost[:body])
