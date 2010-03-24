@@ -210,7 +210,6 @@ module Model
           it "triggers #on_update callbacks with the record and the changeset" do
             record = BlogPost.find('grain_quinoa')
             record.update(:body => "Actually quinoa is not REALLY a grain, it's a seed", :blog_id => "vegetable")
-            record.save
 
             on_insert_calls.should be_empty
             on_update_calls.length.should == 1

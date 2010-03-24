@@ -24,13 +24,12 @@ convert screw unit to use underscore.js _.isEqual for equal matcher?
 document and release screw unit
 make relations work with beEmpty matcher, possibly by tying into or creating some general underscore facility for determining emptyness
 rename table.globalName to name
-
+support for anonymous modules in foundation.js
 add a limit operator to the server side and use it for Relation#first
 
 deferred issues / open questions
 ---------------
-
-support for anonymous modules in foundation.js
+should Record#update allow id to be assigned?
 when an update is performed on a relation, records in the identity map can become stale. should I implement relation#reload for relations that have records (not just tuples), which reloads any records in the id map? could be expensive. may want to implement in memory?
 checking for the existence of the session every single request? shouldn't that at least cache it in the identity map?
 should exposed repository be in the http package, so nothing in model is dependent on http?

@@ -165,13 +165,11 @@ module Model
               blog = Blog.find('grain')
               post = blog.blog_posts.first
 
-              post.body = "Rustic raver"
-              post.save
+              post.update(:body => "Rustic raver")
               on_update_calls.should be_empty
 
               title_before = blog.title
-              blog.title = "Beep street"
-              blog.save
+              blog.update(:title => "Beep street")
 
               on_update_calls.length.should == 1
               on_update_calls.first[0].should == blog
@@ -180,8 +178,7 @@ module Model
               changeset.old_state.title.should == title_before
               changeset.new_state.title.should == "Beep street"
 
-              blog.title = "Hash rocket"
-              blog.save
+              blog.update(:title => "Hash rocket")
 
               on_update_calls.length.should == 2
               changeset_2 = on_update_calls[1][1]

@@ -10,10 +10,6 @@ class Ranking < Model::Record
 
   def after_create
     election.majorities.where(:winner_id => candidate_id).update(:count => Majority[:count] + 1)
-#    election.majorities.where(:winner_id => candidate_id).each do |majority|
-#      majority.count += 1
-#      majority.save
-#    end
   end
 
 end

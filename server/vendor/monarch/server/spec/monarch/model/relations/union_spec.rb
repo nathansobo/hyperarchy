@@ -114,8 +114,7 @@ module Model
           describe "when a tuple in one of the operands is updated" do
             it "triggers #on_update events" do
               post = operand_1.first
-              post.title = "Hash rocket"
-              post.save
+              post.update(:title => "Hash rocket")
 
               on_insert_calls.should be_empty
               on_update_calls.length.should == 1

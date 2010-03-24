@@ -162,8 +162,7 @@ module Model
             describe "when the record was not previously a member of the selection but now it is" do
               it "fires #on_insert callbacks with the record" do
                 record = BlogPost.find(BlogPost[:blog_id].neq("grain"))
-                record.blog_id = "grain"
-                record.save
+                record.update(:blog_id => "grain")
 
                 on_insert_calls.should == [record]
                 on_update_calls.should be_empty
@@ -174,8 +173,7 @@ module Model
             describe "when the record was not previously a member of the selection and it still isn't" do
               it "fires no event callbacks" do
                 record = BlogPost.find(BlogPost[:blog_id].neq("grain"))
-                record.blog_id = "hamburgers"
-                record.save
+                record.update(:blog_id => "hamburgers")
 
                 on_insert_calls.should be_empty
                 on_update_calls.should be_empty
@@ -187,8 +185,7 @@ module Model
             describe "when the record was previously a member of the selection and now it isn't" do
               it "fires #on_remove callbacks with the record" do
                 record = BlogPost.find(BlogPost[:blog_id].eq("grain"))
-                record.blog_id = "hamburgers"
-                record.save
+                record.update(:blog_id => "hamburgers")
 
                 on_insert_calls.should be_empty
                 on_update_calls.should be_empty
@@ -199,8 +196,7 @@ module Model
             describe "when the record was previously a member of the selection and it still is" do
               it "fires #on_update callbacks with the record and the changeset" do
                 record = BlogPost.find(BlogPost[:blog_id].eq("grain"))
-                record.title = "New title"
-                record.save
+                record.update(:title => "New title")
 
                 on_insert_calls.should be_empty
 

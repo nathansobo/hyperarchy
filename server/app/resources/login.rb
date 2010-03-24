@@ -3,8 +3,7 @@ module Resources
     def post(attributes)
       if user = User.find(User[:email_address].eq(attributes[:email_address]))
         if user.password == attributes[:password]
-          current_session.user_id = user.id
-          current_session.save
+          current_session.update(:user => user)
           ajax_success({ "current_user_id" => user.id }, user)
         else
           ajax_failure(:errors => { :password => "Incorrect password for the given email address." })

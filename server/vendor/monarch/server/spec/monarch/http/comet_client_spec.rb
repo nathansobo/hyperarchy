@@ -31,7 +31,6 @@ module Http
         expected_message = ["update", "blog_posts", record.id, { "title" => "Tejava", "body" => "I love this tea and so does Brian Takita!" }]
         mock(client).send(expected_message)
         record.update(:title => "Tejava", :body => "I love this tea and so does Brian Takita!")
-        record.save
 
         expected_message = ["destroy", "blog_posts", record.id]
         mock(client).send(expected_message)
@@ -47,16 +46,14 @@ module Http
         expected_message = ["update", "blogs", blog.id, { "title" => "My new title" }]
         RR.reset_double(client, :send)
         mock(client).send(expected_message)
-        blog.title = "My new title"
-        blog.save
+        blog.update(:title => "My new title")
 
         subscription_3_id = client.subscribe(BlogPost.table)
         subscription_3_id.should_not == subscription_1_id
 
         expected_message = ["update", "blog_posts", blog_post.id, { "title" => "Kukicha" }]
         mock(client).send(expected_message)
-        blog_post.title = "Kukicha"
-        blog_post.save
+        blog_post.update(:title => "Kukicha")
       end
     end
 

@@ -150,8 +150,7 @@ module Model
           describe "when a record is updated in the operand" do
             context "if one of the updated columns is in the projection" do
               it "triggers update callbacks with the projection of the tuple" do
-                post.title = "Moo Moo Bahh"
-                post.save
+                post.update(:title => "Moo Moo Bahh")
 
                 on_insert_calls.should be_empty
 
@@ -171,8 +170,7 @@ module Model
 
             context "if none of the updated columns are in the projection" do
               it "does not trigger any callbacks" do
-                post.created_at = Time.now
-                post.save
+                post.update(:created_at => Time.now)
 
                 on_insert_calls.should be_empty
                 on_update_calls.should be_empty

@@ -167,8 +167,7 @@ module Model
                 post_2 = BlogPost.create!(:blog_id => "fun")
 
                 blog = Blog.unsafe_create(:id => "misery")
-                blog.id = "fun"
-                blog.save
+                blog.update(:id => "fun")
 
                 on_insert_calls.length.should == 2
                 on_insert_calls.all? {|composite_tuple| composite_tuple[Blog] == blog }.should be_true
@@ -183,8 +182,7 @@ module Model
               it "fires #on_remove events with all composite tuples that were removed from the join" do
                 blog = Blog.find("grain")
                 grain_posts = blog.blog_posts
-                blog.id = "crapola"
-                blog.save
+                blog.update(:id => "crapola")
 
                 on_insert_calls.should be_empty
                 on_update_calls.should be_empty
@@ -198,8 +196,7 @@ module Model
               it "fires #on_update events with those composite tuples" do
                 blog = Blog.find("grain")
                 grain_posts = blog.blog_posts
-                blog.title = "Did you mean Barbie?"
-                blog.save
+                blog.update(:title => "Did you mean Barbie?")
 
                 on_insert_calls.should be_empty
 
@@ -218,8 +215,7 @@ module Model
                 post_title_before = post.title
                 post_body_before = post.body
 
-                post.title = "Malathion"
-                post.save
+                post.update(:title => "Malathion")
 
                 blog_title_after = blog.title
                 post_title_after = post.title
@@ -240,10 +236,8 @@ module Model
                 new_post_snapshot.body.should == post_body_after
                 new_blog_snapshot.title.should == blog_title_after
 
-                post.title = "Modified again"
-                post.save
-                blog.title = "Modified"
-                blog.save
+                post.update(:title => "Modified again")
+                blog.update(:title => "Modified")
 
                 old_post_snapshot.title.should == post_title_before
                 old_post_snapshot.body.should == post_body_before
@@ -262,8 +256,7 @@ module Model
 
                 blog = Blog.find("grain")
                 grain_posts = blog.blog_posts
-                blog.id = "fun"
-                blog.save
+                blog.update(:id => "fun")
 
                 on_insert_calls.length.should == 2
                 on_insert_calls.all? {|composite_tuple| composite_tuple[Blog] == blog }.should be_true
@@ -287,8 +280,7 @@ module Model
 
                 on_update_calls.should be_empty
 
-                post.blog_id = "misery"
-                post.save
+                post.update(:blog_id => "misery")
 
                 on_insert_calls.length.should == 1
 
@@ -305,8 +297,7 @@ module Model
                 blog = Blog.find("grain")
                 post = blog.blog_posts.first
 
-                post.blog_id = "crapola"
-                post.save
+                post.update(:blog_id => "crapola")
 
                 on_insert_calls.should be_empty
                 on_update_calls.should be_empty
@@ -321,8 +312,7 @@ module Model
               it "fires #on_update events with those composite tuples and the changeset" do
                 blog = Blog.find("grain")
                 post = blog.blog_posts.first
-                post.body = "The sea lions have left the pier. Earthquake imminent?"
-                post.save
+                post.update(:body => "The sea lions have left the pier. Earthquake imminent?")
 
                 on_insert_calls.should be_empty
 
@@ -342,8 +332,7 @@ module Model
                 vegetable_blog = Blog.find("vegetable")
                 grain_post = grain_blog.blog_posts.first
 
-                grain_post.blog_id = "vegetable"
-                grain_post.save
+                grain_post.update(:blog_id => "vegetable")
 
                 on_insert_calls.length.should == 1
                 on_insert_calls.first[Blog].should == vegetable_blog

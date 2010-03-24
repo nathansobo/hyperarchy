@@ -26,8 +26,7 @@ class ResourceExampleGroup < Spec::Example::ExampleGroup
   end
 
   def authenticate(user)
-    current_session.user_id = user.id
-    current_session.save
+    current_session.update(:user => user)
   end
 
   def locate(path)
