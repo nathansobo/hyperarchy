@@ -241,7 +241,7 @@ module Model
           record.has_hair.should == false
           record.age.should == age_before_update
 
-          dirty_field_values.should == {:has_hair => false, :full_name => "Fancy Nash Lincoln", :great_name => "Fancy Nash Lincoln The Great", :human => true}
+          dirty_field_values.should == {:has_hair => false, :full_name => "Fancy Nash Lincoln", :great_name => "Fancy Nash Lincoln The Great"}
         end
       end
 
@@ -276,7 +276,7 @@ module Model
           record.has_hair.should == false
           record.age.should == age_before_update
 
-          dirty_field_values.should == {:has_hair => false, :full_name => "Nash Lincoln", :great_name => "Nash Lincoln The Great", :human => true}
+          dirty_field_values.should == {:has_hair => false, :full_name => "Nash Lincoln", :great_name => "Nash Lincoln The Great"}
         end
       end
 

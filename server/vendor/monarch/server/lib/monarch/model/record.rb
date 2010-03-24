@@ -90,7 +90,7 @@ module Model
 
     def unsafe_initialize(field_values)
       initialize_fields
-      update(field_values)
+      soft_update(field_values)
       initialize_relations
     end
 
@@ -103,18 +103,17 @@ module Model
       self
     end
 
+    
     def update(values_by_method_name)
-      values_by_method_name.each do |method_name, value|
-        writer_method_name = "#{method_name}="
-        self.send(writer_method_name, value) if self.respond_to?(writer_method_name)
-      end
-      dirty_field_values_wire_representation
+      result = soft_update(values_by_method_name)
+      save
+      result
     end
 
     def update!(values_by_method_name)
-      result = update(values_by_method_name)
-      raise InvalidRecordException.new(self, validation_errors_by_column_name) unless valid?
-      result
+      returning update(values_by_method_name) do
+        raise InvalidRecordException.new(self, validation_errors_by_column_name) unless valid?
+      end
     end
 
     def update_fields(field_values_by_column_name)
@@ -122,7 +121,9 @@ module Model
         field = self.field(column_name)
         field.value = value if field
       end
-      dirty_field_values_wire_representation
+      returning(dirty_field_values_wire_representation) do
+        save
+      end
     end
 
     def destroy
@@ -278,6 +279,14 @@ module Model
 
     def after_update(changeset)
       # override when needed
+    end
+
+    def soft_update(values_by_method_name)
+      values_by_method_name.each do |method_name, value|
+        writer_method_name = "#{method_name}="
+        self.send(writer_method_name, value) if self.respond_to?(writer_method_name)
+      end
+      dirty_field_values_wire_representation
     end
 
     def initialize_relations

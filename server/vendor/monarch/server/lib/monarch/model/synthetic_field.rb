@@ -9,8 +9,10 @@ module Model
       @remote_value = signal.remote_value
 
       signal.on_update do |new_value|
-        @value = new_value
-        mark_dirty
+        if @value != new_value
+          @value = new_value
+          mark_dirty
+        end
       end
     end
 
