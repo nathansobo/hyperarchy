@@ -29,12 +29,9 @@ module Model
         select blogs.* from users inner join blogs on users.id = blogs.user_id
       })
       User.where(:age => 21).join_through(Blog.where(:title => "I Can Drink Now")).to_sql.should be_like(%{
-        select
-          blogs.*
-        from
-          users inner join blogs on users.id = blogs.user_id
-        where
-          blogs.title = "I Can Drink Now" and users.age = 21
+        select blogs.*
+        from users inner join blogs on users.id = blogs.user_id
+        where blogs.title = "I Can Drink Now" and users.age = 21
       })
       User.where(:age => 21).
         join_through(Blog.where(:title => "I Can Drink Now")).
@@ -52,8 +49,16 @@ module Model
       })
     end
 
-    specify "projections involving aggregation functions" do
+    specify "projections involving aggregation functions composed on top of other constructs" do
       User.project(User[:id].count).to_sql.should be_like(%{select count(users.id) from users})
+      User.where(:age => 34).project(User[:id].count).to_sql.should be_like(%{
+        select count(users.id) from users where users.age = 34
+      })
+      User.where(:id => 1).join_through(Blog).project(Blog[:id].count, :id).to_sql.should be_like(%{
+        select count(blogs.id), blogs.id
+        from users inner join blogs on users.id = blogs.user_id
+        where users.id = 1
+      })
     end
   end
 end

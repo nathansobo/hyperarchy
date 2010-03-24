@@ -30,7 +30,7 @@ refactor client side list code into a single generic widget
 add the suite keyword to screw unit so that hyperarchy and monarch spec suites can be run together on a single page
 when a constructor is declared with the same name as an extant module, extend the constructor with the module
 test :class_name option to belongs_to
-
+it should not be possible to reference an attribute or table in a projection that is not exposed by the underlying relation (like if it's projected away)
 add a _._ underscore builder object which builds views with a single top-level method call _._li({candidateId: "foo"});
 convert screw unit to use underscore.js _.isEqual for equal matcher?
 document and release screw unit
