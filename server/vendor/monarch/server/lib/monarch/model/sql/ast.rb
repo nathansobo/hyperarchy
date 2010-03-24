@@ -47,7 +47,7 @@ module Model
 
         "where " + where_clause_predicates.map do |predicate|
           predicate.to_sql
-        end.join(" and ")
+        end.sort.join(" and ")
       end
     end
 
@@ -187,7 +187,7 @@ module Model
         def to_sql
           predicates.map do |predicate|
             predicate.to_sql
-          end.join(" and ")
+          end.sort.join(" and ")
         end
       end
     end
@@ -198,6 +198,14 @@ module Model
       end
 
       class SetFunction
+        attr_reader :type, :expression
+        def initialize(type, expression)
+          @type, @expression = type, expression
+        end
+
+        def to_sql
+          "#{type}(#{expression.to_sql})"
+        end
       end
     end
   end

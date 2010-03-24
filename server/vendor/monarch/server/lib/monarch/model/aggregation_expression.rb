@@ -16,6 +16,10 @@ module Model
       "#{function_name}(#{column.to_sql})#{alias_sql}"
     end
 
+    def sql_derived_column
+      Sql::DerivedColumn.new(Sql::Expressions::SetFunction.new(function_name, column.sql_expression))
+    end
+
     def name
       expression_alias || to_select_clause_sql.to_sym
     end

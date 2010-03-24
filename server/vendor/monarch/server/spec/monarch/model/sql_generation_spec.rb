@@ -34,7 +34,7 @@ module Model
         from
           users inner join blogs on users.id = blogs.user_id
         where
-          users.age = 21 and blogs.title = "I Can Drink Now"
+          blogs.title = "I Can Drink Now" and users.age = 21
       })
       User.where(:age => 21).
         join_through(Blog.where(:title => "I Can Drink Now")).
@@ -46,11 +46,14 @@ module Model
           inner join blogs on users.id = blogs.user_id
           inner join blog_posts on blogs.id = blog_posts.blog_id
         where
-          users.age = 21
+          blog_posts.title = "Day 5: The World Is Spining"
           and blogs.title = "I Can Drink Now"
-          and blog_posts.title = "Day 5: The World Is Spining"
+          and users.age = 21
       })
     end
 
+    specify "projections involving aggregation functions" do
+      User.project(User[:id].count).to_sql.should be_like(%{select count(users.id) from users})
+    end
   end
 end

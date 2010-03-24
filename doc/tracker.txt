@@ -1,4 +1,17 @@
 * when a ranking is created / updated / destroyed, recompute the vote tally
+rewrite the sql generation system... add group by, aggregations support
+refactor the relational algebra api:
+  Expression
+    Column
+    DerivedColumn
+    AggregationExpression
+      Sum
+      Count
+      etc
+    Addition
+    Multiplication
+
+
 election.ranked/unranked candidates must be by user
 test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
 ranking removal x is only visible when a candidate is ranked and hovered over
