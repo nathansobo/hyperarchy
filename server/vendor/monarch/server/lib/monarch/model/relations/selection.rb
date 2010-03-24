@@ -42,10 +42,10 @@ module Model
         operand.build_sql_query(query)
       end
 
+      delegate :sql_table_ref, :sql_select_list, :to => :operand
+      
       def sql_query_specification
-
-        Sql::QuerySpecification.new(:all, [Sql::Asterisk.new], operand.sql_table_ref, sql_where_clause_predicates)
-
+        Sql::QuerySpecification.new(:all, sql_select_list, operand.sql_table_ref, sql_where_clause_predicates)
       end
 
       def sql_where_clause_predicates

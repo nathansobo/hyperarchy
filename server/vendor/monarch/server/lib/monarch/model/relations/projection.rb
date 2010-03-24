@@ -43,6 +43,12 @@ module Model
         operand.build_sql_query(sql_query)
       end
 
+      delegate :sql_table_ref, :sql_where_clause_predicates, :to => :operand
+
+      def sql_query_specification
+        Sql::QuerySpecification.new(:all, sql_select_list, operand.sql_table_ref, sql_where_clause_predicates)
+      end
+
       def build_record_from_database(field_values)
         tuple_class.new(field_values)
       end
@@ -53,6 +59,12 @@ module Model
       end
 
       protected
+      def sql_select_list
+        concrete_columns.map do |column|
+          column.sql_derived_column
+        end
+      end
+
       def subscribe_to_operands
         operand_subscriptions.add(operand.on_insert do |tuple|
           on_insert_node.publish(project_tuple(tuple))

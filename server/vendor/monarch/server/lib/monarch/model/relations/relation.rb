@@ -176,7 +176,8 @@ module Model
           if arg.is_a?(ConcreteColumn)
             arg
           elsif arg.instance_of?(Symbol)
-            column(arg)
+            raise "No column #{arg} found on relation" unless column = column(arg)
+            column
           elsif table_or_record_class?(arg)
             convert_to_table_if_needed(arg).concrete_columns
           else

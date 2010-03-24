@@ -104,11 +104,15 @@ module Model
       end
 
       def sql_query_specification
-        Sql::QuerySpecification.new(:all, [Sql::Asterisk.new], sql_table_ref)
+        @sql_query_specification ||= Sql::QuerySpecification.new(:all, sql_select_list, sql_table_ref)
+      end
+
+      def sql_select_list
+        @sql_select_list ||= [Sql::Asterisk.new]
       end
 
       def sql_table_ref
-        Sql::Table.new(self)
+        @sql_table_ref ||= Sql::Table.new(self)
       end
 
       def sql_where_clause_predicates

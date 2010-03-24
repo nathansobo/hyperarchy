@@ -19,6 +19,10 @@ module Model
       "#{column.to_sql} as #{name}"
     end
 
+    def sql_derived_column
+      Sql::DerivedColumn.new(column.sql_expression, name)
+    end
+
     def ==(other)
       return false unless other.instance_of?(self.class)
       column == other.column && column_alias == other.column_alias

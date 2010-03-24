@@ -23,7 +23,7 @@ module Model
          "from",
          from_clause_sql,
          where_clause_sql
-        ].filter_blanks.join(" ")
+        ].compact.join(" ")
       end
 
       protected
@@ -53,8 +53,22 @@ module Model
 
     # populates the select list of a query specification
     class DerivedColumn
-      attr_accessor :expression # can be a column reference (which is an expression) or a more complex value expression involving literals
-      attr_accessor :name #optional
+      # :expression can be a column reference or a more complex value expression involving literals, operators, and functions
+      attr_accessor :expression, :name
+
+      def initialize(expression, name=nil)
+        @expression, @name = expression, name
+      end
+
+      def to_sql
+        expression.to_sql + as_sql
+      end
+
+      protected
+      
+      def as_sql
+        name ? " as #{name}" : ""
+      end
     end
 
     # populates the select list of a query specification
@@ -64,9 +78,14 @@ module Model
       def initialize(qualifier=nil)
         @qualifier = qualifier
       end
-
+      
       def to_sql
-        "*"
+        "#{qualifier_sql}*"
+      end
+
+      protected
+      def qualifier_sql
+        qualifier ? "#{qualifier.to_sql}." : ""
       end
     end
 
@@ -100,7 +119,32 @@ module Model
       # :type can be INNER, LEFT OUTER, RIGHT OUTER, or UNION
       # the table refs can be aliased, derived, or joined tables
       # the condition is a Predicate involving column refs or expressions
-      attr_accessor :type, :left_table_ref, :right_table_ref, :condition
+      attr_accessor :type, :left_table_ref, :right_table_ref, :conditions
+
+      def initialize(type, left_table_ref, right_table_ref, conditions)
+        @type = type
+        @left_table_ref = left_table_ref
+        @right_table_ref = right_table_ref
+        @conditions = conditions
+      end
+
+      def to_sql
+        [left_table_ref.to_sql,
+         type,
+         "join",
+         right_table_ref.to_sql,
+         "on",
+         join_conditions_sql
+        ].join(" ")
+      end
+
+      protected
+
+      def join_conditions_sql
+        conditions.map do |predicate|
+          predicate.to_sql
+        end.join(" ")
+      end
     end
 
     class ColumnRef

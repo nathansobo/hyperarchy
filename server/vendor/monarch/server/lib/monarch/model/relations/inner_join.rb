@@ -37,6 +37,22 @@ module Model
         right_operand.build_sql_query(query)
       end
 
+      def sql_query_specification
+        Sql::QuerySpecification.new(:all, [Sql::Asterisk.new], sql_table_ref)
+      end
+
+      def sql_table_ref
+        Sql::JoinedTable.new(:inner, left_operand.sql_table_ref, right_operand.sql_table_ref, sql_join_conditions)
+      end
+
+      def sql_join_conditions
+        [predicate.sql_predicate]
+      end
+
+      def sql_where_clause_predicates
+        left_operand.sql_where_clause_predicates + right_operand.sql_where_clause_predicates
+      end
+
       def build_record_from_database(field_values)
         tuple_class.new(field_values)
       end
