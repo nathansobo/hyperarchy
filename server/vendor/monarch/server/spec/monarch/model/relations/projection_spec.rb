@@ -61,29 +61,6 @@ module Model
         end
       end
 
-      describe "#to_sql" do
-        it "generates appropriate sql" do
-          projection.to_sql.should == %{
-            select distinct
-              blog_posts.id as id,
-              blogs.title as blog_title,
-              blog_posts.title as blog_post_title,
-              blogs.user_id as user_id,
-              blog_posts.body as body
-            from
-              blogs,
-              blog_posts
-            where
-              blog_posts.blog_id = blogs.id
-          }.gsub(/[  \n]+/, " ").strip
-        end
-
-        it "always honors the topmost projection operation in the relation tree" do
-          composed_projection = projection.project(BlogPost[:id], Blog[:title].as(:blog_title))
-          projection.to_sql.should == %{select distinct blog_posts.id as id, blogs.title as blog_title, blog_posts.title as blog_post_title, blogs.user_id as user_id, blog_posts.body as body from blogs, blog_posts where blog_posts.blog_id = blogs.id}
-        end
-      end
-
       describe "#==" do
         it "structurally compares the receiver with the operand" do
           operand_2 = Blog.join(BlogPost).on(BlogPost[:blog_id].eq(Blog[:id]))

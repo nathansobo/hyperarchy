@@ -1,4 +1,5 @@
 * when a ranking is created / updated / destroyed, recompute the vote tally
+deal with projection, union, and aggregation specs
 projections that remove all primary keys should add a distinct keyword
 rewrite the sql generation system... add group by, aggregations support
 refactor the relational algebra api:

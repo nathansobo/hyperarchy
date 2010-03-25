@@ -19,8 +19,8 @@ module Model
       "#{column.to_sql} as #{name}"
     end
 
-    def sql_derived_column
-      Sql::DerivedColumn.new(column.sql_expression, name)
+    def sql_derived_column(table_ref)
+      Sql::DerivedColumn.new(table_ref, column.sql_expression, name)
     end
 
     def ==(other)

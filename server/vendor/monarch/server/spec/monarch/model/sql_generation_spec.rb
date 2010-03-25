@@ -32,15 +32,16 @@ module Model
           blogs.id as blogs__id,
           blogs.title as blogs__title,
           blogs.user_id as blogs__user_id
-        from users inner join blogs on users.id = blogs.user_id
+        from users, blogs
+        where users.id = blogs.user_id
       })
       User.join_through(Blog).to_sql.should be_like(%{
-        select blogs.* from users inner join blogs on users.id = blogs.user_id
+        select blogs.* from users, blogs where users.id = blogs.user_id
       })
       User.where(:age => 21).join_through(Blog.where(:title => "I Can Drink Now")).to_sql.should be_like(%{
         select blogs.*
-        from users inner join blogs on users.id = blogs.user_id
-        where blogs.title = "I Can Drink Now" and users.age = 21
+        from users, blogs
+        where blogs.title = "I Can Drink Now" and users.age = 21 and users.id = blogs.user_id
       })
       User.where(:age => 21).
         join_through(Blog.where(:title => "I Can Drink Now")).
@@ -48,15 +49,20 @@ module Model
         select
           blog_posts.*
         from
-          users
-          inner join blogs on users.id = blogs.user_id
-          inner join blog_posts on blogs.id = blog_posts.blog_id
+          users, blogs, blog_posts
         where
           blog_posts.title = "Day 5: The World Is Spining"
+          and blogs.id = blog_posts.blog_id
           and blogs.title = "I Can Drink Now"
           and users.age = 21
+          and users.id = blogs.user_id
+
       })
     end
+
+#    specify "unions" do
+#      puts union(Blog.where(:title => "Good Times"), Blog.where(:title => "Bad Times")).to_sql
+#    end
 
     specify "projections involving aggregation functions composed on top of other constructs" do
       User.project(User[:id].count).to_sql.should be_like(%{select count(users.id) from users})
@@ -65,8 +71,8 @@ module Model
       })
       User.where(:id => 1).join_through(Blog).project(Blog[:id].count, :id).to_sql.should be_like(%{
         select count(blogs.id), blogs.id
-        from users inner join blogs on users.id = blogs.user_id
-        where users.id = 1
+        from users, blogs 
+        where users.id = 1 and users.id = blogs.user_id
       })
     end
   end

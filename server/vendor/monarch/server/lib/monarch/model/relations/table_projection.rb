@@ -69,7 +69,7 @@ module Model
       end
 
       def num_instances_in_operand(record)
-        operand.where(id_column.eq(record.id)).aggregate(id_column.count).value
+        operand.where(id_column.eq(record.id)).project(id_column.count).value
       end
 
       def id_column

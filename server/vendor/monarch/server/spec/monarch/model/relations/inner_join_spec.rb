@@ -72,25 +72,6 @@ module Model
         end
       end
 
-      describe "#to_sql" do
-        it "generates a query" do
-          join.to_sql.should == %{
-            select
-              blogs.id as blogs__id,
-              blogs.title as blogs__title,
-              blogs.user_id as blogs__user_id,
-              blog_posts.id as blog_posts__id,
-              blog_posts.title as blog_posts__title,
-              blog_posts.body as blog_posts__body,
-              blog_posts.blog_id as blog_posts__blog_id,
-              blog_posts.created_at as blog_posts__created_at,
-              blog_posts.featured as blog_posts__featured
-            from
-              blogs inner join blog_posts on blogs.id = blog_posts.blog_id
-          }.gsub(/[ \n]+/, " ").strip
-        end
-      end
-
       describe "#==" do
         it "structurally compares the receiver with the operand" do
           predicate_2 = Blog[:id].eq(BlogPost[:blog_id])

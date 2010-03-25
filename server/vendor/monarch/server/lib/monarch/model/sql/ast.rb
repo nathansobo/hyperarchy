@@ -6,14 +6,16 @@ module Model
       # :from_clause is populated by a "table reference", which can be a Table, AliasedTable, DerivedTable, or JoinedTable
       # :where clause
       # :grouping_column_refs is populated by GroupingColumnRef objects
-      attr_accessor :set_quantifier, :select_list, :from_clause, :where_clause_predicates, :grouping_column_refs
+      attr_accessor :set_quantifier, :select_list, :from_clause_table_refs, :where_clause_predicates, :grouping_column_refs
 
-      def initialize(set_quantifier, select_list, from_clause, where_clause_predicates=[], grouping_column_refs=[])
+      def initialize(set_quantifier, select_list, from_clause_table_ref, where_clause_predicates=[], grouping_column_refs=[])
         @set_quantifier = set_quantifier
         @select_list = select_list
-        @from_clause = from_clause
+        @from_clause_table_refs = [from_clause_table_ref]
         @where_clause_predicates = where_clause_predicates
         @grouping_column_refs = grouping_column_refs
+
+        flatten
       end
 
       def to_sql
@@ -28,6 +30,12 @@ module Model
 
       protected
 
+
+      def flatten
+        where_clause_predicates.concat(from_clause_table_refs.first.join_conditions)
+        @from_clause_table_refs = from_clause_table_refs.first.joined_table_refs
+      end
+
       def set_quantifier_sql
         nil
       end
@@ -39,7 +47,9 @@ module Model
       end
 
       def from_clause_sql
-        from_clause.to_sql
+        from_clause_table_refs.map do |table_ref|
+          table_ref.to_sql
+        end.join(", ")
       end
 
       def where_clause_sql
@@ -119,9 +129,17 @@ module Model
         algebra_table.global_name
       end
 
+      def joined_table_refs
+        [self]
+      end
+
+      def join_conditions
+        []
+      end
+
       def derived_columns
         algebra_table.concrete_columns.map do |column|
-          column.sql_derived_column
+          column.sql_derived_column(self)
         end
       end
     end
@@ -151,18 +169,29 @@ module Model
 
       def to_sql
         [left_table_ref.to_sql,
-         type,
-         "join",
+         join_sql,
          right_table_ref.to_sql,
-         "on",
          join_conditions_sql
         ].join(" ")
       end
 
+      def join_conditions
+        left_table_ref.join_conditions + conditions + right_table_ref.join_conditions
+      end
+
+      def joined_table_refs
+        (left_table_ref.joined_table_refs + right_table_ref.joined_table_refs).uniq
+      end
+
       protected
 
+      def join_sql
+        type == :union ? "union" : "#{type} join"
+      end
+
       def join_conditions_sql
-        conditions.map do |predicate|
+        return nil if type == :union
+        "on " + conditions.map do |predicate|
           predicate.to_sql
         end.join(" ")
       end

@@ -90,20 +90,6 @@ module Model
         end
       end
 
-      describe "#to_sql" do
-        context "when #operand is a Table" do
-          it "generates a query with an appropriate where clause" do
-            selection.to_sql.should == "select * from #{operand.global_name} where #{predicate.to_sql}"
-          end
-        end
-
-        context "when #operand is another Selection" do
-          it "generates a query with a where clause that has multiple conditions" do
-            composite_selection.to_sql.should == "select * from #{operand.global_name} where #{predicate_2.to_sql} and #{predicate.to_sql}"
-          end
-        end
-      end
-
       describe "#==" do
         it "structurally compares the receiver with the operand" do
           predicate_2 = Predicates::Eq.new(BlogPost[:blog_id], "grain")

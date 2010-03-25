@@ -16,12 +16,8 @@ module Model
       "#{function_name}(#{column.to_sql})#{alias_sql}"
     end
 
-    def sql_derived_column
+    def sql_derived_column(sql_table_ref)
       Sql::DerivedColumn.new(sql_table_ref, Sql::Expressions::SetFunction.new(function_name, column.sql_expression), expression_alias)
-    end
-
-    def sql_table_ref
-      "Not implemented"
     end
 
     def name

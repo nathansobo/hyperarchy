@@ -14,6 +14,10 @@ module Model
         end
       end
 
+      def value
+        first[0]
+      end
+
       def concrete_columns
         concrete_columns_by_name.values
       end
@@ -61,7 +65,7 @@ module Model
       protected
       def sql_select_list
         concrete_columns.map do |column|
-          column.sql_derived_column
+          column.sql_derived_column(sql_table_ref)
         end
       end
 

@@ -45,7 +45,7 @@ module Model
       delegate :sql_table_ref, :sql_select_list, :to => :operand
       
       def sql_query_specification
-        Sql::QuerySpecification.new(:all, sql_select_list, operand.sql_table_ref, sql_where_clause_predicates)
+        Sql::QuerySpecification.new(:all, sql_select_list, sql_table_ref, sql_where_clause_predicates)
       end
 
       def sql_where_clause_predicates
