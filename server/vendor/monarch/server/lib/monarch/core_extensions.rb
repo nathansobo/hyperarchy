@@ -106,6 +106,10 @@ class NilClass
   def to_sql
     "null"
   end
+
+  def sql_expression
+    self
+  end
 end
 
 class Time

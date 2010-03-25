@@ -26,8 +26,14 @@ module Model
       value.to_sql
     end
 
+    delegate :sql_expression, :to => :value
+
     def signal(&block)
       Signal.new(self, &block)
+    end
+
+    def sql_expression
+      value.sql_expression
     end
 
     protected

@@ -38,7 +38,15 @@ module Model
       end
 
       def sql_query_specification
-        Sql::QuerySpecification.new(:all, [Sql::Asterisk.new], sql_table_ref)
+        Sql::QuerySpecification.new(:all, sql_select_list, sql_table_ref)
+      end
+
+      def sql_select_list
+        (left_operand.sql_select_list + right_operand.sql_select_list).map do |derived_column_or_asterisk|
+          derived_column_or_asterisk.derive(self) do |derived_column|
+            "#{derived_column.table_ref.name}__#{derived_column.name}"
+          end
+        end.flatten
       end
 
       def sql_table_ref

@@ -17,7 +17,7 @@ module Model
           tuple = all.first
 
           tuple.max_signed_up_at.should_not be_nil
-          tuple[1].should be >= 60 
+          tuple[1].should be >= 60
         end
 
         specify "the tuples it returns cast their fields to the appropriate datatype based on the expression and the column type" do

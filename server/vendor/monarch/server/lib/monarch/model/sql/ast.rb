@@ -44,20 +44,29 @@ module Model
 
       def where_clause_sql
         return nil if where_clause_predicates.empty?
-
         "where " + where_clause_predicates.map do |predicate|
           predicate.to_sql
         end.sort.join(" and ")
       end
     end
 
-    # populates the select list of a query specification
+    # Represents the columns exposed at the surface of a table ref
+    # QuerySpecification#select_list is populated with DerivedColumn and Asterisk objects
     class DerivedColumn
       # :expression can be a column reference or a more complex value expression involving literals, operators, and functions
-      attr_accessor :expression, :name
+      attr_accessor :table_ref, :expression, :name
 
-      def initialize(expression, name=nil)
-        @expression, @name = expression, name
+      def initialize(table_ref, expression, name=nil)
+        @table_ref, @expression, @name = table_ref, expression, name
+        @name = expression.name if name.nil? && expression.respond_to?(:name)
+      end
+
+      def ref
+        @ref ||= ColumnRef.new(table_ref, name)
+      end
+
+      def derive(table_ref, &block)
+        DerivedColumn.new(table_ref, ref, block.call(ref))
       end
 
       def to_sql
@@ -71,21 +80,23 @@ module Model
       end
     end
 
-    # populates the select list of a query specification
+    # Represents the set of all columns in a given table ref at the surface of a table ref that contains it
+    # QuerySpecification#select_list is populated with DerivedColumn and Asterisk objects
     class Asterisk
-      attr_accessor :qualifier # optional, can be a table or correlation name
+      attr_accessor :table_ref # optional, can be a table or correlation name
 
-      def initialize(qualifier=nil)
-        @qualifier = qualifier
+      def initialize(table_ref=nil)
+        @table_ref = table_ref
       end
       
       def to_sql
-        "#{qualifier_sql}*"
+        "#{table_ref.name}.*"
       end
 
-      protected
-      def qualifier_sql
-        qualifier ? "#{qualifier.to_sql}." : ""
+      def derive(deriving_table_ref, &block)
+        table_ref.derived_columns.map do |derived_column|
+          derived_column.derive(deriving_table_ref, &block)
+        end
       end
     end
 
@@ -102,6 +113,12 @@ module Model
 
       def name
         algebra_table.global_name
+      end
+
+      def derived_columns
+        algebra_table.concrete_columns.map do |column|
+          column.sql_derived_column
+        end
       end
     end
 

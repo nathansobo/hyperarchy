@@ -108,7 +108,7 @@ module Model
       end
 
       def sql_select_list
-        @sql_select_list ||= [Sql::Asterisk.new]
+        @sql_select_list ||= [Sql::Asterisk.new(sql_table_ref)]
       end
 
       def sql_table_ref

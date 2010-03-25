@@ -80,7 +80,7 @@ module Model
     end
 
     def sql_derived_column
-      Sql::DerivedColumn.new(sql_expression)
+      Sql::DerivedColumn.new(table.sql_table_ref, sql_expression)
     end
 
     def to_select_clause_sql
