@@ -69,6 +69,10 @@ module Model
         DerivedColumn.new(table_ref, ref, block.call(ref))
       end
 
+      def aliased?
+        @aliased ||= name && (!expression.respond_to?(:name) || expression.name != name)
+      end
+
       def to_sql
         expression.to_sql + as_sql
       end
@@ -76,7 +80,7 @@ module Model
       protected
       
       def as_sql
-        name ? " as #{name}" : ""
+        aliased?? " as #{name}" : ""
       end
     end
 

@@ -17,7 +17,11 @@ module Model
     end
 
     def sql_derived_column
-      Sql::DerivedColumn.new(Sql::Expressions::SetFunction.new(function_name, column.sql_expression))
+      Sql::DerivedColumn.new(sql_table_ref, Sql::Expressions::SetFunction.new(function_name, column.sql_expression), expression_alias)
+    end
+
+    def sql_table_ref
+      "Not implemented"
     end
 
     def name
