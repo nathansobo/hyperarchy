@@ -3,20 +3,23 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../../monarch_spec_helper
 module Model
   module Relations
     describe Projection do
-      attr_reader :projection, :operand, :projected_columns
+      attr_reader :projection, :operand
 
       before do
         @operand = Blog.join(BlogPost).on(BlogPost[:blog_id].eq(Blog[:id]))
-        @projected_columns = [
+        @projection = Projection.new(operand, projected_columns) do
+          def foo; end
+        end
+      end
+
+      def projected_columns
+        @projected_columns ||= [
           BlogPost[:id],
           Blog[:title].as(:blog_title),
           BlogPost[:title].as(:blog_post_title),
           Blog[:user_id],
           BlogPost[:body]
         ]
-        @projection = Projection.new(operand, projected_columns) do
-          def foo; end
-        end
       end
 
       describe "#initialize" do
@@ -43,6 +46,20 @@ module Model
             projected_tuple.body.should == blog_post.body
             projected_tuple.user_id.should == blog.user_id
             projected_tuple.should be_valid
+          end
+        end
+
+        context "when the projection contains an aggregation function" do
+          def projected_columns
+            @projected_columns ||= [Blog[:id], Blog[:id].count.as(:count)]
+          end
+
+          it "returns the results of the aggregation, allowing the aggregation result field to to be referenced by name, expression, or index" do
+            expected_count = operand.size
+            tuple = projection.first
+            tuple[1].should == expected_count
+            tuple[:count].should == expected_count
+            tuple[projected_columns[1]].should == expected_count
           end
         end
       end
