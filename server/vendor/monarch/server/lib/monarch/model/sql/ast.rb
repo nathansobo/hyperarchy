@@ -32,7 +32,9 @@ module Model
 
 
       def flatten
-        where_clause_predicates.concat(from_clause_table_refs.first.join_conditions)
+        @where_clause_predicates = (where_clause_predicates + from_clause_table_refs.first.join_conditions).map do |predicate|
+          predicate.flatten
+        end.flatten.uniq
         @from_clause_table_refs = from_clause_table_refs.first.joined_table_refs
       end
 
@@ -223,7 +225,19 @@ module Model
         end
 
         def to_sql
-          "#{left_expression.to_sql} = #{right_expression.to_sql}"
+          @to_sql ||= "#{left_expression.to_sql} = #{right_expression.to_sql}"
+        end
+
+        def flatten
+          [self]
+        end
+
+        def hash
+          @hash ||= [left_expression.to_sql, right_expression.to_sql].sort.join(" = ").hash
+        end
+
+        def eql?(other)
+          other.hash == hash
         end
       end
 
@@ -238,6 +252,10 @@ module Model
           predicates.map do |predicate|
             predicate.to_sql
           end.sort.join(" and ")
+        end
+
+        def flatten
+          predicates.map {|p| p.flatten}.flatten
         end
       end
     end

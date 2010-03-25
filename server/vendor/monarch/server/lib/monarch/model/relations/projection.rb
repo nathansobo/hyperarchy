@@ -22,12 +22,14 @@ module Model
         concrete_columns_by_name.values
       end
 
-      def column(column_or_name)
-        case column_or_name
+      def column(column_or_name_or_index)
+        case column_or_name_or_index
         when String, Symbol
-          concrete_columns_by_name[column_or_name]
-        when ConcreteColumn
-          column_or_name
+          concrete_columns_by_name[column_or_name_or_index]
+        when ConcreteColumn, AggregationExpression
+          column_or_name_or_index
+        when Integer
+          concrete_columns[column_or_name_or_index]
         end
       end
 
