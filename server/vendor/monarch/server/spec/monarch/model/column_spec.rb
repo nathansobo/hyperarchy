@@ -17,12 +17,6 @@ module Model
     end
 
     describe "instance methods" do
-      describe "#to_sql" do
-        it "returns the qualified column name" do
-          BlogPost[:body].to_sql.should == "blog_posts.body"
-        end
-      end
-
       describe "#eq" do
         it "returns an instance of Predicates::Eq with self as #left_operand and the argument as #right_operand" do
           predicate = BlogPost[:id].eq("grain_quinoa")

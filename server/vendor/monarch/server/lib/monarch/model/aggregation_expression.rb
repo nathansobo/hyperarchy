@@ -12,16 +12,16 @@ module Model
       self
     end
 
-    def to_select_clause_sql
-      "#{function_name}(#{column.to_sql})#{alias_sql}"
+    def sql_derived_column(sql_table_ref)
+      Sql::DerivedColumn.new(sql_table_ref, sql_expression, expression_alias)
     end
 
-    def sql_derived_column(sql_table_ref)
-      Sql::DerivedColumn.new(sql_table_ref, Sql::Expressions::SetFunction.new(function_name, column.sql_expression), expression_alias)
+    def sql_expression
+      Sql::Expressions::SetFunction.new(function_name, column.sql_expression)
     end
 
     def name
-      expression_alias || to_select_clause_sql.to_sym
+      expression_alias || sql_expression.to_sql.to_sym
     end
 
     def ==(other)

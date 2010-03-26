@@ -22,10 +22,6 @@ module Model
       update_node.subscribe(&block)
     end
 
-    def to_sql
-      value.to_sql
-    end
-
     delegate :sql_expression, :to => :value
 
     def signal(&block)

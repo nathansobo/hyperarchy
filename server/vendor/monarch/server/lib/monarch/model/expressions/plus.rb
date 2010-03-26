@@ -10,10 +10,6 @@ module Model
       def sql_expression
         Sql::Expressions::Plus.new(left_operand.sql_expression, right_operand.sql_expression)
       end
-
-      def to_sql
-        "#{left_operand.to_sql} + #{right_operand.to_sql}"
-      end
     end
   end
 end

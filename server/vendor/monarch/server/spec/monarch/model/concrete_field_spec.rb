@@ -115,12 +115,5 @@ module Model
         end
       end
     end
-
-    describe "#to_sql" do
-      it "proxies to #value" do
-        field.value = "hello"
-        field.to_sql.should == field.value.to_sql
-      end
-    end
   end
 end

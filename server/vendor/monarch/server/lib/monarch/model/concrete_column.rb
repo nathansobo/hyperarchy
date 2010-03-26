@@ -71,10 +71,6 @@ module Model
       end
     end
 
-    def to_sql
-      "#{table.global_name}.#{name}"
-    end
-
     def sql_expression
       Sql::ColumnRef.new(table.sql_from_table_ref, name)
     end

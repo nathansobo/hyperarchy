@@ -1,13 +1,10 @@
 * when a ranking is created / updated / destroyed, recompute the vote tally
-rewrite update in terms of new sql compilation strategy
 deal with union spec
 add tests for equality / inequality comparison with null
 add outer join support
 add  group by plus aggregations and join support
 projections that remove all primary keys should add a distinct keyword
-refactor the relational algebra api:
-
-
+refactor the relational algebra api
 election.ranked/unranked candidates must be by user
 test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
 ranking removal x is only visible when a candidate is ranked and hovered over
@@ -35,6 +32,7 @@ rename table.globalName to name
 support for anonymous modules in foundation.js
 add a limit operator to the server side and use it for Relation#first
 disallow updates to columns not exposed in a projection
+enforce that unions and projections have at least one primary key before activating them for events (to warn about the shortcomings of current event system)
 
 deferred issues / open questions
 ---------------

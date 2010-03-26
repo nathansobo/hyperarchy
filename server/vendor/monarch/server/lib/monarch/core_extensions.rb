@@ -5,10 +5,6 @@ class Class
 end
 
 class Object
-  def to_sql
-    inspect
-  end
-
   def eigenclass
     class << self
       self
@@ -42,6 +38,10 @@ class Fixnum
   def sql_expression
     self
   end
+
+  def to_sql
+    inspect
+  end
 end
 
 class String
@@ -51,6 +51,10 @@ class String
 
   def sql_expression
     self
+  end
+
+  def to_sql
+    inspect
   end
 
   def path_starts_with?(prefix)
