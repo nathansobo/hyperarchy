@@ -38,11 +38,7 @@ module Model
         operand.build_sql_query(query)
       end
 
-      delegate :sql_from_table_ref, :sql_update_table_ref, :sql_select_list, :to => :operand
-      
-      def sql_query_specification
-        Sql::QuerySpecification.new(:all, sql_select_list, sql_from_table_ref, sql_where_clause_predicates)
-      end
+      delegate :sql_set_quantifier, :sql_select_list, :sql_from_table_ref, :sql_update_table_ref, :to => :operand
 
       def sql_where_clause_predicates
         [predicate.sql_predicate] + operand.sql_where_clause_predicates

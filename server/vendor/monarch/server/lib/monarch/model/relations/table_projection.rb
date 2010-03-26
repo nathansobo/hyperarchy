@@ -14,7 +14,6 @@ module Model
       def initialize(operand, projected_table, &block)
         super(&block)
         @operand, @projected_table = operand, projected_table
-        
       end
 
       def surface_tables
@@ -28,8 +27,8 @@ module Model
 
       delegate :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
 
-      def sql_query_specification
-        Sql::QuerySpecification.new(:all, sql_select_list, sql_from_table_ref, sql_where_clause_predicates)
+      def sql_set_quantifier
+        :all
       end
 
       def sql_update_table_ref

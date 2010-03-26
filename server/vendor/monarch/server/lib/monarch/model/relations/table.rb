@@ -102,9 +102,9 @@ module Model
         query.add_from_table(self)
         query
       end
-
-      def sql_query_specification
-        @sql_query_specification ||= Sql::QuerySpecification.new(:all, sql_select_list, sql_from_table_ref)
+      
+      def sql_set_quantifier
+        :all
       end
 
       def sql_update_table_ref

@@ -19,10 +19,6 @@ module Model
         Sql::Union.new(operands.map {|o| o.build_sql_query(query.clone)})
       end
 
-      def sql_query_specification
-        Sql::QuerySpecification.new(:all, operands.first.sql_select_list, sql_from_table_ref, [])
-      end
-
       def sql_from_table_ref
 #        Sql::JoinedTable.new(:union, operands[0].subquery.sql_from_table_ref, operands[1].subquery.sql_from_table_ref, nil)
       end

@@ -51,6 +51,19 @@ module Model
         from users, blogs
         where users.id = blogs.user_id
       })
+      User.join_to(Blog.where(:title => "Fun")).to_sql.should be_like(%{
+        select
+          users.id as users__id,
+          users.full_name as users__full_name,
+          users.age as users__age,
+          users.signed_up_at as users__signed_up_at,
+          users.has_hair as users__has_hair,
+          blogs.id as blogs__id,
+          blogs.title as blogs__title,
+          blogs.user_id as blogs__user_id
+        from users, blogs
+        where blogs.title = "Fun" and users.id = blogs.user_id
+      })
       User.join_through(Blog).to_sql.should be_like(%{
         select blogs.* from users, blogs where users.id = blogs.user_id
       })

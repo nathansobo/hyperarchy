@@ -8,15 +8,6 @@ module Model
       def sql_predicate
         Sql::Expressions::Neq.new(left_operand.sql_expression, right_operand.sql_expression)
       end
-
-      protected
-      def sql_operator
-        if left_operand.nil? || right_operand.nil?
-          "is not"
-        else
-          "!="
-        end
-      end
     end
   end
 end

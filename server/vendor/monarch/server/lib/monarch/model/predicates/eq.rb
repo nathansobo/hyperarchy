@@ -27,10 +27,6 @@ module Model
         convert_string_to_integer_if_needed
       end
 
-      def to_sql
-        "#{left_operand.to_sql} #{sql_operator} #{right_operand.to_sql}"
-      end
-
       def sql_predicate
         Sql::Expressions::Eq.new(left_operand.sql_expression, right_operand.sql_expression)
       end
@@ -56,14 +52,6 @@ module Model
       end
 
       protected
-
-      def sql_operator
-        if left_operand.nil? || right_operand.nil?
-          "is"
-        else
-          "="
-        end
-      end
 
       def column_operand
         return left_operand if left_operand.instance_of?(ConcreteColumn)

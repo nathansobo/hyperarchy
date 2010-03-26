@@ -51,8 +51,8 @@ module Model
 
       delegate :sql_update_table_ref, :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
 
-      def sql_query_specification
-        Sql::QuerySpecification.new(:all, sql_select_list, sql_from_table_ref, sql_where_clause_predicates)
+      def sql_set_quantifier
+        :all #TODO: make distinct if this projection strips out all primary keys
       end
 
       def build_record_from_database(field_values)

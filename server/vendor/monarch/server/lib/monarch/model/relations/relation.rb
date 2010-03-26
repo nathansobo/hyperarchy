@@ -240,8 +240,14 @@ module Model
         end
       end
 
+      delegate :sql_set_quantifier, :to => :operand
+
+      def sql_query_specification
+        Sql::QuerySpecification.new(sql_set_quantifier, sql_select_list, sql_from_table_ref, sql_where_clause_predicates)
+      end
+
       def sql_update_statement(field_values)
-        @sql_update_statement ||= Sql::UpdateStatement.new(sql_update_table_ref, sql_set_clause_assignments(field_values), sql_from_table_ref, sql_where_clause_predicates)
+        Sql::UpdateStatement.new(sql_update_table_ref, sql_set_clause_assignments(field_values), sql_from_table_ref, sql_where_clause_predicates)
       end
 
       def sql_set_clause_assignments(field_values)

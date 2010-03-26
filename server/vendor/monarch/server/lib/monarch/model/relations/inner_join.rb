@@ -37,8 +37,8 @@ module Model
         right_operand.build_sql_query(query)
       end
 
-      def sql_query_specification
-        Sql::QuerySpecification.new(:all, sql_select_list, sql_from_table_ref)
+      def sql_set_quantifier
+        :all
       end
 
       def sql_select_list
