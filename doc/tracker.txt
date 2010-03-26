@@ -1,5 +1,5 @@
 * when a ranking is created / updated / destroyed, recompute the vote tally
-explode ast.rb into files
+rewrite update in terms of new sql compilation strategy
 deal with union spec
 add tests for equality / inequality comparison with null
 add outer join support
