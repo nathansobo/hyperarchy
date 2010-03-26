@@ -4,10 +4,6 @@ add tests for equality / inequality comparison with null
 add outer join support
 add  group by plus aggregations and join support
 projections that remove all primary keys should add a distinct keyword
-refactor the relational algebra api:
-  make an algebra directory. unify predicates / expressions. columns belong in expressions.
-  make a tuples directory where code pertaining to tuples lives
-
 investigate use of AliasedColumn... projection.rb 87
 why does Tuple#define_field_reader restrict definition of ? methods to concrete (not synthetic) columns?
 election.ranked/unranked candidates must be by user
@@ -41,6 +37,7 @@ enforce that unions and projections have at least one primary key before activat
 
 deferred issues / open questions
 ---------------
+does there actually need to be a separate sql hierarchy? can some of the raw algebra classes take the place of their sql counterparts without loss of clarity?
 should Record#update allow id to be assigned?
 when an update is performed on a relation, records in the identity map can become stale. should I implement relation#reload for relations that have records (not just tuples), which reloads any records in the id map? could be expensive. may want to implement in memory?
 checking for the existence of the session every single request? shouldn't that at least cache it in the identity map?

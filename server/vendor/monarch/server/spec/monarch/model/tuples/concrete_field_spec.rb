@@ -111,7 +111,9 @@ module Model
         end
 
         context "when the column's #type is not :datetime" do
-          it "just returns the #value"
+          it "just returns the #value" do
+            field.value_wire_representation.should == field.value
+          end
         end
       end
     end
