@@ -98,11 +98,6 @@ module Model
         event_nodes.each {|node| node.cancel}
       end
 
-      def build_sql_query(query=Sql::Select.new)
-        query.add_from_table(self)
-        query
-      end
-      
       def sql_set_quantifier
         :all
       end

@@ -31,12 +31,6 @@ module Model
         @tuple_class
       end
 
-      def build_sql_query(query=Sql::Select.new)
-        query.add_condition(predicate)
-        left_operand.build_sql_query(query)
-        right_operand.build_sql_query(query)
-      end
-
       def sql_set_quantifier
         :all
       end

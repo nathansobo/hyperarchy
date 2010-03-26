@@ -33,11 +33,6 @@ module Model
         build_sql_query(Sql::Update.new(convert_keys_to_columns(column_assignments)))
       end
 
-      def build_sql_query(query=Sql::Select.new)
-        query.add_condition(predicate)
-        operand.build_sql_query(query)
-      end
-
       delegate :sql_set_quantifier, :sql_select_list, :sql_from_table_ref, :sql_update_table_ref, :to => :operand
 
       def sql_where_clause_predicates

@@ -20,11 +20,6 @@ module Model
         [projected_table]
       end
 
-      def build_sql_query(query=Sql::Select.new)
-        query.select_clause_columns = projected_table.concrete_columns unless query.has_explicit_select_clause_columns?
-        operand.build_sql_query(query)
-      end
-
       delegate :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
 
       def sql_set_quantifier

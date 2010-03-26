@@ -44,11 +44,6 @@ module Model
         @tuple_class
       end
 
-      def build_sql_query(sql_query=Sql::Select.new)
-        sql_query.select_clause_columns = concrete_columns unless sql_query.has_explicit_select_clause_columns?
-        operand.build_sql_query(sql_query)
-      end
-
       delegate :sql_update_table_ref, :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
 
       def sql_set_quantifier
