@@ -232,7 +232,7 @@ module Model
             end
           end
 
-          context "when passed a subclass of Record and a AliasedColumn" do
+          context "when passed a subclass of Record and a AliasedExpression" do
             it "returns a Projection with all the columns of the record class's table and the other column" do
               projection = join.project(Blog, BlogPost[:body])
               projected_columns = projection.concrete_columns.map(&:expression)

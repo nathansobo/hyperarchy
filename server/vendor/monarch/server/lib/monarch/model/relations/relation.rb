@@ -181,7 +181,7 @@ module Model
 
       def convert_to_columns_if_needed(args)
         args.map do |arg|
-          if arg.is_a?(Expressions::ConcreteColumn) || arg.is_a?(Expressions::AggregationExpression)
+          if arg.is_a?(Expressions::Expression) || arg.instance_of?(Expressions::AliasedExpression)
             arg
           elsif arg.instance_of?(Symbol)
             raise "No column #{arg} found on relation" unless column = column(arg)

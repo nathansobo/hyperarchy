@@ -15,18 +15,16 @@ module Model
         algebra_table.global_name
       end
 
+      def algebra_columns
+        algebra_table.concrete_columns
+      end
+
       def joined_table_refs
         [self]
       end
 
       def join_conditions
         []
-      end
-
-      def derived_columns
-        algebra_table.concrete_columns.map do |column|
-          column.sql_derived_column(self)
-        end
       end
     end
   end

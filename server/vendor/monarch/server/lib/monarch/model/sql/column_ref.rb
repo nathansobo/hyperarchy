@@ -10,6 +10,10 @@ module Model
       def to_sql
         "#{table_ref.name}.#{name}"
       end
+
+      def derive(table_ref, &block)
+        DerivedColumn.new(table_ref, self, block.call(self))
+      end
     end
   end
 end

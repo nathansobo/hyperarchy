@@ -59,7 +59,7 @@ module Model
             tuple = projection.first
             tuple[1].should == expected_count
             tuple[:count].should == expected_count
-            tuple[projected_columns[1]].should == expected_count
+            tuple[projection[1]].should == expected_count
           end
         end
       end

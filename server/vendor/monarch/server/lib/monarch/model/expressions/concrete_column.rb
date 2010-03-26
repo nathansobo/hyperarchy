@@ -28,7 +28,7 @@ module Model
       end
 
       def as(column_alias)
-        AliasedColumn.new(self, column_alias.to_sym)
+        AliasedExpression.new(self, column_alias.to_sym)
       end
 
       def max
@@ -74,10 +74,6 @@ module Model
 
       def sql_expression
         Sql::ColumnRef.new(table.sql_from_table_ref, name)
-      end
-
-      def sql_derived_column(table_ref)
-        Sql::DerivedColumn.new(table_ref, sql_expression)
       end
 
       protected
