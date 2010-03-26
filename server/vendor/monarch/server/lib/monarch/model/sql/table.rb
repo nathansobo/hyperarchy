@@ -19,11 +19,11 @@ module Model
         algebra_table.concrete_columns
       end
 
-      def joined_table_refs
+      def inner_joined_table_refs
         [self]
       end
 
-      def join_conditions
+      def inner_join_conditions
         []
       end
     end

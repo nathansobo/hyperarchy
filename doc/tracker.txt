@@ -1,8 +1,6 @@
 * when a ranking is created / updated / destroyed, recompute the vote tally
-add tests for equality / inequality comparison with null
 add outer join support
 election.ranked/unranked candidates must be by user
-
 
 deal with union spec
 add  group by plus aggregations and join support

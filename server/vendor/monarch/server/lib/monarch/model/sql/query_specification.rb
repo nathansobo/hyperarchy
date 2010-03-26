@@ -3,7 +3,7 @@ module Model
     class QuerySpecification < Block
       # :set_quantifier can be 'distinct' or 'all'
       # :select_list is populated with DerivedColumn or Asterisk instances
-      # :from_clause is populated by a "table reference", which can be a Table, AliasedTable, DerivedTable, or JoinedTable
+      # :from_clause is populated by a "table reference", which can be a Table, AliasedTable, DerivedTable, or InnerJoinedTable
       # :where clause
       # :grouping_column_refs is populated by GroupingColumnRef objects
       attr_accessor :set_quantifier, :select_list, :from_clause_table_refs, :where_clause_predicates, :grouping_column_refs

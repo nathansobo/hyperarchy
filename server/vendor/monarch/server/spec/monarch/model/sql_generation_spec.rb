@@ -108,6 +108,40 @@ module Model
       })
     end
 
+    specify "left joins" do
+      Blog.left_join_to(BlogPost).to_sql.should be_like(%{
+        select
+          blogs.id as blogs__id,
+          blogs.title as blogs__title,
+          blogs.user_id as blogs__user_id,
+          blog_posts.id as blog_posts__id,
+          blog_posts.title as blog_posts__title,
+          blog_posts.body as blog_posts__body,
+          blog_posts.blog_id as blog_posts__blog_id,
+          blog_posts.created_at as blog_posts__created_at,
+          blog_posts.featured as blog_posts__featured
+        from
+          blogs left outer join blog_posts on blogs.id = blog_posts.blog_id
+      })
+
+      Blog.
+        left_join_to(BlogPost.where(:title => "First Post!")).
+        where(BlogPost[:id].eq(nil)).
+        project(Blog).to_sql.should be_like(%{
+        select
+          blogs.*
+        from
+          blogs
+          left outer join blog_posts
+            on blogs.id = blog_posts.blog_id
+            and blog_posts.title = "First Post!"
+        where
+          blog_posts.id is null
+      })
+
+
+    end
+
 #    specify "unions" do
 #      puts union(Blog.where(:title => "Good Times"), Blog.where(:title => "Bad Times")).to_sql
 #    end

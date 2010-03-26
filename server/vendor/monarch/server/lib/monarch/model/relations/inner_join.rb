@@ -1,6 +1,6 @@
 module Model
   module Relations
-    class InnerJoin < Relation
+    class InnerJoin < Join
       class << self
         def from_wire_representation(representation, repository)
           left_operand = Relation.from_wire_representation(representation["left_operand"], repository)
@@ -31,26 +31,14 @@ module Model
         @tuple_class
       end
 
-      def sql_set_quantifier
-        :all
-      end
-
-      def sql_select_list
-        (left_operand.sql_select_list + right_operand.sql_select_list).map do |derived_column_or_asterisk|
-          derived_column_or_asterisk.derive(self) do |derived_column|
-            "#{derived_column.table_ref.name}__#{derived_column.name}"
-          end
-        end.flatten
-      end
-
       def sql_from_table_ref
-        Sql::JoinedTable.new(:inner, left_operand.sql_from_table_ref, right_operand.sql_from_table_ref, sql_join_conditions)
+        Sql::InnerJoinedTable.new(left_operand.sql_from_table_ref, right_operand.sql_from_table_ref, sql_join_conditions)
       end
 
       def sql_join_conditions
         [predicate.sql_predicate]
       end
-
+      
       def sql_where_clause_predicates
         left_operand.sql_where_clause_predicates + right_operand.sql_where_clause_predicates
       end

@@ -4,10 +4,10 @@ module Model
       protected
 
       def flatten_and_uniq_inner_joins
-        @where_clause_predicates = (where_clause_predicates + from_clause_table_refs.first.join_conditions).map do |predicate|
+        @where_clause_predicates = (where_clause_predicates + from_clause_table_refs.first.inner_join_conditions).map do |predicate|
           predicate.flatten
         end.flatten.uniq
-        @from_clause_table_refs = from_clause_table_refs.first.joined_table_refs
+        @from_clause_table_refs = from_clause_table_refs.first.inner_joined_table_refs
       end
 
       def from_clause_sql

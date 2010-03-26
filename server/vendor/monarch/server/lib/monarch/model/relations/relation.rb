@@ -55,27 +55,26 @@ module Model
         Selection.new(self, convert_to_predicate(predicate_or_id_or_hash), &block)
       end
 
-      def join(right_operand, &block)
-        PartiallyConstructedInnerJoin.new(self, convert_to_table_if_needed(right_operand), &block)
+      def join(right_operand)
+        PartiallyConstructedInnerJoin.new(self, convert_to_table_if_needed(right_operand))
       end
 
-      def join_to(right_operand)
-        right_operand = convert_to_table_if_needed(right_operand)
-        left_operand_surface_tables = surface_tables
-        right_operand_surface_tables = right_operand.surface_tables
-        unless right_operand_surface_tables.size == 1
-          raise "#join_to can only be passed relations that have a single surface table"
-        end
-
-        right_surface_table = right_operand_surface_tables.first
-        id_column, foreign_key_column = find_join_columns(left_operand_surface_tables.last, right_surface_table)
-        self.join(right_operand).on(id_column.eq(foreign_key_column))
+      def join_to(right_operand, &block)
+        self.join(right_operand).on(infer_join_predicate(right_operand), &block)
       end
 
-      def join_through(right_operand)
+      def join_through(right_operand, &block)
         right_operand = convert_to_table_if_needed(right_operand)
         right_surface_table = right_operand.surface_tables.first
-        self.join_to(right_operand).project(right_surface_table)
+        self.join_to(right_operand, &block).project(right_surface_table)
+      end
+
+      def left_join(right_operand)
+        PartiallyConstructedLeftJoin.new(self, convert_to_table_if_needed(right_operand))
+      end
+
+      def left_join_to(right_operand, &block)
+        self.left_join(right_operand).on(infer_join_predicate(right_operand), &block)
       end
 
       def project(*args, &block)
@@ -194,6 +193,19 @@ module Model
         end.flatten
       end
 
+      def infer_join_predicate(right_operand)
+        right_operand = convert_to_table_if_needed(right_operand)
+        left_operand_surface_tables = surface_tables
+        right_operand_surface_tables = right_operand.surface_tables
+        unless right_operand_surface_tables.size == 1
+          raise "#join_to can only be passed relations that have a single surface table"
+        end
+
+        right_surface_table = right_operand_surface_tables.first
+        id_column, foreign_key_column = find_join_columns(left_operand_surface_tables.last, right_surface_table)
+        id_column.eq(foreign_key_column)
+      end
+
       def find_join_columns(table_1, table_2)
         if foreign_key = table_2.column("#{table_1.global_name.singularize}_id".to_sym)
           [table_1.column(:id), foreign_key]
@@ -262,8 +274,19 @@ module Model
           @left_operand, @right_operand = left_operand, right_operand
         end
 
-        def on(predicate)
-          InnerJoin.new(left_operand, right_operand, predicate)
+        def on(predicate, &block)
+          InnerJoin.new(left_operand, right_operand, predicate, &block)
+        end
+      end
+
+      class PartiallyConstructedLeftJoin
+        attr_reader :left_operand, :right_operand
+        def initialize(left_operand, right_operand)
+          @left_operand, @right_operand = left_operand, right_operand
+        end
+
+        def on(predicate, &block)
+          LeftOuterJoin.new(left_operand, right_operand, predicate, &block)
         end
       end
     end
