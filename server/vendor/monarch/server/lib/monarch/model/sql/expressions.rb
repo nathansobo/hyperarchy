@@ -1,6 +1,8 @@
 module Model
   module Sql
-    module Predicates
+    # instantiated with ColumnRefs or Expressions
+    module Expressions
+
       class Binary
         attr_reader :left_expression, :right_expression
 
@@ -37,6 +39,12 @@ module Model
         end
       end
 
+      class Plus < Binary
+        def operator_sql
+          "+"
+        end
+      end
+
       class And
         attr_reader :predicates
 
@@ -53,12 +61,6 @@ module Model
         def flatten
           predicates.map {|p| p.flatten}.flatten
         end
-      end
-    end
-
-    module Expressions
-      class Plus
-
       end
 
       class SetFunction

@@ -32,7 +32,7 @@ module Model
       end
 
       def sql_predicate
-        Sql::Predicates::Eq.new(left_operand.sql_expression, right_operand.sql_expression)
+        Sql::Expressions::Eq.new(left_operand.sql_expression, right_operand.sql_expression)
       end
 
       def ==(other)

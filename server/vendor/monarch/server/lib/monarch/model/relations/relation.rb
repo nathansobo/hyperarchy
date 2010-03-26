@@ -94,10 +94,14 @@ module Model
         sql_query_specification.to_sql
       end
 
+      def update(column_assignments)
+        Origin.execute_dui(to_update_sql(column_assignments))
+      end
+
       def to_update_sql(field_values)
         sql_update_statement(field_values).to_sql
       end
-      
+
       def add_to_relational_dataset(dataset)
         all.each do |record|
           record.add_to_relational_dataset(dataset)
@@ -234,6 +238,10 @@ module Model
             [column, value]
           end
         end
+      end
+
+      def sql_update_statement(field_values)
+        @sql_update_statement ||= Sql::UpdateStatement.new(sql_update_table_ref, sql_set_clause_assignments(field_values), sql_from_table_ref, sql_where_clause_predicates)
       end
 
       def sql_set_clause_assignments(field_values)

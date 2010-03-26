@@ -11,7 +11,7 @@ module Model
       end
 
       def sql_predicate
-        Sql::Predicates::And.new(operands.map {|op| op.sql_predicate})
+        Sql::Expressions::And.new(operands.map {|op| op.sql_predicate})
       end
     end
   end

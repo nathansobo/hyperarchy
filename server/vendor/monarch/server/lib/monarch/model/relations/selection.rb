@@ -29,10 +29,6 @@ module Model
         operand.unsafe_create(predicate.force_matching_field_values(field_values))
       end
 
-      def update(column_assignments)
-        Origin.execute_dui(build_sql_update(column_assignments).to_sql)
-      end
-
       def build_sql_update(column_assignments)
         build_sql_query(Sql::Update.new(convert_keys_to_columns(column_assignments)))
       end
@@ -42,14 +38,10 @@ module Model
         operand.build_sql_query(query)
       end
 
-      delegate :sql_table_ref, :sql_select_list, :to => :operand
+      delegate :sql_from_table_ref, :sql_update_table_ref, :sql_select_list, :to => :operand
       
       def sql_query_specification
-        Sql::QuerySpecification.new(:all, sql_select_list, sql_table_ref, sql_where_clause_predicates)
-      end
-
-      def sql_update_statement(field_values)
-        Sql::UpdateStatement.new(sql_table_ref, sql_set_clause_assignments(field_values), nil, sql_where_clause_predicates)
+        Sql::QuerySpecification.new(:all, sql_select_list, sql_from_table_ref, sql_where_clause_predicates)
       end
 
       def sql_where_clause_predicates

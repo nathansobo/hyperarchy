@@ -26,14 +26,18 @@ module Model
         operand.build_sql_query(query)
       end
 
-      delegate :sql_table_ref, :sql_where_clause_predicates, :to => :operand
+      delegate :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
 
       def sql_query_specification
-        Sql::QuerySpecification.new(:all, sql_select_list, operand.sql_table_ref, sql_where_clause_predicates)
+        Sql::QuerySpecification.new(:all, sql_select_list, sql_from_table_ref, sql_where_clause_predicates)
+      end
+
+      def sql_update_table_ref
+        projected_table.sql_from_table_ref
       end
 
       def sql_select_list
-        [Sql::Asterisk.new(projected_table.sql_table_ref)]
+        [Sql::Asterisk.new(projected_table.sql_from_table_ref)]
       end
 
       def build_record_from_database(field_values)

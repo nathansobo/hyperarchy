@@ -76,7 +76,7 @@ module Model
     end
 
     def sql_expression
-      Sql::ColumnRef.new(table.sql_table_ref, name)
+      Sql::ColumnRef.new(table.sql_from_table_ref, name)
     end
 
     def sql_derived_column(table_ref)

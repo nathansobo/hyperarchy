@@ -38,7 +38,7 @@ module Model
       end
 
       def sql_query_specification
-        Sql::QuerySpecification.new(:all, sql_select_list, sql_table_ref)
+        Sql::QuerySpecification.new(:all, sql_select_list, sql_from_table_ref)
       end
 
       def sql_select_list
@@ -49,8 +49,8 @@ module Model
         end.flatten
       end
 
-      def sql_table_ref
-        Sql::JoinedTable.new(:inner, left_operand.sql_table_ref, right_operand.sql_table_ref, sql_join_conditions)
+      def sql_from_table_ref
+        Sql::JoinedTable.new(:inner, left_operand.sql_from_table_ref, right_operand.sql_from_table_ref, sql_join_conditions)
       end
 
       def sql_join_conditions

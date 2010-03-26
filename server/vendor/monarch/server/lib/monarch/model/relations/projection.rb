@@ -49,14 +49,10 @@ module Model
         operand.build_sql_query(sql_query)
       end
 
-      delegate :sql_table_ref, :sql_where_clause_predicates, :to => :operand
+      delegate :sql_update_table_ref, :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
 
       def sql_query_specification
-        Sql::QuerySpecification.new(:all, sql_select_list, operand.sql_table_ref, sql_where_clause_predicates)
-      end
-
-      def sql_update_statement(field_values)
-        Sql::UpdateStatement.new(sql_table_ref, sql_set_clause_assignments(field_values), nil, sql_where_clause_predicates)
+        Sql::QuerySpecification.new(:all, sql_select_list, sql_from_table_ref, sql_where_clause_predicates)
       end
 
       def build_record_from_database(field_values)
@@ -71,7 +67,7 @@ module Model
       protected
       def sql_select_list
         concrete_columns.map do |column|
-          column.sql_derived_column(sql_table_ref)
+          column.sql_derived_column(sql_from_table_ref)
         end
       end
 

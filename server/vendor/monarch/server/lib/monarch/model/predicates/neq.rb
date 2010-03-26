@@ -6,7 +6,7 @@ module Model
       end
 
       def sql_predicate
-        Sql::Predicates::Neq.new(left_operand.sql_expression, right_operand.sql_expression)
+        Sql::Expressions::Neq.new(left_operand.sql_expression, right_operand.sql_expression)
       end
 
       protected
