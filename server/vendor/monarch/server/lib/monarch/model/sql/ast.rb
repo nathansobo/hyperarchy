@@ -217,15 +217,15 @@ module Model
 
     module Predicates
       # instantiated with ColumnRefs or Expressions
-      class Eq
-        attr_accessor :left_expression, :right_expression
+      class Binary
+        attr_reader :left_expression, :right_expression
 
         def initialize(left_expression, right_expression)
           @left_expression, @right_expression = left_expression, right_expression
         end
 
         def to_sql
-          @to_sql ||= "#{left_expression.to_sql} = #{right_expression.to_sql}"
+          @to_sql ||= "#{left_expression.to_sql} #{operator_sql} #{right_expression.to_sql}"
         end
 
         def flatten
@@ -233,11 +233,23 @@ module Model
         end
 
         def hash
-          @hash ||= [left_expression.to_sql, right_expression.to_sql].sort.join(" = ").hash
+          @hash ||= [left_expression.to_sql, right_expression.to_sql].sort.join(operator_sql).hash
         end
 
         def eql?(other)
           other.hash == hash
+        end
+      end
+
+      class Eq < Binary
+        def operator_sql
+          "="
+        end
+      end
+
+      class Neq < Binary
+        def operator_sql
+          "!="
         end
       end
 
