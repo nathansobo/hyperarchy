@@ -218,7 +218,7 @@ module Model
       def hash_to_predicate(hash)
         predicates = []
         hash.each do |column_name, value|
-          if value.is_a?(Tuple) && column = column("#{column_name}_id")
+          if value.is_a?(Tuples::Tuple) && column = column("#{column_name}_id")
             predicates.push(column.eq(value.id))
           else
             unless column = column(column_name)

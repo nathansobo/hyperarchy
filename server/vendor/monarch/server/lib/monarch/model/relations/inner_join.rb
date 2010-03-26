@@ -26,7 +26,7 @@ module Model
 
       def tuple_class
         return @tuple_class if @tuple_class
-        @tuple_class = Class.new(CompositeTuple)
+        @tuple_class = Class.new(Tuples::CompositeTuple)
         @tuple_class.relation = self
         @tuple_class
       end

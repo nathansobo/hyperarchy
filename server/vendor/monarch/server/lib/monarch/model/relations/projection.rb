@@ -44,7 +44,7 @@ module Model
       
       def tuple_class
         return @tuple_class if @tuple_class
-        @tuple_class = Class.new(Tuple)
+        @tuple_class = Class.new(Tuples::Tuple)
         @tuple_class.relation = self
         @tuple_class
       end
