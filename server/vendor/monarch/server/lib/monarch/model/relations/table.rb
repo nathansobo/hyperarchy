@@ -107,6 +107,10 @@ module Model
         @sql_query_specification ||= Sql::QuerySpecification.new(:all, sql_select_list, sql_table_ref)
       end
 
+      def sql_update_statement(field_values)
+        @sql_update_statement ||= Sql::UpdateStatement.new(sql_table_ref, sql_set_clause_assignments(field_values), nil, nil)
+      end
+
       def sql_select_list
         @sql_select_list ||= [Sql::Asterisk.new(sql_table_ref)]
       end

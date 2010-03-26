@@ -55,6 +55,10 @@ module Model
         Sql::QuerySpecification.new(:all, sql_select_list, operand.sql_table_ref, sql_where_clause_predicates)
       end
 
+      def sql_update_statement(field_values)
+        Sql::UpdateStatement.new(sql_table_ref, sql_set_clause_assignments(field_values), nil, sql_where_clause_predicates)
+      end
+
       def build_record_from_database(field_values)
         tuple_class.new(field_values)
       end

@@ -93,6 +93,10 @@ module Model
       def to_sql
         sql_query_specification.to_sql
       end
+
+      def to_update_sql(field_values)
+        sql_update_statement(field_values).to_sql
+      end
       
       def add_to_relational_dataset(dataset)
         all.each do |record|
@@ -229,6 +233,12 @@ module Model
           elsif column = column(key)
             [column, value]
           end
+        end
+      end
+
+      def sql_set_clause_assignments(field_values)
+        convert_keys_to_columns(field_values).transform do |column, value|
+          [column.sql_expression, value.sql_expression]
         end
       end
 

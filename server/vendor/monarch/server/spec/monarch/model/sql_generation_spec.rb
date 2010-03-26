@@ -3,19 +3,36 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 module Model
   describe "SQL generation" do
     specify "tables" do
-      User.table.to_sql.should == %{select users.* from users}
+      User.table.to_sql.should be_like(%{
+        select users.* from users
+      })
+      User.table.to_update_sql(:full_name => "John Travolta", :age => 47).should be_like(%{
+        update users set age = 47, full_name = "John Travolta"
+      })
     end
 
     specify "combined selections and projections" do
       User.where({:full_name => "Amory Lovins", :age => 40}).to_sql.should be_like(%{
         select users.* from users where users.age = 40 and users.full_name = "Amory Lovins"
       })
+      User.where({:full_name => "Amory Lovins", :age => 40}).to_update_sql(:full_name => "Amorous Loving", :age => 30).should be_like(%{
+        update users set age = 30, full_name = "Amorous Loving" where users.age = 40 and users.full_name = "Amory Lovins"
+      })
+
       User.where({:age => 40}).project(:id, :full_name).to_sql.should be_like(%{
         select users.id, users.full_name from users where users.age = 40
       })
+      User.where({:age => 40}).project(:id, :full_name).to_update_sql(:full_name => "Lucile Ball").should be_like(%{
+        update users set full_name = "Lucile Ball" where users.age = 40
+      })
+
       User.project(:id, :full_name).where({:full_name => "Nathan Sobo"}).to_sql.should be_like(%{
         select users.id, users.full_name from users where users.full_name = "Nathan Sobo"
       })
+      User.project(:id, :full_name).where({:full_name => "Nathan Sobo"}).to_update_sql({:full_name => "Nath Sobo"}).should be_like(%{
+        update users set full_name = "Nath Sobo" where users.full_name = "Nathan Sobo"
+      })
+
       User.project(:id, :full_name).where({:full_name => "Nathan Sobo"}).project(:id).to_sql.should be_like(%{
         select users.id from users where users.full_name = "Nathan Sobo"
       })
@@ -56,7 +73,6 @@ module Model
           and blogs.title = "I Can Drink Now"
           and users.age = 21
           and users.id = blogs.user_id
-
       })
     end
 

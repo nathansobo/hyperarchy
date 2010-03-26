@@ -34,6 +34,7 @@ make relations work with beEmpty matcher, possibly by tying into or creating som
 rename table.globalName to name
 support for anonymous modules in foundation.js
 add a limit operator to the server side and use it for Relation#first
+disallow updates to columns not exposed in a projection
 
 deferred issues / open questions
 ---------------
