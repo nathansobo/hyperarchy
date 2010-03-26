@@ -8,6 +8,10 @@ module Model
         @column, @column_alias = column, column_alias
       end
 
+      def derive(relation)
+        DerivedColumn.new(relation, column, column_alias)
+      end
+
       def eq(right_operand)
         Expressions::Eq.new(self, right_operand)
       end

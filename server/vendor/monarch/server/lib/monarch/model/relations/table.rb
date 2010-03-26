@@ -33,7 +33,7 @@ module Model
         case column_or_name
         when String, Symbol
           concrete_columns_by_name[column_or_name.to_sym] || synthetic_columns_by_name[column_or_name.to_sym]
-        when Column
+        when Expressions::Column
           column_or_name if column_or_name.table == self
         end
       end

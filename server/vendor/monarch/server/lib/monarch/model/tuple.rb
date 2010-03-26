@@ -10,6 +10,7 @@ module Model
 
       protected
       def define_field_reader(column)
+        return unless column.name
         define_method(column.name) do
           get_field_value(column)
         end
@@ -97,7 +98,7 @@ module Model
     end
 
     def evaluate(term)
-      if term.is_a?(Column)
+      if term.is_a?(Expressions::Column)
         field(term).value
       else
         term

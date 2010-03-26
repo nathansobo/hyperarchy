@@ -80,10 +80,6 @@ module Model
         Sql::DerivedColumn.new(table_ref, sql_expression)
       end
 
-      def to_select_clause_sql
-        "#{to_sql} as #{name}"
-      end
-
       protected
       def schema_type
         case type

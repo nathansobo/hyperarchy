@@ -1,6 +1,6 @@
 module Model
   module Expressions
-    class AggregationExpression
+    class AggregationExpression < Expression
       attr_reader :function_name, :column, :expression_alias
       delegate :convert_value_for_storage, :convert_value_for_wire, :to => :column
 

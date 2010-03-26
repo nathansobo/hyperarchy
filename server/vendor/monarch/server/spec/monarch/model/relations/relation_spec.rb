@@ -209,38 +209,38 @@ module Model
             it "returns a Projection with the given columns as its #concrete_columns" do
               blog_title_alias = Blog[:title].as(:blog_title)
               projection = join.project(blog_title_alias, BlogPost[:title])
-              projection.concrete_columns.should == [blog_title_alias, BlogPost[:title]]
+              projection.concrete_columns.map(&:expression).should == [Blog[:title], BlogPost[:title]]
             end
           end
 
           context "when passed symbols" do
             it "returns a projection with the first column in the underlying relation whose name matches each symbol" do
               projection = join.project(:id, :title, :blog_id)
-              projection.concrete_columns.should == [Blog[:id], Blog[:title], BlogPost[:blog_id]]
+              projection.concrete_columns.map(&:expression).should == [Blog[:id], Blog[:title], BlogPost[:blog_id]]
             end
           end
 
           context "when passed a table and a column" do
             it "returns a Projection with all the columns of the table and the other column" do
               projection = join.project(Blog.table, BlogPost[:body])
-              concrete_columns = projection.concrete_columns
+              projected_columns = projection.concrete_columns.map(&:expression)
 
               Blog.table.concrete_columns.each do |column|
-                concrete_columns.should include column
+                projected_columns.should include column
               end
-              concrete_columns.should include(BlogPost[:body])
+              projected_columns.should include(BlogPost[:body])
             end
           end
 
           context "when passed a subclass of Record and a AliasedColumn" do
             it "returns a Projection with all the columns of the record class's table and the other column" do
               projection = join.project(Blog, BlogPost[:body])
-              concrete_columns = projection.concrete_columns
+              projected_columns = projection.concrete_columns.map(&:expression)
 
               Blog.table.concrete_columns.each do |column|
-                concrete_columns.should include column
+                projected_columns.should include column
               end
-              concrete_columns.should include(BlogPost[:body])
+              projected_columns.should include(BlogPost[:body])
             end
           end
         end

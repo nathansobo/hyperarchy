@@ -67,10 +67,9 @@ module Model
 
       def convert_string_to_integer_if_needed
         return unless Model.convert_strings_to_keys
-
-        if left_operand.instance_of?(ConcreteColumn) && left_operand.type == :key && right_operand.instance_of?(String)
+        if left_operand.is_a?(Column) && left_operand.type == :key && right_operand.instance_of?(String)
           @right_operand = left_operand.convert_value_for_storage(right_operand)
-        elsif right_operand.instance_of?(ConcreteColumn) && right_operand.type == :key && left_operand.instance_of?(String)
+        elsif right_operand.is_a?(Column) && right_operand.type == :key && left_operand.instance_of?(String)
           @left_operand = right_operand.convert_value_for_storage(left_operand)
         end 
       end

@@ -2,15 +2,18 @@ module Model
   module Relations
     class Projection < Relations::Relation
 
-      attr_reader :operand, :concrete_columns_by_name
+      attr_reader :operand, :concrete_columns, :concrete_columns_by_name, :concrete_columns_by_underlying_expression
       delegate :tables, :to => :operand
 
-      def initialize(operand, concrete_columns, &block)
+      def initialize(operand, projected_expressions, &block)
         super(&block)
-        @operand, @concrete_columns = operand, concrete_columns
-        @concrete_columns_by_name = ActiveSupport::OrderedHash.new
-        concrete_columns.each do |column|
-          concrete_columns_by_name[column.name] = column
+        @operand = operand
+        @concrete_columns = projected_expressions.map {|expression| expression.derive(self)}
+        @concrete_columns_by_name = {}
+        @concrete_columns_by_underlying_expression = {}
+        concrete_columns.each do |derived_column|
+          concrete_columns_by_name[derived_column.name] = derived_column if derived_column.name
+          concrete_columns_by_underlying_expression[derived_column.expression] = derived_column
         end
       end
 
@@ -18,18 +21,20 @@ module Model
         first[0]
       end
 
-      def concrete_columns
-        concrete_columns_by_name.values
-      end
-
-      def column(column_or_name_or_index)
-        case column_or_name_or_index
+      def column(expression_or_name_or_index)
+        case expression_or_name_or_index
         when String, Symbol
-          concrete_columns_by_name[column_or_name_or_index]
+          concrete_columns_by_name[expression_or_name_or_index]
+        when Expressions::Expression
+          if (concrete_columns.include?(expression_or_name_or_index))
+            expression_or_name_or_index
+          else
+            concrete_columns_by_underlying_expression[expression_or_name_or_index]
+          end
         when Expressions::ConcreteColumn, Expressions::AggregationExpression
-          column_or_name_or_index
+          expression_or_name_or_index
         when Integer
-          concrete_columns[column_or_name_or_index]
+          concrete_columns[expression_or_name_or_index]
         end
       end
 
@@ -84,9 +89,7 @@ module Model
       def project_tuple(tuple)
         field_values = {}
         concrete_columns_by_name.each do |name, column|
-          column = column.column if column.instance_of?(Expressions::AliasedColumn)
-          field = tuple.field(column)
-          field_values[name] = field.value if field
+          field_values[name] = tuple.evaluate(column.expression)
         end
         tuple_class.new(field_values)
       end
