@@ -13,7 +13,7 @@ module Model
       end
 
       it "defines an :id ConcreteColumn on the subclass" do
-        BlogPost[:id].class.should == ConcreteColumn
+        BlogPost[:id].class.should == Expressions::ConcreteColumn
         BlogPost[:id].name.should == :id
         BlogPost[:id].type.should == :key
       end

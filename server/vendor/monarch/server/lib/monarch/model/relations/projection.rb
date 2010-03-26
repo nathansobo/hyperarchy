@@ -26,7 +26,7 @@ module Model
         case column_or_name_or_index
         when String, Symbol
           concrete_columns_by_name[column_or_name_or_index]
-        when ConcreteColumn, AggregationExpression
+        when Expressions::ConcreteColumn, Expressions::AggregationExpression
           column_or_name_or_index
         when Integer
           concrete_columns[column_or_name_or_index]
@@ -84,7 +84,7 @@ module Model
       def project_tuple(tuple)
         field_values = {}
         concrete_columns_by_name.each do |name, column|
-          column = column.column if column.instance_of?(AliasedColumn)
+          column = column.column if column.instance_of?(Expressions::AliasedColumn)
           field = tuple.field(column)
           field_values[name] = field.value if field
         end

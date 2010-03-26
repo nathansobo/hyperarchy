@@ -14,11 +14,11 @@ module Model
       end
 
       def define_concrete_column(name, type, options={})
-        concrete_columns_by_name[name] = ConcreteColumn.new(self, name, type, options)
+        concrete_columns_by_name[name] = Expressions::ConcreteColumn.new(self, name, type, options)
       end
 
       def define_synthetic_column(name, type, signal_definition)
-        synthetic_columns_by_name[name] = SyntheticColumn.new(self, name, type, signal_definition)
+        synthetic_columns_by_name[name] = Expressions::SyntheticColumn.new(self, name, type, signal_definition)
       end
 
       def concrete_columns

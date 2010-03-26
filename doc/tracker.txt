@@ -8,6 +8,8 @@ refactor the relational algebra api:
   make an algebra directory. unify predicates / expressions. columns belong in expressions.
   make a tuples directory where code pertaining to tuples lives
 
+investigate use of AliasedColumn... projection.rb 87
+why does Tuple#define_field_reader restrict definition of ? methods to concrete (not synthetic) columns?
 election.ranked/unranked candidates must be by user
 test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
 ranking removal x is only visible when a candidate is ranked and hovered over

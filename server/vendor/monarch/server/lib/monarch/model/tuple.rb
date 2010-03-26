@@ -14,7 +14,7 @@ module Model
           get_field_value(column)
         end
 
-        if column.instance_of?(ConcreteColumn) && column.type == :boolean
+        if column.instance_of?(Expressions::ConcreteColumn) && column.type == :boolean
           define_method("#{column.name}?") do
             get_field_value(column)
           end
