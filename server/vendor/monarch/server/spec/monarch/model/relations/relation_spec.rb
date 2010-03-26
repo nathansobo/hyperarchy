@@ -259,7 +259,7 @@ module Model
           end
 
           context "when passed a Hash" do
-            it "converts the hash into a conjunction of predicates" do
+            it "converts the hash into a conjunction of expressions" do
               BlogPost.table.find(:body => "Millet").should == BlogPost.where(BlogPost[:body].eq("Millet")).first
             end
 

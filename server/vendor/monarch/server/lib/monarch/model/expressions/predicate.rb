@@ -1,5 +1,5 @@
 module Model
-  module Predicates
+  module Expressions
     class Predicate
       class << self
         def from_wire_representation(representation, repository)

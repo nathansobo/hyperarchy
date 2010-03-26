@@ -1,7 +1,7 @@
 (function(Monarch) {
 
-//= require "predicates/predicate"
-//= require "predicates/eq"
-//= require "predicates/and"
+//= require "expressions/predicate"
+//= require "expressions/eq"
+//= require "expressions/and"
 
 })(Monarch);

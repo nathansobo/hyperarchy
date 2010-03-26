@@ -4,7 +4,7 @@ module Model
       class << self
         def from_wire_representation(representation, repository)
           operand = Relation.from_wire_representation(representation["operand"], repository)
-          predicate = Predicates::Predicate.from_wire_representation(representation["predicate"], repository)
+          predicate = Expressions::Predicate.from_wire_representation(representation["predicate"], repository)
           new(operand, predicate)
         end
       end

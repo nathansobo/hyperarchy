@@ -208,7 +208,7 @@ module Model
         case id_or_predicate_or_hash
         when Hash
           hash_to_predicate(id_or_predicate_or_hash)
-        when Predicates::Predicate
+        when Expressions::Predicate
           id_or_predicate_or_hash
         else
           column(:id).eq(id_or_predicate_or_hash)
@@ -227,7 +227,7 @@ module Model
             predicates.push(column.eq(value))
           end
         end
-        predicates.length == 1 ? predicates.first : Predicates::And.new(predicates)
+        predicates.length == 1 ? predicates.first : Expressions::And.new(predicates)
       end
 
       def convert_keys_to_columns(hash)

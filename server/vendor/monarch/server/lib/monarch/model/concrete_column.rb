@@ -15,11 +15,11 @@ module Model
     end
 
     def eq(right_operand)
-      Predicates::Eq.new(self, right_operand)
+      Expressions::Eq.new(self, right_operand)
     end
 
     def neq(right_operand)
-      Predicates::Neq.new(self, right_operand)
+      Expressions::Neq.new(self, right_operand)
     end
 
     def +(right_operand)

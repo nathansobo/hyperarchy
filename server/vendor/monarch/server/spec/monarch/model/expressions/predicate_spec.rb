@@ -1,11 +1,11 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../../monarch_spec_helper")
 
 module Model
-  module Predicates
+  module Expressions
     describe Predicate do
       describe ".from_wire_representation" do
         context "when 'type' is 'eq'" do
-          it "delegates to .from_wire_representation on Predicates::Eq" do
+          it "delegates to .from_wire_representation on Expressions::Eq" do
             wire_representation = {
               "type" => "eq",
               "left_operand" => {

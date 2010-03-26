@@ -29,7 +29,7 @@ module Model
 
             selection.class.should == Relations::Selection
             selection.operand.should == repository.resolve_table_name(:blog_posts)
-            selection.predicate.class.should == Predicates::Eq
+            selection.predicate.class.should == Expressions::Eq
             selection.predicate.left_operand.should == BlogPost[:blog_id]
             selection.predicate.right_operand.should == "grain".hash
           end
@@ -39,9 +39,9 @@ module Model
       attr_reader :operand, :predicate, :selection, :predicate_2, :composite_selection
       before do
         @operand = BlogPost.table
-        @predicate = Predicates::Eq.new(BlogPost[:blog_id], "grain")
+        @predicate = Expressions::Eq.new(BlogPost[:blog_id], "grain")
         @selection = Selection.new(operand, predicate)
-        @predicate_2 = Predicates::Eq.new(BlogPost[:body], "Barley")
+        @predicate_2 = Expressions::Eq.new(BlogPost[:body], "Barley")
         @composite_selection = Selection.new(selection, predicate_2)
       end
 
@@ -92,7 +92,7 @@ module Model
 
       describe "#==" do
         it "structurally compares the receiver with the operand" do
-          predicate_2 = Predicates::Eq.new(BlogPost[:blog_id], "grain")
+          predicate_2 = Expressions::Eq.new(BlogPost[:blog_id], "grain")
           selection_2 = Selection.new(operand, predicate_2)
 
           selection.should == selection_2

@@ -16,7 +16,7 @@ Screw.Unit(function(c) { with(c) {
     })
 
     describe("#evaluate", function() {
-      context("when both predicates evaluate to true", function() {
+      context("when both expressions evaluate to true", function() {
         it("returns true", function() {
           expect(operand1.evaluate(record)).to(beTrue);
           expect(operand2.evaluate(record)).to(beTrue);

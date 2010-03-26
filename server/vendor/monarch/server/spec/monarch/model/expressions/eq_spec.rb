@@ -1,7 +1,7 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../../monarch_spec_helper")
 
 module Model
-  module Predicates
+  module Expressions
     describe Eq do
       describe "class methods" do
         describe ".from_wire_representation" do

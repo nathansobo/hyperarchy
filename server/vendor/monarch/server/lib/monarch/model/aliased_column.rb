@@ -8,7 +8,7 @@ module Model
     end
 
     def eq(right_operand)
-      Predicates::Eq.new(self, right_operand)
+      Expressions::Eq.new(self, right_operand)
     end
 
     def name

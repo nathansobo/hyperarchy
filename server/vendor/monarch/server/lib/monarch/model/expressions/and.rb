@@ -1,5 +1,5 @@
 module Model
-  module Predicates
+  module Expressions
     class And < Predicate
       attr_reader :operands
       def initialize(operands)

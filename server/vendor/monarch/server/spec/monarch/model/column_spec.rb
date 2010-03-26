@@ -18,9 +18,9 @@ module Model
 
     describe "instance methods" do
       describe "#eq" do
-        it "returns an instance of Predicates::Eq with self as #left_operand and the argument as #right_operand" do
+        it "returns an instance of Expressions::Eq with self as #left_operand and the argument as #right_operand" do
           predicate = BlogPost[:id].eq("grain_quinoa")
-          predicate.class.should == Predicates::Eq
+          predicate.class.should == Expressions::Eq
           predicate.left_operand.should == BlogPost[:id]
           predicate.right_operand.should == "grain_quinoa".hash
         end

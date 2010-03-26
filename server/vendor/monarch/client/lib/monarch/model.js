@@ -20,7 +20,7 @@
 //= require "model/synthetic_column"
 //= require "model/order_by_column"
 //= require "model/relations"
-//= require "model/predicates"
+//= require "model/expressions"
 
 _.module("Monarch.Model", {
   allowStringKeys: false

@@ -1,5 +1,5 @@
 module Model
-  module Predicates
+  module Expressions
     class Neq < Eq
       def force_matching_field_values(field_values={})
         raise "Not implemented for Neq"
