@@ -25,17 +25,21 @@ module Model
         def eql?(other)
           other.hash == hash
         end
+
+        def has_nil_operand?
+          left_expression.nil? || right_expression.nil?
+        end
       end
 
       class Eq < Binary
         def operator_sql
-          "="
+          has_nil_operand?? "is" : "="
         end
       end
 
       class Neq < Binary
         def operator_sql
-          "!="
+          has_nil_operand?? "is not" : "!="
         end
       end
 
