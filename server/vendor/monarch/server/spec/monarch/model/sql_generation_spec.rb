@@ -139,12 +139,24 @@ module Model
           blog_posts.id is null
       })
 
+      Blog.
+        left_join_to(BlogPost.where(:title => "First Post!")).
+        where(BlogPost[:id].eq(nil)).
+        project(Blog).to_update_sql(:title => "Zeroth Post!").should be_like(%{
+        update
+          blogs
+        set
+          title = "Zeroth Post!"
+        from
+          blogs
+          left outer join blog_posts
+            on blogs.id = blog_posts.blog_id
+            and blog_posts.title = "First Post!"
+        where
+          blog_posts.id is null
 
+      })
     end
-
-#    specify "unions" do
-#      puts union(Blog.where(:title => "Good Times"), Blog.where(:title => "Bad Times")).to_sql
-#    end
 
     specify "projections involving aggregation functions composed on top of other constructs" do
       User.project(User[:id].count).to_sql.should be_like(%{select count(users.id) from users})
