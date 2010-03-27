@@ -52,7 +52,7 @@ module Model
       end
 
       def where(predicate_or_id_or_hash, &block)
-        Selection.new(self, convert_to_predicate(predicate_or_id_or_hash), &block)
+        Selection.new(self, convert_to_predicate_if_needed(predicate_or_id_or_hash), &block)
       end
 
       def join(right_operand)
@@ -216,7 +216,7 @@ module Model
         end
       end
 
-      def convert_to_predicate(id_or_predicate_or_hash)
+      def convert_to_predicate_if_needed(id_or_predicate_or_hash)
         case id_or_predicate_or_hash
         when Hash
           hash_to_predicate(id_or_predicate_or_hash)
@@ -229,14 +229,28 @@ module Model
 
       def hash_to_predicate(hash)
         predicates = []
-        hash.each do |column_name, value|
-          if value.is_a?(Tuples::Tuple) && column = column("#{column_name}_id")
+        hash.each do |key, value|
+          if value.is_a?(Tuples::Tuple) && column = column("#{key}_id")
             predicates.push(column.eq(value.id))
           else
-            unless column = column(column_name)
-              raise "No such column: #{column_name}"
+
+            left_operand = if key.instance_of?(Symbol)
+              returning(column(key)) do |column|
+                raise "No such column: #{key}" unless column
+              end
+            else
+              key
             end
-            predicates.push(column.eq(value))
+
+            right_operand = if value.instance_of?(Symbol)
+              returning(column(value)) do |column|
+                raise "No such column: #{value}" unless column
+              end
+            else
+              value
+            end
+
+            predicates.push(left_operand.eq(right_operand))
           end
         end
         predicates.length == 1 ? predicates.first : Expressions::And.new(predicates)

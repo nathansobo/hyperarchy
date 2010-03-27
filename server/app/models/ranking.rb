@@ -8,20 +8,33 @@ class Ranking < Model::Record
   belongs_to :candidate
   belongs_to :election
 
+
+  def rankings_by_same_user
+    Ranking.where(:user_id => user_id, :election_id => election_id)
+  end
+
+  def higher_rankings_by_same_user
+    rankings_by_same_user.where(Ranking[:position] < position)
+  end
+
+  def lower_rankings_by_same_user
+    rankings_by_same_user.where(Ranking[:position] > position)
+  end
+
+  def majorities_where_ranked_candidate_is_winner
+    Majority.where(:winner_id => candidate_id)
+  end
+
   def after_create
-    p election.majorities.where(:winner_id => candidate_id).all
-
-
     election_candidates = Candidate.where(:election_id => election_id)
-    rankings_for_election_by_user = Ranking.where(:user_id => user_id, :election_id => election_id)
 
-    election_candidates.left_join_to(rankings_for_election_by_user)
+    majorities_to_increment =
+      majorities_where_ranked_candidate_is_winner.
+        left_join(higher_rankings_by_same_user).on(:loser_id => :candidate_id).
+        where(:candidate_id => nil).
+        project(Majority)
 
-
-    election.rankings
-
-
-    election.majorities.where(:winner_id => candidate_id).update(:count => Majority[:count] + 1)
+    majorities_to_increment.update(:count => Majority[:count] + 1)
   end
 
 end

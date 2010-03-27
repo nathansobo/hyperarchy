@@ -1,8 +1,29 @@
 module Model
   module Relations
     class Join < Relation
+      attr_reader :left_operand, :right_operand, :predicate
+      
+      def initialize(left_operand, right_operand, predicate_or_hash, &block)
+        super(&block)
+        @left_operand, @right_operand = left_operand, right_operand
+        @predicate = convert_to_predicate_if_needed(predicate_or_hash)
+      end
 
+      def column(name)
+        left_operand.column(name) || right_operand.column(name)
+      end
+      
       protected
+
+      def convert_hash_to_join_predicate_if_needed(predicate_or_hash)
+        if predicate_or_hash.instance_of?(Hash)
+
+          
+
+        else
+          predicate_or_hash
+        end
+      end
 
       def sql_set_quantifier
         :all

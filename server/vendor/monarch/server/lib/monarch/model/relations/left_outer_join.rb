@@ -1,13 +1,6 @@
 module Model
   module Relations
     class LeftOuterJoin < Join
-      attr_reader :left_operand, :right_operand, :predicate
-
-      def initialize(left_operand, right_operand, predicate, &block)
-        super(&block)
-        @left_operand, @right_operand, @predicate = left_operand, right_operand, predicate
-      end
-
       def sql_join_type
         :left_outer
       end

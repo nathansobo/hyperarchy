@@ -27,6 +27,10 @@ module Model
         Expressions::Plus.new(self, right_operand)
       end
 
+      def <(right_operand)
+        Expressions::LessThan.new(self, right_operand)
+      end
+
       def as(column_alias)
         AliasedExpression.new(self, column_alias.to_sym)
       end

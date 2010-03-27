@@ -44,6 +44,16 @@ class Fixnum
   end
 end
 
+class Float
+  def sql_expression
+    self
+  end
+
+  def to_sql
+    inspect
+  end
+end
+
 class String
   def starts_with?(prefix)
     index(prefix) == 0

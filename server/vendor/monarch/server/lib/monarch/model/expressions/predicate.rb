@@ -1,6 +1,6 @@
 module Model
   module Expressions
-    class Predicate
+    class Predicate < Expression
       class << self
         def from_wire_representation(representation, repository)
           case representation["type"]

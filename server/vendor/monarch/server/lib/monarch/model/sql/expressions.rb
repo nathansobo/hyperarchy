@@ -49,6 +49,12 @@ module Model
         end
       end
 
+      class LessThan < Binary
+        def operator_sql
+          "<"
+        end
+      end
+
       class And
         attr_reader :predicates
 

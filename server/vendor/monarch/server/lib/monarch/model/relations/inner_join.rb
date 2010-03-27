@@ -10,16 +10,6 @@ module Model
         end
       end
 
-      attr_reader :left_operand, :right_operand, :predicate
-      def initialize(left_operand, right_operand, predicate, &block)
-        super(&block)
-        @left_operand, @right_operand, @predicate = left_operand, right_operand, predicate
-      end
-
-      def column(name)
-        left_operand.column(name) || right_operand.column(name)
-      end
-
       def surface_tables
         left_operand.surface_tables + right_operand.surface_tables
       end
