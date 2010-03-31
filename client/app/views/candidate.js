@@ -10,7 +10,7 @@ _.constructor("Views.Candidate", View.Template, {
   }},
 
   viewProperties: {
-    propertyAccessors: ["candidate", "ranking"],
+    propertyAccessors: ["candidate"],
 
     ranking: {
       afterChange: function(ranking) {

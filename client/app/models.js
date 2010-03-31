@@ -3,4 +3,3 @@
 //= require "models/organization"
 //= require "models/candidate"
 //= require "models/ranking"
-//= require "models/majority"

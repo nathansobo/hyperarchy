@@ -52,15 +52,9 @@ Screw.Unit(function(c) { with(c) {
 
         mockProxy(Ranking, 'createOrUpdate');
 
-        var itemA = View.build(function(b) {
-          b.li({candidateId: candidateA.id()});
-        });
-        var itemB = View.build(function(b) {
-          b.li({candidateId: candidateB.id()});
-        });
-        var itemC = View.build(function(b) {
-          b.li({candidateId: candidateC.id()});
-        });
+        var itemA = Views.Candidate.toView({candidate: candidateA});
+        var itemB = Views.Candidate.toView({candidate: candidateB});
+        var itemC = Views.Candidate.toView({candidate: candidateC});
 
         // simulate insertion with jQuery-UI sortable
         view.rankingsOl.append(itemA);
@@ -75,7 +69,6 @@ Screw.Unit(function(c) { with(c) {
         view.handleUpdate(itemC);
         expect(Ranking.createOrUpdate).to(haveBeenCalled, withArgs(user, election, candidateC, candidateB, candidateA));
 
-        itemB.remove();
         itemB.insertAfter(itemA);
         view.handleUpdate(itemB);
         expect(Ranking.createOrUpdate).to(haveBeenCalled, withArgs(user, election, candidateB, candidateA, null));
