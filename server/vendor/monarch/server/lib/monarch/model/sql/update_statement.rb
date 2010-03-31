@@ -1,9 +1,8 @@
 module Model
   module Sql
     class UpdateStatement < Block
-      attr_reader :target_table_ref, :set_clause_assignments, :from_clause_table_refs, :where_clause_predicates
-      def initialize(target_table_ref, set_clause_assignments, from_clause_table_ref, where_clause_predicates)
-        @target_table_ref = target_table_ref
+      attr_reader :set_clause_assignments, :from_clause_table_refs, :where_clause_predicates
+      def initialize(set_clause_assignments, from_clause_table_ref, where_clause_predicates)
         @set_clause_assignments = set_clause_assignments
         @from_clause_table_refs = [from_clause_table_ref].compact
         @where_clause_predicates = where_clause_predicates || []
@@ -13,10 +12,9 @@ module Model
 
       def to_sql
         ["update",
-         target_table_ref.name,
+         from_tables_sql,
          "set",
          set_clause_assignments_sql,
-         from_clause_sql,
          where_clause_sql
         ].join(" ")
       end
@@ -24,12 +22,8 @@ module Model
       protected
       def set_clause_assignments_sql
         set_clause_assignments.map do |column_ref, expression|
-          "#{column_ref.name} = #{expression.to_sql}"
+          "#{column_ref.to_sql} = #{expression.to_sql}"
         end.sort.join(", ")
-      end
-
-      def from_clause_sql
-        super unless from_clause_table_refs == [target_table_ref]
       end
     end
   end

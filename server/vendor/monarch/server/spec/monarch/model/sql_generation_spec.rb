@@ -8,7 +8,7 @@ module Model
       })
 
       User.table.to_update_sql(:full_name => "John Travolta", :age => 47).should be_like(%{
-        update users set age = 47, full_name = "John Travolta"
+        update users set users.age = 47, users.full_name = "John Travolta"
       })
     end
 
@@ -33,13 +33,13 @@ module Model
       })
 
       User.where(:full_name => "Amory Lovins", :age => 40).to_update_sql(:full_name => "Amorous Loving", :age => 30).should be_like(%{
-        update users set age = 30, full_name = "Amorous Loving" where users.age = 40 and users.full_name = "Amory Lovins"
+        update users set users.age = 30, users.full_name = "Amorous Loving" where users.age = 40 and users.full_name = "Amory Lovins"
       })
       User.where(:age => 40).project(:id, :full_name).to_update_sql(:full_name => "Lucile Ball").should be_like(%{
-        update users set full_name = "Lucile Ball" where users.age = 40
+        update users set users.full_name = "Lucile Ball" where users.age = 40
       })
       User.project(:id, :full_name).where(:full_name => "Nathan Sobo").to_update_sql({:full_name => "Nath Sobo"}).should be_like(%{
-        update users set full_name = "Nath Sobo" where users.full_name = "Nathan Sobo"
+        update users set users.full_name = "Nath Sobo" where users.full_name = "Nathan Sobo"
       })
     end
 
@@ -94,16 +94,14 @@ module Model
       })
 
       User.where(:age => 21).join_through(Blog.where(:title => "I Can Drink Now")).to_update_sql(:title => "I Am 21").should be_like(%{
-        update blogs
-        set title = "I Am 21"
-        from users, blogs
+        update users, blogs
+        set blogs.title = "I Am 21"
         where blogs.title = "I Can Drink Now" and users.age = 21 and users.id = blogs.user_id
       })
 
       User.where(:age => 21).join_through(Blog).where(:title => "I Can Drink Now").to_update_sql(:title => "I Am 21").should be_like(%{
-        update blogs
-        set title = "I Am 21"
-        from users, blogs
+        update users, blogs
+        set blogs.title = "I Am 21"
         where blogs.title = "I Can Drink Now" and users.age = 21 and users.id = blogs.user_id
       })
     end
@@ -145,16 +143,13 @@ module Model
         project(Blog).to_update_sql(:title => "Zeroth Post!").should be_like(%{
         update
           blogs
-        set
-          title = "Zeroth Post!"
-        from
-          blogs
           left outer join blog_posts
             on blogs.id = blog_posts.blog_id
             and blog_posts.title = "First Post!"
+        set
+          blogs.title = "Zeroth Post!"
         where
           blog_posts.id is null
-
       })
     end
 

@@ -10,8 +10,8 @@ module Model
         @from_clause_table_refs = from_clause_table_refs.first.inner_joined_table_refs
       end
 
-      def from_clause_sql
-        "from " + from_clause_table_refs.map do |table_ref|
+      def from_tables_sql
+        from_clause_table_refs.map do |table_ref|
           table_ref.to_sql
         end.join(", ")
       end

@@ -14,7 +14,7 @@ module Model
       end
 
       def sql_where_clause_predicates
-        []
+        left_operand.sql_where_clause_predicates
       end
     end
   end

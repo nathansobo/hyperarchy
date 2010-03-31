@@ -4,10 +4,8 @@ class Db < Thor
   desc "setup", "(re)create 'hyperarchy_development' database and build its schema"
   def setup
     Origin.connection = Sequel.mysql :user => 'root', :password => 'password', :host => 'localhost'
-    Origin.connection.execute('drop database if exists hyperarchy_development')
-    Origin.connection.execute('create database hyperarchy_development')
-    Origin.connection.use('hyperarchy_development')
-    Model::Repository.create_schema
+    recreate_schema("hyperarchy_development")
+    recreate_schema("hyperarchy_test")
   end
 
   desc "load_fixtures", "load the test fixtures into the development database"
@@ -27,5 +25,12 @@ class Db < Thor
   private
   def dir
     File.dirname(__FILE__)
+  end
+
+  def recreate_schema(db_name)
+    Origin.connection.execute("drop database if exists #{db_name}")
+    Origin.connection.execute("create database #{db_name}")
+    Origin.connection.use(db_name)
+    Model::Repository.create_schema
   end
 end

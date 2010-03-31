@@ -49,9 +49,21 @@ module Model
         end
       end
 
+      class Minus < Binary
+        def operator_sql
+          "-"
+        end
+      end
+
       class LessThan < Binary
         def operator_sql
           "<"
+        end
+      end
+
+      class GreaterThan < Binary
+        def operator_sql
+          ">"
         end
       end
 

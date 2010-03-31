@@ -26,10 +26,6 @@ module Model
         :all
       end
 
-      def sql_update_table_ref
-        projected_table.sql_from_table_ref
-      end
-
       def sql_select_list
         [Sql::Asterisk.new(projected_table.sql_from_table_ref)]
       end

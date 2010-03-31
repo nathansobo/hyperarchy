@@ -273,7 +273,7 @@ module Model
       end
 
       def sql_update_statement(field_values)
-        Sql::UpdateStatement.new(sql_update_table_ref, sql_set_clause_assignments(field_values), sql_from_table_ref, sql_where_clause_predicates)
+        Sql::UpdateStatement.new(sql_set_clause_assignments(field_values), sql_from_table_ref, sql_where_clause_predicates)
       end
 
       def sql_set_clause_assignments(field_values)

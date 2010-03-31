@@ -22,7 +22,8 @@ module Model
         ["select",
          set_quantifier_sql,
          select_list_sql,
-         from_clause_sql,
+         "from",
+         from_tables_sql,
          where_clause_sql
         ].compact.join(" ")
       end

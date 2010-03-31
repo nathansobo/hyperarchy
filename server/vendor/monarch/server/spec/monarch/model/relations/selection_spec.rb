@@ -74,22 +74,6 @@ module Model
         end
       end
 
-      describe "#update(expression)" do
-        it "performs an update to all the records in the relation using the given expression" do
-          user_1 = User.create!(:full_name => "John Doe", :age => 11)
-          user_2 = User.create!(:full_name => "John Doe", :age => 12)
-          user_3 = User.create!(:full_name => "John Doe", :age => 13)
-          user_4 = User.create!(:full_name => "Jane Doe", :age => 14)
-
-          User.where(:full_name => "John Doe").update(:age => User[:age] + 1)
-
-          user_1.reload.age.should == 12
-          user_2.reload.age.should == 13
-          user_3.reload.age.should == 14
-          user_4.reload.age.should == 14
-        end
-      end
-
       describe "#==" do
         it "structurally compares the receiver with the operand" do
           predicate_2 = Expressions::Eq.new(BlogPost[:blog_id], "grain")

@@ -102,10 +102,6 @@ module Model
         :all
       end
 
-      def sql_update_table_ref
-        sql_from_table_ref
-      end
-
       def sql_select_list
         @sql_select_list ||= [Sql::Asterisk.new(sql_from_table_ref)]
       end

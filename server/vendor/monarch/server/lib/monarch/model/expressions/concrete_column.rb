@@ -27,8 +27,16 @@ module Model
         Expressions::Plus.new(self, right_operand)
       end
 
+      def -(right_operand)
+        Expressions::Minus.new(self, right_operand)
+      end
+
       def <(right_operand)
         Expressions::LessThan.new(self, right_operand)
+      end
+
+      def >(right_operand)
+        Expressions::GreaterThan.new(self, right_operand)
       end
 
       def as(column_alias)

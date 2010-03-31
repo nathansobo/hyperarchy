@@ -2,10 +2,12 @@ dir = File.dirname(__FILE__)
 
 require "#{dir}/expressions/expression"
 require "#{dir}/expressions/plus"
+require "#{dir}/expressions/minus"
 require "#{dir}/expressions/predicate"
 require "#{dir}/expressions/eq"
 require "#{dir}/expressions/neq"
 require "#{dir}/expressions/less_than"
+require "#{dir}/expressions/greater_than"
 require "#{dir}/expressions/and"
 require "#{dir}/expressions/aggregation_expression"
 require "#{dir}/expressions/column"
