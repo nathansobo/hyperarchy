@@ -1,5 +1,4 @@
 * when a ranking is created / updated / destroyed, recompute the vote tally
-refactor server side model code a little more (the expressions)
 get the app running on sinatra
 attempt to convert comet hub to use the cramp library
 
