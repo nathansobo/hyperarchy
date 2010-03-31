@@ -160,7 +160,7 @@ module Model
             describe "when the update causes some composite tuples to stop being present in the join" do
               it "fires #on_remove events with all composite tuples that were removed from the join" do
                 blog = Blog.find("grain")
-                grain_posts = blog.blog_posts
+                grain_posts = BlogPost.where(:blog_id => "grain")
                 blog.update(:id => "crapola")
 
                 on_insert_calls.should be_empty
@@ -234,7 +234,7 @@ module Model
                 post_2 = BlogPost.create!(:blog_id => "fun")
 
                 blog = Blog.find("grain")
-                grain_posts = blog.blog_posts
+                grain_posts = BlogPost.where(:blog_id => "grain")
                 blog.update(:id => "fun")
 
                 on_insert_calls.length.should == 2

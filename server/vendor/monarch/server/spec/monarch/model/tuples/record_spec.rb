@@ -69,6 +69,10 @@ module Model
             blog_posts_relation.all.each do |answer|
               answer.blog_id.should == blog.id
             end
+
+            new_blog = Blog.create!
+            post = new_blog.blog_posts.create!(:body => "New post")
+            new_blog.blog_posts.all.should == [post]
           end
         end
 
@@ -78,6 +82,16 @@ module Model
             blog_post.blog.should == Blog.find("grain")
             blog_post.blog = Blog.find("vegetable")
             blog_post.blog.should == Blog.find("vegetable")
+          end
+
+          context "when a :class_name option is passed" do
+            it "uses the given class as the target of the foreign key rather than inferring it from the name of the foreign key" do
+              # make blog actually point at a user, for the sake of testing
+              BlogPost.belongs_to "blog", :class_name => "User"
+              post = BlogPost.find("grain_quinoa")
+              post.blog_id = "nathan"
+              post.blog.should == User.find("nathan")
+            end
           end
         end
 
