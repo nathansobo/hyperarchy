@@ -155,7 +155,7 @@ module Model
 
     specify "orderings" do
       User.where(:age => 34).order_by(User[:full_name].desc).to_sql.should be_like(%{
-        select users.* from users where users.age = 34 order by users.full_name descending
+        select users.* from users where users.age = 34 order by users.full_name desc
       })
     end
 

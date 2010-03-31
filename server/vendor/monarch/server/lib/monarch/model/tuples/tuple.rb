@@ -102,6 +102,8 @@ module Model
       def evaluate(term)
         if term.is_a?(Expressions::Column)
           field(term).value
+        elsif term.is_a?(Field)
+          term.value
         else
           term
         end
