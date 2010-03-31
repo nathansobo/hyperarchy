@@ -1,6 +1,7 @@
 class Candidate < Model::Record
   column :body, :string
   column :election_id, :key
+  column :position, :integer
 
   belongs_to :election
 
