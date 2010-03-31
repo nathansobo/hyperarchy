@@ -14,9 +14,8 @@ class Ranking < Model::Record
       where(:candidate_id => nil).
       increment(:count)
 
-
     lower_rankings_by_same_user.
-      join(majorities_where_ranked_candidate_is_loser).on(Ranking[:candidate_id] => Majority[:winner_id]).
+      join(majorities_where_ranked_candidate_is_loser).on(:candidate_id => :winner_id).
       decrement(:count)
   end
 
@@ -55,10 +54,11 @@ class Ranking < Model::Record
   end
 
   def after_destroy
-    lower_rankings_by_same_user.
-      join(majorities_where_ranked_candidate_is_winner).on(:loser_id => :candidate_id).
+    majorities_where_ranked_candidate_is_winner.
+      left_join(higher_rankings_by_same_user).on(:loser_id => :candidate_id).
+      where(:candidate_id => nil).
       decrement(:count)
-    
+
     lower_rankings_by_same_user.
       join(majorities_where_ranked_candidate_is_loser).on(:winner_id => :candidate_id).
       increment(:count)

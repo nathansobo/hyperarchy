@@ -76,6 +76,15 @@ module Models
         find_majority(candidate_2, candidate_3).count.should == 0
         find_majority(candidate_3, candidate_1).count.should == 1
         find_majority(candidate_3, candidate_2).count.should == 1
+
+        # 1
+        ranking_3.destroy
+        find_majority(candidate_1, candidate_2).count.should == 1
+        find_majority(candidate_1, candidate_3).count.should == 1
+        find_majority(candidate_2, candidate_1).count.should == 0
+        find_majority(candidate_2, candidate_3).count.should == 0
+        find_majority(candidate_3, candidate_1).count.should == 0
+        find_majority(candidate_3, candidate_2).count.should == 0
       end
     end
   end
