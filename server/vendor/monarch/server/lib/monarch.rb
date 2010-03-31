@@ -9,6 +9,7 @@ require "sequel"
 require "sequel/extensions/inflector"
 require "guid"
 require "json"
+require "warden"
 
 $:.push("#{MONARCH_SERVER_ROOT}/vendor/pusher/lib")
 require "pusher"

@@ -14,7 +14,7 @@ class ResourceExampleGroup < Spec::Example::ExampleGroup
   end
 
   def current_session
-    Session.find(Session[:session_id].eq(request.session_id))
+    request.env['rack.session']
   end
 
   def current_user
@@ -26,6 +26,7 @@ class ResourceExampleGroup < Spec::Example::ExampleGroup
   end
 
   def authenticate(user)
+    current_session["warden.user.key"] = user.id
     current_session.update(:user => user)
   end
 

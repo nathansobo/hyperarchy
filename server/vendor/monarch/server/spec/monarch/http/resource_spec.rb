@@ -7,20 +7,6 @@ module Http
       @resource = Resource.new
     end
 
-    describe "#current_session" do
-      attr_reader :session
-
-      before do
-        @session = Session.create!
-        resource.current_request = Http::TestRequest.new
-        resource.current_request.session_id = session.session_id
-      end
-
-      it "returns the Session with an id of #current_request's session_id" do
-        resource.current_session.should == session
-      end
-    end
-
     describe "#ajax_response(successful, data, records_or_relations)" do
       context "when passed an array of records or relations" do
         it "adds the records to a relational dataset by calling add_to_relational_dataset on each" do

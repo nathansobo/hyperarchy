@@ -10,7 +10,6 @@ require "#{dir}/model/signal"
 require "#{dir}/model/remote_repository"
 require "#{dir}/model/sql"
 require "#{dir}/model/invalid_record_exception"
-require "#{dir}/model/session"
 require "#{dir}/model/user"
 
 module Model

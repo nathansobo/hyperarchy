@@ -8,12 +8,8 @@ module Http
       current_request.session_id
     end
 
-    def current_session
-      Session.find(Session[:session_id].eq(current_session_id))
-    end
-
     def current_user
-      current_session.user
+      current_request.env['warden'].user
     end
 
     def ajax_success(data, records_or_relations=nil)
