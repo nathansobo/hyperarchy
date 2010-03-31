@@ -4,11 +4,11 @@ _.constructor("Views.Signup", View.Template, {
       ol(function() {
         li(function() {
           label({ 'for': 'fullName' }, "full name:");
-          input({ type: 'text', id: 'fullName', name: 'fullName' });
+          input({ type: 'text', id: 'fullName', name: 'full_name' });
         });
         li(function() {
           label({ 'for': 'emailAddress' }, "email address:");
-          input({ type: 'text', id: 'emailAddress', name: 'emailAddress' });
+          input({ type: 'text', id: 'emailAddress', name: 'email_address' });
         });
         li(function() {
           label({ 'for': 'password' }, "password:");
