@@ -8,6 +8,62 @@ class Ranking < Model::Record
   belongs_to :candidate
   belongs_to :election
 
+  def after_create
+    majorities_where_ranked_candidate_is_winner.
+      left_join(higher_rankings_by_same_user).on(:loser_id => :candidate_id).
+      where(:candidate_id => nil).
+      increment(:count)
+
+
+    lower_rankings_by_same_user.
+      join(majorities_where_ranked_candidate_is_loser).on(Ranking[:candidate_id] => Majority[:winner_id]).
+      decrement(:count)
+  end
+
+  def after_update(changeset)
+    if changeset.changed?(:position)
+      old_position = changeset.old_state.position
+      new_position = changeset.new_state.position
+      if new_position < old_position
+        after_ranking_moved_up(new_position, old_position)
+      else
+        after_ranking_moved_down(new_position, old_position)
+      end
+    end
+  end
+
+  def after_ranking_moved_up(new_position, old_position)
+    previously_higher_rankings = lower_rankings_by_same_user.where(Ranking[:position] < old_position)
+    previously_higher_rankings.
+      join(majorities_where_ranked_candidate_is_loser).on(:winner_id => :candidate_id).
+      decrement(:count)
+
+    previously_higher_rankings.
+      join(majorities_where_ranked_candidate_is_winner).on(:loser_id => :candidate_id).
+      increment(:count)
+  end
+
+  def after_ranking_moved_down(new_position, old_position)
+    previously_lower_rankings = higher_rankings_by_same_user.where(Ranking[:position] > old_position)
+    previously_lower_rankings.
+      join(majorities_where_ranked_candidate_is_loser).on(:winner_id => :candidate_id).
+      increment(:count)
+
+    previously_lower_rankings.
+      join(majorities_where_ranked_candidate_is_winner).on(:loser_id => :candidate_id).
+      decrement(:count)
+  end
+
+  def after_destroy
+    lower_rankings_by_same_user.
+      join(majorities_where_ranked_candidate_is_winner).on(:loser_id => :candidate_id).
+      decrement(:count)
+    
+    lower_rankings_by_same_user.
+      join(majorities_where_ranked_candidate_is_loser).on(:winner_id => :candidate_id).
+      increment(:count)
+  end
+
   def rankings_by_same_user
     Ranking.where(:user_id => user_id, :election_id => election_id)
   end
@@ -27,21 +83,4 @@ class Ranking < Model::Record
   def majorities_where_ranked_candidate_is_loser
     Majority.where(:loser_id => candidate_id)
   end
-
-  def after_create
-    majorities_to_increment =
-      majorities_where_ranked_candidate_is_winner.
-        left_join(higher_rankings_by_same_user).on(:loser_id => :candidate_id).
-        where(:candidate_id => nil).
-        project(Majority)
-
-    majorities_to_decrement =
-      lower_rankings_by_same_user.
-        join(majorities_where_ranked_candidate_is_loser).on(Ranking[:candidate_id] => Majority[:winner_id]).
-        project(Majority)
-
-    majorities_to_increment.update(:count => Majority[:count] + 1)
-    majorities_to_decrement.update(:count => Majority[:count] - 1)
-  end
-
 end
