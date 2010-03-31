@@ -5,7 +5,7 @@ module Model
         def from_wire_representation(representation, repository)
           left_operand = Relation.from_wire_representation(representation["left_operand"], repository)
           right_operand = Relation.from_wire_representation(representation["right_operand"], repository)
-          predicate = Expressions::Predicate.from_wire_representation(representation["predicate"], repository)
+          predicate = Expressions::Expression.from_wire_representation(representation["predicate"], repository)
           new(left_operand, right_operand, predicate)
         end
       end
@@ -26,7 +26,7 @@ module Model
       end
 
       def sql_join_conditions
-        [predicate.sql_predicate]
+        [predicate.sql_expression]
       end
       
       def sql_where_clause_predicates

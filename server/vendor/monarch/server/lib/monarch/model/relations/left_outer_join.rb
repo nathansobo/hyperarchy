@@ -10,7 +10,7 @@ module Model
       end
 
       def sql_join_conditions
-        [predicate.sql_predicate] + right_operand.sql_where_clause_predicates
+        [predicate.sql_expression] + right_operand.sql_where_clause_predicates
       end
 
       def sql_where_clause_predicates

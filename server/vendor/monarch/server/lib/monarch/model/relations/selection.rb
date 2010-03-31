@@ -4,7 +4,7 @@ module Model
       class << self
         def from_wire_representation(representation, repository)
           operand = Relation.from_wire_representation(representation["operand"], repository)
-          predicate = Expressions::Predicate.from_wire_representation(representation["predicate"], repository)
+          predicate = Expressions::Expression.from_wire_representation(representation["predicate"], repository)
           new(operand, predicate)
         end
       end
@@ -36,7 +36,7 @@ module Model
       delegate :sql_set_quantifier, :sql_select_list, :sql_from_table_ref, :to => :operand
 
       def sql_where_clause_predicates
-        [predicate.sql_predicate] + operand.sql_where_clause_predicates
+        [predicate.sql_expression] + operand.sql_where_clause_predicates
       end
 
       def ==(other)

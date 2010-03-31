@@ -235,7 +235,7 @@ module Model
         case id_or_predicate_or_hash
         when Hash
           hash_to_predicate(id_or_predicate_or_hash)
-        when Expressions::Predicate
+        when Expressions::Expression
           id_or_predicate_or_hash
         else
           column(:id).eq(id_or_predicate_or_hash)

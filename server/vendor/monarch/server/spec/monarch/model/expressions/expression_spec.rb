@@ -2,7 +2,7 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../../monarch_spec_helper
 
 module Model
   module Expressions
-    describe Predicate do
+    describe Expression do
       describe ".from_wire_representation" do
         context "when 'type' is 'eq'" do
           it "delegates to .from_wire_representation on Expressions::Eq" do
@@ -20,7 +20,7 @@ module Model
 
             repository = Object.new
             mock(Eq).from_wire_representation(wire_representation, repository)
-            Predicate.from_wire_representation(wire_representation, repository)
+            Expression.from_wire_representation(wire_representation, repository)
           end
         end
       end

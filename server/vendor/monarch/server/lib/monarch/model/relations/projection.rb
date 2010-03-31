@@ -31,7 +31,7 @@ module Model
           else
             concrete_columns_by_underlying_expression[expression_or_name_or_index]
           end
-        when Expressions::ConcreteColumn, Expressions::AggregationExpression
+        when Expressions::ConcreteColumn, Expressions::AggregationFunction
           expression_or_name_or_index
         when Integer
           concrete_columns[expression_or_name_or_index]

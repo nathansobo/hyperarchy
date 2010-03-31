@@ -1,70 +1,12 @@
 module Model
   module Expressions
     class ConcreteColumn < Column
-      class << self
-        def from_wire_representation(representation, repository)
-          table = repository.resolve_table_name(representation["table"].to_sym)
-          table.column(representation["name"].to_sym)
-        end
-      end
 
-      attr_reader :table, :name, :type, :default_value
+      attr_reader :default_value
 
       def initialize(table, name, type, options={})
         super(table, name, type)
         @default_value = options[:default]
-      end
-
-      def eq(right_operand)
-        Expressions::Eq.new(self, right_operand)
-      end
-
-      def neq(right_operand)
-        Expressions::Neq.new(self, right_operand)
-      end
-
-      def +(right_operand)
-        Expressions::Plus.new(self, right_operand)
-      end
-
-      def -(right_operand)
-        Expressions::Minus.new(self, right_operand)
-      end
-
-      def <(right_operand)
-        Expressions::LessThan.new(self, right_operand)
-      end
-
-      def >(right_operand)
-        Expressions::GreaterThan.new(self, right_operand)
-      end
-
-      def as(column_alias)
-        AliasedExpression.new(self, column_alias.to_sym)
-      end
-
-      def asc
-        SortSpecification.new(self, :asc)
-      end
-
-      def desc
-        SortSpecification.new(self, :desc)
-      end
-
-      def max
-        AggregationExpression.new('max', self)
-      end
-
-      def min
-        AggregationExpression.new('min', self)
-      end
-
-      def sum
-        AggregationExpression.new('sum', self)
-      end
-
-      def count
-        AggregationExpression.new('count', self)
       end
 
       def create_column(generator)

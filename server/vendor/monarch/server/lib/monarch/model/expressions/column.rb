@@ -1,6 +1,13 @@
 module Model
   module Expressions
     class Column < Expression
+      class << self
+        def from_wire_representation(representation, repository)
+          table = repository.resolve_table_name(representation["table"].to_sym)
+          table.column(representation["name"].to_sym)
+        end
+      end
+      
       attr_reader :table, :name, :type
 
       def initialize(table, name, type)

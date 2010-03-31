@@ -14,11 +14,6 @@ module Model
       def name
         column_alias || column.name
       end
-
-      def ==(other)
-        return false unless other.instance_of?(self.class)
-        column == other.column && column_alias == other.column_alias
-      end
     end
   end
 end
