@@ -1,6 +1,10 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations.Relation, {
+  constructorInitialize: function() {
+    this.delegate('column', 'projectedTable');
+  },
+
   initialize: function(operand, projectedTable) {
     this.operand = operand;
     this.projectedTable = projectedTable;

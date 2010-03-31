@@ -97,6 +97,16 @@ module Model
         Origin.execute_dui(to_update_sql(column_assignments))
       end
 
+      def increment(column)
+        column = column(column)
+        update(column => column + 1)
+      end
+
+      def decrement(column)
+        column = column(column)
+        update(column => column - 1)
+      end
+
       def to_update_sql(field_values)
         sql_update_statement(field_values).to_sql
       end
