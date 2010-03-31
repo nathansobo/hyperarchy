@@ -153,6 +153,12 @@ module Model
       })
     end
 
+    specify "orderings" do
+      User.where(:age => 34).order_by(User[:full_name].desc).to_sql.should be_like(%{
+        select users.* from users where users.age = 34 order by users.full_name descending
+      })
+    end
+
     specify "projections involving aggregation functions composed on top of other constructs" do
       User.project(User[:id].count).to_sql.should be_like(%{select count(users.id) from users})
       User.where(:age => 34).project(User[:id].count).to_sql.should be_like(%{

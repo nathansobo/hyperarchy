@@ -114,6 +114,10 @@ module Model
         []
       end
 
+      def sql_sort_specifications
+        []
+      end
+
       def build_record_from_database(field_values)
         id = Integer(field_values[:id])
 

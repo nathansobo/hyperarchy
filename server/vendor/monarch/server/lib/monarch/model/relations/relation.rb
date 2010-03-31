@@ -16,6 +16,7 @@ module Model
         end
       end
       include ForwardsArrayMethodsToRecords
+
       attr_writer :exposed_name
       delegate :include?, :map, :to => :all
 
@@ -53,6 +54,10 @@ module Model
 
       def where(predicate_or_id_or_hash, &block)
         Selection.new(self, convert_to_predicate_if_needed(predicate_or_id_or_hash), &block)
+      end
+
+      def order_by(*sort_specifications)
+        Ordering.new(self, sort_specifications)
       end
 
       def join(right_operand)
@@ -276,10 +281,10 @@ module Model
         end
       end
 
-      delegate :sql_set_quantifier, :to => :operand
+      delegate :sql_set_quantifier, :sql_sort_specifications, :to => :operand
 
       def sql_query_specification
-        Sql::QuerySpecification.new(sql_set_quantifier, sql_select_list, sql_from_table_ref, sql_where_clause_predicates)
+        Sql::QuerySpecification.new(sql_set_quantifier, sql_select_list, sql_from_table_ref, sql_where_clause_predicates, sql_sort_specifications)
       end
 
       def sql_update_statement(field_values)

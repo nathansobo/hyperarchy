@@ -38,7 +38,8 @@ module Model
       end
 
       def force_matching_field_values(field_values={})
-        field_values.merge(column_operand.name => scalar_operand)
+        scalar_value = scalar_operand.is_a?(Field) ? scalar_operand.value : scalar_operand
+        field_values.merge(column_operand.name => scalar_value)
       end
 
       def matches?(record)

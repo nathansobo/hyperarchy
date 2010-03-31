@@ -36,6 +36,10 @@ module Model
           end
         end.flatten
       end
+
+      def sql_sort_specifications
+        left_operand.sql_sort_specifications + right_operand.sql_sort_specifications
+      end
     end
   end
 end

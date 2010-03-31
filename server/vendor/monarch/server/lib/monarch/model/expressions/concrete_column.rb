@@ -43,6 +43,14 @@ module Model
         AliasedExpression.new(self, column_alias.to_sym)
       end
 
+      def asc
+        SortSpecification.new(self, :asc)
+      end
+
+      def desc
+        SortSpecification.new(self, :desc)
+      end
+
       def max
         AggregationExpression.new('max', self)
       end
