@@ -1,4 +1,5 @@
 dir = File.dirname(__FILE__)
+require "#{dir}/http/asset_service"
 require "#{dir}/http/build_relational_dataset"
 require "#{dir}/http/dispatcher"
 require "#{dir}/http/request"
@@ -6,6 +7,5 @@ require "#{dir}/http/resource"
 require "#{dir}/http/subresource"
 require "#{dir}/http/response"
 require "#{dir}/http/server"
-require "#{dir}/http/asset_service"
 require "#{dir}/http/comet_hub"
 require "#{dir}/http/comet_client"

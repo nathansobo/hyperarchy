@@ -3,6 +3,7 @@ dir = File.dirname(__FILE__)
 ENVIRONMENT = "test"
 require "#{dir}/../config/environment"
 require "spec"
+require "rack/test"
 require "#{dir}/spec_helpers/fixtures"
 require "#{MONARCH_SERVER_ROOT}/spec/spec_helpers/resource_example_group"
 require "#{MONARCH_SERVER_ROOT}/spec/spec_helpers/test_request"

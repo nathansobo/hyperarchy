@@ -21,16 +21,13 @@ module Resources
         created_user.full_name.should == 'Nathan Sobo'
         created_user.password.should == 'password'
 
-        response.should be_ok
-        response.body_from_json.should == {
+        last_response.should be_ok
+        last_response.body_from_json.should == {
           "successful" => true,
           "data" => {
             "current_user_id" => created_user.id  
           }
         }
-
-        current_user.should == created_user
-        current_session.should_not be_dirty
       end
     end
   end
