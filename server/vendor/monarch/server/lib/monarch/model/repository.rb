@@ -29,10 +29,7 @@ module Model
       end
 
       unless cancelled
-        start = Time.now
-#        puts "RESUMING EVENTS"
         resume_events
-#        puts "DONE RESUMING EVENTS #{(Time.now - start) * 1000}"
       end
     end
 

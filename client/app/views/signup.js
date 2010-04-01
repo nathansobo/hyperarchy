@@ -21,7 +21,7 @@ _.constructor("Views.Signup", View.Template, {
 
   viewProperties: {
     signupSubmitted: function() {
-      Server.post('/users', this.fieldValues())
+      Server.post('/signup', this.fieldValues())
         .onSuccess(function(data) {
           Application.currentUserIdEstablished(data.currentUserId);
           History.load('organizations');

@@ -11,4 +11,4 @@
 //= require "controllers"
 //= require "routes"
 
-Repository.originUrl = "/user_repository";
+Repository.originUrl = "/repository";

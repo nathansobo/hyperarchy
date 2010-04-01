@@ -3,9 +3,9 @@
 
   add_js_location "/monarch_vendor", "server/vendor/monarch/client/vendor"
   add_js_location "/monarch", "server/vendor/monarch/client/lib"
-  add_js_location "/app", "client/app"
+  add_js_location "/lib", "client/lib"
   add_js_location "/app_vendor", "client/vendor"
 
   add_js_location "/specs/monarch", "server/vendor/monarch/client/spec"
-  add_js_location "/specs/app", "client/spec"
+  add_js_location "/specs/lib", "client/spec"
 end

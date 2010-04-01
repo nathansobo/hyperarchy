@@ -7,7 +7,7 @@ module Http
     end
 
     def call(env)
-      request = Request.new(env)
+      request = Rack::Request.new(env)
       physical_path = asset_manager.physicalize_path(request.path_info)
 
       if physical_path && File.exists?(physical_path)

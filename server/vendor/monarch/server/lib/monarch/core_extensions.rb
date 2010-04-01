@@ -78,6 +78,10 @@ class String
       hash
     end
   end
+
+  def from_json
+    JSON.parse(self)
+  end
 end
 
 class Array

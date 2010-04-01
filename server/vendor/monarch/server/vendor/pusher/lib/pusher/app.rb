@@ -7,7 +7,7 @@ module Pusher
     
     attr_reader :session_key, :channel_key, :channel, :logger, :ping_interval
     
-    # Create a new Pusher Rack app.
+    # Create a new Pusher Rack lib.
     # Options:
     #   session_key: the key in which the session unique ID will be passed in the request
     #   channel_key: the key in which the channel unique ID will be passed in the request

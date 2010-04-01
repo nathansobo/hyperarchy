@@ -1,6 +1,7 @@
 module Model
+  class ExposedRepository
+    include Util::BuildRelationalDataset
 
-  class ExposedRepository < ::Http::Resource
     class << self
       def expose(name, &relation_definition)
         exposed_relation_definitions_by_name[name] = relation_definition
@@ -14,44 +15,27 @@ module Model
       end
     end
 
-    def locate(path_fragment)
-      case path_fragment
-      when 'fetch'
-        Http::Subresource.new(self, :get, :fetch)
-      when 'mutate'
-        Http::Subresource.new(self, :post, :mutate)
-      when 'subscribe'
-        Http::Subresource.new(self, :post, :subscribe)
-      when 'unsubscribe'
-        Http::Subresource.new(self, :post, :unsubscribe)
-      else
-        raise "Unknown path"
-      end
+    def fetch(relation_wire_representations)
+      build_relational_dataset(build_relations_from_wire_representations(relation_wire_representations))
     end
 
-    def fetch(params)
-      relation_wire_representations = JSON.parse(params[:relations])
-      ajax_success(nil, build_relations_from_wire_representations(relation_wire_representations))
+    def mutate(operations)
+      perform_operations_in_transaction(operations)
     end
 
-    def mutate(params)
-      successful, response_data = perform_operations_in_transaction(JSON.parse(params[:operations]))
-      [200, headers, { 'successful' => successful, 'data' => response_data}.to_json]
-    end
-
-    def subscribe(params)
-      subscription_guids = build_relations_from_wire_representations(JSON.parse(params[:relations])).map do |relation|
-        current_comet_client.subscribe(relation)
-      end
-      [200, headers, { 'successful' => true, 'data' => subscription_guids}.to_json]
-    end
-
-    def unsubscribe(params)
-      JSON.parse(params[:subscription_ids]).each do |subscription_id|
-        current_comet_client.unsubscribe(subscription_id)
-      end
-      [200, headers, { 'successful' => true, 'data' => ""}.to_json]
-    end
+#    def subscribe(comet_client, relation_wire_representations)
+#      subscription_guids = build_relations_from_wire_representations(relation_wire_representations).map do |relation|
+#        current_comet_client.subscribe(relation)
+#      end
+#      [200, headers, { 'successful' => true, 'data' => subscription_guids}.to_json]
+#    end
+#
+#    def unsubscribe(params)
+#      JSON.parse(params[:subscription_ids]).each do |subscription_id|
+#        current_comet_client.unsubscribe(subscription_id)
+#      end
+#      [200, headers, { 'successful' => true, 'data' => ""}.to_json]
+#    end
 
     def perform_operations_in_transaction(operations)
       successful = true
@@ -65,8 +49,8 @@ module Model
           else
             successful = false
             response_data = {
-              :index => index,
-              :errors => result.data
+              'index' => index,
+              'errors' => result.data
             }
             raise Sequel::Rollback
           end
@@ -109,7 +93,7 @@ module Model
       if record.valid?
         valid_result(record.wire_representation)
       else
-        invalid_result(record.validation_errors_by_column_name)
+        invalid_result(record.validation_errors_by_column_name.stringify_keys)
       end
     end
 
@@ -120,12 +104,12 @@ module Model
 
       if record.valid?
         if relation.find(id)
-          return valid_result(updated_field_values)
+          return valid_result(updated_field_values.stringify_keys)
         else
           return invalid_result("Security violation")
         end
       else
-        return invalid_result(record.validation_errors_by_column_name)
+        return invalid_result(record.validation_errors_by_column_name.stringify_keys)
       end
     end
 
@@ -137,10 +121,6 @@ module Model
 
     def headers
       { 'Content-Type' => 'application/json' }
-    end
-
-    def perform_fetch(relation_wire_representations)
-      build_relational_dataset(build_relations_from_wire_representations(relation_wire_representations))
     end
 
     def build_relations_from_wire_representations(representations)

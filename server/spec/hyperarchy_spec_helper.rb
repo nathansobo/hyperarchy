@@ -1,12 +1,12 @@
 dir = File.dirname(__FILE__)
 
-ENVIRONMENT = "test"
-require "#{dir}/../config/environment"
+ENV['RACK_ENV'] = "test"
+
+require "#{dir}/../lib/hyperarchy"
 require "spec"
 require "rack/test"
 require "#{dir}/spec_helpers/fixtures"
-require "#{MONARCH_SERVER_ROOT}/spec/spec_helpers/resource_example_group"
-require "#{MONARCH_SERVER_ROOT}/spec/spec_helpers/test_request"
+require "#{MONARCH_SERVER_ROOT}/spec/spec_helpers/rack_example_group"
 
 Spec::Runner.configure do |config|
   config.mock_with :rr
@@ -26,6 +26,22 @@ module Spec::Example::Subject::ExampleGroupMethods
     before do
       Model::Repository.load_fixtures(FIXTURES)
     end
+  end
+end
+
+class RackExampleGroup < Spec::Example::ExampleGroup
+  def app
+    Hyperarchy::App
+  end
+end
+
+class Rack::MockResponse
+  def body_from_json
+    JSON.parse(body)
+  end
+
+  def ok?
+    status == 200
   end
 end
 

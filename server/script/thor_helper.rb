@@ -1,3 +1,3 @@
 dir = File.dirname(__FILE__)
-Object::ENVIRONMENT = "script"
-require "#{dir}/../config/environment"
+ENV['RACK_ENV'] = "script"
+require "#{dir}/../lib/hyperarchy"

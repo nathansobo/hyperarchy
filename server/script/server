@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
 dir = File.dirname(__FILE__)
-require "#{dir}/../config/environment"
+require "#{dir}/../lib/hyperarchy"
 
-Http::Server.new(:port => 9000).start
+Hyperarchy::App.run! :host => 'localhost', :port => 9000

@@ -10,8 +10,8 @@ class Db < Thor
 
   desc "load_fixtures", "load the test fixtures into the development database"
   def load_fixtures
-    require "#{dir}/../config/environments/development"
     require "#{dir}/../spec/spec_helpers/fixtures"
+    Origin.connection = Sequel.mysql('hyperarchy_development', :user => 'root', :password => 'password')
     Model.convert_strings_to_keys = true
     Model::Repository::clear_tables
     Model::Repository::load_fixtures(FIXTURES)
