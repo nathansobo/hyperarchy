@@ -33,5 +33,15 @@ module Hyperarchy
       successful, response_data = exposed_repository.mutate(params[:operations].from_json)
       json_response(successful, response_data)
     end
+
+    post "/repository/subscribe" do
+      successful, response_data = exposed_repository.subscribe(params[:relations].from_json)
+      json_response(successful, response_data)
+    end
+
+    post "/response_data/unsubscribe" do
+      successful = exposed_repository.unsubscribe(params[:subscription_ids].from_json)
+      json_response(successful, "")
+    end
   end
 end
