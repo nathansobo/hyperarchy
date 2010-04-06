@@ -294,35 +294,29 @@ module Model
       end
     end
 
-#    describe "#subscribe and #unsubscribe" do
-#      specify "#subscribe converts the 'relations' JSON into actual relations defined in terms of the exposed tables and calls #current_comet_client.subscribe with them and #unsubscribe calls #current_comet_client.unsubscribe with each subscription_id" do
-#        relations = [{ "type" => "table", "name" => "blogs"}, { "type" => "table", "name" => "blog_posts"}]
-#
-#        mock_relation_1 = Object.new
-#        mock_relation_2 = Object.new
-#        mock(exposed_repository).build_relation_from_wire_representation({ "type" => "table", "name" => "blogs"}) { mock_relation_1 }
-#        mock(exposed_repository).build_relation_from_wire_representation({ "type" => "table", "name" => "blog_posts"}) { mock_relation_2 }
-#
-#        exposed_repository.current_comet_client = Http::FakeRealTimeClient.new
-#        mock(exposed_repository.current_comet_client).subscribe(mock_relation_1) { "mock_subscription_id_1"}
-#        mock(exposed_repository.current_comet_client).subscribe(mock_relation_2) { "mock_subscription_id_2"}
-#        response = Http::Response.new(*exposed_repository.subscribe({:relations => relations.to_json}))
-#
-#        response.should be_ok
-#        response.headers.should == { 'Content-Type' => 'application/json'}
-#        parsed_repsonse_body = JSON.parse(response.body)
-#        parsed_repsonse_body['successful'].should be_true
-#        parsed_repsonse_body['data'].should == ["mock_subscription_id_1", "mock_subscription_id_2"]
-#
-#        mock(exposed_repository.current_comet_client).unsubscribe("mock_subscription_id_1")
-#        mock(exposed_repository.current_comet_client).unsubscribe("mock_subscription_id_2")
-#        response = Http::Response.new(*exposed_repository.unsubscribe({:subscription_ids => ["mock_subscription_id_1", "mock_subscription_id_2"].to_json}))
-#
-#        response.should be_ok
-#        response.headers.should == { 'Content-Type' => 'application/json'}
-#        response.body_from_json.should == {'successful' => true, 'data' => ""}
-#      end
-#    end
+    describe "#subscribe and #unsubscribe" do
+      specify "#subscribe converts the 'relations' JSON into actual relations defined in terms of the exposed tables and calls #current_comet_client.subscribe with them and #unsubscribe calls #current_comet_client.unsubscribe with each subscription_id" do
+        relations = [{ "type" => "table", "name" => "blogs"}, { "type" => "table", "name" => "blog_posts"}]
+
+        mock_relation_1 = Object.new
+        mock_relation_2 = Object.new
+        mock(exposed_repository).build_relation_from_wire_representation({ "type" => "table", "name" => "blogs"}) { mock_relation_1 }
+        mock(exposed_repository).build_relation_from_wire_representation({ "type" => "table", "name" => "blog_posts"}) { mock_relation_2 }
+
+        real_time_client = Http::FakeRealTimeClient.new
+        mock(real_time_client).subscribe(mock_relation_1) { "mock_subscription_id_1"}
+        mock(real_time_client).subscribe(mock_relation_2) { "mock_subscription_id_2"}
+
+        successful, response_data = exposed_repository.subscribe(real_time_client, relations)
+
+        successful.should be_true
+        response_data.should == ["mock_subscription_id_1", "mock_subscription_id_2"]
+
+        mock(real_time_client).unsubscribe("mock_subscription_id_1")
+        mock(real_time_client).unsubscribe("mock_subscription_id_2")
+        exposed_repository.unsubscribe(real_time_client, ["mock_subscription_id_1", "mock_subscription_id_2"]).should be_true
+      end
+    end
 
     describe "#build_relation_from_wire_representation" do
       before do

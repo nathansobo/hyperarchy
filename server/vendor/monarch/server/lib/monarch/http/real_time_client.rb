@@ -72,6 +72,7 @@ module Http
 
     def start_reconnect_timer
       @reconnect_timer = EM::Timer.new(RECONNECT_INTERVAL) do
+        puts "Client #{id} going offline"
         went_offline
       end
     end
@@ -81,7 +82,6 @@ module Http
     end
 
     def went_offline
-      puts "Client #{id} now going offline"
       hub.remove_client(id)
       unsubscribe_all
     end

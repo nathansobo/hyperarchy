@@ -23,19 +23,19 @@ module Model
       perform_operations_in_transaction(operations)
     end
 
-#    def subscribe(comet_client, relation_wire_representations)
-#      subscription_guids = build_relations_from_wire_representations(relation_wire_representations).map do |relation|
-#        current_comet_client.subscribe(relation)
-#      end
-#      [200, headers, { 'successful' => true, 'data' => subscription_guids}.to_json]
-#    end
-#
-#    def unsubscribe(params)
-#      JSON.parse(params[:subscription_ids]).each do |subscription_id|
-#        current_comet_client.unsubscribe(subscription_id)
-#      end
-#      [200, headers, { 'successful' => true, 'data' => ""}.to_json]
-#    end
+    def subscribe(real_time_client, relation_wire_representations)
+      subscription_guids = build_relations_from_wire_representations(relation_wire_representations).map do |relation|
+        real_time_client.subscribe(relation)
+      end
+      return true, subscription_guids
+    end
+
+    def unsubscribe(real_time_client, subscription_ids)
+      subscription_ids.each do |subscription_id|
+        real_time_client.unsubscribe(subscription_id)
+      end
+      true
+    end
 
     def perform_operations_in_transaction(operations)
       successful = true

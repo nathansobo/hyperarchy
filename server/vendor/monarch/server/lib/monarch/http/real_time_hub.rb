@@ -2,7 +2,8 @@ require 'cramp/controller'
 
 module Http
   class RealTimeHub
-    RACK_ENV_KEY = "real_time_hub"
+    RACK_ENV_HUB_KEY = "real_time_hub"
+    RACK_ENV_CLIENT_KEY = "real_time_client"
 
     attr_reader :app, :comet_handler, :clients
     def initialize(app)
@@ -12,8 +13,13 @@ module Http
     end
 
     def call(env)
-      env[RACK_ENV_KEY] = self
-      case env['PATH_INFO']
+      request = Rack::Request.new(env)
+      env[RACK_ENV_HUB_KEY] = self
+      if client_id = request.params["real_time_client_id"]
+        env[RACK_ENV_CLIENT_KEY] = clients[client_id]
+      end
+      
+      case request.path_info
       when "/comet"
         comet_handler.call(env)
       else
@@ -55,7 +61,7 @@ module Http
       end
 
       def hub
-        env[RACK_ENV_KEY]
+        env[RACK_ENV_HUB_KEY]
       end
 
       def params
