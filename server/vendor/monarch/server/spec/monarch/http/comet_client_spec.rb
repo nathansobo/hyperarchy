@@ -1,12 +1,12 @@
 #require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 #
 #module Http
-#  describe CometClient do
+#  describe RealTimeClient do
 #    attr_reader :client, :hub
 #
 #    before do
 #      @hub = Object.new
-#      @client = CometClient.new("sample-comet-client-id", hub)
+#      @client = RealTimeClient.new("sample-comet-client-id", hub)
 #      publicize client, :went_offline
 #    end
 #

@@ -26,15 +26,15 @@ _.constructor("Monarch.Http.Server", {
     }
 
     var subscribeFuture = new Monarch.Http.AjaxFuture();
-    this.post(Repository.originUrl + "/subscribe", {
-      relations: _.map(relations, function(relation) {
-        return relation.wireRepresentation();
-      })
-    }).onSuccess(function(subscriptionIds) {
-      subscribeFuture.triggerSuccess(_.map(subscriptionIds, function(subscriptionId, index) {
-        return new Monarch.Http.RemoteSubscription(subscriptionId, relations[index]);
-      }));
-    });
+//    this.post(Repository.originUrl + "/subscribe", {
+//      relations: _.map(relations, function(relation) {
+//        return relation.wireRepresentation();
+//      })
+//    }).onSuccess(function(subscriptionIds) {
+//      subscribeFuture.triggerSuccess(_.map(subscriptionIds, function(subscriptionId, index) {
+//        return new Monarch.Http.RemoteSubscription(subscriptionId, relations[index]);
+//      }));
+//    });
 
     return subscribeFuture;
   },

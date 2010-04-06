@@ -13,6 +13,7 @@ require "warden"
 
 $:.push("#{MONARCH_SERVER_ROOT}/vendor/pusher/lib")
 require "pusher"
+gem "activesupport"
 require "active_support/ordered_hash"
 require "active_support/core_ext/module/delegation"
 require "active_support/core_ext/object/misc"
@@ -27,18 +28,6 @@ require "#{dir}/monarch/core_extensions"
 require "#{dir}/monarch/util"
 require "#{dir}/monarch/http"
 require "#{dir}/monarch/model"
-
-class String
- include ActiveSupport::CoreExtensions::String::StartsEndsWith
-end
-
-class Hash
-  include ActiveSupport::CoreExtensions::Hash::Keys
-end
-
-class Numeric
-  include ActiveSupport::CoreExtensions::Numeric::Time
-end
 
 Origin = Model::RemoteRepository.new
 

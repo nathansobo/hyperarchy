@@ -303,7 +303,7 @@ module Model
 #        mock(exposed_repository).build_relation_from_wire_representation({ "type" => "table", "name" => "blogs"}) { mock_relation_1 }
 #        mock(exposed_repository).build_relation_from_wire_representation({ "type" => "table", "name" => "blog_posts"}) { mock_relation_2 }
 #
-#        exposed_repository.current_comet_client = Http::FakeCometClient.new
+#        exposed_repository.current_comet_client = Http::FakeRealTimeClient.new
 #        mock(exposed_repository.current_comet_client).subscribe(mock_relation_1) { "mock_subscription_id_1"}
 #        mock(exposed_repository.current_comet_client).subscribe(mock_relation_2) { "mock_subscription_id_2"}
 #        response = Http::Response.new(*exposed_repository.subscribe({:relations => relations.to_json}))

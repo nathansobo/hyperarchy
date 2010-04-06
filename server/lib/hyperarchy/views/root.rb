@@ -17,7 +17,6 @@ module Views
           application_javascript_tags
           script :type => "text/javascript", :language => "javascript" do
             rawtext %[
-              window.COMET_CLIENT_ID = #{Guid.new.to_s.to_json};
               $(function() {
                 window.Application = new Controllers.Application();
                 #{reestablish_current_user}

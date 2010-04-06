@@ -1,5 +1,5 @@
 module Http
-  class FakeCometClient
+  class FakeRealTimeClient
     def subscribe(relations)
       raise "Mock out this method"
     end

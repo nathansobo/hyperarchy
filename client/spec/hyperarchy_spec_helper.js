@@ -10,7 +10,6 @@ Screw.Unit(function(c) { with(c) {
 
   init(function() {
     Monarch.Model.allowStringKeys = true;
-    window.COMET_CLIENT_ID = "fake-from-spec-helper";
   });
 }});
 

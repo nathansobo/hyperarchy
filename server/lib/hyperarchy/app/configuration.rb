@@ -9,6 +9,7 @@ module Hyperarchy
       Origin.connection = Sequel.mysql('hyperarchy_development', :user => 'root', :password => 'password')
     end
 
+    use Rack::ShowExceptions
     use Http::AssetService, Util::AssetManager.instance
     use Rack::Session::Cookie
     use Warden::Manager do |manager|
@@ -20,6 +21,9 @@ module Hyperarchy
         User.find(id)
       end
     end
+
+    attr_accessor :real_time_hub
+    use Http::RealTimeHub
 
     helpers Util::BuildRelationalDataset, Hyperarchy::Helpers
   end

@@ -22,10 +22,6 @@ require "#{dir}/hyperarchy/models"
 require "#{dir}/hyperarchy/views"
 require "#{dir}/hyperarchy/app"
 
-class Hash
-  include ActiveSupport::CoreExtensions::Hash::Keys
-end
-
 Util::AssetManager.add_js_location("/javascript/app", "#{CLIENT_ROOT}/app")
 Util::AssetManager.add_js_location("/javascript/vendor", "#{CLIENT_ROOT}/vendor")
 Util::AssetManager.add_location("/stylesheets", "#{CLIENT_ROOT}/stylesheets")
