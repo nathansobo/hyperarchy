@@ -10,7 +10,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("when #signupSubmit is clicked", function() {
-      it("posts the form field values to '/users', then calls Application.currentUserIdEstablished with the User's id and navigates the organization view if the result is successful", function() {
+      it("posts the form field values to '/signup', then calls Application.currentUserIdEstablished with the User's id and navigates the organization view if the result is successful", function() {
         view.find('#fullName').val("Billy Cobham");
         view.find('#emailAddress').val("cobham@gmail.com");
         view.find('#password').val("spectrum");
@@ -19,10 +19,10 @@ Screw.Unit(function(c) { with(c) {
         view.find('#signupSubmit').click();
 
         expect(Server.posts.length).to(eq, 1);
-        expect(Server.lastPost.url).to(eq, "/users");
+        expect(Server.lastPost.url).to(eq, "/signup");
         expect(Server.lastPost.data).to(equal, {
-          fullName: "Billy Cobham",
-          emailAddress: "cobham@gmail.com",
+          full_name: "Billy Cobham",
+          email_address: "cobham@gmail.com",
           password: "spectrum"
         });
 

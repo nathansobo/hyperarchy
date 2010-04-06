@@ -47,7 +47,7 @@ Screw.Unit(function(c) { with(c) {
           mock(History, 'load');
           Server.lastPost.simulateFailure({
             errors: {
-              password: "Your password did not match the given email address."
+              password: ["Your password did not match the given email address."]
             }
           });
           expect(History.load).toNot(haveBeenCalled);

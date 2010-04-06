@@ -16,25 +16,38 @@ _.constructor("Monarch.Http.Server", {
   },
 
   subscribe: function(relations) {
+    var subscribeFuture = new Monarch.Http.AjaxFuture();
+
     if (!this.cometClient) {
       this.cometClient = this.newCometClient();
-      this.cometClient.connect();
       this.cometClient.onReceive(function(mutation) {
         if (window.debugEvents) console.debug(mutation);
         Repository.mutate([mutation]);
       });
+
+      this.connecting = this.cometClient.connect()
+      this.connecting.onSuccess(function() {
+        delete this.connecting;
+      }, this);
     }
 
-    var subscribeFuture = new Monarch.Http.AjaxFuture();
-//    this.post(Repository.originUrl + "/subscribe", {
-//      relations: _.map(relations, function(relation) {
-//        return relation.wireRepresentation();
-//      })
-//    }).onSuccess(function(subscriptionIds) {
-//      subscribeFuture.triggerSuccess(_.map(subscriptionIds, function(subscriptionId, index) {
-//        return new Monarch.Http.RemoteSubscription(subscriptionId, relations[index]);
-//      }));
-//    });
+    if (this.connecting) {
+      this.connecting.onSuccess(function() {
+        this.subscribe(relations).chain(subscribeFuture);
+      }, this);
+      return subscribeFuture;
+    }
+
+    this.post(Repository.originUrl + "/subscribe", {
+      real_time_client_id: this.cometClient.clientId,
+      relations: _.map(relations, function(relation) {
+        return relation.wireRepresentation();
+      })
+    }).onSuccess(function(subscriptionIds) {
+      subscribeFuture.triggerSuccess(_.map(subscriptionIds, function(subscriptionId, index) {
+        return new Monarch.Http.RemoteSubscription(subscriptionId, relations[index]);
+      }));
+    });
 
     return subscribeFuture;
   },

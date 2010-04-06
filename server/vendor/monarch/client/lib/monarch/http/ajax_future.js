@@ -7,6 +7,15 @@ _.constructor("Monarch.Http.AjaxFuture", {
     this.afterEventsNode = new Monarch.SubscriptionNode();
     this.onFailureNode = new Monarch.SubscriptionNode();
     this.onCompleteNode = new Monarch.SubscriptionNode();
+    this.subscriptionNodes = [
+      this.onSuccessNode, this.beforeEventsNode, this.afterEventsNode, this.onFailureNode, this.onCompleteNode
+    ];
+  },
+
+  chain: function(otherFuture) {
+    _.each(this.subscriptionNodes, function(node, index) {
+      node.chain(otherFuture.subscriptionNodes[index]);
+    });
   },
 
   handleResponse: function(response) {

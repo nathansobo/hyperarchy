@@ -9,6 +9,7 @@ _.constructor("Monarch.SubscriptionNode", {
     this.subscriptions = [];
     this.paused = false;
     this.delayedEvents = [];
+    this.chainedNodes = [];
   },
 
   subscribe: function(callback, context) {
@@ -20,6 +21,10 @@ _.constructor("Monarch.SubscriptionNode", {
   unsubscribe: function(subscription) {
     _.remove(this.subscriptions, subscription);
     if (this.onUnsubscribeNode) this.onUnsubscribeNode.publish(subscription);
+  },
+
+  chain: function(otherNode) {
+    this.chainedNodes.push(otherNode);
   },
 
   onUnsubscribe: function(callback, context) {
@@ -34,7 +39,10 @@ _.constructor("Monarch.SubscriptionNode", {
     } else {
       _.each(this.subscriptions, function(subscription) {
         subscription.trigger(publishArguments);
-      })
+      });
+      _.each(this.chainedNodes, function(node) {
+        node.publish.apply(node, publishArguments);
+      });
     }
   },
 

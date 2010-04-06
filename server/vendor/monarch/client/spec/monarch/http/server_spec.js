@@ -3,12 +3,13 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Http.Server", function() {
-    var server;
+    var server, fakeCometClient;
 
     before(function() {
       server = new Monarch.Http.Server();
+      fakeCometClient = new FakeServer.FakeCometClient();
       mock(server, 'newCometClient', function() {
-        return new FakeServer.FakeCometClient();
+        return fakeCometClient;
       });
     });
 
@@ -108,41 +109,42 @@ Screw.Unit(function(c) { with(c) {
       describe("#subscribe(relations)", function() {
         useExampleDomainModel();
 
-        it("if there is no comet client, initializes one and connects it", function() {
+        it("initializes and connects the client if needed, then performs the request", function() {
           expect(server.cometClient).to(beNull);
-          server.subscribe([Blog.table, BlogPost.table]);
-          expect(server.cometClient).toNot(beNull);
-          expect(server.cometClient.connected).to(beTrue);
-        });
-
-        it("performs a POST to {Repository.originUrl}/subscribe with the json representation of the given relations and invokes the returned future with RemoteSubscriptions when the post completes successfully", function() {
           var subscribeFuture = server.subscribe([Blog.table, BlogPost.table]);
+          expect(server.cometClient).toNot(beNull);
+          expect(fakeCometClient.connecting).to(beTrue);
+          fakeCometClient.simulateConnectSuccess("sample-id");
 
           expect(server.posts.length).to(eq, 1);
-
           expect(server.lastPost.type).to(eq, "post");
           expect(server.lastPost.url).to(eq, Repository.originUrl + "/subscribe");
           expect(server.lastPost.data).to(equal, {
-            relations: [Blog.table.wireRepresentation(), BlogPost.table.wireRepresentation()]            
+            real_time_client_id: "sample-id",
+            relations: [Blog.table.wireRepresentation(), BlogPost.table.wireRepresentation()]
           });
 
           var successCallback = mockFunction("successCallback");
           subscribeFuture.onSuccess(successCallback);
-          
-          server.lastPost.simulateSuccess(["mockSubscriptionId1", "mockSubscriptionId2"]);
 
+          server.lastPost.simulateSuccess(["mockSubscriptionId1", "mockSubscriptionId2"]);
           var remoteSubscriptions = successCallback.mostRecentArgs[0];
           expect(remoteSubscriptions.length).to(eq, 2);
           expect(remoteSubscriptions[0].relation).to(eq, Blog.table);
           expect(remoteSubscriptions[0].id).to(eq, "mockSubscriptionId1");
           expect(remoteSubscriptions[1].relation).to(eq, BlogPost.table);
           expect(remoteSubscriptions[1].id).to(eq, "mockSubscriptionId2");
+
+          server.newCometClient.clear();
+          server.subscribe([User.table]);
+          expect(server.newCometClient).toNot(haveBeenCalled);
         });
 
         it("causes all mutation commands received to be sent to Repository.mutate", function() {
           mock(Repository, "mutate");
 
           server.subscribe([Blog.table, BlogPost.table]);
+          server.cometClient.simulateConnectSuccess("sample-id");
           server.cometClient.simulateReceive(['create', 'blogs', { id: 'animals' }]);
 
           expect(Repository.mutate).to(haveBeenCalled, withArgs([['create', 'blogs', { id: 'animals' }]]));

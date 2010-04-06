@@ -5,7 +5,9 @@ _.constructor("FakeServer.FakeCometClient", {
   },
   
   connect: function() {
-    this.connected = true;
+    this.connecting = true;
+    this.connectFuture = new Monarch.Http.AjaxFuture();
+    return this.connectFuture;
   },
 
   onReceive: function(callback, context) {
@@ -14,5 +16,13 @@ _.constructor("FakeServer.FakeCometClient", {
 
   simulateReceive: function(message) {
     this.onReceiveNode.publish(message);
+  },
+
+  simulateConnectSuccess: function(clientId) {
+    this.clientId = clientId;
+    this.connecting = false;
+    this.connected = true;
+    this.connectFuture.triggerSuccess();
+    delete this.connectFuture;
   }
 });

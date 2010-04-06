@@ -7,8 +7,8 @@ _.constructor("Monarch.Http.CometClient", {
 
   connect: function() {
     var self = this;
-    var len = 0
-    sessionId = "fakeClientId";
+    var numReceivedCharacters = 0
+    var connectFuture = new Http.AjaxFuture();
 
     var xhr = jQuery.ajax({
       type: "post",
@@ -19,21 +19,23 @@ _.constructor("Monarch.Http.CometClient", {
 
     xhr.onreadystatechange = function() {
       if (xhr.readyState == 3) {
-        var data = _.trim(xhr.responseText.slice(len));
-        console.debug(data);
-        len = xhr.responseText.length;
+        var data = _.trim(xhr.responseText.slice(numReceivedCharacters));
+        numReceivedCharacters = xhr.responseText.length;
         if (data.length > 0) {
           _.each(data.split("\n"), function(messageString) {
             var message = JSON.parse(messageString);
             if (message[0] == "connected") {
               self.clientId = message[1];
+              connectFuture.triggerSuccess();
             } else {
               self.onReceiveNode.publish(message);
             }
           });
         }
       }
-    }
+    };
+
+    return connectFuture;
   },
 
   onReceive: function(callback, context) {

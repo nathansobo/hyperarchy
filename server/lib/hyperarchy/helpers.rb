@@ -26,6 +26,10 @@ module Hyperarchy
       warden.user
     end
 
+    def current_real_time_client
+      request.env[Http::RealTimeHub::RACK_ENV_CLIENT_KEY]
+    end
+
     def warden
       @warden ||= request.env['warden']
     end
