@@ -8,6 +8,7 @@ _.constructor("Monarch.Http.Server", {
   },
 
   fetch: function(relations) {
+    if (window.debugFetch) console.debug("fetching", relations);
     return this.get(Repository.originUrl + "/fetch", {
       relations: _.map(relations, function(relation) {
         return relation.wireRepresentation();
@@ -54,7 +55,8 @@ _.constructor("Monarch.Http.Server", {
 
   unsubscribe: function(remoteSubscriptions) {
     return this.post(Repository.originUrl + "/unsubscribe", {
-      subscriptionIds: _.map(remoteSubscriptions, function(remoteSubscription) {
+      real_time_client_id: this.cometClient.clientId,
+      subscription_ids: _.map(remoteSubscriptions, function(remoteSubscription) {
         return remoteSubscription.id;
       })
     });
