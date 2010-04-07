@@ -4,8 +4,8 @@ _.constructor("Monarch.Model.Record", {
   constructorProperties: {
     initialize: function() {
       this.delegateConstructorMethods('find', 'fetch', 'tuples', 'first', 'each', 'any', 'onLocalUpdate', 'onRemoteInsert',
-                                      'onRemoteUpdate', 'onRemoteRemove', 'where', 'orderBy', 'project', 'empty',
-                                      'createFromRemote', 'fixture', 'clear', 'table');
+                                      'onRemoteUpdate', 'onRemoteRemove', 'where', 'orderBy', 'project', 'difference',
+                                      'empty', 'createFromRemote', 'fixture', 'clear', 'table');
     },
 
     inherited: function(subconstructor) {
@@ -121,6 +121,7 @@ _.constructor("Monarch.Model.Record", {
     this.local.updateEventsEnabled = true;
     this.remote.initializeSyntheticFields();
     this.local.initializeSyntheticFields();
+    if (this.afterInitialize) this.afterInitialize();
   },
 
   fetch: function() {
