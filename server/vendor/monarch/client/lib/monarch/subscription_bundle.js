@@ -6,11 +6,11 @@ _.constructor("Monarch.SubscriptionBundle", {
   },
 
   add: function(subscription) {
-    this.subscriptions.push(subscription);
-  },
-
-  addAll: function(subscriptions) {
-    this.subscriptions.push.apply(this.subscriptions, subscriptions);
+    if (_.isArray(subscription)) {
+      this.subscriptions.push.apply(this.subscriptions, subscription);
+    } else {
+      this.subscriptions.push(subscription);
+    }
   },
 
   destroyAll: function() {
