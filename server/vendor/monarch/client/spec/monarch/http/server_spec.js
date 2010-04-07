@@ -158,12 +158,16 @@ Screw.Unit(function(c) { with(c) {
           var remoteSubscription1 = new Monarch.Http.RemoteSubscription("fakeSubscription1", Blog.table);
           var remoteSubscription2 = new Monarch.Http.RemoteSubscription("fakeSubscription2", BlogPost.table);
 
+          server.cometClient = fakeCometClient;
+          fakeCometClient.clientId = "sample-id"
+
           server.unsubscribe([remoteSubscription1, remoteSubscription2]);
           expect(server.posts.length).to(eq, 1);
           expect(server.lastPost.type).to(eq, "post");
           expect(server.lastPost.url).to(eq, Repository.originUrl + "/unsubscribe");
           expect(server.lastPost.data).to(equal, {
-            subscriptionIds: [remoteSubscription1.id, remoteSubscription2.id]
+            real_time_client_id: "sample-id",
+            subscription_ids: [remoteSubscription1.id, remoteSubscription2.id]
           });
         });
       });
@@ -462,7 +466,7 @@ Screw.Unit(function(c) { with(c) {
               server.lastPost.simulateSuccess({primary: [null], secondary: []});
 
               expect(Blog.find('recipes')).to(beNull);
-              expect(_.any(Blog.table.Tuples, function(r) { r === record})).to(beFalse);
+              expect(_.any(Blog.table._tuples, function(r) { r === record})).to(beFalse);
               expect('recipes' in Blog.table.tuplesById).to(beFalse);
 
               expect(beforeEventsCallback).to(haveBeenCalled);

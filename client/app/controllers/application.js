@@ -9,8 +9,6 @@ _.constructor("Controllers.Application", {
     History.onChange(function(path) {
       this.navigate(path);
     }, this);
-    
-    Server.subscribe([]);
   },
 
   navigate: function(path) {

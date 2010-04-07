@@ -36,9 +36,11 @@ _.constructor("Views.Elections", View.Template, {
 
     elections: {
       afterChange: function(elections) {
-        this.electionsSubscriptions.destroyAll();
         this.electionsOl.html("");
-        elections.subscribe();
+        this.electionsSubscriptions.destroyAll();
+        elections.subscribe().onSuccess(function(subscription) {
+          this.electionsSubscriptions.add(subscription);
+        }, this);
         this.fetchingElections = elections.fetch();
         this.fetchingElections.afterEvents(function() {
           elections.each(this.hitch('addElectionToList'));

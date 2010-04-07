@@ -21,7 +21,7 @@ Screw.Unit(function(c) { with(c) {
         it("fetches and displays the election's candidates", function() {
           view.election(election);
           expect(Server.fetches.length).to(eq, 1);
-          expect(Server.lastFetch.relations).to(equal, [election.candidates(), election.rankings().forUser(user)]);
+          expect(Server.lastFetch.relations).to(equal, [election.candidates(), election.rankingsForUser(user)]);
           Server.lastFetch.simulateSuccess();
 
           expect(election.candidates().empty()).to(beFalse);

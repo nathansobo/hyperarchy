@@ -7,7 +7,6 @@ Screw.Unit(function(c) { with(c) {
       view = Views.Login.toView();
     });
 
-
     describe("when #loginSubmit is clicked", function() {
       before(function() {
         view.find('#emailAddress').val("cobham@gmail.com");
@@ -54,7 +53,6 @@ Screw.Unit(function(c) { with(c) {
           expect(view.html()).to(match, "Your password did not match the given email address.");
         });
       })
-
     });
   });
 }});

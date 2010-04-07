@@ -40,7 +40,7 @@ module Hyperarchy
       json_response(successful, response_data)
     end
 
-    post "/response_data/unsubscribe" do
+    post "/repository/unsubscribe" do
       raise "No real time client" unless current_real_time_client
       successful = exposed_repository.unsubscribe(current_real_time_client, params[:subscription_ids].from_json)
       json_response(successful, "")

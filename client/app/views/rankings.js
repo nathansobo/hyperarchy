@@ -27,7 +27,7 @@ _.constructor("Views.Rankings", View.Template, {
 
     election: {
       afterChange: function(election) {
-        this.rankings = election.rankings().forUser(Application.currentUser());
+        this.rankings = election.rankingsForUser(Application.currentUser());
         Server.fetch([election.candidates(), this.rankings])
           .onSuccess(this.hitch('populateRankings'));
       }

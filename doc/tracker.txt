@@ -1,12 +1,5 @@
-* when a ranking is created / updated / destroyed, recompute the vote tally
-get the app running on sinatra
-attempt to convert comet hub to use the cramp library
-
-election.ranked/unranked candidates must be scoped by user
 when elections / candidates / rankings change, reflect change in browser
-
-
-
+election.ranked/unranked candidates must be scoped by user
 test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
 ranking removal x is only visible when a candidate is ranked and hovered over
 release foundation.js

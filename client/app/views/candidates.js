@@ -59,10 +59,14 @@ _.constructor("Views.Candidates", View.Template, {
     election: {
       afterChange: function(election) {
         this.candidatesSubscriptions.destroyAll();
-        Server.fetch([election.candidates(), election.rankings().forUser(Application.currentUser())])
+
+        election.candidates().subscribe().onSuccess(function(subscriptions) {
+          this.candidatesSubscriptions.add(subscriptions);
+        }, this);
+        Server.fetch([election.candidates(), election.rankingsForUser(Application.currentUser())])
           .afterEvents(function() {
             this.populateCandidates();
-            this.candidatesSubscriptions.add(election.unrankedCandidates().onRemoteInsert(this.hitch('addCandidateToList')));
+            this.candidatesSubscriptions.add(election.unrankedCandidatesForUser(Application.currentUser()).onRemoteInsert(this.hitch('addCandidateToList')));
           }, this);
       }
     },
@@ -73,7 +77,7 @@ _.constructor("Views.Candidates", View.Template, {
 
     populateCandidates: function() {
       this.candidatesOl.html("");
-      this.election().unrankedCandidates().each(this.hitch('addCandidateToList'));
+      this.election().unrankedCandidatesForUser(Application.currentUser()).each(this.hitch('addCandidateToList'));
     },
 
     addCandidateToList: function(candidate) {

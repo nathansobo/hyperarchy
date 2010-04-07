@@ -19,7 +19,7 @@ Screw.Unit(function(c) { with(c) {
 
       context("when the given election differs from the current election", function() {
         it("fetches the rankings associated with the current user and displays them in order", function() {
-          var rankings = election.rankings().forUser(user);
+          var rankings = election.rankingsForUser(user);
           expect(Server.fetches.length).to(eq, 1);
           expect(Server.lastFetch.relations).to(equal, [election.candidates(), rankings]);
 

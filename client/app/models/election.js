@@ -6,21 +6,30 @@ _.constructor("Election", Model.Record, {
     });
 
     this.hasMany('candidates');
-    this.hasMany('rankings', {orderBy: 'position'}).extend({
-      forUser: function(user) {
-        var userId = user.id();
-        if (!this.rankingsByUserId) this.rankingsByUserId = {}
-        if (!this.rankingsByUserId[userId]) this.rankingsByUserId[userId] = this.where({userId: userId});
-        return this.rankingsByUserId[userId];
-      }
-    });
+    this.hasMany('rankings', {orderBy: 'position'});
+  },
 
-    this.relatesToMany('rankedCandidates', function() {
-      return this.rankings().joinThrough(Candidate);
-    });
+  afterInitialize: function() {
+    this.rankingsByUserId = {}
+    this.rankedCandidatesByUserId = {}
+    this.unrankedCandidatesByUserId = {}
+  },
 
-    this.relatesToMany('unrankedCandidates', function() {
-      return this.candidates().difference(this.rankedCandidates());
-    });
+  rankingsForUser: function(user) {
+    var userId = user.id();
+    if (this.rankingsByUserId[userId]) return this.rankingsByUserId[userId];
+    return this.rankingsByUserId[userId] = this.rankings().where({userId: userId})
+  },
+
+  rankedCandidatesForUser: function(user) {
+    var userId = user.id();
+    if (this.rankedCandidatesByUserId[userId]) return this.rankedCandidatesByUserId[userId];
+    return this.rankedCandidatesByUserId[userId] = this.rankingsForUser(user).joinThrough(Candidate);
+  },
+
+  unrankedCandidatesForUser: function(user) {
+    var userId = user.id();
+    if (this.unrankedCandidatesByUserId[userId]) return this.unrankedCandidatesByUserId[userId];
+    return this.unrankedCandidatesByUserId[userId] = this.candidates().difference(this.rankedCandidatesForUser(user));
   }
 });
