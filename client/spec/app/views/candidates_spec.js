@@ -25,7 +25,7 @@ Screw.Unit(function(c) { with(c) {
           Server.lastFetch.simulateSuccess();
 
           expect(election.candidates().empty()).to(beFalse);
-          election.unrankedCandidates().each(function(candidate) {
+          election.unrankedCandidatesForUser(user).each(function(candidate) {
             expect(view.candidatesOl.find("li[candidateId='" + candidate.id() + "']")).toNot(beEmpty);
           });
         });
