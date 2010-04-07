@@ -14,7 +14,7 @@ _.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations
   hasOperands: true,
 
   allTuples: function() {
-    if (this.Tuples) return this.Tuples;
+    if (this._tuples) return this._tuples;
 
     var allTuples = [];
     _.each(this.operand.allTuples(), function(compositeTuple) {

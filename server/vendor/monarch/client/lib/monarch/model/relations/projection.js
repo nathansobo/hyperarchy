@@ -16,7 +16,7 @@ _.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relations.Rela
   },
 
   allTuples: function() {
-    if (this.Tuples) return this.Tuples;
+    if (this._tuples) return this._tuples;
 
     this.tuplesByOperandRecordId = {};
     return _.map(this.operand.allTuples(), function(operandTuple) {

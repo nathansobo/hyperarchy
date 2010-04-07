@@ -30,6 +30,7 @@ Screw.Unit(function(c) { with(c) {
     describe("event handling", function() {
       var table1, table2, difference, record, insertCallback, updateCallback, removeCallback;
       init(function() {
+        // operands are selectively overridden below
         leftOperand = Blog.table;
         rightOperand = Blog.table;
       });
@@ -171,6 +172,65 @@ Screw.Unit(function(c) { with(c) {
             record.update({userId: 'jonah'})
             expect(insertCallback).to(haveBeenCalled, withArgs(record));
           });
+        });
+      });
+    });
+
+    describe("subscription propagation", function() {
+      describe("when a subscription is registered for the selection, destroyed, and another subscription is registered", function() {
+        var eventType;
+
+        scenario("for onRemoteInsert callbacks", function() {
+          init(function() {
+            eventType = "onRemoteInsert";
+          });
+        });
+
+        scenario("for onRemoteUpdate callbacks", function() {
+          init(function() {
+            eventType = "onRemoteUpdate";
+          });
+        });
+
+        scenario("for onRemoteRemove callbacks", function() {
+          init(function() {
+            eventType = "onRemoteRemove";
+          });
+        });
+
+        scenario("for onClean callbacks", function() {
+          init(function() {
+            eventType = "onClean";
+          });
+        });
+
+        scenario("for onDirty callbacks", function() {
+          init(function() {
+            eventType = "onDirty";
+          });
+        });
+
+        it("subscribes to its #operand and memoizes tuples, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
+          var rightOperand = User.where({age: 28});
+          var difference = User.difference(rightOperand);
+
+          expect(rightOperand.hasSubscribers()).to(beFalse);
+          expect(difference.tuplesById).to(beNull);
+
+          var subscription = difference[eventType].call(difference, function() {});
+
+          expect(rightOperand.hasSubscribers()).to(beTrue);
+          expect(difference.tuplesById).toNot(beNull);
+
+          subscription.destroy();
+
+          expect(rightOperand.hasSubscribers()).to(beFalse);
+          expect(difference.tuplesById).to(beNull);
+
+          difference.onRemoteUpdate(function() {});
+
+          expect(rightOperand.hasSubscribers()).to(beTrue);
+          expect(difference.tuplesById).toNot(beNull);
         });
       });
     });

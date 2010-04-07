@@ -8,7 +8,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     this.recordConstructor = recordConstructor;
     this.columnsByName = {};
     this.syntheticColumnsByName = {};
-    this.Tuples = [];
+    this._tuples = [];
     this.tuplesById = {};
 
     this.initializeEventsSystem();
@@ -55,7 +55,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   },
 
   allTuples: function() {
-    return this.Tuples.concat();
+    return this._tuples.concat();
   },
 
   find: function(predicateOrId) {
@@ -134,7 +134,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   },
 
   clear: function() {
-    this.Tuples = [];
+    this._tuples = [];
     this.tuplesById = {}
     this.onRemoteInsertNode = new Monarch.SubscriptionNode();
     this.onRemoteRemoveNode = new Monarch.SubscriptionNode();
@@ -160,7 +160,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   // private
 
   insert: function(record) {
-    this.Tuples.push(record);
+    this._tuples.push(record);
     if (record.id()) this.tuplesById[record.id()] = record;
     record.initializeRelations();
   }

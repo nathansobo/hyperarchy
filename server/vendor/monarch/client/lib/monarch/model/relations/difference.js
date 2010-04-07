@@ -72,6 +72,11 @@ _.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relations.Rela
     }, this));
   },
 
+  unsubscribeFromOperands: function($super) {
+    $super();
+    this.tuplesById = null;
+  },
+
   memoizeTuples: function() {
     var tuplesById = {};
     this.each(function(record) {

@@ -10,7 +10,7 @@ _.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations.Relat
   },
 
   allTuples: function() {
-    if (this.Tuples) return this.Tuples;
+    if (this._tuples) return this._tuples;
 
     return _.filter(this.cartesianProduct(), function(compositeTuple) {
       return this.predicate.evaluate(compositeTuple);

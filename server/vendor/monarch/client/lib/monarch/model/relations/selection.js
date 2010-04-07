@@ -9,7 +9,7 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
   },
 
   allTuples: function() {
-    if (this.Tuples) return this.Tuples;
+    if (this._tuples) return this._tuples;
     return _.filter(this.operand.allTuples(), function(tuple) {
       return this.predicate.evaluate(tuple);
     }, this);

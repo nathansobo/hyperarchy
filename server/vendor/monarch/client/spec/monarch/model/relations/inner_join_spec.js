@@ -448,26 +448,26 @@ Screw.Unit(function(c) { with(c) {
           expect(leftOperand.hasSubscribers()).to(beFalse);
           expect(rightOperand.hasSubscribers()).to(beFalse);
 
-          expect(join.Tuples).to(beNull);
+          expect(join._tuples).to(beNull);
 
           var subscription = join[eventType].call(join, function() {});
 
           expect(leftOperand.hasSubscribers()).to(beTrue);
           expect(rightOperand.hasSubscribers()).to(beTrue);
 
-          expect(join.Tuples).toNot(beNull);
+          expect(join._tuples).toNot(beNull);
 
           subscription.destroy();
 
           expect(leftOperand.hasSubscribers()).to(beFalse);
           expect(rightOperand.hasSubscribers()).to(beFalse);
-          expect(join.Tuples).to(beNull);
+          expect(join._tuples).to(beNull);
 
           join.onRemoteUpdate(function() {});
 
           expect(leftOperand.hasSubscribers()).to(beTrue);
           expect(rightOperand.hasSubscribers()).to(beTrue);
-          expect(join.Tuples).toNot(beNull);
+          expect(join._tuples).toNot(beNull);
         });
       });
     });

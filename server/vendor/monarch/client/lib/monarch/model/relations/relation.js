@@ -216,12 +216,12 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   memoizeTuples: function() {
-    this.Tuples = this.tuples();
+    this._tuples = this.tuples();
   },
 
   tupleInsertedRemotely: function(record, options) {
     if (!this.contains(record)) {
-      this.Tuples.push(record)
+      this._tuples.push(record)
     }
     this.onRemoteInsertNode.publish(record);
   },
@@ -235,7 +235,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   tupleRemovedRemotely: function(record) {
-    _.remove(this.Tuples, record);
+    _.remove(this._tuples, record);
     this.onRemoteRemoveNode.publish(record);
   },
 
@@ -268,7 +268,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
 
   unsubscribeFromOperands: function() {
     this.operandsSubscriptionBundle.destroyAll();
-    this.Tuples = null;
+    this._tuples = null;
   },
 
   remoteSubscribe: function() {

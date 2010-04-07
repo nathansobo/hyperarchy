@@ -406,22 +406,22 @@ Screw.Unit(function(c) { with(c) {
 
         it("subscribes to its #operand and memoizes tuples, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
           expect(operand.hasSubscribers()).to(beFalse);
-          expect(selection.Tuples).to(beNull);
+          expect(selection._tuples).to(beNull);
 
           var subscription = selection[eventType].call(selection, function() {});
 
           expect(operand.hasSubscribers()).to(beTrue);
-          expect(selection.Tuples).toNot(beNull);
+          expect(selection._tuples).toNot(beNull);
 
           subscription.destroy();
 
           expect(operand.hasSubscribers()).to(beFalse);
-          expect(selection.Tuples).to(beNull);
+          expect(selection._tuples).to(beNull);
 
           selection.onRemoteUpdate(function() {});
 
           expect(operand.hasSubscribers()).to(beTrue);
-          expect(selection.Tuples).toNot(beNull);
+          expect(selection._tuples).toNot(beNull);
         });
       });
     });
