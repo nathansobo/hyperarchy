@@ -39,7 +39,7 @@ module Model
       end
 
       def surface_tables
-        nil
+        [self]
       end
       
       def tuple_class
@@ -49,10 +49,22 @@ module Model
         @tuple_class
       end
 
+      def aggregation?
+        concrete_columns.any? do |expression|
+          expression.aggregation?
+        end
+      end
+
       delegate :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
 
       def sql_set_quantifier
         :all #TODO: make distinct if this projection strips out all primary keys
+      end
+
+      def sql_select_list
+        concrete_columns.map do |column|
+          column.sql_derived_column
+        end
       end
 
       def build_record_from_database(field_values)
@@ -65,12 +77,6 @@ module Model
       end
 
       protected
-      def sql_select_list
-        concrete_columns.map do |column|
-          column.sql_derived_column(sql_from_table_ref)
-        end
-      end
-
       def subscribe_to_operands
         operand_subscriptions.add(operand.on_insert do |tuple|
           on_insert_node.publish(project_tuple(tuple))

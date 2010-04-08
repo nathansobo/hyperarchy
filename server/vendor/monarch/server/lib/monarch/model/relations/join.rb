@@ -12,6 +12,10 @@ module Model
       def column(name)
         left_operand.column(name) || right_operand.column(name)
       end
+
+      def aggregation?
+        false
+      end
       
       protected
 
@@ -27,6 +31,10 @@ module Model
 
       def sql_set_quantifier
         :all
+      end
+
+      def sql_grouping_column_refs
+        []
       end
 
       def sql_select_list

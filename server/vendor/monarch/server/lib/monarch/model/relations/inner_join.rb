@@ -22,7 +22,7 @@ module Model
       end
 
       def sql_from_table_ref
-        Sql::InnerJoinedTable.new(left_operand.sql_from_table_ref, right_operand.sql_from_table_ref, sql_join_conditions)
+        Sql::InnerJoinedTable.new(left_operand.sql_joined_table_ref, right_operand.sql_joined_table_ref, sql_join_conditions)
       end
 
       def sql_join_conditions

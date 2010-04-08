@@ -60,6 +60,10 @@ module Model
         Ordering.new(self, sort_specifications)
       end
 
+      def group_by(*grouping_columns)
+        Grouping.new(self, grouping_columns)
+      end
+
       def join(right_operand)
         PartiallyConstructedInnerJoin.new(self, convert_to_table_if_needed(right_operand))
       end
@@ -88,10 +92,6 @@ module Model
         else
           Projection.new(self, convert_to_columns_if_needed(args), &block)
         end
-      end
-
-      def aggregate(*args, &block)
-        Aggregation.new(self, args, &block)
       end
 
       def to_sql
@@ -151,6 +151,14 @@ module Model
 
       def num_subscriptions
         (event_nodes || []).map {|node| node.count}.sum
+      end
+
+      def sql_joined_table_ref
+        if aggregation?
+          Sql::DerivedTable.new(sql_query_specification, "derived_fixme")
+        else
+          sql_from_table_ref
+        end
       end
 
       protected
@@ -281,10 +289,10 @@ module Model
         end
       end
 
-      delegate :sql_set_quantifier, :sql_sort_specifications, :to => :operand
+      delegate :sql_set_quantifier, :sql_sort_specifications, :sql_grouping_column_refs, :aggregation?, :to => :operand
 
       def sql_query_specification
-        Sql::QuerySpecification.new(sql_set_quantifier, sql_select_list, sql_from_table_ref, sql_where_clause_predicates, sql_sort_specifications)
+        Sql::QuerySpecification.new(sql_set_quantifier, sql_select_list, sql_from_table_ref, sql_where_clause_predicates, sql_sort_specifications, sql_grouping_column_refs)
       end
 
       def sql_update_statement(field_values)

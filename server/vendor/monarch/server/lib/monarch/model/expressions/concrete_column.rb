@@ -38,6 +38,10 @@ module Model
         Sql::ColumnRef.new(table.sql_from_table_ref, name)
       end
 
+      def aggregation?
+        false
+      end
+
       protected
       def schema_type
         case type

@@ -71,7 +71,7 @@ module Model
 
         delegate :create, :create!, :unsafe_create, :where, :project, :join, :join_to, :join_through, :aggregate, :find,
                  :size, :concrete_columns_by_name, :[], :create_table, :drop_table, :clear_table, :all, :find_or_create,
-                 :left_join, :left_join_to, :to => :table
+                 :left_join, :left_join_to, :group_by, :to => :table
 
         protected
         def define_field_writer(column)

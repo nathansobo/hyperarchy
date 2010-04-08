@@ -164,10 +164,44 @@ module Model
       User.where(:age => 34).project(User[:id].count).to_sql.should be_like(%{
         select count(users.id) from users where users.age = 34
       })
+      User.where(:age => 34).project(User[:id].count.as(:count)).to_sql.should be_like(%{
+        select count(users.id) as count from users where users.age = 34
+      })
       User.where(:id => 1).join_through(Blog).project(Blog[:id].count, :id).to_sql.should be_like(%{
         select count(blogs.id), blogs.id
         from users, blogs 
         where users.id = 1 and users.id = blogs.user_id
+      })
+    end
+
+    specify "groupings plus aggregations" do
+      User.group_by(:age).project(:age, User[:id].count.as("count")).to_sql.should be_like(%{
+        select users.age, count(users.id) as count from users group by users.age
+      })
+    end
+
+    specify "joins to groupings" do
+      blog_post_counts =
+        Blog.left_join_to(BlogPost).
+          group_by(Blog[:id]).
+          project(Blog[:id].as(:blog_id), BlogPost[:id].count.as(:num_posts))
+          
+      Blog.join_to(blog_post_counts).project(:title, :num_posts).to_sql.should be_like(%{
+        select
+          blogs.title,
+          derived_fixme.num_posts
+        from
+          blogs,
+            (select
+              blogs.id as blog_id,
+              count(blog_posts.id) as num_posts
+            from
+              blogs
+              left outer join blog_posts
+                on blogs.id = blog_posts.blog_id
+            group by blogs.id) as derived_fixme
+        where
+          blogs.id = derived_fixme.blog_id
       })
     end
   end

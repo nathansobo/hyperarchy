@@ -26,6 +26,13 @@ module Model
       def inner_join_conditions
         []
       end
+
+      def evaluate_algebra_expression(expression)
+        case expression
+          when DerivedColumn
+        end
+
+      end
     end
   end
 end

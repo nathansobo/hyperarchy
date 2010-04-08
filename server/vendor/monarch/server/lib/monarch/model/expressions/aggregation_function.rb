@@ -29,6 +29,10 @@ module Model
         end
       end
 
+      def aggregation?
+        true
+      end
+
       protected
       def alias_sql
         expression_alias ? " as #{expression_alias}" : ""

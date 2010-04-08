@@ -98,6 +98,10 @@ module Model
         event_nodes.each {|node| node.cancel}
       end
 
+      def aggregation?
+        false
+      end
+
       def sql_set_quantifier
         :all
       end
@@ -115,6 +119,10 @@ module Model
       end
 
       def sql_sort_specifications
+        []
+      end
+
+      def sql_grouping_column_refs
         []
       end
 
