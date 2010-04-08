@@ -26,12 +26,13 @@ module Model
 
       delegate :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
 
-      def sql_set_quantifier
+      def sql_set_quantifier(state)
         :all
       end
 
-      def sql_select_list
-        [Sql::Asterisk.new(projected_table.sql_from_table_ref)]
+      def sql_select_list(state)
+        state[self][:sql_select_list] ||=
+          [Sql::Asterisk.new(projected_table.sql_from_table_ref(state))]
       end
 
       def build_record_from_database(field_values)

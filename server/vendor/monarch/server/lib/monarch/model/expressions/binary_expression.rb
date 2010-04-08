@@ -37,8 +37,9 @@ module Model
           left_operand == other.right_operand && right_operand == other.left_operand
       end
 
-      def sql_expression
-        sql_expression_class.new(left_operand.sql_expression, right_operand.sql_expression)
+      def sql_expression(state)
+        state[self][:sql_expression] ||=
+          sql_expression_class.new(left_operand.sql_expression(state), right_operand.sql_expression(state))
       end
 
       def column_operand

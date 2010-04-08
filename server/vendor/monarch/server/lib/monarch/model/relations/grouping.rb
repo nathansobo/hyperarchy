@@ -9,10 +9,11 @@ module Model
         @grouping_columns = grouping_columns.map {|c| column(c)}
       end
 
-      def sql_grouping_column_refs
-        grouping_columns.map do |column|
-          column.sql_expression
-        end
+      def sql_grouping_column_refs(state)
+        state[self][:sql_grouping_column_refs] ||=
+          grouping_columns.map do |column|
+            column.sql_expression(state)
+          end
       end
     end
   end

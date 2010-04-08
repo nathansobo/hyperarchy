@@ -9,6 +9,7 @@ require "#{dir}/model/changeset"
 require "#{dir}/model/signal"
 require "#{dir}/model/remote_repository"
 require "#{dir}/model/sql"
+require "#{dir}/model/sql_generation_state"
 require "#{dir}/model/invalid_record_exception"
 require "#{dir}/model/user"
 

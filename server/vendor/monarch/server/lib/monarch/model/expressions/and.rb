@@ -6,8 +6,9 @@ module Model
         @operands = operands
       end
 
-      def sql_expression
-        Sql::Expressions::And.new(operands.map {|op| op.sql_expression})
+      def sql_expression(state)
+        state[self][:sql_expression] ||=
+          Sql::Expressions::And.new(operands.map {|op| op.sql_expression(state)})
       end
     end
   end

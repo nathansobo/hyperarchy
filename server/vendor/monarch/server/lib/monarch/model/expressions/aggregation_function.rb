@@ -8,12 +8,17 @@ module Model
         @function_name, @column = function_name, column
       end
 
-      def sql_expression
-        Sql::Expressions::SetFunction.new(function_name, column.sql_expression)
+      def sql_expression(state)
+        state[self][:sql_expression] ||=
+          Sql::Expressions::SetFunction.new(function_name, column.sql_expression(state))
       end
 
       def name
-        expression_alias || sql_expression.to_sql.to_sym
+        expression_alias || to_sql.to_sym
+      end
+
+      def to_sql
+        sql_expression(SqlGenerationState.new).to_sql
       end
 
       def ==(other)

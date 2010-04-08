@@ -102,27 +102,27 @@ module Model
         false
       end
 
-      def sql_set_quantifier
+      def sql_set_quantifier(state)
         :all
       end
 
-      def sql_select_list
-        @sql_select_list ||= [Sql::Asterisk.new(sql_from_table_ref)]
+      def sql_select_list(state)
+        state[self][:sql_select_list] ||= [Sql::Asterisk.new(sql_from_table_ref(state))]
       end
 
-      def sql_from_table_ref
-        @sql_from_table_ref ||= Sql::Table.new(self)
+      def sql_from_table_ref(state)
+        state[self][:sql_from_table_ref] ||= Sql::Table.new(self)
       end
 
-      def sql_where_clause_predicates
+      def sql_where_clause_predicates(state)
         []
       end
 
-      def sql_sort_specifications
+      def sql_sort_specifications(state)
         []
       end
 
-      def sql_grouping_column_refs
+      def sql_grouping_column_refs(state)
         []
       end
 

@@ -8,13 +8,16 @@ module Model
         @relation, @expression, @name = relation, expression, name
       end
 
-      def sql_derived_column
-        sql_name = name unless name.to_s == expression.sql_expression.to_sql
-        Sql::DerivedColumn.new(relation.sql_from_table_ref, expression.sql_expression, sql_name)
+      def sql_derived_column(state)
+        state[self][:sql_derived_column] ||= begin
+          sql_name = name unless name.to_s == expression.sql_expression(state).to_sql
+          Sql::DerivedColumn.new(relation.sql_from_table_ref(state), expression.sql_expression(state), sql_name)
+        end
       end
 
-      def sql_expression
-        Sql::ColumnRef.new(relation.sql_joined_table_ref, name)
+      def sql_expression(state)
+        state[self][:sql_expression] ||=
+          Sql::ColumnRef.new(relation.sql_joined_table_ref(state), name)
       end
 
       def ==(other)

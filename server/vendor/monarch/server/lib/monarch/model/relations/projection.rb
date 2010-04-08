@@ -57,14 +57,15 @@ module Model
 
       delegate :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
 
-      def sql_set_quantifier
+      def sql_set_quantifier(state)
         :all #TODO: make distinct if this projection strips out all primary keys
       end
 
-      def sql_select_list
-        concrete_columns.map do |column|
-          column.sql_derived_column
-        end
+      def sql_select_list(state)
+        state[self][:sql_select_list] ||=
+          concrete_columns.map do |column|
+            column.sql_derived_column(state)
+          end
       end
 
       def build_record_from_database(field_values)

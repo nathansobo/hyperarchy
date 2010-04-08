@@ -35,8 +35,9 @@ module Model
 
       delegate :sql_set_quantifier, :sql_select_list, :sql_from_table_ref, :to => :operand
 
-      def sql_where_clause_predicates
-        [predicate.sql_expression] + operand.sql_where_clause_predicates
+      def sql_where_clause_predicates(state)
+        state[self][:sql_where_clause_predicates] ||=
+          [predicate.sql_expression(state)] + operand.sql_where_clause_predicates(state)
       end
 
       def ==(other)

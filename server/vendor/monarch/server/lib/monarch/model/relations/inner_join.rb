@@ -21,16 +21,18 @@ module Model
         @tuple_class
       end
 
-      def sql_from_table_ref
-        Sql::InnerJoinedTable.new(left_operand.sql_joined_table_ref, right_operand.sql_joined_table_ref, sql_join_conditions)
+      def sql_from_table_ref(state)
+        state[self][:sql_from_table_ref] ||=
+          Sql::InnerJoinedTable.new(left_operand.sql_joined_table_ref(state), right_operand.sql_joined_table_ref(state), sql_join_conditions(state))
       end
 
-      def sql_join_conditions
-        [predicate.sql_expression]
+      def sql_join_conditions(state)
+        state[self][:sql_join_conditions] ||= [predicate.sql_expression(state)]
       end
       
-      def sql_where_clause_predicates
-        left_operand.sql_where_clause_predicates + right_operand.sql_where_clause_predicates
+      def sql_where_clause_predicates(state)
+        state[self][:sql_where_clause_predicates] ||=
+          left_operand.sql_where_clause_predicates(state) + right_operand.sql_where_clause_predicates(state)
       end
 
       def build_record_from_database(field_values)

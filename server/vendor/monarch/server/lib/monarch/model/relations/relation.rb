@@ -95,7 +95,7 @@ module Model
       end
 
       def to_sql
-        sql_query_specification.to_sql
+        sql_query_specification(SqlGenerationState.new).to_sql
       end
 
       def update(column_assignments)
@@ -113,7 +113,7 @@ module Model
       end
 
       def to_update_sql(field_values)
-        sql_update_statement(field_values).to_sql
+        sql_update_statement(SqlGenerationState.new, field_values).to_sql
       end
 
       def add_to_relational_dataset(dataset)
@@ -153,12 +153,13 @@ module Model
         (event_nodes || []).map {|node| node.count}.sum
       end
 
-      def sql_joined_table_ref
-        if aggregation?
-          Sql::DerivedTable.new(sql_query_specification, "derived_fixme")
-        else
-          sql_from_table_ref
-        end
+      def sql_joined_table_ref(state)
+        state[self][:sql_joined_table_ref] ||=
+          if aggregation?
+            Sql::DerivedTable.new(sql_query_specification(state), "derived_fixme")
+          else
+            sql_from_table_ref(state)
+          end
       end
 
       protected
@@ -291,17 +292,18 @@ module Model
 
       delegate :sql_set_quantifier, :sql_sort_specifications, :sql_grouping_column_refs, :aggregation?, :to => :operand
 
-      def sql_query_specification
-        Sql::QuerySpecification.new(sql_set_quantifier, sql_select_list, sql_from_table_ref, sql_where_clause_predicates, sql_sort_specifications, sql_grouping_column_refs)
+      def sql_query_specification(state)
+        state[self][:sql_query_specification] ||=
+          Sql::QuerySpecification.new(sql_set_quantifier(state), sql_select_list(state), sql_from_table_ref(state), sql_where_clause_predicates(state), sql_sort_specifications(state), sql_grouping_column_refs(state))
       end
 
-      def sql_update_statement(field_values)
-        Sql::UpdateStatement.new(sql_set_clause_assignments(field_values), sql_from_table_ref, sql_where_clause_predicates)
+      def sql_update_statement(state, field_values)
+        Sql::UpdateStatement.new(sql_set_clause_assignments(state, field_values), sql_from_table_ref(state), sql_where_clause_predicates(state))
       end
 
-      def sql_set_clause_assignments(field_values)
+      def sql_set_clause_assignments(state, field_values)
         convert_keys_to_columns(field_values).transform do |column, value|
-          [column.sql_expression, value.sql_expression]
+          [column.sql_expression(state), value.sql_expression(state)]
         end
       end
 

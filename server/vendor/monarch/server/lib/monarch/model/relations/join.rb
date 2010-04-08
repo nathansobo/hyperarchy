@@ -19,34 +19,26 @@ module Model
       
       protected
 
-      def convert_hash_to_join_predicate_if_needed(predicate_or_hash)
-        if predicate_or_hash.instance_of?(Hash)
-
-          
-
-        else
-          predicate_or_hash
-        end
-      end
-
-      def sql_set_quantifier
+      def sql_set_quantifier(state)
         :all
       end
 
-      def sql_grouping_column_refs
+      def sql_grouping_column_refs(state)
         []
       end
 
-      def sql_select_list
-        (left_operand.sql_select_list + right_operand.sql_select_list).map do |derived_column_or_asterisk|
-          derived_column_or_asterisk.derive(self) do |derived_column|
-            "#{derived_column.table_ref.name}__#{derived_column.name}"
-          end
-        end.flatten
+      def sql_select_list(state)
+        state[self][:sql_select_list] ||=
+          (left_operand.sql_select_list(state) + right_operand.sql_select_list(state)).map do |derived_column_or_asterisk|
+            derived_column_or_asterisk.derive(state, self) do |derived_column|
+              "#{derived_column.table_ref.name}__#{derived_column.name}"
+            end
+          end.flatten
       end
 
-      def sql_sort_specifications
-        left_operand.sql_sort_specifications + right_operand.sql_sort_specifications
+      def sql_sort_specifications(state)
+        state[self][:sql_sort_specifications] ||=
+          left_operand.sql_sort_specifications(state) + right_operand.sql_sort_specifications(state)
       end
     end
   end

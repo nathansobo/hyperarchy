@@ -13,9 +13,9 @@ module Model
         "#{table_ref.name}.*"
       end
 
-      def derive(deriving_table_ref, &block)
+      def derive(state, deriving_table_ref, &block)
         table_ref.algebra_columns.map do |algebra_column|
-          algebra_column.sql_expression.derive(deriving_table_ref, &block)
+          algebra_column.sql_expression(state).derive(deriving_table_ref, &block)
         end
       end
     end

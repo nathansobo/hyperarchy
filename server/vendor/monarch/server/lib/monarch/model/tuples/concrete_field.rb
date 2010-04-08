@@ -29,8 +29,8 @@ module Model
         Signal.new(self, &block)
       end
 
-      def sql_expression
-        value.sql_expression
+      def sql_expression(state)
+        value.sql_expression(state)
       end
 
       protected

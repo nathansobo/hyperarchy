@@ -35,7 +35,7 @@ class Symbol
 end
 
 class Fixnum
-  def sql_expression
+  def sql_expression(state)
     self
   end
 
@@ -45,7 +45,7 @@ class Fixnum
 end
 
 class Float
-  def sql_expression
+  def sql_expression(state)
     self
   end
 
@@ -59,7 +59,7 @@ class String
     index(prefix) == 0
   end
 
-  def sql_expression
+  def sql_expression(state)
     self
   end
 
@@ -125,7 +125,7 @@ class NilClass
     "null"
   end
 
-  def sql_expression
+  def sql_expression(state)
     self
   end
 end

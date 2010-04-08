@@ -16,8 +16,9 @@ module Model
         operand == other.operand && sort_specifications == other.sort_specifications
       end
 
-      def sql_sort_specifications
-        sort_specifications.map {|sort_spec| sort_spec.sql_sort_specification}
+      def sql_sort_specifications(state)
+        state[self][:sql_sort_specifications] ||=
+          sort_specifications.map {|sort_spec| sort_spec.sql_sort_specification(state)}
       end
 
       protected
