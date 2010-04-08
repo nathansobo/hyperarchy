@@ -14,7 +14,6 @@ _.constructor("Monarch.Http.CometClient", {
       type: "post",
       url: Server.cometHubUrl,
       data: { client_id: self.clientId },
-      complete: function() { self.connect() }
     });
 
     xhr.onreadystatechange = function() {
@@ -32,6 +31,8 @@ _.constructor("Monarch.Http.CometClient", {
             }
           });
         }
+      } else if (xhr.readyState == 4) {
+        self.connect();
       }
     };
 

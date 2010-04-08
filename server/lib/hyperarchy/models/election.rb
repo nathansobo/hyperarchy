@@ -8,6 +8,7 @@ class Election < Model::Record
   has_many :majorities
 
   def compute_global_ranking
+    puts "compute_global_ranking"
     already_processed = []
     graph = RGL::DirectedAdjacencyGraph.new
 
@@ -21,7 +22,9 @@ class Election < Model::Record
     end
 
     graph.topsort_iterator.each_with_index do |candidate_id, index|
-      Candidate.find(candidate_id).update(:position => index + 1)
+      candidate = Candidate.find(candidate_id)
+      puts "updating #{candidate.body.inspect} from #{candidate.position} #{index}"
+      candidate.update(:position => index + 1)
     end
   end
 end

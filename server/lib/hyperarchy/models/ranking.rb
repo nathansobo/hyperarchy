@@ -17,18 +17,22 @@ class Ranking < Model::Record
     lower_rankings_by_same_user.
       join(majorities_where_ranked_candidate_is_loser).on(:candidate_id => :winner_id).
       decrement(:count)
+
+    election.compute_global_ranking
   end
 
   def after_update(changeset)
-    if changeset.changed?(:position)
-      old_position = changeset.old_state.position
-      new_position = changeset.new_state.position
-      if new_position < old_position
-        after_ranking_moved_up(new_position, old_position)
-      else
-        after_ranking_moved_down(new_position, old_position)
-      end
+    return unless changeset.changed?(:position)
+
+    old_position = changeset.old_state.position
+    new_position = changeset.new_state.position
+    if new_position < old_position
+      after_ranking_moved_up(new_position, old_position)
+    else
+      after_ranking_moved_down(new_position, old_position)
     end
+
+    election.compute_global_ranking
   end
 
   def after_ranking_moved_up(new_position, old_position)
@@ -62,6 +66,8 @@ class Ranking < Model::Record
     lower_rankings_by_same_user.
       join(majorities_where_ranked_candidate_is_loser).on(:winner_id => :candidate_id).
       increment(:count)
+
+    election.compute_global_ranking
   end
 
   def rankings_by_same_user

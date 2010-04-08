@@ -29,6 +29,12 @@ module Spec::Example::Subject::ExampleGroupMethods
   end
 end
 
+module Spec::Example::Subject::ExampleMethods
+  def find_majority(winner, loser)
+    election.majorities.find(:winner => winner, :loser => loser).reload
+  end
+end
+
 class RackExampleGroup < Spec::Example::ExampleGroup
   def app
     Hyperarchy::App
