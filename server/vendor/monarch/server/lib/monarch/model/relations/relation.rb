@@ -156,7 +156,7 @@ module Model
       def sql_joined_table_ref(state)
         state[self][:sql_joined_table_ref] ||=
           if aggregation?
-            Sql::DerivedTable.new(sql_query_specification(state), "derived_fixme")
+            Sql::DerivedTable.new(sql_query_specification(state), state.next_derived_table_name)
           else
             sql_from_table_ref(state)
           end

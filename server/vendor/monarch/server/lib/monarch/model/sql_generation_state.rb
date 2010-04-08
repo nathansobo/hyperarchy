@@ -9,7 +9,7 @@ module Model
     end
 
     def next_derived_table_name
-      derived_table_count += 1
+      @derived_table_count += 1
       "t#{derived_table_count}"
     end
   end

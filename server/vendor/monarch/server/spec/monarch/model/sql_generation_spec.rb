@@ -189,7 +189,7 @@ module Model
       Blog.join_to(blog_post_counts).project(:title, :num_posts).to_sql.should be_like(%{
         select
           blogs.title,
-          derived_fixme.num_posts
+          t1.num_posts
         from
           blogs,
             (select
@@ -199,9 +199,9 @@ module Model
               blogs
               left outer join blog_posts
                 on blogs.id = blog_posts.blog_id
-            group by blogs.id) as derived_fixme
+            group by blogs.id) as t1
         where
-          blogs.id = derived_fixme.blog_id
+          blogs.id = t1.blog_id
       })
     end
   end
