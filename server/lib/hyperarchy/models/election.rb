@@ -27,4 +27,10 @@ class Election < Model::Record
       candidate.update(:position => index + 1)
     end
   end
+
+  def candidate_ranking_counts
+    rankings.
+      group_by(:candidate_id).
+      project(:candidate_id, Ranking[:id].count.as(:times_ranked))
+  end
 end

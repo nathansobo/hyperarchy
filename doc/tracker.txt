@@ -1,3 +1,8 @@
+test:
+  selects on top of aggregations... they should execute a subquery
+  projections on top of aggregations... they should not execute a subquery but just modify the select list
+  orderings and groupings within aggregation subqueries should not leak out into the containing queries
+
 when elections / candidates / rankings change, reflect change in browser
 election.ranked/unranked candidates must be scoped by user
 test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
@@ -5,6 +10,9 @@ ranking removal x is only visible when a candidate is ranked and hovered over
 release foundation.js
 implement auto code reloading for the server-side code in development
 if current user is null, direct to login screen always
+
+
+
 
 projections that remove all primary keys should add a distinct keyword
 why does Tuple#define_field_reader restrict definition of ? methods to concrete (not synthetic) columns?

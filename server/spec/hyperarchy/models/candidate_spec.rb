@@ -19,6 +19,8 @@ module Models
         Majority.find({ :winner => falafel, :loser => tacos, :election => election }).should_not be_nil
         Majority.find({ :winner => tacos, :loser => falafel, :election => election }).should_not be_nil
 
+        $on = true
+        
         fish = election.candidates.create(:body => "Fish")
         
         Majority.find({ :winner => falafel, :loser => fish, :election => election }).should_not be_nil
