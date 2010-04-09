@@ -185,24 +185,43 @@ module Model
         Blog.left_join_to(BlogPost).
           group_by(Blog[:id]).
           project(Blog[:id].as(:blog_id), BlogPost[:id].count.as(:num_posts))
-          
       Blog.join_to(blog_post_counts).project(:title, :num_posts).to_sql.should be_like(%{
         select
           blogs.title,
           t1.num_posts
         from
-          blogs,
-            (select
+          blogs, (
+            select
               blogs.id as blog_id,
               count(blog_posts.id) as num_posts
             from
               blogs
               left outer join blog_posts
                 on blogs.id = blog_posts.blog_id
-            group by blogs.id) as t1
+            group by blogs.id
+          ) as t1
         where
           blogs.id = t1.blog_id
       })
+
+      Blog.join_to(blog_post_counts).to_update_sql(:title => blog_post_counts[:num_posts]).should be_like(%{
+        update
+          blogs, (
+            select
+              blogs.id as blog_id,
+              count(blog_posts.id) as num_posts
+            from
+              blogs
+              left outer join blog_posts
+                on blogs.id = blog_posts.blog_id
+            group by blogs.id
+          ) as t1
+        set
+          blogs.title = t1.num_posts
+        where
+          blogs.id = t1.blog_id
+      })
+
     end
   end
 end

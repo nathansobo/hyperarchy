@@ -6,7 +6,21 @@ module Matchers
 
     def matches?(actual)
       @actual = actual
-      @expected.gsub(/\s+/, ' ').strip == @actual.gsub(/\s+/, ' ').strip
+      normalize(@expected) == normalize(@actual)
+    end
+
+    NORMALIZATIONS = {
+      /\s+/ => ' ',
+      /\(\s+/ => '(',
+      /\s+\)/ => ')'
+    }
+    
+    def normalize(string)
+      new_string = string
+      NORMALIZATIONS.each do |regex, replacement|
+        new_string = new_string.gsub(regex, replacement)
+      end
+      new_string.strip
     end
 
     def failure_message
