@@ -15,7 +15,7 @@ module Model
         @ref ||= ColumnRef.new(table_ref, name)
       end
 
-      def derive(table_ref, &block)
+      def derive(state, table_ref, &block)
         DerivedColumn.new(table_ref, ref, block.call(ref))
       end
 

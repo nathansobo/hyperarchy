@@ -29,10 +29,6 @@ module Model
         operand.unsafe_create(predicate.force_matching_field_values(field_values))
       end
 
-      def build_sql_update(column_assignments)
-        build_sql_query(Sql::Update.new(convert_keys_to_columns(column_assignments)))
-      end
-
       delegate :sql_set_quantifier, :sql_select_list, :sql_from_table_ref, :to => :operand
 
       def sql_where_clause_predicates(state)

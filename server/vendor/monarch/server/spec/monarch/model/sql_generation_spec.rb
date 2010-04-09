@@ -221,7 +221,6 @@ module Model
         where
           blogs.id = t1.blog_id
       })
-
     end
   end
 end

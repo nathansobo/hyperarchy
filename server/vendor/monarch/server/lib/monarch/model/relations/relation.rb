@@ -280,8 +280,12 @@ module Model
         predicates.length == 1 ? predicates.first : Expressions::And.new(predicates)
       end
 
-      def convert_keys_to_columns(hash)
+      def convert_keys_and_values_to_columns(hash)
         hash.transform do |key, value|
+          if value.instance_of?(Symbol)
+            value = column(value)
+            raise "No column by that name found" unless value
+          end
           if key.is_a?(Expressions::Column)
             [key, value]
           elsif column = column(key)
@@ -302,7 +306,7 @@ module Model
       end
 
       def sql_set_clause_assignments(state, field_values)
-        convert_keys_to_columns(field_values).transform do |column, value|
+        convert_keys_and_values_to_columns(field_values).transform do |column, value|
           [column.sql_expression(state), value.sql_expression(state)]
         end
       end
