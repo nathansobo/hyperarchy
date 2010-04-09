@@ -1,6 +1,4 @@
 gems:
-  - name: thin
-    version: '1.2.5'
   - name: sequel
     version: '2.12.0'
   - name: guid
@@ -27,3 +25,15 @@ gems:
     version: '0.11.5'
   - name: rr
     version: '0.10.10'
+  - name: cramp
+    version: '0.10'
+  - name: rack-test
+    version: '0.5.3'
+  - name: rgl
+    version: '0.4.0'
+  - name: sinatra
+    version: '1.0'
+  - name: warden
+    version: '0.10.2'
+  - name: thin
+    version: '1.2.7'
