@@ -12,11 +12,11 @@ module Model
 
       def sql_join_conditions(state)
         state[self][:sql_join_conditions] ||=
-          [predicate.sql_expression(state)] + right_operand.sql_where_clause_predicates(state)
+          [predicate.sql_expression(state)] + right_operand.external_sql_where_predicates(state)
       end
 
-      def sql_where_clause_predicates(state)
-        left_operand.sql_where_clause_predicates(state)
+      def internal_sql_where_predicates(state)
+        left_operand.external_sql_where_predicates(state)
       end
     end
   end

@@ -23,16 +23,16 @@ module Model
 
       def sql_from_table_ref(state)
         state[self][:sql_from_table_ref] ||=
-          Sql::InnerJoinedTable.new(left_operand.sql_joined_table_ref(state), right_operand.sql_joined_table_ref(state), sql_join_conditions(state))
+          Sql::InnerJoinedTable.new(left_operand.external_sql_table_ref(state), right_operand.external_sql_table_ref(state), sql_join_conditions(state))
       end
 
       def sql_join_conditions(state)
         state[self][:sql_join_conditions] ||= [predicate.sql_expression(state)]
       end
       
-      def sql_where_clause_predicates(state)
-        state[self][:sql_where_clause_predicates] ||=
-          left_operand.sql_where_clause_predicates(state) + right_operand.sql_where_clause_predicates(state)
+      def internal_sql_where_predicates(state)
+        state[self][:internal_sql_where_predicates] ||=
+          left_operand.external_sql_where_predicates(state) + right_operand.external_sql_where_predicates(state)
       end
 
       def build_record_from_database(field_values)

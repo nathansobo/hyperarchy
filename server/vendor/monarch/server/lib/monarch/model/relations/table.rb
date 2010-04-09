@@ -98,10 +98,6 @@ module Model
         event_nodes.each {|node| node.cancel}
       end
 
-      def aggregation?
-        false
-      end
-
       def sql_set_quantifier(state)
         :all
       end
@@ -114,7 +110,7 @@ module Model
         state[self][:sql_from_table_ref] ||= Sql::Table.new(self)
       end
 
-      def sql_where_clause_predicates(state)
+      def internal_sql_where_predicates(state)
         []
       end
 

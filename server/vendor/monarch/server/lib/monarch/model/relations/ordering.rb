@@ -3,7 +3,7 @@ module Model
     class Ordering < Relation
       attr_reader :operand, :sort_specifications
       delegate :column, :surface_tables, :build_record_from_database, :sql_set_quantifier, :sql_select_list,
-               :sql_from_table_ref, :sql_where_clause_predicates,
+               :sql_from_table_ref, :internal_sql_where_predicates,
                :to => :operand
 
       def initialize(operand, sort_specifications, &block)

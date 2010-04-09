@@ -13,10 +13,6 @@ module Model
         left_operand.column(name) || right_operand.column(name)
       end
 
-      def aggregation?
-        false
-      end
-      
       protected
 
       def sql_set_quantifier(state)

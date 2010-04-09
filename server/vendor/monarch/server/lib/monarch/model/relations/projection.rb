@@ -55,7 +55,7 @@ module Model
         end
       end
 
-      delegate :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
+      delegate :sql_from_table_ref, :internal_sql_where_predicates, :to => :operand
 
       def sql_set_quantifier(state)
         :all #TODO: make distinct if this projection strips out all primary keys

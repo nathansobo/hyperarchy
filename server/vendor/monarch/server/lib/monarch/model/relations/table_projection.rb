@@ -20,11 +20,7 @@ module Model
         [projected_table]
       end
 
-      def aggregation?
-        false
-      end
-
-      delegate :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
+      delegate :sql_from_table_ref, :internal_sql_where_predicates, :to => :operand
 
       def sql_set_quantifier(state)
         :all

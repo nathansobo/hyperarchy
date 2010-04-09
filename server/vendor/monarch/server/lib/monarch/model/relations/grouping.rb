@@ -2,11 +2,15 @@ module Model
   module Relations
     class Grouping < Relation
       attr_reader :operand, :grouping_columns
-      delegate :column, :surface_tables, :build_record_from_database, :sql_from_table_ref, :sql_where_clause_predicates, :to => :operand
+      delegate :column, :surface_tables, :build_record_from_database, :sql_from_table_ref, :internal_sql_where_predicates, :to => :operand
 
       def initialize(operand, grouping_columns)
         @operand = operand
         @grouping_columns = grouping_columns.map {|c| column(c)}
+      end
+
+      def aggregation?
+        true
       end
 
       def sql_grouping_column_refs(state)
