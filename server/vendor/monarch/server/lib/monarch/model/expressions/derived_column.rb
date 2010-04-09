@@ -16,8 +16,13 @@ module Model
       end
 
       def sql_expression(state)
-        state[self][:sql_expression] ||=
-          Sql::ColumnRef.new(relation.sql_joined_table_ref(state), name)
+        state[self][:sql_expression] ||= begin
+          if relation.aggregation?
+            Sql::ColumnRef.new(relation.sql_joined_table_ref(state), name)
+          else
+            expression.sql_expression(state)
+          end
+        end
       end
 
       def ==(other)
