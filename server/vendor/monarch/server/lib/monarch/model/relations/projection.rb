@@ -64,10 +64,6 @@ module Model
         operand == other.operand && concrete_columns_by_name == other.concrete_columns_by_name
       end
 
-      def sql_set_quantifier(state)
-        :all #TODO: make distinct if this projection strips out all primary keys
-      end
-      
       def internal_sql_select_list(state)
         state[self][:internal_sql_select_list] ||=
           concrete_columns.map do |column|

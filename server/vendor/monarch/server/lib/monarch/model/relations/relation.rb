@@ -157,7 +157,7 @@ module Model
         false
       end
 
-      def external_sql_select_list(state)
+      def external_sql_select_list(state, external_relation)
         internal_sql_select_list(state)
       end
 
@@ -309,11 +309,9 @@ module Model
         end
       end
 
-      delegate :sql_set_quantifier, :to => :operand
-
       def sql_query_specification(state)
         state[self][:sql_query_specification] ||=
-          Sql::QuerySpecification.new(sql_set_quantifier(state), internal_sql_select_list(state), internal_sql_table_ref(state), internal_sql_where_predicates(state), internal_sql_sort_specifications(state), internal_sql_grouping_column_refs(state))
+          Sql::QuerySpecification.new(:all, internal_sql_select_list(state), internal_sql_table_ref(state), internal_sql_where_predicates(state), internal_sql_sort_specifications(state), internal_sql_grouping_column_refs(state))
       end
 
       def sql_update_statement(state, field_values)

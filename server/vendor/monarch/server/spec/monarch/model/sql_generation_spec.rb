@@ -185,8 +185,16 @@ module Model
     end
 
     specify "selections involving subqueries" do
-      puts Blog.group_by(:user_id).order_by(:title).project(Blog[:title].count.as(:count)).where(:count => 3).to_sql
-
+      Blog.group_by(:user_id).order_by(:title).project(Blog[:title].count.as(:count)).where(:count => 3).to_sql.should be_like(%{
+        select t1.count
+        from (
+          select count(blogs.title) as count
+          from blogs
+          group by blogs.user_id
+          order by blogs.title asc
+        ) as t1
+        where t1.count = 3
+      })
 
       blog_post_counts =
         Blog.where(:user_id => "jan").left_join_to(BlogPost).

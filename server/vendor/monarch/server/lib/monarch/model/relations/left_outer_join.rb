@@ -7,7 +7,7 @@ module Model
 
       def internal_sql_table_ref(state)
         state[self][:internal_sql_table_ref] ||=
-          Sql::OuterJoinedTable.new(:left, left_operand.internal_sql_table_ref(state), right_operand.internal_sql_table_ref(state), sql_join_conditions(state))
+          Sql::OuterJoinedTable.new(:left, left_operand.external_sql_table_ref(state), right_operand.external_sql_table_ref(state), sql_join_conditions(state))
       end
 
       def sql_join_conditions(state)

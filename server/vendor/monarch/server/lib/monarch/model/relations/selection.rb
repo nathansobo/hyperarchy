@@ -29,8 +29,6 @@ module Model
         operand.unsafe_create(predicate.force_matching_field_values(field_values))
       end
 
-      delegate :sql_set_quantifier, :to => :operand
-
       def internal_sql_table_ref(state)
         operand.external_sql_table_ref(state)
       end

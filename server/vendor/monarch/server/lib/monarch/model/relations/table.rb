@@ -98,34 +98,6 @@ module Model
         event_nodes.each {|node| node.cancel}
       end
 
-      def sql_set_quantifier(state)
-        :all
-      end
-
-      def internal_sql_select_list(state)
-        state[self][:internal_sql_select_list] ||= [Sql::Asterisk.new(internal_sql_table_ref(state))]
-      end
-
-      def external_sql_select_list(state, external_relation)
-        internal_sql_select_list(state)
-      end
-
-      def internal_sql_table_ref(state)
-        state[self][:internal_sql_table_ref] ||= Sql::Table.new(self)
-      end
-
-      def internal_sql_where_predicates(state)
-        []
-      end
-
-      def internal_sql_sort_specifications(state)
-        []
-      end
-
-      def internal_sql_grouping_column_refs(state)
-        []
-      end
-
       def build_record_from_database(field_values)
         id = Integer(field_values[:id])
 
@@ -181,6 +153,25 @@ module Model
       end
 
       protected
+      def internal_sql_select_list(state)
+        state[self][:internal_sql_select_list] ||= [Sql::Asterisk.new(internal_sql_table_ref(state))]
+      end
+
+      def internal_sql_table_ref(state)
+        state[self][:internal_sql_table_ref] ||= Sql::Table.new(self)
+      end
+
+      def internal_sql_where_predicates(state)
+        []
+      end
+
+      def internal_sql_sort_specifications(state)
+        []
+      end
+
+      def internal_sql_grouping_column_refs(state)
+        []
+      end
 
       def has_operands?
         false

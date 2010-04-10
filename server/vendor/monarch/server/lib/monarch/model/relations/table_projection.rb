@@ -20,13 +20,9 @@ module Model
         [projected_table]
       end
 
-      def sql_set_quantifier(state)
-        :all
-      end
-
       def internal_sql_select_list(state)
         state[self][:internal_sql_select_list] ||=
-          [Sql::Asterisk.new(projected_table.internal_sql_table_ref(state))]
+          [Sql::Asterisk.new(projected_table.external_sql_table_ref(state))]
       end
 
       def external_sql_select_list(state, external_relation)

@@ -1,10 +1,8 @@
 module Model
   module Relations
-    class Ordering < Relation
+    class Ordering < UnaryOperator
       attr_reader :operand, :sort_specifications
-      delegate :column, :surface_tables, :build_record_from_database, :sql_set_quantifier, :internal_sql_select_list,
-               :internal_sql_table_ref, :internal_sql_where_predicates,
-               :to => :operand
+      delegate :column, :surface_tables, :build_record_from_database, :to => :operand
 
       def initialize(operand, sort_specifications, &block)
         super(&block)

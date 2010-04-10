@@ -15,17 +15,13 @@ module Model
 
       protected
 
-      def sql_set_quantifier(state)
-        :all
-      end
-
       def internal_sql_grouping_column_refs(state)
         []
       end
 
       def internal_sql_select_list(state)
         state[self][:internal_sql_select_list] ||=
-          (left_operand.internal_sql_select_list(state) + right_operand.internal_sql_select_list(state)).map do |derived_column_or_asterisk|
+          (left_operand.external_sql_select_list(state, self) + right_operand.external_sql_select_list(state, self)).map do |derived_column_or_asterisk|
             derived_column_or_asterisk.derive(state, self) do |derived_column|
               "#{derived_column.table_ref.name}__#{derived_column.name}"
             end
@@ -34,7 +30,7 @@ module Model
 
       def internal_sql_sort_specifications(state)
         state[self][:internal_sql_sort_specifications] ||=
-          left_operand.internal_sql_sort_specifications(state) + right_operand.internal_sql_sort_specifications(state)
+          left_operand.external_sql_sort_specifications(state) + right_operand.external_sql_sort_specifications(state)
       end
     end
   end
