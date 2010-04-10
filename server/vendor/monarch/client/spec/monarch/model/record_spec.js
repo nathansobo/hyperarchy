@@ -101,8 +101,8 @@ Screw.Unit(function(c) { with(c) {
           var user = User.localCreate({id: "jerry"});
           var ordering = user.blogs();
           expect(ordering.constructor).to(eq, Monarch.Model.Relations.Ordering);
-          expect(ordering.orderByColumns[0].column).to(eq, Blog.name_);
-          expect(ordering.orderByColumns[0].direction).to(eq, "desc");
+          expect(ordering.sortSpecifications[0].column).to(eq, Blog.name_);
+          expect(ordering.sortSpecifications[0].direction).to(eq, "desc");
         });
       });
 
@@ -112,11 +112,11 @@ Screw.Unit(function(c) { with(c) {
           var user = User.localCreate({id: "jerry"});
           var ordering = user.blogs();
           expect(ordering.constructor).to(eq, Monarch.Model.Relations.Ordering);
-          expect(ordering.orderByColumns.length).to(eq, 2);
-          expect(ordering.orderByColumns[0].column).to(eq, Blog.name_);
-          expect(ordering.orderByColumns[0].direction).to(eq, "desc");
-          expect(ordering.orderByColumns[1].column).to(eq, Blog.userId);
-          expect(ordering.orderByColumns[1].direction).to(eq, "asc");
+          expect(ordering.sortSpecifications.length).to(eq, 2);
+          expect(ordering.sortSpecifications[0].column).to(eq, Blog.name_);
+          expect(ordering.sortSpecifications[0].direction).to(eq, "desc");
+          expect(ordering.sortSpecifications[1].column).to(eq, Blog.userId);
+          expect(ordering.sortSpecifications[1].direction).to(eq, "asc");
         });
       });
 

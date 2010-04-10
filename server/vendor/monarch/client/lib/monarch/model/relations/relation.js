@@ -77,8 +77,8 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   orderBy: function() {
-    var orderByColumns = _.map(arguments, function(orderByColumn) {
-      if (orderByColumn instanceof Monarch.Model.OrderByColumn) {
+    var sortSpecifications = _.map(arguments, function(orderByColumn) {
+      if (orderByColumn instanceof Monarch.Model.SortSpecification) {
         return orderByColumn;
       } else if (orderByColumn instanceof Monarch.Model.Column) {
         return orderByColumn.asc();
@@ -92,11 +92,11 @@ _.constructor("Monarch.Model.Relations.Relation", {
           return this.column(columnName).asc();
         }
       } else {
-        throw new Error("You can only order by Columns, OrderByColumns, or 'columnName direction' strings");
+        throw new Error("You can only order by Columns, sortSpecifications, or 'columnName direction' strings");
       }
     }, this);
 
-    return new Monarch.Model.Relations.Ordering(this, orderByColumns);
+    return new Monarch.Model.Relations.Ordering(this, sortSpecifications);
   },
 
   difference: function(rightOperand) {
@@ -227,7 +227,11 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   tupleUpdatedRemotely: function(record, updateData, newIndex, oldIndex) {
-    this.onRemoteUpdateNode.publish(record, updateData, newIndex, oldIndex);
+    if (newIndex === undefined) {
+      this.onRemoteUpdateNode.publish(record, updateData);
+    } else {
+      this.onRemoteUpdateNode.publish(record, updateData, newIndex, oldIndex);
+    }
   },
 
   tupleUpdatedLocally: function(record, updateData) {

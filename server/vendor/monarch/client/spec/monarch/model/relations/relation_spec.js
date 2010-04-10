@@ -162,34 +162,34 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#orderBy(orderByColumns...)", function() {
-      context("when passed OrderByColumns", function() {
-        it("builds an Ordering relation with the receiver as its #operand and the given #orderByColumns", function() {
+    describe("#orderBy(sortSpecifications...)", function() {
+      context("when passed sortSpecifications", function() {
+        it("builds an Ordering relation with the receiver as its #operand and the given #sortSpecifications", function() {
           var ordering = relation.orderBy(column1.asc(), column2.desc());
-          expect(ordering.orderByColumns[0].column).to(eq, column1);
-          expect(ordering.orderByColumns[0].direction).to(eq, "asc");
-          expect(ordering.orderByColumns[1].column).to(eq, column2);
-          expect(ordering.orderByColumns[1].direction).to(eq, "desc");
+          expect(ordering.sortSpecifications[0].column).to(eq, column1);
+          expect(ordering.sortSpecifications[0].direction).to(eq, "asc");
+          expect(ordering.sortSpecifications[1].column).to(eq, column2);
+          expect(ordering.sortSpecifications[1].direction).to(eq, "desc");
         });
       });
 
       context("when passed naked Columns", function() {
-        it("builds an Ordering relation with the receiver as its #operand and defaults the OrderByColumns to ascending", function() {
+        it("builds an Ordering relation with the receiver as its #operand and defaults the sortSpecifications to ascending", function() {
           var ordering = relation.orderBy(column1, column2);
-          expect(ordering.orderByColumns[0].column).to(eq, column1);
-          expect(ordering.orderByColumns[0].direction).to(eq, "asc");
-          expect(ordering.orderByColumns[1].column).to(eq, column2);
-          expect(ordering.orderByColumns[1].direction).to(eq, "asc");
+          expect(ordering.sortSpecifications[0].column).to(eq, column1);
+          expect(ordering.sortSpecifications[0].direction).to(eq, "asc");
+          expect(ordering.sortSpecifications[1].column).to(eq, column2);
+          expect(ordering.sortSpecifications[1].direction).to(eq, "asc");
         });
       });
 
       context("when passed strings", function() {
-        it("builds an Ordering relation with the receiver as its #operand and defaults the OrderByColumns to ascending", function() {
+        it("builds an Ordering relation with the receiver as its #operand and defaults the sortSpecifications to ascending", function() {
           var ordering = relation.orderBy(column1.name + " asc", column2.name + " desc");
-          expect(ordering.orderByColumns[0].column).to(eq, column1);
-          expect(ordering.orderByColumns[0].direction).to(eq, "asc");
-          expect(ordering.orderByColumns[1].column).to(eq, column2);
-          expect(ordering.orderByColumns[1].direction).to(eq, "desc");
+          expect(ordering.sortSpecifications[0].column).to(eq, column1);
+          expect(ordering.sortSpecifications[0].direction).to(eq, "asc");
+          expect(ordering.sortSpecifications[1].column).to(eq, column2);
+          expect(ordering.sortSpecifications[1].direction).to(eq, "desc");
         });
       });
     });
