@@ -15,10 +15,6 @@ module Model
 
       protected
 
-      def internal_sql_grouping_column_refs(state)
-        []
-      end
-
       def internal_sql_select_list(state)
         state[self][:internal_sql_select_list] ||=
           (left_operand.external_sql_select_list(state, self) + right_operand.external_sql_select_list(state, self)).map do |derived_column_or_asterisk|
@@ -26,6 +22,10 @@ module Model
               "#{derived_column.table_ref.name}__#{derived_column.name}"
             end
           end.flatten
+      end
+
+      def internal_sql_grouping_column_refs(state)
+        []
       end
 
       def internal_sql_sort_specifications(state)

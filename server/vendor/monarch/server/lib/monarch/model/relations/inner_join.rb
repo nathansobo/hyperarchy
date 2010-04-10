@@ -21,9 +21,16 @@ module Model
         @tuple_class
       end
 
-      def external_sql_select_list(state, external_relation)
-        internal_sql_select_list(state)
+      def build_record_from_database(field_values)
+        tuple_class.new(field_values)
       end
+
+      def ==(other)
+        return false unless other.instance_of?(self.class)
+        left_operand == other.left_operand && right_operand == other.right_operand && predicate == other.predicate
+      end
+
+      protected
 
       def internal_sql_table_ref(state)
         state[self][:internal_sql_table_ref] ||=
@@ -38,17 +45,6 @@ module Model
         state[self][:internal_sql_where_predicates] ||=
           left_operand.external_sql_where_predicates(state) + right_operand.external_sql_where_predicates(state)
       end
-
-      def build_record_from_database(field_values)
-        tuple_class.new(field_values)
-      end
-
-      def ==(other)
-        return false unless other.instance_of?(self.class)
-        left_operand == other.left_operand && right_operand == other.right_operand && predicate == other.predicate
-      end
-
-      protected
 
       def subscribe_to_operands
         operand_subscriptions.add(left_operand.on_insert do |left_tuple|
