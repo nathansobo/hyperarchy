@@ -36,7 +36,7 @@ module Model
 
       def sql_expression(state)
         state[self][:sql_expression] ||=
-          Sql::ColumnRef.new(table.sql_from_table_ref(state), name)
+          Sql::ColumnRef.new(table.external_sql_table_ref(state), name)
       end
 
       def aggregation?

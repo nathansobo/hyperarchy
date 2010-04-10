@@ -20,15 +20,23 @@ module Model
         [projected_table]
       end
 
-      delegate :sql_from_table_ref, :internal_sql_where_predicates, :to => :operand
+      delegate :internal_sql_table_ref, :internal_sql_where_predicates, :to => :operand
 
       def sql_set_quantifier(state)
         :all
       end
 
-      def sql_select_list(state)
-        state[self][:sql_select_list] ||=
-          [Sql::Asterisk.new(projected_table.sql_from_table_ref(state))]
+      def internal_sql_select_list(state)
+        state[self][:internal_sql_select_list] ||=
+          [Sql::Asterisk.new(projected_table.internal_sql_table_ref(state))]
+      end
+
+      def external_sql_select_list(state, external_relation)
+        internal_sql_select_list(state)
+      end
+
+      def internal_sql_grouping_column_refs(state)
+        operand.external_sql_grouping_column_refs(state)
       end
 
       def build_record_from_database(field_values)

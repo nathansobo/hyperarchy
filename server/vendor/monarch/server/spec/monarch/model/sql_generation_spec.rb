@@ -180,7 +180,24 @@ module Model
       })
     end
 
-    specify "joins to groupings" do
+    specify "selections involving subqueries" do
+      blog_post_counts =
+        Blog.where(:user_id => "jan").left_join_to(BlogPost).
+          group_by(Blog[:id]).
+          project(Blog[:id].as(:blog_id), BlogPost[:id].count.as(:num_posts))
+      blog_post_counts.where(:num_posts => 5).to_sql.should be_like(%{
+        select t1.blog_id, t1.num_posts
+        from (
+          select blogs.id as blog_id, count(blog_posts.id) as num_posts
+          from blogs left outer join blog_posts on blogs.id = blog_posts.blog_id
+          where blogs.user_id = 909647828
+          group by blogs.id
+        ) as t1
+        where t1.num_posts = 5
+      })
+    end
+
+    specify "joins involving subqueries" do
       blog_post_counts =
         Blog.where(:user_id => "jan").left_join_to(BlogPost).
           group_by(Blog[:id]).
@@ -195,8 +212,6 @@ module Model
         ) as t1
         where blogs.id = t1.blog_id
       })
-
-
     end
   end
 end

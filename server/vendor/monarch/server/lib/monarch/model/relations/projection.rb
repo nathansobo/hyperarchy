@@ -55,17 +55,31 @@ module Model
         end
       end
 
-      delegate :sql_from_table_ref, :internal_sql_where_predicates, :to => :operand
+      delegate :internal_sql_table_ref, :internal_sql_where_predicates, :to => :operand
 
       def sql_set_quantifier(state)
         :all #TODO: make distinct if this projection strips out all primary keys
       end
 
-      def sql_select_list(state)
-        state[self][:sql_select_list] ||=
+      def internal_sql_select_list(state)
+        state[self][:internal_sql_select_list] ||=
           concrete_columns.map do |column|
             column.sql_derived_column(state)
           end
+      end
+
+      def external_sql_select_list(state, external_relation)
+        state[self][:external_sql_select_list] ||= begin
+          concrete_columns.map do |column|
+            column.derive(external_relation).sql_derived_column(state)
+          end
+        end
+      end
+
+      def internal_sql_grouping_column_refs(state)
+        state[self][:internal_sql_grouping_column_refs] ||= begin
+          operand.external_sql_grouping_column_refs(state)
+        end
       end
 
       def build_record_from_database(field_values)

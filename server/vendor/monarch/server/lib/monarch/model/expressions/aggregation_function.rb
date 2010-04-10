@@ -38,6 +38,10 @@ module Model
         true
       end
 
+      def type
+        :integer
+      end
+
       protected
       def alias_sql
         expression_alias ? " as #{expression_alias}" : ""

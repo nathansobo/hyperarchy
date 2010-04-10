@@ -2,8 +2,8 @@ module Model
   module Relations
     class Ordering < Relation
       attr_reader :operand, :sort_specifications
-      delegate :column, :surface_tables, :build_record_from_database, :sql_set_quantifier, :sql_select_list,
-               :sql_from_table_ref, :internal_sql_where_predicates,
+      delegate :column, :surface_tables, :build_record_from_database, :sql_set_quantifier, :internal_sql_select_list,
+               :internal_sql_table_ref, :internal_sql_where_predicates,
                :to => :operand
 
       def initialize(operand, sort_specifications, &block)
@@ -14,6 +14,10 @@ module Model
       def ==(other)
         return false unless other.instance_of?(self.class)
         operand == other.operand && sort_specifications == other.sort_specifications
+      end
+
+      def internal_sql_grouping_column_refs(state)
+        operand.external_sql_grouping_column_refs(state)
       end
 
       def sql_sort_specifications(state)

@@ -102,12 +102,16 @@ module Model
         :all
       end
 
-      def sql_select_list(state)
-        state[self][:sql_select_list] ||= [Sql::Asterisk.new(sql_from_table_ref(state))]
+      def internal_sql_select_list(state)
+        state[self][:internal_sql_select_list] ||= [Sql::Asterisk.new(internal_sql_table_ref(state))]
       end
 
-      def sql_from_table_ref(state)
-        state[self][:sql_from_table_ref] ||= Sql::Table.new(self)
+      def external_sql_select_list(state, external_relation)
+        internal_sql_select_list(state)
+      end
+
+      def internal_sql_table_ref(state)
+        state[self][:internal_sql_table_ref] ||= Sql::Table.new(self)
       end
 
       def internal_sql_where_predicates(state)
@@ -118,7 +122,7 @@ module Model
         []
       end
 
-      def sql_grouping_column_refs(state)
+      def internal_sql_grouping_column_refs(state)
         []
       end
 

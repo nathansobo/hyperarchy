@@ -10,7 +10,7 @@ module Model
       end
 
       attr_reader :operand, :predicate
-      delegate :column, :surface_tables, :build_record_from_database, :to => :operand
+      delegate :column, :surface_tables, :build_record_from_database, :external_sql_select_list, :to => :operand
 
       def initialize(operand, predicate, &block)
         super(&block)
@@ -29,11 +29,25 @@ module Model
         operand.unsafe_create(predicate.force_matching_field_values(field_values))
       end
 
-      delegate :sql_set_quantifier, :sql_select_list, :sql_from_table_ref, :to => :operand
+      delegate :sql_set_quantifier, :to => :operand
+
+      def internal_sql_table_ref(state)
+        operand.external_sql_table_ref(state)
+      end
+
+      def internal_sql_select_list(state)
+        operand.external_sql_select_list(state, self)
+      end
 
       def internal_sql_where_predicates(state)
         state[self][:internal_sql_where_predicates] ||=
-          [predicate.sql_expression(state)] + operand.internal_sql_where_predicates(state)
+          [predicate.sql_expression(state)] + operand.external_sql_where_predicates(state)
+      end
+
+      def internal_sql_grouping_column_refs(state)
+        state[self][:internal_sql_grouping_column_refs] ||= begin
+          operand.external_sql_grouping_column_refs(state)
+        end
       end
 
       def ==(other)

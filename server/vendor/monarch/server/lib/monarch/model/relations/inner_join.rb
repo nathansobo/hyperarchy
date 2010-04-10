@@ -21,8 +21,12 @@ module Model
         @tuple_class
       end
 
-      def sql_from_table_ref(state)
-        state[self][:sql_from_table_ref] ||=
+      def external_sql_select_list(state, external_relation)
+        internal_sql_select_list(state)
+      end
+
+      def internal_sql_table_ref(state)
+        state[self][:internal_sql_table_ref] ||=
           Sql::InnerJoinedTable.new(left_operand.external_sql_table_ref(state), right_operand.external_sql_table_ref(state), sql_join_conditions(state))
       end
 

@@ -15,8 +15,8 @@ module Model
         end
       end
 
-      def sql_from_table_ref(state)
-#        Sql::InnerJoinedTable.new(:union, operands[0].subquery.sql_from_table_ref, operands[1].subquery.sql_from_table_ref, nil)
+      def internal_sql_table_ref(state)
+#        Sql::InnerJoinedTable.new(:union, operands[0].subquery.internal_sql_table_ref, operands[1].subquery.internal_sql_table_ref, nil)
       end
 
       protected

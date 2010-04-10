@@ -5,9 +5,9 @@ module Model
         :left_outer
       end
 
-      def sql_from_table_ref(state)
-        state[self][:sql_from_table_ref] ||=
-          Sql::OuterJoinedTable.new(:left, left_operand.sql_from_table_ref(state), right_operand.sql_from_table_ref(state), sql_join_conditions(state))
+      def internal_sql_table_ref(state)
+        state[self][:internal_sql_table_ref] ||=
+          Sql::OuterJoinedTable.new(:left, left_operand.internal_sql_table_ref(state), right_operand.internal_sql_table_ref(state), sql_join_conditions(state))
       end
 
       def sql_join_conditions(state)

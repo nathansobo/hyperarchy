@@ -19,13 +19,13 @@ module Model
         :all
       end
 
-      def sql_grouping_column_refs(state)
+      def internal_sql_grouping_column_refs(state)
         []
       end
 
-      def sql_select_list(state)
-        state[self][:sql_select_list] ||=
-          (left_operand.sql_select_list(state) + right_operand.sql_select_list(state)).map do |derived_column_or_asterisk|
+      def internal_sql_select_list(state)
+        state[self][:internal_sql_select_list] ||=
+          (left_operand.internal_sql_select_list(state) + right_operand.internal_sql_select_list(state)).map do |derived_column_or_asterisk|
             derived_column_or_asterisk.derive(state, self) do |derived_column|
               "#{derived_column.table_ref.name}__#{derived_column.name}"
             end
