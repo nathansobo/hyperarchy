@@ -6,6 +6,11 @@ _.constructor("Controllers.Application", {
       signup: Views.Signup.toView(),
       organizations: Views.Organizations.toView()
     };
+    _.each(this.views, function(view) {
+      view.hide();
+      this.body.append(view);
+    }, this);
+
     History.onChange(function(path) {
       this.navigate(path);
     }, this);
@@ -22,11 +27,14 @@ _.constructor("Controllers.Application", {
     }
   },
 
-  switchViews: function(view) {
-    if (this.currentView === view) return;
-    this.body.empty();
-    this.body.append(view);
-    this.currentView = view;
+  switchViews: function(viewToShow) {
+    _.each(this.views, function(view) {
+      if (view === viewToShow) {
+        view.show();
+      } else {
+        view.hide();
+      }
+    });
   },
 
   currentUserIdEstablished: function(currentUserId) {

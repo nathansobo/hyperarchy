@@ -11,27 +11,31 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#navigate", function() {
+      before(function() {
+        _.each(controller.views, function(view) {
+          mock(view, 'show');
+          mock(view, 'hide');
+        });
+      });
+
       context("when called with '' (empty string)", function() {
         it("shows the login view and hides the others", function() {
           controller.navigate("");
-          expect(controller.body.children().length).to(eq, 1);
-          expect(controller.body.children("#login").length).to(eq, 1);
+          expect(controller.views.login.show).to(haveBeenCalled);
         });
       });
 
       context("when called with 'login'", function() {
         it("shows the login view and hides the others", function() {
           controller.navigate("login");
-          expect(controller.body.children().length).to(eq, 1);
-          expect(controller.body.children("#login").length).to(eq, 1);
+          expect(controller.views.login.show).to(haveBeenCalled);
         });
       });
 
       context("when called with 'signup'", function() {
         it("shows the signup view and hides the others", function() {
           controller.navigate("signup");
-          expect(controller.body.children().length).to(eq, 1);
-          expect(controller.body.children("#signup").length).to(eq, 1);
+          expect(controller.views.signup.show).to(haveBeenCalled);
         });
       });
 
@@ -39,8 +43,7 @@ Screw.Unit(function(c) { with(c) {
         it("shows the organizations view and hides the others, then calls #navigate on the view with the given :organization_id", function() {
           mock(controller.views.organizations, 'navigate');
           controller.navigate("organizations/meta");
-          expect(controller.body.children().length).to(eq, 1);
-          expect(controller.body.children("#organizations").length).to(eq, 1);
+          expect(controller.views.organizations.show).to(haveBeenCalled);
           expect(controller.views.organizations.navigate).to(haveBeenCalled, withArgs("meta"));
 
           mock(controller.body, 'append');
@@ -52,9 +55,9 @@ Screw.Unit(function(c) { with(c) {
       context("when called with 'organizations'", function() {
         it("shows the organizations view and hides the others, then calls #navigate on the view with null", function() {
           mock(controller.views.organizations, 'navigate');
+
           controller.navigate("organizations");
-          expect(controller.body.children().length).to(eq, 1);
-          expect(controller.body.children("#organizations").length).to(eq, 1);
+          expect(controller.views.organizations.show).to(haveBeenCalled);
           expect(controller.views.organizations.navigate).to(haveBeenCalled, withArgs(null));
         });
       });
