@@ -1,6 +1,6 @@
 module Model
   module Relations
-    class Selection < Relation
+    class Selection < UnaryOperator
       class << self
         def from_wire_representation(representation, repository)
           operand = Relation.from_wire_representation(representation["operand"], repository)

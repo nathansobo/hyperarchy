@@ -8,7 +8,8 @@ module Model
 
       def initialize(operand, sort_specifications, &block)
         super(&block)
-        @operand, @sort_specifications = operand, convert_to_sort_specifications_if_needed(sort_specifications)
+        @operand = operand
+        @sort_specifications = convert_to_sort_specifications_if_needed(sort_specifications)
       end
 
       def ==(other)
@@ -20,8 +21,8 @@ module Model
         operand.external_sql_grouping_column_refs(state)
       end
 
-      def sql_sort_specifications(state)
-        state[self][:sql_sort_specifications] ||=
+      def internal_sql_sort_specifications(state)
+        state[self][:internal_sql_sort_specifications] ||=
           sort_specifications.map {|sort_spec| sort_spec.sql_sort_specification(state)}
       end
 
@@ -31,7 +32,7 @@ module Model
           if column_or_sort_spec.instance_of?(Expressions::SortSpecification)
             column_or_sort_spec
           else
-            Expressions::SortSpecification(column_or_sort_spec, :asc)
+            Expressions::SortSpecification.new(column(column_or_sort_spec), :asc)
           end
         end
       end

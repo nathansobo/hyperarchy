@@ -153,34 +153,28 @@ module Model
         (event_nodes || []).map {|node| node.count}.sum
       end
 
+      def aggregation?
+        false
+      end
+
+      def external_sql_select_list(state)
+        internal_sql_select_list(state)
+      end
+
       def external_sql_table_ref(state)
-        state[self][:external_sql_table_ref] ||=
-          if aggregation?
-            Sql::DerivedTable.new(sql_query_specification(state), state.next_derived_table_name)
-          else
-            internal_sql_table_ref(state)
-          end
+        internal_sql_table_ref(state)
       end
 
       def external_sql_where_predicates(state)
-        state[self][:external_sql_where_predicates] ||=
-          if aggregation?
-            []
-          else
-            internal_sql_where_predicates(state)
-          end
+        internal_sql_where_predicates(state)
       end
 
       def external_sql_grouping_column_refs(state)
-        if aggregation?
-          []
-        else
-          internal_sql_grouping_column_refs(state)
-        end
+        internal_sql_grouping_column_refs(state)
       end
 
-      def aggregation?
-        false
+      def external_sql_sort_specifications(state)
+        internal_sql_sort_specifications(state)
       end
 
       protected
@@ -315,11 +309,11 @@ module Model
         end
       end
 
-      delegate :sql_set_quantifier, :sql_sort_specifications, :to => :operand
+      delegate :sql_set_quantifier, :to => :operand
 
       def sql_query_specification(state)
         state[self][:sql_query_specification] ||=
-          Sql::QuerySpecification.new(sql_set_quantifier(state), internal_sql_select_list(state), internal_sql_table_ref(state), internal_sql_where_predicates(state), sql_sort_specifications(state), internal_sql_grouping_column_refs(state))
+          Sql::QuerySpecification.new(sql_set_quantifier(state), internal_sql_select_list(state), internal_sql_table_ref(state), internal_sql_where_predicates(state), internal_sql_sort_specifications(state), internal_sql_grouping_column_refs(state))
       end
 
       def sql_update_statement(state, field_values)

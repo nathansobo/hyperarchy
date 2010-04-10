@@ -32,9 +32,9 @@ module Model
           end.flatten
       end
 
-      def sql_sort_specifications(state)
-        state[self][:sql_sort_specifications] ||=
-          left_operand.sql_sort_specifications(state) + right_operand.sql_sort_specifications(state)
+      def internal_sql_sort_specifications(state)
+        state[self][:internal_sql_sort_specifications] ||=
+          left_operand.internal_sql_sort_specifications(state) + right_operand.internal_sql_sort_specifications(state)
       end
     end
   end

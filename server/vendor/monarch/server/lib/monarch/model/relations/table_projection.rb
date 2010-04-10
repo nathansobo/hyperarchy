@@ -1,6 +1,6 @@
 module Model
   module Relations
-    class TableProjection < Relation
+    class TableProjection < UnaryOperator
       class << self
         def from_wire_representation(representation, repository)
           operand = Relation.from_wire_representation(representation["operand"], repository)
@@ -19,8 +19,6 @@ module Model
       def surface_tables
         [projected_table]
       end
-
-      delegate :internal_sql_table_ref, :internal_sql_where_predicates, :to => :operand
 
       def sql_set_quantifier(state)
         :all

@@ -1,6 +1,6 @@
 module Model
   module Relations
-    class Projection < Relations::Relation
+    class Projection < UnaryOperator
 
       attr_reader :operand, :concrete_columns, :concrete_columns_by_name, :concrete_columns_by_underlying_expression
       delegate :tables, :to => :operand
@@ -55,12 +55,19 @@ module Model
         end
       end
 
-      delegate :internal_sql_table_ref, :internal_sql_where_predicates, :to => :operand
+      def build_record_from_database(field_values)
+        tuple_class.new(field_values)
+      end
+
+      def ==(other)
+        return false unless other.instance_of?(self.class)
+        operand == other.operand && concrete_columns_by_name == other.concrete_columns_by_name
+      end
 
       def sql_set_quantifier(state)
         :all #TODO: make distinct if this projection strips out all primary keys
       end
-
+      
       def internal_sql_select_list(state)
         state[self][:internal_sql_select_list] ||=
           concrete_columns.map do |column|
@@ -69,26 +76,31 @@ module Model
       end
 
       def external_sql_select_list(state, external_relation)
-        state[self][:external_sql_select_list] ||= begin
+        state[self][:external_sql_select_list] ||=
           concrete_columns.map do |column|
             column.derive(external_relation).sql_derived_column(state)
           end
-        end
       end
 
-      def internal_sql_grouping_column_refs(state)
-        state[self][:internal_sql_grouping_column_refs] ||= begin
-          operand.external_sql_grouping_column_refs(state)
-        end
+      def external_sql_table_ref(state)
+        state[self][:external_sql_table_ref] ||=
+          if aggregation?
+            Sql::DerivedTable.new(sql_query_specification(state), state.next_derived_table_name)
+          else
+            internal_sql_table_ref(state)
+          end
       end
 
-      def build_record_from_database(field_values)
-        tuple_class.new(field_values)
+      def external_sql_where_predicates(state)
+        aggregation?? [] : super
       end
 
-      def ==(other)
-        return false unless other.instance_of?(self.class)
-        operand == other.operand && concrete_columns_by_name == other.concrete_columns_by_name
+      def external_sql_grouping_column_refs(state)
+        aggregation?? [] : super
+      end
+
+      def external_sql_sort_specifications(state)
+        aggregation?? [] : super
       end
 
       protected

@@ -159,6 +159,10 @@ module Model
       })
     end
 
+    def new_state
+      Model::SqlGenerationState.new
+    end
+
     specify "projections involving aggregation functions composed on top of other constructs" do
       User.project(User[:id].count).to_sql.should be_like(%{select count(users.id) from users})
       User.where(:age => 34).project(User[:id].count).to_sql.should be_like(%{
@@ -181,6 +185,9 @@ module Model
     end
 
     specify "selections involving subqueries" do
+      puts Blog.group_by(:user_id).order_by(:title).project(Blog[:title].count.as(:count)).where(:count => 3).to_sql
+
+
       blog_post_counts =
         Blog.where(:user_id => "jan").left_join_to(BlogPost).
           group_by(Blog[:id]).

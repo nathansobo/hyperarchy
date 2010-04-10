@@ -118,7 +118,7 @@ module Model
         []
       end
 
-      def sql_sort_specifications(state)
+      def internal_sql_sort_specifications(state)
         []
       end
 
