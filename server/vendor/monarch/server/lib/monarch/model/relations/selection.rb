@@ -29,31 +29,17 @@ module Model
         operand.unsafe_create(predicate.force_matching_field_values(field_values))
       end
 
-      def internal_sql_table_ref(state)
-        operand.external_sql_table_ref(state)
-      end
-
-      def internal_sql_select_list(state)
-        operand.external_sql_select_list(state, self)
-      end
-
-      def internal_sql_where_predicates(state)
-        state[self][:internal_sql_where_predicates] ||=
-          [predicate.sql_expression(state)] + operand.external_sql_where_predicates(state)
-      end
-
-      def internal_sql_grouping_column_refs(state)
-        state[self][:internal_sql_grouping_column_refs] ||= begin
-          operand.external_sql_grouping_column_refs(state)
-        end
-      end
-
       def ==(other)
         return false unless other.instance_of?(self.class)
         operand == other.operand && predicate == other.predicate
       end
 
       protected
+
+      def internal_sql_where_predicates(state)
+        state[self][:internal_sql_where_predicates] ||=
+          [predicate.sql_expression(state)] + operand.external_sql_where_predicates(state)
+      end
 
       def subscribe_to_operands
         operand_subscriptions.add(operand.on_insert do |record|
