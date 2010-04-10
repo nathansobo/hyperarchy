@@ -18,7 +18,7 @@
 //= require "model/column"
 //= require "model/projected_column"
 //= require "model/synthetic_column"
-//= require "model/order_by_column"
+//= require "model/sort_specification"
 //= require "model/relations"
 //= require "model/predicates"
 

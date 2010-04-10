@@ -226,8 +226,8 @@ _.constructor("Monarch.Model.Relations.Relation", {
     this.onRemoteInsertNode.publish(record);
   },
 
-  tupleUpdatedRemotely: function(record, updateData) {
-    this.onRemoteUpdateNode.publish(record, updateData);
+  tupleUpdatedRemotely: function(record, updateData, newIndex, oldIndex) {
+    this.onRemoteUpdateNode.publish(record, updateData, newIndex, oldIndex);
   },
 
   tupleUpdatedLocally: function(record, updateData) {

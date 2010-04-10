@@ -15,11 +15,11 @@ _.constructor("Monarch.Model.ProjectedColumn", {
   },
 
   asc: function() {
-    return new Monarch.Model.OrderByColumn(this, 'asc');
+    return new Monarch.Model.SortSpecification(this, 'asc');
   },
 
   desc: function() {
-    return new Monarch.Model.OrderByColumn(this, 'desc');
+    return new Monarch.Model.SortSpecification(this, 'desc');
   }
 });
 
