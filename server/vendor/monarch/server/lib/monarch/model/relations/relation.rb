@@ -153,10 +153,6 @@ module Model
         (event_nodes || []).map {|node| node.count}.sum
       end
 
-      def aggregation?
-        false
-      end
-
       def external_sql_select_list(state, external_relation)
         internal_sql_select_list(state)
       end

@@ -49,12 +49,6 @@ module Model
         @tuple_class
       end
 
-      def aggregation?
-        concrete_columns.any? do |expression|
-          expression.aggregation?
-        end
-      end
-
       def build_record_from_database(field_values)
         tuple_class.new(field_values)
       end
@@ -62,13 +56,6 @@ module Model
       def ==(other)
         return false unless other.instance_of?(self.class)
         operand == other.operand && concrete_columns_by_name == other.concrete_columns_by_name
-      end
-
-      def internal_sql_select_list(state)
-        state[self][:internal_sql_select_list] ||=
-          concrete_columns.map do |column|
-            column.sql_derived_column(state)
-          end
       end
 
       def external_sql_select_list(state, external_relation)
@@ -99,7 +86,21 @@ module Model
         aggregation?? [] : super
       end
 
+      def aggregation?
+        concrete_columns.any? do |expression|
+          expression.aggregation?
+        end
+      end
+
       protected
+
+      def internal_sql_select_list(state)
+        state[self][:internal_sql_select_list] ||=
+          concrete_columns.map do |column|
+            column.sql_derived_column(state)
+          end
+      end
+
       def subscribe_to_operands
         operand_subscriptions.add(operand.on_insert do |tuple|
           on_insert_node.publish(project_tuple(tuple))
