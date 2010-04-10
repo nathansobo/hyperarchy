@@ -9,6 +9,8 @@ module Model
         @grouping_columns = grouping_columns.map {|c| column(c)}
       end
 
+      protected
+
       def internal_sql_grouping_column_refs(state)
         state[self][:internal_sql_grouping_column_refs] ||=
           grouping_columns.map do |column|

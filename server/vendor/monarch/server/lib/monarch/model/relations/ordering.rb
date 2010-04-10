@@ -15,16 +15,13 @@ module Model
         operand == other.operand && sort_specifications == other.sort_specifications
       end
 
-      def internal_sql_grouping_column_refs(state)
-        operand.external_sql_grouping_column_refs(state)
-      end
-
+      protected
+      
       def internal_sql_sort_specifications(state)
         state[self][:internal_sql_sort_specifications] ||=
           sort_specifications.map {|sort_spec| sort_spec.sql_sort_specification(state)}
       end
 
-      protected
       def convert_to_sort_specifications_if_needed(columns_or_sort_specs)
         columns_or_sort_specs.map do |column_or_sort_spec|
           if column_or_sort_spec.instance_of?(Expressions::SortSpecification)

@@ -9,8 +9,8 @@ module Model
         end
       end
 
-      delegate :column, :create, :to => :projected_table
       attr_reader :operand, :projected_table
+      delegate :column, :create, :to => :projected_table
       def initialize(operand, projected_table, &block)
         super(&block)
         @operand, @projected_table = operand, projected_table
@@ -18,19 +18,6 @@ module Model
 
       def surface_tables
         [projected_table]
-      end
-
-      def internal_sql_select_list(state)
-        state[self][:internal_sql_select_list] ||=
-          [Sql::Asterisk.new(projected_table.external_sql_table_ref(state))]
-      end
-
-      def external_sql_select_list(state, external_relation)
-        internal_sql_select_list(state)
-      end
-
-      def internal_sql_grouping_column_refs(state)
-        operand.external_sql_grouping_column_refs(state)
       end
 
       def build_record_from_database(field_values)
@@ -45,6 +32,11 @@ module Model
       protected
       attr_reader :last_changeset
 
+      def internal_sql_select_list(state)
+        state[self][:internal_sql_select_list] ||=
+          [Sql::Asterisk.new(projected_table.external_sql_table_ref(state))]
+      end
+      
       def subscribe_to_operands
         operand_subscriptions.add(operand.on_insert do |composite_tuple|
           record = composite_tuple[projected_table]
