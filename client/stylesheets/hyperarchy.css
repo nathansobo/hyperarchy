@@ -1,6 +1,60 @@
+h2 {
+  /*font-size: 22px;*/
+}
+
+button {
+  padding: 5px;
+}
+
+a.createElection {
+  font-size: 21px;
+  color: #007100;
+  display: block;
+  margin-bottom: 20px;
+}
+
+.grayText {
+  color: #999999;
+}
+
+div#createElectionForm {
+  width: 620px;
+  margin: 20px auto 40px;
+}
+
+div#createElectionForm input {
+  font-size: 21px;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+div#createElectionForm button {
+  display: block;
+  margin: auto;
+  font-size: 15px;
+}
+
+
+li.election {
+  margin-bottom: 10px;
+}
+
+li.election .body {
+  font-size: 21px;
+  line-height: 26px;
+  margin-bottom: 10px;
+}
+
+ol.candidates li {
+  list-style: decimal;
+  list-style-position: inside;
+  font-size: 15px;
+}
+
 #header {
   background: #cccccc;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 #title {
   margin: 3px 10px;
@@ -54,6 +108,7 @@ div.unrankCandidate:hover {
 }
 
 /* ------------------ */
+
 
 ol.errorList {
   margin: 5px;

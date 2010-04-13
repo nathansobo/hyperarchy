@@ -76,6 +76,12 @@ module Model
         other.hash == hash
       end
 
+      def add_to_relational_dataset(dataset)
+        constituent_records.each do |record|
+          record.add_to_relational_dataset(dataset)
+        end
+      end
+
       protected
       def build_constituent_record(table, field_values)
         table_specific_field_values = {}

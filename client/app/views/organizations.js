@@ -3,9 +3,9 @@ _.constructor("Views.Organizations", View.Template, {
     div({id: "organizations", 'class': "container12"}, function() {
       div({id: "header", 'class': "grid12"}, function() {
         div({'class': "grid2 alpha"}, function() {
-          h1({id: "title"}, "hyperarchy");
+          h3({id: "title"}, "hyperarchy");
         });
-        div({'class': "grid2 prefix8 omega"}, function() {
+        div({'class': "grid2 prefix8 omega", style: "display: none"}, function() {
           span("organization:");
           select()
             .ref("organizationSelect")
@@ -15,24 +15,32 @@ _.constructor("Views.Organizations", View.Template, {
         });
       });
 
-      div({'class': "grid4"}, function() {
-        subview('electionsView', Views.Elections)
-      });
+      div({'class': "top grid12"}, function() {
+        a({href: "#", 'class': 'createElection'}, "Raise a New Question...")
+          .ref('createElectionLink')
+          .click('showCreateElectionForm');
 
-      div({'class': "grid4"}, function() {
-        subview('rankingsView', Views.Rankings);
-      });
+        div({id: 'createElectionForm', style: "display: none;"}, function() {
+          input()
+            .ref('createElectionInput')
+            .click(function() {
+              this.val("");
+              this.removeClass('grayText');
+            });
+          button("Raise Question")
+            .ref('createElectionButton')
+            .click('createElection');
+        }).ref('createElectionForm');
+      }).ref('topDiv');
 
-      div({'class': "grid4"}, function() {
-        subview('candidatesView', Views.Candidates);
-      });
+      ol(function() {
+        
+      }).ref('electionsList');
     });
   }},
 
   viewProperties: {
     initialize: function() {
-      this.electionsView.candidatesView = this.candidatesView;
-      this.electionsView.rankingsView = this.rankingsView;
       this.fetchingOrganizations = Organization.fetch();
       this.fetchingOrganizations.afterEvents(function() {
         Organization.each(function(organization) {
@@ -65,8 +73,34 @@ _.constructor("Views.Organizations", View.Template, {
     },
 
     displayOrganization: function(organizationId) {
-      if (this.organizationSelect.val() != organizationId) this.organizationSelect.val(organizationId);
-      this.electionsView.elections(Organization.find(organizationId).elections());
+      this.organization = Organization.find(organizationId);
+      this.displayElections();
+    },
+
+    displayElections: function() {
+      Server.fetch([this.organization.elections(), this.organization.elections().joinTo(Candidate)])
+        .onSuccess(function() {
+          this.organization.elections().each(function(election) {
+            this.electionsList.append(Views.ElectionLi.toView({election: election}));
+          }, this);
+        }, this);
+    },
+
+    showCreateElectionForm: function() {
+      this.createElectionLink.hide();
+      this.createElectionForm.show();
+      this.createElectionInput.val("Type your question here.");
+      this.createElectionInput.addClass('grayText');
+      return false;
+    },
+
+    createElection: function() {
+      this.createElectionButton.attr('disabled', true);
+      this.organization.elections().create({body: this.createElectionInput.val()})
+        .onSuccess(function(election) {
+          console.debug(election.id());
+//          History.load("elections/" + election.id());
+        });
     },
 
     organizationSelectChanged: function() {

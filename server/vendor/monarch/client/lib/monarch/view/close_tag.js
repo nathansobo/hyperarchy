@@ -28,9 +28,9 @@ _.constructor("Monarch.View.CloseTag", {
         this.onBuild(function(element, view) {
           element[eventName].call(element, function(event) {
             if (callback) {
-              callback.call(element, view, event);
+              return callback.call(element, view, event);
             } else {
-              view[callbackOrMethodName].apply(view, boundArgs.concat([element, event]));
+              return view[callbackOrMethodName].apply(view, boundArgs.concat([element, event]));
             }
           });
         });

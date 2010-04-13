@@ -17,6 +17,17 @@ class Db < Thor
     Model::Repository::load_fixtures(FIXTURES)
   end
 
+  desc "load_examples", "load the example data into the development database"
+  def load_examples
+    require "#{dir}/../spec/spec_helpers/examples"
+    Origin.connection = Sequel.mysql('hyperarchy_development', :user => 'root', :password => 'password')
+    Model.convert_strings_to_keys = true
+    Model::Repository::clear_tables
+    Model::Repository::load_fixtures(FIXTURES)
+  end
+
+
+
   desc "console", "connect to the 'hyperarchy_development' database in mysql console"
   def console
     exec "/usr/bin/env mysql -uroot -ppassword hyperarchy_development"
