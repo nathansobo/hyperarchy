@@ -219,7 +219,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
     this._tuples = this.tuples();
   },
 
-  tupleInsertedRemotely: function(record, options) {
+  tupleInsertedRemotely: function(record) {
     if (!this.contains(record)) {
       this._tuples.push(record)
     }
@@ -239,7 +239,8 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   tupleRemovedRemotely: function(record) {
-    _.remove(this._tuples, record);
+    var position = _.indexOf(this._tuples, record);
+    this._tuples.splice(position, 1);
     this.onRemoteRemoveNode.publish(record);
   },
 
