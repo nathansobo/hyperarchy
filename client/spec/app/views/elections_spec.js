@@ -31,7 +31,7 @@ Screw.Unit(function(c) { with(c) {
         it("cancels event subscriptions to the previous relation", function() {
           Server.auto = true;
           view.elections(elections);
-          var newElections = Organization.fixture('meta').elections();
+          var newElections = Organization.fixture('global').elections();
           view.elections(newElections);
           
           elections.createFromRemote({id: "newRestaurantElection", body: "Thish should not appear in the list"});

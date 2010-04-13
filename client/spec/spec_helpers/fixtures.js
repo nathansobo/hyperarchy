@@ -8,8 +8,8 @@ Screw.Unit(function(c) {
     },
 
     organizations: {
-      meta: {
-        name: "Meta Hyperarchy"
+      global: {
+        name: "global Hyperarchy"
       },
       restaurant: {
         name: "Restaurant"
@@ -18,7 +18,7 @@ Screw.Unit(function(c) {
 
     elections: {
       features: {
-        organizationId: 'meta',
+        organizationId: 'global',
         body: "What features should we add to Hyperarchy?"
       },
       menu: {

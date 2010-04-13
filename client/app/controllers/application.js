@@ -18,11 +18,16 @@ _.constructor("Controllers.Application", {
 
   navigate: function(path) {
     if (path == "") {
-      this.switchViews(this.views.login);
+      if (this.currentUserId) {
+        this.switchViews(this.views.organizations);
+        this.views.organizations.navigate('global');
+      } else {
+        this.switchViews(this.views.login);
+      }
     } else {
       var pathParts = _.splitAtFirstSlash(path);
       var view = this.views[pathParts[0]];
-      this.switchViews(view)
+      this.switchViews(view);
       if (_.isFunction(view.navigate)) view.navigate(pathParts[1]);
     }
   },

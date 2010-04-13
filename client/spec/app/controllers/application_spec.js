@@ -42,9 +42,9 @@ Screw.Unit(function(c) { with(c) {
       context("when called with 'organizations/:organization_id'", function() {
         it("shows the organizations view and hides the others, then calls #navigate on the view with the given :organization_id", function() {
           mock(controller.views.organizations, 'navigate');
-          controller.navigate("organizations/meta");
+          controller.navigate("organizations/global");
           expect(controller.views.organizations.show).to(haveBeenCalled);
-          expect(controller.views.organizations.navigate).to(haveBeenCalled, withArgs("meta"));
+          expect(controller.views.organizations.navigate).to(haveBeenCalled, withArgs("global"));
 
           mock(controller.body, 'append');
           controller.navigate("organizations/restaurant");

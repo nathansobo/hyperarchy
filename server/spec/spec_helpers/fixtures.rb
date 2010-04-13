@@ -8,8 +8,8 @@ FIXTURES = {
   },
 
   :organizations => {
-    :meta => {
-      :name => "Meta Hyperarchy"  
+    :global => {
+      :name => "global Hyperarchy"
     },
     :restaurunt => {
       :name => "Restaurant"
@@ -18,7 +18,7 @@ FIXTURES = {
 
   :elections => {
     :bottleneck => {
-      :organization_id => "meta",
+      :organization_id => "global",
       :body => "What's our biggest bottleneck?"
     },
     :menu => {
