@@ -9,7 +9,13 @@ _.constructor("Views.ElectionLi", View.Template, {
           li(candidate.body());
         });
       });
+    }).click('displayElection');
+  }},
 
-    });
-  }}
+  viewProperties: {
+    displayElection: function() {
+      History.load("elections/" + this.election.id());
+    }
+  }
+
 });

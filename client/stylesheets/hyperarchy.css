@@ -6,15 +6,23 @@ button {
   padding: 5px;
 }
 
-a.createElection {
+.largeFont {
   font-size: 21px;
-  color: #007100;
-  display: block;
-  margin-bottom: 20px;
 }
 
 .grayText {
   color: #999999;
+}
+
+.elections .body {
+  margin-bottom: 20px;
+}
+
+a.createElection, a#createCandidate {
+  font-size: 21px;
+  color: #007100;
+  display: block;
+  margin-bottom: 20px;
 }
 
 div#createElectionForm {
@@ -35,9 +43,9 @@ div#createElectionForm button {
   font-size: 15px;
 }
 
-
 li.election {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
 }
 
 li.election .body {
@@ -52,9 +60,53 @@ ol.candidates li {
   font-size: 15px;
 }
 
+div#createCandidateForm textarea {
+  font-size: 21px;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  display: block;
+}
+
+div#createCandidateForm button {
+  display: block;
+  font-size: 15px;
+}
+
+
+.elections .sectionLabel {
+  font-size: 16px;
+  color: #999999;
+  margin-bottom: 5px;
+}
+
+.elections ol.candidates {
+  height: 400px;
+  width: 100%;
+  background-color: #f4f2f2;
+  border-width: 3px;
+  -moz-box-shadow: #d6d3d3 0px 0px 5px inset;
+  -webkit-box-shadow: #d6d3d3 0px 0px 5px inset;
+}
+
+.elections ol.candidates li {
+  border: 1px solid #d6d3d3;
+  padding: 5px;
+  cursor: default;
+  background: white;
+  border-bottom: none;
+  -moz-box-shadow: #d6d3d3 0px 1px 3px;
+  -webkit-box-shadow: #d6d3d3 0px 1px 3px;
+}
+
+.elections ol.candidates li:last-child {
+  border-bottom: 1px solid #d6d3d3;
+}
+
+
 #header {
   background: #cccccc;
-  margin-bottom: 15px;
+  margin-bottom: 30px;
 }
 #title {
   margin: 3px 10px;

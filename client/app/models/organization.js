@@ -1,9 +1,16 @@
 _.constructor("Organization", Model.Record, {
-  constructorInitialize: function() {
-    this.columns({
-      name: "string"
-    });
+  constructorProperties: {
+    initialize: function() {
+      this.columns({
+        name: "string"
+      });
 
-    this.hasMany("elections");
+      this.hasMany("elections");
+    },
+
+    global: function() {
+      return this.find({name: "Global"});
+    }
   }
+
 });

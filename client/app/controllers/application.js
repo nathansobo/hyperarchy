@@ -1,15 +1,15 @@
 _.constructor("Controllers.Application", {
-  initialize: function(body) {
+  initialize: function(currentUserId, body) {
+    this.currentUserId = currentUserId;
     this.body = body || $('body');
     this.views = {
       login: Views.Login.toView(),
       signup: Views.Signup.toView(),
-      organizations: Views.Organizations.toView()
+      organizations: Views.Organizations.toView(),
+      elections: Views.Elections.toView()
     };
-    _.each(this.views, function(view) {
-      view.hide();
-      this.body.append(view);
-    }, this);
+    this.layout = Views.Layout.toView({views: this.views});
+    this.body.append(this.layout);
 
     History.onChange(function(path) {
       this.navigate(path);
@@ -20,7 +20,7 @@ _.constructor("Controllers.Application", {
     if (path == "") {
       if (this.currentUserId) {
         this.switchViews(this.views.organizations);
-        this.views.organizations.navigate('global');
+        this.views.organizations.navigate(Organization.global().id());
       } else {
         this.switchViews(this.views.login);
       }
@@ -32,14 +32,8 @@ _.constructor("Controllers.Application", {
     }
   },
 
-  switchViews: function(viewToShow) {
-    _.each(this.views, function(view) {
-      if (view === viewToShow) {
-        view.show();
-      } else {
-        view.hide();
-      }
-    });
+  switchViews: function(selectedView) {
+    this.layout.switchViews(selectedView);
   },
 
   currentUserIdEstablished: function(currentUserId) {

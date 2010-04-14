@@ -9,7 +9,7 @@ FIXTURES = {
 
   :organizations => {
     :global => {
-      :name => "global Hyperarchy"
+      :name => "Global"
     }
   },
 

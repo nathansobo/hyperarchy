@@ -18,8 +18,9 @@ module Views
           script :type => "text/javascript", :language => "javascript" do
             rawtext %[
               $(function() {
-                window.Application = new Controllers.Application();
-                #{reestablish_current_user}
+                #{store_organizations_in_repository}
+                #{store_current_user_in_repository}
+                window.Application = new Controllers.Application(#{(current_user ? current_user.id : nil).to_json});
               });
             ]
           end
@@ -30,12 +31,16 @@ module Views
       end
     end
 
-    def reestablish_current_user
-      return "" unless current_user
-      %{
-        Application.currentUserIdEstablished(#{current_user.id});
-        Repository.update(#{build_relational_dataset(current_user).to_json});
-      }
+    def store_organizations_in_repository
+      store_in_repository(Organization.table)
+    end
+
+    def store_current_user_in_repository
+      store_in_repository(current_user) if current_user
+    end
+
+    def store_in_repository(dataset)
+      %{Repository.update(#{build_relational_dataset(dataset).to_json});}
     end
 
 

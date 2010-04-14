@@ -1,3 +1,4 @@
+//= require "views/layout"
 //= require "views/login"
 //= require "views/signup"
 //= require "views/organizations"
