@@ -21,6 +21,10 @@ _.constructor("Election", Model.Record, {
     return this.rankingsByUserId[userId] = this.rankings().where({userId: userId})
   },
 
+  rankingsForCurrentUser: function() {
+    return this.rankingsForUser(Application.currentUser());
+  },
+
   rankedCandidatesForUser: function(user) {
     var userId = user.id();
     if (this.rankedCandidatesByUserId[userId]) return this.rankedCandidatesByUserId[userId];

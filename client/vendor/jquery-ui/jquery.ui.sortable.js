@@ -1,5 +1,5 @@
 /*
- * jQuery UI Sortable 1.8rc3
+ * jQuery UI Sortable 1.8
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -74,7 +74,6 @@ $.widget("ui.sortable", $.ui.mouse, {
 	},
 
 	_mouseCapture: function(event, overrideHandle) {
-
 		if (this.reverting) {
 			return false;
 		}
@@ -224,6 +223,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 	},
 
 	_mouseDrag: function(event) {
+
 		//Compute the helpers position
 		this.position = this._generatePosition(event);
 		this.positionAbs = this._convertPositionTo("absolute");
@@ -545,7 +545,6 @@ $.widget("ui.sortable", $.ui.mouse, {
 	},
 
 	_refreshItems: function(event) {
-
 		this.items = [];
 		this.containers = [this];
 		var items = this.items;
@@ -613,7 +612,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 		} else {
 			for (var i = this.containers.length - 1; i >= 0; i--){
 				var p = this.containers[i].element.offset();
-				this.containers[i].containerCache.left = p.left;
+        this.containers[i].containerCache.left = p.left;
 				this.containers[i].containerCache.top = p.top;
 				this.containers[i].containerCache.width	= this.containers[i].element.outerWidth();
 				this.containers[i].containerCache.height = this.containers[i].element.outerHeight();
@@ -699,8 +698,11 @@ $.widget("ui.sortable", $.ui.mouse, {
 		// if no intersecting containers found, return 
 		if(!innermostContainer) return; 
 
-		// move the item into the container if it's not there already 
-		if(this.currentContainer != this.containers[innermostIndex]) { 
+		// move the item into the container if it's not there already
+		if(this.containers.length === 1) {
+			this.containers[innermostIndex]._trigger("over", event, this._uiHash(this));
+			this.containers[innermostIndex].containerCache.over = 1;
+		} else if(this.currentContainer != this.containers[innermostIndex]) { 
 
 			//When entering a new container, we will find the item with the least distance and append our item near it 
 			var dist = 10000; var itemWithLeastDistance = null; var base = this.positionAbs[this.containers[innermostIndex].floating ? 'left' : 'top']; 
@@ -1045,7 +1047,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 });
 
 $.extend($.ui.sortable, {
-	version: "1.8rc3"
+	version: "1.8"
 });
 
 })(jQuery);

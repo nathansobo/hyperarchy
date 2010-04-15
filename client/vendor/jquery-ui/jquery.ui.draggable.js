@@ -1,5 +1,5 @@
 /*
- * jQuery UI Draggable 1.8rc3
+ * jQuery UI Draggable 1.8
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -459,7 +459,7 @@ $.widget("ui.draggable", $.ui.mouse, {
 });
 
 $.extend($.ui.draggable, {
-	version: "1.8rc3"
+	version: "1.8"
 });
 
 $.ui.plugin.add("draggable", "connectToSortable", {
@@ -475,8 +475,10 @@ $.ui.plugin.add("draggable", "connectToSortable", {
 					instance: sortable,
 					shouldRevert: sortable.options.revert
 				});
-				sortable._refreshItems();	//Do a one-time refresh at start to refresh the containerCache
-				sortable._trigger("activate", event, uiSortable);
+				// nathan patched 4/14/10, original version below
+        sortable.refreshPositions();
+        //sortable._refreshItems();	//Do a one-time refresh at start to refresh the containerCache
+        sortable._trigger("activate", event, uiSortable);
 			}
 		});
 
@@ -529,12 +531,13 @@ $.ui.plugin.add("draggable", "connectToSortable", {
 		};
 
 		$.each(inst.sortables, function(i) {
-			
 			//Copy over some variables to allow calling the sortable's native _intersectsWith
 			this.instance.positionAbs = inst.positionAbs;
 			this.instance.helperProportions = inst.helperProportions;
 			this.instance.offset.click = inst.offset.click;
-			
+
+      this.instance.refreshPositions();
+
 			if(this.instance._intersectsWith(this.instance.containerCache)) {
 
 				//If it intersects, we use a little isOver variable and set it once, so our move-in stuff gets fired only once
@@ -544,14 +547,11 @@ $.ui.plugin.add("draggable", "connectToSortable", {
 					//Now we fake the start of dragging for the sortable instance,
 					//by cloning the list group item, appending it to the sortable and using it as inst.currentItem
 					//We can then fire the start event of the sortable with our passed browser event, and our own helper (so it doesn't create a new one)
-          this.instance.currentItem = $(self).clone().appendTo(this.instance.element).data("sortable-item", true);
-          this.instance.currentItem.offset().top = $(self).offset().top;
-
-          this.instance.options._helper = this.instance.options.helper; //Store helper option to later restore it
+					this.instance.currentItem = $(self).clone().appendTo(this.instance.element).data("sortable-item", true);
+					this.instance.options._helper = this.instance.options.helper; //Store helper option to later restore it
 					this.instance.options.helper = function() { return ui.helper[0]; };
 
 					event.target = this.instance.currentItem[0];
-
 					this.instance._mouseCapture(event, true);
 					this.instance._mouseStart(event, true, true);
 

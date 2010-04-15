@@ -14,26 +14,30 @@ _.constructor("Views.Elections", View.Template, {
 
 
       div({'class': "grid4"}, function() {
-        div({'class': "sectionLabel"}, "Current Consensus");
-        ol({'class': "candidates"}).ref('candidatesList');
+        subview('candidatesList', Views.CandidatesList);
       });
 
       div({'class': "grid4"}, function() {
-        div({'class': "sectionLabel"}, "Your Ranking");
-        ol({'class': "candidates"});
-      })
+        subview('rankedCandidatesList', Views.RankedCandidatesList);
+      });
     });
   }},
 
   viewProperties: {
+    initialize: function() {
+      this.subscriptions = new Monarch.SubscriptionBundle();
+    },
+
     election: {
-      afterChange: function(newElection) {
-        this.bodyDiv.html(newElection.body());
-        this.candidatesList.empty();
-        newElection.candidates().each(function(candidate) {
-          this.candidatesList.appendView(function(b) {
-            b.li(candidate.body());
-          })
+      afterChange: function(election) {
+        Server.fetch([election.candidates(), election.rankingsForCurrentUser()])
+          .onSuccess(function() {
+            this.candidatesList.election(election);
+            this.rankedCandidatesList.election(election);
+          }, this);
+
+        election.candidates().subscribe().onSuccess(function(subscription) {
+          this.subscriptions.add(subscription);
         }, this);
       }
     },
