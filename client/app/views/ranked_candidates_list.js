@@ -26,7 +26,9 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     populateRankings: function() {
       this.rankedCandidatesList.empty();
       this.rankings.each(function(ranking) {
-        this.rankedCandidatesList.append(Views.RankedCandidateLi.toView({ranking: ranking}));
+        var li = Views.RankedCandidateLi.toView({ranking: ranking});
+        li.stopLoading();
+        this.rankedCandidatesList.append(li);
       }, this);
       this.subscriptions.add(this.rankings.onRemoteRemove(function(ranking) {
         this.findLi(ranking.candidate()).remove();
@@ -36,14 +38,15 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     handleReceive: function(event, ui) {
       var candidate = Candidate.find(ui.item.attr('candidateId'));
       var rankedCandidateView = Views.RankedCandidateLi.toView({candidate: candidate});
-      this.findPreviousLi(candidate).remove();
-      this.findLi(candidate).replaceWith(rankedCandidateView);
+      this.findPreviousLi(candidate).remove(); // may have already been ranked
+      this.findLi(candidate).replaceWith(rankedCandidateView); // replace the clone of the draggable li with a real view
     },
 
     handleUpdate: function(event, ui) {
       // received items are replaced with different object, so need to find from the list
       var candidate = Candidate.find(ui.item.attr('candidateId'));
       var rankedCandidateLi = this.findLi(candidate);
+      rankedCandidateLi.view().startLoading();
 
       var predecessorId = rankedCandidateLi.prev().attr('candidateId');
       var successorId = rankedCandidateLi.next().attr('candidateId');
@@ -52,7 +55,10 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
 
       Ranking.createOrUpdate(Application.currentUser(), this.election(), candidate, predecessor, successor)
         .onSuccess(function(ranking) {
-          rankedCandidateLi.view().ranking(ranking);
+          if (!ranking) debugger;
+          console.debug("assigning ranking for " + ranking.candidate().body());
+          rankedCandidateLi.view().ranking = ranking;
+          rankedCandidateLi.view().stopLoading();
         });
     },
 

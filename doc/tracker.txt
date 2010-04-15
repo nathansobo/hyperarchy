@@ -12,7 +12,7 @@ implement auto code reloading for the server-side code in development
 if current user is null, direct to login screen always
 
 
-
+clean up subscriptions on candidate ranking relation?
 
 projections that remove all primary keys should add a distinct keyword
 why does Tuple#define_field_reader restrict definition of ? methods to concrete (not synthetic) columns?

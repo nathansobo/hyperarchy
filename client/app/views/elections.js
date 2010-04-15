@@ -54,7 +54,6 @@ _.constructor("Views.Elections", View.Template, {
     },
 
     navigate: function(electionId) {
-
       var election = Election.find(electionId);
 
       if (election) {

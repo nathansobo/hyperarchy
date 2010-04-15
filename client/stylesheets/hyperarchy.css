@@ -116,13 +116,13 @@ div#createCandidateForm button {
 
 .candidateIcon {
   position: absolute;
-  left: 272px;
-  top: 2px;
+  top: 0;
+  left: 266px;
+  height: 19px;
+  width: 19px;
   padding: 7px;
-  width: 11px;
-  height: 11px;
+  background-position: 12px 11px;
   background-repeat: no-repeat;
-  background-position: 7px 7px;
 }
 
 .candidateRanked {
@@ -131,6 +131,11 @@ div#createCandidateForm button {
 
 .unrankCandidate {
   background-image: url(/images/x_11x11_light.png);
+}
+
+.loading {
+  background-image: url(/images/loading_arrows_light.gif);
+  background-position: 9px 9px;
 }
 
 div.unrankCandidate:hover {

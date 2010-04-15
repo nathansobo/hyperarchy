@@ -13,6 +13,20 @@ _.constructor("Views.CandidateLi", View.Template, {
 
   viewProperties: {
     initialize: function() {
+      var rankingRelation = this.candidate.rankingByCurrentUser();
+
+      if (!rankingRelation.empty()) {
+        this.candidateRankedIcon.show();
+      }
+
+      rankingRelation.onRemoteInsert(function() {
+        this.candidateRankedIcon.show();
+      }, this);
+
+      rankingRelation.onRemoteRemove(function() {
+        this.candidateRankedIcon.hide();
+      }, this);
+
       this.draggable({
         connectToSortable: "ol#rankedCandidates",
         revert: 'invalid',
