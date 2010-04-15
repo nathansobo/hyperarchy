@@ -596,7 +596,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         context("when given only clean records", function() {
-          it("does not post to the server, but still triggers before and after events callbacks", function() {
+          it("does not post to the server, but still triggers before and after events callbacks with the first record", function() {
             var beforeEventsCallback = mockFunction('beforeEventsCallback');
             var afterEventsCallback = mockFunction('afterEventsCallback');
             var cleanRecord = User.fixture('jan')
@@ -607,8 +607,8 @@ Screw.Unit(function(c) { with(c) {
 
             expect(server.posts).to(beEmpty);
 
-            expect(beforeEventsCallback).to(haveBeenCalled, once);
-            expect(afterEventsCallback).to(haveBeenCalled, once);
+            expect(beforeEventsCallback).to(haveBeenCalled, withArgs(cleanRecord));
+            expect(afterEventsCallback).to(haveBeenCalled, withArgs(cleanRecord));
           });
         });
 

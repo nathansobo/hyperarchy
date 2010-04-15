@@ -66,14 +66,22 @@ _.constructor("Monarch.Http.Server", {
     var commands = _.map(this.extractDirtyRecords(arguments), function(dirtyRecord) {
       return this.buildAppropriateCommand(dirtyRecord);
     }, this);
-    var batch = new Monarch.Http.CommandBatch(this, commands);
 
-    Repository.pauseMutations();
-    var saveFuture = batch.perform();
-    saveFuture.onComplete(function() {
-      Repository.resumeMutations();
-    });
-    return saveFuture;
+
+    if (_.isEmpty(commands)) {
+      var saveFuture = new Monarch.Http.AjaxFuture();
+      saveFuture.updateRepositoryAndTriggerCallbacks(this.firstRecord(arguments), _.identity);
+      return saveFuture;
+    } else {
+      var batch = new Monarch.Http.CommandBatch(this, commands);
+      Repository.pauseMutations();
+      var saveFuture = batch.perform();
+      saveFuture.onComplete(function() {
+        Repository.resumeMutations();
+      });
+
+      return saveFuture;
+    }
   },
 
   post: function(url, data) {
@@ -112,6 +120,15 @@ _.constructor("Monarch.Http.Server", {
       }
     });
     return dirtyRecords;
+  },
+
+  firstRecord: function(recordsOrRelations) {
+    var first = recordsOrRelations[0];
+    if (first._relation_) {
+      return first.first();
+    } else {
+      return first;
+    }
   },
 
   buildAppropriateCommand: function(record) {
