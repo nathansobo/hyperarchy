@@ -3,12 +3,21 @@ _.constructor("Views.Elections", View.Template, {
     div({'class': "elections"}, function() {
       div({'class': "grid4"}, function() {
         div({'class': "body largeFont"}).ref('bodyDiv');
+
         a({href: "#", id: "createCandidate"}, "Suggest A New Answer...")
           .click('showCreateCandidateForm')
           .ref('createCandidateLink');
+
         div({id: "createCandidateForm", style: "display: none"}, function() {
-          textarea({rows: 3});
-          button("Suggest Answer").ref('createCandidateButton');
+          textarea({rows: 3})
+            .ref('createCandidateTextarea')
+            .click(function() {
+              this.val("");
+              this.removeClass('grayText');
+            });
+          button("Suggest Answer")
+            .click('createCandidate')
+            .ref('createCandidateButton');
         }).ref('createCandidateForm');
       });
 
@@ -30,6 +39,8 @@ _.constructor("Views.Elections", View.Template, {
 
     election: {
       afterChange: function(election) {
+        this.bodyDiv.html(election.body());
+
         Server.fetch([election.candidates(), election.rankingsForCurrentUser()])
           .onSuccess(function() {
             this.candidatesList.election(election);
@@ -60,8 +71,20 @@ _.constructor("Views.Elections", View.Template, {
 
     showCreateCandidateForm: function() {
       this.createCandidateLink.hide();
+      this.createCandidateTextarea.addClass('grayText');
+      this.createCandidateTextarea.val('Type your suggestion here.')
+      this.createCandidateButton.attr('disabled', false);
       this.createCandidateForm.show();
       return false;
+    },
+
+    createCandidate: function() {
+      this.createCandidateButton.attr('disabled', true);
+      this.election().candidates().create({body: this.createCandidateTextarea.val()})
+        .onSuccess(function() {
+          this.createCandidateForm.hide();
+          this.createCandidateLink.show();
+        }, this);
     }
   }
 });
