@@ -36,6 +36,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     handleReceive: function(event, ui) {
       var candidate = Candidate.find(ui.item.attr('candidateId'));
       var rankedCandidateView = Views.RankedCandidateLi.toView({candidate: candidate});
+      this.findPreviousLi(candidate).remove();
       this.findLi(candidate).replaceWith(rankedCandidateView);
     },
 
@@ -53,6 +54,10 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
         .onSuccess(function(ranking) {
           rankedCandidateLi.view().ranking(ranking);
         });
+    },
+
+    findPreviousLi: function(candidate) {
+      return this.rankedCandidatesList.find("li.rankedCandidate[candidateId='" + candidate.id() + "']");
     },
 
     findLi: function(candidate) {
