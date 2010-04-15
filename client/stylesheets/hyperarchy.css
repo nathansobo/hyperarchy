@@ -83,7 +83,6 @@ div#createCandidateForm button {
   font-size: 15px;
 }
 
-
 .elections .sectionLabel {
   font-size: 16px;
   color: #999999;
@@ -102,6 +101,8 @@ div#createCandidateForm button {
 .elections ol.candidates li {
   border: 1px solid #c8c7c7;
   padding: 5px;
+  width: 263px;
+  padding-right: 30px;
   cursor: default;
   background: white;
   border-bottom: none;
@@ -113,6 +114,11 @@ div#createCandidateForm button {
 .elections ol.candidates li:last-child {
   border-bottom: 1px solid #d6d3d3;
 }
+
+.elections ol.candidates li.ui-draggable-dragging {
+  list-style-type: disc;
+}
+
 
 .candidateIcon {
   position: absolute;

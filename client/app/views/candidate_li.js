@@ -7,7 +7,7 @@ _.constructor("Views.CandidateLi", View.Template, {
         .click('destroyRanking');
       div({'class': "candidateIcon candidateRanked", style: "display: none;"})
         .ref('candidateRankedIcon');
-      span(candidate.body());
+      span({'class': "body"}, candidate.body());
     });
   }},
 

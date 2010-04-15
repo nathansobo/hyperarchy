@@ -6,7 +6,7 @@ _.constructor("Views.RankedCandidateLi", View.Template, {
       div({'class': "candidateIcon unrankCandidate", style: "display: none;"})
         .ref('destroyRankingButton')
         .click('destroyRanking');
-      span(candidate.body());
+      span({'class': "body"}, candidate.body());
     });
   }},
 
