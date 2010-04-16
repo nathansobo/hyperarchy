@@ -41,6 +41,20 @@ _.constructor("Monarch.View.Template", {
   },
 
   defaultViewProperties: {
+    registerView: function() {
+      var registeredNames = _.toArray(arguments);
+      jQuery(window).bind('hashchange', _.bind(function(e) {
+        var state = e.getState();
+
+        if (_.include(registeredNames, state) || _.include(registeredNames, state.view)) {
+          this.show();
+          if (_.isFunction(this.navigate)) this.navigate(state);
+        } else {
+          this.hide();
+        }
+      }, this));
+    },
+
     fieldValues: function() {
       var values = {};
       this.find("input,select").each(function() {

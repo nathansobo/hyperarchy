@@ -14,7 +14,7 @@ _.constructor("Views.ElectionLi", View.Template, {
 
   viewProperties: {
     displayElection: function() {
-      History.load("elections/" + this.election.id());
+      $.bbq.pushState({view: "election", electionId: this.election.id()});
     }
   }
 

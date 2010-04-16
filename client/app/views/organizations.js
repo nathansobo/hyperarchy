@@ -26,7 +26,14 @@ _.constructor("Views.Organizations", View.Template, {
   }},
 
   viewProperties: {
-    navigate: function(organizationId) {
+    initialize: function() {
+      this.registerView(undefined, "organization");
+    },
+
+    navigate: function(state) {
+      organizationId = state.organizationId;
+      console.debug("finding");
+      if (!organizationId) organizationId = Organization.find({name: "Global"}).id();
       this.organization(Organization.find(organizationId));
     },
 

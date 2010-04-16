@@ -11,15 +11,11 @@ _.constructor("Controllers.Application", {
     this.layout = Views.Layout.toView({views: this.views});
     this.body.append(this.layout);
 
-    History.onChange(function(path) {
-      this.navigate(path);
-    }, this);
+    console.debug("triggering");
+    $(window).trigger('hashchange');
   },
 
   navigate: function(path) {
-
-    console.debug(path);
-
     if (path == "") {
       if (this.currentUserId) {
         this.switchViews(this.views.organizations);

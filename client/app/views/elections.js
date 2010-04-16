@@ -35,7 +35,29 @@ _.constructor("Views.Elections", View.Template, {
   viewProperties: {
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
+
+      this.registerView('election', function(e) {
+        var electionId = e.getState('electionId');
+      });
     },
+
+
+
+    navigate: function(state) {
+      var election = Election.find(state.electionId);
+
+      if (election) {
+        this.election(election);
+      } else {
+        Server.fetch([
+          Election.where({id: electionId}),
+          Candidate.where({electionId: electionId})
+        ]).onSuccess(function() {
+          this.navigate(state);
+        }, this);
+      }
+    },
+
 
     election: {
       afterChange: function(election) {
@@ -49,21 +71,6 @@ _.constructor("Views.Elections", View.Template, {
 
         election.candidates().subscribe().onSuccess(function(subscription) {
           this.subscriptions.add(subscription);
-        }, this);
-      }
-    },
-
-    navigate: function(electionId) {
-      var election = Election.find(electionId);
-
-      if (election) {
-        this.election(election);
-      } else {
-        Server.fetch([
-          Election.where({id: electionId}),
-          Candidate.where({electionId: electionId})
-        ]).onSuccess(function() {
-          this.navigate(electionId);
         }, this);
       }
     },
