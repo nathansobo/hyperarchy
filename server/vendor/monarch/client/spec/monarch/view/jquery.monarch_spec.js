@@ -23,4 +23,20 @@ Screw.Unit(function(c) { with(c) {
       expect(clickCallback).to(haveBeenCalled);
     });
   });
+
+  describe("jQuery.fn.view", function() {
+    after(function() {
+      $("#testContent").empty();
+    });
+
+    it("returns the view object associated with a DOM node", function() {
+      var view = Monarch.View.build(function(b) {
+        b.div("testing");
+      });
+
+      $("#testContent").append(view);
+      var newWrapper = $("#testContent").find("div");
+      expect(newWrapper.view()).to(eq, view);
+    });
+  });
 }});

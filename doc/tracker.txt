@@ -1,48 +1,35 @@
-test:
-  selects on top of aggregations... they should execute a subquery
-  projections on top of aggregations... they should not execute a subquery but just modify the select list
-  orderings and groupings within aggregation subqueries should not leak out into the containing queries
-
 when elections / candidates / rankings change, reflect change in browser
-election.ranked/unranked candidates must be scoped by user
-test the view extension's ability to get back to the view wrapper from a new jquery wrapper of an element
-ranking removal x is only visible when a candidate is ranked and hovered over
-release foundation.js
-implement auto code reloading for the server-side code in development
-if current user is null, direct to login screen always
 
-
+secure the ranking api against unauthorized writes
 clean up subscriptions on candidate ranking relation?
 
-projections that remove all primary keys should add a distinct keyword
-why does Tuple#define_field_reader restrict definition of ? methods to concrete (not synthetic) columns?
-rename candidates view to unranked_candidates
-make Server.fetch take varargs as well as arrays
-cache the results of fetching the same relation twice within a short period of time
-replace _.defer in initialize with onDomAttach hook
-add _ to the closure surrounding every monarch file
-secure the ranking api against unauthorized writes
-refactor client side list code into a single generic widget
-add the suite keyword to screw unit so that hyperarchy and monarch spec suites can be run together on a single page
-when a constructor is declared with the same name as an extant module, extend the constructor with the module
-it should not be possible to reference an attribute or table in a projection that is not exposed by the underlying relation (like if it's projected away)
-add a _._ underscore builder object which builds views with a single top-level method call _._li({candidateId: "foo"});
-convert screw unit to use underscore.js _.isEqual for equal matcher?
-document and release screw unit
-make relations work with beEmpty matcher, possibly by tying into or creating some general underscore facility for determining emptyness
+implement auto code reloading for the server-side code in development
+
 rename table.globalName to name
-support for anonymous modules in foundation.js
-add a limit operator to the server side and use it for Relation#first
-disallow updates to columns not exposed in a projection
-enforce that unions and projections have at least one primary key before activating them for events (to warn about the shortcomings of current event system)
-
+make Server.fetch take varargs as well as arrays
+convenient underscore based view builder syntax
+add _ to the closure surrounding every monarch file
 deal with union spec
-add  group by plus aggregations and join support
+enforce that unions and projections have at least one primary key before activating them for events (to warn about the shortcomings of current event system)
+add a limit operator to the server side and use it for Relation#first
+support for anonymous modules in foundation.js
+when a constructor is declared with the same name as an extant module, extend the constructor with the module
+projections that remove all primary keys should add a distinct keyword
+it should not be possible to reference an attribute or table in a projection that is not exposed by the underlying relation (like if it's projected away)
+disallow updates to columns not exposed in a projection
+why does Tuple#define_field_reader restrict definition of ? methods to concrete (not synthetic) columns?
+convert screw unit to use underscore.js _.isEqual for equal matcher?
+make relations work with beEmpty matcher, possibly by tying into or creating some general underscore facility for determining emptyness
+add the suite keyword to screw unit so that hyperarchy and monarch spec suites can be run together on a single page
 
+
+longer term
+-----------
+release foundation.js
+document and release screw unit
 
 deferred issues / open questions
 ---------------
-does there actually need to be a separate sql hierarchy? can some of the raw algebra classes take the place of their sql counterparts without loss of clarity?
 should Record#update allow id to be assigned?
 when an update is performed on a relation, records in the identity map can become stale. should I implement relation#reload for relations that have records (not just tuples), which reloads any records in the id map? could be expensive. may want to implement in memory?
 checking for the existence of the session every single request? shouldn't that at least cache it in the identity map?
