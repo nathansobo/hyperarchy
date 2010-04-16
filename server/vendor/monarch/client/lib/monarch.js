@@ -1,7 +1,7 @@
 (function(Monarch) {
 
 //= require <jquery-1.4.2>
-//= require <jquery.history>
+//= require <jquery.ba-bbq>
 //= require <jquery.cookie>
 //= require <htmlescape>
 //= require <underscore>

@@ -2,12 +2,21 @@
 
 _.constructor("Monarch.View.History", {
   onChange: function(callback, context) {
-    jQuery.historyInit(context ? _.bind(callback, context) : callback);
+    if (context) callback = _.bind(callback, context);
+    $(window).bind('hashchange', function(e) {
+      console.debug(e.getState('url'));
+      callback(e.getState('url') || "");
+    });
+
+    console.debug("HELLO");
+    if (!this.triggeredOnce) {
+      this.triggeredOnce = true;
+      $(window).trigger("hashchange");
+    }
   },
 
   load: function(path) {
-    this.path = "";
-    jQuery.historyLoad(path);
+    jQuery.bbq.pushState({url: path}, 2);
   },
 
   path: ""

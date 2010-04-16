@@ -1,6 +1,21 @@
 when elections / candidates / rankings change, reflect change in browser
 
+fix navigation in chrome
+fix layout issues on organizations page, add a rank / more / details link
+add logo to header
+make elections and candidates editable by their creator
+email-based invite flow for new user signups
+cleanup css
+minify and cache javascript in production
 secure the ranking api against unauthorized writes
+write a deploy script
+--- alpha release
+
+release: private organizations
+users can create their own organizations
+users can navigate to organizations they are a member of
+users can invite other users to their organizations and choose their rights
+
 clean up subscriptions on candidate ranking relation?
 
 implement auto code reloading for the server-side code in development

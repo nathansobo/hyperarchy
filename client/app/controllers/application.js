@@ -17,6 +17,9 @@ _.constructor("Controllers.Application", {
   },
 
   navigate: function(path) {
+
+    console.debug(path);
+
     if (path == "") {
       if (this.currentUserId) {
         this.switchViews(this.views.organizations);
