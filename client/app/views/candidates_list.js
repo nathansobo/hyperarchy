@@ -9,6 +9,9 @@ _.constructor("Views.CandidatesList", View.Template, {
   viewProperties: {
     initialize: function() {
       this.candidatesSubscriptions = new Monarch.SubscriptionBundle();
+      var adjustHeight = this.hitch('adjustHeight');
+      _.defer(adjustHeight);
+      $(window).resize(adjustHeight);
     },
 
     election: {
@@ -26,6 +29,10 @@ _.constructor("Views.CandidatesList", View.Template, {
 
     addCandidateToList: function(candidate) {
       this.candidatesList.append(Views.CandidateLi.toView({candidate: candidate}));
+    },
+
+    adjustHeight: function() {
+      this.candidatesList.height($(window).height() - this.candidatesList.offset().top - 20); 
     }
   }
 });

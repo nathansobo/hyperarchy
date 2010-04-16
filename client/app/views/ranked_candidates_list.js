@@ -13,6 +13,9 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
         update: this.hitch('handleUpdate'),
         receive: this.hitch('handleReceive')
       });
+      var adjustHeight = this.hitch('adjustHeight');
+      _.defer(adjustHeight);
+      $(window).resize(adjustHeight);
     },
 
     election: {
@@ -68,6 +71,10 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
 
     findLi: function(candidate) {
       return this.rankedCandidatesList.find("li[candidateId='" + candidate.id() + "']");
+    },
+
+    adjustHeight: function() {
+      this.rankedCandidatesList.height($(window).height() - this.rankedCandidatesList.offset().top - 20); 
     }
   }
 });
