@@ -16,7 +16,7 @@ _.constructor("Views.CandidatesList", View.Template, {
 
     election: {
       afterChange: function(election) {
-        this.candidatesSubscriptions.destroyAll();
+        this.candidatesSubscriptions.destroy();
         this.populateCandidates();
         this.candidatesSubscriptions.add(election.candidates().onRemoteInsert(this.hitch('addCandidateToList')));
       }

@@ -272,7 +272,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   unsubscribeFromOperands: function() {
-    this.operandsSubscriptionBundle.destroyAll();
+    this.operandsSubscriptionBundle.destroy();
     this._tuples = null;
   },
 

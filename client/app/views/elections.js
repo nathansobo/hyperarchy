@@ -34,14 +34,9 @@ _.constructor("Views.Elections", View.Template, {
 
   viewProperties: {
     initialize: function() {
+      this.registerView('election');
       this.subscriptions = new Monarch.SubscriptionBundle();
-
-      this.registerView('election', function(e) {
-        var electionId = e.getState('electionId');
-      });
     },
-
-
 
     navigate: function(state) {
       var election = Election.find(state.electionId);
@@ -52,15 +47,14 @@ _.constructor("Views.Elections", View.Template, {
         Server.fetch([
           Election.where({id: electionId}),
           Candidate.where({electionId: electionId})
-        ]).onSuccess(function() {
-          this.navigate(state);
-        }, this);
+        ]).onSuccess(this.navigate, this);
       }
     },
 
 
     election: {
       afterChange: function(election) {
+        this.subscriptions.destroy();
         this.bodyDiv.html(election.body());
 
         Server.fetch([election.candidates(), election.rankingsForCurrentUser()])

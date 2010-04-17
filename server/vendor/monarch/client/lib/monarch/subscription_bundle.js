@@ -13,7 +13,7 @@ _.constructor("Monarch.SubscriptionBundle", {
     }
   },
 
-  destroyAll: function() {
+  destroy: function() {
     _.each(this.subscriptions, function(subscription) {
       subscription.destroy();
     });

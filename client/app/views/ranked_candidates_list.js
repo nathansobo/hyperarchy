@@ -20,7 +20,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
 
     election: {
       afterChange: function(election) {
-        this.subscriptions.destroyAll();
+        this.subscriptions.destroy();
         this.rankings = election.rankingsForCurrentUser();
         this.populateRankings();
       }

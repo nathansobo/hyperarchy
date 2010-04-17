@@ -287,7 +287,7 @@ _.constructor("Monarch.Model.Record", {
   },
 
   cleanup: function() {
-    this.subscriptions.destroyAll();
+    this.subscriptions.destroy();
   },
 
   equals: function(other) {
