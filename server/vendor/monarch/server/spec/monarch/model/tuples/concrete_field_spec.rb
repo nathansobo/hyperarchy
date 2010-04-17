@@ -17,6 +17,10 @@ module Model
         @field ||= User.find('jan').field(:has_hair)
       end
 
+      def integer_field
+        @field ||= User.find('jan').field(:age)
+      end
+
       describe "#value=" do
         context "when assigning to a :datetime field" do
           def field
@@ -43,6 +47,21 @@ module Model
           end
         end
 
+        context "when assigning to an integer field" do
+          def field
+            integer_field
+          end
+
+          it "interprets strings and integers as integers and nil as nil" do
+            field.value = 4
+            field.value.should == 4
+            field.value = "33"
+            field.value.should == 33
+            field.value = nil
+            field.value.should be_nil
+          end
+        end
+
         context "when assigning to a boolean field" do
           def field
             boolean_field
@@ -61,6 +80,11 @@ module Model
             field.value.should be_false
             field.value = true
             field.value.should be_true
+          end
+
+          it "interprets nil as nil" do
+            field.value = nil
+            field.value.should be_nil
           end
         end
 

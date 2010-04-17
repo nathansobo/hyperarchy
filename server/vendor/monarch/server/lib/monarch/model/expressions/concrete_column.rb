@@ -22,7 +22,7 @@ module Model
         when :key
           convert_key_value_for_storage(value)
         when :integer
-          value.to_i
+          value ? value.to_i : nil
         when :float
           value.to_f
         when :datetime
