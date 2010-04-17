@@ -12,7 +12,7 @@ class Election < Model::Record
     already_processed = []
     graph = RGL::DirectedAdjacencyGraph.new
 
-    majorities.order_by(Majority[:count].desc).each do |majority|
+    majorities.where(Majority[:count] > 0).order_by(Majority[:count].desc).each do |majority|
       winner_id = majority.winner_id
       loser_id = majority.loser_id
       next if already_processed.include?([loser_id, winner_id])

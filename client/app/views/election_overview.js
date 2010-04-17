@@ -76,6 +76,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.createCandidateButton.attr('disabled', true);
       this.election().candidates().create({body: this.createCandidateTextarea.val()})
         .onSuccess(function() {
+          this.createCandidateButton.attr('disabled', false);
           this.createCandidateTextarea.addClass("grayText");
           this.createCandidateTextarea.val("Type your own suggestion here.");
         }, this);
