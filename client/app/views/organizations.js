@@ -31,16 +31,26 @@ _.constructor("Views.Organizations", View.Template, {
     },
 
     navigate: function(state) {
-      organizationId = state.organizationId;
-      console.debug("finding");
-      if (!organizationId) organizationId = Organization.find({name: "Global"}).id();
-      this.organization(Organization.find(organizationId));
+      var organizationId = state.organizationId || Organization.find({name: "Global"}).id(); 
+      this.organizationId(organizationId);
+
+      if (state.showCreateElectionForm) {
+        this.createElectionLink.hide();
+        this.createElectionForm.show();
+      } else {
+        this.createElectionLink.show();
+        this.createElectionForm.hide();
+      }
     },
 
-    organization: {
+    organizationId: {
       afterChange: function() {
         this.displayElections();
       }
+    },
+
+    organization: function() {
+      return Organization.find(this.organizationId());
     },
 
     displayElections: function() {
@@ -54,10 +64,7 @@ _.constructor("Views.Organizations", View.Template, {
     },
 
     showCreateElectionForm: function() {
-      this.createElectionLink.hide();
-      this.createElectionForm.show();
-      this.createElectionInput.val("Type your question here.");
-      this.createElectionInput.addClass('grayText');
+      $.bbq.pushState({showCreateElectionForm:true});
       return false;
     },
 

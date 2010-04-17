@@ -4,17 +4,14 @@ _.constructor("Views.Elections", View.Template, {
       div({'class': "grid4"}, function() {
         div({'class': "body largeFont"}).ref('bodyDiv');
 
-        a({href: "#", id: "createCandidate"}, "Suggest A New Answer...")
-          .click('showCreateCandidateForm')
-          .ref('createCandidateLink');
-
-        div({id: "createCandidateForm", style: "display: none"}, function() {
-          textarea({rows: 3})
+        div({id: "createCandidateForm"}, function() {
+          textarea({'class': "grayText", rows: 3}, "Type your own suggestion here.")
             .ref('createCandidateTextarea')
             .click(function() {
               this.val("");
               this.removeClass('grayText');
             });
+
           button("Suggest Answer")
             .click('createCandidate')
             .ref('createCandidateButton');
@@ -39,18 +36,19 @@ _.constructor("Views.Elections", View.Template, {
     },
 
     navigate: function(state) {
-      var election = Election.find(state.electionId);
+      var electionId = state.electionId;
+      var election = Election.find(electionId);
 
-      if (election) {
-        this.election(election);
-      } else {
+      if (!election) {
         Server.fetch([
           Election.where({id: electionId}),
           Candidate.where({electionId: electionId})
-        ]).onSuccess(this.navigate, this);
+        ]).onSuccess(_.bind(this.navigate, this, state));
+        return;
       }
-    },
 
+      this.election(election);
+    },
 
     election: {
       afterChange: function(election) {
@@ -69,21 +67,12 @@ _.constructor("Views.Elections", View.Template, {
       }
     },
 
-    showCreateCandidateForm: function() {
-      this.createCandidateLink.hide();
-      this.createCandidateTextarea.addClass('grayText');
-      this.createCandidateTextarea.val('Type your suggestion here.')
-      this.createCandidateButton.attr('disabled', false);
-      this.createCandidateForm.show();
-      return false;
-    },
-
     createCandidate: function() {
       this.createCandidateButton.attr('disabled', true);
       this.election().candidates().create({body: this.createCandidateTextarea.val()})
         .onSuccess(function() {
-          this.createCandidateForm.hide();
-          this.createCandidateLink.show();
+          this.createCandidateTextarea.addClass("grayText");
+          this.createCandidateTextarea.val("Type your own suggestion here.");
         }, this);
     }
   }

@@ -10,29 +10,7 @@ _.constructor("Controllers.Application", {
     };
     this.layout = Views.Layout.toView({views: this.views});
     this.body.append(this.layout);
-
-    console.debug("triggering");
     $(window).trigger('hashchange');
-  },
-
-  navigate: function(path) {
-    if (path == "") {
-      if (this.currentUserId) {
-        this.switchViews(this.views.organizations);
-        this.views.organizations.navigate(Organization.global().id());
-      } else {
-        this.switchViews(this.views.login);
-      }
-    } else {
-      var pathParts = _.splitAtFirstSlash(path);
-      var view = this.views[pathParts[0]];
-      this.switchViews(view);
-      if (_.isFunction(view.navigate)) view.navigate(pathParts[1]);
-    }
-  },
-
-  switchViews: function(selectedView) {
-    this.layout.switchViews(selectedView);
   },
 
   currentUserIdEstablished: function(currentUserId) {

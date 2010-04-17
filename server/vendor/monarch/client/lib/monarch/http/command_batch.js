@@ -18,7 +18,6 @@ _.constructor("Monarch.Http.CommandBatch", {
           this.handleUnsuccessfulResponse(responseData);
         }, this);
     } else {
-      console.debug("NULL ROUTE");
       this.future.updateRepositoryAndTriggerCallbacks(null, _.identity);
     }
 
