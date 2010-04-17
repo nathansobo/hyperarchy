@@ -47,6 +47,8 @@ _.constructor("Views.Elections", View.Template, {
         return;
       }
 
+      this.candidatesList.adjustHeight();
+      this.rankedCandidatesList.adjustHeight();
       this.election(election);
     },
 
@@ -54,6 +56,9 @@ _.constructor("Views.Elections", View.Template, {
       afterChange: function(election) {
         this.subscriptions.destroy();
         this.bodyDiv.html(election.body());
+
+        this.candidatesList.empty();
+        this.rankedCandidatesList.empty();
 
         Server.fetch([election.candidates(), election.rankingsForCurrentUser()])
           .onSuccess(function() {

@@ -31,6 +31,10 @@ _.constructor("Views.CandidatesList", View.Template, {
       this.candidatesList.append(Views.CandidateLi.toView({candidate: candidate}));
     },
 
+    empty: function() {
+      this.candidatesList.empty();
+    },
+
     adjustHeight: function() {
       this.candidatesList.height($(window).height() - this.candidatesList.offset().top - 20); 
     }

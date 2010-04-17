@@ -38,6 +38,10 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       }, this));
     },
 
+    empty: function() {
+      this.rankedCandidatesList.empty();
+    },
+
     handleReceive: function(event, ui) {
       var candidate = Candidate.find(ui.item.attr('candidateId'));
       var rankedCandidateView = Views.RankedCandidateLi.toView({candidate: candidate});
