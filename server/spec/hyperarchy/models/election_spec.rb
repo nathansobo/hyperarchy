@@ -1,8 +1,8 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper")
+require File.expand_path(File.dirname(__FILE__) + "/../../hyperarchy_spec_helper")
 
 module Models
   describe Election do
-    attr_reader :election, :memphis, :knoxville, :chattanooga, :nashville
+    attr_reader :election, :memphis, :knoxville, :chattanooga, :nashville, :unranked
 
     before do
       @election = Election.create!(:body => "Where should the capital of Tennesee be?")
@@ -10,10 +10,11 @@ module Models
       @knoxville = election.candidates.create!(:body => "Knoxville")
       @chattanooga = election.candidates.create!(:body => "Chattanooga")
       @nashville = election.candidates.create!(:body => "Nashville")
+      @unranked = election.candidates.create!(:body => "Unranked")
     end
 
     describe "#compute_global_ranking" do
-      specify "uses the ranked-pairs algoritm to produce a global ranking" do
+      it "uses the ranked-pairs algoritm to produce a global ranking, assigning a position of null to any unranked candidates" do
         4.times do
           user = User.create
           election.rankings.create(:user => user, :candidate => memphis, :position => 1)
@@ -52,6 +53,7 @@ module Models
         chattanooga.position.should == 2
         knoxville.position.should == 3
         memphis.position.should == 4
+        unranked.reload.position.should be_nil
       end
     end
   end
