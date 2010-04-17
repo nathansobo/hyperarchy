@@ -1,4 +1,4 @@
-_.constructor("Views.Elections", View.Template, {
+_.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'class': "elections"}, function() {
       div({'class': "grid4"}, function() {

@@ -1,12 +1,12 @@
 //= require "../../hyperarchy_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("Views.Organizations", function() {
+  describe("Views.OrganizationOverview", function() {
     useRemoteFixtures();
 
     var view;
     before(function() {
-      view = Views.Organizations.toView();
+      view = Views.OrganizationOverview.toView();
     });
 
     describe("#initialize", function() {

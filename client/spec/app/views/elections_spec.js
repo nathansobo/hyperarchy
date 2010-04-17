@@ -1,12 +1,12 @@
 //= require "../../hyperarchy_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("Views.Elections", function() {
+  describe("Views.ElectionOverview", function() {
     useRemoteFixtures();
 
     var view, elections;
     before(function() {
-      view = Views.Elections.toView();
+      view = Views.ElectionOverview.toView();
       Server.autoFetch([Organization.table]);
       elections = Organization.fixture('restaurant').elections();
     });

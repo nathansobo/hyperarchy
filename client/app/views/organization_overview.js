@@ -1,4 +1,4 @@
-_.constructor("Views.Organizations", View.Template, {
+_.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizations"}, function() {
       div({'class': "top grid12"}, function() {
