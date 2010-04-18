@@ -25,10 +25,6 @@ class Election < Model::Record
       if candidate = ranked_candidates.find(candidate_id)
         puts "updating #{candidate.body.inspect} from #{candidate.position} to #{index}"
         candidate.update(:position => index + 1)
-      else
-        candidate = Candidate.find(candidate_id)
-        puts "updating #{candidate.body.inspect} from #{candidate.position} to null"
-        candidate.update(:position => nil)
       end
     end
   end

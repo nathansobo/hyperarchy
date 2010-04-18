@@ -19,6 +19,7 @@ _.constructor("Views.CandidatesList", View.Template, {
         this.candidatesSubscriptions.destroy();
         this.populateCandidates();
         this.candidatesSubscriptions.add(election.candidates().onRemoteInsert(this.hitch('addCandidateToList')));
+        this.candidatesSubscriptions.add(election.candidates().onRemoteUpdate(this.hitch('updateCandidate')))
       }
     },
 
@@ -28,7 +29,13 @@ _.constructor("Views.CandidatesList", View.Template, {
     },
 
     addCandidateToList: function(candidate) {
+      console.debug(candidate.wireRepresentation());
       this.candidatesList.append(Views.CandidateLi.toView({candidate: candidate}));
+    },
+
+    updateCandidate: function(candidate, changes) {
+      console.debug(candidate.wireRepresentation());
+      console.debug(changes);
     },
 
     empty: function() {

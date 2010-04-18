@@ -67,6 +67,10 @@ class Ranking < Model::Record
       join(majorities_where_ranked_candidate_is_loser).on(:winner_id => :candidate_id).
       increment(:count)
 
+    if all_rankings_for_same_candidate.empty?
+      candidate.update(:position => nil)
+    end
+
     election.compute_global_ranking
   end
 
@@ -88,5 +92,9 @@ class Ranking < Model::Record
 
   def majorities_where_ranked_candidate_is_loser
     Majority.where(:loser_id => candidate_id)
+  end
+
+  def all_rankings_for_same_candidate
+    Ranking.where(:candidate_id => candidate_id)
   end
 end
