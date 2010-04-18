@@ -6,7 +6,6 @@ _.constructor("Candidate", Model.Record, {
       position: 'integer'
     });
 
-
     this.hasMany('rankings');
   },
 

@@ -5,7 +5,7 @@ _.constructor("Election", Model.Record, {
       body: 'string'
     });
 
-    this.hasMany('candidates');
+    this.hasMany('candidates', {orderBy: 'position'});
     this.hasMany('rankings', {orderBy: 'position'});
   },
 

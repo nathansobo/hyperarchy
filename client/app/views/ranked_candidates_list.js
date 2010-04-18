@@ -63,7 +63,6 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       Ranking.createOrUpdate(Application.currentUser(), this.election(), candidate, predecessor, successor)
         .onSuccess(function(ranking) {
           if (!ranking) debugger;
-          console.debug("assigning ranking for " + ranking.candidate().body());
           rankedCandidateLi.view().ranking = ranking;
           rankedCandidateLi.view().stopLoading();
         });
