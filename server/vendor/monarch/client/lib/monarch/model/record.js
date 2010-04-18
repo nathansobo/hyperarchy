@@ -2,6 +2,10 @@
 
 _.constructor("Monarch.Model.Record", {
   constructorProperties: {
+    toString: function() {
+      return JSON.stringify(this.wireRepresentation());
+    },
+
     initialize: function() {
       this.delegateConstructorMethods('find', 'fetch', 'tuples', 'first', 'each', 'any', 'onLocalUpdate', 'onRemoteInsert',
                                       'onRemoteUpdate', 'onRemoteRemove', 'where', 'orderBy', 'project', 'difference',

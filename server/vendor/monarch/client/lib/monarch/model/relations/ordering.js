@@ -10,6 +10,13 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
     this.sortSpecifications = sortSpecifications;
 
     this.comparator = _.bind(function(a, b) {
+      // null and undefined are treated as infinity
+      function lessThan(a, b) {
+        if ((a === null || a === undefined) && b !== null && b !== undefined) return false;
+        if ((b === null || b === undefined) && a !== null && a !== undefined) return true;
+        return a < b;
+      }
+
       for(var i = 0; i < this.sortSpecifications.length; i++) {
         var sortSpecification = this.sortSpecifications[i]
         var column = sortSpecification.column;
@@ -18,8 +25,8 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
         var aValue = a.field(column).value();
         var bValue = b.field(column).value();
 
-        if (aValue < bValue) return -1 * directionCoefficient;
-        else if (aValue > bValue) return 1 * directionCoefficient;
+        if (lessThan(aValue, bValue)) return -1 * directionCoefficient;
+        else if (lessThan(bValue, aValue)) return 1 * directionCoefficient;
       }
       return 0;
     }, this);
@@ -65,8 +72,8 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
     }, this);
     if (!positionMayChange) $super(tuple, changedFields, currentPosition, currentPosition);
 
-    var newPosition = _.comparatorSortedIndex(this._tuples, tuple, this.comparator);
     this._tuples.splice(currentPosition, 1);
+    var newPosition = _.comparatorSortedIndex(this._tuples, tuple, this.comparator);
     this._tuples.splice(newPosition, 0, tuple);
     $super(tuple, changedFields, newPosition, currentPosition);
   },

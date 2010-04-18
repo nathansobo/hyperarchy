@@ -69,16 +69,22 @@ Screw.Unit(function(c) { with(c) {
       describe("when a tuple is remotely updated in the operand", function() {
         it("triggers #onRemoteUpdate callbacks with the updated tuple and its new and old index in the ordering", function() {
           var tuplesLengthBefore = ordering._tuples.length;
+
+          user3.update({age: 20000});
+          expect(updateCallback).to(haveBeenCalled);
+          var args = updateCallback.mostRecentArgs;
+          expect(args[0]).to(eq, user3);
+          expect(args[2]).to(eq, 3); // new index
+          expect(args[3]).to(eq, 2); // old index
+
+          updateCallback.clear();
           user3.update({age: 0});
           expect(updateCallback).to(haveBeenCalled);
 
           var args = updateCallback.mostRecentArgs;
           expect(args[0]).to(eq, user3);
-          expect(args[1].age.oldValue).to(eq, 2);
-          expect(args[1].age.newValue).to(eq, 0);
-          
           expect(args[2]).to(eq, 0); // new index
-          expect(args[3]).to(eq, 2); // old index
+          expect(args[3]).to(eq, 3); // old index
 
           expect(ordering._tuples.length).to(eq, tuplesLengthBefore);
           expect(ordering._tuples[0]).to(eq, user3);

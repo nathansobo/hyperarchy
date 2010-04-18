@@ -11,6 +11,10 @@ _.constructor("Monarch.Model.Column", {
     return new Monarch.Model.Predicates.Eq(this, rightOperand);
   },
 
+  neq: function(rightOperand) {
+    return new Monarch.Model.Predicates.Neq(this, rightOperand);
+  },
+
   asc: function() {
     return new Monarch.Model.SortSpecification(this, 'asc');
   },
