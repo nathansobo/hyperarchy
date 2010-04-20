@@ -1,3 +1,4 @@
+//= require "views/default_view_properties"
 //= require "views/login"
 //= require "views/signup"
 //= require "views/error_list"

@@ -20,7 +20,7 @@ _.constructor("Views.Login", View.Template, {
       Server.post('/login', _.underscoreKeys(this.fieldValues()))
         .onSuccess(function(data) {
           Application.currentUserIdEstablished(data.current_user_id);
-          History.load('organizations');
+          jQuery.bbq.pushState({view: 'organization'});
         })
         .onFailure(function(data) {
           this.find("#errors").html(Views.ErrorList.toView(data.errors)).show();

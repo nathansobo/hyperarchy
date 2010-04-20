@@ -21,6 +21,7 @@ module Views
                 #{store_organizations_in_repository}
                 #{store_current_user_in_repository}
                 window.Application = new Controllers.Application(#{(current_user ? current_user.id : nil).to_json});
+                window.Application.initializeNavigation();
               });
             ]
           end

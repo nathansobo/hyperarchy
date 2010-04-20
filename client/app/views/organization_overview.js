@@ -28,6 +28,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   viewProperties: {
     defaultView: true,
     viewName: 'organization',
+    beforeFilters: ['ensureAuthenticated'],
 
     navigate: function(state) {
       var organizationId = state.organizationId || Organization.find({name: "Global"}).id(); 
@@ -35,6 +36,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
       if (state.showCreateElectionForm) {
         this.createElectionLink.hide();
+        this.createElectionInput.val("Type your question here.");
+        this.createElectionInput.addClass("grayText");
         this.createElectionForm.show();
       } else {
         this.createElectionLink.show();

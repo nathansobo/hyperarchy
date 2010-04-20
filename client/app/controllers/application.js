@@ -10,6 +10,9 @@ _.constructor("Controllers.Application", {
     };
     this.layout = Views.Layout.toView({views: this.views});
     this.body.append(this.layout);
+  },
+
+  initializeNavigation: function() {
     $(window).trigger('hashchange');
   },
 

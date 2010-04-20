@@ -14,6 +14,10 @@ _.constructor("Monarch.View.Template", {
       return new this().toView(properties);
     },
 
+    extendDefaultViewProperties: function(properties) {
+      _.extend(this.prototype.defaultViewProperties, properties);
+    },
+
     inherited: function(subtemplate) {
       var superconstructorViewProperties = this.prototype.viewProperties || {};
       var subconstructorViewProperties = subtemplate.prototype.viewProperties || {};
@@ -57,7 +61,7 @@ _.constructor("Monarch.View.Template", {
 
     invokeBeforeFilters: function(state) {
       if (!this.beforeFilters) return true;
-      return _.all(this.registeredBeforeFilters, function(beforeFilter) {
+      return _.all(this.beforeFilters, function(beforeFilter) {
         if (_.isFunction(beforeFilter)) {
           return beforeFilter.call(this, state);
         } else {

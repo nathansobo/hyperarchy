@@ -25,8 +25,8 @@ _.constructor("Views.Signup", View.Template, {
     signupSubmitted: function() {
       Server.post('/signup', this.fieldValues())
         .onSuccess(function(data) {
-          Application.currentUserIdEstablished(data.currentUserId);
-          History.load('organizations');
+          Application.currentUserIdEstablished(data.current_user_id);
+          jQuery.bbq.pushState({view: 'organization'});
         });
     }
   }
