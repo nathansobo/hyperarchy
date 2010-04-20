@@ -54,6 +54,13 @@ _.constructor("Monarch.View.CloseTag", {
     return this;
   },
 
+  showsView: function(viewName) {
+    this.click(function() {
+      jQuery.bbq.pushState({view: viewName});
+      return false;
+    });
+  },
+
   onBuild: function(callback, context) {
     if (!this.onBuildNode) this.onBuildNode = new Monarch.SubscriptionNode();
     return this.onBuildNode.subscribe(callback, context);

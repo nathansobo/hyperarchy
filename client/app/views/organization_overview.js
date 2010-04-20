@@ -26,9 +26,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   }},
 
   viewProperties: {
-    initialize: function() {
-      this.registerView(undefined, "organization");
-    },
+    defaultView: true,
+    viewName: 'organization',
 
     navigate: function(state) {
       var organizationId = state.organizationId || Organization.find({name: "Global"}).id(); 

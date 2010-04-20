@@ -9,11 +9,13 @@ _.constructor("Views.Login", View.Template, {
         input({ id: 'password', name: 'password', type: 'password' });
         button({id: 'loginSubmit'}, "log in").click(function(view) { view.loginSubmitted(); });
       });
-      a({id: "signUp", href: "#signup", local: true}, "sign up");
+      a({id: "signUp", href: "#signup", local: true}, "sign up").showsView('signup');
     });
   }},
 
   viewProperties: {
+    viewName: 'login',
+
     loginSubmitted: function() {
       Server.post('/login', _.underscoreKeys(this.fieldValues()))
         .onSuccess(function(data) {

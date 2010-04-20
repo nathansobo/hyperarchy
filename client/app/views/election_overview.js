@@ -30,8 +30,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
   }},
 
   viewProperties: {
+    viewName: 'election',
+
     initialize: function() {
-      this.registerView('election');
       this.subscriptions = new Monarch.SubscriptionBundle();
     },
 

@@ -16,7 +16,7 @@ _.constructor("Monarch.View.Builder", {
     },
 
     supportedTags: [
-      'acronym', 'address', 'area', 'b', 'base', 'bdo', 'big', 'blockquote', 'body',
+      'acronym', 'address', 'area', 'b', 'base', 'bdo', 'big', 'blockquote', 'body', 'a',
       'br', 'button', 'caption', 'cite', 'code', 'dd', 'del', 'div', 'dl', 'dt', 'em',
       'fieldset', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'head', 'hr', 'html', 'i',
       'img', 'iframe', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'map',
@@ -34,9 +34,6 @@ _.constructor("Monarch.View.Builder", {
     this.precedingElementPath = [0];
   },
 
-
-  hashRegex: /^.*#/,
-
   toView: function(props) {
     if (props) throw new Error("Builder#toView no longer takes properties")
 
@@ -52,22 +49,6 @@ _.constructor("Monarch.View.Builder", {
       xml.push(instruction.toXml());
     });
     return xml.join("");
-  },
-
-  a: function() {
-    var hashRegex = this.hashRegex;
-    var closeTagInstruction = this.tag.apply(this, ["a"].concat(_.toArray(arguments)));
-    var openTagInstruction = closeTagInstruction.openTagInstruction;
-
-    if (openTagInstruction.attributes && openTagInstruction.attributes.local) {
-      closeTagInstruction.click(function(view) {
-        var href = this.attr('href');
-        var followingHash = href.replace(hashRegex, '');
-        History.load(followingHash);
-        return false;
-      });
-    }
-    return closeTagInstruction;
   },
 
   subview: function() {

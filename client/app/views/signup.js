@@ -20,6 +20,8 @@ _.constructor("Views.Signup", View.Template, {
   }},
 
   viewProperties: {
+    viewName: 'signup',
+
     signupSubmitted: function() {
       Server.post('/signup', this.fieldValues())
         .onSuccess(function(data) {

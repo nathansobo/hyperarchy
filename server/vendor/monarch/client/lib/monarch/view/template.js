@@ -37,22 +37,33 @@ _.constructor("Monarch.View.Template", {
     if (properties) _.extend(additionalProperties, properties);
     _.assignProperties(view, additionalProperties);
     if (_.isFunction(view.initialize)) view.initialize();
+    if (view.viewName || view.defaultView) view.registerForNavigation();
     return view;
   },
 
   defaultViewProperties: {
-    registerView: function() {
-      var registeredNames = _.toArray(arguments);
+    registerForNavigation: function() {
       jQuery(window).bind('hashchange', _.bind(function(e) {
         var state = e.getState();
-
-        if (_.include(registeredNames, state) || _.include(registeredNames, state.view)) {
+        if (!this.invokeBeforeFilters(state)) return;
+        if ((this.viewName && state.view == this.viewName) || (this.defaultView && !state.view)) {
           this.show();
           if (_.isFunction(this.navigate)) this.navigate(state);
         } else {
           this.hide();
         }
       }, this));
+    },
+
+    invokeBeforeFilters: function(state) {
+      if (!this.beforeFilters) return true;
+      return _.all(this.registeredBeforeFilters, function(beforeFilter) {
+        if (_.isFunction(beforeFilter)) {
+          return beforeFilter.call(this, state);
+        } else {
+          return this[beforeFilter](state);
+        }
+      }, this);
     },
 
     fieldValues: function() {
