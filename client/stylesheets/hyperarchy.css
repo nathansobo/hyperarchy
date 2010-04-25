@@ -1,10 +1,13 @@
 #header {
-  background: #cccccc;
   margin-bottom: 30px;
+  border-bottom: 1px solid #cccccc;
 }
 
-#title {
-  margin: 3px 10px;
+#logo {
+  margin: 5px 0px;
+  background-image: url(/images/logo.png);
+  width: 191px;
+  height: 28px;
 }
 
 h2 {

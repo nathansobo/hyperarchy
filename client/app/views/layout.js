@@ -8,7 +8,7 @@ _.constructor("Views.Layout", View.Template, {
   header: function() { with(this.builder) {
     div({id: "header", 'class': "grid12"}, function() {
       div({'class': "grid2 alpha"}, function() {
-        h3({id: "title"}, "hyperarchy");
+        div({id: "logo"});
       });
       div({'class': "grid2 prefix8 omega", style: "display: none"}, function() {
         span("organization:");

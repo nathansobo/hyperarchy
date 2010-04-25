@@ -1,10 +1,10 @@
-when elections / candidates / rankings change, reflect change in browser
 
-fix navigation in chrome
-fix layout issues on organizations page, add a rank / more / details link
-add logo to header
 make elections and candidates editable by their creator
 email-based invite flow for new user signups
+
+fix layout issues on organizations page, add a rank / more / details link
+
+add logo to header
 cleanup css
 minify and cache javascript in production
 secure the ranking api against unauthorized writes
