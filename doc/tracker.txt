@@ -1,20 +1,24 @@
-
 make elections and candidates editable by their creator
+separate login page
+log out
 email-based invite flow for new user signups
 
-fix layout issues on organizations page, add a rank / more / details link
+clarify that you can drill down into elections (rank, details, add answers)
+limit the number of candidates to 5 with a "more" link
+when there are no elections, "raise a question" should be open
 
-add logo to header
+users can create their own organizations
+users can navigate to organizations they are a member of
+users can invite other users to their organizations and choose their rights
+
 cleanup css
 minify and cache javascript in production
 secure the ranking api against unauthorized writes
 write a deploy script
+
 --- alpha release
 
 release: private organizations
-users can create their own organizations
-users can navigate to organizations they are a member of
-users can invite other users to their organizations and choose their rights
 
 clean up subscriptions on candidate ranking relation?
 

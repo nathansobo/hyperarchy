@@ -1,5 +1,5 @@
 #header {
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   border-bottom: 1px solid #cccccc;
 }
 
@@ -70,7 +70,7 @@ li.election .body {
   list-style: decimal;
   list-style-position: inside;
   font-size: 15px;
-  padding: 5px;
+  padding: 2px;
 }
 
 div#createCandidateForm textarea {
