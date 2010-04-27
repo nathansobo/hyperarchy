@@ -30,8 +30,8 @@ require "#{dir}/monarch/helpers"
 Origin = Model::RemoteRepository.new
 
 MONARCH_ASSET_PREFIX = "" unless defined?(MONARCH_ASSET_PREFIX)
-Util::AssetManager.add_js_location("#{MONARCH_ASSET_PREFIX}/monarch/lib", "#{MONARCH_CLIENT_ROOT}/lib")
-Util::AssetManager.add_js_location("#{MONARCH_ASSET_PREFIX}/monarch/vendor", "#{MONARCH_CLIENT_ROOT}/vendor")
+Http::AssetService::AssetManager.add_js_location("#{MONARCH_ASSET_PREFIX}/monarch/lib", "#{MONARCH_CLIENT_ROOT}/lib")
+Http::AssetService::AssetManager.add_js_location("#{MONARCH_ASSET_PREFIX}/monarch/vendor", "#{MONARCH_CLIENT_ROOT}/vendor")
 
 module Monarch
   def self.registered(app)

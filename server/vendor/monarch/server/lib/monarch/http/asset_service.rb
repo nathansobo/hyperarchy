@@ -1,3 +1,8 @@
+dir = File.dirname(__FILE__)
+require "#{dir}/asset_service/asset_location"
+require "#{dir}/asset_service/asset_manager"
+require "#{dir}/asset_service/js_asset"
+
 module Http
   class AssetService
     attr_reader :app, :asset_manager
