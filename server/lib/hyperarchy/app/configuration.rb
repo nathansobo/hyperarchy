@@ -1,16 +1,6 @@
 module Hyperarchy
   class App < Sinatra::Base
-    configure(:test) do
-      Origin.connection = Sequel.mysql('hyperarchy_test', :user => 'root', :password => 'password')
-      Model::convert_strings_to_keys = true
-    end
-
-    configure(:development) do
-      Origin.connection = Sequel.mysql('hyperarchy_development', :user => 'root', :password => 'password')
-    end
-
     use Rack::ShowExceptions
-    use Http::AssetService, Util::AssetManager.instance
     use Rack::Session::Cookie
     use Warden::Manager do |manager|
       manager.default_strategies :bcrypt
@@ -22,9 +12,16 @@ module Hyperarchy
       end
     end
 
-    attr_accessor :real_time_hub
-    use Http::RealTimeHub
+    register Monarch
+    helpers Hyperarchy::Helpers
 
-    helpers Util::BuildRelationalDataset, Hyperarchy::Helpers
+    configure(:test) do
+      Origin.connection = Sequel.mysql('hyperarchy_test', :user => 'root', :password => 'password')
+      Model::convert_strings_to_keys = true
+    end
+
+    configure(:development) do
+      Origin.connection = Sequel.mysql('hyperarchy_development', :user => 'root', :password => 'password')
+    end
   end
 end
