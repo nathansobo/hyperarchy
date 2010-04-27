@@ -1,4 +1,4 @@
-module Http
+module Rack
   class AssetService
     class AssetManager
       class << self

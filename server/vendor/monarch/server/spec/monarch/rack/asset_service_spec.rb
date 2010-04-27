@@ -1,13 +1,13 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 
-module Http
+module Rack
   describe AssetService, :type => :rack do
     attr_reader :proxied_app, :asset_manager, :dir
     before do
       @proxied_app = proxied_app = Object.new
       @asset_manager = asset_manager = Object.new
       @asset_service = AssetService.new(proxied_app, asset_manager)
-      @dir = File.dirname(__FILE__)
+      @dir = ::File.dirname(__FILE__)
       @app = Rack::Builder.new do
         use AssetService, asset_manager
         run proxied_app

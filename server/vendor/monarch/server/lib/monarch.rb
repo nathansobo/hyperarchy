@@ -23,19 +23,19 @@ require "active_support/core_ext/numeric/time"
 
 require "#{dir}/monarch/core_extensions"
 require "#{dir}/monarch/util"
-require "#{dir}/monarch/http"
+require "#{dir}/monarch/rack"
 require "#{dir}/monarch/model"
 require "#{dir}/monarch/helpers"
 
 module Monarch
   class << self
     delegate :add_location, :add_js_location, :virtual_dependency_paths_from_load_path,
-             :to => "Http::AssetService::AssetManager.instance"
+             :to => "Rack::AssetService::AssetManager.instance"
 
     def registered(app)
       app.helpers Monarch::Helpers, Util::BuildRelationalDataset
-      app.use Http::AssetService, Http::AssetService::AssetManager.instance
-      app.use Http::RealTimeHub
+      app.use Rack::AssetService, Rack::AssetService::AssetManager.instance
+      app.use Rack::RealTimeHub
 
       app.get "/repository/fetch" do
         dataset = exposed_repository.fetch(params[:relations].from_json)

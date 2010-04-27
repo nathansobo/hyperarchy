@@ -1,4 +1,4 @@
-module Http
+module Rack
   class RealTimeClient
     RECONNECT_INTERVAL = 5
     attr_reader :id, :connection, :hub

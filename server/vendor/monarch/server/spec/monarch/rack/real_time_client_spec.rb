@@ -1,6 +1,6 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 
-module Http
+module Rack
   describe RealTimeClient do
     attr_reader :client, :hub
 

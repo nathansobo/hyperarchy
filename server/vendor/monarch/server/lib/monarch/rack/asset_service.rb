@@ -3,7 +3,7 @@ require "#{dir}/asset_service/asset_location"
 require "#{dir}/asset_service/asset_manager"
 require "#{dir}/asset_service/js_asset"
 
-module Http
+module Rack
   class AssetService
     attr_reader :app, :asset_manager
 
@@ -15,7 +15,7 @@ module Http
       request = Rack::Request.new(env)
       physical_path = asset_manager.physicalize_path(request.path_info)
 
-      if physical_path && File.exists?(physical_path)
+      if physical_path && ::File.exists?(physical_path)
         file = Rack::File.new(nil)
         file.path = physical_path
         file.serving

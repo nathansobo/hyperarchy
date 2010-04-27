@@ -23,7 +23,7 @@ module Monarch
     end
 
     def current_real_time_client
-      request.env[Http::RealTimeHub::RACK_ENV_CLIENT_KEY]
+      request.env[Rack::RealTimeHub::RACK_ENV_CLIENT_KEY]
     end
   end
 end

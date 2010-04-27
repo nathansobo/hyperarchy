@@ -1,4 +1,4 @@
-module Http
+module Rack
   class AssetService
     class JsAsset
       RELATIVE_REQUIRE_REGEX = /^\/\/= require\s+['"]([^'"]+)['"].*/
@@ -9,7 +9,7 @@ module Http
       def initialize(physical_path, asset_manager)
         raise "JsAsset created with nil physical_path" if physical_path.nil?
         @physical_path, @asset_manager = physical_path, asset_manager
-        @containing_dir = File.dirname(physical_path)
+        @containing_dir = ::File.dirname(physical_path)
       end
 
       def add_dependencies_to_required_virtual_paths(required_virtual_paths)
@@ -21,7 +21,7 @@ module Http
 
       def require_declarations
         declarations = []
-        File.open(physical_path, 'r') do |f|
+        ::File.open(physical_path, 'r') do |f|
           f.lines.each do |line|
             if match = RELATIVE_REQUIRE_REGEX.match(line)
               require_path = match[0]
@@ -44,7 +44,7 @@ module Http
         attr_reader :js_asset
 
         def initialize(parent_dir, relative_path, asset_manager)
-          @js_asset = JsAsset.new(File.join(parent_dir, relative_path + ".js"), asset_manager)
+          @js_asset = JsAsset.new(::File.join(parent_dir, relative_path + ".js"), asset_manager)
         end
       end
 

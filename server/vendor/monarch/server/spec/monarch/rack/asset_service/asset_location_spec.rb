@@ -1,6 +1,6 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../../monarch_spec_helper")
 
-class Http::AssetService
+class Rack::AssetService
   describe AssetLocation do
     attr_reader :dir
 

@@ -303,7 +303,7 @@ module Model
         mock(exposed_repository).build_relation_from_wire_representation({ "type" => "table", "name" => "blogs"}) { mock_relation_1 }
         mock(exposed_repository).build_relation_from_wire_representation({ "type" => "table", "name" => "blog_posts"}) { mock_relation_2 }
 
-        real_time_client = Http::FakeRealTimeClient.new
+        real_time_client = Rack::FakeRealTimeClient.new
         mock(real_time_client).subscribe(mock_relation_1) { "mock_subscription_id_1"}
         mock(real_time_client).subscribe(mock_relation_2) { "mock_subscription_id_2"}
 

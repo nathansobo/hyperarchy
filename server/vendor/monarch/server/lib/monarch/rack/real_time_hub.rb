@@ -1,6 +1,6 @@
 require 'cramp/controller'
 
-module Http
+module Rack
   class RealTimeHub
     RACK_ENV_HUB_KEY = "real_time_hub"
     RACK_ENV_CLIENT_KEY = "real_time_client"
