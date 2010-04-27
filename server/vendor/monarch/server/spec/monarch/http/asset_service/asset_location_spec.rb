@@ -1,4 +1,4 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
+require File.expand_path("#{File.dirname(__FILE__)}/../../../monarch_spec_helper")
 
 class Http::AssetService
   describe AssetLocation do

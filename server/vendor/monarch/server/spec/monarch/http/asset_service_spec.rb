@@ -23,7 +23,7 @@ module Http
         context "when a file exists at the physicalized path" do
           it "responds with the file's contents and does not proxy through to the next layer of the rack stack" do
             virtual_path = "/extant_file/1.js"
-            physical_path = "#{dir}/../util/file_system_fixtures_for_asset_manager_specs/dir_1/1.js"
+            physical_path = "#{dir}/asset_service/file_system_fixtures_for_asset_manager_specs/dir_1/1.js"
             mock(asset_manager).physicalize_path("/extant_file/1.js") { physical_path }
             dont_allow(proxied_app).call
 
