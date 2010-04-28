@@ -1,4 +1,4 @@
-class BlogPost < Model::Record
+class BlogPost < Monarch::Model::Record
   column :title, :string
   column :body, :string, :default => "Enter your post here..."
   column :blog_id, :key

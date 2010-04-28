@@ -1,50 +1,51 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 
-module Model
-  describe "SQL generation" do
-    specify "tables" do
-      User.table.to_sql.should be_like(%{
+module Monarch
+  module Model
+    describe "SQL generation" do
+      specify "tables" do
+        User.table.to_sql.should be_like(%{
         select users.* from users
       })
 
-      User.table.to_update_sql(:full_name => "John Travolta", :age => 47).should be_like(%{
+        User.table.to_update_sql(:full_name => "John Travolta", :age => 47).should be_like(%{
         update users set users.age = 47, users.full_name = "John Travolta"
       })
-    end
+      end
 
-    specify "combined selections and projections" do
-      User.where(:full_name => "Amory Lovins", :age => 40).to_sql.should be_like(%{
+      specify "combined selections and projections" do
+        User.where(:full_name => "Amory Lovins", :age => 40).to_sql.should be_like(%{
         select users.* from users where users.age = 40 and users.full_name = "Amory Lovins"
       })
-      User.where(:age => nil).to_sql.should be_like(%{
+        User.where(:age => nil).to_sql.should be_like(%{
         select users.* from users where users.age is null
       })
-      User.where(User[:age].neq(nil)).to_sql.should be_like(%{
+        User.where(User[:age].neq(nil)).to_sql.should be_like(%{
         select users.* from users where users.age is not null
       })
-      User.where(:age => 40).project(:id, :full_name).to_sql.should be_like(%{
+        User.where(:age => 40).project(:id, :full_name).to_sql.should be_like(%{
         select users.id, users.full_name from users where users.age = 40
       })
-      User.project(:id, :full_name).where(:full_name => "Nathan Sobo").to_sql.should be_like(%{
+        User.project(:id, :full_name).where(:full_name => "Nathan Sobo").to_sql.should be_like(%{
         select users.id, users.full_name from users where users.full_name = "Nathan Sobo"
       })
-      User.project(:id, :full_name).where(:full_name => "Nathan Sobo").project(:id).to_sql.should be_like(%{
+        User.project(:id, :full_name).where(:full_name => "Nathan Sobo").project(:id).to_sql.should be_like(%{
         select users.id from users where users.full_name = "Nathan Sobo"
       })
 
-      User.where(:full_name => "Amory Lovins", :age => 40).to_update_sql(:full_name => "Amorous Loving", :age => 30).should be_like(%{
+        User.where(:full_name => "Amory Lovins", :age => 40).to_update_sql(:full_name => "Amorous Loving", :age => 30).should be_like(%{
         update users set users.age = 30, users.full_name = "Amorous Loving" where users.age = 40 and users.full_name = "Amory Lovins"
       })
-      User.where(:age => 40).project(:id, :full_name).to_update_sql(:full_name => "Lucile Ball").should be_like(%{
+        User.where(:age => 40).project(:id, :full_name).to_update_sql(:full_name => "Lucile Ball").should be_like(%{
         update users set users.full_name = "Lucile Ball" where users.age = 40
       })
-      User.project(:id, :full_name).where(:full_name => "Nathan Sobo").to_update_sql({:full_name => "Nath Sobo"}).should be_like(%{
+        User.project(:id, :full_name).where(:full_name => "Nathan Sobo").to_update_sql({:full_name => "Nath Sobo"}).should be_like(%{
         update users set users.full_name = "Nath Sobo" where users.full_name = "Nathan Sobo"
       })
-    end
+      end
 
-    specify "combined inner joins, selections, and projections" do
-      User.join_to(Blog).to_sql.should be_like(%{
+      specify "combined inner joins, selections, and projections" do
+        User.join_to(Blog).to_sql.should be_like(%{
         select
           users.id as users__id,
           users.full_name as users__full_name,
@@ -57,7 +58,7 @@ module Model
         from users, blogs
         where users.id = blogs.user_id
       })
-      User.join_to(Blog.where(:title => "Fun")).to_sql.should be_like(%{
+        User.join_to(Blog.where(:title => "Fun")).to_sql.should be_like(%{
         select
           users.id as users__id,
           users.full_name as users__full_name,
@@ -70,17 +71,17 @@ module Model
         from users, blogs
         where blogs.title = "Fun" and users.id = blogs.user_id
       })
-      User.join_through(Blog).to_sql.should be_like(%{
+        User.join_through(Blog).to_sql.should be_like(%{
         select blogs.* from users, blogs where users.id = blogs.user_id
       })
-      User.where(:age => 21).join_through(Blog.where(:title => "I Can Drink Now")).to_sql.should be_like(%{
+        User.where(:age => 21).join_through(Blog.where(:title => "I Can Drink Now")).to_sql.should be_like(%{
         select blogs.*
         from users, blogs
         where blogs.title = "I Can Drink Now" and users.age = 21 and users.id = blogs.user_id
       })
-      User.where(:age => 21).
-        join_through(Blog.where(:title => "I Can Drink Now")).
-        join_through(BlogPost.where(:title => "Day 5: The World Is Spining")).to_sql.should be_like(%{
+        User.where(:age => 21).
+          join_through(Blog.where(:title => "I Can Drink Now")).
+          join_through(BlogPost.where(:title => "Day 5: The World Is Spining")).to_sql.should be_like(%{
         select
           blog_posts.*
         from
@@ -93,21 +94,21 @@ module Model
           and users.id = blogs.user_id
       })
 
-      User.where(:age => 21).join_through(Blog.where(:title => "I Can Drink Now")).to_update_sql(:title => "I Am 21").should be_like(%{
+        User.where(:age => 21).join_through(Blog.where(:title => "I Can Drink Now")).to_update_sql(:title => "I Am 21").should be_like(%{
         update users, blogs
         set blogs.title = "I Am 21"
         where blogs.title = "I Can Drink Now" and users.age = 21 and users.id = blogs.user_id
       })
 
-      User.where(:age => 21).join_through(Blog).where(:title => "I Can Drink Now").to_update_sql(:title => "I Am 21").should be_like(%{
+        User.where(:age => 21).join_through(Blog).where(:title => "I Can Drink Now").to_update_sql(:title => "I Am 21").should be_like(%{
         update users, blogs
         set blogs.title = "I Am 21"
         where blogs.title = "I Can Drink Now" and users.age = 21 and users.id = blogs.user_id
       })
-    end
+      end
 
-    specify "left joins" do
-      Blog.left_join_to(BlogPost).to_sql.should be_like(%{
+      specify "left joins" do
+        Blog.left_join_to(BlogPost).to_sql.should be_like(%{
         select
           blogs.id as blogs__id,
           blogs.title as blogs__title,
@@ -122,10 +123,10 @@ module Model
           blogs left outer join blog_posts on blogs.id = blog_posts.blog_id
       })
 
-      Blog.
-        left_join_to(BlogPost.where(:title => "First Post!")).
-        where(BlogPost[:id].eq(nil)).
-        project(Blog).to_sql.should be_like(%{
+        Blog.
+          left_join_to(BlogPost.where(:title => "First Post!")).
+          where(BlogPost[:id].eq(nil)).
+          project(Blog).to_sql.should be_like(%{
         select
           blogs.*
         from
@@ -137,10 +138,10 @@ module Model
           blog_posts.id is null
       })
 
-      Blog.
-        left_join_to(BlogPost.where(:title => "First Post!")).
-        where(BlogPost[:id].eq(nil)).
-        project(Blog).to_update_sql(:title => "Zeroth Post!").should be_like(%{
+        Blog.
+          left_join_to(BlogPost.where(:title => "First Post!")).
+          where(BlogPost[:id].eq(nil)).
+          project(Blog).to_update_sql(:title => "Zeroth Post!").should be_like(%{
         update
           blogs
           left outer join blog_posts
@@ -151,41 +152,41 @@ module Model
         where
           blog_posts.id is null
       })
-    end
+      end
 
-    specify "orderings" do
-      User.where(:age => 34).order_by(User[:full_name].desc).to_sql.should be_like(%{
+      specify "orderings" do
+        User.where(:age => 34).order_by(User[:full_name].desc).to_sql.should be_like(%{
         select users.* from users where users.age = 34 order by users.full_name desc
       })
-    end
+      end
 
-    def new_state
-      Model::SqlGenerationState.new
-    end
+      def new_state
+        Model::SqlGenerationState.new
+      end
 
-    specify "projections involving aggregation functions composed on top of other constructs" do
-      User.project(User[:id].count).to_sql.should be_like(%{select count(users.id) from users})
-      User.where(:age => 34).project(User[:id].count).to_sql.should be_like(%{
+      specify "projections involving aggregation functions composed on top of other constructs" do
+        User.project(User[:id].count).to_sql.should be_like(%{select count(users.id) from users})
+        User.where(:age => 34).project(User[:id].count).to_sql.should be_like(%{
         select count(users.id) from users where users.age = 34
       })
-      User.where(:age => 34).project(User[:id].count.as(:count)).to_sql.should be_like(%{
+        User.where(:age => 34).project(User[:id].count.as(:count)).to_sql.should be_like(%{
         select count(users.id) as count from users where users.age = 34
       })
-      User.where(:id => 1).join_through(Blog).project(Blog[:id].count, :id).to_sql.should be_like(%{
+        User.where(:id => 1).join_through(Blog).project(Blog[:id].count, :id).to_sql.should be_like(%{
         select count(blogs.id), blogs.id
         from users, blogs 
         where users.id = 1 and users.id = blogs.user_id
       })
-    end
+      end
 
-    specify "groupings plus aggregations" do
-      User.group_by(:age).project(:age, User[:id].count.as("count")).to_sql.should be_like(%{
+      specify "groupings plus aggregations" do
+        User.group_by(:age).project(:age, User[:id].count.as("count")).to_sql.should be_like(%{
         select users.age, count(users.id) as count from users group by users.age
       })
-    end
+      end
 
-    specify "selections involving subqueries" do
-      Blog.group_by(:user_id).order_by(:title).project(Blog[:title].count.as(:count)).where(:count => 3).to_sql.should be_like(%{
+      specify "selections involving subqueries" do
+        Blog.group_by(:user_id).order_by(:title).project(Blog[:title].count.as(:count)).where(:count => 3).to_sql.should be_like(%{
         select t1.count
         from (
           select count(blogs.title) as count
@@ -196,11 +197,11 @@ module Model
         where t1.count = 3
       })
 
-      blog_post_counts =
-        Blog.where(:user_id => "jan").left_join_to(BlogPost).
-          group_by(Blog[:id]).
-          project(Blog[:id].as(:blog_id), BlogPost[:id].count.as(:num_posts))
-      blog_post_counts.where(:num_posts => 5).to_sql.should be_like(%{
+        blog_post_counts =
+          Blog.where(:user_id => "jan").left_join_to(BlogPost).
+            group_by(Blog[:id]).
+            project(Blog[:id].as(:blog_id), BlogPost[:id].count.as(:num_posts))
+        blog_post_counts.where(:num_posts => 5).to_sql.should be_like(%{
         select t1.blog_id, t1.num_posts
         from (
           select blogs.id as blog_id, count(blog_posts.id) as num_posts
@@ -210,15 +211,15 @@ module Model
         ) as t1
         where t1.num_posts = 5
       })
-    end
+      end
 
-    specify "joins involving subqueries" do
-      blog_post_counts =
-        Blog.where(:user_id => "jan").left_join_to(BlogPost).
-          group_by(Blog[:id]).
-          project(Blog[:id].as(:blog_id), BlogPost[:id].count.as(:num_posts))
+      specify "joins involving subqueries" do
+        blog_post_counts =
+          Blog.where(:user_id => "jan").left_join_to(BlogPost).
+            group_by(Blog[:id]).
+            project(Blog[:id].as(:blog_id), BlogPost[:id].count.as(:num_posts))
 
-      Blog.join_to(blog_post_counts).project(:title, :num_posts).to_sql.should be_like(%{
+        Blog.join_to(blog_post_counts).project(:title, :num_posts).to_sql.should be_like(%{
         select blogs.title, t1.num_posts
         from blogs, (
           select blogs.id as blog_id, count(blog_posts.id) as num_posts
@@ -227,6 +228,7 @@ module Model
         ) as t1
         where blogs.id = t1.blog_id
       })
+      end
     end
   end
 end

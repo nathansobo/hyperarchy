@@ -1,4 +1,4 @@
-class User < Model::Record
+class User < Monarch::Model::Record
   column :full_name, :string
   column :age, :integer
   column :signed_up_at, :datetime

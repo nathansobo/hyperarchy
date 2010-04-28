@@ -1,5 +1,5 @@
 module Models
-  class ExposedRepository < Model::ExposedRepository
+  class ExposedRepository < Monarch::Model::ExposedRepository
     attr_reader :user
     def initialize(user)
       @user = user

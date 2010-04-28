@@ -1,6 +1,6 @@
 module Hyperarchy
   class App < Sinatra::Base
-    use Rack::ShowExceptions
+#    use Rack::ShowExceptions
     use Rack::Session::Cookie
     use Warden::Manager do |manager|
       manager.default_strategies :bcrypt
@@ -17,7 +17,7 @@ module Hyperarchy
 
     configure(:test) do
       Origin.connection = Sequel.mysql('hyperarchy_test', :user => 'root', :password => 'password')
-      Model::convert_strings_to_keys = true
+      Monarch::Model::convert_strings_to_keys = true
     end
 
     configure(:development) do

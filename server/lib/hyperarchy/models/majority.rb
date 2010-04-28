@@ -1,4 +1,4 @@
-class Majority < Model::Record
+class Majority < Monarch::Model::Record
   column :election_id, :key
   column :winner_id, :key
   column :loser_id, :key

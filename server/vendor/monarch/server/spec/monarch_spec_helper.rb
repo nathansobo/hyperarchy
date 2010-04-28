@@ -12,22 +12,21 @@ Dir["#{File.dirname(__FILE__)}/spec_helpers/*.rb"].each do |spec_helper_path|
 end
 
 Origin.connection = Sequel.sqlite
-Model::Repository.create_schema
-Model::convert_strings_to_keys = true
+Monarch::Model::Repository.create_schema
+Monarch::Model::convert_strings_to_keys = true
 
 Spec::Runner.configure do |config|
   config.include Matchers 
   config.mock_with :rr
   config.before do
-    Model::Repository.clear_tables
-    Model::Repository.load_fixtures(FIXTURES)
-    Model::Repository.initialize_local_identity_map unless manually_manage_identity_map?
+    Monarch::Model::Repository.clear_tables
+    Monarch::Model::Repository.load_fixtures(FIXTURES)
+    Monarch::Model::Repository.initialize_local_identity_map unless manually_manage_identity_map?
     stub(EventMachine).add_timer
   end
 
   config.after do
-#    raise "Test pollution! Subscriptions must be destroyed after each test" if Model::Repository.num_subscriptions == 0
-    Model::Repository.clear_local_identity_map unless manually_manage_identity_map?
+    Monarch::Model::Repository.clear_local_identity_map unless manually_manage_identity_map?
   end
 end
 

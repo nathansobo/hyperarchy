@@ -1,4 +1,4 @@
-class UserRepository < Model::ExposedRepository
+class UserRepository < Monarch::Model::ExposedRepository
   attr_reader :user
 
   expose :users do

@@ -1,3 +1,3 @@
-class User < Model::Record
+class User < Monarch::Model::Record
   
 end

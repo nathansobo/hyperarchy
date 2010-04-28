@@ -12,19 +12,19 @@ Spec::Runner.configure do |config|
   config.mock_with :rr
 
   config.before do
-    Model::Repository.clear_tables
-    Model::Repository.initialize_local_identity_map
+    Monarch::Model::Repository.clear_tables
+    Monarch::Model::Repository.initialize_local_identity_map
   end
 
   config.after do
-    Model::Repository.clear_local_identity_map
+    Monarch::Model::Repository.clear_local_identity_map
   end
 end
 
 module Spec::Example::Subject::ExampleGroupMethods
   def use_fixtures
     before do
-      Model::Repository.load_fixtures(FIXTURES)
+      Monarch::Model::Repository.load_fixtures(FIXTURES)
     end
   end
 end

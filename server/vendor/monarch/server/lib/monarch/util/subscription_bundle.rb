@@ -1,17 +1,19 @@
-module Util
-  class SubscriptionBundle
-    attr_reader :subscriptions
+module Monarch
+  module Util
+    class SubscriptionBundle
+      attr_reader :subscriptions
 
-    def initialize
-      @subscriptions = []
-    end
+      def initialize
+        @subscriptions = []
+      end
 
-    def add(subscription)
-      subscriptions.push(subscription)
-    end
-    
-    def destroy_all
-      subscriptions.each {|s| s.destroy}
+      def add(subscription)
+        subscriptions.push(subscription)
+      end
+
+      def destroy_all
+        subscriptions.each {|s| s.destroy}
+      end
     end
   end
 end

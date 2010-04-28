@@ -1,4 +1,4 @@
-class Ranking < Model::Record
+class Ranking < Monarch::Model::Record
   column :user_id, :key
   column :election_id, :key
   column :candidate_id, :key

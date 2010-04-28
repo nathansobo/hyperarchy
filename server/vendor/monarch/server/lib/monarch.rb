@@ -30,7 +30,7 @@ require "#{dir}/monarch/helpers"
 module Monarch
   class << self
     delegate :add_location, :add_js_location, :virtual_dependency_paths_from_load_path,
-             :to => "Rack::AssetService::AssetManager.instance"
+             :to => "Monarch::Rack::AssetService::AssetManager.instance"
 
     def registered(app)
       app.helpers Monarch::Helpers, Util::BuildRelationalDataset
@@ -62,7 +62,7 @@ module Monarch
   end
 end
 
-Origin = Model::RemoteRepository.new
+Origin = Monarch::Model::RemoteRepository.new
 
 MONARCH_ASSET_PREFIX = "" unless defined?(MONARCH_ASSET_PREFIX)
 Monarch.add_js_location("#{MONARCH_ASSET_PREFIX}/monarch/lib", "#{MONARCH_CLIENT_ROOT}/lib")

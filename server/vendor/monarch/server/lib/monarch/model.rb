@@ -13,8 +13,10 @@ require "#{dir}/model/sql_generation_state"
 require "#{dir}/model/invalid_record_exception"
 require "#{dir}/model/user"
 
-module Model
-  class << self
-    attr_accessor :convert_strings_to_keys
+module Monarch
+  module Model
+    class << self
+      attr_accessor :convert_strings_to_keys
+    end
   end
 end

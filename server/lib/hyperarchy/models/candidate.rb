@@ -1,4 +1,4 @@
-class Candidate < Model::Record
+class Candidate < Monarch::Model::Record
   column :body, :string
   column :election_id, :key
   column :position, :integer

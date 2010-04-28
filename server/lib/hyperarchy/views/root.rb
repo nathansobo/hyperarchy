@@ -1,6 +1,6 @@
 module Views
   class Root < Erector::Widget
-    include Util::BuildRelationalDataset
+    include Monarch::Util::BuildRelationalDataset
 
     needs :current_user
 

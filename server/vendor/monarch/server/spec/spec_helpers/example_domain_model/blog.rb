@@ -1,4 +1,4 @@
-class Blog < Model::Record
+class Blog < Monarch::Model::Record
   column :title, :string
   column :user_id, :key
 

@@ -1,5 +1,5 @@
 
-class Election < Model::Record
+class Election < Monarch::Model::Record
   column :organization_id, :key
   column :body, :string
 
