@@ -6,38 +6,37 @@ body.home {
 body.home #logo {
   background-image: url("/images/logo_large.png");
   background-repeat: no-repeat;
-  width: 804;
-  height: 104;
+  width: 804px;
+  height: 104px;
   margin: 0 auto;
 }
 
 body.home #description {
-  margin: 20px auto 50px;
+  margin-top: 20px;
+  margin-bottom: 50px;
   font-size: 22px;
   text-align: justify;
 }
 
-body.home .imageLink {
-
+body.home #signUpOrLogIn {
+  text-align: right;
 }
 
-body.home #signup {
+body.home #signUp {
+  display: inline-block;
   background-image: url("/images/sign_up.png");
   background-repeat: no-repeat;
-  width: 156px;
-  height: 30px;
-  margin-bottom: 10px;
-  position: relative;
-  left: 50px;
+  width: 158px;
+  height: 34px;
+  margin-right: 20px;
 }
 
-body.home #login {
+body.home #logIn {
+  display: inline-block;
   background-image: url("/images/log_in.png");
   background-repeat: no-repeat;
-  width: 125px;
-  height: 30px;
-  position: relative;
-  left: 50px;
+  width: 127px;
+  height: 34px;
 }
 
 /* app page */

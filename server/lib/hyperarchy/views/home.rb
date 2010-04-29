@@ -9,20 +9,19 @@ module Views
         div :id => "description", :class => "grid10 prefix1 suffix1" do
           rawtext description
         end
-
-        div :class => "grid2 prefix8" do
-          div :id => "signup"
-          div :id => "login"
+        div :id => "signUpOrLogIn", :class => "grid10 prefix1 suffix1" do
+          div :id => "signUp"
+          div :id => "logIn"
         end
       end
     end
 
     def description
       %{
-        Hyperarchy is a <b>democratic consensus tracker</b> for your organization.
-        Start discussions by raising questions.
-        Then suggest and rank answers.
-        Hyperarchy continuously merges everyone's rankings into an evolving picture of the collective opinion.
+
+        Hyperarchy helps your organization track its own collective opinion.
+        It lets you put any issue to a vote by raising questions, then allows members to suggest and rank answers to these questions.
+        As individuals change their rankings, Hyperarchy computes and broadcasts the evolving consensus in real time, making it easier to communicate and make decisions.
      }
     end
   end
