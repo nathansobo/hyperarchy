@@ -1,7 +1,12 @@
 module Hyperarchy
   class App < Sinatra::Base
+
     get "/" do
-      render_page Views::Root
+      render_page Views::Home
+    end
+
+    get "/app" do
+      render_page Views::App
     end
 
     post "/login" do
