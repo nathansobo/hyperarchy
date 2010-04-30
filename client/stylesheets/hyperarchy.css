@@ -6,14 +6,13 @@ body.home {
 body.home #logo {
   background-image: url("/images/logo_large.png");
   background-repeat: no-repeat;
-  width: 804px;
-  height: 104px;
-  margin: 0 auto;
+  width: 780px;
+  height: 100px;
 }
 
 body.home #description {
   margin-top: 20px;
-  margin-bottom: 50px;
+  margin-bottom: 40px;
   font-size: 22px;
   text-align: justify;
 }

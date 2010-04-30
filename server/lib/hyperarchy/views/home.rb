@@ -2,7 +2,7 @@ module Views
   class Home < Layout
     def body_content
       div :class => "container12" do
-        div :class => "grid12" do
+        div :class => "grid10 prefix1 suffix1" do
           div :id => "logo"
         end
 
