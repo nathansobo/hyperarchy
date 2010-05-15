@@ -9,6 +9,14 @@ module Views
         div :id => "description", :class => "grid10 prefix1 suffix1" do
           rawtext description
         end
+
+#        form :id => "logIn", :action => "login" do
+#          label "Email Address", :for => "email_address"
+#          input :name => "email_address"
+#          label "Password", :for => "password"
+#          input :type => "password", :name => "password"
+#        end
+
         div :id => "signUpOrLogIn", :class => "grid10 prefix1 suffix1" do
           div :id => "signUp"
           div :id => "logIn"

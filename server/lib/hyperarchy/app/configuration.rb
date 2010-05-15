@@ -1,6 +1,5 @@
 module Hyperarchy
   class App < Sinatra::Base
-#    use Rack::ShowExceptions
     use Rack::Session::Cookie
     use Warden::Manager do |manager|
       manager.default_strategies :bcrypt
@@ -22,6 +21,11 @@ module Hyperarchy
 
     configure(:development) do
       Origin.connection = Sequel.mysql('hyperarchy_development', :user => 'root', :password => 'password')
+
+      register Sinatra::Reloader
+      dir = File.dirname(__FILE__)
+      also_reload "#{dir}/../models/*.rb"
+      also_reload "#{dir}/../views/*.rb"
     end
   end
 end

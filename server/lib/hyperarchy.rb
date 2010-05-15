@@ -10,6 +10,7 @@ $: << "#{SERVER_ROOT}/vendor/monarch/server/lib/"
 require "rubygems"
 require "sinatra"
 require "monarch"
+require "sinatra/reloader"
 require "bcrypt"
 require "erector"
 require 'rgl/base'
