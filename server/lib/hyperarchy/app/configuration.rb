@@ -1,6 +1,7 @@
 module Hyperarchy
   class App < Sinatra::Base
     use Rack::Session::Cookie
+    use Rack::Flash, :accessorize => [:errors]
     use Warden::Manager do |manager|
       manager.default_strategies :bcrypt
       manager.serialize_into_session do |user|

@@ -1,5 +1,7 @@
 module Views
   class Home < Layout
+    needs :flash, :current_user
+
     def body_content
       div :class => "container12" do
         div :class => "grid10 prefix1 suffix1" do
@@ -9,19 +11,50 @@ module Views
         div :id => "description", :class => "grid10 prefix1 suffix1" do
           rawtext description
         end
+        
+        div :class => "grid10 prefix1 suffix1" do
+          if flash.errors
+            div flash.errors
+          end
 
-#        form :id => "logIn", :action => "login" do
-#          label "Email Address", :for => "email_address"
-#          input :name => "email_address"
-#          label "Password", :for => "password"
-#          input :type => "password", :name => "password"
-#        end
+          form :id => "loginForm", :action => "login", :method => "post" do
+            label "Email Address", :for => "email_address"
+            input :name => "email_address"
+            label "Password", :for => "password"
+            input :type => "password", :name => "password"
+            input :value => "Log In", :type => "submit"
+          end
+        end
 
         div :id => "signUpOrLogIn", :class => "grid10 prefix1 suffix1" do
-          div :id => "signUp"
-          div :id => "logIn"
+          a :id => "signUp", :href => "#signUp"
+          a :id => "logIn", :href => "#logIn"
         end
       end
+    end
+
+    def head_content
+      javascript_include "jquery-1.4.2.js"
+      javascript_include "jquery.ba-bbq.js"
+
+      javascript %[
+        $(function() {
+          $(window).bind("hashchange", function(e) {
+            if (e.fragment == "") {
+              $("#description").show();
+              $("#signUpOrLogIn").show();
+              $("#loginForm").hide();
+            }
+
+            if (e.fragment == "logIn") {
+              $("#description").hide();
+              $("#signUpOrLogIn").hide();        
+              $("#loginForm").show();
+            }
+          });
+          $(window).trigger("hashchange");
+        });
+      ]
     end
 
     def description

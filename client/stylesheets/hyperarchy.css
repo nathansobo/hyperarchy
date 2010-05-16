@@ -1,6 +1,7 @@
 /* home page */
 body.home {
   margin-top: 100px;
+  font-size: 22px;
 }
 
 body.home #logo {
@@ -8,12 +9,11 @@ body.home #logo {
   background-repeat: no-repeat;
   width: 780px;
   height: 100px;
+  margin-bottom: 20px;
 }
 
 body.home #description {
-  margin-top: 20px;
   margin-bottom: 40px;
-  font-size: 22px;
   text-align: justify;
 }
 
@@ -28,6 +28,7 @@ body.home #signUp {
   width: 158px;
   height: 34px;
   margin-right: 20px;
+  cursor: pointer;
 }
 
 body.home #logIn {
@@ -36,7 +37,31 @@ body.home #logIn {
   background-repeat: no-repeat;
   width: 127px;
   height: 34px;
+  cursor: pointer;
 }
+
+body.home #loginForm {
+  width: 350px;
+  font-size: 22px;
+  display: none;
+  margin: 20px auto;
+}
+
+body.home #loginForm label {
+  display: block;
+}
+
+body.home #loginForm input {
+  display: block;
+  width: 350px;
+  margin-bottom: 10px;
+}
+
+body.home #loginForm input[type="submit"] {
+  width: auto;
+  float: right;
+}
+
 
 /* app page */
 

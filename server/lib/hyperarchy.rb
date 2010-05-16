@@ -11,6 +11,7 @@ require "rubygems"
 require "sinatra"
 require "monarch"
 require "sinatra/reloader"
+require "rack-flash"
 require "bcrypt"
 require "erector"
 require 'rgl/base'
