@@ -13,11 +13,11 @@ module Views
         end
         
         div :class => "grid10 prefix1 suffix1" do
-          if flash.errors
-            div flash.errors
-          end
-
           form :id => "loginForm", :action => "login", :method => "post" do
+            if flash.errors
+              div flash.errors, :id => "errors"
+            end
+
             label "Email Address", :for => "email_address"
             input :name => "email_address"
             label "Password", :for => "password"

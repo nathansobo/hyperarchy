@@ -47,6 +47,13 @@ body.home #loginForm {
   margin: 20px auto;
 }
 
+body.home #loginForm #errors {
+  margin-bottom: 20px;
+  font-size: 16px;
+  background: #ffe3e3;
+  padding: 5px;
+}
+
 body.home #loginForm label {
   display: block;
 }
