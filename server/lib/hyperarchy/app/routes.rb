@@ -2,6 +2,7 @@ module Hyperarchy
   class App < Sinatra::Base
 
     get "/" do
+      redirect "/app#view=organization" and return if current_user
       render_page Views::Home
     end
 
@@ -12,7 +13,7 @@ module Hyperarchy
     post "/login" do
       warden.logout(:default)
       if warden.authenticate
-        redirect "/app"
+        redirect "/app#view=organization"
       else
         flash[:errors] = warden.errors.full_messages
         flash[:email_address_errors] = warden.errors[:email_address]
