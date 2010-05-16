@@ -9,7 +9,7 @@ module Hyperarchy
     end
 
     def render_page(template, params={})
-      template.new(params.merge(:current_user => current_user)).to_pretty
+      template.new(params).to_s(:prettyprint => true, :helpers => self)
     end
   end
 end

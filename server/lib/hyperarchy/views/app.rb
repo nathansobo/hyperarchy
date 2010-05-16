@@ -1,7 +1,5 @@
 module Views
   class App < Views::Layout
-    needs :current_user
-
     def head_content
       application_javascript_tags
       javascript %[

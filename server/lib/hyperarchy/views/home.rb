@@ -1,7 +1,5 @@
 module Views
   class Home < Layout
-    needs :flash, :current_user
-
     def body_content
       div :class => "container12" do
         div :class => "grid10 prefix1 suffix1" do
@@ -14,12 +12,12 @@ module Views
         
         div :class => "grid10 prefix1 suffix1" do
           form :id => "loginForm", :action => "login", :method => "post" do
-            if flash.errors
-              div flash.errors, :id => "errors"
+            if flash[:errors]
+              div flash[:errors], :id => "errors"
             end
 
             label "Email Address", :for => "email_address"
-            input :name => "email_address"
+            input :name => "email_address", :value => flash[:entered_email_address]
             label "Password", :for => "password"
             input :type => "password", :name => "password"
             input :value => "Log In", :type => "submit"
@@ -44,14 +42,22 @@ module Views
               $("#description").show();
               $("#signUpOrLogIn").show();
               $("#loginForm").hide();
+              $("#loginForm #errors").hide();
             }
 
             if (e.fragment == "logIn") {
+              var errorsOnEmailAddress = #{flash[:email_address_errors].to_json};
               $("#description").hide();
               $("#signUpOrLogIn").hide();        
               $("#loginForm").show();
+              if (errorsOnEmailAddress) {
+                $("#loginForm input[name='email_address']").focus();
+              } else {
+                $("#loginForm input[name='password']").focus();
+              }
             }
           });
+
           $(window).trigger("hashchange");
         });
       ]

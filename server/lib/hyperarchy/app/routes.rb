@@ -2,7 +2,7 @@ module Hyperarchy
   class App < Sinatra::Base
 
     get "/" do
-      render_page Views::Home, :flash => flash
+      render_page Views::Home
     end
 
     get "/app" do
@@ -14,7 +14,9 @@ module Hyperarchy
       if warden.authenticate
         redirect "/app"
       else
-        flash.errors = warden.errors.full_messages
+        flash[:errors] = warden.errors.full_messages
+        flash[:email_address_errors] = warden.errors[:email_address]
+        flash[:entered_email_address] = params[:email_address]
         redirect "/#logIn"
       end
     end

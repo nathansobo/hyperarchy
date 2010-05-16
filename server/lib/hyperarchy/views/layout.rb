@@ -42,5 +42,13 @@ module Views
         script :type => "text/javascript", :language => "javascript", :src => path
       end
     end
+
+    def method_missing(method, *args, &block)
+      if helpers && helpers.respond_to?(method)
+        helpers.send(method, *args, &block)
+      else
+        super
+      end
+    end
   end
 end
