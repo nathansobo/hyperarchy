@@ -6,7 +6,8 @@ _.constructor("Controllers.Application", {
       login: Views.Login.toView(),
       signup: Views.Signup.toView(),
       organizations: Views.OrganizationOverview.toView(),
-      elections: Views.ElectionOverview.toView()
+      elections: Views.ElectionOverview.toView(),
+      invite: Views.Invite.toView()
     };
     this.layout = Views.Layout.toView({views: this.views});
     this.body.append(this.layout);

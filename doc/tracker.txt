@@ -1,6 +1,4 @@
 make elections and candidates editable by their creator
-separate login page
-log out
 email-based invite flow for new user signups
 
 clarify that you can drill down into elections (rank, details, add answers)

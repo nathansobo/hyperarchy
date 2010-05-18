@@ -6,11 +6,11 @@ _.constructor("Views.Layout", View.Template, {
           div({id: "logo"});
         });
 
-
-        div({'class': "grid1 prefix8 omega"}, function() {
-          a({class: "logout", href: "#"}, "Log Out").click(function() {
+        div({'class': "grid9 omega"}, function() {
+          a({'class': "logout", href: "#"}, "Log Out").click(function() {
             $("<form action='/logout' method='post'>").submit();
           });
+          a({'class': "invite", href: "#view=invite"}, "Invite");
         });
       });
     }).ref('body');
