@@ -1,24 +1,19 @@
 _.constructor("Views.Layout", View.Template, {
   content: function() { with(this.builder) {
     div({id: "application", 'class': "container12"}, function() {
-      template.header();
-    }).ref('body');
-  }},
+      div({id: "header", 'class': "grid12"}, function() {
+        div({'class': "grid3 alpha"}, function() {
+          div({id: "logo"});
+        });
 
-  header: function() { with(this.builder) {
-    div({id: "header", 'class': "grid12"}, function() {
-      div({'class': "grid2 alpha"}, function() {
-        div({id: "logo"});
-      });
-      div({'class': "grid2 prefix8 omega", style: "display: none"}, function() {
-        span("organization:");
-        select()
-          .ref("organizationSelect")
-          .change(function(view) {
-            view.organizationSelectChanged();
+
+        div({'class': "grid1 prefix8 omega"}, function() {
+          a({class: "logout", href: "#"}, "Log Out").click(function() {
+            $("<form action='/logout' method='post'>").submit();
           });
+        });
       });
-    });
+    }).ref('body');
   }},
 
   viewProperties: {

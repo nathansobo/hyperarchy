@@ -46,11 +46,12 @@ module Views
             }
 
             if (e.fragment == "logIn") {
+              var errors = #{flash[:errors].to_json};
               var errorsOnEmailAddress = #{flash[:email_address_errors].to_json};
               $("#description").hide();
               $("#signUpOrLogIn").hide();        
               $("#loginForm").show();
-              if (errorsOnEmailAddress) {
+              if (!errors || errorsOnEmailAddress) {
                 $("#loginForm input[name='email_address']").focus();
               } else {
                 $("#loginForm input[name='password']").focus();

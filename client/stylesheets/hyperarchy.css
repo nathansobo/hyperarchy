@@ -72,10 +72,16 @@ body.home #loginForm input[type="submit"] {
 
 /* app page */
 
-
 #header {
   margin-bottom: 20px;
   border-bottom: 1px solid #cccccc;
+  position: relative;
+}
+
+#header .logout {
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 #logo {
