@@ -169,26 +169,6 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#a", function() {
-      describe("when the 'local' attribute is set to true", function() {
-        it("assigns a click callback to the link that invokes jQuery.history.load with the portion of the href following the '#' character", function() {
-          mock(History, 'load');
-          builder.a({'local': true, href: "#bar"}, "Go To The Bar");
-          builder.toView().click();
-          expect(History.load).to(haveBeenCalled, withArgs('bar'));
-        });
-      });
-
-      describe("when the 'local' attribute is set to false", function() {
-        it("assigns a click callback to the link that invokes jQuery.history.load", function() {
-          mock(History, 'load');
-          builder.a({'local': false, href: "isi.edu"}, "Go To The Information Sciences Institute");
-          builder.toView().click();
-          expect(History.load).toNot(haveBeenCalled);
-        });
-      });
-    });
-
     describe("#subview", function() {
       before(function() {
         _.constructor("ExampleSubviewTemplate", Monarch.View.Template, {

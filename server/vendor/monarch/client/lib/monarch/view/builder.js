@@ -35,7 +35,7 @@ _.constructor("Monarch.View.Builder", {
   },
 
   toView: function(props) {
-    if (props) throw new Error("Builder#toView no longer takes properties")
+    if (props) throw new Error("Builder#toView no longer takes properties");
 
     var view = jQuery(this.toHtml());
     view.data('view', view);
