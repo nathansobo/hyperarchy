@@ -1,14 +1,14 @@
 module Monarch
   module Helpers
-    def successful_json_response(data, dataset=nil)
+    def successful_json_response(data={}, dataset=nil)
       json_response(true, data, dataset)
     end
 
-    def unsuccessful_json_response(data, dataset=nil)
+    def unsuccessful_json_response(data={}, dataset=nil)
       json_response(false, data, dataset)
     end
 
-    def json_response(successful, data, dataset=nil)
+    def json_response(successful, data={}, dataset=nil)
       headers("Content-Type" => "application/json")
       response = { "successful" => successful }
       response["data"] = data if data

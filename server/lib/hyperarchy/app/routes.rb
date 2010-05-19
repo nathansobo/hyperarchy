@@ -33,5 +33,11 @@ module Hyperarchy
       request.env['warden'].set_user(new_user)
       successful_json_response("current_user_id" => new_user.id)
     end
+
+    post "/invite" do
+      puts "INVITE #{params[:email_addresses].from_json.inspect}"
+      sleep 1
+      successful_json_response
+    end
   end
 end

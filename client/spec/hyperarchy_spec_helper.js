@@ -10,6 +10,7 @@ Screw.Unit(function(c) { with(c) {
 
   init(function() {
     Monarch.Model.allowStringKeys = true;
+    window.notify = mockFunction('window.notify');
   });
 }});
 
