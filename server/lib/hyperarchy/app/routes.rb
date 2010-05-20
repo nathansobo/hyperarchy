@@ -28,6 +28,10 @@ module Hyperarchy
       redirect "/"
     end
 
+    get "/signup" do
+      render_page Views::Signup, :invitation_code => params[:invitation_code]
+    end
+
     post "/signup" do
       new_user = User.create!(params)
       request.env['warden'].set_user(new_user)
@@ -35,8 +39,9 @@ module Hyperarchy
     end
 
     post "/invite" do
-      puts "INVITE #{params[:email_addresses].from_json.inspect}"
-      sleep 1
+      params[:email_addresses].from_json.each do |email_address|
+        Invitation.create!(:inviter => current_user, :sent_to_address => email_address)
+      end
       successful_json_response
     end
   end

@@ -21,10 +21,18 @@ module Hyperarchy
     end
 
     configure(:development) do
+      ::SMTP_OPTIONS = {
+        :domain => "hyperarchy.com",
+        :host => "localhost",
+        :port => 2525,
+      }
+
       Origin.connection = Sequel.mysql('hyperarchy_development', :user => 'root', :password => 'password')
 
       register Sinatra::Reloader
       dir = File.dirname(__FILE__)
+
+      also_reload "#{dir}/../*.rb"
       also_reload "#{dir}/../models/*.rb"
       also_reload "#{dir}/../views/*.rb"
     end

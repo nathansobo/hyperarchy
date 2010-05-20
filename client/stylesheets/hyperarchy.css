@@ -17,7 +17,7 @@ body.home {
   font-size: 22px;
 }
 
-body.home #logo {
+#bigLogo {
   background-image: url("/images/logo_large.png");
   background-repeat: no-repeat;
   width: 780px;
@@ -82,6 +82,47 @@ body.home #loginForm input[type="submit"] {
   float: right;
 }
 
+
+/* signup page */
+
+body.signup {
+  margin-top: 100px;
+  font-size: 22px;
+}
+
+body.signup #signupForm {
+  margin: 0 auto;
+  width: 250px;
+  display: block;
+}
+
+body.signup label {
+  display: block;
+  font-size: 16px;
+}
+
+body.signup #bigLogo {
+  margin-bottom: 40px;
+}
+
+
+body.signup input.text, body.signup textarea.text {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+body.signup textarea.text {
+  height: 85px;
+}
+
+body.signup input[type=submit] {
+  margin-top: 10px;
+}
+
+body.signup .description {
+  /*text-align: justify;*/
+}
 
 /* app page */
 

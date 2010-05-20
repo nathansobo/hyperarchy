@@ -57,6 +57,8 @@ module Monarch
             Float
           when :datetime
             Time
+          when :boolean
+            TrueClass
           end
         end
 

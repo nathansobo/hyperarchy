@@ -13,11 +13,12 @@ require "monarch"
 require "sinatra/reloader"
 require "rack-flash"
 require "bcrypt"
+require "pony"
 require "erector"
 require 'rgl/base'
 require 'rgl/adjacency'
 require 'rgl/topsort'
-require "#{dir}/warden"
+require "#{dir}/warden/strategies/bcrypt_strategy"
 
 require "#{dir}/hyperarchy/helpers"
 require "#{dir}/hyperarchy/models"
