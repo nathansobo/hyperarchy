@@ -29,6 +29,7 @@ module Hyperarchy
     end
 
     get "/signup" do
+      puts request.host_with_port
       render_page Views::Signup, :invitation_code => params[:invitation_code]
     end
 

@@ -8,11 +8,11 @@ class Mailer
       @instance = FakeMailer.new
     end
 
-    delegate :send, :default_options=, :emails, :reset, :to => :instance
+    delegate :send, :default_options=, :emails, :reset, :base_url=, :base_url, :to => :instance
     private :new
   end
 
-  attr_accessor :default_options
+  attr_accessor :default_options, :base_url
   def send(options)
     Pony.mail(default_options.merge(options))
   end

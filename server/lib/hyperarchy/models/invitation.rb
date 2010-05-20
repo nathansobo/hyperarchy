@@ -32,6 +32,6 @@ class Invitation < Monarch::Model::Record
 
   protected
   def invite_email_body
-    %{Visit hyperarchy.com/signup?invitation_code=#{guid} to sign up.}
+    %[Visit #{Mailer.base_url}/signup?invitation_code=#{guid} to sign up.]
   end
 end
