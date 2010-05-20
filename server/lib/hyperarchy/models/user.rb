@@ -1,5 +1,6 @@
 class User < Monarch::Model::Record
-  column :full_name, :string
+  column :first_name, :string
+  column :last_name, :string
   column :email_address, :string
   column :encrypted_password, :string
 
@@ -21,5 +22,9 @@ class User < Monarch::Model::Record
 
   def password
     BCrypt::Password.new(encrypted_password)
+  end
+
+  def full_name
+    "#{first_name} #{last_name}"
   end
 end

@@ -4,7 +4,7 @@ _.constructor("Views.Signup", View.Template, {
       ol(function() {
         li(function() {
           label({ 'for': 'fullName' }, "full name:");
-          input({ type: 'text', id: 'fullName', name: 'full_name' });
+          input({ type: 'text', id: 'fullName', name: 'user[full_name' });
         });
         li(function() {
           label({ 'for': 'emailAddress' }, "email address:");

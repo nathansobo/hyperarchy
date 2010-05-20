@@ -17,6 +17,7 @@ module Hyperarchy
 
     configure(:test) do
       Mailer.use_fake
+      Mailer.base_url = "hyperarchy.com"
       Origin.connection = Sequel.mysql('hyperarchy_test', :user => 'root', :password => 'password')
       Monarch::Model::convert_strings_to_keys = true
     end
