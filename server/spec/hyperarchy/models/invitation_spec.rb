@@ -7,7 +7,6 @@ module Models
 
     before do
       @emails = []
-      stub(Pony).mail {|options| emails.push(options)}
       @inviter = User.find("nathan")
       @invitation = Invitation.create!(:inviter => inviter, :sent_to_address => "bob@example.com")
     end
@@ -20,8 +19,9 @@ module Models
 
     describe "after create" do
       it "sends an email to the :sent_to_address" do
-        emails.length.should == 1
-        email = emails.first
+        Mailer.emails.length.should == 1
+
+        email = Mailer.emails.first
         email[:to].should == "bob@example.com"
         email[:subject].should match(inviter.full_name)
         email[:body].should include("hyperarchy.com/signup?invitation_code=#{invitation.guid}")

@@ -13,9 +13,7 @@ class Invitation < Monarch::Model::Record
   end
 
   def after_create
-    Pony.mail(
-      :via => :smtp,
-      :smtp => SMTP_OPTIONS,
+    Mailer.send(
       :to => sent_to_address,
       :from => "admin@hyperarchy.com",
       :subject => "#{inviter.full_name} has invited you to join Hyperarchy",

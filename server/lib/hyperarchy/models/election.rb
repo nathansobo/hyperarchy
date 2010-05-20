@@ -1,4 +1,3 @@
-
 class Election < Monarch::Model::Record
   column :organization_id, :key
   column :body, :string

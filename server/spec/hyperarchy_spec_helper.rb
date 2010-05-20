@@ -2,9 +2,10 @@ dir = File.dirname(__FILE__)
 
 ENV['RACK_ENV'] = "test"
 
-require "#{dir}/../lib/hyperarchy"
+require "rubygems"
 require "spec"
 require "rack/test"
+require "#{dir}/../lib/hyperarchy"
 require "#{dir}/spec_helpers/fixtures"
 require "#{MONARCH_SERVER_ROOT}/spec/spec_helpers/rack_example_group"
 
@@ -14,6 +15,7 @@ Spec::Runner.configure do |config|
   config.before do
     Monarch::Model::Repository.clear_tables
     Monarch::Model::Repository.initialize_local_identity_map
+    Mailer.reset
   end
 
   config.after do
@@ -39,15 +41,23 @@ class RackExampleGroup < Spec::Example::ExampleGroup
   def app
     Hyperarchy::App
   end
+
+  def flash
+    last_request.env["x-rack.flash"]
+  end
+
+  def warden
+    last_request.env["warden"]
+  end
+
+  def current_user
+    warden.user
+  end
 end
 
 class Rack::MockResponse
   def body_from_json
     JSON.parse(body)
-  end
-
-  def ok?
-    status == 200
   end
 end
 

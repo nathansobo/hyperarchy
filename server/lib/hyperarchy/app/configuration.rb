@@ -16,16 +16,20 @@ module Hyperarchy
     helpers Hyperarchy::Helpers
 
     configure(:test) do
+      Mailer.use_fake
       Origin.connection = Sequel.mysql('hyperarchy_test', :user => 'root', :password => 'password')
       Monarch::Model::convert_strings_to_keys = true
     end
 
     configure(:development) do
-      ::SMTP_OPTIONS = {
-        :domain => "hyperarchy.com",
-        :host => "localhost",
-        :port => 2525,
-      }
+      Mailer.default_options(
+        :via => :smtp,
+        :via_options => {
+          :address => "hyperarchy.com",
+          :host => "localhost",
+          :port => 2525,
+        }
+      )
 
       Origin.connection = Sequel.mysql('hyperarchy_development', :user => 'root', :password => 'password')
 

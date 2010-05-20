@@ -20,6 +20,7 @@ require 'rgl/adjacency'
 require 'rgl/topsort'
 require "#{dir}/warden/strategies/bcrypt_strategy"
 
+require "#{dir}/hyperarchy/mailer"
 require "#{dir}/hyperarchy/helpers"
 require "#{dir}/hyperarchy/models"
 require "#{dir}/hyperarchy/views"
