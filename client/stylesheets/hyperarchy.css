@@ -1,3 +1,9 @@
+input.text, textarea.text {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
 /* layout */
 
 #notification {
@@ -82,7 +88,6 @@ body.home #loginForm input[type="submit"] {
   float: right;
 }
 
-
 /* signup page */
 
 body.signup {
@@ -105,13 +110,6 @@ body.signup #bigLogo {
   margin-bottom: 40px;
 }
 
-
-body.signup input.text, body.signup textarea.text {
-  display: block;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
 body.signup textarea.text {
   height: 85px;
 }
@@ -123,6 +121,13 @@ body.signup input[type=submit] {
 body.signup .description {
   /*text-align: justify;*/
 }
+
+/* add organization page */
+
+div.addOrganization input[type=submit] {
+  margin-top: 10px;
+}
+
 
 /* app page */
 

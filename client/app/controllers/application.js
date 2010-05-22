@@ -5,6 +5,7 @@ _.constructor("Controllers.Application", {
     this.views = {
       login: Views.Login.toView(),
       signup: Views.Signup.toView(),
+      addOrganization: Views.AddOrganization.toView(),
       organizations: Views.OrganizationOverview.toView(),
       elections: Views.ElectionOverview.toView(),
       invite: Views.Invite.toView()

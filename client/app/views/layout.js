@@ -15,6 +15,7 @@ _.constructor("Views.Layout", View.Template, {
               $("<form action='/logout' method='post'>").submit();
             });
             a({'class': "invite", href: "#view=invite"}, "Invite");
+            a({'class': "addOrganization", href: "#view=addOrganization"}, "Add Your Organization");
           });
         });
       }).ref('body');;

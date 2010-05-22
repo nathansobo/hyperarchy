@@ -1,6 +1,7 @@
 //= require "views/default_view_properties"
 //= require "views/login"
 //= require "views/signup"
+//= require "views/add_organization"
 //= require "views/invite"
 //= require "views/error_list"
 //= require "views/layout"

@@ -1,5 +1,4 @@
 make elections and candidates editable by their creator
-email-based invite flow for new user signups
 
 clarify that you can drill down into elections (rank, details, add answers)
 limit the number of candidates to 5 with a "more" link
