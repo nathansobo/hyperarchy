@@ -438,5 +438,13 @@ Screw.Unit(function(c) { with(c) {
         expect(tableInOtherRepo).to(eq, otherRepo.tables.users);
       });
     });
+
+    describe("#isEqual", function() {
+      it("structurally compares the selection with other relations", function() {
+        expect(User.where({fullName: "Joe"}).isEqual(User.where({fullName: "Joe"}))).to(beTrue);
+        expect(User.where({fullName: "Joe"}).isEqual(User.where({fullName: "Bob"}))).to(beFalse);
+        expect(User.where({fullName: "Joe"}).isEqual(User.table)).to(beFalse);
+      });
+    });
   });
 }});

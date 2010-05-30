@@ -51,6 +51,11 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
     return this.operand.surfaceTables();
   },
 
+  isEqual: function(other) {
+    if (other.constructor !== Monarch.Model.Relations.Selection) return false;
+    return this.predicate.isEqual(other.predicate) && this.operand.isEqual(other.operand);
+  },
+
   // private
 
   subscribeToOperands: function() {

@@ -702,7 +702,7 @@ Screw.Unit(function(c) { with(c) {
     });
   });
 
-  describe("_.Object", function() {
+  describe("_.Object (the default prototype from which all constructors inherit)", function() {
     var object;
 
     before(function() {
@@ -714,8 +714,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     after(function() {
-      delete window.Foo;
-      delete _.Object.constructorDelegateTarget;
+      delete window.Foo, _.Object.constructorDelegateTarget;
     });
 
     describe(".delegateConstructorMethods", function() {
@@ -751,5 +750,29 @@ Screw.Unit(function(c) { with(c) {
         expect(object.instanceDelegateTarget.bar).to(haveBeenCalled, onObject(object.instanceDelegateTarget));
       });
     });
+
+    describe("#isA", function() {
+      before(function() {
+        _.constructor("Uber");
+        _.constructor("Super", Uber);
+        _.constructor("Sub", Super);
+        _.constructor("Other", Uber);
+
+      });
+
+      after(function() {
+        delete window.Uber, window.Super, window.Sub, window.Other;
+      });
+
+      it("determines if the object's constructor inherits from the given constructor", function() {
+        var object = new Sub();
+        expect(object.isA(Sub)).to(beTrue);
+        expect(object.isA(Super)).to(beTrue);
+        expect(object.isA(Uber)).to(beTrue);
+        expect(object.isA(_.Object)).to(beTrue);
+        expect(object.isA(Other)).to(beFalse);
+      });
+    });
+
   });
 }});

@@ -53,6 +53,7 @@ _.mixin({
     var originalSubconstructorPrototype = subconstructor.prototype;
     try {
       superconstructor._initializeDisabled_ = true;
+      subconstructor.superconstructor = superconstructor;
       subconstructor.prototype = new superconstructor();
     } finally {
       delete superconstructor._initializeDisabled_;
@@ -224,6 +225,18 @@ _.constructor("_.Object", {
     var methodName = _.first(args);
     var otherArgs = _.rest(args);
     return _.bind.apply(_, [this[methodName], this].concat(otherArgs));
+  },
+
+  isA: function(constructor) {
+    var currentConstructor = this.constructor;
+    while (true) {
+      if (currentConstructor === constructor) return true;
+      if (currentConstructor.superconstructor) {
+        currentConstructor = currentConstructor.superconstructor;
+      } else {
+        return false;
+      }
+    }
   }
 });
 

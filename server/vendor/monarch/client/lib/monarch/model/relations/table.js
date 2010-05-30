@@ -69,6 +69,14 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     }
   },
 
+  fetch: function($super, id) {
+    if (arguments.length === 0){
+      return $super();
+    } else {
+      return this.where({id: id}).fetch();
+    }
+  },
+
   column: function(name) {
     return this.columnsByName[name];
   },
@@ -155,6 +163,10 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
 
   primaryTable: function() {
     return this;
+  },
+
+  isEqual: function(other) {
+    return this === other;
   },
 
   // private

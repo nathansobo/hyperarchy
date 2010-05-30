@@ -47,6 +47,13 @@ _.constructor("Monarch.Model.Predicates.Binary", Monarch.Model.Predicates.Predic
         value: operand
       };
     }
+  },
+
+  isEqual: function(other) {
+    if (!(_.isFunction(other.isA) && other.isA(Monarch.Model.Predicates.Binary))) return false;
+    return this.type === other.type &&
+      _.isEqual(this.leftOperand, other.leftOperand) &&
+        _.isEqual(this.rightOperand, other.rightOperand);
   }
 });
 

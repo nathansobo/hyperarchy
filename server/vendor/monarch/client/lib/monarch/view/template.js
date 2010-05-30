@@ -72,7 +72,7 @@ _.constructor("Monarch.View.Template", {
 
     fieldValues: function() {
       var values = {};
-      this.find("input,select").each(function() {
+      this.find("input,select,textarea").each(function() {
         var elt = jQuery(this);
         var name = elt.attr('name');
         if (!name) return;

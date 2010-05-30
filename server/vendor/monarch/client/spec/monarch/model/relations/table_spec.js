@@ -293,5 +293,27 @@ Screw.Unit(function(c) { with(c) {
         expect(User.find('jan')).to(beNull);
       });
     });
+
+    describe("#fetch", function() {
+      useFakeServer(false);
+
+      context("when an id is provided", function() {
+        it("fetches the record with that id", function() {
+          User.table.fetch("jan");
+          expect(Server.fetches.length).to(eq, 1);
+          var fetchedRelation = Server.lastFetch.relations[0];
+          expect(fetchedRelation.isEqual(User.where({id: "jan"}))).to(beTrue);
+        });
+      });
+
+      context("when no id is provided", function() {
+        it("fetches the entire table", function() {
+          User.table.fetch();
+          expect(Server.fetches.length).to(eq, 1);
+          var fetchedRelation = Server.lastFetch.relations[0];
+          expect(fetchedRelation).to(eq, User.table);
+        });
+      });
+    });
   });
 }});

@@ -18,6 +18,7 @@ Screw.Unit(function(c) { with(c) {
               input({name: "bar", value: "Bar"}).ref('bar');
               input({name: "baz", type: "checkbox", checked: false}).ref('baz');
               input({value: "Do not include because I have no name"});
+              textarea({name: 'textarea'}, "This too");
 
               select({name: "quux"}, function() {
                 option({value: "1"});
@@ -62,6 +63,7 @@ Screw.Unit(function(c) { with(c) {
             foo: "Foo",
             bar: "Bar",
             baz: false,
+            textarea: "This too",
             quux: 2
           });
         });
@@ -77,6 +79,7 @@ Screw.Unit(function(c) { with(c) {
             bar: "Bar",
             baz: false,
             quux: 2,
+            textarea: "This too",
             corge: "hi there"
           });
         });
