@@ -1,6 +1,14 @@
+body {
+  font-size: 15px;
+}
+
 input.text, textarea.text {
   display: block;
   width: 100%;
+  margin-bottom: 10px;
+}
+
+.marginBottom {
   margin-bottom: 10px;
 }
 
@@ -302,4 +310,8 @@ div.unrankCandidate:hover {
 
 #invite button {
   margin-right: 10px;
+}
+
+#invite #skip {
+  padding: 15px 0 0 3px;
 }

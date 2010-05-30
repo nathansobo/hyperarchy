@@ -5,5 +5,9 @@ _.constructor("User", Model.Record, {
     });
 
     this.hasMany('rankings');
+    this.hasMany('memberships');
+    this.relatesToMany('organizations', function() {
+      return this.memberships().joinThrough(Organization);
+    });
   }
 });

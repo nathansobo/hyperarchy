@@ -6,6 +6,7 @@ _.constructor("Controllers.Application", {
       login: Views.Login.toView(),
       signup: Views.Signup.toView(),
       addOrganization: Views.AddOrganization.toView(),
+      editOrganization: Views.EditOrganization.toView(),
       organizations: Views.OrganizationOverview.toView(),
       elections: Views.ElectionOverview.toView(),
       invite: Views.Invite.toView()

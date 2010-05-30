@@ -36,13 +36,18 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
       if (state.showCreateElectionForm) {
         this.createElectionLink.hide();
-        this.createElectionInput.val("Type your question here.");
-        this.createElectionInput.addClass("grayText");
+        this.resetCreateElectionForm();
         this.createElectionForm.show();
       } else {
         this.createElectionLink.show();
         this.createElectionForm.hide();
       }
+    },
+
+    resetCreateElectionForm: function() {
+      this.createElectionInput.val("Type your question here.");
+      this.createElectionInput.addClass("grayText");
+      this.createElectionButton.attr('disabled', false);
     },
 
     organizationId: {
@@ -74,8 +79,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.createElectionButton.attr('disabled', true);
       this.organization().elections().create({body: this.createElectionInput.val()})
         .onSuccess(function(election) {
-          History.load("elections/" + election.id());
-        });
+          $.bbq.pushState({view: "election", electionId: election.id()});
+        }, this);
     }
   }
 });

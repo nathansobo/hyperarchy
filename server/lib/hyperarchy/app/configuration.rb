@@ -42,6 +42,10 @@ module Hyperarchy
       also_reload "#{dir}/../views/*.rb"
     end
 
+    Warden::Manager.after_set_user do |user, auth, options|
+      Monarch::Model::Record.current_user = user
+    end
+
     before do
       Mailer.base_url = base_url
     end

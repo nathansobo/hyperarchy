@@ -35,7 +35,6 @@ _.constructor("Views.CandidatesList", View.Template, {
 
     updateCandidate: function(candidate, changes, index) {
       var candidateLi = this.findLi(candidate);
-      console.debug("updating index", candidate.body(), "position", candidate.position(), "index", index);
       this.insertAtIndex(candidateLi, index);
     },
 

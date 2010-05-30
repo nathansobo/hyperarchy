@@ -8,6 +8,8 @@ class User < Monarch::Model::Record
     BCrypt::Password.create(unencrypted_password).to_s
   end
 
+  has_many :memberships
+
   relates_to_many :elections do
     Election.table
   end

@@ -12,7 +12,8 @@ _.constructor("Views.Layout", View.Template, {
 
           div({'class': "grid9 omega"}, function() {
             a({'class': "logout", href: "#"}, "Log Out").click(function() {
-              $("<form action='/logout' method='post'>").submit();
+
+              $("<form action='/logout' method='post'>").appendTo($("body")).submit();
             });
             a({'class': "invite", href: "#view=invite"}, "Invite");
             a({'class': "addOrganization", href: "#view=addOrganization"}, "Add Your Organization");

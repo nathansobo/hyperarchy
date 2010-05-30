@@ -8,7 +8,7 @@ _.constructor("Views.Invite", View.Template, {
 
       div({'class': "grid12"}, function() {
         button('Send Invitations').ref('sendInvitationsButton').click('sendInvitations');
-        span({'class': "grayText"}, "Separate addresses with spaces, line-breaks, or commas");
+        span({'class': "grayText"}, "Separate with spaces, line-breaks, or commas");
       });
     });
   }},

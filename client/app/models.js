@@ -1,5 +1,6 @@
 //= require "models/user"
-//= require "models/election"
 //= require "models/organization"
+//= require "models/membership"
+//= require "models/election"
 //= require "models/candidate"
 //= require "models/ranking"

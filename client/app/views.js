@@ -2,6 +2,7 @@
 //= require "views/login"
 //= require "views/signup"
 //= require "views/add_organization"
+//= require "views/edit_organization"
 //= require "views/invite"
 //= require "views/error_list"
 //= require "views/layout"

@@ -9,6 +9,10 @@ module Models
       Organization.table
     end
 
+    expose :memberships do
+      Membership.table
+    end
+
     expose :elections do
       Election.table
     end
