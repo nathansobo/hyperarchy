@@ -160,6 +160,11 @@ Screw.Unit(function(c) { with(c) {
           expect(user.blogs().foo()).to(equal, "foo");
         });
       });
+
+      context("if a through option is supplied, it constructs a relation through the join table", function() {
+        var user = User.fixture('jan');
+        expect(user.blogPosts().isEqual(user.blogs().joinThrough(BlogPost))).to(beTrue);
+      });
     });
 
     describe(".belongsTo", function() {

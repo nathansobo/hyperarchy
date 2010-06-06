@@ -105,7 +105,6 @@ module Monarch
           self
         end
 
-
         def update(values_by_method_name)
           result = soft_update(values_by_method_name)
           save

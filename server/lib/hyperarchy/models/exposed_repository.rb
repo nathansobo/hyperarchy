@@ -13,6 +13,10 @@ module Models
       Membership.table
     end
 
+    expose :users do
+      User.table
+    end
+
     expose :elections do
       Election.table
     end

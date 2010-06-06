@@ -12,6 +12,35 @@ input.text, textarea.text {
   margin-bottom: 10px;
 }
 
+.bigMarginBottom {
+  margin-bottom: 30px;
+}
+
+.block {
+  display: block;
+}
+
+button {
+  padding: 5px;
+}
+
+.largeFont {
+  font-size: 21px;
+}
+
+.smallFont {
+  font-size: 13px;
+}
+
+.grayText {
+  color: #999999;
+}
+
+
+th, td {
+  padding: 5px 0 5px 0;
+}
+
 /* layout */
 
 #notification {
@@ -137,6 +166,32 @@ div.addOrganization input[type=submit] {
 }
 
 
+/* edit organization page */
+
+div.addMember {
+  border-bottom: 1px solid #999999;
+  padding-bottom: 5px;
+}
+
+div.addMember input, div.addMember label, div.addMember select {
+  margin-right: 10px;
+  vertical-align: top;
+}
+
+div.addMember .searchInput {
+  width: 450px;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+table.members {
+  width: 100%;
+}
+
+table.members th {
+  font-weight: bold;
+}
+
 /* app page */
 
 #header {
@@ -160,18 +215,6 @@ div.addOrganization input[type=submit] {
   background-repeat: no-repeat;
   width: 221px;
   height: 30px;
-}
-
-button {
-  padding: 5px;
-}
-
-.largeFont {
-  font-size: 21px;
-}
-
-.grayText {
-  color: #999999;
 }
 
 .elections .body {

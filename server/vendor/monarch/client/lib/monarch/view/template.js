@@ -168,7 +168,7 @@ _.constructor("Monarch.View.Template", {
 
     populateTextFields: function() {
       var model = this.model();
-      this.find("input:text").each(function() {
+      this.find("input:text, textarea").each(function() {
         var elt = jQuery(this);
         var fieldName = elt.attr('name');
         if (model[fieldName]) {

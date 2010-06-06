@@ -12,7 +12,7 @@ FIXTURES = {
     :global => {
       :name => "Global"
     },
-    :restaurunt => {
+    :restaurant => {
       :name => "Restaurant"
     }
   },

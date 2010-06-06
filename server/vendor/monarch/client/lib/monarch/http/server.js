@@ -10,6 +10,7 @@ _.constructor("Monarch.Http.Server", {
   fetch: function(relations) {
     return this.get(Repository.originUrl + "/fetch", {
       relations: _.map(relations, function(relation) {
+        if (!relation.wireRepresentation) debugger;
         return relation.wireRepresentation();
       })
     });
