@@ -29,14 +29,7 @@ module Models
         invitation = membership.invitation
         invitation.inviter.should == current_user
         invitation.sent_to_address.should == "new_member@example.com"
-        membership.user.should be_false
-
-
-        Organization.create!()
-
-        other_membership =
-
-
+        membership.user.should be_nil
       end
     end
   end

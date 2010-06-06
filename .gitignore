@@ -1,6 +1,7 @@
 *.iml
 *.iws
 *.ipr
+.bundle
 public/all.js
 target
 .DS_Store

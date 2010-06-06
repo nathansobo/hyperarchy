@@ -23,7 +23,7 @@ module Models
 
         email = Mailer.emails.first
         email[:to].should == "bob@example.com"
-        email[:subject].should match(inviter.full_name)
+        email[:subject].should match(Regexp.new(inviter.full_name))
         email[:body].should include("hyperarchy.com/signup?invitation_code=#{invitation.guid}")
       end
     end

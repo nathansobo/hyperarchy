@@ -1,15 +1,9 @@
 dir = File.dirname(__FILE__)
 
 ENV['RACK_ENV'] = "test"
-
-require "rubygems"
-require "spec"
-require "rack/test"
 require "#{dir}/../lib/hyperarchy"
 require "#{dir}/spec_helpers/fixtures"
 require "#{MONARCH_SERVER_ROOT}/spec/spec_helpers/rack_example_group"
-
-
 
 Spec::Runner.configure do |config|
   config.mock_with :rr
