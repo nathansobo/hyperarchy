@@ -1,5 +1,5 @@
 /*
- * jQuery UI Sortable 1.8
+ * jQuery UI Sortable 1.8.2
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -73,7 +73,20 @@ $.widget("ui.sortable", $.ui.mouse, {
 		return this;
 	},
 
+	_setOption: function(key, value){
+		if ( key === "disabled" ) {
+			this.options[ key ] = value;
+	
+			this.widget()
+				[ value ? "addClass" : "removeClass"]( "ui-sortable-disabled" );
+		} else {
+			// Don't call widget base _setOption for disable as it adds ui-state-disabled class
+			$.Widget.prototype._setOption.apply(this, arguments);
+		}
+	},
+
 	_mouseCapture: function(event, overrideHandle) {
+
 		if (this.reverting) {
 			return false;
 		}
@@ -545,6 +558,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 	},
 
 	_refreshItems: function(event) {
+
 		this.items = [];
 		this.containers = [this];
 		var items = this.items;
@@ -612,7 +626,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 		} else {
 			for (var i = this.containers.length - 1; i >= 0; i--){
 				var p = this.containers[i].element.offset();
-        this.containers[i].containerCache.left = p.left;
+				this.containers[i].containerCache.left = p.left;
 				this.containers[i].containerCache.top = p.top;
 				this.containers[i].containerCache.width	= this.containers[i].element.outerWidth();
 				this.containers[i].containerCache.height = this.containers[i].element.outerHeight();
@@ -1047,7 +1061,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 });
 
 $.extend($.ui.sortable, {
-	version: "1.8"
+	version: "1.8.2"
 });
 
 })(jQuery);

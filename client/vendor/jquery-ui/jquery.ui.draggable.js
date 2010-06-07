@@ -1,5 +1,5 @@
 /*
- * jQuery UI Draggable 1.8
+ * jQuery UI Draggable 1.8.2
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -459,7 +459,7 @@ $.widget("ui.draggable", $.ui.mouse, {
 });
 
 $.extend($.ui.draggable, {
-	version: "1.8"
+	version: "1.8.2"
 });
 
 $.ui.plugin.add("draggable", "connectToSortable", {
@@ -475,10 +475,8 @@ $.ui.plugin.add("draggable", "connectToSortable", {
 					instance: sortable,
 					shouldRevert: sortable.options.revert
 				});
-				// nathan patched 4/14/10, original version below
-        sortable.refreshPositions();
-        //sortable._refreshItems();	//Do a one-time refresh at start to refresh the containerCache
-        sortable._trigger("activate", event, uiSortable);
+				sortable._refreshItems();	//Do a one-time refresh at start to refresh the containerCache
+				sortable._trigger("activate", event, uiSortable);
 			}
 		});
 
@@ -531,13 +529,12 @@ $.ui.plugin.add("draggable", "connectToSortable", {
 		};
 
 		$.each(inst.sortables, function(i) {
+			
 			//Copy over some variables to allow calling the sortable's native _intersectsWith
 			this.instance.positionAbs = inst.positionAbs;
 			this.instance.helperProportions = inst.helperProportions;
 			this.instance.offset.click = inst.offset.click;
-
-      this.instance.refreshPositions();
-
+			
 			if(this.instance._intersectsWith(this.instance.containerCache)) {
 
 				//If it intersects, we use a little isOver variable and set it once, so our move-in stuff gets fired only once
