@@ -3,11 +3,10 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 module Models
   describe Invitation do
     attr_reader :emails, :inviter, :invitation
-    use_fixtures
 
     before do
       @emails = []
-      @inviter = User.find("nathan")
+      @inviter = User.make
       @invitation = Invitation.create!(:inviter => inviter, :sent_to_address => "bob@example.com")
     end
 

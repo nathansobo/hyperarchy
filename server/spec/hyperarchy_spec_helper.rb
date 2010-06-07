@@ -2,7 +2,6 @@ dir = File.dirname(__FILE__)
 
 ENV['RACK_ENV'] = "test"
 require "#{dir}/../lib/hyperarchy"
-require "#{dir}/spec_helpers/fixtures"
 require "#{dir}/spec_helpers/machinist_monarch_adaptor"
 require "#{dir}/spec_helpers/blueprints"
 require "#{MONARCH_SERVER_ROOT}/spec/spec_helpers/rack_example_group"
@@ -19,14 +18,6 @@ Spec::Runner.configure do |config|
 
   config.after do
     Monarch::Model::Repository.clear_local_identity_map
-  end
-end
-
-module Spec::Example::Subject::ExampleGroupMethods
-  def use_fixtures
-    before do
-      Monarch::Model::Repository.load_fixtures(FIXTURES)
-    end
   end
 end
 

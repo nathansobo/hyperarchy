@@ -1,10 +1,8 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper")
 
 describe "POST /invite", :type => :rack do
-  use_fixtures
-
   before do
-    login_as User.find('nathan')
+    login_as User.make
   end
 
   it "creates an invitation for each of the given email addresses" do

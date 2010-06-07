@@ -2,16 +2,14 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 
 module Models
   describe Membership do
-    use_fixtures
-
     attr_reader :organization
     before do
-      @organization = Organization.find("restaurant")
+      @organization = Organization.make
     end
 
     describe "when created with an email address of an existing user" do
       it "associates the membership with the user that has that email address" do
-        user = User.find("nathan")
+        user = User.make
         membership = organization.memberships.create!(:email_address => user.email_address)
         membership.user.should == user
         membership.should_not be_pending
@@ -21,7 +19,7 @@ module Models
 
     describe "when created with an unknown email address" do
       it "associates the membership with an invitation to that email address and assigns it a pending state" do
-        current_user = User.find("nathan")
+        current_user = User.make
         Monarch::Model::Record.current_user = current_user
 
         membership = organization.memberships.create!(:email_address => "new_member@example.com")

@@ -3,8 +3,6 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 module Models
   describe Candidate do
     describe "after create" do
-      use_fixtures
-
       attr_reader :election
       before do
         @election = Election.make
@@ -28,9 +26,9 @@ module Models
       end
 
       it "for every ranking of an existing candidate by any user, increments that candidates majority over the created candidate" do
-        user_1 = User.create!
-        user_2 = User.create!
-        user_3 = User.create!
+        user_1 = User.make
+        user_2 = User.make
+        user_3 = User.make
 
         falafel = election.candidates.create(:body => "Falafel")
         tacos = election.candidates.create(:body => "Tacos")

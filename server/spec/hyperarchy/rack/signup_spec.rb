@@ -12,10 +12,9 @@ describe "/signup", :type => :rack do
     end
 
     context "if an already-redeemed invitation code is specified" do
-      use_fixtures
       attr_reader :invitation
       before do
-        @invitation = Invitation.create!(:inviter => User.find("nathan"), :sent_to_address => "steph@example.com", :redeemed => true)
+        @invitation = Invitation.create!(:inviter => User.make, :sent_to_address => "steph@example.com", :redeemed => true)
       end
 
       it "sets :already_redeemed in the flash and redirects back to /signup with no params" do
@@ -28,7 +27,6 @@ describe "/signup", :type => :rack do
   end
 
   describe "POST /signup" do
-    use_fixtures
     attr_reader :user_attributes
 
     before do
@@ -44,7 +42,7 @@ describe "/signup", :type => :rack do
       attr_reader :invitation
 
       before do
-        @invitation = Invitation.create(:sent_to_address => "steph@example.com", :inviter => User.find("nathan"))
+        @invitation = Invitation.create(:sent_to_address => "steph@example.com", :inviter => User.make)
       end
 
       context "if the invitation has not been redeemed" do

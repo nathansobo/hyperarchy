@@ -5,12 +5,11 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 module Models
   describe Ranking do
     describe "after create, update, or destroy" do
-      use_fixtures
       attr_reader :user, :election, :candidate_1, :candidate_2, :candidate_3
 
       before do
-        @user = User.find("nathan")
-        @election = Election.find("menu")
+        @user = User.make
+        @election = Election.make
         @candidate_1 = election.candidates.create(:body => "1")
         @candidate_2 = election.candidates.create(:body => "2")
         @candidate_3 = election.candidates.create(:body => "3")

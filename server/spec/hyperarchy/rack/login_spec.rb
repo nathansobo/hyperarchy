@@ -4,7 +4,7 @@ describe "POST /login", :type => :rack do
   attr_reader :user
 
   before do
-    @user = User.create(:email_address => "billy@example.com", :password => "spectrum")
+    @user = User.make(:email_address => "billy@example.com", :password => "spectrum")
   end
 
   context "if a User with the given email address exists" do

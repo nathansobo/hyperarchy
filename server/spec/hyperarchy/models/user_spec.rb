@@ -4,7 +4,7 @@ module Models
   describe User do
     attr_reader :user
     before do
-      @user = User.new
+      @user = User.make
     end
 
     describe "#password and #password=" do
