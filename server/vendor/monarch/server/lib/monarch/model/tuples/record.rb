@@ -72,7 +72,7 @@ module Monarch
 
           delegate :create, :create!, :unsafe_create, :where, :project, :join, :join_to, :join_through, :aggregate, :find,
                    :size, :concrete_columns_by_name, :[], :create_table, :drop_table, :clear_table, :all, :find_or_create,
-                   :left_join, :left_join_to, :group_by, :to => :table
+                   :left_join, :left_join_to, :group_by, :on_insert, :on_remove, :on_update, :to => :table
 
           protected
           def define_field_writer(column)
@@ -134,6 +134,7 @@ module Monarch
 
         def save
           return nil unless valid?
+          return table.insert(self) unless persisted?
           return Changeset.new(snapshot, snapshot) unless dirty?
 
           before_update(dirty_concrete_field_values_by_column_name)
@@ -153,8 +154,12 @@ module Monarch
         def dirty?
           concrete_fields.any? {|field| field.dirty?}
         end
+        def persisted?
+          @persisted
+        end
 
         def mark_clean
+          @persisted = true
           fields.each { |field| field.mark_clean }
         end
 
