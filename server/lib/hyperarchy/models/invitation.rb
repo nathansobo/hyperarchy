@@ -7,6 +7,7 @@ class Invitation < Monarch::Model::Record
 
   belongs_to :inviter, :class_name => "User"
   belongs_to :invitee, :class_name => "User"
+  has_many :memberships
 
   def before_create
     self.guid = Guid.new.to_s
@@ -27,6 +28,9 @@ class Invitation < Monarch::Model::Record
     self.invitee = user
     self.redeemed = true
     save
+    memberships.each do |membership|
+      membership.update(:pending => false, :user => user)
+    end
     user
   end
 

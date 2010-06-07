@@ -17,7 +17,9 @@ class Membership < Monarch::Model::Record
       self.pending = false
     else
       self.pending = true
-      self.invitation = Invitation.create!(:sent_to_address => email_address, :inviter => current_user)
+      self.invitation =
+        Invitation.find(:sent_to_address => email_address) ||
+          Invitation.create!(:sent_to_address => email_address, :inviter => current_user)
     end
   end
 end

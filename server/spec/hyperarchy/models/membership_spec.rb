@@ -22,12 +22,26 @@ module Models
         current_user = User.make
         Monarch::Model::Record.current_user = current_user
 
-        membership = organization.memberships.create!(:email_address => "new_member@example.com")
+        email_address = "new_member@example.com"
+        membership = organization.memberships.create!(:email_address => email_address)
         membership.should be_pending
         invitation = membership.invitation
         invitation.inviter.should == current_user
-        invitation.sent_to_address.should == "new_member@example.com"
+        invitation.sent_to_address.should == email_address
         membership.user.should be_nil
+
+        other_organization = Organization.make
+        other_membership = other_organization.memberships.create!(:email_address => email_address)
+
+        other_membership.should be_pending
+        other_membership.invitation.should == invitation
+
+        user = invitation.redeem(User.plan)
+
+        membership.should_not be_pending
+        membership.user.should == user
+        other_membership.should_not be_pending
+        other_membership.user.should == user
       end
     end
   end
