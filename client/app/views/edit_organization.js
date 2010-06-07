@@ -15,8 +15,8 @@ _.constructor("Views.EditOrganization", View.Template, {
         label({'class': "largeFont block"}, "Members");
 
         div({'class': "addMember marginBottom"}, function() {
-          div({'class': "searchInput"}, function() {
-            input({'class': "searchInput"});
+          div({'class': "addMemberInput"}, function() {
+            input({'class': "addMemberInput"}).ref('addMemberInput');
             span({'class': "grayText smallFont"}, "e.g. John Smith, john@example.com, John Smith <john@example.com>");
           });
 
@@ -49,6 +49,20 @@ _.constructor("Views.EditOrganization", View.Template, {
 
   viewProperties: {
     viewName: 'editOrganization',
+
+    initialize: function() {
+      this.addMemberInput.autocomplete({
+        source: function(value, callback) {
+
+          _.delay(function() {
+            callback(["testing", "1", "2"]);
+          }, 1000);
+
+
+        }
+      });
+
+    },
 
     navigate: function(state) {
       var organizationId = state.organizationId;
