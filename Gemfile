@@ -23,6 +23,6 @@ group :test do
   gem "rspec", "1.2.6", :require => "spec"
   gem "rr", "0.10.0"
   gem "rack-test", "0.5.3", :require => "rack/test"
-  gem "machinist", "1.0.6"
+  gem "machinist", "1.0.6", :require => ["machinist", "machinist/blueprints", "sham"]
   gem "faker", "0.3.1"    
 end

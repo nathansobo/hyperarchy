@@ -3,6 +3,8 @@ dir = File.dirname(__FILE__)
 ENV['RACK_ENV'] = "test"
 require "#{dir}/../lib/hyperarchy"
 require "#{dir}/spec_helpers/fixtures"
+require "#{dir}/spec_helpers/machinist_monarch_adaptor"
+require "#{dir}/spec_helpers/blueprints"
 require "#{MONARCH_SERVER_ROOT}/spec/spec_helpers/rack_example_group"
 
 Spec::Runner.configure do |config|
@@ -11,6 +13,7 @@ Spec::Runner.configure do |config|
   config.before do
     Monarch::Model::Repository.clear_tables
     Monarch::Model::Repository.initialize_local_identity_map
+    Sham.reset
     Mailer.reset
   end
 

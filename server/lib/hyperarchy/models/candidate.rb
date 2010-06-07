@@ -6,7 +6,7 @@ class Candidate < Monarch::Model::Record
   belongs_to :election
 
   def after_create
-    Candidate.where(Candidate[:id].neq(id)).each do |other_candidate|
+    Candidate.where(:election_id => election_id).where(Candidate[:id].neq(id)).each do |other_candidate|
       Majority.create({:winner => self, :loser => other_candidate, :election_id => election_id})
       Majority.create({:winner => other_candidate, :loser => self, :election_id => election_id})
     end

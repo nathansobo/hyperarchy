@@ -6,6 +6,8 @@ class Election < Monarch::Model::Record
   has_many :rankings
   has_many :majorities
 
+  belongs_to :organization
+
   def compute_global_ranking
     puts "compute_global_ranking"
     already_processed = []

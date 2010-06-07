@@ -7,7 +7,7 @@ module Models
 
       attr_reader :election
       before do
-        @election = Election.find("menu")
+        @election = Election.make
       end
 
       it "creates a winning and losing majority every pairing of the created candidate with other candidates" do
@@ -19,8 +19,6 @@ module Models
         Majority.find({ :winner => falafel, :loser => tacos, :election => election }).should_not be_nil
         Majority.find({ :winner => tacos, :loser => falafel, :election => election }).should_not be_nil
 
-        $on = true
-        
         fish = election.candidates.create(:body => "Fish")
         
         Majority.find({ :winner => falafel, :loser => fish, :election => election }).should_not be_nil
@@ -34,7 +32,6 @@ module Models
         user_2 = User.create!
         user_3 = User.create!
 
-        election = Election.find("menu")
         falafel = election.candidates.create(:body => "Falafel")
         tacos = election.candidates.create(:body => "Tacos")
         fish = election.candidates.create(:body => "Fish")
@@ -50,6 +47,7 @@ module Models
         election.rankings.create(:user => user_3, :candidate => falafel, :position => 1)
 
         candidate = election.candidates.create(:body => "Alpaca")
+
         find_majority(falafel, candidate).count.should == 3
         find_majority(tacos, candidate).count.should == 2
         find_majority(fish, candidate).count.should == 1
