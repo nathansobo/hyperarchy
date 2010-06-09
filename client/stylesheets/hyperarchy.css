@@ -182,7 +182,10 @@ div.addMember {
 
 div.addMember input, div.addMember label, div.addMember select {
   margin-right: 10px;
-  vertical-align: top;
+}
+
+div.addMember input[type=text] {
+  width: 250px;
 }
 
 div.addMember .addMemberInput {

@@ -173,8 +173,6 @@ _.constructor("Monarch.View.Template", {
         var fieldName = elt.attr('name');
         if (model[fieldName]) {
           elt.val(model[fieldName].call(model) || "");
-        } else {
-          elt.val("");
         }
       });
     },

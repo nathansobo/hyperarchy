@@ -1,6 +1,7 @@
 class Invitation < Monarch::Model::Record
   column :guid, :string
   column :sent_to_address, :string
+  column :full_name, :string
   column :redeemed, :boolean
   column :inviter_id, :key
   column :invitee_id, :key
@@ -13,29 +14,22 @@ class Invitation < Monarch::Model::Record
     self.guid = Guid.new.to_s
   end
 
-  def after_create
-    Mailer.send(
-      :to => sent_to_address,
-      :from => "admin@hyperarchy.com",
-      :subject => "#{inviter.full_name} has invited you to join Hyperarchy",
-      :body => invite_email_body
-    )
-  end
-  
-  def redeem(user_attributes)
+  def redeem(attributes)
     raise "Already redeemed" if redeemed?
-    user = User.create!(user_attributes)
+
+    confirm_memberships = attributes.delete(:confirm_memberships)
+    user = User.create!(attributes)
     self.invitee = user
     self.redeemed = true
     save
+
     memberships.each do |membership|
-      membership.update(:pending => false, :user => user)
+      if confirm_memberships.include?(membership.id)
+        membership.update(:pending => false, :user => user)
+      else
+        membership.destroy
+      end
     end
     user
-  end
-
-  protected
-  def invite_email_body
-    %[Visit #{Mailer.base_url}/signup?invitation_code=#{guid} to sign up.]
   end
 end

@@ -2,46 +2,77 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 
 module Models
   describe Membership do
-    attr_reader :organization
+    attr_reader :organization, :current_user
     before do
       @organization = Organization.make
+      @current_user = User.make
+      Monarch::Model::Record.current_user = current_user
     end
 
     describe "when created with an email address of an existing user" do
-      it "associates the membership with the user that has that email address" do
+      it "associates the pending membership with the user that has that email address and sends them an email with a link to join the organization" do
         user = User.make
         membership = organization.memberships.create!(:email_address => user.email_address)
         membership.user.should == user
-        membership.should_not be_pending
+        membership.should be_pending
         membership.invitation.should be_nil
+
+        Mailer.emails.length.should == 1
+        invite_email = Mailer.emails.first
+
+        invite_email[:to].should == user.email_address
+        invite_email[:subject].should match(/#{current_user.full_name}/)
+        invite_email[:subject].should match(/#{organization.name}/)
+        invite_email[:body].should match(/confirm_membership\/#{membership.id}/)
       end
     end
 
     describe "when created with an unknown email address" do
-      it "associates the membership with an invitation to that email address and assigns it a pending state" do
-        current_user = User.make
-        Monarch::Model::Record.current_user = current_user
-
+      it "associates the pending membership with an invitation with the given email address and sends them an email with a link to the invitation" do
+        full_name = "New Member"
         email_address = "new_member@example.com"
-        membership = organization.memberships.create!(:email_address => email_address)
-        membership.should be_pending
-        invitation = membership.invitation
+
+        membership_1 = organization.memberships.create!(:full_name => full_name, :email_address => email_address)
+        membership_1.should be_pending
+
+        invitation = membership_1.invitation
         invitation.inviter.should == current_user
+        invitation.full_name.should == full_name
         invitation.sent_to_address.should == email_address
-        membership.user.should be_nil
+        membership_1.user.should be_nil
 
-        other_organization = Organization.make
-        other_membership = other_organization.memberships.create!(:email_address => email_address)
+        Mailer.emails.length.should == 1
+        invite_email_1 = Mailer.emails.shift
+        invite_email_1[:to].should == email_address
+        invite_email_1[:subject].should match(current_user.full_name)
+        invite_email_1[:subject].should match(organization.name)
+        invite_email_1[:body].should match(/signup\?invitation_code=#{invitation.guid}/)
 
-        other_membership.should be_pending
-        other_membership.invitation.should == invitation
+        # Membership to a different organization associtates with the same invitation
+        organization_2 = Organization.make
+        membership_2 = organization_2.memberships.create!(:email_address => email_address)
 
-        user = invitation.redeem(User.plan)
+        membership_2.should be_pending
+        membership_2.invitation.should == invitation
 
-        membership.should_not be_pending
-        membership.user.should == user
-        other_membership.should_not be_pending
-        other_membership.user.should == user
+        Mailer.emails.length.should == 1
+        invite_email_2 = Mailer.emails.shift
+        invite_email_2[:to].should == email_address
+        invite_email_2[:subject].should match(current_user.full_name)
+        invite_email_2[:subject].should match(organization_2.name)
+        invite_email_2[:body].should match(/signup\?invitation_code=#{invitation.guid}/)
+
+        # A third membership just to test redemption below
+        organization_3 = Organization.make
+        membership_3 = organization_3.memberships.create!(:email_address => email_address)
+
+        # Become a member only of the specified organizations, delete the other memberships
+        user = invitation.redeem(User.plan.merge(:confirm_memberships => [membership_1.id, membership_3.id]))
+        membership_1.should_not be_pending
+        membership_1.user.should == user
+        membership_3.should_not be_pending
+        membership_3.user.should == user
+        Membership.find(membership_2.id).should be_nil
       end
     end
   end
