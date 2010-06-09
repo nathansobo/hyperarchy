@@ -48,8 +48,7 @@ module Monarch
             end
 
             it "defines a reader method for the synthetic field" do
-              record.field(:great_name).value
-              record.great_name
+              record.field(:great_name).value.should == record.great_name
             end
 
             it "includes the value of a reader method by the same name in a record's #wire_representation" do
@@ -59,6 +58,11 @@ module Monarch
             it "allows a writer method by the same name to be written to in a call to #update_fields" do
               record.field(:great_name).value = "Hunan"
               record.full_name.should == "Hunan The Great"
+            end
+
+            it "allows columns to be defined in terms of signals or methods" do
+              record.great_name.should == "Jan Nelson The Great"
+              record.terrible_name.should == "Jan Nelson The Terrible"
             end
           end
 

@@ -16,6 +16,8 @@ class User < Monarch::Model::Record
     end
   end
 
+  synthetic_column :terrible_name, :string
+
   relates_to_many :blogs do
     Blog.where(Blog[:user_id].eq(id))
   end
@@ -26,6 +28,10 @@ class User < Monarch::Model::Record
 
   def great_name=(full_name)
     self.full_name = full_name + " The Great"
+  end
+
+  def terrible_name
+    "#{full_name} The Terrible"
   end
 
   def validate

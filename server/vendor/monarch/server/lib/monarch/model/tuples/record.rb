@@ -305,7 +305,7 @@ module Monarch
           super
           @synthetic_fields_by_column = {}
           relation.synthetic_columns.each do |column|
-            synthetic_fields_by_column[column] = SyntheticField.new(self, column, instance_eval(&column.signal_definition))
+            synthetic_fields_by_column[column] = SyntheticField.new(self, column)
           end
         end
       end

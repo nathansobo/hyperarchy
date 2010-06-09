@@ -251,6 +251,7 @@ module Monarch
                     'signed_up_at' => signed_up_at.to_millis,
                     'has_hair' => nil,
                     'great_name' => "Jake Frautschi The Great",
+                    'terrible_name' => "Jake Frautschi The Terrible",
                     'human' => true
                   },
                   jan.wire_representation.stringify_keys,
