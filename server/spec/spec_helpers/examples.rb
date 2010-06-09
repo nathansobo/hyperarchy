@@ -1,7 +1,8 @@
 FIXTURES = {
   :users => {
     :nathan => {
-      :full_name => "Nathan Sobo",
+      :first_name => "Nathan",
+      :last_name => "Sobo",
       :email_address => "nathansobo@example.com",
       :encrypted_password => User.encrypt_password("password")
     }

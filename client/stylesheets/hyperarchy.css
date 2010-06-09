@@ -24,6 +24,10 @@ button {
   padding: 5px;
 }
 
+.placeheld {
+  color: #999999;
+}
+
 .largeFont {
   font-size: 21px;
 }
@@ -184,14 +188,12 @@ div.addMember input, div.addMember label, div.addMember select {
   margin-right: 10px;
 }
 
-div.addMember input[type=text] {
-  width: 250px;
+div.addMember input.name {
+  width: 150px;
 }
 
-div.addMember .addMemberInput {
-  width: 450px;
-  display: inline-block;
-  margin-right: 10px;
+div.addMember input.emailAddress {
+  width: 250px;
 }
 
 table.members {

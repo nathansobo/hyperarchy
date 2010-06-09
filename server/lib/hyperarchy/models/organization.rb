@@ -8,6 +8,6 @@ class Organization < Monarch::Model::Record
   attr_accessor :suppress_membership_creation
   
   def after_create
-    memberships.create(:user => current_user, :role => "owner") unless suppress_membership_creation
+    memberships.create(:user => current_user, :role => "owner", :pending => false) unless suppress_membership_creation
   end
 end

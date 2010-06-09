@@ -9,6 +9,13 @@ module Models
       Monarch::Model::Record.current_user = current_user
     end
 
+    describe "when not pending" do
+      it "does not send a confirmation email" do
+        organization.memberships.create!(:user => User.make, :pending => false)
+        Mailer.emails.should be_empty
+      end
+    end
+
     describe "when created with an email address of an existing user" do
       it "associates the pending membership with the user that has that email address and sends them an email with a link to join the organization" do
         user = User.make

@@ -5,11 +5,14 @@ class Membership < Monarch::Model::Record
   column :role, :string
   column :pending, :boolean, :default => true
 
+  synthetic_column :first_name, :string do
+  end
+
   belongs_to :organization
   belongs_to :user
   belongs_to :invitation
 
-  attr_accessor :email_address, :full_name
+  attr_accessor :email_address, :first_name, :last_name
 
   def before_create
     if user = User.find(:email_address => email_address)
@@ -18,12 +21,14 @@ class Membership < Monarch::Model::Record
       self.invitation =
         Invitation.find(:sent_to_address => email_address) ||
           Invitation.create!(:sent_to_address => email_address,
-                             :full_name => full_name,
+                             :first_name => first_name,
+                             :last_name => last_name,
                              :inviter => current_user)
     end
   end
 
   def after_create
+    return unless pending?
     Mailer.send(
       :to => email_address,
       :from => "admin@hyperarchy.com",

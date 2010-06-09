@@ -8,6 +8,7 @@
 //= require <jquery-ui/jquery.ui.droppable>
 //= require <jquery-ui/jquery.ui.sortable>
 //= require <jquery-ui/jquery.ui.autocomplete>
+//= require <jquery.placeheld>
 //= require "models"
 //= require "views"
 //= require "controllers"

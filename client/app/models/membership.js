@@ -4,10 +4,13 @@ _.constructor("Membership", Model.Record, {
       organizationId: "key",
       userId: "key",
       role: "string",
-      pending: "boolean"
+      pending: "boolean",
+      firstName: "string",
+      lastName: "string",
+      emailAddress: "string"
     });
 
-    this.belongsTo("organization");
+    this.belongsTo("organiza  tion");
     this.belongsTo("user");
   }
 });

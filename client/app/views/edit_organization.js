@@ -15,13 +15,14 @@ _.constructor("Views.EditOrganization", View.Template, {
         label({'class': "largeFont block"}, "Members");
 
         div({'class': "addMember marginBottom"}, function() {
-          input({'class': "addMemberName", type: "text", placeholder: "Name"}).ref('addMemberName');
-          input({'class': "addMemberEmail", type: "text", placeholder: "Email Address"}).ref('addMemberEmail');
+          input({'class': "name", type: "text", placeholder: "First Name"}).ref('createMembershipFirstName');
+          input({'class': "name", type: "text", placeholder: "Last Name"}).ref('createMembershipLastName');
+          input({'class': "emailAddress", type: "text", placeholder: "Email Address"}).ref('createMembershipEmail');
           select(function() {
             option("Member");
             option("Owner");
-          });
-          input({type: "submit", value: "Add"});
+          }).ref("createMembershipRole");
+          input({type: "submit", value: "Add"}).click('createMembership');
         });
 
         table({'class': "members"}, function() {
@@ -46,6 +47,12 @@ _.constructor("Views.EditOrganization", View.Template, {
   viewProperties: {
     viewName: 'editOrganization',
 
+    initialize: function() {
+      this.createMembershipFirstName.placeHeld();
+      this.createMembershipLastName.placeHeld();
+      this.createMembershipEmail.placeHeld();
+    },
+
     navigate: function(state) {
       var organizationId = state.organizationId;
       Server.fetch([
@@ -58,26 +65,35 @@ _.constructor("Views.EditOrganization", View.Template, {
 
     modelAssigned: function(model) {
       this.membersTbody.empty();
+      this.model().memberships().each(this.hitch('appendMembershipTr'));
+    },
 
-      this.model().memberships().each(function(membership) {
-        var user = membership.user();
-        this.membersTbody.appendView(function(b) {
-          b.tr(function() {
-            b.td(user.fullName());
-            b.td(user.emailAddress());
-            b.td(function() {
-              b.select(function() {
-                b.option("Member", {selected: membership.role() === "member"});
-                b.option("Owner", {selected: membership.role() === "owner"});
-              });
+    appendMembershipTr: function(membership) {
+      this.membersTbody.appendView(function(b) {
+        b.tr(function() {
+          b.td(membership.fullName());
+          b.td(membership.emailAddress());
+          b.td(function() {
+            b.select(function() {
+              b.option("Member", {selected: membership.role() === "member"});
+              b.option("Owner", {selected: membership.role() === "owner"});
             });
-            b.td("No Pending Invitations");
-            b.td(function() {
-              b.a({href: "#"}, "Remove");
-            });
-          })
-        });
-      }, this);
+          });
+          b.td("No Pending Invitations");
+          b.td(function() {
+            b.a({href: "#"}, "Remove");
+          });
+        })
+      });
+    },
+
+    createMembership: function() {
+      this.model().memberships().create({
+        firstName: this.createMembershipFirstName.val(),
+        lastName: this.createMembershipLastName.val(),
+        emailAddress: this.createMembershipEmail.val(),
+        role: this.createMembershipRole.val()
+      }).onSuccess(this.hitch('appendMembershipTr'));
     }
   }
 });

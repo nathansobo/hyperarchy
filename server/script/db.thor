@@ -6,16 +6,7 @@ class Db < Thor
     Origin.connection = Sequel.mysql :user => 'root', :password => 'password', :host => 'localhost'
     recreate_schema("hyperarchy_development")
     recreate_schema("hyperarchy_test")
-  end
-
-  desc "load_fixtures", "load the test fixtures into the development database"
-  def load_fixtures
-    require "#{dir}/../spec/spec_helpers/fixtures"
-    require 'logger'
-    Origin.connection = Sequel.mysql('hyperarchy_development', :user => 'root', :password => 'password', :loggers => [Logger.new($stdout)])
-    Monarch::Model.convert_strings_to_keys = true
-    Monarch::Model::Repository::clear_tables
-    Monarch::Model::Repository::load_fixtures(FIXTURES)
+    load_examples
   end
 
   desc "load_examples", "load the example data into the development database"
@@ -26,8 +17,6 @@ class Db < Thor
     Monarch::Model::Repository::clear_tables
     Monarch::Model::Repository::load_fixtures(FIXTURES)
   end
-
-
 
   desc "console", "connect to the 'hyperarchy_development' database in mysql console"
   def console
