@@ -19,8 +19,8 @@ _.constructor("Views.EditOrganization", View.Template, {
           input({'class': "name", type: "text", placeholder: "Last Name"}).ref('createMembershipLastName');
           input({'class': "emailAddress", type: "text", placeholder: "Email Address"}).ref('createMembershipEmail');
           select(function() {
-            option("Member");
-            option("Owner");
+            option({value: "member"}, "Member");
+            option({value: "owner"}, "Owner");
           }).ref("createMembershipRole");
           input({type: "submit", value: "Add"}).click('createMembership');
         });
@@ -57,7 +57,7 @@ _.constructor("Views.EditOrganization", View.Template, {
       var organizationId = state.organizationId;
       Server.fetch([
         Organization.where({id: organizationId}),
-        Membership.where({organizationId: organizationId}).joinTo(User)
+        Membership.where({organizationId: organizationId})
       ]).onSuccess(function() {
         this.model(Organization.find(state.organizationId));
       }, this);
@@ -75,8 +75,8 @@ _.constructor("Views.EditOrganization", View.Template, {
           b.td(membership.emailAddress());
           b.td(function() {
             b.select(function() {
-              b.option("Member", {selected: membership.role() === "member"});
-              b.option("Owner", {selected: membership.role() === "owner"});
+              b.option({selected: membership.role() === "member", value: "member"}, "Member");
+              b.option({selected: membership.role() === "owner", value: "owner"}, "Owner");
             });
           });
           b.td("No Pending Invitations");
@@ -94,6 +94,11 @@ _.constructor("Views.EditOrganization", View.Template, {
         emailAddress: this.createMembershipEmail.val(),
         role: this.createMembershipRole.val()
       }).onSuccess(this.hitch('appendMembershipTr'));
+
+      this.createMembershipFirstName.val("");
+      this.createMembershipLastName.val("");
+      this.createMembershipEmail.val("");
+
     }
   }
 });

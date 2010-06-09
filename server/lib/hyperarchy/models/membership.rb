@@ -5,14 +5,36 @@ class Membership < Monarch::Model::Record
   column :role, :string
   column :pending, :boolean, :default => true
 
-  synthetic_column :first_name, :string do
-  end
+  synthetic_column :first_name, :string
+  synthetic_column :last_name, :string
+  synthetic_column :email_address, :string
 
   belongs_to :organization
   belongs_to :user
   belongs_to :invitation
 
-  attr_accessor :email_address, :first_name, :last_name
+  attr_writer :email_address, :first_name, :last_name
+  delegate :email_address, :first_name, :last_name, :to => :user_details_delegate
+
+  def email_address
+    @email_address || user_details_delegate.email_address
+  end
+
+  def first_name
+    @first_name || user_details_delegate.first_name
+  end
+
+  def last_name
+    @last_name || user_details_delegate.last_name
+  end
+
+  def user_details_delegate
+    if user
+      user
+    else
+      invitation
+    end
+  end
 
   def before_create
     if user = User.find(:email_address => email_address)

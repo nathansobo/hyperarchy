@@ -3,6 +3,7 @@ class Invitation < Monarch::Model::Record
   column :sent_to_address, :string
   column :first_name, :string
   column :last_name, :string
+  column :last_name, :string
   column :redeemed, :boolean
   column :inviter_id, :key
   column :invitee_id, :key
@@ -32,5 +33,9 @@ class Invitation < Monarch::Model::Record
       end
     end
     user
+  end
+
+  def email_address
+    sent_to_address
   end
 end

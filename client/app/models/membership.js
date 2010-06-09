@@ -12,5 +12,9 @@ _.constructor("Membership", Model.Record, {
 
     this.belongsTo("organiza  tion");
     this.belongsTo("user");
+  },
+
+  fullName: function() {
+    return this.firstName() + " " + this.lastName();
   }
 });
