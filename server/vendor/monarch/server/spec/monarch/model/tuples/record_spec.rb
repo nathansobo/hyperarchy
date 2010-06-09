@@ -244,20 +244,22 @@ module Monarch
               @record ||= User.find('jan')
             end
 
-            it "calls those assignment methods that actually exist by name and returns a hash of any fields that the update changed" do
+            it "writes given attribute-value pairs using assignment methods, ignoring any attributes without assignment methods" do
               def record.fancy_full_name=(full_name)
                 self.full_name = "Fancy " + full_name
               end
 
               age_before_update = record.age
 
-              dirty_field_values = record.update(:has_hair => false, :fancy_full_name => "Nash Lincoln", :age => age_before_update, :bogus => "crap")
+              record.update(:has_hair => false, :fancy_full_name => "Nash Lincoln", :age => age_before_update, :bogus => "crap").should == record
 
               record.full_name.should == "Fancy Nash Lincoln"
               record.has_hair.should == false
               record.age.should == age_before_update
+            end
 
-              dirty_field_values.should == {:has_hair => false, :full_name => "Fancy Nash Lincoln", :great_name => "Fancy Nash Lincoln The Great"}
+            it "returns false is the record is not valid" do
+              record.update(:age => 2).should be_false
             end
           end
 
@@ -279,20 +281,18 @@ module Monarch
               @record ||= User.find('jan')
             end
 
-            it "writes directly to fields, bypassing any custom writer methods, and returns the fields that were made dirty" do
+            it "writes directly to fields, bypassing any custom writer methods" do
               def record.some_method=(value)
                 raise "Should not be called"
               end
 
               age_before_update = record.age
 
-              dirty_field_values = record.update_fields(:has_hair => false, :full_name => "Nash Lincoln", :age => age_before_update, :some_method => "crap", :bogus => "crap")
+              record.update_fields(:has_hair => false, :full_name => "Nash Lincoln", :age => age_before_update, :some_method => "crap", :bogus => "crap")
 
               record.full_name.should == "Nash Lincoln"
               record.has_hair.should == false
               record.age.should == age_before_update
-
-              dirty_field_values.should == {:has_hair => false, :full_name => "Nash Lincoln", :great_name => "Nash Lincoln The Great"}
             end
           end
 
@@ -311,6 +311,11 @@ module Monarch
                 record.id.should_not be_nil
                 record.should be_persisted
                 inserted.should == record
+              end
+
+              it "returns false if the record is not valid" do
+                record = User.new(:age => 2)
+                record.save.should be_false
               end
             end
 
@@ -353,6 +358,12 @@ module Monarch
                 on_update_changeset.old_state.evaluate(User[:great_name]).should == great_name_before
                 on_update_changeset.new_state.evaluate(User[:full_name]).should == record.full_name
                 on_update_changeset.new_state.evaluate(User[:great_name]).should == record.great_name
+              end
+
+              it "returns false if the record is not valid" do
+                record = User.find("jan")
+                record.age = 2
+                record.save.should be_false
               end
             end
           end

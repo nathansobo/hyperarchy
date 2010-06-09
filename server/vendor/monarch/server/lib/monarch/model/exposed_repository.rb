@@ -101,11 +101,11 @@ module Monarch
       def perform_update(table_name, id, field_values)
         relation = resolve_table_name(table_name)
         record = relation.find(id)
-        updated_field_values = record.update_fields(field_values)
+        record.update_fields(field_values)
 
         if record.valid?
           if relation.find(id)
-            return valid_result(updated_field_values.stringify_keys)
+            return valid_result(record.wire_representation.stringify_keys)
           else
             return invalid_result("Security violation")
           end

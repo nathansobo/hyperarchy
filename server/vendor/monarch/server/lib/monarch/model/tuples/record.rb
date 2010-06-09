@@ -106,9 +106,8 @@ module Monarch
         end
 
         def update(values_by_method_name)
-          result = soft_update(values_by_method_name)
+          soft_update(values_by_method_name)
           save
-          result
         end
 
         def update!(values_by_method_name)
@@ -122,9 +121,7 @@ module Monarch
             field = self.field(column_name)
             field.value = value if field
           end
-          returning(dirty_field_values_wire_representation) do
-            save
-          end
+          save
         end
 
         def destroy
@@ -133,9 +130,9 @@ module Monarch
         end
 
         def save
-          return nil unless valid?
+          return false unless valid?
           return table.insert(self) unless persisted?
-          return Changeset.new(snapshot, snapshot) unless dirty?
+          return self unless dirty?
 
           before_update(dirty_concrete_field_values_by_column_name)
           field_values_for_database = dirty_concrete_field_values_by_column_name
@@ -148,12 +145,13 @@ module Monarch
           table.record_updated(self, changeset)
           after_update(changeset)
 
-          changeset
+          self
         end
 
         def dirty?
           concrete_fields.any? {|field| field.dirty?}
         end
+
         def persisted?
           @persisted
         end
@@ -161,13 +159,6 @@ module Monarch
         def mark_clean
           @persisted = true
           fields.each { |field| field.mark_clean }
-        end
-
-        def dirty_field_values_wire_representation
-          dirty_fields.inject({}) do |field_values, field|
-            field_values[field.column.name] = field.value_wire_representation
-            field_values
-          end
         end
 
         def dirty_concrete_field_values_by_column_name
@@ -292,7 +283,7 @@ module Monarch
             writer_method_name = "#{method_name}="
             self.send(writer_method_name, value) if self.respond_to?(writer_method_name)
           end
-          dirty_field_values_wire_representation
+          self
         end
 
         def initialize_relations

@@ -155,7 +155,7 @@ module Monarch
 
         context "when called with a single update operation" do
           context "when the given field values are valid" do
-            it "finds the record with the given 'id' in the given 'relation', then updates it with the given field values and returns all changed field values as its result" do
+            it "finds the record with the given 'id' in the given 'relation', then updates it with the given field values and returns its wire representation" do
               record = User.find('jan')
               new_signed_up_at = record.signed_up_at - 1.hours
               field_values = {
@@ -173,11 +173,7 @@ module Monarch
 
               successful.should be_true
               response_data.should == {
-                'primary' => [{
-                  'full_name' => "Jan Christian Nelson The Great",
-                  'signed_up_at' => new_signed_up_at.to_millis,
-                  'great_name' => "Jan Christian Nelson The Great The Great"
-                }],
+                'primary' => [record.wire_representation.stringify_keys],
                 'secondary' => []
               }
             end
@@ -241,7 +237,8 @@ module Monarch
 
               jake = User.find(User[:full_name].eq("Jake Frautschi"))
               jake.should_not be_nil
-              User.find("jan").age.should == 101
+              jan = User.find("jan")
+              jan.age.should == 101
               User.find('wil').should be_nil
 
               successful.should be_true
@@ -256,7 +253,7 @@ module Monarch
                     'great_name' => "Jake Frautschi The Great",
                     'human' => true
                   },
-                  { 'age' => 101 },
+                  jan.wire_representation.stringify_keys,
                   nil
                 ],
                 'secondary' => []
