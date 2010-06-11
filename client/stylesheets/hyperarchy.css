@@ -20,6 +20,10 @@ input.text, textarea.text {
   display: block;
 }
 
+.inlineBlock {
+  display: inline-block;
+}
+
 button {
   padding: 5px;
 }
@@ -200,9 +204,22 @@ table.members {
   width: 100%;
 }
 
+table.members td, table.members th {
+  border-bottom: 1px #999999 dashed;
+}
+
+table.members .role {
+  width: 115px;
+}
+
+table.members .remove {
+  width: 80px;
+}
+
 table.members th {
   font-weight: bold;
 }
+
 
 /* app page */
 
@@ -344,8 +361,16 @@ div#createCandidateForm button {
 }
 
 .loading {
+  background-repeat: no-repeat;
   background-image: url(/images/loading_arrows_light.gif);
   background-position: 2px 2px;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
+.inactive {
+  background: none;
 }
 
 div.unrankCandidate:hover {

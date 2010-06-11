@@ -61,6 +61,12 @@ _.constructor("Monarch.View.CloseTag", {
     });
   },
 
+  hide: function() {
+    this.onBuild(function(element) {
+      element.hide();
+    });
+  },
+
   onBuild: function(callback, context) {
     if (!this.onBuildNode) this.onBuildNode = new Monarch.SubscriptionNode();
     return this.onBuildNode.subscribe(callback, context);

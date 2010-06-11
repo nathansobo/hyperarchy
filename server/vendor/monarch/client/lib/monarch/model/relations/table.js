@@ -70,7 +70,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   },
 
   fetch: function($super, id) {
-    if (arguments.length === 0){
+    if (arguments.length === 1){
       return $super();
     } else {
       return this.where({id: id}).fetch();

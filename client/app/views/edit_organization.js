@@ -69,22 +69,45 @@ _.constructor("Views.EditOrganization", View.Template, {
     },
 
     appendMembershipTr: function(membership) {
-      this.membersTbody.appendView(function(b) {
+      var membershipTr = Monarch.View.build(function(b) {
         b.tr(function() {
           b.td(membership.fullName());
           b.td(membership.emailAddress());
-          b.td(function() {
-            b.select(function() {
-              b.option({selected: membership.role() === "member", value: "member"}, "Member");
-              b.option({selected: membership.role() === "owner", value: "owner"}, "Owner");
-            });
+          b.td({'class': "role"}, function() {
+            if (membership.user() !== Application.currentUser()) {
+              b.select(function() {
+                b.option({selected: membership.role() === "member", value: "member"}, "Member");
+                b.option({selected: membership.role() === "owner", value: "owner"}, "Owner");
+              }).change(function(view) {
+                view.roleChangePending.removeClass('inactive');
+                membership.update({role: this.val()}).onSuccess(function() {
+                  view.roleChangePending.addClass('inactive');
+                });
+              });
+              b.div({'class': "loading inactive"}).ref('roleChangePending');
+            } else {
+              b.text(_.capitalize(membership.role()));
+            }
           });
-          b.td("No Pending Invitations");
-          b.td(function() {
-            b.a({href: "#"}, "Remove");
+          b.td(membership.pending() ? "Pending" : "Accepted");
+          b.td({'class': "remove"}, function() {
+            if (membership.user() !== Application.currentUser()) {
+              b.a({href: "#"}, "Remove").click(function(view) {
+                view.destroyPending.removeClass('inactive');
+                console.debug(this);
+                console.debug(this.parent('table'));
+                membership.destroy().onSuccess(function() {
+                  membershipTr.remove();
+                }, this);
+                return false;
+              });
+              b.div({'class': "loading inactive"}).ref('destroyPending');
+            }
           });
         })
       });
+
+      this.membersTbody.append(membershipTr);
     },
 
     createMembership: function() {
@@ -98,7 +121,6 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.createMembershipFirstName.val("");
       this.createMembershipLastName.val("");
       this.createMembershipEmail.val("");
-
     }
   }
 });
