@@ -2,7 +2,7 @@ _.constructor("Views.Layout", View.Template, {
   content: function() { with(this.builder) {
 
     div({id: "application"}, function() {
-      div({id: "notification", style: "display: none"}, "Thank you. Your invitations have been sent.").ref("notification");
+      div({id: "notification", style: "display: none"}).ref("notification");
 
       div({'class': "container12"}, function() {
         div({id: "header", 'class': "grid12"}, function() {

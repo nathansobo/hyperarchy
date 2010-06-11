@@ -1,6 +1,8 @@
 module Views
   class Home < Layout
     def body_content
+      div :id => "notification", :style => "display: none"
+
       div :class => "container12" do
         div :class => "grid10 prefix1 suffix1" do
           div :id => "bigLogo"
@@ -32,11 +34,23 @@ module Views
     end
 
     def head_content
+      javascript_include "underscore.js"
       javascript_include "jquery-1.4.2.js"
       javascript_include "jquery.ba-bbq.js"
 
       javascript %[
         $(function() {
+          var notification = #{flash[:notification].to_json};
+          if (notification) {
+            var box = $("#notification");
+            box.html(notification);
+            box.slideDown();
+            _.delay(function() {
+              box.slideUp('fast');
+              box.empty();
+            }, 4000);
+          }
+
           $(window).bind("hashchange", function(e) {
             if (e.fragment == "") {
               $("#description").show();

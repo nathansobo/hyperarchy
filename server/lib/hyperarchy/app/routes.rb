@@ -42,6 +42,17 @@ module Hyperarchy
       redirect "/app#view=organization"
     end
 
+    post "/interested" do
+      Mailer.send(
+        :to => ["admin@hyperarchy.com", "nathansobo+hyperarchy@gmail.com"],
+        :from => "admin@hyperarchy.com",
+        :subject => "#{params[:email_address]} is interested in Hyperarchy",
+        :body => "Their comments: #{params[:comments]}"
+      )
+      flash[:notification] = "Thanks. We'll contact you soon."
+      redirect "/"
+    end
+
     post "/invite" do
       params[:email_addresses].from_json.each do |email_address|
         Invitation.create!(:inviter => current_user, :sent_to_address => email_address)

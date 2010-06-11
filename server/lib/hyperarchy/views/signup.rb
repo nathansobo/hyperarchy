@@ -59,7 +59,7 @@ module Views
       when flash[:invalid_invitation_code]
         %{
           Sorry. That invitation code is not valid. Please ensure you copied the entire url from the email.
-          Or you can leave your email address and we will contact you as soon as possible.
+          Or you can leave your email address and we will contact you as soon as possible. We won't use your address for any other reason.
         }
       when flash[:already_redeemed]
         %{
@@ -68,7 +68,7 @@ module Views
         }
       else
         %{
-          Hyperarchy is currently in a private testing phase.
+          Thanks for your interest. Hyperarchy is currently in a private testing phase.
           Please leave us your email address, and we'll send you an invitation as soon as possible.
         }
       end

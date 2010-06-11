@@ -67,11 +67,11 @@ th, td {
   background: -moz-linear-gradient(top, #fff3c7, #fbe9a9);
   border-bottom: 1px solid #8e8e8e;
   margin-bottom: 5px;
+  font-size: 14px;
 }
 
 /* home page */
 body.home {
-  margin-top: 100px;
   font-size: 22px;
 }
 
@@ -80,6 +80,7 @@ body.home {
   background-repeat: no-repeat;
   width: 780px;
   height: 100px;
+  margin-top: 100px;
   margin-bottom: 20px;
 }
 
@@ -143,7 +144,6 @@ body.home #loginForm input[type="submit"] {
 /* signup page */
 
 body.signup {
-  margin-top: 100px;
   font-size: 22px;
 }
 
