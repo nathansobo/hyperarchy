@@ -15,10 +15,11 @@ module Hyperarchy
     register Monarch
     helpers Hyperarchy::Helpers
 
+    Origin.connection = Sequel.mysql("hyperarchy_#{RACK_ENV}", :user => 'root', :password => 'password', :encoding => 'utf8')
+    
     configure(:test) do
       Mailer.use_fake
       Mailer.base_url = "hyperarchy.com"
-      Origin.connection = Sequel.mysql('hyperarchy_test', :user => 'root', :password => 'password')
       Monarch::Model::convert_strings_to_keys = true
     end
 
@@ -32,11 +33,8 @@ module Hyperarchy
         }
       }
 
-      Origin.connection = Sequel.mysql('hyperarchy_development', :user => 'root', :password => 'password')
-
       register Sinatra::Reloader
       dir = File.dirname(__FILE__)
-
       also_reload "#{dir}/../*.rb"
       also_reload "#{dir}/../models/*.rb"
       also_reload "#{dir}/../views/*.rb"

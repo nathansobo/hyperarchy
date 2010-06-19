@@ -2,17 +2,12 @@ dir = File.expand_path(File.dirname(__FILE__))
 
 ENV['RACK_ENV'] = "development" unless ENV.has_key?('RACK_ENV')
 RACK_ENV = ENV['RACK_ENV']
-
-ROOT = File.expand_path("#{dir}/../..")
-SERVER_ROOT = File.expand_path("#{ROOT}/server")
-CLIENT_ROOT = File.expand_path("#{ROOT}/client")
-$: << "#{SERVER_ROOT}/vendor/monarch/server/lib/"
-
+require "#{dir}/paths"
 require "rubygems"
 require "bundler"
 ENV['BUNDLE_GEMFILE'] ||= "#{dir}/../../Gemfile"
 
-Bundler.require(:default, RACK_ENV.to_sym)
+Bundler::require(:default, RACK_ENV.to_sym)
 require "monarch"
 require "#{dir}/warden/strategies/bcrypt_strategy"
 require "#{dir}/hyperarchy/mailer"

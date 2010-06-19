@@ -1,6 +1,0 @@
-#!/usr/bin/env ruby
-require "pathname"
-dir = Pathname.new(File.expand_path(File.dirname(__FILE__))).realpath
-
-puts "Starting nginx"
-exec "sudo /opt/local/sbin/nginx -c #{dir}/../../config/nginx.conf 2>&1"

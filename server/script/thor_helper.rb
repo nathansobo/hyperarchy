@@ -1,3 +1,7 @@
 dir = File.dirname(__FILE__)
-ENV['RACK_ENV'] = "script"
-require "#{dir}/../lib/hyperarchy"
+require "rubygems"
+require "thor"
+require "bundler"
+ENV['BUNDLE_GEMFILE'] ||= "#{dir}/../../Gemfile"
+Bundler.setup(:default, :development)
+require "sequel"

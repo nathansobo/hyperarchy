@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require "rubygems"
+require "rye"
+Rye::Cmd.add_command(:git)
+
+class Server
+  attr_reader :server
+
+  def initialize
+    @server = Rye::Box.new('hyperarchy.com', :user => 'hyperarchy', :keys => nil)
+  end
+
+  def deploy(ref)
+    server.cd(deploy_dir)
+    server.git :fetch
+    server.git :reset, "--hard", ref
+  end
+
+  def deploy_dir
+    "/home/hyperarchy/production"
+  end
+end
+
+Server.new.deploy("production", "HEAD")
