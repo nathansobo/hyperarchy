@@ -30,5 +30,5 @@ end
 
 group :development do
   gem "net-ssh", "2.0.23"
-  gem "grit", "2.0.0"
+  gem "git", "1.2.5"
 end

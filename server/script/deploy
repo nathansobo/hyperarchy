@@ -1,13 +1,12 @@
 #!/usr/bin/env ruby
 dir = File.dirname(__FILE__)
+$: << "#{File.dirname(__FILE__)}/../vendor/net-ssh-shell/lib"
 require "rubygems"
 require "bundler"
 ENV['BUNDLE_GEMFILE'] ||= "#{dir}/../../Gemfile"
 Bundler.setup(:development)
-$: << "#{File.dirname(__FILE__)}/../vendor/net-ssh-shell/lib"
-
 require "net/ssh/shell"
-require "grit"
+require "git"
 
 class Server
   attr_reader :shell, :local_repo
@@ -19,22 +18,20 @@ class Server
 
   def deploy(env, ref)
     cd(deploy_dir(env))
-    new_ref = local_repo.commits(ref).first.id
     old_ref = git "rev-parse", :HEAD
-
+    new_ref = local_repo.revparse(ref)
 
     git :fetch
-
-    p git :diff, new_ref, old_ref, "--", "Gemfile"
-    
-
     git :reset, "--hard", ref
     git :clean, "-df"
-
-
-
-    bundle :install
+    bundle :install if gemfile_changed?(old_ref, new_ref)
     thor "db:migrate", env
+  end
+
+  protected
+
+  def gemfile_changed?(old_ref, new_ref)
+    local_repo.diff(old_ref, new_ref).path('Gemfile').patch != ""
   end
 
   def deploy_dir(env)
@@ -58,6 +55,9 @@ class Server
   commands :cd, :git, :bundle, :thor
 end
 
-dir = File.dirname(__FILE__)
-local_repo = Grit::Repo.new(File.expand_path("#{dir}/../.."))
-Server.new(local_repo).deploy("production", "origin/master")
+env = ARGV[0]
+raise "You must specify an environment (demo or production)" unless env
+ref = ARGV[1] || "origin/master"
+local_repo = Git.open(File.expand_path("#{dir}/../.."))
+
+Server.new(local_repo).deploy(env, ref)
