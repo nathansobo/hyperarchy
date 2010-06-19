@@ -3,6 +3,7 @@
 require "rubygems"
 require "rye"
 Rye::Cmd.add_command(:git)
+Rye::Cmd.add_command(:bundle)
 
 class Server
   attr_reader :server
@@ -11,15 +12,17 @@ class Server
     @server = Rye::Box.new('hyperarchy.com', :user => 'hyperarchy', :keys => nil)
   end
 
-  def deploy(ref)
-    server.cd(deploy_dir)
-    server.git :fetch
-    server.git :reset, "--hard", ref
+  def deploy(env, ref)
+    puts server.cd(deploy_dir(env))
+    puts server.git :fetch
+    puts server.git :reset, "--hard", ref
+    puts server.git :clean, "-df"
+    puts server.bundle :install
   end
 
-  def deploy_dir
-    "/home/hyperarchy/production"
+  def deploy_dir(env)
+    "/home/hyperarchy/#{env}"
   end
 end
 
-Server.new.deploy("production", "HEAD")
+Server.new.deploy("production", "origin/master")
