@@ -1,4 +1,5 @@
 source :gemcutter
+source "http://gems.github.com/"
 
 # monarch
 gem "rack", "1.1.0"
@@ -25,4 +26,9 @@ group :test do
   gem "rack-test", "0.5.3", :require => "rack/test"
   gem "machinist", "1.0.6", :require => ["machinist", "machinist/blueprints", "sham"]
   gem "faker", "0.3.1"    
+end
+
+group :development do
+  gem "net-ssh", "2.0.23"
+  gem "grit", "2.0.0"
 end

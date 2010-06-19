@@ -1,28 +1,63 @@
 #!/usr/bin/env ruby
-
+dir = File.dirname(__FILE__)
 require "rubygems"
-require "rye"
-Rye::Cmd.add_command(:git)
-Rye::Cmd.add_command(:bundle)
+require "bundler"
+ENV['BUNDLE_GEMFILE'] ||= "#{dir}/../../Gemfile"
+Bundler.setup(:development)
+$: << "#{File.dirname(__FILE__)}/../vendor/net-ssh-shell/lib"
+
+require "net/ssh/shell"
+require "grit"
 
 class Server
-  attr_reader :server
+  attr_reader :shell, :local_repo
 
-  def initialize
-    @server = Rye::Box.new('hyperarchy.com', :user => 'hyperarchy', :keys => nil)
+  def initialize(local_repo)
+    @local_repo = local_repo
+    @shell = Net::SSH.start("hyperarchy.com", "hyperarchy").shell
   end
 
   def deploy(env, ref)
-    puts server.cd(deploy_dir(env))
-    puts server.git :fetch
-    puts server.git :reset, "--hard", ref
-    puts server.git :clean, "-df"
-    puts server.bundle :install
+    cd(deploy_dir(env))
+    new_ref = local_repo.commits(ref).first.id
+    old_ref = git "rev-parse", :HEAD
+
+
+    git :fetch
+
+    p git :diff, new_ref, old_ref, "--", "Gemfile"
+    
+
+    git :reset, "--hard", ref
+    git :clean, "-df"
+
+
+
+    bundle :install
+    thor "db:migrate", env
   end
 
   def deploy_dir(env)
     "/home/hyperarchy/#{env}"
   end
+
+  def execute!(*args)
+    command = args.join(" ")
+    puts command
+    shell.execute!(command)
+  end
+
+  def self.commands(*commands)
+    commands.each do |command|
+      define_method(command) do |*args|
+        execute!(command, *args)
+      end
+    end
+  end
+
+  commands :cd, :git, :bundle, :thor
 end
 
-Server.new.deploy("production", "origin/master")
+dir = File.dirname(__FILE__)
+local_repo = Grit::Repo.new(File.expand_path("#{dir}/../.."))
+Server.new(local_repo).deploy("production", "origin/master")
