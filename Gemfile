@@ -1,5 +1,4 @@
 source :gemcutter
-source "http://gems.github.com/"
 
 # monarch
 gem "rack", "1.1.0"
@@ -31,4 +30,9 @@ end
 group :development do
   gem "net-ssh", "2.0.23"
   gem "git", "1.2.5"
+end
+
+group :thor do
+  gem "daemons", "1.0.10"
+  gem "sequel", "3.12.0"
 end

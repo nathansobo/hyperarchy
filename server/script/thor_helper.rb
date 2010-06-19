@@ -3,5 +3,5 @@ require "rubygems"
 require "thor"
 require "bundler"
 ENV['BUNDLE_GEMFILE'] ||= "#{dir}/../../Gemfile"
-Bundler.setup(:default, :development)
+Bundler.setup(:thor)
 require "sequel"
