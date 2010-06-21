@@ -33,4 +33,5 @@ group :thor do
   gem "git", "1.2.5"
   gem "daemons", "1.0.10"
   gem "sequel", "3.12.0"
+  gem "mysql", "2.8.1"
 end
