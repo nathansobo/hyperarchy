@@ -1,12 +1,12 @@
 require File.expand_path("#{File.dirname(__FILE__)}/thor_helper")
 
 class Server < Thor
-  desc "start [environment=development] [port=9000]", "starts the app server for the specified environment in the background"
-  def start(env="development", port=9000)
+  desc "start [environment=development] [port]", "starts the app server for the specified environment in the background"
+  def start(env="development", port=nil)
     require "daemons"
     options = daemon_options(:start)
     Dir.mkdir(options[:dir]) unless File.exists?(options[:dir])
-    Daemons.run_proc("ce3_thin_server", options) do
+    Daemons.run_proc("hyperarchy_#{env}", options) do
       require_and_run(env, port)
     end
   end
@@ -14,11 +14,11 @@ class Server < Thor
   desc "stop [environment=development]", "stops the app server for the specified environment"
   def stop(env="development")
     require "daemons"
-    Daemons.run_proc("ce3_thin_server", daemon_options(:stop)) {}
+    Daemons.run_proc("hyperarchy_#{env}", daemon_options(:stop)) {}
   end
 
-  desc "foreground [environment=development] [port=9000]", "runs the app server in the foreground"
-  def foreground(env="development", port=9000)
+  desc "foreground [environment=development] [port]", "runs the app server in the foreground"
+  def foreground(env="development", port=nil)
     require_and_run(env, port)
   end
 
@@ -40,7 +40,9 @@ class Server < Thor
   def require_and_run(env, port)
     ENV['RACK_ENV'] = env
     require "#{dir}/../lib/hyperarchy"
-    Hyperarchy::App.run! :host => 'localhost', :port => port
+    options = { :host => 'localhost' }
+    options[:port] = port if port
+    Hyperarchy::App.run!(options)
   end
 
   def dir

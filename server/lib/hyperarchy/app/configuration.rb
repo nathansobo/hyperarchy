@@ -24,6 +24,7 @@ module Hyperarchy
     end
 
     configure(:development) do
+      set :port, 9000
       Mailer.default_options = {
         :via => :smtp,
         :via_options => {
@@ -38,6 +39,14 @@ module Hyperarchy
       also_reload "#{dir}/../*.rb"
       also_reload "#{dir}/../models/*.rb"
       also_reload "#{dir}/../views/*.rb"
+    end
+
+    configure(:demo) do
+      set :port, 3001
+    end
+
+    configure(:production) do
+      set :port, 3000
     end
 
     Warden::Manager.after_set_user do |user, auth, options|

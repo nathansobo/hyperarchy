@@ -25,7 +25,9 @@ class Server
     git :reset, "--hard", ref
     git :clean, "-df"
     bundle :install if gemfile_changed?(old_ref, new_ref)
+    sudo :god, :stop, "#{hyperarchy}_#{env}"
     thor "db:migrate", env
+    sudo :god, :start, "#{hyperarchy}_#{env}"
   end
 
   protected
