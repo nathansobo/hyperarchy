@@ -4,6 +4,7 @@ source :gemcutter
 gem "rack", "1.1.0"
 gem "sinatra", "1.0"
 gem "sequel", "3.12.0"
+gem "mysql", "2.8.1"
 gem "activesupport", "3.0.0.beta"
 gem "json", "1.2.0"
 gem "guid", "0.1.1"
@@ -27,12 +28,9 @@ group :test do
   gem "faker", "0.3.1"    
 end
 
-group :development do
+group :thor do
   gem "net-ssh", "2.0.23"
   gem "git", "1.2.5"
-end
-
-group :thor do
   gem "daemons", "1.0.10"
   gem "sequel", "3.12.0"
 end

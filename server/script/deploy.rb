@@ -1,22 +1,13 @@
-#!/usr/bin/env ruby
-dir = File.dirname(__FILE__)
-$: << "#{File.dirname(__FILE__)}/../vendor/net-ssh-shell/lib"
-require "rubygems"
-require "bundler"
-ENV['BUNDLE_GEMFILE'] ||= "#{dir}/../../Gemfile"
-Bundler.setup(:development)
+$: << "#{ROOT}/server/vendor/net-ssh-shell/lib"
 require "net/ssh/shell"
 require "git"
 
-class Server
+class Deployment
   attr_reader :shell, :local_repo
 
-  def initialize(local_repo)
-    @local_repo = local_repo
-    @shell = Net::SSH.start("hyperarchy.com", "hyperarchy").shell
-  end
-
   def deploy(env, ref)
+    @local_repo = Git.open(ROOT)
+
     cd(deploy_dir(env))
     old_ref = git "rev-parse", :HEAD
     new_ref = local_repo.revparse(ref)
@@ -25,12 +16,20 @@ class Server
     git :reset, "--hard", ref
     git :clean, "-df"
     bundle :install if gemfile_changed?(old_ref, new_ref)
-    sudo :god, :stop, "#{hyperarchy}_#{env}"
+    god :stop, "hyperarchy_#{env}"
     thor "db:migrate", env
-    sudo :god, :start, "#{hyperarchy}_#{env}"
+    god :start, "hyperarchy_#{env}"
+  end
+
+  def global_config
+    exec("rsync -ave ssh #{ROOT}/global_config hyperarchy@hyperarchy.com:")
   end
 
   protected
+
+  def shell
+    @shell ||= Net::SSH.start("hyperarchy.com", "hyperarchy").shell
+  end
 
   def gemfile_changed?(old_ref, new_ref)
     local_repo.diff(old_ref, new_ref).path('Gemfile').patch != ""
@@ -54,12 +53,6 @@ class Server
     end
   end
 
-  commands :cd, :git, :bundle, :thor
+  commands :cd, :git, :bundle, :thor, :god
 end
 
-env = ARGV[0]
-raise "You must specify an environment (demo or production)" unless env
-ref = ARGV[1] || "origin/master"
-local_repo = Git.open(File.expand_path("#{dir}/../.."))
-
-Server.new(local_repo).deploy(env, ref)
