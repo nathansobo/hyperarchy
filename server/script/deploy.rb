@@ -8,7 +8,7 @@ class Deployment
   def deploy(env, ref)
     @local_repo = Git.open(ROOT)
 
-    cd(deploy_dir(env))
+    cd deploy_dir(env)
     old_ref = git "rev-parse", :HEAD
     new_ref = local_repo.revparse(ref)
 
@@ -21,8 +21,14 @@ class Deployment
     god :start, "hyperarchy_#{env}"
   end
 
-  def global_config
+  def deploy_global_config
     exec("rsync -ave ssh #{ROOT}/global_config hyperarchy@hyperarchy.com:")
+
+    god :load, "/home/hyperarchy/global_config/*.god" 
+
+    cd "/home/hyperarchy/global_config"
+
+
   end
 
   protected

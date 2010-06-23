@@ -9,10 +9,10 @@ class Deploy < Thor
     deploy(:demo, ref)
   end
 
-  desc "global_config", "rsyncs nginx and god config files to the server and reloads them"
-  def global_config
+  desc "global", "rsyncs nginx and god config files to the server and reloads them"
+  def global
     require "#{File.dirname(__FILE__)}/deploy"
-    Deployment.new.sync_global_config
+    Deployment.new.deploy_global_config
   end
 
   private
