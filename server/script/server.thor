@@ -5,7 +5,7 @@ class Server < Thor
   def start(env="development", port=nil)
     require "daemons"
     options = daemon_options(:start)
-    Dir.mkdir(options[:dir]) unless File.directory?(options[:dir])
+    Dir.mkdir(options[:dir]) unless File.exist?(options[:dir]) || File.symlink?(options[:dir])
     Daemons.run_proc("hyperarchy_#{env}", options) do
       require_and_run(env, port)
     end
