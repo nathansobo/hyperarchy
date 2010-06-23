@@ -5,8 +5,8 @@ ROOT = File.expand_path("#{dir}/..")
   God.watch do |w|
     w.name = "hyperarchy_#{env}"
     w.dir = ROOT
-    w.start = "thor server:start #{env}"
-    w.stop = "thor server:stop #{env}"
+    w.start = "cd /home/hyperarchy/#{env} && thor server:start #{env}"
+    w.stop = "cd /home/hyperarchy/#{env} && thor server:stop #{env}"
     w.grace = 10.seconds
     w.pid_file = "#{ROOT}/log/hyperarchy_#{env}.pid"
     w.behavior(:clean_pid_file)

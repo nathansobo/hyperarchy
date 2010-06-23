@@ -34,6 +34,7 @@ module Hyperarchy
         }
       }
 
+
       register Sinatra::Reloader
       dir = File.dirname(__FILE__)
       also_reload "#{dir}/../*.rb"
@@ -47,6 +48,18 @@ module Hyperarchy
 
     configure(:production) do
       set :port, 3000
+
+      Mailer.default_options = {
+        :via => :smtp,
+        :via_options => {
+          :address => "smtp.gmail.com",
+          :port => 587,
+          :user_name => "admin@hyperarchy.com",
+          :password => "thepresent",
+          :authentication => :plain,
+          :domain => "hyperarchy.com"
+        }
+      }
     end
 
     Warden::Manager.after_set_user do |user, auth, options|
