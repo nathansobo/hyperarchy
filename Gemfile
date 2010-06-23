@@ -4,7 +4,6 @@ source :gemcutter
 gem "rack", "1.1.0"
 gem "sinatra", "1.0"
 gem "sequel", "3.12.0"
-gem "mysql", "2.8.1"
 gem "activesupport", "3.0.0.beta"
 gem "json", "1.2.0"
 gem "guid", "0.1.1"

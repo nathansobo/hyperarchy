@@ -1,5 +1,5 @@
 dir = File.dirname(__FILE__)
-ROOT = File.expand_path("#{dir}/../..")
+ROOT = File.expand_path("#{dir}/..")
 
 %w[demo production].each do |env|
   God.watch do |w|
