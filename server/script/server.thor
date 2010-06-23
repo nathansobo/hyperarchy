@@ -29,7 +29,7 @@ class Server < Thor
       :app_name   => "hyperarchy_server",
       :ARGV       => [start_or_stop.to_s],
       :dir_mode   => :normal,
-      :dir        => "#{dir}/../../log",
+      :dir        => File.expand_path("#{dir}/../../log"),
       :multiple   => false,
       :mode       => :exec,
       :backtrace  => true,
