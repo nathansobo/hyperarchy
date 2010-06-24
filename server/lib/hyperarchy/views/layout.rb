@@ -17,6 +17,7 @@ module Views
         body :class => self.class.basename.underscore do
           body_content
         end
+        mixpanel_javascript
       end
     end
 
@@ -28,6 +29,14 @@ module Views
 
     def store_in_repository(dataset)
       %{Repository.update(#{build_relational_dataset(dataset).to_json});}
+    end
+
+    def mixpanel_javascript
+      if RACK_ENV == 'production'
+        javascript %[var mp_protocol = (('https:' == document.location.protocol) ? 'https://' : 'http://'); document.write(unescape('%3Cscript src="' + mp_protocol + 'api.mixpanel.com/site_media/js/api/mixpanel.js" type="text/javascript"%3E%3C/script%3E')); </script> <script type='text/javascript'> try {  var mpmetrics = new MixpanelLib('f75e7802da27692104957ff1af6c2847'); } catch(err) { null_fn = function () {}; var mpmetrics = {  track: null_fn,  track_funnel: null_fn,  register: null_fn,  register_once: null_fn, register_funnel: null_fn }; }]
+      else
+        javascript %[null_fn = function () {}; var mpmetrics = {  track: null_fn,  track_funnel: null_fn,  register: null_fn,  register_once: null_fn, register_funnel: null_fn };]
+      end
     end
 
     def javascript(text=nil, &block)

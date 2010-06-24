@@ -1,5 +1,5 @@
 dir = File.dirname(__FILE__)
-ROOT = "#{dir}/../.."
+ROOT = File.expand_path("#{dir}/../..")
 
 require "rubygems"
 require "thor"

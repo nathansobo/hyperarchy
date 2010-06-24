@@ -61,4 +61,3 @@ class Deployment
 
   commands :cd, :git, :bundle, :thor, :sudo
 end
-

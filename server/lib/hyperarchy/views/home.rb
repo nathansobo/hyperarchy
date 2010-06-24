@@ -57,6 +57,8 @@ module Views
               $("#signUpOrLogIn").show();
               $("#loginForm").hide();
               $("#loginForm #errors").hide();
+
+              mpmetrics.track('view home page');
             }
 
             if (e.fragment == "logIn") {
@@ -70,6 +72,8 @@ module Views
               } else {
                 $("#loginForm input[name='password']").focus();
               }
+
+              mpmetrics.track('view login page');
             }
           });
 

@@ -23,7 +23,7 @@ module Views
 
           label "First Name", :for => "first_name"
           input :class => "text", :name => "user[first_name]"
-
+p
           label "Last Name", :for => "last_name"
           input :class => "text", :name => "user[last_name]"
 
@@ -59,7 +59,7 @@ module Views
       when flash[:invalid_invitation_code]
         %{
           Sorry. That invitation code is not valid. Please ensure you copied the entire url from the email.
-          Or you can leave your email address and we will contact you as soon as possible. We won't use your address for any other reason.
+          Or you can leave your email address and we will contact you as soon as possible.
         }
       when flash[:already_redeemed]
         %{
@@ -76,9 +76,18 @@ module Views
 
     def head_content
       javascript_include "jquery-1.4.2.js"
+
       javascript %[
+        var hasInvitation = #{!(invitation.nil?).to_json};
+
         $(function() {
-          $("input[name='user[first_name]']").focus();
+          if (hasInvitation) {
+            $("input[name='user[first_name]']").focus();
+            mpmetrics.track('view signup page');
+          } else {
+            $("input[name='email_address']").focus();
+            mpmetrics.track('view interested page');
+          }
         });
       ]
     end
