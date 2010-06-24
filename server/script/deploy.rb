@@ -23,7 +23,7 @@ class Deployment
   end
 
   def deploy_global_config
-    exec("rsync -ave ssh #{ROOT}/global_config hyperarchy@hyperarchy.com:")
+    system("rsync -ave ssh #{ROOT}/global_config hyperarchy@hyperarchy.com:")
     god :load, "/home/hyperarchy/global_config/hyperarchy.god"
   end
 
