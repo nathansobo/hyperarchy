@@ -17,24 +17,24 @@ class Deployment
     git :clean, "-df"
     bundle :install if gemfile_changed?(old_ref, new_ref)
     god :stop, "hyperarchy_#{env}"
+    sleep 1
     thor "db:migrate", env
     god :start, "hyperarchy_#{env}"
   end
 
   def deploy_global_config
     exec("rsync -ave ssh #{ROOT}/global_config hyperarchy@hyperarchy.com:")
-
-    god :load, "/home/hyperarchy/global_config/*.god" 
-
-    cd "/home/hyperarchy/global_config"
-
-
+    god :load, "/home/hyperarchy/global_config/hyperarchy.god"
   end
 
   protected
 
   def shell
     @shell ||= Net::SSH.start("hyperarchy.com", "hyperarchy").shell
+  end
+
+  def god(*args)
+    sudo "-i", :god, *args
   end
 
   def gemfile_changed?(old_ref, new_ref)
@@ -59,6 +59,6 @@ class Deployment
     end
   end
 
-  commands :cd, :git, :bundle, :thor, :god
+  commands :cd, :git, :bundle, :thor, :sudo
 end
 
