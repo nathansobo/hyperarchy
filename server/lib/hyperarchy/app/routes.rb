@@ -37,9 +37,23 @@ module Hyperarchy
 
     post "/signup" do
       invitation = validate_invitation_code(params[:invitation_code])
-      new_user = invitation.redeem(params[:user])
+      new_user = invitation.redeem(params[:redeem])
       request.env['warden'].set_user(new_user)
       redirect "/app#view=organization"
+    end
+
+    get "/confirm_membership/:membership_id" do |membership_id|
+      membership = Membership.find(membership_id)
+
+      p membership.user_id
+      p current_user.id
+      p membership.user == current_user
+
+      unless membership.user == current_user
+        redirect "/app"
+        return
+      end
+      render_page Views::ConfirmMembership, :membership => membership
     end
 
     post "/interested" do

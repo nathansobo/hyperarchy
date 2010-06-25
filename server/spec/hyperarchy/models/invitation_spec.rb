@@ -7,7 +7,11 @@ module Models
     before do
       @emails = []
       @inviter = User.make
-      @invitation = Invitation.create!(:inviter => inviter, :sent_to_address => "bob@example.com")
+      @invitation = Invitation.create!(:inviter => inviter, :sent_to_address => "bob@example.com", :send_email => send_email)
+    end
+
+    def send_email
+      false
     end
 
     describe "before create" do
@@ -17,20 +21,32 @@ module Models
     end
 
     describe "after create" do
-      it "sends an email to the :sent_to_address" do
-        Mailer.emails.length.should == 1
+      context "when :send_email is true" do
+        def send_email
+          true
+        end
 
-        email = Mailer.emails.first
-        email[:to].should == "bob@example.com"
-        email[:subject].should match(Regexp.new(inviter.full_name))
-        email[:body].should include("hyperarchy.com/signup?invitation_code=#{invitation.guid}")
+        it "sends an email to the :sent_to_address" do
+          Mailer.emails.length.should == 1
+
+          email = Mailer.emails.first
+          email[:to].should == "bob@example.com"
+          email[:subject].should match(Regexp.new(inviter.full_name))
+          email[:body].should include("hyperarchy.com/signup?invitation_code=#{invitation.guid}")
+        end
+      end
+
+      context "when :send_email is false" do
+        it "does not send any email" do
+          Mailer.emails.should be_empty
+        end
       end
     end
 
     describe "#redeem" do
       it "if not already redeemed, creates and returns a user with the given properties, otherwise raises" do
         invitation.should_not be_redeemed
-        user = invitation.redeem(:first_name => "Chevy", :last_name => "Chase", :email_address => "chevy@example.com", :password => "password")
+        user = invitation.redeem(:user => {:first_name => "Chevy", :last_name => "Chase", :email_address => "chevy@example.com", :password => "password"})
         invitation.should be_redeemed
         invitation.invitee.should == user
 

@@ -1,5 +1,6 @@
 module Hyperarchy
   class App < Sinatra::Base
+    use Monarch::Rack::IdentityMapManager unless RACK_ENV == "test"
     use Rack::Session::Cookie
     use Rack::Flash
     use Warden::Manager do |manager|

@@ -14,6 +14,7 @@ class Membership < Monarch::Model::Record
   belongs_to :invitation
 
   attr_writer :email_address, :first_name, :last_name
+  attr_accessor :suppress_invite_email
   delegate :email_address, :first_name, :last_name, :to => :user_details_delegate
 
   def email_address
@@ -51,6 +52,7 @@ class Membership < Monarch::Model::Record
 
   def after_create
     return unless pending?
+    return if suppress_invite_email
     Mailer.send(
       :to => email_address,
       :from => "admin@hyperarchy.com",

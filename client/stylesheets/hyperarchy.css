@@ -8,6 +8,10 @@ input.text, textarea.text {
   margin-bottom: 10px;
 }
 
+.inline {
+  display: inline;
+}
+
 .marginBottom {
   margin-bottom: 10px;
 }
@@ -148,14 +152,18 @@ body.signup {
 }
 
 body.signup #signupForm {
-  margin: 0 auto;
-  width: 350px;
-  display: block;
+  /*margin: 0 auto;*/
+  /*width: 100%;*/
+  /*display: block;*/
 }
 
 body.signup label {
   display: block;
   font-size: 16px;
+}
+
+body.signup label.inline {
+  display: inline;
 }
 
 body.signup #bigLogo {

@@ -36,23 +36,26 @@ module Models
 
     describe "when created with an unknown email address" do
       it "associates the pending membership with an invitation with the given email address and sends them an email with a link to the invitation" do
-        full_name = "New Member"
+        first_name = "New"
+        last_name = "Member"
+
         email_address = "new_member@example.com"
 
-        membership_1 = organization.memberships.create!(:full_name => full_name, :email_address => email_address)
+        membership_1 = organization.memberships.create!(:first_name => first_name, :last_name => last_name, :email_address => email_address)
         membership_1.should be_pending
 
         invitation = membership_1.invitation
         invitation.inviter.should == current_user
-        invitation.full_name.should == full_name
+        invitation.first_name.should == first_name
+        invitation.last_name.should == last_name
         invitation.sent_to_address.should == email_address
         membership_1.user.should be_nil
 
         Mailer.emails.length.should == 1
         invite_email_1 = Mailer.emails.shift
         invite_email_1[:to].should == email_address
-        invite_email_1[:subject].should match(current_user.full_name)
-        invite_email_1[:subject].should match(organization.name)
+        invite_email_1[:subject].should include(current_user.full_name)
+        invite_email_1[:subject].should include(organization.name)
         invite_email_1[:body].should match(/signup\?invitation_code=#{invitation.guid}/)
 
         # Membership to a different organization associtates with the same invitation
@@ -65,8 +68,8 @@ module Models
         Mailer.emails.length.should == 1
         invite_email_2 = Mailer.emails.shift
         invite_email_2[:to].should == email_address
-        invite_email_2[:subject].should match(current_user.full_name)
-        invite_email_2[:subject].should match(organization_2.name)
+        invite_email_2[:subject].should include(current_user.full_name)
+        invite_email_2[:subject].should include(organization_2.name)
         invite_email_2[:body].should match(/signup\?invitation_code=#{invitation.guid}/)
 
         # A third membership just to test redemption below
@@ -74,7 +77,7 @@ module Models
         membership_3 = organization_3.memberships.create!(:email_address => email_address)
 
         # Become a member only of the specified organizations, delete the other memberships
-        user = invitation.redeem(User.plan.merge(:confirm_memberships => [membership_1.id, membership_3.id]))
+        user = invitation.redeem(:user => User.plan, :confirm_memberships => [membership_1.id, membership_3.id])
         membership_1.should_not be_pending
         membership_1.user.should == user
         membership_3.should_not be_pending

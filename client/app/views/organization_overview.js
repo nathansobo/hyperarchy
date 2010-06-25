@@ -28,7 +28,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   viewProperties: {
     defaultView: true,
     viewName: 'organization',
-    beforeFilters: ['ensureAuthenticated'],
 
     navigate: function(state) {
       var organizationId = state.organizationId || Organization.find({name: "Global"}).id(); 

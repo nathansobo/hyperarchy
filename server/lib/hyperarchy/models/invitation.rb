@@ -12,15 +12,31 @@ class Invitation < Monarch::Model::Record
   belongs_to :invitee, :class_name => "User"
   has_many :memberships
 
+  attr_accessor :send_email
+
   def before_create
     self.guid = Guid.new.to_s
+  end
+  
+  def after_create
+    return unless send_email
+    Mailer.send(
+      :to => sent_to_address,
+      :from => "admin@hyperarchy.com",
+      :subject => "#{inviter.full_name} has invited you to join Hyperarchy",
+      :body => invite_email_body
+    )
+  end
+
+  def email_address
+    sent_to_address
   end
 
   def redeem(attributes)
     raise "Already redeemed" if redeemed?
 
-    confirm_memberships = attributes.delete(:confirm_memberships)
-    user = User.create!(attributes)
+    confirm_memberships = attributes[:confirm_memberships].map(&:to_i)
+    user = User.create!(attributes[:user])
     self.invitee = user
     self.redeemed = true
     save
@@ -35,7 +51,8 @@ class Invitation < Monarch::Model::Record
     user
   end
 
-  def email_address
-    sent_to_address
+  protected
+  def invite_email_body
+    %[Visit #{Mailer.base_url}/signup?invitation_code=#{guid} to sign up.]
   end
 end

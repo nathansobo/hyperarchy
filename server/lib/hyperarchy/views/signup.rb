@@ -17,23 +17,37 @@ module Views
     end
 
     def signup_form
-      div :class => "grid10 prefix1 suffix1" do
-        form :id => "signupForm", :action => "/signup", :method => "post" do
+      has_memberships = !invitation.memberships.empty?
+
+      form :id => "signupForm", :action => "/signup", :method => "post" do
+        div :class => has_memberships ? "grid4 prefix1 suffix1" : "grid4 prefix4 suffix4" do
           input :type => "hidden", :name => "invitation_code", :value => invitation.guid
 
           label "First Name", :for => "first_name"
-          input :class => "text", :name => "user[first_name]"
-p
+          input :class => "text", :name => "redeem[user[first_name]]"
+
           label "Last Name", :for => "last_name"
-          input :class => "text", :name => "user[last_name]"
+          input :class => "text", :name => "redeem[user[last_name]]"
 
           label "Email Address", :for => "email_address"
-          input :class => "text", :name => "user[email_address]", :value => invitation.sent_to_address
+          input :class => "text", :name => "redeem[user[email_address]]", :value => invitation.sent_to_address
 
           label "Password", :for => "password"
-          input :class => "text", :name => "user[password]", :type => "password"
+          input :class => "text", :name => "redeem[user[password]]", :type => "password"
 
           input :type => "submit", :value =>"Sign Up"
+        end
+
+        if has_memberships
+          div :class => "grid4 suffix1" do
+            h3 "Accept Invitations From These Organizations:"
+
+            invitation.memberships.each do |membership|
+              organization = membership.organization
+              input :type => "checkbox", :name => "redeem[confirm_memberships][]", :id => "confirm_membership_#{membership.id}", :value => membership.id, :checked => true
+              label organization.name, :class => 'inline', :for => "confirm_membership_#{membership.id}"
+            end
+          end
         end
       end
     end

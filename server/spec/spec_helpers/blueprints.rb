@@ -24,3 +24,8 @@ Organization.blueprint do
   name { Sham.organization_name }
   description { Sham.organization_description }
 end
+
+Membership.blueprint do
+  organization { Organization.make }
+  suppress_invite_email { true }
+end
