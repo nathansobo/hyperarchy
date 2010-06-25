@@ -1,6 +1,8 @@
 require File.expand_path("#{File.dirname(__FILE__)}/thor_helper")
 
 class Server < Thor
+  map "fg" => :foreground
+  
   desc "start [environment=development] [port]", "starts the app server for the specified environment in the background"
   def start(env="development", port=nil)
     require "daemons"

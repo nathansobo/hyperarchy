@@ -3,8 +3,6 @@ _.constructor("Controllers.Application", {
     this.currentUserId = currentUserId;
     this.body = body || $('body');
     this.views = {
-      login: Views.Login.toView(),
-      signup: Views.Signup.toView(),
       addOrganization: Views.AddOrganization.toView(),
       editOrganization: Views.EditOrganization.toView(),
       organizations: Views.OrganizationOverview.toView(),
