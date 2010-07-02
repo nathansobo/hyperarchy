@@ -9,7 +9,7 @@ module Hyperarchy
       redirect redirect "/#logIn" and return unless current_user
       render_page Views::App
     end
-
+ntzzz
     get "/login" do
       render_page Views::Login
     end
@@ -56,7 +56,7 @@ module Hyperarchy
 
       membership = Membership.find(membership_id)
       membership.update(:pending => false) if membership.user == current_user
-      redirect "/app"
+      redirect "/app#view=organization&organizationId=#{membership.organization_id}"
     end
 
     post "/interested" do

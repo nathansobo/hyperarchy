@@ -19,12 +19,14 @@ module Hyperarchy
     Origin.connection = Sequel.mysql("hyperarchy_#{RACK_ENV}", :user => 'root', :password => 'password', :encoding => 'utf8')
     
     configure(:test) do
+      ::LOGGER = Logger.new($stdout)
       Mailer.use_fake
       Mailer.base_url = "hyperarchy.com"
       Monarch::Model::convert_strings_to_keys = true
     end
 
     configure(:development) do
+      ::LOGGER = Logger.new($stdout)
       set :port, 9000
       Mailer.default_options = {
         :via => :smtp,
@@ -42,10 +44,12 @@ module Hyperarchy
     end
 
     configure(:demo) do
+      ::LOGGER = Logger.new($stdout)
       set :port, 3001
     end
 
     configure(:production) do
+      ::LOGGER = Logger.new($stdout)
       set :port, 3000
 
       Mailer.default_options = {

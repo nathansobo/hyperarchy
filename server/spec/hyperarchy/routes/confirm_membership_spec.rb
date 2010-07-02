@@ -19,7 +19,7 @@ describe "GET /confirm_membership/:membership_id", :type => :rack do
       membership.should_not be_pending
 
       last_response.should be_redirect
-      last_response.location.should == "/app"
+      last_response.location.should == "/app#view=organization&organizationId=#{membership.organization_id}"
     end
   end
 

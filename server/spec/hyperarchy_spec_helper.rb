@@ -28,6 +28,13 @@ module Spec::Example::Subject::ExampleMethods
 end
 
 class RackExampleGroup < Spec::Example::ExampleGroup
+  include Warden::Test::Helpers
+
+  after do
+    Warden::test_reset!
+  end
+
+
   def app
     Hyperarchy::App
   end
@@ -43,6 +50,9 @@ class RackExampleGroup < Spec::Example::ExampleGroup
   def current_user
     warden.user
   end
+end
+
+class RackExampleGroup < Spec::Example::ExampleGroup
 end
 
 class Rack::MockResponse

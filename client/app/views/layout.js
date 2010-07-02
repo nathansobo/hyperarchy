@@ -22,12 +22,12 @@ _.constructor("Views.Layout", View.Template, {
 
             ol({id: "organizationSelectList"}, function() {
               li(function() {
-                a({href: "#"}, "Add Organization...")
+                a({href: "#view=addOrganization"}, "Add Organization...")
               }).ref('addOrganizationLi')
             }).ref('organizationSelectList');
           });
         });
-      }).ref('body');;
+      }).ref('body');
     })
   }},
 
@@ -44,8 +44,12 @@ _.constructor("Views.Layout", View.Template, {
 
       memberships.onEach(function(membership) {
         this.addOrganizationLi.before(View.build(function(b) {
+          var organization = membership.organization();
           b.li(function() {
-            b.a({href: "#"}, membership.organization().name());
+            b.a({href: "#"}, organization.name()).click(function(view, e) {
+              $.bbq.pushState({view: "organization", organizationId: organization.id()});
+              e.preventDefault();
+            });
           });
         }));
       }, this);

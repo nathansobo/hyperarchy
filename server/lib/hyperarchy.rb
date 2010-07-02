@@ -9,6 +9,7 @@ ENV['BUNDLE_GEMFILE'] ||= "#{dir}/../../Gemfile"
 
 Bundler::require(:default, RACK_ENV.to_sym)
 require "monarch"
+require "logger"
 require "#{dir}/warden/strategies/bcrypt_strategy"
 require "#{dir}/hyperarchy/mailer"
 require "#{dir}/hyperarchy/helpers"

@@ -274,11 +274,12 @@ table.members th {
   -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
 }
 
-#organizationSelectList li {
+#organizationSelectList a {
   padding: 2px 4px;
+  display: block;
 }
 
-#organizationSelectList li:hover {
+#organizationSelectList a:hover {
   background: #fff3c7;
 }
 
