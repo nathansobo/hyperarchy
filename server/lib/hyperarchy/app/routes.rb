@@ -10,10 +10,19 @@ module Hyperarchy
       render_page Views::App
     end
 
+    get "/login" do
+      render_page Views::Login
+    end
+
     post "/login" do
       warden.logout(:default)
       if warden.authenticate
-        redirect "/app#view=organization"
+
+        if params[:redirected_from]
+          redirect params[:redirected_from]
+        else
+          redirect "/app#view=organization"
+        end
       else
         flash[:errors] = warden.errors.full_messages
         flash[:email_address_errors] = warden.errors[:email_address]
@@ -43,17 +52,11 @@ module Hyperarchy
     end
 
     get "/confirm_membership/:membership_id" do |membership_id|
+      authentication_required
+
       membership = Membership.find(membership_id)
-
-      p membership.user_id
-      p current_user.id
-      p membership.user == current_user
-
-      unless membership.user == current_user
-        redirect "/app"
-        return
-      end
-      render_page Views::ConfirmMembership, :membership => membership
+      membership.update(:pending => false) if membership.user == current_user
+      redirect "/app"
     end
 
     post "/interested" do

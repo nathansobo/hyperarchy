@@ -12,6 +12,12 @@ module Hyperarchy
       template.new(params).to_s(:prettyprint => true, :helpers => self)
     end
 
+    def authentication_required
+      return if current_user
+      redirect "/login?redirected_from=#{request.fullpath}"
+      halt
+    end
+
     def validate_invitation_code(invitation_code)
       invitation = Invitation.find(:guid => invitation_code)
 

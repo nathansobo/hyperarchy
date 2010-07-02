@@ -11,24 +11,10 @@ module Views
         div :id => "description", :class => "grid10 prefix1 suffix1" do
           rawtext description
         end
-        
-        div :class => "grid10 prefix1 suffix1" do
-          form :id => "loginForm", :action => "login", :method => "post" do
-            if flash[:errors]
-              div flash[:errors], :id => "errors"
-            end
-
-            label "Email Address", :for => "email_address"
-            input :name => "email_address", :value => flash[:entered_email_address]
-            label "Password", :for => "password"
-            input :type => "password", :name => "password"
-            input :value => "Log In", :type => "submit"
-          end
-        end
 
         div :id => "signUpOrLogIn", :class => "grid10 prefix1 suffix1" do
           a :id => "signUp", :href => "/signup"
-          a :id => "logIn", :href => "#logIn"
+          a :id => "logIn", :href => "/login"
         end
       end
     end
@@ -36,7 +22,6 @@ module Views
     def head_content
       javascript_include "underscore.js"
       javascript_include "jquery-1.4.2.js"
-      javascript_include "jquery.ba-bbq.js"
 
       javascript %[
         $(function() {
@@ -51,33 +36,7 @@ module Views
             }, 4000);
           }
 
-          $(window).bind("hashchange", function(e) {
-            if (e.fragment == "") {
-              $("#description").show();
-              $("#signUpOrLogIn").show();
-              $("#loginForm").hide();
-              $("#loginForm #errors").hide();
-
-              mpmetrics.track('view home page');
-            }
-
-            if (e.fragment == "logIn") {
-              var errors = #{flash[:errors].to_json};
-              var errorsOnEmailAddress = #{flash[:email_address_errors].to_json};
-              $("#description").hide();
-              $("#signUpOrLogIn").hide();        
-              $("#loginForm").show();
-              if (!errors || errorsOnEmailAddress) {
-                $("#loginForm input[name='email_address']").focus();
-              } else {
-                $("#loginForm input[name='password']").focus();
-              }
-
-              mpmetrics.track('view login page');
-            }
-          });
-
-          $(window).trigger("hashchange");
+          mpmetrics.track('view home page');
         });
       ]
     end

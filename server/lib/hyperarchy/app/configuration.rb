@@ -29,12 +29,10 @@ module Hyperarchy
       Mailer.default_options = {
         :via => :smtp,
         :via_options => {
-          :address => "hyperarchy.com",
-          :host => "localhost",
+          :address => "localhost",
           :port => 2525,
         }
       }
-
 
       register Sinatra::Reloader
       dir = File.dirname(__FILE__)

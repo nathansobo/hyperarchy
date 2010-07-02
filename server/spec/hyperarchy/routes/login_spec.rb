@@ -16,6 +16,16 @@ describe "POST /login", :type => :rack do
         last_response.should be_redirect
         last_response.location.should == "/app#view=organization"
       end
+
+      context "if the redirected_from param is present" do
+        it "redirects to the given param after authenticating instead of /app" do
+          post "/login", :email_address => user.email_address, :password => "spectrum", :redirected_from => "/foo"
+
+          current_user.should == user
+          last_response.should be_redirect
+          last_response.location.should == "/foo"
+        end
+      end
     end
 
     context "if the given password does NOT match that User" do

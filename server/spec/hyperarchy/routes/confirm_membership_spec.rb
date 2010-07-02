@@ -13,9 +13,13 @@ describe "GET /confirm_membership/:membership_id", :type => :rack do
   end
 
   context "when the membership belongs to the logged-in user" do
-    it "renders the confirm/decline membership page" do
+    it "activates the membership and redirects to /app" do
+      membership.should be_pending
       get "/confirm_membership/#{membership.id}"
-      last_response.should be_ok
+      membership.should_not be_pending
+
+      last_response.should be_redirect
+      last_response.location.should == "/app"
     end
   end
 
