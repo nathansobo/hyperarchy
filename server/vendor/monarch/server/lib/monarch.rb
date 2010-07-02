@@ -9,7 +9,6 @@ require "sequel"
 require "sequel/extensions/inflector"
 require "guid"
 require "json"
-require "warden"
 
 require "active_support/ordered_hash"
 require "active_support/core_ext/module/delegation"
@@ -37,23 +36,23 @@ module Monarch
       app.use Rack::AssetService, Rack::AssetService::AssetManager.instance
       app.use Rack::RealTimeHub
 
-      app.get "/repository/fetch" do
+      app.get "#{MONARCH_PATH_PREFIX}/repository/fetch" do
         dataset = exposed_repository.fetch(params[:relations].from_json)
         successful_json_response(nil, dataset)
       end
 
-      app.post "/repository/mutate" do
+      app.post "#{MONARCH_PATH_PREFIX}/repository/mutate" do
         successful, response_data = exposed_repository.mutate(params[:operations].from_json)
         json_response(successful, response_data)
       end
 
-      app.post "/repository/subscribe" do
+      app.post "#{MONARCH_PATH_PREFIX}/repository/subscribe" do
         raise "No real time client" unless current_real_time_client
         successful, response_data = exposed_repository.subscribe(current_real_time_client, params[:relations].from_json)
         json_response(successful, response_data)
       end
 
-      app.post "/repository/unsubscribe" do
+      app.post "#{MONARCH_PATH_PREFIX}/repository/unsubscribe" do
         raise "No real time client" unless current_real_time_client
         successful = exposed_repository.unsubscribe(current_real_time_client, params[:subscription_ids].from_json)
         json_response(successful, "")
@@ -64,6 +63,6 @@ end
 
 Origin = Monarch::Model::RemoteRepository.new
 
-MONARCH_ASSET_PREFIX = "" unless defined?(MONARCH_ASSET_PREFIX)
-Monarch.add_js_location("#{MONARCH_ASSET_PREFIX}/monarch/lib", "#{MONARCH_CLIENT_ROOT}/lib")
-Monarch.add_js_location("#{MONARCH_ASSET_PREFIX}/monarch/vendor", "#{MONARCH_CLIENT_ROOT}/vendor")
+MONARCH_PATH_PREFIX = "" unless defined?(MONARCH_PATH_PREFIX)
+Monarch.add_js_location("#{MONARCH_PATH_PREFIX}/monarch/lib", "#{MONARCH_CLIENT_ROOT}/lib")
+Monarch.add_js_location("#{MONARCH_PATH_PREFIX}/monarch/vendor", "#{MONARCH_CLIENT_ROOT}/vendor")

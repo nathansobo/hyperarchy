@@ -60,7 +60,8 @@ module Monarch
         def insert(record)
           record.before_create if record.respond_to?(:before_create)
           return record if !record.valid?
-          record.id = Origin.insert(self, record.field_values_by_column_name)
+          id = Origin.insert(self, record.field_values_by_column_name)
+          record.id = id unless tuple_class.guid_primary_key?
           on_insert_node.publish(record)
           local_identity_map[record.id] = record if local_identity_map
           record.mark_clean
@@ -100,7 +101,7 @@ module Monarch
         end
 
         def build_record_from_database(field_values)
-          id = Integer(field_values[:id])
+          id = tuple_class.guid_primary_key?? field_values[:id] : Integer(field_values[:id])
 
           if record_from_global_id_map = global_identity_map[id]
             record_from_global_id_map

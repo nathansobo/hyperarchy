@@ -22,5 +22,10 @@ _.constructor("FakeServer.FakeRequest", {
       successful: false,
       data: data
     });
+  },
+
+  simulateError: function() {
+    this.fakeServer.removeRequest(this);
+    this.future.triggerError();
   }
 });

@@ -5,14 +5,17 @@ module Monarch
       delegate :transaction, :execute_dui, :to => :connection
 
       def insert(table, field_values)
+        LOGGER.debug("insert -- #{table.global_name}, #{field_values.inspect}")
         connection.from(table.global_name).insert(field_values)
       end
 
       def update(table, id, field_values)
+        LOGGER.debug("update -- #{table.global_name}, #{id}, #{field_values.inspect}")
         connection.from(table.global_name).filter(:id => id).update(field_values)
       end
 
       def destroy(table, id)
+        LOGGER.debug("destroy -- #{table.global_name}, #{id}")
         connection.from(table.global_name).filter(:id => id).delete
       end
 

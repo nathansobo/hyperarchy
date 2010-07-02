@@ -110,13 +110,21 @@ end
 
 class TrueClass
   def to_sql
-    1
+    "1"
+  end
+
+  def sql_expression(state)
+    self
   end
 end
 
 class FalseClass
   def to_sql
-    0
+    "0"
+  end
+
+  def sql_expression(state)
+    self
   end
 end
 

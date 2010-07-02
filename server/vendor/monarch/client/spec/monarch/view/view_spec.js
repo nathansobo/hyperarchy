@@ -127,6 +127,24 @@ Screw.Unit(function(c) { with(c) {
           model.localUpdate({foo: "old model foo new value"});
           expect(view.foo.val()).to(eq, 'new foo');
         });
+
+        it("when a remote field is updated, only updates the form field if the local field is not dirty", function() {
+          Server.auto = false;
+          view.model(model);
+          var fooBefore = view.foo.val();
+
+          model.update({foo: "foo prime"});
+          expect(Server.updates.length).to(eq, 1);
+
+          model.update({foo: "foo double prime"});
+          expect(Server.updates.length).to(eq, 2);
+
+          Server.updates[0].simulateSuccess();
+          expect(view.foo.val()).to(eq, fooBefore);
+
+          Server.updates[0].simulateSuccess();
+          expect(view.foo.val()).to(eq, "foo double prime");
+        });
       });
 
       describe("#save()", function() {

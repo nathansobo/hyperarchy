@@ -6,8 +6,10 @@ _.constructor("Monarch.Model.LocalField", Monarch.Model.ConcreteField, {
   initialize: function(fieldset, column) {
     this.fieldset = fieldset;
     this.column = column;
+    this.record = this.fieldset.record;
     this.validationErrors = [];
     this.updateEventsEnabled = true;
+    this.version = this.record.localVersion;
   },
 
   onRemoteUpdate: function(callback, context) {
@@ -40,7 +42,7 @@ _.constructor("Monarch.Model.LocalField", Monarch.Model.ConcreteField, {
   clearValidationErrors: function() {
     var wasInvalid = !this.fieldset.valid();
     this.validationErrors = [];
-    if (this.fieldset.record.onValidNode && wasInvalid && this.fieldset.valid()) this.fieldset.record.onValidNode.publish();
+    if (this.record.onValidNode && wasInvalid && this.fieldset.valid()) this.record.onValidNode.publish();
   },
 
   notModifiedAfter: function(date) {
@@ -69,6 +71,7 @@ _.constructor("Monarch.Model.LocalField", Monarch.Model.ConcreteField, {
     }
 
     if (this.updateEventsEnabled) {
+      this.version = this.record.nextLocalVersion();
       var batchAlreadyInProgress = this.fieldset.batchInProgress;
       if (!batchAlreadyInProgress) this.fieldset.beginBatchUpdate();
       this.fieldset.fieldUpdated(this, newValue, oldValue);

@@ -8,6 +8,7 @@ module Monarch
       end
 
       def call(env)
+        puts "id map"
         Model::Repository.initialize_local_identity_map
         result = app.call(env)
         Model::Repository.clear_local_identity_map

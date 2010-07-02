@@ -22,7 +22,8 @@ _.constructor("Monarch.View.Builder", {
       'img', 'iframe', 'input', 'ins', 'kbd', 'label', 'legend', 'li', 'link', 'map',
       'meta', 'noframes', 'noscript', 'ol', 'optgroup', 'option', 'p', 'param', 'pre',
       'samp', 'script', 'select', 'small', 'span', 'strong', 'style', 'sub', 'sup',
-      'table', 'tbody', 'td', 'textarea', 'th', 'thead', 'title', 'tr', 'tt', 'ul', 'var'
+      'table', 'tbody', 'td', 'textarea', 'th', 'thead', 'title', 'tr', 'tt', 'ul', 'var',
+      'col', 'colgroup', 'section', 'article'
     ],
 
     selfClosingTags: { 'br': 1, 'hr': 1, 'input': 1, 'img': 1 }

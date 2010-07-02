@@ -21,6 +21,10 @@ _.constructor("Monarch.Model.SyntheticField", Monarch.Model.Field, {
     }
   },
 
+  dirty: function() {
+    return this.signal.localValue() !== this.signal.remoteValue();
+  },
+
   // private
 
   subscribeToFieldUpdates: function() {

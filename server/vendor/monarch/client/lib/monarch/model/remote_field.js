@@ -10,13 +10,17 @@ _.constructor("Monarch.Model.RemoteField", Monarch.Model.ConcreteField, {
 
   // private
 
-  valueAssigned: function(newValue, oldValue) {
+  valueAssigned: function(newValue, oldValue, version) {
     this.fieldset.fieldUpdated(this, newValue, oldValue);
     if (this.fieldset.updateEventsEnabled && this.onUpdateNode) this.onUpdateNode.publish(newValue, oldValue)
-    this.localField().updateEventsEnabled = false;
-    this.localField().value(newValue);
-    this.localField().markClean();
-    this.localField().updateEventsEnabled = true;
+
+    var localField = this.localField();
+
+    if (version && localField.version > version) return;
+    localField.updateEventsEnabled = false;
+    localField.value(newValue);
+    localField.markClean();
+    localField.updateEventsEnabled = true;
   }
 });
 

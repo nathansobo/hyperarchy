@@ -8,13 +8,15 @@ _.constructor("Monarch.Model.RemoteFieldset", Monarch.Model.Fieldset, {
     this.batchUpdateInProgress = false;
   },
 
-  update: function(fieldValues) {
+  update: function(fieldValues, version) {
     this.batchedUpdates = {};
 
     _.each(fieldValues, function(fieldValue, columnName) {
       var field = this.field(columnName);
-      if (field) field.value(fieldValue);
+      if (field) field.value(fieldValue, version);
     }, this);
+
+    if (version && this.record.remoteVersion < version) this.record.remoteVersion = version;
 
     var changeset = this.batchedUpdates;
     this.batchedUpdates = null;

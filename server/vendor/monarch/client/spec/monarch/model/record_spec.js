@@ -405,6 +405,14 @@ Screw.Unit(function(c) { with(c) {
 
         expect(updateCallback).to(haveBeenCalled, once);
       });
+
+      it("can become dirty if it does not match its remote counterpart", function() {
+        var record = Blog.fixture('recipes');
+        record.name('Farming');
+        expect(record.field('funProfitName').dirty()).to(beTrue);
+        record.save();
+        expect(record.field('funProfitName').dirty()).to(beFalse);
+      });
     });
 
     describe("#fetch", function() {

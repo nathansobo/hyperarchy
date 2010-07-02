@@ -6,6 +6,7 @@ _.constructor("Monarch.Http.AjaxFuture", {
     this.beforeEventsNode = new Monarch.SubscriptionNode();
     this.afterEventsNode = new Monarch.SubscriptionNode();
     this.onFailureNode = new Monarch.SubscriptionNode();
+    this.onErrorNode = new Monarch.SubscriptionNode();
     this.onCompleteNode = new Monarch.SubscriptionNode();
     this.subscriptionNodes = [
       this.onSuccessNode, this.beforeEventsNode, this.afterEventsNode, this.onFailureNode, this.onCompleteNode
@@ -58,10 +59,17 @@ _.constructor("Monarch.Http.AjaxFuture", {
   
   triggerFailure: function(data) {
     this.triggered = true;
-    this.successful = false;
+    this.failure = true;
     this.data = data;
     this.onFailureNode.publish(data);
     this.onCompleteNode.publish(data);
+  },
+
+  triggerError: function(xhr, status, errorThrown) {
+    this.triggered = true;
+    this.error = true;
+    this.data = [xhr, status, errorThrown];
+    this.onErrorNode.publish(xhr, status, errorThrown);
   },
 
   onSuccess: function(callback, context) {
@@ -75,9 +83,18 @@ _.constructor("Monarch.Http.AjaxFuture", {
 
   onFailure: function(callback, context) {
     if (this.triggered) {
-      if (!this.successful) callback.call(context, this.data);
+      if (this.failure) callback.call(context, this.data);
     } else {
       this.onFailureNode.subscribe(callback, context);
+    }
+    return this;
+  },
+
+  onError: function(errorCallback) {
+    if (this.triggered) {
+      if (this.error) errorCallback.apply(null, this.data);
+    } else {
+      this.onErrorNode.subscribe(errorCallback);
     }
     return this;
   },

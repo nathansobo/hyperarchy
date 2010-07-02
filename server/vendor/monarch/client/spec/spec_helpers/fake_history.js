@@ -15,17 +15,24 @@ Screw.Unit(function(c) {
 
 _.constructor("FakeHistory", {
   initialize: function() {
-    this.onChangeNode = new Monarch.SubscriptionNode();
-    this.path = "";
+    this.hashchangeNode = new Monarch.SubscriptionNode();
   },
 
-  onChange: function(callback, context) {
-    this.onChangeNode.subscribe(callback, context);
-    callback.call(context, this.path);
+  hashchange: function(callback) {
+    this.hashchangeNode.subscribe(callback);
+    callback();
   },
 
-  load: function(path) {
-    this.path = path;
-    this.onChangeNode.publish(path);
+  fragment: function(fragment) {
+    if (arguments.length == 1) {
+      var oldFragment = this._fragment;
+      this._fragment = fragment;
+      if (fragment !== oldFragment) this.hashchangeNode.publish();
+    }
+    return this._fragment;
+  },
+
+  setFragment: function(fragment) {
+    this._fragment = fragment;
   }
 });

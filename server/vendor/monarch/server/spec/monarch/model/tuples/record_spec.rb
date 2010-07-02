@@ -66,6 +66,14 @@ module Monarch
             end
           end
 
+          describe ".guid_primary_key" do
+            it "makes the :id column's type a string and causes guids to be generated upon record creation" do
+              GuidRecord[:id].type.should == :string
+              record = GuidRecord.create!
+              record.id.should be_instance_of(String)
+            end
+          end
+
           describe ".has_many" do
             it "defines a Selection via .relates_to_many based on the given name" do
               blog = Blog.find("grain")
@@ -373,8 +381,9 @@ module Monarch
           end
 
           describe "#valid?" do
-            it "calls #before_validate before calling validate" do
+            it "calls #before_validate and #validate_wire_representation before calling validate" do
               mock(record).before_validate.ordered
+              mock(record).validate_wire_representation.ordered
               mock(record).validate.ordered
 
               record.title = "Hola!"
@@ -382,7 +391,7 @@ module Monarch
               record.valid?
             end
 
-            describe "when #validate stores validation errors on at least one field" do
+            describe "when #validate or #validate_wire_representation stores validation errors on at least one field" do
               it "returns false" do
                 record.title = "Has Many Through"
                 mock(record).validate do
@@ -396,6 +405,15 @@ module Monarch
               it "returns true" do
                 record.should be_valid
               end
+            end
+          end
+
+          describe "#validate_wire_representation" do
+            it "stores a validation error on each field whose #value_wire_representation is not syntactically valid JSON" do
+              stub(record.field(:title)).value_wire_representation { "" }
+              stub(record.field(:body)).value_wire_representation { "\240" }
+              mock(record).validation_error(:body, anything)
+              record.validate_wire_representation
             end
           end
 

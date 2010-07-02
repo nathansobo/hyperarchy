@@ -92,14 +92,16 @@ _.constructor("Monarch.View.Template", {
 
     show: function($super) {
       if (this.beforeShow) this.beforeShow();
-      $super();
+      var result = $super();
       if (this.afterShow) this.afterShow();
+      return result;
     },
 
     hide: function($super) {
       if (this.beforeHide) this.beforeHide();
-      $super();
+      var result = $super();
       if (this.afterHide) this.afterHide();
+      return result;
     },
 
     model: {
@@ -126,7 +128,8 @@ _.constructor("Monarch.View.Template", {
     handleModelFieldUpdate: function(fieldName, changes) {
       var element = this.find("[name='" + fieldName + "']");
       if (!element) return;
-
+      if (this.model().field(fieldName).dirty()) return;
+      
       if (element.attr('type') == "checkbox") {
         this.populateCheckboxField(element, changes.newValue);
       } else {
@@ -207,7 +210,9 @@ _.constructor("Monarch.View.Template", {
       });
     },
 
-    hitch: _.Object.prototype.hitch
+    hitch: _.Object.prototype.hitch,
+    bind: _.Object.prototype.bind,
+    defer: _.Object.prototype.defer
   }
 });
 

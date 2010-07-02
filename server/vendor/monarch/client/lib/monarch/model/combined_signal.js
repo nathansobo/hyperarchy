@@ -45,7 +45,7 @@ _.constructor("Monarch.Model.CombinedSignal", {
     return this.onRemoteUpdateNode.subscribe(callback, context);
   },
 
-  onLocalUpdate: function(callback) {
+  onLocalUpdate: function(callback, context) {
     return this.onLocalUpdateNode.subscribe(callback, context);
   }
 });

@@ -275,6 +275,7 @@ Screw.Unit(function(c) { with(c) {
 
           before(function() {
             record = Blog.fixture('recipes');
+            expect(record.localVersion).to(eq, 0);
             nameBeforeUpdate = record.name();
             funProfitNameBeforeUpdate = record.funProfitName();
             userIdBeforeUpdate = record.userId();
@@ -416,6 +417,70 @@ Screw.Unit(function(c) { with(c) {
               expect(tableRemoteUpdateCallback).toNot(haveBeenCalled);
               expect(recordRemoteUpdateCallback).toNot(haveBeenCalled);
               expect(record.onRemoteUpdate).toNot(haveBeenCalled);
+            });
+
+            context("when the record is changed again while a save is being processed by the server", function() {
+              it("does not mark the record clean again or stomp over the new changes", function() {
+                expect(record.remoteVersion).to(eq, 0);
+                expect(record.pendingVersion).to(eq, 0);
+                expect(record.localVersion).to(eq, 0);
+
+                record.name("Bad Bad Children");
+                record.userId("funda");
+
+                expect(record.remoteVersion).to(eq, 0);
+                expect(record.pendingVersion).to(eq, 0);
+                expect(record.localVersion).to(eq, 1);
+
+                server.save(record);
+
+                expect(record.remoteVersion).to(eq, 0);
+                expect(record.pendingVersion).to(eq, 1);
+                expect(record.localVersion).to(eq, 1);
+
+                expect(server.posts.length).to(eq, 1);
+                expect(server.lastPost.url).to(eq, "/repository/mutate");
+                expect(server.lastPost.data).to(equal, {
+                  operations: [['update', 'blogs', 'recipes', { name: "Bad Bad Children", user_id: "funda" }]]
+                });
+
+                record.name("Bratty Argentine Children");
+
+                expect(record.remoteVersion).to(eq, 0);
+                expect(record.pendingVersion).to(eq, 1);
+                expect(record.localVersion).to(eq, 2);
+                expect(record.field('name').version).to(eq, 2);
+
+                server.lastPost.simulateSuccess({
+                  primary: [{
+                    name: "Bad Bad Children", // server can change field values too
+                    user_id: 'funda'
+                  }],
+                  secondary: []
+                });
+
+                expect(record.name()).to(eq, "Bratty Argentine Children");
+                expect(record.field('name').version).to(eq, 2);
+                expect(record.userId()).to(eq, "funda");
+                expect(record.field('userId').version).to(eq, 1);
+                expect(record.dirty()).to(beTrue);
+
+                expect(record.remoteVersion).to(eq, 1);
+                expect(record.pendingVersion).to(eq, 1);
+                expect(record.localVersion).to(eq, 2);
+
+                server.save(record);
+
+                expect(record.remoteVersion).to(eq, 1);
+                expect(record.pendingVersion).to(eq, 2);
+                expect(record.localVersion).to(eq, 2);
+
+                expect(server.posts.length).to(eq, 1);
+                expect(server.lastPost.url).to(eq, "/repository/mutate");
+                expect(server.lastPost.data).to(equal, {
+                  operations: [['update', 'blogs', 'recipes', { name: "Bratty Argentine Children" }]]
+                });
+              });
             });
           });
         });
@@ -711,6 +776,18 @@ Screw.Unit(function(c) { with(c) {
         };
         ajaxOptions.success(responseJson);
         expect(future.handleResponse).to(haveBeenCalled, withArgs(responseJson));
+      });
+
+      it("triggers error callbacks if the request terminates with an error", function() {
+        mock(jQuery, 'ajax');
+        var data = { foo: "bar" };
+        var future = server[requestMethod].call(server, "/users", data);
+        var ajaxOptions = jQuery.ajax.mostRecentArgs[0];
+        
+        var errorCallback = mockFunction("errorCallback");
+        future.onError(errorCallback);
+        ajaxOptions.error("mock XMLHttpRequest", "error", "exception");
+        expect(errorCallback).to(haveBeenCalled, withArgs("mock XMLHttpRequest", "error", "exception"));
       });
     });
   });

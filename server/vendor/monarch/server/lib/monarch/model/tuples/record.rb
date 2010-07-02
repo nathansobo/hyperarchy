@@ -15,6 +15,15 @@ module Monarch
             relation
           end
 
+          def guid_primary_key
+            self[:id].type = :string
+            @guid_primary_key = true
+          end
+
+          def guid_primary_key?
+            !@guid_primary_key.nil?
+          end
+
           def column(name, type, options={})
             column = table.define_concrete_column(name, type, options)
             define_field_writer(column)
@@ -203,6 +212,7 @@ module Monarch
         def validate_if_needed
           return if validated?
           before_validate
+          validate_wire_representation
           validate
           mark_validated
         end
@@ -213,6 +223,18 @@ module Monarch
 
         def mark_validated
           fields.each { |field| field.mark_validated }
+        end
+
+        def validate_wire_representation
+          fields.each do |field|
+            begin
+              field.value_wire_representation.to_json
+            rescue JSON::GeneratorError
+              validation_error(field.name, "text contains one or more illegal (non-unicode) characters")
+            rescue => e
+              validation_error(field.name, "unexpected error: #{e}")
+            end
+          end
         end
 
         def validate
@@ -294,7 +316,7 @@ module Monarch
         end
 
         def default_field_values
-          defaults = {}
+          defaults = self.class.guid_primary_key?? { :id => Guid.new.to_s } : {}
           table.concrete_columns.each do |column|
             defaults[column.name] = column.default_value unless column.default_value.nil?
           end

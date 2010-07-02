@@ -11,7 +11,7 @@ module Monarch
         end
 
         def create_column(generator)
-          if name == :id
+          if name == :id && type == :key
             generator.primary_key(name, schema_type)
           else
             generator.column(name, schema_type)
@@ -25,7 +25,7 @@ module Monarch
           when :integer
             value ? value.to_i : nil
           when :float
-            value.to_f
+            value ? value.to_f : nil
           when :datetime
             convert_datetime_value_for_storage(value)
           when :boolean

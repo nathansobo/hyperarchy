@@ -30,8 +30,9 @@ module Monarch
 
         protected
 
+
         def as_sql
-          aliased?? " as #{name}" : ""
+          name ? " as #{name}" : ""
         end
       end
     end

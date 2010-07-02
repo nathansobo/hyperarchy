@@ -132,7 +132,7 @@
   // Get location.hash (or what you'd expect location.hash to be) sans any
   // leading #. Thanks for making this necessary, Firefox!
   function get_fragment( url ) {
-    return url.replace( /^[^#]*#?(.*)$/, '$1' );
+    return url.replace( /^[^#]*(#!?)?(.*)$/, '$2' );
   };
 
   // Get location.search (or what you'd expect location.search to be) sans any

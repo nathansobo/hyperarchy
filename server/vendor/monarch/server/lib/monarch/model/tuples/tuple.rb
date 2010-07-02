@@ -30,7 +30,9 @@ module Monarch
         def initialize(field_values)
           initialize_fields
           field_values.each do |column_name, value|
-            field(column_name).value = value
+            field = field(column_name)
+            raise "No field found for column name #{column_name}" unless field
+            field.value = value
           end
         end
 

@@ -24,13 +24,13 @@ module Monarch
         select users.* from users where users.age is not null
       })
         User.where(:age => 40).project(:id, :full_name).to_sql.should be_like(%{
-        select users.id, users.full_name from users where users.age = 40
+        select users.id as id, users.full_name as full_name from users where users.age = 40
       })
         User.project(:id, :full_name).where(:full_name => "Nathan Sobo").to_sql.should be_like(%{
-        select users.id, users.full_name from users where users.full_name = "Nathan Sobo"
+        select users.id as id, users.full_name as full_name from users where users.full_name = "Nathan Sobo"
       })
         User.project(:id, :full_name).where(:full_name => "Nathan Sobo").project(:id).to_sql.should be_like(%{
-        select users.id from users where users.full_name = "Nathan Sobo"
+        select users.id as id from users where users.full_name = "Nathan Sobo"
       })
 
         User.where(:full_name => "Amory Lovins", :age => 40).to_update_sql(:full_name => "Amorous Loving", :age => 30).should be_like(%{
@@ -173,7 +173,7 @@ module Monarch
         select count(users.id) as count from users where users.age = 34
       })
         User.where(:id => 1).join_through(Blog).project(Blog[:id].count, :id).to_sql.should be_like(%{
-        select count(blogs.id), blogs.id
+        select count(blogs.id), blogs.id as id
         from users, blogs 
         where users.id = 1 and users.id = blogs.user_id
       })
@@ -181,13 +181,13 @@ module Monarch
 
       specify "groupings plus aggregations" do
         User.group_by(:age).project(:age, User[:id].count.as("count")).to_sql.should be_like(%{
-        select users.age, count(users.id) as count from users group by users.age
+        select users.age as age, count(users.id) as count from users group by users.age
       })
       end
 
       specify "selections involving subqueries" do
         Blog.group_by(:user_id).order_by(:title).project(Blog[:title].count.as(:count)).where(:count => 3).to_sql.should be_like(%{
-        select t1.count
+        select t1.count as count
         from (
           select count(blogs.title) as count
           from blogs
@@ -202,7 +202,7 @@ module Monarch
             group_by(Blog[:id]).
             project(Blog[:id].as(:blog_id), BlogPost[:id].count.as(:num_posts))
         blog_post_counts.where(:num_posts => 5).to_sql.should be_like(%{
-        select t1.blog_id, t1.num_posts
+        select t1.blog_id as blog_id, t1.num_posts as num_posts
         from (
           select blogs.id as blog_id, count(blog_posts.id) as num_posts
           from blogs left outer join blog_posts on blogs.id = blog_posts.blog_id
@@ -220,7 +220,7 @@ module Monarch
             project(Blog[:id].as(:blog_id), BlogPost[:id].count.as(:num_posts))
 
         Blog.join_to(blog_post_counts).project(:title, :num_posts).to_sql.should be_like(%{
-        select blogs.title, t1.num_posts
+        select blogs.title as title, t1.num_posts as num_posts
         from blogs, (
           select blogs.id as blog_id, count(blog_posts.id) as num_posts
           from blogs left outer join blog_posts on blogs.id = blog_posts.blog_id

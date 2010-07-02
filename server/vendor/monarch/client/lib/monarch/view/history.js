@@ -1,23 +1,19 @@
 (function(Monarch, jQuery) {
 
 _.constructor("Monarch.View.History", {
-  onChange: function(callback, context) {
-    if (context) callback = _.bind(callback, context);
-    $(window).bind('hashchange', function(e) {
-      callback(e.getState('url') || "");
-    });
+  hashchange: function(callback) {
+    jQuery(window).bind('hashchange', callback);
+    callback();
+  },
 
-    if (!this.triggeredOnce) {
-      this.triggeredOnce = true;
-      $(window).trigger("hashchange");
+  fragment: function(fragment) {
+    if (arguments.length == 1) {
+      window.location = "http://" + window.location.hostname + window.location.pathname + "#" + fragment;
+      return fragment;
+    } else {
+      return window.location.hash.replace("#", "");
     }
-  },
-
-  load: function(path) {
-    jQuery.bbq.pushState({url: path}, 2);
-  },
-
-  path: ""
+  }
 });
 
 })(Monarch, jQuery);

@@ -9,7 +9,8 @@ module Monarch
           end
         end
 
-        attr_reader :table, :name, :type
+        attr_reader :table, :name
+        attr_accessor :type
 
         def initialize(table, name, type)
           @table, @name, @type = table, name, type

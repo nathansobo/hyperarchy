@@ -143,12 +143,12 @@ function buildPropertyAccessor(name, reader, writer, afterWriteHook, afterChange
   if (!reader) reader = function() { return this[fieldName]; };
   if (!writer) writer = function(value) { this[fieldName] = value; };
 
-  var accessor = function(value) {
+  var accessor = function() {
     if (arguments.length == 0) {
       return reader.call(this);
     } else {
       var oldValue = this[fieldName];
-      var newValue = writer.call(this, value) || this[fieldName];
+      var newValue = writer.apply(this, arguments) || this[fieldName];
       if (afterWriteHook) afterWriteHook.call(this, newValue, oldValue);
       if (afterChangeHook && newValue !== oldValue) afterChangeHook.call(this, newValue, oldValue);
       return newValue;
@@ -225,6 +225,17 @@ _.constructor("_.Object", {
     var methodName = _.first(args);
     var otherArgs = _.rest(args);
     return _.bind.apply(_, [this[methodName], this].concat(otherArgs));
+  },
+
+  bind: function() {
+    var args = _.toArray(arguments);
+    var fn = _.first(args);
+    var otherArgs = _.rest(args);
+    return _.bind.apply(_, [fn, this].concat(otherArgs));
+  },
+
+  defer: function(fn) {
+    return _.defer(this.bind(fn));
   },
 
   isA: function(constructor) {
