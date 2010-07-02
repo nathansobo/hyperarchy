@@ -270,6 +270,8 @@ table.members th {
   border-top: none;
   display: none;
   width: auto;
+  -moz-box-shadow: #c8c7c7 0px 1px 3px;
+  -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
 }
 
 #organizationSelectList li {
@@ -277,7 +279,7 @@ table.members th {
 }
 
 #organizationSelectList li:hover {
-  background: #f0efef;
+  background: #fff3c7;
 }
 
 #logo {

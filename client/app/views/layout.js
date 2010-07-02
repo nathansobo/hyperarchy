@@ -22,8 +22,8 @@ _.constructor("Views.Layout", View.Template, {
 
             ol({id: "organizationSelectList"}, function() {
               li(function() {
-                a({href: "#"}, "Add Organization...").ref('addOrganization')
-              })
+                a({href: "#"}, "Add Organization...")
+              }).ref('addOrganizationLi')
             }).ref('organizationSelectList');
           });
         });
@@ -43,7 +43,7 @@ _.constructor("Views.Layout", View.Template, {
       var memberships = Application.currentUser().memberships();
 
       memberships.onEach(function(membership) {
-        this.organizationSelectList.append(View.build(function(b) {
+        this.addOrganizationLi.before(View.build(function(b) {
           b.li(function() {
             b.a({href: "#"}, membership.organization().name());
           });
@@ -71,17 +71,11 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     toggleOrganizationSelect: function(elt, e) {
-      console.debug("HELLO!");
-      if (this.organizationSelectList.is(":visible")) {
-        this.hideOrganizationSelect();
-      } else {
-        this.showOrganizationSelect();
-      }
+      if (!this.organizationSelectList.is(":visible")) this.showOrganizationSelect();
       e.preventDefault();
     },
 
     showOrganizationSelect: function() {
-      console.debug('show');
       this.organizationSelectList.show().position({
         my: "left top",
         at: "left bottom",
@@ -94,8 +88,6 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     hideOrganizationSelect: function() {
-      console.debug('hide');
-
       this.organizationSelectList.hide();
     }
   }
