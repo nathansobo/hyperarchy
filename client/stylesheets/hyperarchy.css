@@ -2,6 +2,12 @@ body {
   font-size: 15px;
 }
 
+
+
+a, a:visited {
+  color: #0e40ac;
+}
+
 input.text, textarea.text {
   display: block;
   width: 100%;
@@ -239,9 +245,39 @@ table.members th {
   height: 40px;
 }
 
-#header a {
+#header .invite, #header .logout, #header #organizationSelect {
   float: right;
   margin-left: 6px;
+}
+
+#organizationSelect {
+  display: inline-block;
+  color: #0e40ac;
+  text-decoration: underline;
+  cursor: pointer;
+  padding-right: 17px;
+
+  background-image: url(/images/expand_arrow_blue.png);
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+#organizationSelectList {
+  z-index: 1;
+  position: absolute;
+  background: white;
+  border: 1px solid #cccccc;
+  border-top: none;
+  display: none;
+  width: auto;
+}
+
+#organizationSelectList li {
+  padding: 2px 4px;
+}
+
+#organizationSelectList li:hover {
+  background: #f0efef;
 }
 
 #logo {

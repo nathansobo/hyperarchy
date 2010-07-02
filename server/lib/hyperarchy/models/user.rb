@@ -9,6 +9,9 @@ class User < Monarch::Model::Record
   end
 
   has_many :memberships
+  relates_to_many :organizations do
+    memberships.join_through(Organization)
+  end
 
   relates_to_many :elections do
     Election.table

@@ -69,9 +69,9 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         }, this);
     },
 
-    showCreateElectionForm: function() {
+    showCreateElectionForm: function(elt, e) {
       $.bbq.pushState({showCreateElectionForm:true});
-      return false;
+      e.preventDefault();
     },
 
     createElection: function() {

@@ -10,7 +10,7 @@ _.constructor("Membership", Model.Record, {
       emailAddress: "string"
     });
 
-    this.belongsTo("organiza  tion");
+    this.belongsTo("organization");
     this.belongsTo("user");
   },
 

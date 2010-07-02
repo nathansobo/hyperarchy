@@ -9,11 +9,13 @@ _.constructor("Controllers.Application", {
       elections: Views.ElectionOverview.toView(),
       invite: Views.Invite.toView()
     };
-    this.layout = Views.Layout.toView({views: this.views});
-    this.body.append(this.layout);
+    // don't render the view until initializeNavigation is called,
+    // so that the Application global is assigned.
   },
 
   initializeNavigation: function() {
+    this.layout = Views.Layout.toView({views: this.views});
+    this.body.append(this.layout);
     $(window).trigger('hashchange');
   },
 
