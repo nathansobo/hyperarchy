@@ -9,7 +9,7 @@ module Hyperarchy
       redirect redirect "/#logIn" and return unless current_user
       render_page Views::App
     end
-ntzzz
+
     get "/login" do
       render_page Views::Login
     end

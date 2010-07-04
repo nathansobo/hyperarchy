@@ -10,7 +10,14 @@ FIXTURES = {
 
   :organizations => {
     :global => {
-      :name => "Global"
+      :name => "Alpha Testers"
+    }
+  },
+
+  :memberships => {
+    :nathan_global => {
+      :user_id => "nathan",
+      :organization_id => "global"
     }
   },
 

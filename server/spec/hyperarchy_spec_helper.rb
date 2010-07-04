@@ -11,6 +11,7 @@ Spec::Runner.configure do |config|
 
   config.before do
     Monarch::Model::Repository.clear_tables
+    Organization.create!(:name => "Alpha Testers", :suppress_membership_creation => true)
     Monarch::Model::Repository.initialize_local_identity_map
     Sham.reset
     Mailer.reset
@@ -33,7 +34,6 @@ class RackExampleGroup < Spec::Example::ExampleGroup
   after do
     Warden::test_reset!
   end
-
 
   def app
     Hyperarchy::App

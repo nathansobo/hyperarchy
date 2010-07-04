@@ -14,7 +14,7 @@ _.constructor("Organization", Model.Record, {
     },
 
     global: function() {
-      return this.find({name: "Global"});
+      return this.find({name: "Alpha Testers"});
     }
   }
 

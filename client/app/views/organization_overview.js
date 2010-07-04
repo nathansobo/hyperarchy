@@ -30,7 +30,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     viewName: 'organization',
 
     navigate: function(state) {
-      var organizationId = state.organizationId || Organization.find({name: "Global"}).id(); 
+      var organizationId = state.organizationId || Organization.find({name: "Alpha Testers"}).id();
       this.organizationId(organizationId);
 
       if (state.showCreateElectionForm) {

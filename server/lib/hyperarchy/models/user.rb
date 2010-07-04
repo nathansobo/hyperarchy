@@ -21,6 +21,10 @@ class User < Monarch::Model::Record
     Candidate.table
   end
 
+  def after_create
+    memberships.create!(:organization => Organization.find(:name => "Alpha Testers"), :suppress_invite_email => true)
+  end
+
   def password=(unencrypted_password)
     self.encrypted_password = self.class.encrypt_password(unencrypted_password)
   end

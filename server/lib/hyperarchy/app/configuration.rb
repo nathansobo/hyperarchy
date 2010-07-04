@@ -65,6 +65,8 @@ module Hyperarchy
       }
     end
 
+    ::LOGGER.level = Logger::WARN
+
     Warden::Manager.after_set_user do |user, auth, options|
       Monarch::Model::Record.current_user = user
     end

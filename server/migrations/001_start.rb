@@ -46,6 +46,8 @@ Sequel.migration do
       String :name, :size=>255
       String :description, :size=>255
     end
+
+    self[:organizations].insert(:name => "Alpha Testers")
     
     create_table(:rankings) do
       primary_key :id
