@@ -2,6 +2,9 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizations"}, function() {
       div({'class': "top grid12"}, function() {
+        h1().ref("organizationName");
+        a({href: "#"}, "Admin Panel").click("editOrganization");
+
         a({href: "#", 'class': 'createElection'}, "Raise A New Question...")
           .ref('createElectionLink')
           .click('showCreateElectionForm');
@@ -51,6 +54,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     organizationId: {
       afterChange: function() {
+        this.organizationName.html(this.organization().name());
         this.displayElections();
       }
     },
@@ -67,6 +71,11 @@ _.constructor("Views.OrganizationOverview", View.Template, {
             this.electionsList.append(Views.ElectionLi.toView({election: election}));
           }, this);
         }, this);
+    },
+
+    editOrganization: function(elt, e) {
+      e.preventDefault();
+      $.bbq.pushState({view: "editOrganization", organizationId: this.organizationId()}, 2);
     },
 
     showCreateElectionForm: function(elt, e) {
