@@ -5,27 +5,22 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         div({'id': "organizationHeader"}, function() {
           div({'id': "title"}, function() {
             a({href: "#", id: 'createElectionLink'}, "Raise A New Question")
-              .ref('createElectionLink')
+              .ref('showCreateElectionFormButton')
               .click('showCreateElectionForm');
             h1().ref("organizationName");
             h2("| Questions Under Discussion");
           });
           div({style: "clear: both"});
 
+          div({id: 'createElectionForm'}, function() {
+            a("Raise Question")
+              .ref('createElectionButton')
+              .click('createElection');
+            input({placeholder: "Type your question here"})
+              .ref('createElectionInput');
+          }).ref('createElectionForm');
         })
 
-
-        div({id: 'createElectionForm', style: "display: none;"}, function() {
-          input()
-            .ref('createElectionInput')
-            .click(function() {
-              this.val("");
-              this.removeClass('grayText');
-            });
-          button("Raise Question")
-            .ref('createElectionButton')
-            .click('createElection');
-        }).ref('createElectionForm');
       }).ref('topDiv');
 
       ol(function() {
@@ -41,15 +36,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     navigate: function(state) {
       var organizationId = state.organizationId || Organization.find({name: "Alpha Testers"}).id();
       this.organizationId(organizationId);
-
-      if (state.showCreateElectionForm) {
-        this.createElectionLink.hide();
-        this.resetCreateElectionForm();
-        this.createElectionForm.show();
-      } else {
-        this.createElectionLink.show();
-        this.createElectionForm.hide();
-      }
+      this.createElectionForm.hide();
+      this.showCreateElectionFormButton.show();
     },
 
     resetCreateElectionForm: function() {
@@ -85,7 +73,9 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     showCreateElectionForm: function(elt, e) {
-      $.bbq.pushState({showCreateElectionForm:true});
+      this.createElectionForm.show();
+      this.showCreateElectionFormButton.hide();
+      this.createElectionInput.focus();
       e.preventDefault();
     },
 

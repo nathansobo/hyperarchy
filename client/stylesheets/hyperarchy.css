@@ -331,21 +331,27 @@ a#createCandidate {
 }
 
 div#createElectionForm {
-  width: 620px;
-  margin: 20px auto 40px;
+  margin: 5px auto 10px;
 }
 
 div#createElectionForm input {
-  font-size: 21px;
-  width: 100%;
+  font-size: 18px;
+  width: 780px;
   margin-bottom: 10px;
   padding: 10px;
 }
 
-div#createElectionForm button {
-  display: block;
-  margin: auto;
-  font-size: 15px;
+div#createElectionForm a {
+  color: white;
+  font-size: 20px;
+  float: right;
+  border-radius: 3px;
+  padding: 3px 7px;
+  text-decoration:none;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
+  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+  margin-top: 5px;
+  cursor: pointer;
 }
 
 .election {
