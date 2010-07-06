@@ -2,12 +2,20 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizations"}, function() {
       div({'class': "top grid12"}, function() {
-        h1().ref("organizationName");
-        a({href: "#"}, "Admin Panel").click("editOrganization");
+        div({'id': "organizationHeader"}, function() {
+          div({'id': "title"}, function() {
+            a({href: "#", id: 'createElectionLink'}, "Raise A New Question")
+              .ref('createElectionLink')
+              .click('showCreateElectionForm');
+            h1().ref("organizationName");
+            h2("| Questions Under Discussion");
+            
+//            a({href: "#", id: "editOrganizationLink"}, "Admin Panel").click("editOrganization");
+          });
+          div({style: "clear: both"});
 
-        a({href: "#", 'class': 'createElection'}, "Raise A New Question...")
-          .ref('createElectionLink')
-          .click('showCreateElectionForm');
+        })
+
 
         div({id: 'createElectionForm', style: "display: none;"}, function() {
           input()

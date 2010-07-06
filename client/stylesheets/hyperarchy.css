@@ -2,8 +2,6 @@ body {
   font-size: 15px;
 }
 
-
-
 a, a:visited {
   color: #0e40ac;
 }
@@ -236,17 +234,17 @@ table.members th {
 /* app page */
 
 #header {
-  margin-bottom: 20px;
   border-bottom: 1px solid #cccccc;
   position: relative;
 }
 
 #header > div {
-  height: 40px;
+  height: 30px;
 }
 
 #header .invite, #header .logout, #header #organizationSelect {
   float: right;
+  margin-top: 2px;
   margin-left: 6px;
 }
 
@@ -288,14 +286,44 @@ table.members th {
   background-image: url(/images/logo_small.png);
   background-repeat: no-repeat;
   width: 221px;
-  height: 30px;
+  height: 25px;
+}
+
+#organizationHeader {
+  margin-top: 15px;
+  margin-bottom: 30px;
+}
+
+#organizationHeader h1 {
+  display: inline;
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+#organizationHeader h2 {
+  display: inline;
 }
 
 .elections .body {
   margin-bottom: 20px;
 }
 
-a.createElection, a#createCandidate {
+a#createElectionLink {
+  color: white;
+  font-size: 20px;
+  float: right;
+  border-radius: 3px;
+  padding: 3px 7px;
+  text-decoration:none;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
+  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+a#createElectionLink:hover {
+  -webkit-box-shadow: 2px 2px 3px rgba(0,0,0,.25);
+}
+
+a#createCandidate {
   font-size: 21px;
   color: #007100;
   display: block;
