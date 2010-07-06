@@ -236,6 +236,7 @@ table.members th {
 #header {
   border-bottom: 1px solid #cccccc;
   position: relative;
+  margin-bottom: 15px;
 }
 
 #header > div {
@@ -290,7 +291,6 @@ table.members th {
 }
 
 #organizationHeader {
-  margin-top: 15px;
   margin-bottom: 30px;
 }
 
