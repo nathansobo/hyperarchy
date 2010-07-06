@@ -9,8 +9,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
               .click('showCreateElectionForm');
             h1().ref("organizationName");
             h2("| Questions Under Discussion");
-            
-//            a({href: "#", id: "editOrganizationLink"}, "Admin Panel").click("editOrganization");
           });
           div({style: "clear: both"});
 

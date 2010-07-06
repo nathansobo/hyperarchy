@@ -348,13 +348,18 @@ div#createElectionForm button {
   font-size: 15px;
 }
 
-li.election {
+.election {
+  -moz-box-shadow: rgba(0,0,0,.4) 1px 1px 6px;
+  -webkit-box-shadow: rgba(0,0,0,.35) 1px 1px 5px;
+  padding: 8px;
   margin-bottom: 20px;
   cursor: pointer;
+  height: 220px;
+  overflow-y: hidden;
 }
 
-li.election .body {
-  font-size: 21px;
+.election .body {
+  font-size: 20px;
   line-height: 26px;
   margin-bottom: 10px;
 }
