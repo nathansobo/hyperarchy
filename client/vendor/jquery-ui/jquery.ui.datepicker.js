@@ -1,5 +1,5 @@
 /*
- * jQuery UI Datepicker 1.8.2
+ * jQuery UI Datepicker @VERSION
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -10,10 +10,9 @@
  * Depends:
  *	jquery.ui.core.js
  */
-
 (function($) { // hide the namespace
 
-$.extend($.ui, { datepicker: { version: "1.8.2" } });
+$.extend($.ui, { datepicker: { version: "@VERSION" } });
 
 var PROP_NAME = 'datepicker';
 var dpuuid = new Date().getTime();
@@ -1491,7 +1490,7 @@ $.extend(Datepicker.prototype, {
 							(otherMonth && !showOtherMonths ? '&#xa0;' : // display for other months
 							(unselectable ? '<span class="ui-state-default">' + printDate.getDate() + '</span>' : '<a class="ui-state-default' +
 							(printDate.getTime() == today.getTime() ? ' ui-state-highlight' : '') +
-							(printDate.getTime() == currentDate.getTime() ? ' ui-state-active' : '') + // highlight selected day
+							(printDate.getTime() == selectedDate.getTime() ? ' ui-state-active' : '') + // highlight selected day
 							(otherMonth ? ' ui-priority-secondary' : '') + // distinguish dates from other months
 							'" href="#">' + printDate.getDate() + '</a>')) + '</td>'; // display selectable date
 						printDate.setDate(printDate.getDate() + 1);
@@ -1721,7 +1720,7 @@ $.fn.datepicker = function(options){
 $.datepicker = new Datepicker(); // singleton instance
 $.datepicker.initialized = false;
 $.datepicker.uuid = new Date().getTime();
-$.datepicker.version = "1.8.2";
+$.datepicker.version = "@VERSION";
 
 // Workaround for #4055
 // Add another global to avoid noConflict issues with inline event handlers

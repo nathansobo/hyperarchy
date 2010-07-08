@@ -1,5 +1,5 @@
 /*
- * jQuery UI Effects Highlight 1.8.2
+ * jQuery UI Effects Highlight @VERSION
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)

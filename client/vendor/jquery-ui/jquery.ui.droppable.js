@@ -1,5 +1,5 @@
 /*
- * jQuery UI Droppable 1.8.2
+ * jQuery UI Droppable @VERSION
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -147,7 +147,7 @@ $.widget("ui.droppable", {
 });
 
 $.extend($.ui.droppable, {
-	version: "1.8.2"
+	version: "@VERSION"
 });
 
 $.ui.intersect = function(draggable, droppable, toleranceMode) {
@@ -161,8 +161,8 @@ $.ui.intersect = function(draggable, droppable, toleranceMode) {
 
 	switch (toleranceMode) {
 		case 'fit':
-			return (l < x1 && x2 < r
-				&& t < y1 && y2 < b);
+			return (l <= x1 && x2 <= r
+				&& t <= y1 && y2 <= b);
 			break;
 		case 'intersect':
 			return (l < x1 + (draggable.helperProportions.width / 2) // Right Half

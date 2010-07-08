@@ -1,6 +1,5 @@
-
 /*
- * jQuery UI Selectable 1.8.2
+ * jQuery UI Selectable @VERSION
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -90,8 +89,6 @@ $.widget("ui.selectable", $.ui.mouse, {
 		$(options.appendTo).append(this.helper);
 		// position helper (lasso)
 		this.helper.css({
-			"z-index": 100,
-			"position": "absolute",
 			"left": event.clientX,
 			"top": event.clientY,
 			"width": 0,
@@ -263,7 +260,7 @@ $.widget("ui.selectable", $.ui.mouse, {
 });
 
 $.extend($.ui.selectable, {
-	version: "1.8.2"
+	version: "@VERSION"
 });
 
 })(jQuery);

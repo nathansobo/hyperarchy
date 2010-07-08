@@ -1,5 +1,5 @@
 /*
- * jQuery UI Draggable 1.8.2
+ * jQuery UI Draggable @VERSION
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -459,7 +459,7 @@ $.widget("ui.draggable", $.ui.mouse, {
 });
 
 $.extend($.ui.draggable, {
-	version: "1.8.2"
+	version: "@VERSION"
 });
 
 $.ui.plugin.add("draggable", "connectToSortable", {
@@ -475,7 +475,7 @@ $.ui.plugin.add("draggable", "connectToSortable", {
 					instance: sortable,
 					shouldRevert: sortable.options.revert
 				});
-				sortable._refreshItems();	//Do a one-time refresh at start to refresh the containerCache
+				sortable.refreshPositions();	//Do a one-time refreshPositions at start to initialize the containerCache
 				sortable._trigger("activate", event, uiSortable);
 			}
 		});

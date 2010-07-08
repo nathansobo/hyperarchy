@@ -1,5 +1,5 @@
 /*
- * jQuery UI Effects Explode 1.8.2
+ * jQuery UI Effects Explode @VERSION
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)

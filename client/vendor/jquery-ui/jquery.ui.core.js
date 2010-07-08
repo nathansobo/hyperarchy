@@ -1,5 +1,5 @@
 /*!
- * jQuery UI 1.8.2
+ * jQuery UI @VERSION
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -7,7 +7,6 @@
  *
  * http://docs.jquery.com/UI
  */
-
 (function($) {
 
 // prevent duplicate loading
@@ -20,7 +19,7 @@ if ($.ui.version) {
 
 //Helper functions and ui object
 $.extend($.ui, {
-	version: "1.8.2",
+	version: "@VERSION",
 
 	// $.ui.plugin is deprecated.  Use the proxy pattern instead.
 	plugin: {

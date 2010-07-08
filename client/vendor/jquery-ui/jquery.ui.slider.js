@@ -1,5 +1,5 @@
 /*
- * jQuery UI Slider 1.8.2
+ * jQuery UI Slider @VERSION
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
@@ -12,7 +12,6 @@
  *	jquery.ui.mouse.js
  *	jquery.ui.widget.js
  */
-
 (function( $ ) {
 
 // number of pages in a slider
@@ -310,7 +309,6 @@ $.widget( "ui.slider", $.ui.mouse, {
 				( parseInt( closestHandle.css("marginTop"), 10 ) || 0)
 		};
 
-		normValue = this._normValueFromMouse( position );
 		this._slide( event, index, normValue );
 		this._animateOff = true;
 		return true;
@@ -676,7 +674,7 @@ $.widget( "ui.slider", $.ui.mouse, {
 });
 
 $.extend( $.ui.slider, {
-	version: "1.8.2"
+	version: "@VERSION"
 });
 
 }(jQuery));

@@ -1,5 +1,5 @@
 /*
- * jQuery UI Effects Clip 1.8.2
+ * jQuery UI Effects Clip @VERSION
  *
  * Copyright (c) 2010 AUTHORS.txt (http://jqueryui.com/about)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
