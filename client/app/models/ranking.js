@@ -13,8 +13,8 @@ _.constructor("Ranking", Model.Record, {
       this.belongsTo('user');
     },
 
-    createOrUpdate: function(user, election, candidate, predecessor, successor) {
-      var newPositionFieldValue = { position: this.determinePosition(user, predecessor, successor) };
+    createOrUpdate: function(user, election, candidate, predecessor, successor, belowSeparator) {
+      var newPositionFieldValue = { position: this.determinePosition(user, predecessor, successor, belowSeparator) };
       var otherFieldValues = {userId: user.id(), electionId: election.id(), candidateId: candidate.id()};
 
       var existingRanking = Ranking.find(otherFieldValues);
@@ -27,11 +27,18 @@ _.constructor("Ranking", Model.Record, {
 
     // private
 
-    determinePosition: function(user, predecessor, successor) {
+    determinePosition: function(user, predecessor, successor, belowSeparator) {
       var predecessorPosition = predecessor ? user.rankings().find({ candidateId: predecessor.id() }).position() : null;
       var successorPosition = successor ? user.rankings().find({ candidateId: successor.id() }).position() : null;
-      if (!predecessorPosition) predecessorPosition = 0;
-      if (!successorPosition) successorPosition = predecessorPosition + 128;
+
+      if (belowSeparator) {
+        if (!successorPosition) successorPosition = 0;
+        if (!predecessorPosition) predecessorPosition = successorPosition - 128;
+      } else {
+        if (!predecessorPosition) predecessorPosition = 0;
+        if (!successorPosition) successorPosition = predecessorPosition + 128;
+      }
+      
       return (predecessorPosition + successorPosition) / 2;
     }
   }

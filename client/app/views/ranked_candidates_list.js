@@ -62,14 +62,14 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       var rankedCandidateLi = this.findLi(candidate);
       rankedCandidateLi.view().startLoading();
 
-      var isNegative = rankedCandidateLi.prevAll('.separator').length > 0;
+      var belowSeparator = rankedCandidateLi.prevAll('.separator').length > 0;
       // the successor is higher in the list, the predecessor is lower
       var successorId = rankedCandidateLi.prev('.candidate').attr('candidateId');
       var predecessorId = rankedCandidateLi.next('.candidate').attr('candidateId');
       var predecessor = predecessorId ? Candidate.find(predecessorId) : null;
       var successor = successorId ? Candidate.find(successorId) : null;
 
-      Ranking.createOrUpdate(Application.currentUser(), this.election(), candidate, predecessor, successor, isNegative)
+      Ranking.createOrUpdate(Application.currentUser(), this.election(), candidate, predecessor, successor, belowSeparator)
         .onSuccess(function(ranking) {
           if (!ranking) debugger;
           rankedCandidateLi.view().ranking = ranking;

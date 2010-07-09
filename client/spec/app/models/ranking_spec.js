@@ -13,8 +13,10 @@ Screw.Unit(function(c) { with(c) {
         var a = Candidate.fixture('rice');
         var b = Candidate.fixture('fish');
         var c = Candidate.fixture('salad');
+        var aRanking, bRanking, cRanking;
 
         Ranking.createOrUpdate(user, election, a, null, null, false).afterEvents(function(ranking) {
+          aRanking = ranking;
           expect(ranking.position()).to(eq, 64);
         });
         
@@ -25,12 +27,30 @@ Screw.Unit(function(c) { with(c) {
         });
 
         Ranking.createOrUpdate(user, election, c, b, a, false).afterEvents(function(ranking) {
+          cRanking = ranking;
           expect(ranking.position()).to(eq, 48);
         });
 
         Ranking.createOrUpdate(user, election, b, a, null, false).afterEvents(function(ranking) {
           expect(ranking).to(eq, bRanking);
-          expect(bRanking.position()).to(eq, 128);
+          expect(ranking.position()).to(eq, 128);
+        });
+
+        // now move rankings below the separator
+
+        Ranking.createOrUpdate(user, election, b, null, null, true).afterEvents(function(ranking) {
+          expect(ranking).to(eq, bRanking);
+          expect(ranking.position()).to(eq, -64);
+        });
+
+        Ranking.createOrUpdate(user, election, a, null, b, true).afterEvents(function(ranking) {
+          expect(ranking).to(eq, aRanking);
+          expect(ranking.position()).to(eq, -128);
+        });
+
+        Ranking.createOrUpdate(user, election, c, a, b, true).afterEvents(function(ranking) {
+          expect(ranking).to(eq, cRanking);
+          expect(ranking.position()).to(eq, -96);
         });
       });
     });
