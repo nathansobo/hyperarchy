@@ -57,13 +57,18 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     handleUpdate: function(event, ui) {
-      // received items are replaced with different object, so need to find from the list
       var candidate = Candidate.find(ui.item.attr('candidateId'));
+      // received items are replaced with different object, so need to find from the list
       var rankedCandidateLi = this.findLi(candidate);
       rankedCandidateLi.view().startLoading();
 
-      var predecessorId = rankedCandidateLi.prev().attr('candidateId');
-      var successorId = rankedCandidateLi.next().attr('candidateId');
+      var isNegative = rankedCandidateLi.prevAll('.separator').length > 0;
+      var predecessorId = rankedCandidateLi.prev('.candidate').attr('candidateId');
+      var successorId = rankedCandidateLi.next('.candidate').attr('candidateId');
+
+      console.debug("pred", predecessorId);
+      console.debug("succ", successorId);
+
       var predecessor = predecessorId ? Candidate.find(predecessorId) : null;
       var successor = successorId ? Candidate.find(successorId) : null;
 
@@ -76,7 +81,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     findPreviousLi: function(candidate) {
-      return this.rankedCandidatesList.find("li.rankedCandidate[candidateId='" + candidate.id() + "']");
+      return this.rankedCandidatesList.find("li.ranked.candidate[candidateId='" + candidate.id() + "']");
     },
 
     findLi: function(candidate) {
