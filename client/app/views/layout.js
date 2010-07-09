@@ -11,20 +11,27 @@ _.constructor("Views.Layout", View.Template, {
           });
 
           div({'class': "grid9 omega"}, function() {
-            a({'class': "logout", href: "#"}, "Log Out").click(function() {
+            a({'class': "logout headerItem", href: "#"}, "Log Out").click(function() {
               $("<form action='/logout' method='post'>").appendTo($("body")).submit();
             });
-            a({'class': "invite", href: "#view=invite"}, "Invite");
+            a({'class': "invite headerItem", href: "#view=invite"}, "Invite");
 
-            a({id: "organizationSelect", href: "#"}, "Organizations")
-              .ref('organizationSelect')
-              .click('toggleOrganizationSelect');
+            a({'class': "headerItem dropdownLink", href: "#"}, "Admin")
+              .ref('adminMenuLink')
+              .click('toggleAdminMenu');
 
-            ol({id: "organizationSelectList"}, function() {
+            ol({'class': "dropdownMenu"}, function() {
+            }).ref('adminMenu');
+
+            a({'class': "headerItem dropdownLink", href: "#"}, "Organizations")
+              .ref('organizationsMenuLink')
+              .click('toggleOrganizationsMenu');
+
+            ol({'class': "dropdownMenu"}, function() {
               li(function() {
                 a({href: "#view=addOrganization"}, "Add Organization...")
               }).ref('addOrganizationLi')
-            }).ref('organizationSelectList');
+            }).ref('organizationsMenu');
           });
         });
       }).ref('body');
@@ -43,8 +50,9 @@ _.constructor("Views.Layout", View.Template, {
       var memberships = Application.currentUser().memberships();
 
       memberships.onEach(function(membership) {
+        var organization = membership.organization();
+
         this.addOrganizationLi.before(View.build(function(b) {
-          var organization = membership.organization();
           b.li(function() {
             b.a({href: "#"}, organization.name()).click(function(view, e) {
               $.bbq.pushState({view: "organization", organizationId: organization.id()});
@@ -52,6 +60,17 @@ _.constructor("Views.Layout", View.Template, {
             });
           });
         }));
+
+        if (membership.role() == "owner") {
+          this.adminMenu.append(View.build(function(b) {
+            b.li(function() {
+              b.a({href: "#"}, organization.name() + " Admin").click(function(view, e) {
+                $.bbq.pushState({view: "editOrganization", organizationId: organization.id()});
+                e.preventDefault();
+              });
+            });
+          }))
+        }
       }, this);
     },
 
@@ -74,25 +93,30 @@ _.constructor("Views.Layout", View.Template, {
       });
     },
 
-    toggleOrganizationSelect: function(elt, e) {
-      if (!this.organizationSelectList.is(":visible")) this.showOrganizationSelect();
+    toggleOrganizationsMenu: function(elt, e) {
       e.preventDefault();
+      this.toggleMenu(this.organizationsMenuLink, this.organizationsMenu);
     },
 
-    showOrganizationSelect: function() {
-      this.organizationSelectList.show().position({
+    toggleAdminMenu: function(elt, e) {
+      e.preventDefault();
+      this.toggleMenu(this.adminMenuLink, this.adminMenu);
+    },
+
+    toggleMenu: function(link, menu) {
+      if (menu.is(":visible")) return;
+
+      menu.show().position({
         my: "left top",
         at: "left bottom",
-        of: this.organizationSelect
+        of: link
       });
 
-      this.defer(function() {
-        $(window).one('click', this.hitch('hideOrganizationSelect'));
+      _.defer(function() {
+        $(window).one('click', function() {
+          menu.hide();
+        });
       });
-    },
-
-    hideOrganizationSelect: function() {
-      this.organizationSelectList.hide();
     }
   }
 });
