@@ -6,7 +6,7 @@ module Hyperarchy
     end
 
     get "/app" do
-      redirect redirect "/#logIn" and return unless current_user
+      redirect redirect "/login" and return unless current_user
       render_page Views::App
     end
 
@@ -27,7 +27,7 @@ module Hyperarchy
         flash[:errors] = warden.errors.full_messages
         flash[:email_address_errors] = warden.errors[:email_address]
         flash[:entered_email_address] = params[:email_address]
-        redirect "/#logIn"
+        redirect "/login"
       end
     end
 
