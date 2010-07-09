@@ -1,8 +1,15 @@
 _.constructor("Views.RankedCandidatesList", View.Template, {
   content: function() { with(this.builder) {
     div(function() {
-      div({'class': "sectionLabel"}, "Your Ranking");
-      ol({id: "rankedCandidates", 'class': "candidates ranked"}).ref('rankedCandidatesList');
+      div({'class': "candidatesListHeader"}, "Your Ranking");
+      ol({id: "rankedCandidates", 'class': "candidates ranked"}, function() {
+
+        li({'class': "separator glossyBlack"}, function() {
+          div({'class': "up"}, "good ideas");
+          div({'class': "down"}, "bad ideas");
+        });
+
+      }).ref('rankedCandidatesList');
     });
   }},
 
@@ -27,7 +34,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     populateRankings: function() {
-      this.rankedCandidatesList.empty();
+      this.empty();
       this.rankings.each(function(ranking) {
         var li = Views.RankedCandidateLi.toView({ranking: ranking});
         li.stopLoading();
@@ -39,7 +46,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     empty: function() {
-      this.rankedCandidatesList.empty();
+      this.rankedCandidatesList.find("li:not(.separator)").remove();
     },
 
     handleReceive: function(event, ui) {
@@ -77,7 +84,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     adjustHeight: function() {
-      this.rankedCandidatesList.height($(window).height() - this.rankedCandidatesList.offset().top - 20); 
+      this.rankedCandidatesList.height($(window).height() - this.rankedCandidatesList.offset().top - 20);
     }
   }
 });

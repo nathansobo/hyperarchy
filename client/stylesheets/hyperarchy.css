@@ -20,6 +20,7 @@ input.text, textarea.text {
   margin-bottom: 10px;
 }
 
+
 .bigMarginBottom {
   margin-bottom: 30px;
 }
@@ -50,6 +51,11 @@ button {
 
 .grayText {
   color: #999999;
+}
+
+.glossyBlack, .glossyBlack:visited {
+  color: white;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
 }
 
 .ui-autocomplete {
@@ -309,13 +315,11 @@ table.members th {
 }
 
 a#createElectionLink {
-  color: white;
   font-size: 20px;
   float: right;
   border-radius: 3px;
   padding: 3px 7px;
   text-decoration:none;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
   -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
 }
 
@@ -342,13 +346,11 @@ div#createElectionForm input {
 }
 
 div#createElectionForm a {
-  color: white;
   font-size: 20px;
   float: right;
   border-radius: 3px;
   padding: 3px 7px;
   text-decoration:none;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
   -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
   margin-top: 5px;
   cursor: pointer;
@@ -390,7 +392,7 @@ div#createCandidateForm button {
   font-size: 15px;
 }
 
-.elections .sectionLabel {
+.elections .candidatesListHeader {
   font-size: 16px;
   color: #999999;
   margin-bottom: 5px;
@@ -404,9 +406,7 @@ div#createCandidateForm button {
   overflow-y: auto;
 }
 
-.elections ol.candidates li {
-  list-style: decimal;
-  list-style-position: inside;
+.elections ol.candidates li.candidate {
   font-size: 15px;
   padding: 5px;
   border: 1px solid #c8c7c7;
@@ -415,6 +415,29 @@ div#createCandidateForm button {
   background: white;
   -moz-box-shadow: #c8c7c7 0px 1px 3px;
   -webkit-box-shadow: #c8c7c7 0px 1px 3px;
+}
+
+.elections ol.candidates li.separator {
+  text-align: center;
+  padding: 5px;
+}
+
+.elections ol.candidates li.separator .up {
+  background: url("/images/arrow_up_white.png");
+  background-repeat: no-repeat;
+  padding-left: 20px;
+  height: 22px;
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.elections ol.candidates li.separator .down {
+  background: url("/images/arrow_down_white.png");
+  background-repeat: no-repeat;
+  background-position: right;
+  padding-right: 20px;
+  height: 22px;
+  display: inline-block;
 }
 
 .elections ol.candidates li:last-child {

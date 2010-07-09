@@ -1,7 +1,7 @@
 _.constructor("Views.CandidatesList", View.Template, {
   content: function() { with(this.builder) {
     div(function() {
-      div({'class': "sectionLabel"}, "Current Consensus");
+      div({'class': "candidatesListHeader"}, "Current Consensus");
       ol({id: "candidates", 'class': "candidates"}).ref('candidatesList');
     });
   }},
