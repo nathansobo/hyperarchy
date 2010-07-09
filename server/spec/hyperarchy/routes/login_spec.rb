@@ -34,7 +34,7 @@ describe "POST /login", :type => :rack do
 
         current_user.should be_nil
         last_response.should be_redirect
-        last_response.location.should == "/#logIn"
+        last_response.location.should == "/login"
         flash[:errors].first.should include("password")
         flash[:entered_email_address].should == user.email_address
         flash[:email_address_errors].should be_nil
@@ -48,7 +48,7 @@ describe "POST /login", :type => :rack do
 
       current_user.should be_nil
       last_response.should be_redirect
-      last_response.location.should == "/#logIn"
+      last_response.location.should == "/login"
       flash[:errors].first.should include("email")
       flash[:entered_email_address].should == "bogus@example.com"
       flash[:email_address_errors].should_not be_nil

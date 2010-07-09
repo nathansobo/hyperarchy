@@ -17,34 +17,34 @@ module Models
       it "uses the ranked-pairs algoritm to produce a global ranking, assigning a position of null to any unranked candidates" do
         4.times do
           user = User.make
-          election.rankings.create(:user => user, :candidate => memphis, :position => 1)
-          election.rankings.create(:user => user, :candidate => nashville, :position => 2)
-          election.rankings.create(:user => user, :candidate => chattanooga, :position => 3)
-          election.rankings.create(:user => user, :candidate => knoxville, :position => 4)
+          election.rankings.create(:user => user, :candidate => memphis, :position => 4)
+          election.rankings.create(:user => user, :candidate => nashville, :position => 3)
+          election.rankings.create(:user => user, :candidate => chattanooga, :position => 2)
+          election.rankings.create(:user => user, :candidate => knoxville, :position => 1)
         end
 
         3.times do
           user = User.make
-          election.rankings.create(:user => user, :candidate => nashville, :position => 1)
-          election.rankings.create(:user => user, :candidate => chattanooga, :position => 2)
-          election.rankings.create(:user => user, :candidate => knoxville, :position => 3)
-          election.rankings.create(:user => user, :candidate => memphis, :position => 4)
+          election.rankings.create(:user => user, :candidate => nashville, :position => 4)
+          election.rankings.create(:user => user, :candidate => chattanooga, :position => 3)
+          election.rankings.create(:user => user, :candidate => knoxville, :position => 2)
+          election.rankings.create(:user => user, :candidate => memphis, :position => 1)
         end
 
         1.times do
           user = User.make
-          election.rankings.create(:user => user, :candidate => chattanooga, :position => 1)
-          election.rankings.create(:user => user, :candidate => knoxville, :position => 2)
-          election.rankings.create(:user => user, :candidate => nashville, :position => 3)
-          election.rankings.create(:user => user, :candidate => memphis, :position => 4)
+          election.rankings.create(:user => user, :candidate => chattanooga, :position => 4)
+          election.rankings.create(:user => user, :candidate => knoxville, :position => 3)
+          election.rankings.create(:user => user, :candidate => nashville, :position => 2)
+          election.rankings.create(:user => user, :candidate => memphis, :position => 1)
         end
 
         2.times do
           user = User.make
-          election.rankings.create(:user => user, :candidate => knoxville, :position => 1)
-          election.rankings.create(:user => user, :candidate => chattanooga, :position => 2)
-          election.rankings.create(:user => user, :candidate => nashville, :position => 3)
-          election.rankings.create(:user => user, :candidate => memphis, :position => 4)
+          election.rankings.create(:user => user, :candidate => knoxville, :position => 4)
+          election.rankings.create(:user => user, :candidate => chattanooga, :position => 3)
+          election.rankings.create(:user => user, :candidate => nashville, :position => 2)
+          election.rankings.create(:user => user, :candidate => memphis, :position => 1)
         end
 
         election.compute_global_ranking

@@ -26,7 +26,7 @@ class Ranking < Monarch::Model::Record
 
     old_position = changeset.old_state.position
     new_position = changeset.new_state.position
-    if new_position < old_position
+    if new_position > old_position
       after_ranking_moved_up(new_position, old_position)
     else
       after_ranking_moved_down(new_position, old_position)
@@ -36,7 +36,7 @@ class Ranking < Monarch::Model::Record
   end
 
   def after_ranking_moved_up(new_position, old_position)
-    previously_higher_rankings = lower_rankings_by_same_user.where(Ranking[:position] < old_position)
+    previously_higher_rankings = lower_rankings_by_same_user.where(Ranking[:position] > old_position)
     previously_higher_rankings.
       join(majorities_where_ranked_candidate_is_loser).on(:winner_id => :candidate_id).
       decrement(:count)
@@ -47,7 +47,7 @@ class Ranking < Monarch::Model::Record
   end
 
   def after_ranking_moved_down(new_position, old_position)
-    previously_lower_rankings = higher_rankings_by_same_user.where(Ranking[:position] > old_position)
+    previously_lower_rankings = higher_rankings_by_same_user.where(Ranking[:position] < old_position)
     previously_lower_rankings.
       join(majorities_where_ranked_candidate_is_loser).on(:winner_id => :candidate_id).
       increment(:count)
@@ -79,11 +79,11 @@ class Ranking < Monarch::Model::Record
   end
 
   def higher_rankings_by_same_user
-    rankings_by_same_user.where(Ranking[:position] < position)
+    rankings_by_same_user.where(Ranking[:position] > position)
   end
 
   def lower_rankings_by_same_user
-    rankings_by_same_user.where(Ranking[:position] > position)
+    rankings_by_same_user.where(Ranking[:position] < position)
   end
 
   def majorities_where_ranked_candidate_is_winner

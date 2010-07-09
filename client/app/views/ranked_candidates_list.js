@@ -7,7 +7,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
         li({'class': "separator glossyBlack"}, function() {
           div({'class': "up"}, "good ideas");
           div({'class': "down"}, "bad ideas");
-        });
+        }).ref('separator');
 
       }).ref('rankedCandidatesList');
     });
@@ -38,7 +38,12 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       this.rankings.each(function(ranking) {
         var li = Views.RankedCandidateLi.toView({ranking: ranking});
         li.stopLoading();
-        this.rankedCandidatesList.append(li);
+
+        if (ranking.position() > 0) {
+          this.separator.before(li);
+        } else {
+          this.rankedCandidatesList.append(li);
+        }
       }, this);
       this.subscriptions.add(this.rankings.onRemoteRemove(function(ranking) {
         this.findLi(ranking.candidate()).remove();

@@ -35,7 +35,7 @@ class Invitation < Monarch::Model::Record
   def redeem(attributes)
     raise "Already redeemed" if redeemed?
 
-    confirm_memberships = attributes[:confirm_memberships].map(&:to_i)
+    confirm_memberships = (attributes[:confirm_memberships] || []).map(&:to_i)
     user = User.create!(attributes[:user])
     self.invitee = user
     self.redeemed = true
