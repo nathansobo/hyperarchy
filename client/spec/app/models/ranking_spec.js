@@ -19,16 +19,16 @@ Screw.Unit(function(c) { with(c) {
         });
         
         var bRanking;
-        Ranking.createOrUpdate(user, election, b, a, null, false).afterEvents(function(ranking) {
+        Ranking.createOrUpdate(user, election, b, null, a, false).afterEvents(function(ranking) {
           bRanking = ranking;
           expect(ranking.position()).to(eq, 32);
         });
 
-        Ranking.createOrUpdate(user, election, c, a, b, false).afterEvents(function(ranking) {
+        Ranking.createOrUpdate(user, election, c, b, a, false).afterEvents(function(ranking) {
           expect(ranking.position()).to(eq, 48);
         });
 
-        Ranking.createOrUpdate(user, election, b, null, a, false).afterEvents(function(ranking) {
+        Ranking.createOrUpdate(user, election, b, a, null, false).afterEvents(function(ranking) {
           expect(ranking).to(eq, bRanking);
           expect(bRanking.position()).to(eq, 128);
         });
