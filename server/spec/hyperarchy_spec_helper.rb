@@ -19,6 +19,7 @@ Spec::Runner.configure do |config|
 
   config.after do
     Monarch::Model::Repository.clear_local_identity_map
+    Timecop.return
   end
 end
 

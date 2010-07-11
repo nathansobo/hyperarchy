@@ -144,6 +144,7 @@ module Monarch
           return self unless dirty?
 
           before_update(dirty_concrete_field_values_by_column_name)
+          self.updated_at = Time.now if column(:updated_at)
           field_values_for_database = dirty_concrete_field_values_by_column_name
 
           old_state = snapshot

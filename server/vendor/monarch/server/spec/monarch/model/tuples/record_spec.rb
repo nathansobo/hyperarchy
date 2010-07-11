@@ -372,6 +372,20 @@ module Monarch
                 on_update_changeset.new_state.evaluate(User[:great_name]).should == record.great_name
               end
 
+              it "sets updated_at to the current time if the record was saved" do
+                now = Time.now
+                Timecop.freeze(now)
+
+                record.title = "San Francisco Rent"
+                record.save
+                record.updated_at.to_i.should == now.to_i
+
+                Timecop.freeze(now + 100)
+                
+                record.save # not dirty
+                record.updated_at.to_i.should == now.to_i
+              end
+
               it "returns false if the record is not valid" do
                 record = User.find("jan")
                 record.age = 2

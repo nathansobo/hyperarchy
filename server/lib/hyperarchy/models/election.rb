@@ -1,6 +1,8 @@
 class Election < Monarch::Model::Record
   column :organization_id, :key
   column :body, :string
+#  column :created_at, :datetime
+#  column :updated_at, :datetime
 
   has_many :candidates
   has_many :rankings
