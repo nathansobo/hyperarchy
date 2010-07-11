@@ -67,7 +67,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.electionsList.empty();
       Server.fetch([this.organization().elections(), this.organization().elections().joinTo(Candidate)])
         .onSuccess(function() {
-          this.organization().elections().each(function(election) {
+          this.organization().elections().onEach(function(election) {
             this.electionsList.append(Views.ElectionLi.toView({election: election}));
           }, this);
         }, this);
