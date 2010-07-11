@@ -62,6 +62,10 @@ button {
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .ui-autocomplete {
   position: absolute;
   background: white;

@@ -2,7 +2,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'class': "elections"}, function() {
       div({'class': "grid4"}, function() {
-        h1().ref('organizationName');
+        h1({'class': "clickable"})
+          .click('goToOrganization')
+          .ref('organizationName');
 
         div({'class': "body largeFont"}).ref('bodyDiv');
 
@@ -86,6 +88,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
           this.createCandidateButton.attr('disabled', false);
           this.createCandidateTextarea.val("");
         }, this);
+    },
+
+    goToOrganization: function() {
+      $.bbq.pushState({view: "organization", organizationId: this.election().organizationId() }, 2);
     }
   }
 });
