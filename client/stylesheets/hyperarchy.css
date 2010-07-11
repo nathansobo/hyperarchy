@@ -6,6 +6,10 @@ a, a:visited {
   color: #0e40ac;
 }
 
+h1 {
+  font-weight: bold;
+}
+
 input.text, textarea.text {
   display: block;
   width: 100%;
@@ -303,7 +307,6 @@ table.members th {
 #organizationHeader h1 {
   display: inline;
   margin-right: 10px;
-  font-weight: bold;
 }
 
 #organizationHeader h2 {

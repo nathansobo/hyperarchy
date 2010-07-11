@@ -2,6 +2,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'class': "elections"}, function() {
       div({'class': "grid4"}, function() {
+        h1().ref('organizationName');
+
         div({'class': "body largeFont"}).ref('bodyDiv');
 
         div({id: "createCandidateForm"}, function() {
@@ -44,9 +46,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       if (!election) {
         Server.fetch([
-          Election.where({id: electionId}),
+          Election.where({id: electionId}).joinTo(Organization),
           Candidate.where({electionId: electionId})
-        ]).onSuccess(_.bind(this.navigate, this, state));
+        ]).onSuccess(this.hitch('navigate', state));
         return;
       }
 
@@ -58,6 +60,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
     election: {
       afterChange: function(election) {
         this.subscriptions.destroy();
+
+        this.organizationName.html(election.organization().name());
         this.bodyDiv.html(election.body());
 
         this.candidatesList.empty();
