@@ -5,11 +5,13 @@ _.constructor("Views.ElectionOverview", View.Template, {
         div({'class': "body largeFont"}).ref('bodyDiv');
 
         div({id: "createCandidateForm"}, function() {
-          textarea({'class': "grayText", rows: 3}, "Type your own suggestion here.")
+          textarea({placeholder: "Type your own suggestion here.", rows: 3})
             .ref('createCandidateTextarea')
-            .click(function() {
-              this.val("");
-              this.removeClass('grayText');
+            .keypress(function(view, e) {
+              if (e.keyCode == 13) {
+                view.createCandidateButton.click();
+                return false;
+              }
             });
 
           button("Suggest Answer")
@@ -78,8 +80,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.election().candidates().create({body: this.createCandidateTextarea.val()})
         .onSuccess(function() {
           this.createCandidateButton.attr('disabled', false);
-          this.createCandidateTextarea.addClass("grayText");
-          this.createCandidateTextarea.val("Type your own suggestion here.");
+          this.createCandidateTextarea.val("");
         }, this);
     }
   }
