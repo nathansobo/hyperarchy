@@ -17,6 +17,12 @@ _.constructor("Views.OrganizationOverview", View.Template, {
               .ref('createElectionButton')
               .click('createElection');
             input({placeholder: "Type your question here"})
+              .keypress(function(view, e) {
+                if (e.keyCode === 13) {
+                  view.createElectionButton.click();
+                  return false;
+                }
+              })
               .ref('createElectionInput');
           }).ref('createElectionForm');
         })
@@ -83,6 +89,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.createElectionButton.attr('disabled', true);
       this.organization().elections().create({body: this.createElectionInput.val()})
         .onSuccess(function(election) {
+          this.createElectionInput.val("");
           $.bbq.pushState({view: "election", electionId: election.id()});
         }, this);
     }

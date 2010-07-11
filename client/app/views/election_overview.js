@@ -12,7 +12,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
           textarea({placeholder: "Type your own suggestion here.", rows: 3})
             .ref('createCandidateTextarea')
             .keypress(function(view, e) {
-              if (e.keyCode == 13) {
+              if (e.keyCode === 13) {
                 view.createCandidateButton.click();
                 return false;
               }
