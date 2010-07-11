@@ -11,10 +11,10 @@ _.constructor("Views.ElectionLi", View.Template, {
             li(candidate.body());
           });
         });
+
+        div({'class': "fadeOut"});
       }).click('displayElection');
-
     });
-
   }},
 
   viewProperties: {
