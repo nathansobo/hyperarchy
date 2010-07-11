@@ -20,6 +20,10 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
         update: this.hitch('handleUpdate'),
         receive: this.hitch('handleReceive')
       });
+      this.separator.mousedown(function(e) {
+        return false;
+      });
+
       var adjustHeight = this.hitch('adjustHeight');
       _.defer(adjustHeight);
       $(window).resize(adjustHeight);

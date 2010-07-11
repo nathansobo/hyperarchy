@@ -427,6 +427,7 @@ div#createCandidateForm button {
 .elections ol.candidates li.separator {
   text-align: center;
   padding: 5px;
+  cursor: default;
 }
 
 .elections ol.candidates li.separator .up {
