@@ -273,6 +273,11 @@ module Monarch
             it "returns false is the record is not valid" do
               record.update(:age => 2).should be_false
             end
+
+            it "runs before_update handlers before performing validation checks" do
+              mock(record).before_update(:age => 2)
+              record.update(:age => 2).should be_false
+            end
           end
 
           describe "#update!(values_by_method_name)" do
