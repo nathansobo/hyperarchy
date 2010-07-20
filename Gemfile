@@ -25,6 +25,7 @@ group :test do
   gem "rack-test", "0.5.3", :require => "rack/test"
   gem "machinist", "1.0.6", :require => ["machinist", "machinist/blueprints", "sham"]
   gem "faker", "0.3.1"
+  gem "timecop", "0.3.4"
 end
 
 group :thor do

@@ -39,6 +39,10 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     defaultView: true,
     viewName: 'organization',
 
+    initialize: function() {
+      this.electionLisById = {};
+    },
+
     navigate: function(state) {
       var organizationId = state.organizationId || Organization.find({name: "Alpha Testers"}).id();
       this.organizationId(organizationId);
@@ -67,10 +71,33 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.electionsList.empty();
       Server.fetch([this.organization().elections(), this.organization().elections().joinTo(Candidate)])
         .onSuccess(function() {
-          this.organization().elections().onEach(function(election) {
-            this.electionsList.append(Views.ElectionLi.toView({election: election}));
+          var elections = this.organization().elections();
+
+          elections.each(function(election) {
+            this.electionsList.append(this.electionLi(election));
           }, this);
+
+          elections.onRemoteInsert(function(election) {
+            this.electionsList.prepend(this.electionLi(election));
+          }, this);
+
+          elections.onRemoteUpdate(function(election, changes) {
+            if (changes.updatedAt) {
+              var electionLi = this.electionLi(election);
+              this.electionsList.prepend(electionLi);
+            }
+          }, this);
+
+          elections.subscribe();
         }, this);
+    },
+
+    electionLi: function(election) {
+      var id = election.id();
+      if (!this.electionLisById[id]) {
+        this.electionLisById[id] = Views.ElectionLi.toView({election: election});
+      }
+      return this.electionLisById[election.id()];
     },
 
     editOrganization: function(elt, e) {

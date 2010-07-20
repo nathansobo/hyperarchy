@@ -2,7 +2,8 @@ _.constructor("Election", Model.Record, {
   constructorInitialize: function() {
     this.columns({
       organizationId: 'key',
-      body: 'string'
+      body: 'string',
+      updatedAt: 'datetime'
     });
 
     this.hasMany('candidates', {orderBy: 'position'});
@@ -12,9 +13,9 @@ _.constructor("Election", Model.Record, {
   },
 
   afterInitialize: function() {
-    this.rankingsByUserId = {}
-    this.rankedCandidatesByUserId = {}
-    this.unrankedCandidatesByUserId = {}
+    this.rankingsByUserId = {};
+    this.rankedCandidatesByUserId = {};
+    this.unrankedCandidatesByUserId = {};
   },
 
   rankingsForUser: function(user) {

@@ -1,8 +1,8 @@
 class Election < Monarch::Model::Record
   column :organization_id, :key
   column :body, :string
-#  column :created_at, :datetime
-#  column :updated_at, :datetime
+  column :created_at, :datetime
+  column :updated_at, :datetime
 
   has_many :candidates
   has_many :rankings
@@ -30,6 +30,8 @@ class Election < Monarch::Model::Record
         candidate.update(:position => index + 1)
       end
     end
+
+    update(:updated_at => Time.now)
   end
 
   def candidate_ranking_counts

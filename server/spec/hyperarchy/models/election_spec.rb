@@ -5,6 +5,8 @@ module Models
     attr_reader :election, :memphis, :knoxville, :chattanooga, :nashville, :unranked
 
     before do
+      Timecop.freeze(Time.now)
+
       @election = Election.make(:body => "Where should the capital of Tennesee be?")
       @memphis = election.candidates.create!(:body => "Memphis")
       @knoxville = election.candidates.create!(:body => "Knoxville")
@@ -15,6 +17,8 @@ module Models
 
     describe "#compute_global_ranking" do
       it "uses the ranked-pairs algoritm to produce a global ranking, assigning a position of null to any unranked candidates" do
+        Timecop.freeze(Time.now + 60)
+
         4.times do
           user = User.make
           election.rankings.create(:user => user, :candidate => memphis, :position => 4)
@@ -54,6 +58,8 @@ module Models
         knoxville.position.should == 3
         memphis.position.should == 4
         unranked.reload.position.should be_nil
+
+        election.updated_at.to_i.should == Time.now.to_i
       end
     end
   end

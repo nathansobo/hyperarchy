@@ -94,8 +94,6 @@ _.constructor("Views.EditOrganization", View.Template, {
             if (membership.user() !== Application.currentUser()) {
               b.a({href: "#"}, "Remove").click(function(view) {
                 view.destroyPending.removeClass('inactive');
-                console.debug(this);
-                console.debug(this.parent('table'));
                 membership.destroy().onSuccess(function() {
                   membershipTr.remove();
                 }, this);

@@ -15,3 +15,4 @@
 //= require "routes"
 
 Repository.originUrl = "/repository";
+window.debugEvents = true;
