@@ -18,9 +18,22 @@ _.constructor("Views.ElectionLi", View.Template, {
   }},
 
   viewProperties: {
+    initialize: function() {
+      this.election.candidates().onRemoteUpdate(this.hitch());
+    },
+
+    insertCandidate: function(candidate, index) {
+      var candidateLi = Views.CandidateLi.toView({candidate: candidate});
+      this.insertAtIndex(candidateLi, index)
+    },
+
+    updateCandidate: function(candidate, changes, index) {
+      var candidateLi = this.findLi(candidate);
+      this.insertAtIndex(candidateLi, index);
+    },
+
     displayElection: function() {
       $.bbq.pushState({view: "election", electionId: this.election.id()});
     }
   }
-
 });

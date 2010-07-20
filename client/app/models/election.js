@@ -6,8 +6,8 @@ _.constructor("Election", Model.Record, {
       updatedAt: 'datetime'
     });
 
-    this.hasMany('candidates', {orderBy: 'position'});
-    this.hasMany('rankings', {orderBy: 'position'});
+    this.hasMany('candidates', {orderBy: 'position asc'});
+    this.hasMany('rankings', {orderBy: 'position desc'});
 
     this.belongsTo('organization');
   },
