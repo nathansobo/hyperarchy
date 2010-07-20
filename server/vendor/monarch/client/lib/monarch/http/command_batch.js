@@ -10,7 +10,6 @@ _.constructor("Monarch.Http.CommandBatch", {
     this.future = new Monarch.Http.AjaxFuture();
 
     if (this.commands.length > 0) {
-      console.debug("mutating: ", this.wireRepresentation());
       this.server.post(Repository.originUrl + "/mutate", { operations: this.wireRepresentation() })
         .onSuccess(function(responseData) {
           this.handleSuccessfulResponse(responseData);
