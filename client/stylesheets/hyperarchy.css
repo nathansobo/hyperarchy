@@ -60,6 +60,7 @@ button {
 .glossyBlack, .glossyBlack:visited {
   color: white;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
+  background: -moz-linear-gradient(top, #6d6e70 0%, #3a3a3b 50%, #000000 51%, #1D1D1D 100%);
 }
 
 .clickable {
@@ -382,6 +383,7 @@ div#createElectionForm a {
 
 .election .fadeOut {
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, rgba(255, 255, 255, 0)), color-stop(0.8, rgba(255, 255, 255, 100)));
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 100));
   height: 50px;
   width: 100%;
   position: absolute;
