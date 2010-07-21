@@ -6,8 +6,8 @@ Screw.Unit(function(c) { with(c) {
 
     before(function() {
       view = Views.SortedList.toView({
-        buildLi: function(b, candidate) {
-          b.li(candidate.body());
+        buildLi: function(candidate) {
+          return $("<li>" + candidate.body() + "</li>");
         }
       });
 

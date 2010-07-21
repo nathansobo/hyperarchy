@@ -13,7 +13,7 @@ _.constructor("Views.SortedList", View.Template, {
 
     relation: {
       afterChange: function(relation) {
-        this.subscriptions.destroy();
+        if (this.subscriptions) this.subscriptions.destroy();
 
         this.empty();
         relation.each(function(record) {
@@ -36,7 +36,7 @@ _.constructor("Views.SortedList", View.Template, {
 
     insertAtIndex: function(li, index) {
       li.detach();
-      var insertBefore = this.find(":eq(" + index + ")");
+      var insertBefore = this.find("> :eq(" + index + ")");
 
       if (insertBefore.length > 0) {
         insertBefore.before(li);
@@ -50,10 +50,7 @@ _.constructor("Views.SortedList", View.Template, {
       if (this.lisById[id]) {
         return this.lisById[id];
       } else {
-        var buildLi = this.buildLi;
-        return this.lisById[id] = View.build(function(b) {
-          buildLi(b, record);
-        });
+        return this.lisById[id] = this.buildLi(record);
       }
     },
 

@@ -88,7 +88,10 @@ _.constructor("Views.OrganizationOverview", View.Template, {
             }
           }, this);
 
-          elections.subscribe();
+          Server.subscribe([
+            elections,
+            elections.joinThrough(Candidate)
+          ]);
         }, this);
     },
 
