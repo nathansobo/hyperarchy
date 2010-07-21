@@ -28,6 +28,16 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+    describe("#wireRepresentation", function() {
+      it("returns the JSON representation of the table projection", function() {
+        expect(projection.wireRepresentation()).to(equal, {
+          type: "table_projection",
+          operand: operand.wireRepresentation(),
+          projected_table: "blogs"
+        });
+      });
+    });
+
     describe("event handling", function() {
 
       var insertCallback, updateCallback, removeCallback;
