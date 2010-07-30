@@ -1,10 +1,11 @@
 class Ranking
   attr_reader :election_id, :default_rank
   
-  # the position of this keyword in the ranking array indicates the place
-  #  for which all of the unranked candidates are tied.
+  # the position of this keyword in the ranking array indicates the "default rank."
+  #  it's a placeholder for any candidates not explicity included in the ranking.
   UNRANKED_ID = "others"
   
+  # if no default rank is specified, assume that unranked candidates are tied for last place
   def initialize(election_id, ranking = [])
     @election_id = election_id
     @ranking = ranking
@@ -15,13 +16,21 @@ class Ranking
   
   # which candidate(s) are in Nth place?
   def candidates_of_rank(rank)
-    @ranking[rank]
+    if rank == @default_rank
+      unranked_candidates
+    else
+      @ranking[rank]
+    end
+  end
+  
+  def [](rank)
+    candidates_of_rank(rank)
   end
   
   # in which place is candidate N?
   def rank_of_candidate(candidate_id)
     @ranking.each_index do |rank|
-      return rank  if Array(@ranking[rank]).include?(candidate_id) 
+      return rank if Array(@ranking[rank]).include?(candidate_id) 
     end
     return default_rank
   end
@@ -31,10 +40,9 @@ class Ranking
     Array(@ranking - [UNRANKED_ID]).flatten.sort
   end
   
-  # which candidates are NOT explicity ranked by this user?
+  # which candidates ARE NOT explicity ranked by this user?
   def unranked_candidates
-    num_candidates = Election[@election_id].candidates.length
-    all_candidates = (0...num_candidates).to_a
+    all_candidates = Election[@election_id].candidate_ids
     return all_candidates - @ranking.flatten
   end
   
@@ -56,16 +64,17 @@ class Ranking
     return candidates_below.flatten.sort
   end 
   
-  # which candidates are ranked above all those that aren't explicity ranked?
+  # which candidates are ranked above those that aren't explicity ranked?
   def candidates_above_default
     Array(@ranking[0...@default_rank]).flatten.sort
   end
   
-  # which candidates are ranked below all those that aren't explicity ranked?
+  # which candidates are ranked below those that aren't explicity ranked?
   def candidates_below_default
     Array(@ranking[@default_rank+1...@ranking.length]).flatten.sort
   end  
 end
+
 
 
 # class Ranking < Monarch::Model::Record
