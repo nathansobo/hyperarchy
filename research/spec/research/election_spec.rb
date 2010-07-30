@@ -25,11 +25,12 @@ describe Election do
     election.candidates.length.should == n    
     
     election.add_ranking([0,"others"])
-    election.add_ranking([1,0,"others",2])
+    election.add_ranking([1,0,"others",3])
     
     results = election.results
     results.first.should == 0
-    results.last.should == 2
+    results[1].should == 1
+    results.last.should == 3
   end
  
 end
