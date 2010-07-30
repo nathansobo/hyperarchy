@@ -74,6 +74,7 @@ class Election
   
   private
   
+  # this is the MAM algorithm. to use another Condorcet method, redefine this method.
   def compute_results
     already_processed = []
     graph = RGL::DirectedAdjacencyGraph.new    
