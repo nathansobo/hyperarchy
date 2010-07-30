@@ -8,7 +8,7 @@ describe Election do
     @election = Election.new
   end
 
-  it "keeps track of election ids" do
+  it "initializes, keeps track of election ids" do
     election.body.should == "Question 0"
     election.id.should == 0
     Election[0].should == election
@@ -19,19 +19,7 @@ describe Election do
     Election[1].should == election1
   end
     
-  it "accepts candidates, expands matrix of majorities" do
-    election.add_candidate
-    election.candidates[0].should == "Candidate 0"
-    #election.majorities.should == [[0]]
-    
-    election.add_candidate("other candidate")
-    election.candidates[1].should == "other candidate"
-    #election.majorities.should == [[0,0],[0,0]]
-    election.add_candidate
-    election.candidates[2].should == "Candidate 2"
-  end
-  
-  it "accepts rankings, updates majority counts" do
+  it "accepts rankings, computes results" do
     n = 5
     n.times {election.add_candidate}
     election.candidates.length.should == n    
@@ -40,14 +28,10 @@ describe Election do
     election.add_ranking([1,0,"others",2])
     
     results = election.results
-    results[0].should == 0
+    results.first.should == 0
     results.last.should == 2
   end
-  
-  it "works" do
-    
-  end
-
+ 
 end
 
 
