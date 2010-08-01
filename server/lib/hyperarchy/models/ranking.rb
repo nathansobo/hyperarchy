@@ -68,10 +68,6 @@ class Ranking < Monarch::Model::Record
       decrement_defeats_by(candidates_not_ranked_by_same_user)
     end
 
-    if all_rankings_for_same_candidate.empty?
-      candidate.update(:position => nil)
-    end
-
     election.compute_global_ranking
   end
 

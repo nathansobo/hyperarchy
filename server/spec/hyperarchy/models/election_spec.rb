@@ -57,7 +57,7 @@ module Models
         chattanooga.position.should == 2
         knoxville.position.should == 3
         memphis.position.should == 4
-        unranked.reload.position.should be_nil
+        unranked.position.should == 5
 
         election.updated_at.to_i.should == Time.now.to_i
       end

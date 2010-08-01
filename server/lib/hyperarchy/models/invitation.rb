@@ -53,6 +53,8 @@ class Invitation < Monarch::Model::Record
 
   protected
   def invite_email_body
-    %[Visit #{Mailer.base_url}/signup?invitation_code=#{guid} to sign up.]
+    %[#{HYPERARCHY_BLURB}
+
+Visit #{Mailer.base_url}/signup?invitation_code=#{guid} to sign as an alpha tester. You can then add your organization and invite your colleagues to vote with you.]
   end
 end

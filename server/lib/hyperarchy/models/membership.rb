@@ -68,7 +68,9 @@ class Membership < Monarch::Model::Record
 
   def invite_email_body
     if invitation
-      %[Visit #{Mailer.base_url}/signup?invitation_code=#{invitation.guid} to sign up.]
+      %[#{HYPERARCHY_BLURB}
+
+Visit #{Mailer.base_url}/signup?invitation_code=#{invitation.guid} to join our private alpha test and start voting on issues for #{organization.name}.]
     else
       %[Visit #{Mailer.base_url}/confirm_membership/#{id} to become a member of #{organization.name}.]
     end

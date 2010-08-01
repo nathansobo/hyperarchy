@@ -4,7 +4,10 @@ _.constructor("Views.Invite", View.Template, {
       div({'class': "grid6"}, function() {
         textarea({'class': "largeFont"}).ref('emailAddresses');
       });
-      div({'class': "grid6 largeFont"}, "Enter your friends' email addresses, and we'll send them an invitation to join Hyperarchy.");
+      div({'class': "grid6 largeFont"},
+        "Enter your friends' email addresses, and we'll send them an invitation to join Hyperarchy. " +
+        "If you would like to invite someone as a member of your specific organization, do that from its admin screen."
+      );
 
       div({'class': "grid12"}, function() {
         button('Send Invitations').ref('sendInvitationsButton').click('sendInvitations');

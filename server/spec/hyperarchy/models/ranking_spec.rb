@@ -95,16 +95,12 @@ module Models
         find_majority(candidate_3, candidate_2).count.should == 0
 
         mock.proxy(election).compute_global_ranking
+
         ranking_1.destroy
 
         election.majorities.each do |majority|
           majority.reload.count.should == 0
         end
-
-        # no candidate is ranked any longer, so all have a null position
-        candidate_1.position.should be_nil
-        candidate_3.position.should be_nil
-        candidate_3.position.should be_nil
       end
 
       specify "negatively ranked candidates are counted as losing to unranked candidates" do
