@@ -22,7 +22,7 @@ class User < Monarch::Model::Record
   end
 
   def after_create
-    memberships.create!(:organization => Organization.find(:name => "Alpha Testers"), :suppress_invite_email => true)
+    memberships.create!(:organization => Organization.find(:name => ALPHA_TEST_ORG_NAME), :suppress_invite_email => true)
   end
 
   def password=(unencrypted_password)

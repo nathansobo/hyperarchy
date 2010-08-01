@@ -8,3 +8,8 @@ require "bundler"
 ENV['BUNDLE_GEMFILE'] ||= "#{ROOT}/Gemfile"
 Bundler.setup(:thor)
 require "sequel"
+
+def require_hyperarchy(env)
+  ENV['RACK_ENV'] = env
+  require "#{ROOT}/server/lib/hyperarchy"
+end

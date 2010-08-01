@@ -3,7 +3,6 @@ class Invitation < Monarch::Model::Record
   column :sent_to_address, :string
   column :first_name, :string
   column :last_name, :string
-  column :last_name, :string
   column :redeemed, :boolean
   column :inviter_id, :key
   column :invitee_id, :key
@@ -51,10 +50,14 @@ class Invitation < Monarch::Model::Record
     user
   end
 
+  def signup_url
+    "#{Mailer.base_url}/signup?invitation_code=#{guid}"
+  end
+
   protected
   def invite_email_body
     %[#{HYPERARCHY_BLURB}
 
-Visit #{Mailer.base_url}/signup?invitation_code=#{guid} to sign as an alpha tester. You can then add your organization and invite your colleagues to vote with you.]
+Visit #{signup_url} to sign as an alpha tester. You can then add your organization and invite your colleagues to vote with you.]
   end
 end

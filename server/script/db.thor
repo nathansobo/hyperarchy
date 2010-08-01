@@ -1,8 +1,8 @@
 require File.expand_path("#{File.dirname(__FILE__)}/thor_helper")
 
 class Db < Thor
-  desc "setup [env=development]", "create and migrate database for specified environment (if no environment specified, sets up development and test and loads example data)"
-  def setup(env=nil)
+  desc "setup [env=development] [load_examples=true]", "create and migrate database for specified environment (if no environment specified, sets up development and test and loads example data)"
+  def setup(env=nil, load_examples=true)
     unless env
       setup("development")
       setup("test")
@@ -12,7 +12,7 @@ class Db < Thor
     db.execute("drop database if exists #{db_name(env)}")
     db.execute("create database #{db_name(env)}")
     migrate(env)
-    load_examples if env == "development"
+    load_examples if env == "development" && load_examples
   end
 
   desc "migrate [env=development]", "run migrations against the given environment"

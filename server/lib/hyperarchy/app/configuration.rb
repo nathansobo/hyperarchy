@@ -74,5 +74,7 @@ module Hyperarchy
     before do
       Mailer.base_url = base_url
     end
+
+    ::ALPHA_TEST_ORG_NAME = "Alpha Testers"
   end
 end
