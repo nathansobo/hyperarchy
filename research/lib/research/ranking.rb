@@ -2,8 +2,13 @@ class Ranking
   attr_reader :election_id, :default_rank
   
   # the position of this keyword in the ranking array indicates the "default rank."
-  #  it's a placeholder for any candidates not explicity included in the ranking.
-  UNRANKED_ID = "others"
+  #  it's a placeholder for all candidates not explicity included in the ranking.
+  UNRANKED_ID = "other candidates"
+  class << self
+    def unranked_id
+      UNRANKED_ID
+    end
+  end
   
   # if no default rank is specified, assume that unranked candidates are tied for last place
   def initialize(election_id, ranking = [])
@@ -14,9 +19,9 @@ class Ranking
     @default_rank = @ranking.index(UNRANKED_ID)
   end
   
-  # which candidate(s) are in Nth place?
+  # which candidates are in Nth place?
   def candidates_of_rank(rank)
-    if rank == @default_rank
+    if @ranking[rank] == UNRANKED_ID
       unranked_candidates
     else
       @ranking[rank]
@@ -24,7 +29,28 @@ class Ranking
   end
   
   def [](rank)
-    candidates_of_rank(rank)
+    candidates_of_rank(rank)\
+  end  
+  
+  def first
+    if @ranking.first == UNRANKED_ID
+      unranked_candidates
+    else
+      @ranking.first
+    end
+  end
+  
+  def last
+    if @ranking.last == UNRANKED_ID
+      unranked_candidates
+    else
+      @ranking.last
+    end
+  end
+  
+  def inspect
+    output = @rankings
+    @rankings.inspect
   end
   
   # in which place is candidate N?
@@ -35,12 +61,12 @@ class Ranking
     return default_rank
   end
   
-  # which candidates ARE explicity ranked by this user?
+  # which candidates ARE explicity ranked?
   def ranked_candidates
     Array(@ranking - [UNRANKED_ID]).flatten.sort
   end
   
-  # which candidates ARE NOT explicity ranked by this user?
+  # which candidates ARE NOT explicity ranked?
   def unranked_candidates
     all_candidates = Election[@election_id].candidate_ids
     return all_candidates - @ranking.flatten

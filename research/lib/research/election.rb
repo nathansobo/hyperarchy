@@ -24,6 +24,10 @@ class Election
     return (0...@candidates.length).to_a
   end
   
+  def num_candidates
+    return @candidates.length
+  end
+  
   def add_candidate(candidate="Candidate #{@candidates.length}")
     @candidates.push(candidate)
     @results_current = false
@@ -35,33 +39,27 @@ class Election
       @majorities << {:winner => id, :loser => new_id, :count => 0}
     end
     
-    # count the new majorities by assigning this new candidate to each user's "default" rank 
+    # look at all of the existing rankings. 
     @rankings.each do |ranking|
-      ranking.candidates_above_default.each do |i|
-        @majorities.each_index do |k| 
-          @majorities[k][:count] += 1  if @majorities[k][:winner] == i and @majorities[k][:loser] == new_id
-        end
+      ranking.candidates_above_default.each do |w|
+        @majorities.each {|m| m[:count] += 1  if m[:winner] == w and m[:loser] == new_id}
       end
-      ranking.candidates_below_default.each do |id|
-        @majorities.each_index do |k| 
-          @majorities[k][:count] += 1  if @majorities[k][:loser] == i and @majorities[k][:winner] == new_id
-        end
+      ranking.candidates_below_default.each do |l|
+        @majorities.each {|m| m[:count] += 1  if m[:loser] == l and m[:winner] == new_id}
       end
     end
   end
   
-  # add a new user ranking, specified by the array "new_ranking." this is converted to a "ranking" object.
-  def add_ranking(new_ranking)
-    @rankings.push(Ranking.new(id, new_ranking))
+  # add a new user ranking, specified by the array "new_ranking." this is converted to a "Ranking" object.
+  def add_ranking(the_ranking)
+    ranking = Ranking.new(id, the_ranking)
+    @rankings.push(ranking)
     @results_current = false
-    ranking = @rankings.last
     
     # increment the count for each pairwise majority in the new ranking
-    candidate_ids.each do |i|
-      ranking.candidates_below(i).each do |j| 
-        @majorities.each_index do |k| 
-          @majorities[k][:count] += 1  if @majorities[k][:winner] == i and @majorities[k][:loser] == j
-        end  
+    candidate_ids.each do |w|
+      ranking.candidates_below(w).each do |l| 
+        @majorities.each {|m| m[:count] += 1  if m[:winner] == w and m[:loser] == l}
       end
     end  
   end
@@ -90,6 +88,7 @@ class Election
 
     @results = []
     graph.topsort_iterator.each {|candidate_id|  @results << candidate_id}
+    @results_current = true
   end
 end
 
@@ -143,3 +142,4 @@ end
 #       project(Candidate)
 #   end
 # end
+
