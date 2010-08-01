@@ -24,16 +24,16 @@ module Views
           input :type => "hidden", :name => "invitation_code", :value => invitation.guid
 
           label "First Name", :for => "first_name"
-          input :class => "text", :name => "redeem[user[first_name]]"
+          input :class => "text", :name => "redeem[user[first_name]]", :value => invitation.first_name || ""
 
           label "Last Name", :for => "last_name"
-          input :class => "text", :name => "redeem[user[last_name]]"
+          input :class => "text", :name => "redeem[user[last_name]]", :value => invitation.last_name || ""
 
           label "Email Address", :for => "email_address"
-          input :class => "text", :name => "redeem[user[email_address]]", :value => invitation.sent_to_address
+          input :class => "text", :name => "redeem[user[email_address]]", :value => invitation.sent_to_address || ""
 
           label "Password", :for => "password"
-          input :class => "text", :name => "redeem[user[password]]", :type => "password"
+          input :class => "text", :name => "redeem[user[password]]", :type => "password", :value => ""
 
           input :type => "submit", :value =>"Sign Up"
         end
@@ -60,7 +60,7 @@ module Views
       div :class => "grid4 suffix1" do
         form :action => "/interested", :method => "post" do
           label "Your Email Address", :for => "email_address"
-          input :class => "text", :name => "email_address"
+          input :class => "text", :name => "email_address", :value => ""
           label "Comments (Optional)"
           textarea :class => "text", :name => "comments"
           input :type => "submit"
@@ -92,14 +92,13 @@ module Views
       javascript_include "jquery-1.4.2.js"
 
       javascript %[
-        var hasInvitation = #{!(invitation.nil?).to_json};
+        var hasInvitation = #{(!invitation.nil?).to_json};
 
         $(function() {
+          $("input[value='']").focus();
           if (hasInvitation) {
-            $("input[name='user[first_name]']").focus();
             mpmetrics.track('view signup page');
           } else {
-            $("input[name='email_address']").focus();
             mpmetrics.track('view interested page');
           }
         });
