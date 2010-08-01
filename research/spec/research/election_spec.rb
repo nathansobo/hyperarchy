@@ -2,37 +2,54 @@ require File.expand_path(File.dirname(__FILE__)) + '/../spec_helper.rb'
 
 
 describe Election do
-  attr_accessor :election
+  attr_accessor :election, :num_candidates, :num_users, :num_ranked, :unranked_id
   
   before do
+    @num_candidates  = 10
+    @num_users       = 5   
+    @num_ranked      = 5
+    
+    @unranked_id = Ranking::UNRANKED_ID
     @election = Election.new
+    num_candidates.times {election.add_candidate}
+    num_users.times do
+      random_ranking = (election.candidate_ids.sort_by {rand}).first(num_ranked)
+      random_ranking = (random_ranking + [unranked_id]).sort_by {rand}
+      election.add_ranking(random_ranking)
+      #puts random_ranking.inspect
+    end
   end
 
-  it "initializes, keeps track of election ids" do
-    election.body.should == "Question 0"
+  it "initializes, keeps track of election IDs" do
     election.id.should == 0
-    Election[0].should == election
-    
-    election1 = Election.new("What the heck?")
-    election1.body.should == "What the heck?"  
+    Election[0].should == election    
+    election1 = Election.new
     election1.id.should == 1
     Election[1].should == election1
   end
+  
+  it "elects the condorcet winner, if one exists" do
+    majorities = Array.new(num_candidates, 0)
+    majorities.each_index {|i| majorities[i] = Array.new(num_candidates, 0)}
+    election.candidate_ids.each do |winner|
+      election.rankings.each do |ranking|
+        ranking.candidates_below(winner).each {|loser| majorities[winner][loser] += 1}
+      end
+    end
+    condorcet_winner = nil
+    election.candidate_ids.each do |i|
+      other_candidates = election.candidate_ids - [i]
+      if other_candidates.all? {|j| majorities[i][j] > majorities[j][i]}
+        puts "- condorcet winner is " + i.to_s
+        condorcet_winner = i
+      end
+    end
     
-  it "accepts rankings, computes results" do
-    n = 5
-    n.times {election.add_candidate}
-    election.candidates.length.should == n    
-    
-    election.add_ranking([0,"others"])
-    election.add_ranking([1,0,"others",3])
-    
-    results = election.results
-    results.first.should == 0
-    results[1].should == 1
-    results.last.should == 3
+    if condorcet_winner
+      election.results.first.should == condorcet_winner
+    end
   end
- 
+  
 end
 
 
