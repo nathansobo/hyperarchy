@@ -72,7 +72,7 @@ module Hyperarchy
 
     post "/invite" do
       params[:email_addresses].from_json.each do |email_address|
-        Invitation.create!(:inviter => current_user, :sent_to_address => email_address)
+        Invitation.create!(:inviter => current_user, :sent_to_address => email_address, :send_email => true)
       end
       successful_json_response
     end

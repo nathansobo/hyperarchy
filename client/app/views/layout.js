@@ -49,6 +49,8 @@ _.constructor("Views.Layout", View.Template, {
 
       var memberships = Application.currentUser().memberships();
 
+      if (memberships.where({role: "owner"}).empty()) this.adminMenuLink.hide();
+
       memberships.onEach(function(membership) {
         var organization = membership.organization();
 
@@ -62,6 +64,7 @@ _.constructor("Views.Layout", View.Template, {
         }));
 
         if (membership.role() == "owner") {
+          this.adminMenuLink.show();
           this.adminMenu.append(View.build(function(b) {
             b.li(function() {
               b.a({href: "#"}, organization.name() + " Admin").click(function(view, e) {
