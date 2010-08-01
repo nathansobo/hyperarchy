@@ -1,26 +1,28 @@
 require File.expand_path(File.dirname(__FILE__)) + '/../spec_helper.rb'
 
 describe Ranking do
-  attr_accessor :my_election
+  attr_accessor :my_election, :unranked
   
   before do
     @my_election = Election.new
     5.times {@my_election.add_candidate}
+    @unranked = Ranking::UNRANKED_ID
   end
     
-  it "can be added to elections and can access their candidate lists" do
+  it "can be added to elections and access their candidate lists" do
     my_election.add_ranking([0, 1])
     ranking = my_election.rankings.last
+    
     ranking.ranked_candidates.should == [0, 1]
     ranking.unranked_candidates.should == [2, 3, 4]
-    
     my_election.add_candidate
     ranking.unranked_candidates.should == [2, 3, 4, 5]
   end
   
-  it "finds ranks of candidates, deals with ties" do
+  it "determines relative ranks of candidates, deals with ties" do
     my_election.add_ranking([0, [1, 2], 3, 4])
     ranking = my_election.rankings.last
+    
     ranking.rank_of_candidate(0).should == 0
     ranking.rank_of_candidate(1).should == 1
     ranking.rank_of_candidate(2).should == 1
@@ -40,15 +42,20 @@ describe Ranking do
   end
   
   it "places unranked candidates properly" do
-    my_election.add_ranking([0, "others", 4])
+    my_election.add_ranking([0, unranked, 4])
     ranking = my_election.rankings.last
+    
     ranking.default_rank.should == 1
+    ranking.rank_of_candidate(0).should == 0
     ranking.rank_of_candidate(1).should == 1
+    ranking.rank_of_candidate(2).should == 1
     ranking.rank_of_candidate(4).should == 2
+    
     ranking.candidates_above_default.should == [0]
     ranking.candidates_below_default.should == [4]
     ranking.candidates_below(0).should == [1, 2, 3, 4]
     ranking.candidates_below(1).should == [4]
+    ranking.candidates_below(2).should == [4]
   end
 end
 
