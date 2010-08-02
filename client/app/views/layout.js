@@ -3,6 +3,19 @@ _.constructor("Views.Layout", View.Template, {
 
     div({id: "application"}, function() {
       div({id: "notification", style: "display: none"}).ref("notification");
+      div({id: "darkenBackground", style: "display: none"})
+        .click('hideFeedbackForm')
+        .ref('darkenBackground');
+      div({id: "feedback", style: "display: none"}, function() {
+        div({class: "x"}).click('hideFeedbackForm');
+        div({id: "thanks", class: "largeFont"}, function() {
+          text("Thanks for taking the time to talk to us! Feel free to get in touch with us via email at ");
+          a({href: "mailto:admin@hyperarchy.com"}, "admin@hyperarchy.com");
+          text(".")
+        });
+        textarea().ref("feedbackTextarea");
+        input({type: "submit", 'class': "largeFont", value: "Send Feedback"}).click('sendFeedback');
+      }).ref("feedbackForm");
 
       div({'class': "container12"}, function() {
         div({id: "header", 'class': "grid12"}, function() {
@@ -14,6 +27,7 @@ _.constructor("Views.Layout", View.Template, {
             a({'class': "logout headerItem", href: "#"}, "Log Out").click(function() {
               $("<form action='/logout' method='post'>").appendTo($("body")).submit();
             });
+            a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
             a({'class': "invite headerItem", href: "#view=invite"}, "Invite");
 
             a({'class': "headerItem dropdownLink", href: "#"}, "Admin")
@@ -120,6 +134,34 @@ _.constructor("Views.Layout", View.Template, {
           menu.hide();
         });
       });
+    },
+
+    showFeedbackForm: function(elt, e) {
+      this.darkenBackground.show();
+
+      this.feedbackForm
+        .show()
+        .position({
+          my: "center",
+          at: "center",
+          of: this.darkenBackground
+        });
+
+      e.preventDefault();
+    },
+
+    hideFeedbackForm: function(elt, e) {
+      this.darkenBackground.hide();
+      this.feedbackForm.hide();
+    },
+
+    sendFeedback: function() {
+      Server.post("/feedback", {
+        feedback: this.feedbackTextarea.val()
+      }).onSuccess(function() {
+        this.hideFeedbackForm();
+        this.notify("Thanks for the feedback!")
+      }, this);
     }
   }
 });

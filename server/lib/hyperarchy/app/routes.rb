@@ -76,5 +76,15 @@ module Hyperarchy
       end
       successful_json_response
     end
+
+    post "/feedback" do
+      Mailer.send(
+        :to => ["admin@hyperarchy.com", "nathansobo+hyperarchy@gmail.com"],
+        :from => "admin@hyperarchy.com",
+        :subject => "#{current_user.full_name} submitted feedback",
+        :body => "User id: #{current_user.id}\n\nTheir comments: #{params[:feedback]}"
+      )
+      successful_json_response
+    end
   end
 end

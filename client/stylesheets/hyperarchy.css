@@ -79,6 +79,12 @@ th, td {
   padding: 5px 0 5px 0;
 }
 
+.x {
+  height: 21px;
+  width: 21px;
+  background-image: url(/images/x_21x21_dark.png);
+}
+
 /* layout */
 
 #notification {
@@ -91,6 +97,46 @@ th, td {
   border-bottom: 1px solid #8e8e8e;
   margin-bottom: 5px;
   font-size: 14px;
+}
+
+#darkenBackground {
+  background-color: rgba(0, 0, 0, .5);
+  z-index: 20;
+  height: 100%;
+  width: 100%;
+  background-repeat: repeat;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+
+#feedback {
+  background: white;
+  height: 300px;
+  width: 600px;
+  position: absolute;
+  z-index: 21;
+  padding: 10px;
+  -moz-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
+  -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
+}
+
+#feedback .x {
+  float: right;
+  margin-left: 30px;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+#feedback #thanks {
+  margin-bottom: 10px;
+}
+
+#feedback textarea {
+  width: 100%;
+  height: 190px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 /* home page */
