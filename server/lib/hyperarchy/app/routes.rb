@@ -62,7 +62,6 @@ module Hyperarchy
     post "/interested" do
       Mailer.send(
         :to => ["admin@hyperarchy.com", "nathansobo+hyperarchy@gmail.com"],
-        :from => "admin@hyperarchy.com",
         :subject => "#{params[:email_address]} is interested in Hyperarchy",
         :body => "Their comments: #{params[:comments]}"
       )
@@ -80,7 +79,6 @@ module Hyperarchy
     post "/feedback" do
       Mailer.send(
         :to => ["admin@hyperarchy.com", "nathansobo+hyperarchy@gmail.com"],
-        :from => "admin@hyperarchy.com",
         :subject => "#{current_user.full_name} submitted feedback",
         :body => "User id: #{current_user.id}\n\nTheir comments: #{params[:feedback]}"
       )

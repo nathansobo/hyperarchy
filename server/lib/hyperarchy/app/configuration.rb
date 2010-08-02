@@ -30,6 +30,7 @@ module Hyperarchy
       set :port, 9000
       Mailer.base_url = "localhost:9000"
       Mailer.default_options = {
+        :from => '"Hyperarchy" <admin@hyperarchy.com>',
         :via => :smtp,
         :via_options => {
           :address => "localhost",
@@ -49,6 +50,19 @@ module Hyperarchy
 
       ::LOGGER = Logger.new($stdout)
       set :port, 3001
+
+      Mailer.default_options = {
+        :via => :smtp,
+        :via_options => {
+          :address => "smtp.gmail.com",
+          :from => '"Hyperarchy" <admin@hyperarchy.com>',
+          :port => 587,
+          :user_name => "admin@hyperarchy.com",
+          :password => "thepresent",
+          :authentication => :plain,
+          :domain => "hyperarchy.com"
+        }
+      }
     end
 
     configure(:production) do
@@ -61,6 +75,7 @@ module Hyperarchy
         :via => :smtp,
         :via_options => {
           :address => "smtp.gmail.com",
+          :from => '"Hyperarchy" <admin@hyperarchy.com>',
           :port => 587,
           :user_name => "admin@hyperarchy.com",
           :password => "thepresent",
@@ -74,10 +89,6 @@ module Hyperarchy
 
     Warden::Manager.after_set_user do |user, auth, options|
       Monarch::Model::Record.current_user = user
-    end
-
-    before do
-      Mailer.base_url = base_url
     end
 
     ::ALPHA_TEST_ORG_NAME = "Alpha Testers"

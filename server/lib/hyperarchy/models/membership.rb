@@ -55,7 +55,6 @@ class Membership < Monarch::Model::Record
     return if suppress_invite_email
     Mailer.send(
       :to => email_address,
-      :from => "admin@hyperarchy.com",
       :subject => invite_email_subject,
       :body => invite_email_body
     )

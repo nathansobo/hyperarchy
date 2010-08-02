@@ -21,7 +21,6 @@ class Invitation < Monarch::Model::Record
     return unless send_email
     Mailer.send(
       :to => sent_to_address,
-      :from => "admin@hyperarchy.com",
       :subject => "#{inviter.full_name} has invited you to join Hyperarchy",
       :body => invite_email_body
     )
