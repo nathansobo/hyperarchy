@@ -72,10 +72,10 @@ module Hyperarchy
       set :port, 3000
 
       Mailer.default_options = {
+        :from => '"Hyperarchy" <admin@hyperarchy.com>',
         :via => :smtp,
         :via_options => {
           :address => "smtp.gmail.com",
-          :from => '"Hyperarchy" <admin@hyperarchy.com>',
           :port => 587,
           :user_name => "admin@hyperarchy.com",
           :password => "thepresent",
