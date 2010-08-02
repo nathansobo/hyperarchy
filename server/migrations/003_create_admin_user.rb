@@ -8,7 +8,7 @@ Sequel.migration do
       :encrypted_password => BCrypt::Password.create("tortuga").to_s
     )
 
-    alpha_testers_id = self[:organizations].find(:name => "Alpha Testers").first[:id]
+    alpha_testers_id = self[:organizations].where(:name => "Alpha Testers").first[:id]
 
     self[:memberships].insert(
       :user_id => admin_id,
