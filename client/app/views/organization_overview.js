@@ -39,10 +39,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     defaultView: true,
     viewName: 'organization',
 
-    initialize: function() {
-      this.electionLisById = {};
-    },
-
     navigate: function(state) {
       var organizationId = state.organizationId || Organization.find({name: "Alpha Testers"}).id();
       this.organizationId(organizationId);
@@ -68,7 +64,9 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     displayElections: function() {
+      this.electionLisById = {};
       this.electionsList.empty();
+
       Server.fetch([this.organization().elections(), this.organization().elections().joinTo(Candidate)])
         .onSuccess(function() {
           var elections = this.organization().elections();
