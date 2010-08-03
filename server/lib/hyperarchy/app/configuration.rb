@@ -53,9 +53,9 @@ module Hyperarchy
 
       Mailer.default_options = {
         :via => :smtp,
+        :from => '"Hyperarchy" <admin@hyperarchy.com>',
         :via_options => {
           :address => "smtp.gmail.com",
-          :from => '"Hyperarchy" <admin@hyperarchy.com>',
           :port => 587,
           :user_name => "admin@hyperarchy.com",
           :password => "thepresent",
