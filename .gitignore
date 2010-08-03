@@ -9,3 +9,4 @@ server/service/*.pid
 .idea
 .rvmrc
 log
+nginx_access.log

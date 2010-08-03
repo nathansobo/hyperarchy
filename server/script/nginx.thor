@@ -17,6 +17,11 @@ class Nginx < Thor
     exec("#{nginx_command} -s reload")
   end
 
+  desc "test", "tests the nginx config"
+  def test
+    exec("#{nginx_command} -t")
+  end
+
   protected
 
   def nginx_command
