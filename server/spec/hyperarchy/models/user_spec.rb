@@ -9,9 +9,8 @@ module Models
 
     describe "after create" do
       it "automatically creates a membership for the 'Alpha Testers' organization" do
-
-        user.organizations.find(:name => ALPHA_TEST_ORG_NAME).should_not be_nil
-
+        alpha_org = Organization.find(:name => ALPHA_TEST_ORG_NAME)
+        user.memberships.find(:pending => false, :organization => alpha_org).should_not be_nil
       end
     end
 

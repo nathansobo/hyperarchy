@@ -61,7 +61,7 @@ _.constructor("Views.Layout", View.Template, {
         this.body.append(view);
       }, this);
 
-      var memberships = Application.currentUser().memberships();
+      var memberships = Application.currentUser().confirmedMemberships();
 
       if (memberships.where({role: "owner"}).empty()) this.adminMenuLink.hide();
 

@@ -8,8 +8,12 @@ _.constructor("User", Model.Record, {
 
     this.hasMany('rankings');
     this.hasMany('memberships');
+
+    this.relatesToMany('confirmedMemberships', function() {
+      return this.memberships().where({pending: false});
+    });
     this.relatesToMany('organizations', function() {
-      return this.memberships().joinThrough(Organization);
+      return this.confirmedMemberships().joinThrough(Organization);
     });
   },
 
