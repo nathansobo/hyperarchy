@@ -10,7 +10,7 @@ _.constructor("Monarch.Http.CometClient", {
     var numReceivedCharacters = 0
     var connectFuture = new Http.AjaxFuture();
 
-    _.defer(function() {
+    _.delay(function() {
       var xhr = jQuery.ajax({
         type: "post",
         url: Server.cometHubUrl,
@@ -36,7 +36,7 @@ _.constructor("Monarch.Http.CometClient", {
           self.connect();
         }
       };
-    });
+    }, 20);
 
     return connectFuture;
   },
