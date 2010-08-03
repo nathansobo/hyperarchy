@@ -69,6 +69,15 @@ button {
   background: -moz-linear-gradient(top, #6d6e70 0%, #3a3a3b 50%, #000000 51%, #1D1D1D 100%);
 }
 
+.roundedButton {
+  font-size: 20px;
+  border-radius: 3px;
+  padding: 3px 7px;
+  text-decoration:none;
+  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+  cursor: pointer;
+}
+
 .clickable {
   cursor: pointer;
 }
@@ -260,6 +269,10 @@ div.addOrganization input[type=submit] {
 
 /* edit organization page */
 
+.editOrganization #overviewLink {
+  float: right;
+}
+
 div.addMember {
   border-bottom: 1px solid #999999;
   padding-bottom: 5px;
@@ -375,13 +388,9 @@ table.members th {
   margin-bottom: 20px;
 }
 
+
 a#createElectionLink {
-  font-size: 20px;
   float: right;
-  border-radius: 3px;
-  padding: 3px 7px;
-  text-decoration:none;
-  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
 }
 
 a#createElectionLink:hover {
@@ -407,14 +416,8 @@ div#createElectionForm input {
 }
 
 div#createElectionForm a {
-  font-size: 20px;
   float: right;
-  border-radius: 3px;
-  padding: 3px 7px;
-  text-decoration:none;
-  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
   margin-top: 5px;
-  cursor: pointer;
 }
 
 .election {

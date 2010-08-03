@@ -4,7 +4,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       div({'class': "top grid12"}, function() {
         div({'id': "organizationHeader"}, function() {
           div({'id': "title"}, function() {
-            a({href: "#", id: 'createElectionLink', 'class': "glossyBlack"}, "Raise A New Question")
+            a({href: "#", id: 'createElectionLink', 'class': "glossyBlack roundedButton"}, "Raise A New Question")
               .ref('showCreateElectionFormButton')
               .click('showCreateElectionForm');
             h1().ref("organizationName");
@@ -13,7 +13,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
           div({style: "clear: both"});
 
           div({id: 'createElectionForm'}, function() {
-            a({'class': "glossyBlack"}, "Raise Question")
+            a({'class': "glossyBlack roundedButton"}, "Raise Question")
               .ref('createElectionButton')
               .click('createElection');
             input({placeholder: "Type your question here"})

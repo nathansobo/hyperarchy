@@ -11,6 +11,17 @@ _.constructor("Views.EditOrganization", View.Template, {
           .click('createOrganization');
       });
 
+      div({'class': "grid7 largeFont"}, function() {
+        a({href: "#", class: "glossyBlack roundedButton", id: "overviewLink"}, "View Questions")
+          .ref('overviewLink')
+          .click(function(view, e) {
+            $.bbq.pushState({view: "organization", organizationId: view.model().id()});
+            e.preventDefault();
+          });
+      });
+
+
+
       div({'class': "grid12"}, function() {
         label({'class': "largeFont block"}, "Members");
 
