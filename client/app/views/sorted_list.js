@@ -7,7 +7,6 @@ _.constructor("Views.SortedList", View.Template, {
   viewProperties: {
 
     initialize: function() {
-      this.lisById = {};
       this.subscriptions = new Monarch.SubscriptionBundle();
     },
 
@@ -15,6 +14,7 @@ _.constructor("Views.SortedList", View.Template, {
       afterChange: function(relation) {
         if (this.subscriptions) this.subscriptions.destroy();
 
+        this.lisById = {};
         this.empty();
         relation.each(function(record) {
           this.append(this.liForRecord(record));
