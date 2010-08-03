@@ -25,7 +25,11 @@ _.constructor("Views.Invite", View.Template, {
     },
 
     sendInvitations: function() {
-      var emailAddresses = this.emailAddresses.val().split(/\s+|\s*,\s*/)
+      var emailAddresses = _.filter(this.emailAddresses.val().split(/\s+|\s*,\s*/), function(address) {
+        return address !== "";
+      });
+      if (emailAddresses.length == 0) return;
+
       this.sendInvitationsButton.attr('disabled', true);
       Server.post("/invite", {email_addresses: emailAddresses})
         .onSuccess(function() {
