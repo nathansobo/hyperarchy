@@ -115,8 +115,11 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     createElection: function() {
+      var body = this.createElectionInput.val();
+      if (body === "") return;
+
       this.createElectionButton.attr('disabled', true);
-      this.organization().elections().create({body: this.createElectionInput.val()})
+      this.organization().elections().create({body: body})
         .onSuccess(function(election) {
           this.createElectionInput.val("");
           $.bbq.pushState({view: "election", electionId: election.id()});

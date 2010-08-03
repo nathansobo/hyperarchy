@@ -82,8 +82,11 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     createCandidate: function() {
+      var body = this.createCandidateTextarea.val();
+      if (body === "") return;
+      
       this.createCandidateButton.attr('disabled', true);
-      this.election().candidates().create({body: this.createCandidateTextarea.val()})
+      this.election().candidates().create({body: body})
         .onSuccess(function() {
           this.createCandidateButton.attr('disabled', false);
           this.createCandidateTextarea.val("");
