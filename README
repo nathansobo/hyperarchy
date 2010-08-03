@@ -1,6 +1,12 @@
 RunLater
 ========
 
+This fork of run_later only works with Rails 3. The original version working with Rails >=2.2 can be found at http://github.com/mattmatt/run_later. To use with Rails3/Bundler, add
+
+gem 'run_later', :git => 'git://github.com/jkraemer/run_later.git'
+
+to your Gemfile.
+
 Simply a blatant port of Merb's run_later method, taking advantage of Rails 2.2 thread safety. Neat as it is, it also works in Rails 2.3.
 Runs longer running tasks outside the current request thread, so that the request will return
 the content to the user without blocking. Once the request is done, the worker will run the 
@@ -51,5 +57,6 @@ License, Props
 Thanks to Yehuda Katz for showing off run_later at the Merb BoF session at RailsConf Europe 2008.
 
 Ported to Rails by Mathias Meyer (http://paperplanes.de).
+Updated to work with Rails 3 by Jens Krämer (http://www.jkraemer.net/).
 
 Released under the MIT license
