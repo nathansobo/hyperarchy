@@ -5,7 +5,7 @@ module RunLater
     attr_accessor :thread
     cattr_accessor :logger
 
-    def initialize(logger = RAILS_DEFAULT_LOGGER)
+    def initialize(logger = Rails.logger)
       self.logger = logger
       @thread = Thread.new {
         trap :INT do
