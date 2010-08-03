@@ -95,7 +95,7 @@ module Views
         var hasInvitation = #{(!invitation.nil?).to_json};
 
         $(function() {
-          $("input[value='']").focus();
+          $("input[value='']:first").focus();
           if (hasInvitation) {
             mpmetrics.track('view signup page');
           } else {
