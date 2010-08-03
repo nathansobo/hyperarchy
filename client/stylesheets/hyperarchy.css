@@ -29,6 +29,12 @@ input.text, textarea.text {
   margin-bottom: 30px;
 }
 
+.errors {
+  background: #ffcccc;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+
 .block {
   display: block;
 }

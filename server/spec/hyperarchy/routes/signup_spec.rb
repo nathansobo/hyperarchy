@@ -49,19 +49,33 @@ describe "/signup", :type => :rack do
       end
 
       context "if the invitation has not been redeemed" do
-        it "creates a user with the given parameters, logs them in, and redirects to the organizations page" do
-          post "/signup", :invitation_code => invitation.guid, :redeem => { :user => user_attributes, :confirm_memberships => [membership_1.id, membership_3.id]}
-          current_user.should_not be_dirty
-          current_user.full_name.should == "Stephanie Wambach"
-          current_user.email_address.should == "steph@example.com"
-          current_user.password.should == "password"
 
-          last_response.should be_redirect
-          last_response.location.should == "/app#view=organization"
+        context "if the parameters are valid" do
+          it "creates a user with the given parameters, logs them in, and redirects to the organizations page" do
+            post "/signup", :invitation_code => invitation.guid, :redeem => { :user => user_attributes, :confirm_memberships => [membership_1.id, membership_3.id]}
+            current_user.should_not be_dirty
+            current_user.full_name.should == "Stephanie Wambach"
+            current_user.email_address.should == "steph@example.com"
+            current_user.password.should == "password"
 
-          membership_1.should_not be_pending
-          membership_3.should_not be_pending
-          Membership.find(membership_2.id).should be_nil
+            last_response.should be_redirect
+            last_response.location.should == "/app#view=organization"
+
+            membership_1.should_not be_pending
+            membership_3.should_not be_pending
+            Membership.find(membership_2.id).should be_nil
+          end
+        end
+
+        context "if the parameters are not valid" do
+          it "redirects back to /signup with :errors set in the flash" do
+            user_attributes[:first_name] = ""
+
+            post "/signup", :invitation_code => invitation.guid, :redeem => { :user => user_attributes, :confirm_memberships => [membership_1.id, membership_3.id]}
+            current_user.should be_nil
+            last_response.should be_ok
+            flash[:errors].should_not be_nil
+          end
         end
       end
 

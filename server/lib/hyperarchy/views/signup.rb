@@ -1,6 +1,6 @@
 module Views
   class Signup < Layout
-    attr_reader :invitation
+    attr_reader :invitation, :user
     
     def body_content
       div :class => "container12" do
@@ -18,19 +18,20 @@ module Views
 
     def signup_form
       has_memberships = !invitation.memberships.empty?
+      two_columns = has_memberships || flash[:errors]
 
       form :id => "signupForm", :action => "/signup", :method => "post" do
-        div :class => has_memberships ? "grid4 prefix1 suffix1" : "grid4 prefix4 suffix4" do
+        div :class => two_columns ? "grid4 prefix1 suffix1" : "grid4 prefix4 suffix4" do
           input :type => "hidden", :name => "invitation_code", :value => invitation.guid
 
           label "First Name", :for => "first_name"
-          input :class => "text", :name => "redeem[user[first_name]]", :value => invitation.first_name || ""
+          input :class => "text", :name => "redeem[user[first_name]]", :value => user.first_name || invitation.first_name || ""
 
           label "Last Name", :for => "last_name"
-          input :class => "text", :name => "redeem[user[last_name]]", :value => invitation.last_name || ""
+          input :class => "text", :name => "redeem[user[last_name]]", :value => user.last_name || invitation.last_name || ""
 
           label "Email Address", :for => "email_address"
-          input :class => "text", :name => "redeem[user[email_address]]", :value => invitation.sent_to_address || ""
+          input :class => "text", :name => "redeem[user[email_address]]", :value => user.email_address || invitation.sent_to_address || ""
 
           label "Password", :for => "password"
           input :class => "text", :name => "redeem[user[password]]", :type => "password", :value => ""
@@ -38,14 +39,24 @@ module Views
           input :type => "submit", :value =>"Sign Up"
         end
 
-        if has_memberships
-          div :class => "grid4 suffix1" do
-            h3 "Accept Invitations From These Organizations:"
+        if two_columns
+          div :class => "grid5 suffix1" do
+            if flash[:errors]
+              ul :class => "errors" do
+                flash[:errors].each do |error|
+                  li(error)
+                end
+              end
+            end
 
-            invitation.memberships.each do |membership|
-              organization = membership.organization
-              input :type => "checkbox", :name => "redeem[confirm_memberships][]", :id => "confirm_membership_#{membership.id}", :value => membership.id, :checked => true
-              label organization.name, :class => 'inline', :for => "confirm_membership_#{membership.id}"
+            if has_memberships
+              h3 "Accept Invitations From These Organizations:"
+
+              invitation.memberships.each do |membership|
+                organization = membership.organization
+                input :type => "checkbox", :name => "redeem[confirm_memberships][]", :id => "confirm_membership_#{membership.id}", :value => membership.id, :checked => true
+                label organization.name, :class => 'inline', :for => "confirm_membership_#{membership.id}"
+              end
             end
           end
         end

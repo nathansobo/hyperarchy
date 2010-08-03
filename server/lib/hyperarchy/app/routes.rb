@@ -41,14 +41,20 @@ module Hyperarchy
         invitation = validate_invitation_code(params[:invitation_code])
       end
 
-      render_page Views::Signup, :invitation => invitation
+      render_page Views::Signup, :invitation => invitation, :user => User.new
     end
 
     post "/signup" do
       invitation = validate_invitation_code(params[:invitation_code])
       new_user = invitation.redeem(params[:redeem])
-      request.env['warden'].set_user(new_user)
-      redirect "/app#view=organization"
+
+      if new_user.valid?
+        request.env['warden'].set_user(new_user)
+        redirect "/app#view=organization"
+      else
+        flash.now[:errors] = new_user.validation_errors
+        render_page Views::Signup, :invitation => invitation, :user => new_user
+      end
     end
 
     get "/confirm_membership/:membership_id" do |membership_id|
