@@ -11,6 +11,8 @@ _.constructor("Monarch.Model.Relations.Relation", {
     this.onRemoteRemoveNode = new Monarch.SubscriptionNode();
     this.onDirtyNode = new Monarch.SubscriptionNode();
     this.onCleanNode = new Monarch.SubscriptionNode();
+    this.onInvalidNode = new Monarch.SubscriptionNode();
+    this.onValidNode = new Monarch.SubscriptionNode();
     if (this.hasOperands) {
       this.operandsSubscriptionBundle = new Monarch.SubscriptionBundle();
       this.unsubscribeFromOperandsWhenThisNoLongerHasSubscribers();
@@ -127,11 +129,6 @@ _.constructor("Monarch.Model.Relations.Relation", {
     _.each(this.tuples(), fn, context);
   },
 
-  onEach: function(fn, context) {
-    this.each(fn, context);
-    return this.onRemoteInsert(fn, context);
-  },
-
   map: function(fn, context) {
     return _.map(this.tuples(), fn, context);
   },
@@ -199,12 +196,30 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return this.onCleanNode.subscribe(callback, context);
   },
 
+  onInvalid: function(callback, context) {
+    this.subscribeToOperandsIfNeeded();
+    return this.onInvalidNode.subscribe(callback, context);
+  },
+
+  onValid: function(callback, context) {
+    this.subscribeToOperandsIfNeeded();
+    return this.onValidNode.subscribe(callback, context);
+  },
+
   recordMadeDirty: function(record) {
     this.onDirtyNode.publish(record);
   },
 
   recordMadeClean: function(record) {
     this.onCleanNode.publish(record);
+  },
+
+  recordMadeInvalid: function(record) {
+    this.onInvalidNode.publish(record)
+  },
+  
+  recordMadeValid: function(record) {
+    this.onValidNode.publish(record);
   },
 
   hasSubscribers: function() {

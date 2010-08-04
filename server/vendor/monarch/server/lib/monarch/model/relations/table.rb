@@ -60,11 +60,6 @@ module Monarch
         def insert(record)
           record.before_create if record.respond_to?(:before_create)
           return record if !record.valid?
-
-          now = Time.now
-          record.updated_at = now if column(:updated_at)
-          record.created_at = now if column(:created_at)
-          
           id = Origin.insert(self, record.field_values_by_column_name)
           record.id = id unless tuple_class.guid_primary_key?
           on_insert_node.publish(record)

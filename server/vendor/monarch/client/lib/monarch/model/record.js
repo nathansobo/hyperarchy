@@ -233,6 +233,7 @@ _.constructor("Monarch.Model.Record", {
   assignValidationErrors: function(errorsByFieldName) {
     this.local.assignValidationErrors(_.camelizeKeys(errorsByFieldName));
     if (this.onInvalidNode) this.onInvalidNode.publish();
+    this.table.recordMadeInvalid(this);
   },
 
   allValidationErrors: function() {

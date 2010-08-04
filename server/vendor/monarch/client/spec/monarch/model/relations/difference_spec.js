@@ -198,18 +198,6 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        scenario("for onClean callbacks", function() {
-          init(function() {
-            eventType = "onClean";
-          });
-        });
-
-        scenario("for onDirty callbacks", function() {
-          init(function() {
-            eventType = "onDirty";
-          });
-        });
-
         it("subscribes to its #operand and memoizes tuples, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
           var rightOperand = User.where({age: 28});
           var difference = User.difference(rightOperand);

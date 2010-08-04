@@ -49,28 +49,18 @@ module Monarch
         describe "#insert" do
           it "calls Origin.insert with the Table and #field_values_by_column_name and stores the record in the thread-local identity map" do
             record = BlogPost.new(:body => "Brown Rice", :blog_id => "grain")
-            mock(Origin).insert(anything, anything) do |the_table, field_values|
-              the_table.should == table
-              field_values[:body].should == "Brown Rice"
-              field_values[:blog_id].should == "grain".hash
-              1 # id returned by insert
-            end
+            mock(Origin).insert(table, record.field_values_by_column_name)
             table.insert(record)
             table.local_identity_map[record.id].should == record
           end
         end
 
         describe "#create" do
-          it "instantiates an instance of #tuple_class with the given concrete_columns, #inserts it, sets its timestamps if the columns are present, and returns it in a non-dirty state with its id assigned" do
-            now = Time.now
-            Timecop.freeze(now)
-
+          it "instantiates an instance of #tuple_class with the given concrete_columns, #inserts it, and returns it in a non-dirty state with its id assigned" do
             record = table.create!(:body => "Brown Rice", :blog_id => "grain")
             record.id.should_not be_nil
-            table.find(:body => "Brown Rice").should == record
+            table.find(table.column(:body).eq("Brown Rice")).should == record
             record.body.should == "Brown Rice"
-            record.created_at.to_i.should == now.to_i
-            record.updated_at.to_i.should == now.to_i
             record.should be_valid
             record.should_not be_dirty
           end
@@ -218,7 +208,6 @@ module Monarch
 
           describe "when a record in the table is updated" do
             it "triggers #on_update callbacks with the record and the changeset" do
-              Timecop.freeze(Time.now)
               record = BlogPost.find('grain_quinoa')
               record.update(:body => "Actually quinoa is not REALLY a grain, it's a seed", :blog_id => "vegetable")
 
@@ -227,7 +216,7 @@ module Monarch
 
               on_update_record, on_update_changeset = on_update_calls.first
               on_update_record.should == record
-              on_update_changeset.wire_representation.should == {"body" => "Actually quinoa is not REALLY a grain, it's a seed", "blog_id" => "vegetable".hash, "updated_at" => Time.now.to_millis}
+              on_update_changeset.wire_representation.should == {"body" => "Actually quinoa is not REALLY a grain, it's a seed", "blog_id" => "vegetable".hash}
 
               on_remove_calls.should be_empty
             end

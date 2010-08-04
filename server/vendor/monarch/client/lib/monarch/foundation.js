@@ -238,6 +238,10 @@ _.constructor("_.Object", {
     return _.defer(this.bind(fn));
   },
 
+  delay: function(fn, time) {
+    return _.delay(this.bind(fn), time);
+  },
+
   isA: function(constructor) {
     var currentConstructor = this.constructor;
     while (true) {

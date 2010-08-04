@@ -290,10 +290,8 @@ module Monarch
               #
               describe "when the update causes some composite tuples that are already present to still be present in the join" do
                 it "fires #on_update events with those composite tuples and the changeset" do
-                  Timecop.freeze(Time.now)
                   blog = Blog.find("grain")
                   post = blog.blog_posts.first
-
                   post.update(:body => "The sea lions have left the pier. Earthquake imminent?")
 
                   on_insert_calls.should be_empty
@@ -301,7 +299,7 @@ module Monarch
                   on_update_calls.length.should == 1
                   on_update_calls.first[0][Blog].should == blog
                   on_update_calls.first[0][BlogPost].should == post
-                  on_update_calls.first[1].wire_representation.should == { 'body' => "The sea lions have left the pier. Earthquake imminent?", "updated_at" => Time.now.to_millis }
+                  on_update_calls.first[1].wire_representation.should == { 'body' => "The sea lions have left the pier. Earthquake imminent?" }
 
 
                   on_remove_calls.should be_empty

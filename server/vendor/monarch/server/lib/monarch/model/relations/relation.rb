@@ -19,7 +19,7 @@ module Monarch
         include ForwardsArrayMethodsToRecords
 
         attr_writer :exposed_name
-        delegate :include?, :map, :to => :all
+        delegate :include?, :map, :all?, :to => :all
 
 
         def initialize(&block)

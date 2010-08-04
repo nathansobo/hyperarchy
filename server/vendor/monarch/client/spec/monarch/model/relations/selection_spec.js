@@ -368,6 +368,37 @@ Screw.Unit(function(c) { with(c) {
           });
         });
       });
+
+      context("when a record is made invalid or valid in the selection's operand", function() {
+        var invalidCallback, validCallback;
+        before(function() {
+          invalidCallback = mockFunction('invalidCallback');
+          validCallback = mockFunction('validCallback');
+          selection.onInvalid(invalidCallback);
+          selection.onValid(validCallback);
+        });
+
+        context("when the record matches the selection's predicate", function() {
+          it("triggers onValid / onInvalid callbacks on the selection", function() {
+            var record = selection.first();
+            record.assignValidationErrors({age: ["too young!"]});
+            expect(invalidCallback).to(haveBeenCalled, withArgs(record));
+            record.clearValidationErrors();
+            expect(validCallback).to(haveBeenCalled, withArgs(record));
+          });
+        });
+
+        context("when the record does not match the selection's predicate", function() {
+          it("does not trigger onDirty / onClean callbacks on the selection", function() {
+            var record = User.fixture('mike');
+            expect(selection.contains(record)).to(beFalse);
+            record.assignValidationErrors({age: ["too young!"]});
+            expect(invalidCallback).toNot(haveBeenCalled);
+            record.clearValidationErrors();
+            expect(validCallback).toNot(haveBeenCalled);
+          });
+        });
+      });
     });
 
     describe("subscription propagation", function() {

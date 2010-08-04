@@ -203,10 +203,10 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("dirty / clean callback triggering", function() {
+    describe("onDirty / onClean callback triggering", function() {
       useLocalFixtures();
 
-      it("fires dirty / clean callbacks when a record in the table becomes dirty or clean", function() {
+      it("fires onDirty / onClean callbacks when a record in the table becomes dirty or clean", function() {
         var dirtyCallback = mockFunction('dirtyCallback');
         var cleanCallback = mockFunction('cleanCallback');
 
@@ -221,6 +221,26 @@ Screw.Unit(function(c) { with(c) {
 
         user.fullName(fullNameBefore);
         expect(cleanCallback).to(haveBeenCalled, withArgs(user));
+      });
+    });
+
+    describe("onInvalid / onValid callback triggering", function() {
+      useLocalFixtures();
+
+      it("fires onInvalid / onValid callbacks when a record in the table becomes invalid or valid again", function() {
+        var invalidCallback = mockFunction('invalidCallback');
+        var validCallback = mockFunction('validCallback');
+
+        User.table.onInvalid(invalidCallback);
+        User.table.onValid(validCallback);
+
+        var user = User.fixture('jan');
+        user.assignValidationErrors({fullName: ["some error"]});
+
+        expect(invalidCallback).to(haveBeenCalled, withArgs(user));
+
+        user.clearValidationErrors();
+        expect(validCallback).to(haveBeenCalled, withArgs(user));
       });
     });
 

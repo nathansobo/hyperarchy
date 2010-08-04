@@ -211,8 +211,17 @@ _.constructor("Monarch.View.Template", {
     },
 
     hitch: _.Object.prototype.hitch,
-    bind: _.Object.prototype.bind,
-    defer: _.Object.prototype.defer
+    bind: function($super, fn) {
+      if (_.isFunction(fn)) {
+        return _.bind(fn, this);
+      } else {
+        var args = _.toArray(arguments);
+        args.shift();
+        return $super.apply(this, args);
+      }
+    },
+    defer: _.Object.prototype.defer,
+    delay: _.Object.prototype.delay
   }
 });
 

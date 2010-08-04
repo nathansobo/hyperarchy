@@ -86,6 +86,14 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
     this.operandsSubscriptionBundle.add(this.operand.onClean(function(record) {
       if (this.contains(record)) this.recordMadeClean(record);
     }, this));
+
+    this.operandsSubscriptionBundle.add(this.operand.onInvalid(function(record) {
+      if (this.contains(record)) this.recordMadeInvalid(record);
+    }, this));
+
+    this.operandsSubscriptionBundle.add(this.operand.onValid(function(record) {
+      if (this.contains(record)) this.recordMadeValid(record);
+    }, this));
   }
 });
 

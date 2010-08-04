@@ -11,7 +11,6 @@ Bundler.setup(:default, :test)
 require "spec"
 require "set"
 require "rack/test"
-require "timecop"
 require "#{dir}/../lib/monarch"
 require "#{dir}/../lib/monarch/model/client"
 
