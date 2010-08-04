@@ -2,52 +2,82 @@ require File.expand_path(File.dirname(__FILE__)) + '/../spec_helper.rb'
 
 
 describe Election do
-  attr_accessor :election, :num_candidates, :num_users, :num_ranked, :unranked_id
+  attr_accessor :election, :majorities, :num_candidates, :num_rankings
   
   before do
     @num_candidates  = 10
-    @num_users       = 5   
-    @num_ranked      = 5
+    @num_rankings    = 30
+    num_ranked      = 5
     
-    @unranked_id = Ranking::UNRANKED_ID
+    # add random rankings
     @election = Election.new
     num_candidates.times {election.add_candidate}
-    num_users.times do
-      random_ranking = (election.candidate_ids.sort_by {rand}).first(num_ranked)
-      random_ranking = (random_ranking + [unranked_id]).sort_by {rand}
+    unranked_id = Ranking::UNRANKED_ID
+    num_rankings.times do
+      random_ranking = Ranking.new(
+                        ((election.candidate_ids.sort_by {rand}).
+                        first(num_ranked) + [unranked_id]).sort_by{rand})
       election.add_ranking(random_ranking)
       #puts random_ranking.inspect
     end
+    
+    # count pairwise majorities
+    @majorities = Array.new(num_candidates) {Array.new(num_candidates) {0}}
+    election.rankings.each do |ranking|
+      election.candidate_ids.each do |winner|
+        ranking.candidates_below(winner).each {|loser| majorities[winner][loser] += 1}
+      end
+    end
   end
 
-  it "initializes, keeps track of election IDs" do
+  it "keeps track of ID numbers" do
     election.id.should == 0
-    Election[0].should == election    
+    Election[0].should == election
     election1 = Election.new
     election1.id.should == 1
     Election[1].should == election1
   end
   
-  it "elects the condorcet winner, if one exists" do
-    majorities = Array.new(num_candidates, 0)
-    majorities.each_index {|i| majorities[i] = Array.new(num_candidates, 0)}
-    election.candidate_ids.each do |winner|
-      election.rankings.each do |ranking|
-        ranking.candidates_below(winner).each {|loser| majorities[winner][loser] += 1}
+  it "results reproduce a single ranking with no ties" do
+    trivial_election = Election.new
+    num_candidates.times {trivial_election.add_candidate}
+    random_ranking = Ranking.new( trivial_election.candidate_ids.sort_by {rand} )
+    trivial_election.add_ranking(random_ranking)    
+    trivial_election.results.inspect.should == random_ranking.inspect
+  end
+  
+  it "results reproduce a single ranking with ties" do
+    trivial_election = Election.new
+    num_candidates.times {trivial_election.add_candidate}
+    random_ranking = Ranking.new( trivial_election.candidate_ids.sort_by {rand} )
+    trivial_election.add_ranking(random_ranking)    
+    puts random_ranking.inspect
+    #trivial_election.results.should == random_ranking
+  end
+  
+  it "ranks condorcet winner first, if there is one" do
+    election.candidate_ids.each do |candidate|
+      other_candidates = election.candidate_ids - [candidate]
+      if other_candidates.all? {|other| majorities[candidate][other] > majorities[other][candidate]}
+        #puts " (condorcet winner: #{candidate})"
+        election.results.first.should == candidate
+        break
       end
     end
-    condorcet_winner = nil
-    election.candidate_ids.each do |i|
-      other_candidates = election.candidate_ids - [i]
-      if other_candidates.all? {|j| majorities[i][j] > majorities[j][i]}
-        puts "- condorcet winner is " + i.to_s
-        condorcet_winner = i
+  end
+  
+  it "ranks condorcet loser last, if there is one" do
+    election.candidate_ids.each do |candidate|
+      other_candidates = election.candidate_ids - [candidate]
+      if other_candidates.all? {|other| majorities[candidate][other] < majorities[other][candidate]}
+        #puts " (condorcet loser: #{candidate})"
+        election.results.last.should == candidate
+        break
       end
     end
-    
-    if condorcet_winner
-      election.results.first.should == condorcet_winner
-    end
+  end
+  
+  it "a" do
   end
   
 end
