@@ -13,7 +13,6 @@ class Election
     @results_current = true
   end
   
-  # reference a particular election by its ID number
   class << self
     def [](id)
       @@all_elections[id]
@@ -28,18 +27,19 @@ class Election
     return @candidates.length
   end
   
+  def num_rankings
+    return @rankings.length
+  end
+  
   def add_candidate(candidate="Candidate #{@candidates.length}")
     @candidates.push(candidate)
     @results_current = false
     new_id = @candidates.length - 1
     
-    # add new pairwise majorities for this new candidate
     candidate_ids[0...new_id].each do |id|
       @majorities << {:winner => new_id, :loser => id, :count => 0}
       @majorities << {:winner => id, :loser => new_id, :count => 0}
     end
-    
-    # look at all of the existing rankings. 
     @rankings.each do |ranking|
       ranking.candidates_above_default.each do |w|
         @majorities.each {|m| m[:count] += 1  if m[:winner] == w and m[:loser] == new_id}
@@ -50,21 +50,18 @@ class Election
     end
   end
   
-  # add a new user ranking, specified by the array "new_ranking." this is converted to a "Ranking" object.
-  def add_ranking(the_ranking)
-    ranking = Ranking.new(id, the_ranking)
+  def add_ranking(ranking)    
+    ranking = Ranking.new(ranking)  if ranking.class != Ranking
+    ranking.election_id = id
     @rankings.push(ranking)
     @results_current = false
-    
-    # increment the count for each pairwise majority in the new ranking
-    candidate_ids.each do |w|
-      ranking.candidates_below(w).each do |l| 
-        @majorities.each {|m| m[:count] += 1  if m[:winner] == w and m[:loser] == l}
+    candidate_ids.each do |winner|
+      ranking.candidates_below(winner).each do |loser| 
+        @majorities.each {|m| m[:count] += 1  if m[:winner] == winner and m[:loser] == loser}
       end
-    end  
+    end
   end
   
-  # returns current global ranking.
   def results
     compute_results unless @results_current
     return @results
@@ -72,24 +69,47 @@ class Election
   
   private
   
-  # this is the MAM algorithm. to use another Condorcet method, redefine this method.
   def compute_results
+    ranked_pairs
+    #minimax
+    #schulze
+    @results_current = true
+  end
+  
+  def ranked_pairs
     already_processed = []
     graph = RGL::DirectedAdjacencyGraph.new    
     @majorities = (@majorities.sort_by {|m| m[:count]}).reverse
     @majorities.each do |majority|
       winner_id = majority[:winner]
       loser_id = majority[:loser]
-      next if already_processed.include?([loser_id, winner_id])
+      next  if already_processed.include?([loser_id, winner_id])
       already_processed.push([winner_id, loser_id])
       graph.add_edge(winner_id, loser_id)
-      graph.remove_edge(winner_id, loser_id) unless graph.acyclic?
+      graph.remove_edge(winner_id, loser_id)  unless graph.acyclic?
     end
-
     @results = []
-    graph.topsort_iterator.each {|candidate_id|  @results << candidate_id}
-    @results_current = true
+    graph.topsort_iterator.each {|candidate_id| @results << candidate_id}
   end
+  
+  def minimax
+    max_losing_majorities = Array.new(num_candidates, 0)
+    candidate_ids.each do |candidate|
+      losing_majorities  = (@majorities.select {|m| m[:loser] == candidate}).collect {|m| m[:count]}
+      winning_majorities = (@majorities.select {|m| m[:winner] == candidate}).collect {|m| m[:count]}
+      losing_majorities.each_index do |i|
+        losing_majorities[i] = 0  if winning_majorities[i] >= losing_majorities[i]
+      end
+      max_losing_majorities[candidate] = losing_majorities.max
+    end
+    @results = candidate_ids.sort_by {|i| max_losing_majorities[i]}
+  end
+  
+  def schulze
+    path = Array.new(num_candidates) {Array.new(num_candidates) {0}}
+  end
+  
+  
 end
 
 
