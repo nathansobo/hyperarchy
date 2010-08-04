@@ -2,12 +2,12 @@ require File.expand_path(File.dirname(__FILE__)) + '/../spec_helper.rb'
 
 
 describe Election do
-  attr_accessor :election, :majorities, :num_candidates, :num_rankings
+  attr_accessor :election, :majorities, :num_candidates, :num_rankings, :num_ranked
   
   before do
     @num_candidates  = 10
     @num_rankings    = 30
-    num_ranked      = 5
+    @num_ranked      = 5
     
     # add random rankings
     @election = Election.new
@@ -49,10 +49,10 @@ describe Election do
   it "results reproduce a single ranking with ties" do
     trivial_election = Election.new
     num_candidates.times {trivial_election.add_candidate}
-    random_ranking = Ranking.new( trivial_election.candidate_ids.sort_by {rand} )
+    random_ranking = Ranking.new((trivial_election.candidate_ids.sort_by {rand}).first(num_ranked))
     trivial_election.add_ranking(random_ranking)    
-    puts random_ranking.inspect
-    #trivial_election.results.should == random_ranking
+    #puts random_ranking.inspect
+    trivial_election.results.inspect.should == random_ranking.inspect
   end
   
   it "ranks condorcet winner first, if there is one" do
@@ -75,9 +75,6 @@ describe Election do
         break
       end
     end
-  end
-  
-  it "a" do
   end
   
 end
