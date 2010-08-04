@@ -10,8 +10,8 @@ describe Ranking do
   end
     
   it "can be added to elections and access their candidate lists" do
-    my_election.add_ranking([0, 1])
-    ranking = my_election.rankings.last
+    ranking = Ranking.new([0, 1])
+    my_election.add_ranking(ranking)
     
     ranking.ranked_candidates.should == [0, 1]
     ranking.unranked_candidates.should == [2, 3, 4]
