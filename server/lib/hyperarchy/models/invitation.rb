@@ -3,7 +3,6 @@ class Invitation < Monarch::Model::Record
   column :sent_to_address, :string
   column :first_name, :string
   column :last_name, :string
-  column :last_name, :string
   column :redeemed, :boolean
   column :inviter_id, :key
   column :invitee_id, :key
@@ -22,7 +21,6 @@ class Invitation < Monarch::Model::Record
     return unless send_email
     Mailer.send(
       :to => sent_to_address,
-      :from => "admin@hyperarchy.com",
       :subject => "#{inviter.full_name} has invited you to join Hyperarchy",
       :body => invite_email_body
     )
@@ -35,8 +33,14 @@ class Invitation < Monarch::Model::Record
   def redeem(attributes)
     raise "Already redeemed" if redeemed?
 
-    confirm_memberships = attributes[:confirm_memberships].map(&:to_i)
-    user = User.create!(attributes[:user])
+    confirm_memberships = (attributes[:confirm_memberships] || []).map(&:to_i)
+
+    user = User.new(attributes[:user])
+    if user.valid?
+      user.save
+    else
+      return user
+    end
     self.invitee = user
     self.redeemed = true
     save
@@ -51,8 +55,14 @@ class Invitation < Monarch::Model::Record
     user
   end
 
+  def signup_url
+    "#{Mailer.base_url}/signup?invitation_code=#{guid}"
+  end
+
   protected
   def invite_email_body
-    %[Visit #{Mailer.base_url}/signup?invitation_code=#{guid} to sign up.]
+    %[#{HYPERARCHY_BLURB}
+
+Visit #{signup_url} to sign as an alpha tester. You can then add your organization and invite your colleagues to vote with you.]
   end
 end

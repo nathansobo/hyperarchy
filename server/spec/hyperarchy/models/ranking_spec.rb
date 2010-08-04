@@ -1,6 +1,4 @@
-require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper")
-
-
+require File.expand_path(File.dirname(__FILE__) + "/../../hyperarchy_spec_helper")
 
 module Models
   describe Ranking do
@@ -20,22 +18,25 @@ module Models
           majority.count.should == 0
         end
 
-        # 1
+        # 1, (2, 3)
         mock.proxy(election).compute_global_ranking
-        ranking_1 = election.rankings.create(:user => user, :candidate => candidate_1, :position => 1)
+        ranking_1 = election.rankings.create(:user => user, :candidate => candidate_1, :position => 64)
         find_majority(candidate_1, candidate_2).count.should == 1
         find_majority(candidate_1, candidate_3).count.should == 1
 
-        # 1, 2
+        # 1, 2, (3)
         mock.proxy(election).compute_global_ranking
-        ranking_2 = election.rankings.create(:user => user, :candidate => candidate_2, :position => 3)
+        ranking_2 = election.rankings.create(:user => user, :candidate => candidate_2, :position => 32)
         find_majority(candidate_1, candidate_2).count.should == 1
+        find_majority(candidate_1, candidate_3).count.should == 1
         find_majority(candidate_2, candidate_1).count.should == 0
         find_majority(candidate_2, candidate_3).count.should == 1
+        find_majority(candidate_3, candidate_1).count.should == 0
+        find_majority(candidate_3, candidate_2).count.should == 0
 
         # 1, 3, 2
         mock.proxy(election).compute_global_ranking
-        ranking_3 = election.rankings.create(:user => user, :candidate => candidate_3, :position => 2)
+        ranking_3 = election.rankings.create(:user => user, :candidate => candidate_3, :position => 48)
         find_majority(candidate_1, candidate_2).count.should == 1
         find_majority(candidate_1, candidate_3).count.should == 1
         find_majority(candidate_2, candidate_1).count.should == 0
@@ -45,23 +46,27 @@ module Models
 
         # 1, 2, 3
         mock.proxy(election).compute_global_ranking
-        ranking_2.update(:position => 1.5)
+        ranking_2.update(:position => 56)
         find_majority(candidate_1, candidate_2).count.should == 1
+        find_majority(candidate_1, candidate_3).count.should == 1
         find_majority(candidate_2, candidate_1).count.should == 0
         find_majority(candidate_2, candidate_3).count.should == 1
         find_majority(candidate_3, candidate_2).count.should == 0
+        find_majority(candidate_3, candidate_1).count.should == 0
 
         # 2, 1, 3
         mock.proxy(election).compute_global_ranking
-        ranking_1.update(:position => 1.75)
+        ranking_1.update(:position => 52)
         find_majority(candidate_1, candidate_2).count.should == 0
         find_majority(candidate_1, candidate_3).count.should == 1
         find_majority(candidate_2, candidate_1).count.should == 1
+        find_majority(candidate_2, candidate_3).count.should == 1
         find_majority(candidate_3, candidate_1).count.should == 0
+        find_majority(candidate_3, candidate_2).count.should == 0
 
         # 3, 2, 1
         mock.proxy(election).compute_global_ranking
-        ranking_3.update(:position => 0.5)
+        ranking_3.update(:position => 128)
         find_majority(candidate_1, candidate_2).count.should == 0
         find_majority(candidate_1, candidate_3).count.should == 0
         find_majority(candidate_2, candidate_1).count.should == 1
@@ -69,7 +74,7 @@ module Models
         find_majority(candidate_3, candidate_1).count.should == 1
         find_majority(candidate_3, candidate_2).count.should == 1
 
-        # 3, 1
+        # 3, 1, (2)
         mock.proxy(election).compute_global_ranking
         ranking_2.destroy
         find_majority(candidate_1, candidate_2).count.should == 1
@@ -79,7 +84,7 @@ module Models
         find_majority(candidate_3, candidate_1).count.should == 1
         find_majority(candidate_3, candidate_2).count.should == 1
 
-        # 1
+        # 1, (2, 3)
         mock.proxy(election).compute_global_ranking
         ranking_3.destroy
         find_majority(candidate_1, candidate_2).count.should == 1
@@ -90,16 +95,88 @@ module Models
         find_majority(candidate_3, candidate_2).count.should == 0
 
         mock.proxy(election).compute_global_ranking
+
         ranking_1.destroy
 
         election.majorities.each do |majority|
           majority.reload.count.should == 0
         end
+      end
 
-        # no candidate is ranked any longer, so all have a null position
-        candidate_1.position.should be_nil
-        candidate_3.position.should be_nil
-        candidate_3.position.should be_nil
+      specify "negatively ranked candidates are counted as losing to unranked candidates" do
+        election.majorities.each do |majority|
+          majority.count.should == 0
+        end
+
+        # (2, 3), 1
+        mock.proxy(election).compute_global_ranking
+        ranking_1 = election.rankings.create(:user => user, :candidate => candidate_1, :position => -64)
+        find_majority(candidate_1, candidate_2).count.should == 0
+        find_majority(candidate_1, candidate_3).count.should == 0
+        find_majority(candidate_2, candidate_1).count.should == 1
+        find_majority(candidate_2, candidate_3).count.should == 0
+        find_majority(candidate_3, candidate_2).count.should == 0
+        find_majority(candidate_3, candidate_1).count.should == 1
+
+        # (3), 1, 2
+        mock.proxy(election).compute_global_ranking
+        ranking_2 = election.rankings.create(:user => user, :candidate => candidate_2, :position => -128)
+        find_majority(candidate_1, candidate_2).count.should == 1
+        find_majority(candidate_1, candidate_3).count.should == 0
+        find_majority(candidate_2, candidate_1).count.should == 0
+        find_majority(candidate_2, candidate_3).count.should == 0
+        find_majority(candidate_3, candidate_2).count.should == 1
+        find_majority(candidate_3, candidate_1).count.should == 1
+
+        # (3), 2, 1
+        mock.proxy(election).compute_global_ranking
+        ranking_2.update(:position => -32)
+        find_majority(candidate_1, candidate_2).count.should == 0
+        find_majority(candidate_1, candidate_3).count.should == 0
+        find_majority(candidate_2, candidate_1).count.should == 1
+        find_majority(candidate_2, candidate_3).count.should == 0
+        find_majority(candidate_3, candidate_2).count.should == 1
+        find_majority(candidate_3, candidate_1).count.should == 1
+
+        # 1, (3), 2
+        mock.proxy(election).compute_global_ranking
+        ranking_1.update(:position => 64)
+        find_majority(candidate_1, candidate_2).count.should == 1
+        find_majority(candidate_1, candidate_3).count.should == 1
+        find_majority(candidate_2, candidate_1).count.should == 0
+        find_majority(candidate_2, candidate_3).count.should == 0
+        find_majority(candidate_3, candidate_2).count.should == 1
+        find_majority(candidate_3, candidate_1).count.should == 0
+
+        # (3), 1, 2
+        mock.proxy(election).compute_global_ranking
+        ranking_1.update(:position => -16)
+        find_majority(candidate_1, candidate_2).count.should == 1
+        find_majority(candidate_1, candidate_3).count.should == 0
+        find_majority(candidate_2, candidate_1).count.should == 0
+        find_majority(candidate_2, candidate_3).count.should == 0
+        find_majority(candidate_3, candidate_2).count.should == 1
+        find_majority(candidate_3, candidate_1).count.should == 1
+
+        # (3, 2), 1
+        mock.proxy(election).compute_global_ranking
+        ranking_2.destroy
+        find_majority(candidate_1, candidate_2).count.should == 0
+        find_majority(candidate_1, candidate_3).count.should == 0
+        find_majority(candidate_2, candidate_1).count.should == 1
+        find_majority(candidate_2, candidate_3).count.should == 0
+        find_majority(candidate_3, candidate_2).count.should == 0
+        find_majority(candidate_3, candidate_1).count.should == 1
+
+        # (1, 2, 3) -- all unranked
+        mock.proxy(election).compute_global_ranking
+        ranking_1.destroy
+        find_majority(candidate_1, candidate_2).count.should == 0
+        find_majority(candidate_1, candidate_3).count.should == 0
+        find_majority(candidate_2, candidate_1).count.should == 0
+        find_majority(candidate_2, candidate_3).count.should == 0
+        find_majority(candidate_3, candidate_2).count.should == 0
+        find_majority(candidate_3, candidate_1).count.should == 0
       end
     end
   end

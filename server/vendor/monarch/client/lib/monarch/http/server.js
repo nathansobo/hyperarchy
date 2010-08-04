@@ -22,7 +22,7 @@ _.constructor("Monarch.Http.Server", {
     if (!this.cometClient) {
       this.cometClient = this.newCometClient();
       this.cometClient.onReceive(function(mutation) {
-        if (window.debugEvents) console.debug(mutation);
+        if (window.debugEvents) console.debug(_.clone(mutation));
         Repository.mutate([mutation]);
       });
 

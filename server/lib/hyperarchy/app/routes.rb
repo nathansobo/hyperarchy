@@ -6,7 +6,7 @@ module Hyperarchy
     end
 
     get "/app" do
-      redirect redirect "/#logIn" and return unless current_user
+      redirect redirect "/login" and return unless current_user
       render_page Views::App
     end
 
@@ -27,7 +27,7 @@ module Hyperarchy
         flash[:errors] = warden.errors.full_messages
         flash[:email_address_errors] = warden.errors[:email_address]
         flash[:entered_email_address] = params[:email_address]
-        redirect "/#logIn"
+        redirect "/login"
       end
     end
 
@@ -41,14 +41,20 @@ module Hyperarchy
         invitation = validate_invitation_code(params[:invitation_code])
       end
 
-      render_page Views::Signup, :invitation => invitation
+      render_page Views::Signup, :invitation => invitation, :user => User.new
     end
 
     post "/signup" do
       invitation = validate_invitation_code(params[:invitation_code])
       new_user = invitation.redeem(params[:redeem])
-      request.env['warden'].set_user(new_user)
-      redirect "/app#view=organization"
+
+      if new_user.valid?
+        request.env['warden'].set_user(new_user)
+        redirect "/app#view=organization"
+      else
+        flash.now[:errors] = new_user.validation_errors
+        render_page Views::Signup, :invitation => invitation, :user => new_user
+      end
     end
 
     get "/confirm_membership/:membership_id" do |membership_id|
@@ -62,7 +68,6 @@ module Hyperarchy
     post "/interested" do
       Mailer.send(
         :to => ["admin@hyperarchy.com", "nathansobo+hyperarchy@gmail.com"],
-        :from => "admin@hyperarchy.com",
         :subject => "#{params[:email_address]} is interested in Hyperarchy",
         :body => "Their comments: #{params[:comments]}"
       )
@@ -72,8 +77,17 @@ module Hyperarchy
 
     post "/invite" do
       params[:email_addresses].from_json.each do |email_address|
-        Invitation.create!(:inviter => current_user, :sent_to_address => email_address)
+        Invitation.create!(:inviter => current_user, :sent_to_address => email_address, :send_email => true)
       end
+      successful_json_response
+    end
+
+    post "/feedback" do
+      Mailer.send(
+        :to => ["admin@hyperarchy.com", "nathansobo+hyperarchy@gmail.com"],
+        :subject => "#{current_user.full_name} submitted feedback",
+        :body => "User id: #{current_user.id}\n\nTheir comments: #{params[:feedback]}"
+      )
       successful_json_response
     end
   end

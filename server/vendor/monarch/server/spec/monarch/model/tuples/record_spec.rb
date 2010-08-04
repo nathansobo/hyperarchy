@@ -273,6 +273,11 @@ module Monarch
             it "returns false is the record is not valid" do
               record.update(:age => 2).should be_false
             end
+
+            it "runs before_update handlers before performing validation checks" do
+              mock(record).before_update(:age => 2)
+              record.update(:age => 2).should be_false
+            end
           end
 
           describe "#update!(values_by_method_name)" do
@@ -370,6 +375,20 @@ module Monarch
                 on_update_changeset.old_state.evaluate(User[:great_name]).should == great_name_before
                 on_update_changeset.new_state.evaluate(User[:full_name]).should == record.full_name
                 on_update_changeset.new_state.evaluate(User[:great_name]).should == record.great_name
+              end
+
+              it "sets updated_at to the current time if the record was saved" do
+                now = Time.now
+                Timecop.freeze(now)
+
+                record.title = "San Francisco Rent"
+                record.save
+                record.updated_at.to_i.should == now.to_i
+
+                Timecop.freeze(now + 100)
+                
+                record.save # not dirty
+                record.updated_at.to_i.should == now.to_i
               end
 
               it "returns false if the record is not valid" do

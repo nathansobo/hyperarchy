@@ -1,7 +1,7 @@
 _.constructor("Views.CandidateLi", View.Template, {
   content: function(params) { with(this.builder) {
     var candidate = params.candidate;
-    li({ candidateId: candidate.id() }, function() {
+    li({ candidateId: candidate.id(), 'class': "candidate" }, function() {
       div({'class': "candidateIcon unrankCandidate", style: "display: none;"})
         .ref('destroyRankingButton')
         .click('destroyRanking');

@@ -1,6 +1,8 @@
 class Election < Monarch::Model::Record
   column :organization_id, :key
   column :body, :string
+  column :created_at, :datetime
+  column :updated_at, :datetime
 
   has_many :candidates
   has_many :rankings
@@ -23,11 +25,12 @@ class Election < Monarch::Model::Record
     end
 
     graph.topsort_iterator.each_with_index do |candidate_id, index|
-      if candidate = ranked_candidates.find(candidate_id)
-        puts "updating #{candidate.body.inspect} from #{candidate.position} to #{index}"
-        candidate.update(:position => index + 1)
-      end
+      candidate = candidates.find(candidate_id)
+      puts "updating #{candidate.body.inspect} from #{candidate.position} to #{index}"
+      candidate.update(:position => index + 1)
     end
+
+    update(:updated_at => Time.now)
   end
 
   def candidate_ranking_counts

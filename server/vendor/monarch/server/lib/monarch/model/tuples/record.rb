@@ -139,11 +139,16 @@ module Monarch
         end
 
         def save
-          return false unless valid?
-          return table.insert(self) unless persisted?
-          return self unless dirty?
+          unless persisted?
+            return false unless valid?
+            return table.insert(self)
+          end
 
+          return self unless dirty?
           before_update(dirty_concrete_field_values_by_column_name)
+          return false unless valid?
+
+          self.updated_at = Time.now if column(:updated_at)
           field_values_for_database = dirty_concrete_field_values_by_column_name
 
           old_state = snapshot

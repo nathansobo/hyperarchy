@@ -6,6 +6,10 @@ a, a:visited {
   color: #0e40ac;
 }
 
+h1 {
+  font-weight: bold;
+}
+
 input.text, textarea.text {
   display: block;
   width: 100%;
@@ -20,8 +24,15 @@ input.text, textarea.text {
   margin-bottom: 10px;
 }
 
+
 .bigMarginBottom {
   margin-bottom: 30px;
+}
+
+.errors {
+  background: #ffcccc;
+  margin-bottom: 20px;
+  padding: 10px;
 }
 
 .block {
@@ -52,6 +63,25 @@ button {
   color: #999999;
 }
 
+.glossyBlack, .glossyBlack:visited {
+  color: white;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
+  background: -moz-linear-gradient(top, #6d6e70 0%, #3a3a3b 50%, #000000 51%, #1D1D1D 100%);
+}
+
+.roundedButton {
+  font-size: 20px;
+  border-radius: 3px;
+  padding: 3px 7px;
+  text-decoration:none;
+  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+  cursor: pointer;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
 .ui-autocomplete {
   position: absolute;
   background: white;
@@ -62,6 +92,12 @@ button {
 
 th, td {
   padding: 5px 0 5px 0;
+}
+
+.x {
+  height: 21px;
+  width: 21px;
+  background-image: url(/images/x_21x21_dark.png);
 }
 
 /* layout */
@@ -76,6 +112,46 @@ th, td {
   border-bottom: 1px solid #8e8e8e;
   margin-bottom: 5px;
   font-size: 14px;
+}
+
+#darkenBackground {
+  background-color: rgba(0, 0, 0, .5);
+  z-index: 20;
+  height: 100%;
+  width: 100%;
+  background-repeat: repeat;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+
+#feedback {
+  background: white;
+  height: 300px;
+  width: 600px;
+  position: absolute;
+  z-index: 21;
+  padding: 10px;
+  -moz-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
+  -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
+}
+
+#feedback .x {
+  float: right;
+  margin-left: 30px;
+  margin-bottom: 30px;
+  cursor: pointer;
+}
+
+#feedback #thanks {
+  margin-bottom: 10px;
+}
+
+#feedback textarea {
+  width: 100%;
+  height: 185px;
+  padding: 10px;
+  margin-bottom: 10px;
 }
 
 /* home page */
@@ -193,6 +269,10 @@ div.addOrganization input[type=submit] {
 
 /* edit organization page */
 
+.editOrganization #overviewLink {
+  float: right;
+}
+
 div.addMember {
   border-bottom: 1px solid #999999;
   padding-bottom: 5px;
@@ -243,25 +323,25 @@ table.members th {
   height: 30px;
 }
 
-#header .invite, #header .logout, #header #organizationSelect {
+#header .headerItem {
   float: right;
   margin-top: 2px;
   margin-left: 6px;
 }
 
-#organizationSelect {
+.dropdownLink {
   display: inline-block;
   color: #0e40ac;
   text-decoration: underline;
   cursor: pointer;
-  padding-right: 17px;
+  padding-right: 15px;
 
   background-image: url(/images/expand_arrow_blue.png);
   background-repeat: no-repeat;
   background-position: right;
 }
 
-#organizationSelectList {
+.dropdownMenu {
   z-index: 1;
   position: absolute;
   background: white;
@@ -269,16 +349,17 @@ table.members th {
   border-top: none;
   display: none;
   width: auto;
-  -moz-box-shadow: #c8c7c7 0px 1px 3px;
+  -moz-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
   -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
+  white-space: nowrap;
 }
 
-#organizationSelectList a {
+.dropdownMenu a {
   padding: 2px 4px;
   display: block;
 }
 
-#organizationSelectList a:hover {
+.dropdownMenu a:hover {
   background: #fff3c7;
 }
 
@@ -297,7 +378,6 @@ table.members th {
 #organizationHeader h1 {
   display: inline;
   margin-right: 10px;
-  font-weight: bold;
 }
 
 #organizationHeader h2 {
@@ -308,15 +388,9 @@ table.members th {
   margin-bottom: 20px;
 }
 
+
 a#createElectionLink {
-  color: white;
-  font-size: 20px;
   float: right;
-  border-radius: 3px;
-  padding: 3px 7px;
-  text-decoration:none;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
-  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
 }
 
 a#createElectionLink:hover {
@@ -342,16 +416,8 @@ div#createElectionForm input {
 }
 
 div#createElectionForm a {
-  color: white;
-  font-size: 20px;
   float: right;
-  border-radius: 3px;
-  padding: 3px 7px;
-  text-decoration:none;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
-  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
   margin-top: 5px;
-  cursor: pointer;
 }
 
 .election {
@@ -362,12 +428,24 @@ div#createElectionForm a {
   cursor: pointer;
   height: 220px;
   overflow-y: hidden;
+  position: relative;
 }
 
 .election .body {
   font-size: 20px;
   line-height: 26px;
   margin-bottom: 10px;
+}
+
+.election .fadeOut {
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, rgba(255, 255, 255, 0)), color-stop(0.8, rgba(255, 255, 255, 100)));
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 100));
+  height: 50px;
+  width: 100%;
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  color: #ffffcc;
 }
 
 #organizations ol.candidates li {
@@ -390,7 +468,7 @@ div#createCandidateForm button {
   font-size: 15px;
 }
 
-.elections .sectionLabel {
+.elections .candidatesListHeader {
   font-size: 16px;
   color: #999999;
   margin-bottom: 5px;
@@ -404,9 +482,7 @@ div#createCandidateForm button {
   overflow-y: auto;
 }
 
-.elections ol.candidates li {
-  list-style: decimal;
-  list-style-position: inside;
+.elections ol.candidates li.candidate {
   font-size: 15px;
   padding: 5px;
   border: 1px solid #c8c7c7;
@@ -415,6 +491,30 @@ div#createCandidateForm button {
   background: white;
   -moz-box-shadow: #c8c7c7 0px 1px 3px;
   -webkit-box-shadow: #c8c7c7 0px 1px 3px;
+}
+
+.elections ol.candidates li.separator {
+  text-align: center;
+  padding: 5px;
+  cursor: default;
+}
+
+.elections ol.candidates li.separator .up {
+  background: url("/images/arrow_up_white.png");
+  background-repeat: no-repeat;
+  padding-left: 20px;
+  height: 22px;
+  display: inline-block;
+  margin-right: 20px;
+}
+
+.elections ol.candidates li.separator .down {
+  background: url("/images/arrow_down_white.png");
+  background-repeat: no-repeat;
+  background-position: right;
+  padding-right: 20px;
+  height: 22px;
+  display: inline-block;
 }
 
 .elections ol.candidates li:last-child {
@@ -467,7 +567,7 @@ div.unrankCandidate:hover {
 #invite textarea {
   padding: 5px;
   width: 100%;
-  height: 115px;
+  height: 185px;
   margin-bottom: 10px;
   overflow-y: auto;
 }
@@ -478,44 +578,4 @@ div.unrankCandidate:hover {
 
 #invite #skip {
   padding: 15px 0 0 3px;
-}
-
-/* Jquery ui autocomplete */
-/* Autocomplete
-----------------------------------*/
-.ui-autocomplete { position: absolute; cursor: default; }
-.ui-autocomplete-loading { background: white url('/images/loading_arrows_light.gif') right center no-repeat; }
-
-/* workarounds */
-* html .ui-autocomplete { width:1px; } /* without this, the menu expands to 100% in IE6 */
-
-/* Menu
-----------------------------------*/
-.ui-menu {
-	list-style: none;
-	padding: 0;
-	margin: 0;
-	display:block;
-}
-.ui-menu .ui-menu {
-	margin-top: -3px;
-}
-.ui-menu .ui-menu-item {
-	margin:0;
-	padding: 0;
-	zoom: 1;
-	float: left;
-	clear: left;
-	width: 100%;
-}
-.ui-menu .ui-menu-item a {
-	text-decoration: none;
-	display: block;
-	padding: .2em .4em;
-	line-height: 1.5;
-	zoom:1;
-}
-.ui-menu .ui-menu-item a.ui-state-hover,
-.ui-menu .ui-menu-item a.ui-state-active {
-  background-color: #e0dfdf;
 }

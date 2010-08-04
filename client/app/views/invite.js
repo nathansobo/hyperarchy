@@ -4,7 +4,11 @@ _.constructor("Views.Invite", View.Template, {
       div({'class': "grid6"}, function() {
         textarea({'class': "largeFont"}).ref('emailAddresses');
       });
-      div({'class': "grid6 largeFont"}, "Enter your friends' email addresses, and we'll send them an invitation to join Hyperarchy.");
+      div({'class': "grid6 largeFont"},
+        "Enter your friends' email addresses, and we'll send them an invitation to join Hyperarchy's alpha testing group. " +
+        "They will also be able to add their own organizations. " +
+        "If you would like to invite someone as a member of your organization, do that from its admin screen."
+      );
 
       div({'class': "grid12"}, function() {
         button('Send Invitations').ref('sendInvitationsButton').click('sendInvitations');
@@ -21,7 +25,11 @@ _.constructor("Views.Invite", View.Template, {
     },
 
     sendInvitations: function() {
-      var emailAddresses = this.emailAddresses.val().split(/\s+|\s*,\s*/)
+      var emailAddresses = _.filter(this.emailAddresses.val().split(/\s+|\s*,\s*/), function(address) {
+        return address !== "";
+      });
+      if (emailAddresses.length == 0) return;
+
       this.sendInvitationsButton.attr('disabled', true);
       Server.post("/invite", {email_addresses: emailAddresses})
         .onSuccess(function() {

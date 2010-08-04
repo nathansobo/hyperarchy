@@ -6,7 +6,7 @@ _.constructor("Organization", Model.Record, {
         description: "string"
       });
 
-      this.hasMany("elections");
+      this.hasMany("elections", {orderBy: "updatedAt desc"});
       this.hasMany("memberships");
       this.relatesToMany("members", function() {
         return this.memberships().joinThrough(User);

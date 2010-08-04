@@ -7,6 +7,7 @@
 //= require "views/election_li"
 //= require "views/ranked_candidates_list"
 //= require "views/candidate_li"
+//= require "views/sorted_list"
 //= require "views/candidates_list"
 //= require "views/ranked_candidate_li"
 

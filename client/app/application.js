@@ -8,6 +8,8 @@
 //= require <jquery-ui/jquery.ui.droppable>
 //= require <jquery-ui/jquery.ui.sortable>
 //= require <jquery-ui/jquery.ui.autocomplete>
+//= require <jquery-ui/jquery.effects.core>
+//= require <jquery-ui/jquery.effects.highlight>
 //= require <jquery.placeheld>
 //= require "models"
 //= require "views"
@@ -15,3 +17,4 @@
 //= require "routes"
 
 Repository.originUrl = "/repository";
+//window.debugEvents = true;

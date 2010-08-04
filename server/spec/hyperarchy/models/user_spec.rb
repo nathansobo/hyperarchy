@@ -7,11 +7,19 @@ module Models
       @user = User.make
     end
 
+    describe "#validate" do
+      it "ensures first_name, last_name, email_address, and encrypted_password are present" do
+        User.make_unsaved(:first_name => "").should_not be_valid
+        User.make_unsaved(:last_name => "").should_not be_valid
+        User.make_unsaved(:email_address => "").should_not be_valid
+        User.make_unsaved(:password => "").should_not be_valid
+      end
+    end
+
     describe "after create" do
       it "automatically creates a membership for the 'Alpha Testers' organization" do
-
-        user.organizations.find(:name => "Alpha Testers").should_not be_nil
-
+        alpha_org = Organization.find(:name => ALPHA_TEST_ORG_NAME)
+        user.memberships.find(:pending => false, :organization => alpha_org).should_not be_nil
       end
     end
 

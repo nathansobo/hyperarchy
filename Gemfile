@@ -24,10 +24,12 @@ group :test do
   gem "rr", "0.10.0"
   gem "rack-test", "0.5.3", :require => "rack/test"
   gem "machinist", "1.0.6", :require => ["machinist", "machinist/blueprints", "sham"]
-  gem "faker", "0.3.1"    
+  gem "faker", "0.3.1"
+  gem "timecop", "0.3.4"
 end
 
 group :thor do
+  gem "bcrypt-ruby", "2.1.1", :require => "bcrypt"
   gem "net-ssh", "2.0.23"
   gem "git", "1.2.5"
   gem "daemons", "1.0.10"

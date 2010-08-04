@@ -1,8 +1,15 @@
 _.constructor("Views.RankedCandidatesList", View.Template, {
   content: function() { with(this.builder) {
     div(function() {
-      div({'class': "sectionLabel"}, "Your Ranking");
-      ol({id: "rankedCandidates", 'class': "candidates ranked"}).ref('rankedCandidatesList');
+      div({'class': "candidatesListHeader"}, "Your Ranking");
+      ol({id: "rankedCandidates", 'class': "candidates ranked"}, function() {
+
+        li({'class': "separator glossyBlack"}, function() {
+          div({'class': "up"}, "good ideas");
+          div({'class': "down"}, "bad ideas");
+        }).ref('separator');
+
+      }).ref('rankedCandidatesList');
     });
   }},
 
@@ -13,6 +20,10 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
         update: this.hitch('handleUpdate'),
         receive: this.hitch('handleReceive')
       });
+      this.separator.mousedown(function(e) {
+        return false;
+      });
+
       var adjustHeight = this.hitch('adjustHeight');
       _.defer(adjustHeight);
       $(window).resize(adjustHeight);
@@ -27,11 +38,16 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     populateRankings: function() {
-      this.rankedCandidatesList.empty();
+      this.empty();
       this.rankings.each(function(ranking) {
         var li = Views.RankedCandidateLi.toView({ranking: ranking});
         li.stopLoading();
-        this.rankedCandidatesList.append(li);
+
+        if (ranking.position() > 0) {
+          this.separator.before(li);
+        } else {
+          this.rankedCandidatesList.append(li);
+        }
       }, this);
       this.subscriptions.add(this.rankings.onRemoteRemove(function(ranking) {
         this.findLi(ranking.candidate()).remove();
@@ -39,7 +55,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     empty: function() {
-      this.rankedCandidatesList.empty();
+      this.rankedCandidatesList.find("li:not(.separator)").remove();
     },
 
     handleReceive: function(event, ui) {
@@ -50,17 +66,19 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     handleUpdate: function(event, ui) {
-      // received items are replaced with different object, so need to find from the list
       var candidate = Candidate.find(ui.item.attr('candidateId'));
+      // received items are replaced with different object, so need to find from the list
       var rankedCandidateLi = this.findLi(candidate);
       rankedCandidateLi.view().startLoading();
 
-      var predecessorId = rankedCandidateLi.prev().attr('candidateId');
-      var successorId = rankedCandidateLi.next().attr('candidateId');
+      var belowSeparator = rankedCandidateLi.prevAll('.separator').length > 0;
+      // the successor is higher in the list, the predecessor is lower
+      var successorId = rankedCandidateLi.prev('.candidate').attr('candidateId');
+      var predecessorId = rankedCandidateLi.next('.candidate').attr('candidateId');
       var predecessor = predecessorId ? Candidate.find(predecessorId) : null;
       var successor = successorId ? Candidate.find(successorId) : null;
 
-      Ranking.createOrUpdate(Application.currentUser(), this.election(), candidate, predecessor, successor)
+      Ranking.createOrUpdate(Application.currentUser(), this.election(), candidate, predecessor, successor, belowSeparator)
         .onSuccess(function(ranking) {
           if (!ranking) debugger;
           rankedCandidateLi.view().ranking = ranking;
@@ -69,7 +87,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     findPreviousLi: function(candidate) {
-      return this.rankedCandidatesList.find("li.rankedCandidate[candidateId='" + candidate.id() + "']");
+      return this.rankedCandidatesList.find("li.ranked.candidate[candidateId='" + candidate.id() + "']");
     },
 
     findLi: function(candidate) {
@@ -77,7 +95,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     adjustHeight: function() {
-      this.rankedCandidatesList.height($(window).height() - this.rankedCandidatesList.offset().top - 20); 
+      this.rankedCandidatesList.height($(window).height() - this.rankedCandidatesList.offset().top - 20);
     }
   }
 });

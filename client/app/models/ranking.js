@@ -13,9 +13,8 @@ _.constructor("Ranking", Model.Record, {
       this.belongsTo('user');
     },
 
-    createOrUpdate: function(user, election, candidate, predecessor, successor) {
-      var positions = this.determinePredecessorAndSuccessorPositions(user, election, predecessor, successor);
-      var newPositionFieldValue = { position: (positions.predecessor + positions.successor) / 2 }
+    createOrUpdate: function(user, election, candidate, predecessor, successor, belowSeparator) {
+      var newPositionFieldValue = { position: this.determinePosition(user, predecessor, successor, belowSeparator) };
       var otherFieldValues = {userId: user.id(), electionId: election.id(), candidateId: candidate.id()};
 
       var existingRanking = Ranking.find(otherFieldValues);
@@ -28,28 +27,19 @@ _.constructor("Ranking", Model.Record, {
 
     // private
 
-    determinePredecessorAndSuccessorPositions: function(user, election, predecessor, successor) {
-      var positions = {};
+    determinePosition: function(user, predecessor, successor, belowSeparator) {
+      var predecessorPosition = predecessor ? user.rankings().find({ candidateId: predecessor.id() }).position() : null;
+      var successorPosition = successor ? user.rankings().find({ candidateId: successor.id() }).position() : null;
 
-      if (predecessor) {
-        positions.predecessor = user.rankings().find({ candidateId: predecessor.id() }).position();
+      if (belowSeparator) {
+        if (!successorPosition) successorPosition = 0;
+        if (!predecessorPosition) predecessorPosition = successorPosition - 128;
       } else {
-        positions.predecessor = 0;
+        if (!predecessorPosition) predecessorPosition = 0;
+        if (!successorPosition) successorPosition = predecessorPosition + 128;
       }
-
-      if (successor) {
-        positions.successor = user.rankings().find({ candidateId: successor.id() }).position();
-      } else {
-        var lastRanking = user.rankings().where({ electionId: election.id()}).last();
-        if (lastRanking) {
-          positions.successor = lastRanking.position() + 2;
-        } else {
-          positions.successor = 2;
-        }
-      }
-
-      return positions;
+      
+      return (predecessorPosition + successorPosition) / 2;
     }
   }
-
 });

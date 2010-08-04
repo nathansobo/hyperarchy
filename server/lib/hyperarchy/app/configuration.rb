@@ -28,7 +28,9 @@ module Hyperarchy
     configure(:development) do
       ::LOGGER = Logger.new($stdout)
       set :port, 9000
+      Mailer.base_url = "localhost:9000"
       Mailer.default_options = {
+        :from => '"Hyperarchy" <admin@hyperarchy.com>',
         :via => :smtp,
         :via_options => {
           :address => "localhost",
@@ -44,15 +46,33 @@ module Hyperarchy
     end
 
     configure(:demo) do
+      Mailer.base_url = "demo.hyperarchy.com"
+
       ::LOGGER = Logger.new($stdout)
       set :port, 3001
+
+      Mailer.default_options = {
+        :via => :smtp,
+        :from => '"Hyperarchy" <admin@hyperarchy.com>',
+        :via_options => {
+          :address => "smtp.gmail.com",
+          :port => 587,
+          :user_name => "admin@hyperarchy.com",
+          :password => "thepresent",
+          :authentication => :plain,
+          :domain => "hyperarchy.com"
+        }
+      }
     end
 
     configure(:production) do
+      Mailer.base_url = "hyperarchy.com"
+
       ::LOGGER = Logger.new($stdout)
       set :port, 3000
 
       Mailer.default_options = {
+        :from => '"Hyperarchy" <admin@hyperarchy.com>',
         :via => :smtp,
         :via_options => {
           :address => "smtp.gmail.com",
@@ -71,8 +91,6 @@ module Hyperarchy
       Monarch::Model::Record.current_user = user
     end
 
-    before do
-      Mailer.base_url = base_url
-    end
+    ::ALPHA_TEST_ORG_NAME = "Alpha Testers"
   end
 end

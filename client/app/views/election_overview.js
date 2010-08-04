@@ -2,14 +2,20 @@ _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'class': "elections"}, function() {
       div({'class': "grid4"}, function() {
+        h1({'class': "clickable"})
+          .click('goToOrganization')
+          .ref('organizationName');
+
         div({'class': "body largeFont"}).ref('bodyDiv');
 
         div({id: "createCandidateForm"}, function() {
-          textarea({'class': "grayText", rows: 3}, "Type your own suggestion here.")
+          textarea({placeholder: "Type your own suggestion here.", rows: 3})
             .ref('createCandidateTextarea')
-            .click(function() {
-              this.val("");
-              this.removeClass('grayText');
+            .keypress(function(view, e) {
+              if (e.keyCode === 13) {
+                view.createCandidateButton.click();
+                return false;
+              }
             });
 
           button("Suggest Answer")
@@ -42,9 +48,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       if (!election) {
         Server.fetch([
-          Election.where({id: electionId}),
+          Election.where({id: electionId}).joinTo(Organization),
           Candidate.where({electionId: electionId})
-        ]).onSuccess(_.bind(this.navigate, this, state));
+        ]).onSuccess(this.hitch('navigate', state));
         return;
       }
 
@@ -56,6 +62,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
     election: {
       afterChange: function(election) {
         this.subscriptions.destroy();
+
+        this.organizationName.html(election.organization().name());
         this.bodyDiv.html(election.body());
 
         this.candidatesList.empty();
@@ -74,13 +82,19 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     createCandidate: function() {
+      var body = this.createCandidateTextarea.val();
+      if (body === "") return;
+      
       this.createCandidateButton.attr('disabled', true);
-      this.election().candidates().create({body: this.createCandidateTextarea.val()})
+      this.election().candidates().create({body: body})
         .onSuccess(function() {
           this.createCandidateButton.attr('disabled', false);
-          this.createCandidateTextarea.addClass("grayText");
-          this.createCandidateTextarea.val("Type your own suggestion here.");
+          this.createCandidateTextarea.val("");
         }, this);
+    },
+
+    goToOrganization: function() {
+      $.bbq.pushState({view: "organization", organizationId: this.election().organizationId() }, 2);
     }
   }
 });

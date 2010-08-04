@@ -40,8 +40,7 @@ class Server < Thor
   end
 
   def require_and_run(env, port)
-    ENV['RACK_ENV'] = env
-    require "#{dir}/../lib/hyperarchy"
+    require_hyperarchy(env)
     options = { :host => 'localhost' }
     options[:port] = port if port
     Hyperarchy::App.run!(options)

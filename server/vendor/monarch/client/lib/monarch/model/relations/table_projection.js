@@ -28,6 +28,14 @@ _.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations
     return [this.projectedTable];
   },
 
+  wireRepresentation: function() {
+    return {
+      type: "table_projection",
+      operand: this.operand.wireRepresentation(),
+      projected_table: this.projectedTable.globalName
+    }
+  },
+
   // private
 
   subscribeToOperands: function() {

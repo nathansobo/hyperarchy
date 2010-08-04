@@ -22,18 +22,27 @@ class User < Monarch::Model::Record
   end
 
   def after_create
-    memberships.create!(:organization => Organization.find(:name => "Alpha Testers"), :suppress_invite_email => true)
+    memberships.create!(:organization => Organization.find(:name => ALPHA_TEST_ORG_NAME), :suppress_invite_email => true, :pending => false)
   end
 
   def password=(unencrypted_password)
+    return nil if unencrypted_password.blank?
     self.encrypted_password = self.class.encrypt_password(unencrypted_password)
   end
 
   def password
+    return nil if encrypted_password.blank?
     BCrypt::Password.new(encrypted_password)
   end
 
   def full_name
     "#{first_name} #{last_name}"
+  end
+
+  def validate
+    validation_error(:first_name, "You must enter a first name.") if first_name.blank?
+    validation_error(:last_name, "You must enter a last name.") if last_name.blank?
+    validation_error(:email_address, "You must enter an email address.") if email_address.blank?
+    validation_error(:encrypted_password, "You must enter a password.") if encrypted_password.blank?
   end
 end

@@ -17,6 +17,7 @@ module Monarch
 
       describe "#subscribe and #unsubscribe" do
         specify "#subscribe causes all insert, update, and remove events on the given relation to send a message to the client and #unsubscribe cancels those events" do
+          Timecop.freeze(Time.now)
           subscription_1_id = client.subscribe(BlogPost.table)
 
           sent_message = nil
@@ -25,7 +26,7 @@ module Monarch
           end
 
           record = BlogPost.create!(:title => "FiberForce Muffins", :body => "Betcha can't eat these.")
-          sent_message.should == ["create", "blog_posts", {"created_at"=>nil, "title"=>"FiberForce Muffins", "body"=>"Betcha can't eat these.", "featured"=>nil, "blog_id"=>nil, "id" => record.id }]
+          sent_message.should == ["create", "blog_posts", {"created_at"=>nil, "title"=>"FiberForce Muffins", "body"=>"Betcha can't eat these.", "featured"=>nil, "blog_id"=>nil, "id" => record.id, "created_at" => Time.now.to_millis, "updated_at" => Time.now.to_millis }]
 
           RR.reset_double(client, :send)
 
