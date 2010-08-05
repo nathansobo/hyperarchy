@@ -4,6 +4,7 @@ require "#{dir}/research/election"
 
 require "rubygems"
 require "bundler"
+require "enumerator"
 
 require "rgl/topsort"
 require "rgl/adjacency"
