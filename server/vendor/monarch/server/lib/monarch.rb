@@ -25,6 +25,7 @@ require "#{dir}/monarch/util"
 require "#{dir}/monarch/rack"
 require "#{dir}/monarch/model"
 require "#{dir}/monarch/helpers"
+require "#{dir}/../vendor/gift_wrapper/lib/gift_wrapper"
 
 module Monarch
   class << self
@@ -33,7 +34,7 @@ module Monarch
 
     def registered(app)
       app.helpers Monarch::Helpers, Util::BuildRelationalDataset
-      app.use Rack::AssetService, Rack::AssetService::AssetManager.instance
+      app.use GiftWrapper
       app.use Rack::RealTimeHub
 
       app.get "#{MONARCH_PATH_PREFIX}/repository/fetch" do
@@ -64,5 +65,5 @@ end
 Origin = Monarch::Model::RemoteRepository.new
 
 MONARCH_PATH_PREFIX = "" unless defined?(MONARCH_PATH_PREFIX)
-Monarch.add_js_location("#{MONARCH_PATH_PREFIX}/monarch/lib", "#{MONARCH_CLIENT_ROOT}/lib")
-Monarch.add_js_location("#{MONARCH_PATH_PREFIX}/monarch/vendor", "#{MONARCH_CLIENT_ROOT}/vendor")
+GiftWrapper.mount("#{MONARCH_CLIENT_ROOT}/lib", "#{MONARCH_PATH_PREFIX}/monarch/lib")
+GiftWrapper.mount("#{MONARCH_CLIENT_ROOT}/vendor", "#{MONARCH_PATH_PREFIX}/monarch/vendor")

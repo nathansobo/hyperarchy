@@ -103,13 +103,10 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
       this.tupleUpdatedRemotely(record, changedFields);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.operand.onDirty(function(record) {
-      this.recordMadeDirty(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onClean(function(record) {
-      this.recordMadeClean(record);
-    }, this));
+    this.operandsSubscriptionBundle.add(this.operand.onDirty(this.hitch('recordMadeDirty')));
+    this.operandsSubscriptionBundle.add(this.operand.onClean(this.hitch('recordMadeClean')));
+    this.operandsSubscriptionBundle.add(this.operand.onInvalid(this.hitch('recordMadeInvalid')));
+    this.operandsSubscriptionBundle.add(this.operand.onValid(this.hitch('recordMadeValid')));
   }
 })
 

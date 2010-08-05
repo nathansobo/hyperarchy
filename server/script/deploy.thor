@@ -11,13 +11,21 @@ class Deploy < Thor
 
   desc "global", "rsyncs nginx and god config files to the server and reloads them"
   def global
-    require "#{File.dirname(__FILE__)}/deploy"
+    require "#{File.dirname(__FILE__)}/deployment"
     Deployment.new.deploy_global_config
+  end
+
+  desc "minify_js [env=production]", "minify the javascript. should be run on the server to which you are deploying."
+  def minify_js(env="production")
+    require_hyperarchy(env)
+    GiftWrapper.clear_package_dir
+    GiftWrapper.combine_js("underscore", "jquery-1.4.2")
+    GiftWrapper.combine_js('application')
   end
 
   private
   def deploy(env, ref)
-    require "#{File.dirname(__FILE__)}/deploy"
+    require "#{File.dirname(__FILE__)}/deployment"
     Deployment.new.deploy(env, ref)
   end
 end

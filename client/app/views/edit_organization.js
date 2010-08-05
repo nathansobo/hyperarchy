@@ -12,7 +12,7 @@ _.constructor("Views.EditOrganization", View.Template, {
       });
 
       div({'class': "grid7 largeFont"}, function() {
-        a({href: "#", class: "glossyBlack roundedButton", id: "overviewLink"}, "View Questions")
+        a({href: "#", 'class': "glossyBlack roundedButton", id: "overviewLink"}, "View Questions")
           .ref('overviewLink')
           .click(function(view, e) {
             $.bbq.pushState({view: "organization", organizationId: view.model().id()});

@@ -14,7 +14,7 @@ _.constructor("Monarch.Http.CometClient", {
       var xhr = jQuery.ajax({
         type: "post",
         url: Server.cometHubUrl,
-        data: { client_id: self.clientId },
+        data: { client_id: self.clientId }
       });
 
       xhr.onreadystatechange = function() {

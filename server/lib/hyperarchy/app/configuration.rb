@@ -17,8 +17,9 @@ module Hyperarchy
     helpers Hyperarchy::Helpers
 
     Origin.connection = Sequel.mysql("hyperarchy_#{RACK_ENV}", :user => 'root', :password => 'password', :encoding => 'utf8')
-    
+
     configure(:test) do
+      GiftWrapper.development_mode = true
       ::LOGGER = Logger.new($stdout)
       Mailer.use_fake
       Mailer.base_url = "hyperarchy.com"
@@ -26,6 +27,7 @@ module Hyperarchy
     end
 
     configure(:development) do
+      GiftWrapper.development_mode = true
       ::LOGGER = Logger.new($stdout)
       set :port, 9000
       Mailer.base_url = "localhost:9000"

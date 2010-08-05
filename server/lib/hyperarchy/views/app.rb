@@ -24,7 +24,7 @@ module Views
     end
 
     def application_javascript_tags
-      javascript_include("application.js")
+      javascript_include("application")
     end
   end
 end

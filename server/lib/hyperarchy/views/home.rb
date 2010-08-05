@@ -24,8 +24,7 @@ module Views
     end
 
     def head_content
-      javascript_include "underscore.js"
-      javascript_include "jquery-1.4.2.js"
+      javascript_include "underscore", "jquery-1.4.2"
 
       javascript %[
         $(function() {

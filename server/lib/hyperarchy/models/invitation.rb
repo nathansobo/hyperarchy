@@ -47,7 +47,7 @@ class Invitation < Monarch::Model::Record
 
     memberships.each do |membership|
       if confirm_memberships.include?(membership.id)
-        membership.update(:pending => false, :user => user)
+        membership.update!(:pending => false, :user => user)
       else
         membership.destroy
       end

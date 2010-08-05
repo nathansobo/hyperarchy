@@ -17,6 +17,7 @@ module Views
         body :class => self.class.basename.underscore do
           body_content
         end
+
         mixpanel_javascript
       end
     end
@@ -46,8 +47,8 @@ module Views
       end
     end
 
-    def javascript_include(path_relative_to_load_path)
-      Monarch.virtual_dependency_paths_from_load_path(path_relative_to_load_path).each do |path|
+    def javascript_include(*paths)
+      GiftWrapper.require_js(*paths).each do |path|
         script :type => "text/javascript", :language => "javascript", :src => path
       end
     end

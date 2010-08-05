@@ -2,7 +2,7 @@ class Membership < Monarch::Model::Record
   column :organization_id, :key
   column :user_id, :key
   column :invitation_id, :key
-  column :role, :string
+  column :role, :string, :default => "member"
   column :pending, :boolean, :default => true
 
   synthetic_column :first_name, :string
