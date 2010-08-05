@@ -27,7 +27,7 @@ module Hyperarchy
     end
 
     configure(:development) do
-#      GiftWrapper.development_mode = true
+      GiftWrapper.development_mode = true
       ::LOGGER = Logger.new($stdout)
       set :port, 9000
       Mailer.base_url = "localhost:9000"
