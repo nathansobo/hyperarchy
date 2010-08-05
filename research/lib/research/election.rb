@@ -113,10 +113,8 @@ class Election
         edges = edges.uniq
         tied = true
         edges.each do |edge|
-          edge_count = (@majorities.select do 
-            |m| m[:winner] == edge.first and m[:loser] == edge.last}).
-              first[:count]
-          end
+          edge_count = (@majorities.select {|m| m[:winner] == edge.first and 
+                                                m[:loser]  == edge.last}).first[:count]
           if edge_count != majority[:count]
             tied = false
             break
@@ -130,6 +128,9 @@ class Election
     #  but one candidate from the graph
     cycles = graph.cycles
     tied_candidates = cycles.flatten.uniq.sort
+    
+    puts tied_candidates.inspect
+    
     tied_groups = []
     tied_candidates.each do |candidate|
       next if tied_groups.flatten.include?(candidate)
@@ -138,6 +139,8 @@ class Election
     tied_groups.each do |group|
       (group - [group.first]).each {|candidate| graph.remove_vertex(candidate)}
     end
+    
+    puts tied_groups.inspect
         
     # perform the topsort, then put the tied groups back into the final result
     @results = []
