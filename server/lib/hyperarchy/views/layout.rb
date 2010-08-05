@@ -47,8 +47,8 @@ module Views
       end
     end
 
-    def javascript_include(paths)
-      GiftWrapper.require_js(paths).each do |path|
+    def javascript_include(*paths)
+      GiftWrapper.require_js(*paths).each do |path|
         script :type => "text/javascript", :language => "javascript", :src => path
       end
     end

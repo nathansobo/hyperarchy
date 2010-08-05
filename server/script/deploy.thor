@@ -19,6 +19,7 @@ class Deploy < Thor
   def minify_js(env="production")
     require_hyperarchy(env)
     GiftWrapper.clear_package_dir
+    GiftWrapper.combine_js("underscore", "jquery-1.4.2")
     GiftWrapper.combine_js('application')
   end
 
