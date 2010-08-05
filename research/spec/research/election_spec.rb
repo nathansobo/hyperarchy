@@ -18,7 +18,7 @@ describe Election do
                         ((election.candidate_ids.sort_by {rand}).
                         first(num_ranked) + [unranked_id]).sort_by{rand})
       election.add_ranking(random_ranking)
-      #puts random_ranking.inspect
+    #puts random_ranking.inspect
     end
     
     # count pairwise majorities
@@ -28,14 +28,6 @@ describe Election do
         ranking.candidates_below(winner).each {|loser| majorities[winner][loser] += 1}
       end
     end
-  end
-
-  it "keeps track of ID numbers" do
-    election.id.should == 0
-    Election[0].should == election
-    election1 = Election.new
-    election1.id.should == 1
-    Election[1].should == election1
   end
   
   it "results reproduce a single ranking with no ties" do
@@ -54,7 +46,7 @@ describe Election do
     #puts random_ranking.inspect
     trivial_election.results.inspect.should == random_ranking.inspect
   end
-  
+    
   it "ranks condorcet winner first, if there is one" do
     election.candidate_ids.each do |candidate|
       other_candidates = election.candidate_ids - [candidate]
