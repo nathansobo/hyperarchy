@@ -7,8 +7,8 @@ _.constructor("Views.Layout", View.Template, {
         .click('hideFeedbackForm')
         .ref('darkenBackground');
       div({id: "feedback", style: "display: none"}, function() {
-        div({class: "x"}).click('hideFeedbackForm');
-        div({id: "thanks", class: "largeFont"}, function() {
+        div({'class': "x"}).click('hideFeedbackForm');
+        div({id: "thanks", 'class': "largeFont"}, function() {
           text("Thanks for taking the time to talk to us! Feel free to get in touch with us via email at ");
           a({href: "mailto:admin@hyperarchy.com"}, "admin@hyperarchy.com");
           text(".")

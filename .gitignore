@@ -2,10 +2,9 @@
 *.iws
 *.ipr
 .bundle
-public/all.js
+client/pkg
 target
 .DS_Store
-server/service/*.pid
 .idea
 .rvmrc
 log

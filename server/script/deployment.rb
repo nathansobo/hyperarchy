@@ -19,6 +19,7 @@ class Deployment
     god :stop, "hyperarchy_#{env}"
     sleep 1
     thor "db:migrate", env
+    thor "deploy:minify_js", env
     god :start, "hyperarchy_#{env}"
   end
 
