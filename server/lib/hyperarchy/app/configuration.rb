@@ -17,7 +17,9 @@ module Hyperarchy
     helpers Hyperarchy::Helpers
 
     Origin.connection = Sequel.mysql("hyperarchy_#{RACK_ENV}", :user => 'root', :password => 'password', :encoding => 'utf8')
-    
+
+    GiftWrapper.development_mode = true
+
     configure(:test) do
       GiftWrapper.development_mode = true
       ::LOGGER = Logger.new($stdout)
