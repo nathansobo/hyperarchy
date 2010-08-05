@@ -161,7 +161,9 @@ class GiftWrapper
   end
 
   def minify(input_path, output_path)
-    system("java -jar #{compiler_jar_path} --js #{input_path} --js_output_file #{output_path} --warning_level=QUIET")
+    IO.popen("java -jar #{compiler_jar_path} --js #{input_path} --js_output_file #{output_path} --warning_level=QUIET") do |f|
+      puts line while line = f.gets
+    end
   end
 
   def compiler_jar_path

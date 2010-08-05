@@ -74,7 +74,7 @@ module Net
       def execute!(command, &callback)
         process = execute(command, &callback)
         wait!
-        process.output_data.chomp
+        [process.exit_status, process.output_data.chomp]
       end
 
       def busy?

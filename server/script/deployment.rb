@@ -49,7 +49,9 @@ class Deployment
   def execute!(*args)
     command = args.join(" ")
     puts command
-    shell.execute!(command)
+    exit_status, output = shell.execute!(command)
+    raise "#{commad} executed non-zero" unless exit_status == 0
+    output
   end
 
   def self.commands(*commands)
