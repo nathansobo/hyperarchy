@@ -166,6 +166,7 @@ module Monarch
 
               describe "when the record was previously a member of the selection and it still is" do
                 it "fires #on_update callbacks with the record and the changeset" do
+                  Timecop.freeze(Time.now)
                   record = BlogPost.find(BlogPost[:blog_id].eq("grain"))
                   record.update(:title => "New title")
 
@@ -174,7 +175,7 @@ module Monarch
                   on_update_calls.should_not be_empty
                   on_update_record, on_update_changeset = on_update_calls.first
                   on_update_record.should == record
-                  on_update_changeset.wire_representation.should == {"title" => "New title"}
+                  on_update_changeset.wire_representation.should == {"title" => "New title", "updated_at" => Time.now.to_millis}
 
                   on_remove_calls.should be_empty
                 end

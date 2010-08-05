@@ -88,6 +88,12 @@ module Monarch
           validation_errors_by_column_name
         end
 
+        def validation_errors
+          fields.map do |field|
+            field.validation_errors
+          end.flatten
+        end
+
         def valid?
           true
         end

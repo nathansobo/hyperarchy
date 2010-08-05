@@ -129,6 +129,11 @@ _.constructor("Monarch.Model.Relations.Relation", {
     _.each(this.tuples(), fn, context);
   },
 
+  onEach: function(fn, context) {
+    this.each(fn, context);
+    return this.onRemoteInsert(fn, context);
+  },
+
   map: function(fn, context) {
     return _.map(this.tuples(), fn, context);
   },
