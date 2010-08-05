@@ -164,6 +164,7 @@ class GiftWrapper
     IO.popen("java -jar #{compiler_jar_path} --js #{input_path} --js_output_file #{output_path} --warning_level=QUIET") do |f|
       puts line while line = f.gets
     end
+    raise "Error running closure compiler" unless $?.to_i == 0
   end
 
   def compiler_jar_path
