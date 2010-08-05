@@ -17,7 +17,8 @@ require "#{dir}/hyperarchy/models"
 require "#{dir}/hyperarchy/views"
 require "#{dir}/hyperarchy/app"
 
-Monarch.add_js_location("/javascript/app", "#{CLIENT_ROOT}/app")
-Monarch.add_js_location("/javascript/vendor", "#{CLIENT_ROOT}/vendor")
-Monarch.add_location("/stylesheets", "#{CLIENT_ROOT}/stylesheets")
-Monarch.add_location("/images", "#{CLIENT_ROOT}/images")
+GiftWrapper.mount("#{CLIENT_ROOT}/app", "/javascript/app")
+GiftWrapper.mount("#{CLIENT_ROOT}/vendor", "/javascript/vendor")
+GiftWrapper.mount("#{CLIENT_ROOT}/stylesheets", "/stylesheets")
+GiftWrapper.mount("#{CLIENT_ROOT}/images", "/images")
+GiftWrapper.mount_package_dir("#{CLIENT_ROOT}/pkg", "/javascript/pkg")
