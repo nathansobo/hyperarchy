@@ -25,31 +25,48 @@ module Models
         Majority.find({ :winner => fish, :loser => tacos, :election => election }).should_not be_nil
       end
 
-      it "for every ranking of an existing candidate by any user, increments that candidates majority over the created candidate" do
+      it "makes the new candidate lose to every positively ranked candidate and win over every negatively ranked one" do
         user_1 = User.make
         user_2 = User.make
         user_3 = User.make
 
-        falafel = election.candidates.create(:body => "Falafel")
-        tacos = election.candidates.create(:body => "Tacos")
-        fish = election.candidates.create(:body => "Fish")
-        twinkies = election.candidates.create(:body => "Twinkies") # unranked
+        _3_up_0_down = election.candidates.create(:body => "3 Up - 0 Down")
+        _2_up_1_down = election.candidates.create(:body => "2 Up - 1 Down")
+        _1_up_2_down = election.candidates.create(:body => "1 Up - 2 Down")
+        _0_up_3_down = election.candidates.create(:body => "0 Up - 3 Down")
+        unranked     = election.candidates.create(:body => "Unranked")
 
-        election.rankings.create(:user => user_1, :candidate => falafel, :position => 1)
-        election.rankings.create(:user => user_1, :candidate => tacos, :position => 2)
-        election.rankings.create(:user => user_1, :candidate => fish, :position => 3)
+        election.rankings.create(:user => user_1, :candidate => _3_up_0_down, :position => 64)
+        election.rankings.create(:user => user_1, :candidate => _2_up_1_down, :position => 32)
+        election.rankings.create(:user => user_1, :candidate => _1_up_2_down, :position => 16)
+        election.rankings.create(:user => user_1, :candidate => _0_up_3_down, :position => -64)
 
-        election.rankings.create(:user => user_2, :candidate => tacos, :position => 1)
-        election.rankings.create(:user => user_2, :candidate => falafel, :position => 2)
+        election.rankings.create(:user => user_2, :candidate => _3_up_0_down, :position => 64)
+        election.rankings.create(:user => user_2, :candidate => _2_up_1_down, :position => 32)
+        election.rankings.create(:user => user_2, :candidate => _1_up_2_down, :position => -32)
+        election.rankings.create(:user => user_2, :candidate => _0_up_3_down, :position => -64)
 
-        election.rankings.create(:user => user_3, :candidate => falafel, :position => 1)
+        election.rankings.create(:user => user_3, :candidate => _3_up_0_down, :position => 64)
+        election.rankings.create(:user => user_3, :candidate => _2_up_1_down, :position => -16)
+        election.rankings.create(:user => user_3, :candidate => _1_up_2_down, :position => -32)
+        election.rankings.create(:user => user_3, :candidate => _0_up_3_down, :position => -64)
 
         candidate = election.candidates.create(:body => "Alpaca")
 
-        find_majority(falafel, candidate).count.should == 3
-        find_majority(tacos, candidate).count.should == 2
-        find_majority(fish, candidate).count.should == 1
-        find_majority(twinkies, candidate).count.should == 0
+        find_majority(_3_up_0_down, candidate).count.should == 3
+        find_majority(candidate, _3_up_0_down).count.should == 0
+
+        find_majority(_2_up_1_down, candidate).count.should == 2
+        find_majority(candidate, _2_up_1_down).count.should == 1
+
+        find_majority(_1_up_2_down, candidate).count.should == 1
+        find_majority(candidate, _1_up_2_down).count.should == 2
+
+        find_majority(_0_up_3_down, candidate).count.should == 0
+        find_majority(candidate, _0_up_3_down).count.should == 3
+
+        find_majority(unranked, candidate).count.should == 0
+        find_majority(candidate, unranked).count.should == 0
       end
     end
   end

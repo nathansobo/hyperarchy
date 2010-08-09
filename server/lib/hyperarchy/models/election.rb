@@ -33,8 +33,24 @@ class Election < Monarch::Model::Record
     update(:updated_at => Time.now)
   end
 
-  def candidate_ranking_counts
-    rankings.
+  def positive_rankings
+    rankings.where(Ranking[:position] > 0)
+  end
+
+  def negative_rankings
+    rankings.where(Ranking[:position] < 0)
+  end
+
+  def positive_candidate_ranking_counts
+    times_each_candidate_is_ranked(positive_rankings)
+  end
+
+  def negative_candidate_ranking_counts
+    times_each_candidate_is_ranked(negative_rankings)
+  end
+
+  def times_each_candidate_is_ranked(relation)
+    relation.
       group_by(:candidate_id).
       project(:candidate_id, Ranking[:id].count.as(:times_ranked))
   end

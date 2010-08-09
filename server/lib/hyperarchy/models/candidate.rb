@@ -11,12 +11,23 @@ class Candidate < Monarch::Model::Record
       Majority.create({:winner => other_candidate, :loser => self, :election_id => election_id})
     end
 
-    losing_majorities.
-      join(election.candidate_ranking_counts).on(:winner_id => :candidate_id).
-      update(:count => :times_ranked)
+    victories_over(election.negative_candidate_ranking_counts).update(:count => :times_ranked)
+    defeats_by(election.positive_candidate_ranking_counts).update(:count => :times_ranked)
   end
-  
-  def losing_majorities
-    election.majorities.where(:loser_id => id)
+
+  def victories_over(other_candidate_ranking_counts)
+    election.
+      majorities.
+      where(:winner_id => id).
+      join(other_candidate_ranking_counts).
+        on(:loser_id => :candidate_id)
+  end
+
+  def defeats_by(other_candidate_ranking_counts)
+    election.
+      majorities.
+      where(:loser_id => id).
+      join(other_candidate_ranking_counts).
+        on(:winner_id => :candidate_id)
   end
 end
