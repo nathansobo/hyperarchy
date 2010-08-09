@@ -14,15 +14,15 @@ module Models
         falafel = election.candidates.create(:body => "Falafel")
         tacos = election.candidates.create(:body => "Tacos")
 
-        Majority.find({ :winner => falafel, :loser => tacos, :election => election }).should_not be_nil
-        Majority.find({ :winner => tacos, :loser => falafel, :election => election }).should_not be_nil
+        Majority.find(:winner => falafel, :loser => tacos, :election => election).should_not be_nil
+        Majority.find(:winner => tacos, :loser => falafel, :election => election).should_not be_nil
 
         fish = election.candidates.create(:body => "Fish")
         
-        Majority.find({ :winner => falafel, :loser => fish, :election => election }).should_not be_nil
-        Majority.find({ :winner => tacos, :loser => fish, :election => election }).should_not be_nil
-        Majority.find({ :winner => fish, :loser => falafel, :election => election }).should_not be_nil
-        Majority.find({ :winner => fish, :loser => tacos, :election => election }).should_not be_nil
+        Majority.find(:winner => falafel, :loser => fish, :election => election).should_not be_nil
+        Majority.find(:winner => tacos, :loser => fish, :election => election).should_not be_nil
+        Majority.find(:winner => fish, :loser => falafel, :election => election).should_not be_nil
+        Majority.find(:winner => fish, :loser => tacos, :election => election).should_not be_nil
       end
 
       it "makes the new candidate lose to every positively ranked candidate and win over every negatively ranked one" do

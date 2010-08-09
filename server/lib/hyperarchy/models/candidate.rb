@@ -6,13 +6,17 @@ class Candidate < Monarch::Model::Record
   belongs_to :election
 
   def after_create
-    Candidate.where(:election_id => election_id).where(Candidate[:id].neq(id)).each do |other_candidate|
+    other_candidates.each do |other_candidate|
       Majority.create({:winner => self, :loser => other_candidate, :election_id => election_id})
       Majority.create({:winner => other_candidate, :loser => self, :election_id => election_id})
     end
 
     victories_over(election.negative_candidate_ranking_counts).update(:count => :times_ranked)
     defeats_by(election.positive_candidate_ranking_counts).update(:count => :times_ranked)
+  end
+
+  def other_candidates
+    election.candidates.where(Candidate[:id].neq(id))
   end
 
   def victories_over(other_candidate_ranking_counts)
