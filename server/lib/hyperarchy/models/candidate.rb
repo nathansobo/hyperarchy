@@ -11,8 +11,10 @@ class Candidate < Monarch::Model::Record
       Majority.create({:winner => other_candidate, :loser => self, :election_id => election_id})
     end
 
-    victories_over(election.negative_candidate_ranking_counts).update(:count => :times_ranked)
-    defeats_by(election.positive_candidate_ranking_counts).update(:count => :times_ranked)
+    victories_over(election.negative_candidate_ranking_counts).update(:pro_count => :times_ranked)
+    victories_over(election.positive_candidate_ranking_counts).update(:con_count => :times_ranked)
+    defeats_by(election.positive_candidate_ranking_counts).update(:pro_count => :times_ranked)
+    defeats_by(election.negative_candidate_ranking_counts).update(:con_count => :times_ranked)
   end
 
   def other_candidates

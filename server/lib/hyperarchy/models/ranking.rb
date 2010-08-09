@@ -72,19 +72,23 @@ class Ranking < Monarch::Model::Record
   end
 
   def increment_victories_over(rankings_or_candidates)
-    victories_over(rankings_or_candidates).increment(:count)
+    victories_over(rankings_or_candidates).increment(:pro_count)
+    defeats_by(rankings_or_candidates).increment(:con_count)
   end
 
   def decrement_victories_over(rankings_or_candidates)
-    victories_over(rankings_or_candidates).decrement(:count)
+    victories_over(rankings_or_candidates).decrement(:pro_count)
+    defeats_by(rankings_or_candidates).decrement(:con_count)
   end
 
   def increment_defeats_by(rankings_or_candidates)
-    defeats_by(rankings_or_candidates).increment(:count)
+    defeats_by(rankings_or_candidates).increment(:pro_count)
+    victories_over(rankings_or_candidates).increment(:con_count)
   end
 
   def decrement_defeats_by(rankings_or_candidates)
-    defeats_by(rankings_or_candidates).decrement(:count)
+    defeats_by(rankings_or_candidates).decrement(:pro_count)
+    victories_over(rankings_or_candidates).decrement(:con_count)
   end
 
   def victories_over(rankings_or_candidates)

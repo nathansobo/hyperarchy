@@ -15,7 +15,7 @@ class Election < Monarch::Model::Record
     already_processed = []
     graph = RGL::DirectedAdjacencyGraph.new
 
-    positive_majorities.order_by(Majority[:count].desc).each do |majority|
+    majorities.order_by(Majority[:pro_count].desc).each do |majority|
       winner_id = majority.winner_id
       loser_id = majority.loser_id
       next if already_processed.include?([loser_id, winner_id])
@@ -53,10 +53,6 @@ class Election < Monarch::Model::Record
     relation.
       group_by(:candidate_id).
       project(:candidate_id, Ranking[:id].count.as(:times_ranked))
-  end
-
-  def positive_majorities
-    majorities.where(Majority[:count] > 0)
   end
 
   def ranked_candidates

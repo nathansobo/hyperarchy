@@ -53,20 +53,30 @@ module Models
 
         candidate = election.candidates.create(:body => "Alpaca")
 
-        find_majority(_3_up_0_down, candidate).count.should == 3
-        find_majority(candidate, _3_up_0_down).count.should == 0
+        find_majority(_3_up_0_down, candidate).pro_count.should == 3
+        find_majority(_3_up_0_down, candidate).con_count.should == 0
+        find_majority(candidate, _3_up_0_down).pro_count.should == 0
+        find_majority(candidate, _3_up_0_down).con_count.should == 3
 
-        find_majority(_2_up_1_down, candidate).count.should == 2
-        find_majority(candidate, _2_up_1_down).count.should == 1
+        find_majority(_2_up_1_down, candidate).pro_count.should == 2
+        find_majority(_2_up_1_down, candidate).con_count.should == 1
+        find_majority(candidate, _2_up_1_down).pro_count.should == 1
+        find_majority(candidate, _2_up_1_down).con_count.should == 2
 
-        find_majority(_1_up_2_down, candidate).count.should == 1
-        find_majority(candidate, _1_up_2_down).count.should == 2
+        find_majority(_1_up_2_down, candidate).pro_count.should == 1
+        find_majority(_1_up_2_down, candidate).con_count.should == 2
+        find_majority(candidate, _1_up_2_down).pro_count.should == 2
+        find_majority(candidate, _1_up_2_down).con_count.should == 1
 
-        find_majority(_0_up_3_down, candidate).count.should == 0
-        find_majority(candidate, _0_up_3_down).count.should == 3
+        find_majority(_0_up_3_down, candidate).pro_count.should == 0
+        find_majority(_0_up_3_down, candidate).con_count.should == 3
+        find_majority(candidate, _0_up_3_down).pro_count.should == 3
+        find_majority(candidate, _0_up_3_down).con_count.should == 0
 
-        find_majority(unranked, candidate).count.should == 0
-        find_majority(candidate, unranked).count.should == 0
+        find_majority(unranked, candidate).pro_count.should == 0
+        find_majority(unranked, candidate).con_count.should == 0
+        find_majority(candidate, unranked).pro_count.should == 0
+        find_majority(candidate, unranked).con_count.should == 0
       end
     end
   end
