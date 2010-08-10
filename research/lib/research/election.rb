@@ -94,7 +94,7 @@ class Election
     # for each majority, add an edge to the graph, unless the opposing
     #  majority has already been added
     graph = RGL::DirectedAdjacencyGraph.new
-    all_cycles = []
+    tied_sets = []
     @majorities = (@majorities.sort_by {|m| m[:count]}).reverse
     @majorities.each do |majority|
       winner = majority[:winner]
@@ -107,7 +107,7 @@ class Election
       # if the new edge creates a cycle, check if all of the majorities
       #  involved are the same size. otherwise, remove this edge.
       if opposing_count == count
-        all_cycles << [winner, loser].sort!
+        tied_sets << [winner, loser].sort!
         next
       end
       if not graph.acyclic?
@@ -123,17 +123,15 @@ class Election
           (tied = false; break) if edge_count != count
         end
         graph.remove_edge(winner, loser)                  if not tied
-        cycles.each {|cycle| all_cycles << cycle.sort!}   if tied
+        cycles.each {|cycle| tied_sets << cycle.sort!}   if tied
       end
     end
     
     # combine all of the cycles that have candidates in common to produce a
     #  list of tied sets of candidates.
-    tied_sets = []
-    unless all_cycles.empty?
-      all_cycles.uniq!
-      tied_candidates = all_cycles.flatten.uniq  
-      tied_sets = all_cycles
+    unless tied_sets.empty?
+      tied_sets = tied_sets.uniq!
+      tied_candidates = tied_sets.flatten.uniq  
       tied_candidates.each do |candidate|
         first_cycle = tied_sets.find {|cycle| cycle.include? candidate}
         position    = tied_sets.index first_cycle
