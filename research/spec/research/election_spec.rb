@@ -5,9 +5,9 @@ describe Election do
   attr_accessor :election, :majorities, :num_candidates, :num_rankings, :num_ranked
   
   before do
-    @num_candidates  = 10
-    @num_rankings    = 30
-    @num_ranked      = 5
+    @num_candidates = 10
+    @num_rankings   = 50
+    @num_ranked     = 10
     
     # add random rankings
     @election = Election.new
@@ -18,7 +18,6 @@ describe Election do
                         ((election.candidate_ids.sort_by {rand}).
                         first(num_ranked) + [unranked_id]).sort_by{rand})
       election.add_ranking(random_ranking)
-    #puts random_ranking.inspect
     end
     
     # count pairwise majorities
@@ -36,6 +35,7 @@ describe Election do
     random_ranking = Ranking.new( trivial_election.candidate_ids.sort_by {rand} )
     trivial_election.add_ranking(random_ranking)    
     trivial_election.results.inspect.should == random_ranking.inspect
+    #puts " results: #{election.results.inspect}"
   end
   
   it "results reproduce a single ranking with ties" do
@@ -43,30 +43,32 @@ describe Election do
     num_candidates.times {trivial_election.add_candidate}
     random_ranking = Ranking.new((trivial_election.candidate_ids.sort_by {rand}).first(num_ranked))
     trivial_election.add_ranking(random_ranking)    
-    #puts random_ranking.inspect
     trivial_election.results.inspect.should == random_ranking.inspect
+    #puts " results: #{election.results.inspect}"
   end
     
   it "ranks condorcet winner first, if there is one" do
     election.candidate_ids.each do |candidate|
       other_candidates = election.candidate_ids - [candidate]
       if other_candidates.all? {|other| majorities[candidate][other] > majorities[other][candidate]}
-        #puts " (condorcet winner: #{candidate})"
+        #puts " condorcet winner: #{candidate}"
         election.results.first.should == candidate
         break
       end
     end
+    puts " results: #{election.results.inspect}"
   end
   
   it "ranks condorcet loser last, if there is one" do
     election.candidate_ids.each do |candidate|
       other_candidates = election.candidate_ids - [candidate]
       if other_candidates.all? {|other| majorities[candidate][other] < majorities[other][candidate]}
-        #puts " (condorcet loser: #{candidate})"
+        #puts " condorcet loser: #{candidate}"
         election.results.last.should == candidate
         break
       end
     end
+    puts " results: #{election.results.inspect}"
   end
   
 end

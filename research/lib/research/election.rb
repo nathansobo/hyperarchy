@@ -36,10 +36,10 @@ class Election
     end
     @rankings.each do |ranking|
       ranking.candidates_above_default.each do |w|
-        @majorities.each {|m| m[:count] += 1  if m[:winner] == w and m[:loser] == new_id}
+        @majorities.find {|m| m[:winner] == w and m[:loser] == new_id}[:count] += 1
       end
       ranking.candidates_below_default.each do |l|
-        @majorities.each {|m| m[:count] += 1  if m[:loser] == l and m[:winner] == new_id}
+        @majorities.find {|m| m[:loser] == l and m[:winner] == new_id}[:count] += 1
       end
     end
   end
@@ -51,7 +51,7 @@ class Election
     @results_current = false
     candidate_ids.each do |winner|
       ranking.candidates_below(winner).each do |loser| 
-        @majorities.each {|m| m[:count] += 1  if m[:winner] == winner and m[:loser] == loser}
+        @majorities.find {|m| m[:winner] == winner and m[:loser] == loser}[:count] += 1
       end
     end
   end
@@ -86,75 +86,78 @@ class Election
     @results = []
     graph.topsort_iterator.each {|candidate_id| @results << candidate_id}
   end
-
- 
-  def ranked_pairs_with_ties  
+  
+  
+  
+  def ranked_pairs_with_ties
     
     # for each majority, add an edge to the graph, unless the opposing
-    #  majority is larger and has already been added
+    #  majority has already been added
     graph = RGL::DirectedAdjacencyGraph.new
+    all_cycles = []
     @majorities = (@majorities.sort_by {|m| m[:count]}).reverse
     @majorities.each do |majority|
       winner = majority[:winner]
       loser  = majority[:loser]
-      opposing_majority = (@majorities.select {|m| m[:winner] == loser and 
-                                                   m[:loser]  == winner}).first
-      next if majority[:count] < opposing_majority[:count]
+      count  = majority[:count]
+      opposing_count = @majorities.find {|m| m[:winner] == loser and m[:loser] == winner}[:count]
+      next if opposing_count > count
       graph.add_edge(winner, loser)
       
       # if the new edge creates a cycle, check if all of the majorities
-      #  involved are the same size.
+      #  involved are the same size. otherwise, remove this edge.
+      if opposing_count == count
+        all_cycles << [winner, loser].sort!
+        next
+      end
       if not graph.acyclic?
-        edges = []
-        graph.cycles_with_vertex(winner).each do |cycle|
-          cycle.each_cons(2) {|pair| edges << pair}
-          edges << [cycle.last, cycle.first]
-        end
-        edges = edges.uniq
         tied = true
-        edges.each do |edge|
-          edge_count = (@majorities.select {|m| m[:winner] == edge.first and 
-                                                m[:loser]  == edge.last}).first[:count]
-          if edge_count != majority[:count]
-            tied = false
-            break
-          end
+        cycles = graph.cycles_with_vertex(winner)
+        cycle_edges = []
+        cycles.each do |cycle|
+          cycle.each_cons(2) {|pair| cycle_edges << pair}
+          cycle_edges << [cycle.last, cycle.first]
         end
-        graph.remove_edge(winner, loser) unless tied
+        cycle_edges.uniq.each do |edge|
+          edge_count = @majorities.find {|m| m[:winner] == edge[0] and m[:loser] == edge[1]}[:count]
+          (tied = false; break) if edge_count != count
+        end
+        graph.remove_edge(winner, loser)                  if not tied
+        cycles.each {|cycle| all_cycles << cycle.sort!}   if tied
       end
     end
     
-    # identify groups of tied candidates. for each group, remove all 
-    #  but one candidate from the graph
-    cycles = graph.cycles
-    tied_candidates = cycles.flatten.uniq.sort
-    
-    puts tied_candidates.inspect
-    
-    tied_groups = []
-    tied_candidates.each do |candidate|
-      next if tied_groups.flatten.include?(candidate)
-      tied_groups << (cycles.select {|cycle| cycle.include?(candidate)}).flatten.uniq.sort
+    # combine all of the cycles that have candidates in common to produce a
+    #  list of tied sets of candidates.
+    tied_sets = []
+    unless all_cycles.empty?
+      all_cycles.uniq!
+      tied_candidates = all_cycles.flatten.uniq  
+      tied_sets = all_cycles
+      tied_candidates.each do |candidate|
+        first_cycle = tied_sets.find {|cycle| cycle.include? candidate}
+        position    = tied_sets.index first_cycle
+        if other_cycles = (tied_sets - [first_cycle]).find_all {|cycle| cycle.include? candidate}
+          other_cycles.each {|other_cycle| tied_sets[position] |= other_cycle}
+          other_cycles.each {|other_cycle| tied_sets.delete other_cycle}
+        end
+      end
     end
-    tied_groups.each do |group|
-      (group - [group.first]).each {|candidate| graph.remove_vertex(candidate)}
-    end
-    
-    puts tied_groups.inspect
-        
-    # perform the topsort, then put the tied groups back into the final result
+                
+    # perform the topsort, then put the tied sets back into the final result
     @results = []
+    tied_sets.each {|set| set[1...set.size].each {|v| graph.remove_vertex v}}
     graph.topsort_iterator.each {|candidate_id| @results << candidate_id}
-    tied_groups.each do |group|
-      @results[@results.index(group.first)] = group
-    end
+    tied_sets.each {|set| @results[@results.index(set.first)] = set.sort!}
   end
+  
+  
   
   def minimax
     max_losing_majorities = Array.new(num_candidates, 0)
     candidate_ids.each do |candidate|
-      losing_majorities  = (@majorities.select {|m| m[:loser] == candidate}).collect {|m| m[:count]}
-      winning_majorities = (@majorities.select {|m| m[:winner] == candidate}).collect {|m| m[:count]}
+      losing_majorities  = (@majorities.find_all {|m| m[:loser] == candidate}).collect {|m| m[:count]}
+      winning_majorities = (@majorities.find_all {|m| m[:winner] == candidate}).collect {|m| m[:count]}
       losing_majorities.each_index do |i|
         losing_majorities[i] = 0  if winning_majorities[i] >= losing_majorities[i]
       end
