@@ -1,15 +1,14 @@
 class Ranking
-  attr_accessor :election_id
+  attr_accessor :election
   attr_reader   :default_rank
   
   # the position of this keyword in the ranking array indicates the "default rank."
   #  it's a placeholder for all candidates not explicity included in the ranking.
   UNRANKED_ID = "other candidates"
   
-  
-  def initialize(the_ranking = [], election_id = nil)
+  def initialize(the_ranking = [], election = nil)
     @ranking = the_ranking
-    @election_id = election_id
+    @election = election
     
     # if default rank isn't specified, assume unranked candidates are tied for last place
     if not @ranking.include?(UNRANKED_ID)
@@ -67,7 +66,7 @@ class Ranking
   
   # which candidates are NOT explicity ranked?
   def unranked_candidates
-    all_candidates = Election[@election_id].candidate_ids
+    all_candidates = @election.candidate_ids
     return all_candidates - @ranking.flatten
   end
   
@@ -76,7 +75,8 @@ class Ranking
     rank = rank_of_candidate(candidate_id)
     candidates_above = Array(@ranking[0...rank])
     if candidates_above.include?(UNRANKED_ID)
-      candidates_above = candidates_above - [UNRANKED_ID] + unranked_candidates;  end
+      candidates_above = candidates_above - [UNRANKED_ID] + unranked_candidates
+    end
     return candidates_above.flatten.sort
   end 
   
@@ -85,7 +85,8 @@ class Ranking
     rank = rank_of_candidate(candidate_id)
     candidates_below = Array(@ranking[rank+1...@ranking.length])
     if candidates_below.include?(UNRANKED_ID)
-      candidates_below = candidates_below - [UNRANKED_ID] + unranked_candidates;  end
+      candidates_below = candidates_below - [UNRANKED_ID] + unranked_candidates
+    end
     return candidates_below.flatten.sort
   end 
   

@@ -20,8 +20,8 @@ describe Ranking do
   end
   
   it "determines relative ranks of candidates, deals with ties" do
-    my_election.add_ranking([0, [1, 2], 3, 4])
-    ranking = my_election.rankings.last
+    ranking = Ranking.new([0, [1, 2], 3, 4])
+    my_election.add_ranking(ranking)
     
     ranking.rank_of_candidate(0).should == 0
     ranking.rank_of_candidate(1).should == 1
@@ -42,8 +42,8 @@ describe Ranking do
   end
   
   it "places unranked candidates properly" do
-    my_election.add_ranking([0, unranked, 4])
-    ranking = my_election.rankings.last
+    ranking = Ranking.new([0, unranked, 4])
+    my_election.add_ranking(ranking)
     
     ranking.default_rank.should == 1
     ranking.rank_of_candidate(0).should == 0
