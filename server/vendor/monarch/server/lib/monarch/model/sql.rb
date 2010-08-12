@@ -1,6 +1,5 @@
 dir = File.dirname(__FILE__)
 
-require "#{dir}/sql/update"
 require "#{dir}/sql/aliased_table"
 require "#{dir}/sql/asterisk"
 require "#{dir}/sql/block"
