@@ -13,17 +13,29 @@ module Monarch
 
         def to_sql
           ["update",
-           from_tables_sql,
+          update_table_sql,
            "set",
            set_clause_assignments_sql,
+           "from",
+           from_tables_sql,
            where_clause_sql
           ].join(" ")
+        end
+
+        def update_table_sql
+          from_clause_table_refs.first.to_sql
+        end
+
+        def from_tables_sql
+          from_clause_table_refs.drop(1).map do |table_ref|
+            table_ref.to_sql
+          end.join(", ")
         end
 
         protected
         def set_clause_assignments_sql
           set_clause_assignments.map do |column_ref, expression|
-            "#{column_ref.to_sql} = #{expression.to_sql}"
+            "#{column_ref.name} = #{expression.to_sql}"
           end.sort.join(", ")
         end
       end
