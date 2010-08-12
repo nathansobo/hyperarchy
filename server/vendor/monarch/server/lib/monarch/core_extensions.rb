@@ -64,7 +64,7 @@ class String
   end
 
   def to_sql
-    inspect
+    "'#{gsub("'", "\\'")}'"
   end
 
   def path_starts_with?(prefix)

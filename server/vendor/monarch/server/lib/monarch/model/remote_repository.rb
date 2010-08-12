@@ -2,10 +2,11 @@ module Monarch
   module Model
     class RemoteRepository
       attr_accessor :connection
-      delegate :transaction, :execute_dui, :to => :connection
+      delegate :transaction, :to => :connection
 
       def insert(table, field_values)
         LOGGER.debug("insert -- #{table.global_name}, #{field_values.inspect}")
+        field_values.delete(:id) if field_values[:id].nil?
         connection.from(table.global_name).insert(field_values)
       end
 
@@ -24,6 +25,11 @@ module Monarch
           relation.build_record_from_database(field_values)
         end
         records
+      end
+
+      def execute_dui(sql)
+        LOGGER.debug("execute_dui -- #{sql}")
+        connection.execute_dui(sql)
       end
 
       def reload(record)

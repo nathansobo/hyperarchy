@@ -10,7 +10,7 @@ class Db < Thor
     end
 
     db.execute("drop database if exists #{db_name(env)}")
-    db.execute("create database #{db_name(env)}")
+    db.execute("create database #{db_name(env)} encoding 'utf8'")
     migrate(env)
     load_examples if env == "development" && load_examples
   end
@@ -42,7 +42,7 @@ class Db < Thor
   private
 
   def db(env=nil)
-    db_connections[env] ||= Sequel.mysql(db_name(env), db_options)
+    db_connections[env] ||= Sequel.postgres(db_name(env), db_options)
   end
 
   def db_name(env)
@@ -50,7 +50,7 @@ class Db < Thor
   end
 
   def db_options
-    { :user => 'root', :password => 'password', :encoding => 'utf8' }
+    { :user => 'postgres', :encoding => 'utf8' }
   end
 
   def db_connections
