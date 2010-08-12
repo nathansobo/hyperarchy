@@ -94,9 +94,9 @@ module Monarch
               and users.id = blogs.user_id
           })
 
-        User.where(:age => 21).join_through(Blog.where(:title => "I Can Drink Now")).to_update_sql(:title => "I Am 21").should be_like(%{
+        User.where(:age => 21).join_through(Blog.where(:title => "I Can Drink Now")).to_update_sql(:title => "I'm 21").should be_like(%{
           update users, blogs
-          set blogs.title = 'I Am 21'
+          set blogs.title = 'I\\'m 21'
           where blogs.title = 'I Can Drink Now' and users.age = 21 and users.id = blogs.user_id
         })
 
