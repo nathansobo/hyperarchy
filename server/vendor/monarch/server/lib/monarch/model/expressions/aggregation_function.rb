@@ -15,7 +15,7 @@ module Monarch
         end
 
         def name
-          expression_alias || to_sql.to_sym
+          expression_alias || function_name
         end
 
         def to_sql
