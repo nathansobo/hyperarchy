@@ -46,11 +46,11 @@ class Db < Thor
   end
 
   def db_name(env)
-    env ? "hyperarchy_#{env}" : nil
+    env ? "hyperarchy_#{env}" : "postgres"
   end
 
   def db_options
-    { :user => 'postgres', :encoding => 'utf8' }
+    { :user => 'hyperarchy', :encoding => 'utf8' }
   end
 
   def db_connections

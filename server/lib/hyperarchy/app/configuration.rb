@@ -16,7 +16,7 @@ module Hyperarchy
     register Monarch
     helpers Hyperarchy::Helpers
 
-    Origin.connection = Sequel.postgres("hyperarchy_#{RACK_ENV}", :user => 'postgres', :encoding => 'utf8')
+    Origin.connection = Sequel.postgres("hyperarchy_#{RACK_ENV}", :user => 'hyperarchy', :encoding => 'utf8')
 
     configure(:test) do
       GiftWrapper.development_mode = true
