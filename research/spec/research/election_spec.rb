@@ -29,22 +29,22 @@ describe Election do
     end
   end
   
-  it "results reproduce a single ranking with no ties" do
+  it "reproduces a single ranking with no ties" do
     trivial_election = Election.new
     num_candidates.times {trivial_election.add_candidate}
     random_ranking = Ranking.new( trivial_election.candidate_ids.sort_by {rand} )
     trivial_election.add_ranking(random_ranking)    
     trivial_election.results.inspect.should == random_ranking.inspect
-    #puts " results: #{election.results.inspect}"
+    puts " results: #{election.results.inspect}"
   end
   
-  it "results reproduce a single ranking with ties" do
+  it "reproduces a single ranking with ties" do
     trivial_election = Election.new
     num_candidates.times {trivial_election.add_candidate}
     random_ranking = Ranking.new((trivial_election.candidate_ids.sort_by {rand}).first(num_ranked))
     trivial_election.add_ranking(random_ranking)    
     trivial_election.results.inspect.should == random_ranking.inspect
-    #puts " results: #{election.results.inspect}"
+    puts " results: #{election.results.inspect}"
   end
     
   it "ranks condorcet winner first, if there is one" do
@@ -71,6 +71,18 @@ describe Election do
     puts " results: #{election.results.inspect}"
   end
   
+  it "recognizes multi-candidate cycles" do
+    cycle_election = Election.new
+    4.times {cycle_election.add_candidate}
+    cycle_election.add_ranking([0,1,2,3])
+    cycle_election.add_ranking([1,2,3,0])
+    cycle_election.add_ranking([2,3,0,1])
+    cycle_election.add_ranking([3,0,1,2])
+    cycle_election.results.should == [[0, 1, 2, 3]]
+    cycle_election.add_candidate
+    cycle_election.results.should == [[0, 1, 2, 3], 4]
+    puts " results: #{cycle_election.results.inspect}"
+  end
 end
 
 
