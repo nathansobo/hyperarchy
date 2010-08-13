@@ -7,7 +7,7 @@ describe Election do
   before do
     @num_candidates = 10
     @num_rankings   = 50
-    @num_ranked     = 10
+    @num_ranked     = 5
     
     # add random rankings
     @election = Election.new
@@ -34,17 +34,22 @@ describe Election do
     num_candidates.times {trivial_election.add_candidate}
     random_ranking = Ranking.new( trivial_election.candidate_ids.sort_by {rand} )
     trivial_election.add_ranking(random_ranking)    
+    #puts " ranking: #{random_ranking.inspect}"
     trivial_election.results.inspect.should == random_ranking.inspect
-    puts " results: #{election.results.inspect}"
+    puts " results: #{trivial_election.results.inspect}"
   end
   
   it "reproduces a single ranking with ties" do
     trivial_election = Election.new
+    unranked_id = Ranking::UNRANKED_ID
     num_candidates.times {trivial_election.add_candidate}
-    random_ranking = Ranking.new((trivial_election.candidate_ids.sort_by {rand}).first(num_ranked))
+    random_ranking = Ranking.new(
+                      ((election.candidate_ids.sort_by {rand}).
+                      first(num_ranked) + [unranked_id]).sort_by{rand})
     trivial_election.add_ranking(random_ranking)    
+    #puts " ranking: #{random_ranking.inspect}"
     trivial_election.results.inspect.should == random_ranking.inspect
-    puts " results: #{election.results.inspect}"
+    puts " results: #{trivial_election.results.inspect}"
   end
     
   it "ranks condorcet winner first, if there is one" do
