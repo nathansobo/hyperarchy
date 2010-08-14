@@ -16,7 +16,6 @@ module Monarch
           update_table_sql,
            "set",
            set_clause_assignments_sql,
-           "from",
            from_tables_sql,
            where_clause_sql
           ].join(" ")
@@ -27,7 +26,8 @@ module Monarch
         end
 
         def from_tables_sql
-          from_clause_table_refs.drop(1).map do |table_ref|
+          return nil unless from_clause_table_refs.length > 1
+          "from " + from_clause_table_refs.drop(1).map do |table_ref|
             table_ref.to_sql
           end.join(", ")
         end

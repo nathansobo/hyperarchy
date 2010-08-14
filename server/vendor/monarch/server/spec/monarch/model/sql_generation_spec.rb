@@ -166,15 +166,15 @@ module Monarch
       end
 
       specify "projections involving aggregation functions composed on top of other constructs" do
-        User.project(User[:id].count).to_sql.should be_like(%{select count(users.id) from users})
+        User.project(User[:id].count).to_sql.should be_like(%{select count(users.id) as count from users})
         User.where(:age => 34).project(User[:id].count).to_sql.should be_like(%{
-          select count(users.id) from users where users.age = 34
-        })
-        User.where(:age => 34).project(User[:id].count.as(:count)).to_sql.should be_like(%{
           select count(users.id) as count from users where users.age = 34
         })
+        User.where(:age => 34).project(User[:id].count.as(:count2)).to_sql.should be_like(%{
+          select count(users.id) as count2 from users where users.age = 34
+        })
         User.where(:id => 1).join_through(Blog).project(Blog[:id].count, :id).to_sql.should be_like(%{
-          select count(blogs.id), blogs.id as id
+          select count(blogs.id) as count, blogs.id as id
           from users, blogs
           where users.id = 1 and users.id = blogs.user_id
         })
