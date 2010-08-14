@@ -72,6 +72,9 @@ class Election
   end
   
   def ranked_pairs
+    
+    # for each majority, add an edge to the graph, unless the opposing
+    #  majority is larger and has already been added
     graph = RGL::DirectedAdjacencyGraph.new
     already_processed = []
     @majorities = (@majorities.sort_by {|m| m[:count]}).reverse
@@ -92,7 +95,7 @@ class Election
   def ranked_pairs_with_ties
     
     # for each majority, add an edge to the graph, unless the opposing
-    #  majority has already been added
+    #  majority is larger and has already been added
     graph = RGL::DirectedAdjacencyGraph.new
     tied_sets = []
     @majorities = (@majorities.sort_by {|m| m[:count]}).reverse
@@ -122,13 +125,13 @@ class Election
           edge_count = @majorities.find {|m| m[:winner] == edge[0] and m[:loser] == edge[1]}[:count]
           (tied = false; break) if edge_count != count
         end
-        graph.remove_edge(winner, loser)                  if not tied
-        cycles.each {|cycle| tied_sets << cycle.sort!}   if tied
+        graph.remove_edge(winner, loser)                if not tied
+        cycles.each {|cycle| tied_sets << cycle.sort!}  if tied
       end
     end
     
-    # combine all of the cycles that have candidates in common to produce a
-    #  list of tied sets of candidates.
+    # combine all of the various intersecting ties to produce a
+    #  final list of tied sets of candidates.
     unless tied_sets.empty?
       tied_sets = tied_sets.uniq!
       tied_candidates = tied_sets.flatten.uniq  
@@ -142,7 +145,8 @@ class Election
       end
     end
                 
-    # perform the topsort, then put the tied sets back into the final result
+    # for each set of tied candidates, temporarily remove all but one candidate from the set.
+    #  perform the topsort, then put the tied sets back into the final result
     @results = []
     tied_sets.each {|set| set[1...set.size].each {|v| graph.remove_vertex v}}
     graph.topsort_iterator.each {|candidate_id| @results << candidate_id}
