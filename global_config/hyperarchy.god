@@ -24,6 +24,8 @@ end
     w.stop = "cd /home/hyperarchy/#{env} && thor server:stop #{env}"
     w.pid_file = "#{ROOT}/log/hyperarchy_#{env}.pid"
     w.behavior(:clean_pid_file)
+    w.uid = "hyperarchy"
+    w.gid = "hyperarchy"
 
     w.start_if do |start|
       start.condition(:process_running) do |c|
