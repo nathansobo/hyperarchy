@@ -16,7 +16,7 @@ module Hyperarchy
     register Monarch
     helpers Hyperarchy::Helpers
 
-    Origin.connection = Sequel.mysql("hyperarchy_#{RACK_ENV}", :user => 'root', :password => 'password', :encoding => 'utf8')
+    Origin.connection = Sequel.postgres("hyperarchy_#{RACK_ENV}", :user => 'hyperarchy', :encoding => 'utf8')
 
     configure(:test) do
       GiftWrapper.development_mode = true
@@ -28,7 +28,7 @@ module Hyperarchy
 
     configure(:development) do
       GiftWrapper.development_mode = true
-      ::LOGGER = Logger.new($stdout)
+      ::LOGGER = Logger.new(STDOUT)
       set :port, 9000
       Mailer.base_url = "localhost:9000"
       Mailer.default_options = {
@@ -87,7 +87,7 @@ module Hyperarchy
       }
     end
 
-    ::LOGGER.level = Logger::WARN
+    ::LOGGER.level = Logger::INFO
 
     Warden::Manager.after_set_user do |user, auth, options|
       Monarch::Model::Record.current_user = user

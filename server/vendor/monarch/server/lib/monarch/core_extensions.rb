@@ -64,7 +64,7 @@ class String
   end
 
   def to_sql
-    inspect
+    "'#{gsub("'", "\\\\'")}'"
   end
 
   def path_starts_with?(prefix)
@@ -110,7 +110,7 @@ end
 
 class TrueClass
   def to_sql
-    "1"
+    "TRUE"
   end
 
   def sql_expression(state)
@@ -120,7 +120,7 @@ end
 
 class FalseClass
   def to_sql
-    "0"
+    "FALSE"
   end
 
   def sql_expression(state)

@@ -1,8 +1,8 @@
 Sequel.migration do
   up do
     alter_table :elections do
-      add_column :updated_at, :datetime
-      add_column :created_at, :datetime
+      add_column :updated_at, Time
+      add_column :created_at, Time
     end
   end
 
