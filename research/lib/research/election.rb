@@ -59,7 +59,7 @@ class Election
   def results
     compute_results unless @results_current
     return @results
-  end 
+  end
   
   private
   
@@ -93,9 +93,6 @@ class Election
   
   
   def ranked_pairs_with_ties
-    
-    # for each majority, add an edge to the graph, unless the opposing
-    #  majority is larger and has already been added
     graph = RGL::DirectedAdjacencyGraph.new
     tied_sets = []
     @majorities = (@majorities.sort_by {|m| m[:count]}).reverse
@@ -103,16 +100,16 @@ class Election
       winner = majority[:winner]
       loser  = majority[:loser]
       count  = majority[:count]
+      
+      # for each majority, add an edge to the graph, unless the opposing
+      #  majority is larger and has already been added
       opposing_count = @majorities.find {|m| m[:winner] == loser and m[:loser] == winner}[:count]
-      next if opposing_count > count
+      next  if opposing_count > count
       graph.add_edge(winner, loser)
       
       # if the new edge creates a cycle, check if all of the majorities
       #  involved are the same size. otherwise, remove this edge.
-      if opposing_count == count
-        tied_sets << [winner, loser].sort!
-        next
-      end
+      (tied_sets << [winner, loser].sort!; next)  if opposing_count == count
       if not graph.acyclic?
         tied = true
         cycles = graph.cycles_with_vertex(winner)
@@ -125,16 +122,15 @@ class Election
           edge_count = @majorities.find {|m| m[:winner] == edge[0] and m[:loser] == edge[1]}[:count]
           (tied = false; break) if edge_count != count
         end
-        graph.remove_edge(winner, loser)                if not tied
         cycles.each {|cycle| tied_sets << cycle.sort!}  if tied
+        graph.remove_edge(winner, loser)                if not tied
       end
     end
-    
-    # combine all of the various intersecting ties to produce a
-    #  final list of tied sets of candidates.
+        
+    # combine all of the intersecting tied sets and remove redundancies
     unless tied_sets.empty?
-      tied_sets = tied_sets.uniq!
-      tied_candidates = tied_sets.flatten.uniq  
+      tied_sets.uniq!
+      tied_candidates = tied_sets.flatten.uniq
       tied_candidates.each do |candidate|
         first_cycle = tied_sets.find {|cycle| cycle.include? candidate}
         position    = tied_sets.index first_cycle
@@ -144,13 +140,13 @@ class Election
         end
       end
     end
-                
-    # for each set of tied candidates, temporarily remove all but one candidate from the set.
+           
+    # for each set of tied candidates, temporarily remove all but one candidate from the graph.
     #  perform the topsort, then put the tied sets back into the final result
     @results = []
     tied_sets.each {|set| set[1...set.size].each {|v| graph.remove_vertex v}}
     graph.topsort_iterator.each {|candidate_id| @results << candidate_id}
-    tied_sets.each {|set| @results[@results.index(set.first)] = set.sort!}
+    tied_sets.each {|set| @results[@results.index(set[0])] = set.sort!}
   end
   
   
@@ -172,57 +168,4 @@ class Election
     path = Array.new(num_candidates) {Array.new(num_candidates) {0}}
   end
   
-  
 end
-
-
-
-# class Election < Monarch::Model::Record
-#   column :organization_id, :key
-#   column :body, :string
-# 
-#   has_many :candidates
-#   has_many :rankings
-#   has_many :majorities
-# 
-#   belongs_to :organization
-# 
-#   def compute_global_ranking
-#     puts "compute_global_ranking"
-#     already_processed = []
-#     graph = RGL::DirectedAdjacencyGraph.new
-# 
-#     positive_majorities.order_by(Majority[:count].desc).each do |majority|
-#       winner_id = majority.winner_id
-#       loser_id = majority.loser_id
-#       next if already_processed.include?([loser_id, winner_id])
-#       already_processed.push([winner_id, loser_id])
-#       graph.add_edge(winner_id, loser_id)
-#       graph.remove_edge(winner_id, loser_id) unless graph.acyclic?
-#     end
-# 
-#     graph.topsort_iterator.each_with_index do |candidate_id, index|
-#       if candidate = ranked_candidates.find(candidate_id)
-#         puts "updating #{candidate.body.inspect} from #{candidate.position} to #{index}"
-#         candidate.update(:position => index + 1)
-#       end
-#     end
-#   end
-# 
-#   def candidate_ranking_counts
-#     rankings.
-#       group_by(:candidate_id).
-#       project(:candidate_id, Ranking[:id].count.as(:times_ranked))
-#   end
-# 
-#   def positive_majorities
-#     majorities.where(Majority[:count] > 0)
-#   end
-# 
-#   def ranked_candidates
-#     candidates.
-#       join_to(rankings).
-#       project(Candidate)
-#   end
-# end
-
