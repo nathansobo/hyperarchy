@@ -8,6 +8,7 @@ module Monarch
           select users.* from users
         })
 
+#        mock(Origin).database_type { :mysql }
         User.table.to_update_sql(:full_name => "John Travolta", :age => 47).should be_like(%{
           update users set users.age = 47, users.full_name = 'John Travolta'
         })

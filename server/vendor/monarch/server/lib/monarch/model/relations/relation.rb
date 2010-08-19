@@ -312,7 +312,11 @@ module Monarch
         end
 
         def sql_update_statement(state, field_values)
-          Sql::UpdateStatement.new(sql_set_clause_assignments(state, field_values), internal_sql_table_ref(state), internal_sql_where_predicates(state))
+          if Origin.database_type == :postgres
+            Sql::PostgresUpdateStatement.new(sql_set_clause_assignments(state, field_values), internal_sql_table_ref(state), internal_sql_where_predicates(state))
+          else
+            Sql::MysqlUpdateStatement.new(sql_set_clause_assignments(state, field_values), internal_sql_table_ref(state), internal_sql_where_predicates(state))
+          end
         end
 
         def sql_set_clause_assignments(state, field_values)

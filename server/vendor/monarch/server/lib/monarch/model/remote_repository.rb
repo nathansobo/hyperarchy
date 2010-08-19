@@ -2,7 +2,7 @@ module Monarch
   module Model
     class RemoteRepository
       attr_accessor :connection
-      delegate :transaction, :to => :connection
+      delegate :transaction, :database_type, :to => :connection
 
       def insert(table, field_values)
         LOGGER.debug("insert -- #{table.global_name}, #{field_values.inspect}")
@@ -40,17 +40,14 @@ module Monarch
         record.update_fields(field_values)
       end
 
-      #TODO: test
       def create_table(name, &definition)
         connection.create_table(name, &definition)
       end
 
-      #TODO: test
       def clear_table(name)
         connection[name].delete
       end
 
-      #TODO: test
       def drop_table(name)
         connection.drop_table(name)
       end
