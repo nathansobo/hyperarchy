@@ -111,6 +111,7 @@ module Monarch
           if record_from_global_id_map = global_identity_map[id]
             record_from_global_id_map
           elsif local_identity_map && record_from_id_map = local_identity_map[id]
+            record_from_id_map.soft_update(field_values)
             record_from_id_map
           else
             record = tuple_class.unsafe_new(field_values)

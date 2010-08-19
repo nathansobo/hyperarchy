@@ -41,14 +41,17 @@ module Monarch
 
       describe "#read" do
         context "when reading a Record that is in the identity map" do
-          it "returns the instance of the Record from the identity map associated with the given Table instead of instantiating another" do
+          it "returns the instance of the Record from the identity map associated with the given Table instead of instantiating another, ensuring it is current with the field values just retrieved from the database" do
             record_in_id_map = BlogPost.find('grain_quinoa')
             BlogPost.table.local_identity_map['grain_quinoa'] = record_in_id_map
+
+            Origin.execute_dui("update blog_posts set body = 'New Body' where id = #{record_in_id_map.id}")
 
             all = Origin.read(BlogPost.where(BlogPost[:id].eq("grain_quinoa")))
             all.size.should == 1
             record = all.first
             record.should equal(record_in_id_map)
+            record.body.should == "New Body"
           end
         end
 

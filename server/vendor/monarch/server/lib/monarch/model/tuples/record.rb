@@ -286,6 +286,14 @@ module Monarch
           super
         end
 
+        def soft_update(values_by_method_name)
+          values_by_method_name.each do |method_name, value|
+            writer_method_name = "#{method_name}="
+            self.send(writer_method_name, value) if self.respond_to?(writer_method_name)
+          end
+          self
+        end
+
         protected
         attr_reader :synthetic_fields_by_column
 
@@ -303,14 +311,6 @@ module Monarch
 
         def after_update(changeset)
           # override when needed
-        end
-
-        def soft_update(values_by_method_name)
-          values_by_method_name.each do |method_name, value|
-            writer_method_name = "#{method_name}="
-            self.send(writer_method_name, value) if self.respond_to?(writer_method_name)
-          end
-          self
         end
 
         def initialize_relations
