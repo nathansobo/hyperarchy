@@ -2,6 +2,12 @@ module Monarch
   module Model
     module Sql
       class PostgresUpdateStatement < UpdateStatement
+
+        def initialize(set_clause_assignments, from_clause_table_ref, where_clause_predicates)
+          super
+          raise "You can not update outer joins in postgres" unless from_clause_table_refs.first.instance_of?(Table)
+        end
+
         def to_sql
           ["update",
             update_table_sql,
@@ -13,7 +19,9 @@ module Monarch
         end
 
         def update_table_sql
-          from_clause_table_refs.first.to_sql
+          table = from_clause_table_refs.first.to_sql
+
+          table
         end
 
         def from_tables_sql
@@ -24,7 +32,7 @@ module Monarch
         end
 
         protected
-        def set_clause_assigment_sql(column_ref, expression)
+        def set_clause_assignment_sql(column_ref, expression)
           "#{column_ref.name} = #{expression.to_sql}"
         end
       end

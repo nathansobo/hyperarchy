@@ -8,9 +8,13 @@ module Monarch
           select users.* from users
         })
 
-#        mock(Origin).database_type { :mysql }
         User.table.to_update_sql(:full_name => "John Travolta", :age => 47).should be_like(%{
           update users set users.age = 47, users.full_name = 'John Travolta'
+        })
+
+        stub(Origin).database_type { :postgres }
+        User.table.to_update_sql(:full_name => "John Travolta", :age => 47).should be_like(%{
+          update users set age = 47, full_name = 'John Travolta'
         })
       end
 
@@ -106,6 +110,15 @@ module Monarch
           set blogs.title = 'I Am 21'
           where blogs.title = 'I Can Drink Now' and users.age = 21 and users.id = blogs.user_id
         })
+
+        stub(Origin).database_type { :postgres }
+
+        User.where(:age => 21).join_through(Blog.where(:title => "I Can Drink Now")).to_update_sql(:title => "I'm 21").should be_like(%{
+          update users
+          set title = 'I\\'m 21'
+          from blogs
+          where blogs.title = 'I Can Drink Now' and users.age = 21 and users.id = blogs.user_id
+        })
       end
 
       specify "left joins" do
@@ -154,6 +167,16 @@ module Monarch
             where
               blog_posts.id is null
           })
+
+        stub(Origin).database_type { :postgres }
+
+        # can only update one table in postgres, so left outer joins cannot be updated
+        lambda do
+          Blog.
+            left_join_to(BlogPost.where(:title => "First Post!")).
+            where(BlogPost[:id].eq(nil)).
+            project(Blog).to_update_sql(:title => "Zeroth Post!")
+        end.should raise_error
       end
 
       specify "orderings" do
