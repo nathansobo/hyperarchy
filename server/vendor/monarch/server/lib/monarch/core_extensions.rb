@@ -110,7 +110,11 @@ end
 
 class TrueClass
   def to_sql
-    "TRUE"
+    if Origin.database_type == :postgres
+      "TRUE"
+    else
+      "1"
+    end
   end
 
   def sql_expression(state)
@@ -120,7 +124,11 @@ end
 
 class FalseClass
   def to_sql
-    "FALSE"
+    if Origin.database_type == :postgres
+      "FALSE"
+    else
+      "0"
+    end
   end
 
   def sql_expression(state)
