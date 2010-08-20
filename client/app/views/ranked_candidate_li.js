@@ -1,13 +1,16 @@
-_.constructor("Views.RankedCandidateLi", View.Template, {
-  content: function(params) { with(this.builder) {
-    var candidate = params.candidate || params.ranking.candidate();
-    li({ candidateId: candidate.id(), 'class': "candidate ranked" }, function() {
-      div({'class': "candidateIcon loading", style: "display: none;"}).ref('loadingIcon');
-      div({'class': "candidateIcon unrankCandidate", style: "display: none;"})
-        .ref('destroyRankingButton')
-        .click('destroyRanking');
-      span({'class': "body"}, candidate.body());
-    });
+_.constructor("Views.RankedCandidateLi", Views.CandidateLi, {
+  content: function($super, params) {
+    if (!params.candidate) params.candidate = params.ranking.candidate();
+    $super(params);
+  },
+
+  additionalClass: "ranked",
+
+  candidateIcon: function() { with(this.builder) {
+    div({'class': "candidateIcon loading", style: "display: none;"}).ref('loadingIcon');
+    div({'class': "candidateIcon unrankCandidate", style: "display: none;"})
+      .ref('destroyRankingButton')
+      .click('destroyRanking');
   }},
 
   viewProperties: {
@@ -27,6 +30,7 @@ _.constructor("Views.RankedCandidateLi", View.Template, {
     },
 
     destroyRanking: function() {
+      this.startLoading();
       this.ranking.destroy();
     }
   }

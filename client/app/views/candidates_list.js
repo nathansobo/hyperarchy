@@ -6,7 +6,7 @@ _.constructor("Views.CandidatesList", View.Template, {
       subview('candidatesList', Views.SortedList, {
         olAttributes: { id: "candidates", 'class': "candidates" },
         buildLi: function(candidate) {
-          return Views.CandidateLi.toView({candidate: candidate});
+          return Views.UnrankedCandidateLi.toView({candidate: candidate});
         }
       });
     });
