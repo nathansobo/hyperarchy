@@ -389,7 +389,7 @@ table.members th {
   display: inline;
 }
 
-.elections .body {
+.elections .electionBody {
   margin-bottom: 20px;
 }
 
@@ -531,6 +531,23 @@ div#createCandidateForm button {
   list-style-type: none;
 }
 
+.expandArrow {
+  display: inline-block;
+  height: 13px;
+  width: 13px;
+  background-image: url(/images/expand_arrows.png);
+  background-repeat: no-repeat;
+  position: relative;
+  top: 1px;
+  margin-left: 1px;
+  margin-right: 3px;
+}
+
+.expandArrow:hover {
+  background-position: -13px 0px;
+  cursor: pointer;
+}
+
 .candidateIcon {
   float: right;
   position: relative;
@@ -543,6 +560,7 @@ div#createCandidateForm button {
 
 .candidateRanked {
   background-image: url(/images/check_12x10_light.png);
+  background-position: 5px 5px;
 }
 
 .unrankCandidate {

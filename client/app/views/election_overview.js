@@ -6,7 +6,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
           .click('goToOrganization')
           .ref('organizationName');
 
-        div({'class': "body largeFont"}).ref('bodyDiv');
+        div({'class': "electionBody largeFont"}).ref('bodyDiv');
 
         div({id: "createCandidateForm"}, function() {
           textarea({placeholder: "Type your own suggestion here.", rows: 3})
