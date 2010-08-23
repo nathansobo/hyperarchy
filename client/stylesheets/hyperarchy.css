@@ -496,7 +496,25 @@ div#createCandidateForm button {
   background: white;
   -moz-box-shadow: #c8c7c7 0px 1px 3px;
   -webkit-box-shadow: #c8c7c7 0px 1px 3px;
+  position: relative;
 }
+
+.elections ol.candidates li.candidate .body {
+  display: block;
+  margin-left: 15px;
+}
+
+.elections ol.candidates li.candidate .expandedInfo {
+  padding: 5px;
+  font-size: 12px;
+}
+
+.elections ol.candidates li.candidate .expandedInfo textarea {
+  width: 100%;
+  height: 60px;
+  padding: 3px;
+}
+
 
 .elections ol.candidates li.separator {
   text-align: center;
@@ -537,16 +555,26 @@ div#createCandidateForm button {
   width: 13px;
   background-image: url(/images/expand_arrows.png);
   background-repeat: no-repeat;
-  position: relative;
-  top: 1px;
+  position: absolute;
+  top: 9px;
+  left: 3px;
   margin-left: 1px;
-  margin-right: 3px;
+  margin-right: 4px;
 }
 
 .expandArrow:hover {
   background-position: -13px 0px;
   cursor: pointer;
 }
+
+.expandArrow.expanded {
+  background-position: -26px 0px;
+}
+
+.expandArrow.expanded:hover {
+  background-position: -39px 0px;
+}
+
 
 .candidateIcon {
   float: right;
