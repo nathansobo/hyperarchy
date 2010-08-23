@@ -542,6 +542,7 @@ div#createCandidateForm button {
 }
 
 .candidateRanked {
+  background-position: 5px 5px;
   background-image: url(/images/check_12x10_light.png);
 }
 
