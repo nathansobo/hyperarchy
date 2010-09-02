@@ -15,7 +15,7 @@ module Views
           head_content
         end
 
-        body :class => self.class.basename.underscore do
+        body :id => self.class.basename.underscore do
           body_content
         end
 

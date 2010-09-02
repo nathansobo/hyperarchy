@@ -11,7 +11,7 @@ _.constructor("Views.EditOrganization", View.Template, {
           .click('saveChanges');
       });
 
-      div({'class': "grid7 largeFont"}, function() {
+      div({'class': "grid7"}, function() {
         a({'class': "glossyBlack roundedButton", id: "overviewLink"}, "View Questions")
           .ref('overviewLink')
           .click(function(view, e) {
@@ -19,8 +19,6 @@ _.constructor("Views.EditOrganization", View.Template, {
             e.preventDefault();
           });
       });
-
-
 
       div({'class': "grid12"}, function() {
         label("Members");
