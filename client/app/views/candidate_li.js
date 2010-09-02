@@ -6,11 +6,18 @@ _.constructor("Views.CandidateLi", View.Template, {
         .ref('expandArrow')
         .click('expandOrContract');
       template.candidateIcon();
-      span({'class': "body"}, candidate.body());
+
+      div({'class': "bodyContainer"}, function() {
+        textarea({style: "display: none;"}, candidate.body()).ref('bodyTextarea');
+        span({'class': "body"}, candidate.body()).ref('body');
+      }).ref('bodyContainer');
+
 
       div({'class': "expandedInfo", style: "display: none;"}, function() {
-        label({'for': "candidateDetails"}, "Details:");
-        textarea({name: "candidateDetails"});
+        button({style: "float: right; margin-right: 5px;"}, "Save").click("editCandidate");
+        button({style: "float: right"}, "Delete").click("deleteCandidate");
+
+        div({'class': "clear"});
       }).ref('expandedInfo');
     });
   }},
@@ -19,10 +26,14 @@ _.constructor("Views.CandidateLi", View.Template, {
     expandOrContract: function() {
       if (this.expanded) {
         this.expanded = false;
+        this.bodyTextarea.hide();
+        this.body.show();
         this.expandArrow.removeClass('expanded');
         this.expandedInfo.slideUp('fast');
       } else {
         this.expanded = true;
+        this.bodyTextarea.show();
+        this.body.hide();
         this.expandArrow.addClass('expanded');
         this.expandedInfo.slideDown('fast');
       }
