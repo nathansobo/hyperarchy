@@ -78,6 +78,25 @@ h1 {
       height: 34px;
       cursor: pointer; }
 
+#login #loginForm {
+  width: 350px;
+  font-size: 22px;
+  margin: 20px auto; }
+  #login #loginForm #errors {
+    margin-bottom: 20px;
+    font-size: 16px;
+    background: #ffe3e3;
+    padding: 5px; }
+  #login #loginForm label {
+    display: block; }
+  #login #loginForm input {
+    display: block;
+    width: 350px;
+    margin-bottom: 10px; }
+    #login #loginForm input[type=submit] {
+      width: auto;
+      float: right; }
+
 #addOrganization, #editOrganization {
   font-size: 21px; }
   #addOrganization input, #editOrganization input, #addOrganization textarea, #editOrganization textarea {

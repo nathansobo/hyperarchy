@@ -83,38 +83,7 @@ th, td {
   background-image: url(/images/x_21x21_dark.png);
 }
 
-
-/* home page */
-
 /* login page */
-
-body.login #loginForm {
-  width: 350px;
-  font-size: 22px;
-  margin: 20px auto;
-}
-
-body.login #loginForm #errors {
-  margin-bottom: 20px;
-  font-size: 16px;
-  background: #ffe3e3;
-  padding: 5px;
-}
-
-body.login #loginForm label {
-  display: block;
-}
-
-body.login #loginForm input {
-  display: block;
-  width: 350px;
-  margin-bottom: 10px;
-}
-
-body.login #loginForm input[type="submit"] {
-  width: auto;
-  float: right;
-}
 
 /* signup page */
 
