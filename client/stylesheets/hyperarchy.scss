@@ -1,0 +1,59 @@
+$blue: #0e40ac;
+$largeFont: 21px;
+
+a, a:visited {
+  color: $blue;
+}
+
+h1 {
+  font-weight: bold;
+}
+
+#addOrganization {
+  font-size: $largeFont;
+
+  input, textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  button { margin-top: 10px; }
+}
+
+#editOrganization {
+  @extend #addOrganization;
+
+  #overviewLink { float: right; }
+
+  div.addMember {
+    font-size: medium;
+    border-bottom: 1px solid #999999;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+
+    input, select {
+      display: inline;
+      margin-right: 10px;
+    }
+
+    input.name { width: 150px; }
+    input.emailAddress { width: 250px; }
+  }
+
+  table.members {
+    width: 100%;
+
+    th { font-weight: bold; }
+    td, th {
+      border-bottom: 1px #999999 dashed;
+    }
+
+    .role { width: 115px; }
+    .remove { width: 80px; }
+    .loading {
+      position: relative;
+      top: 5px;
+    }
+  }
+}
