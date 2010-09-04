@@ -1,6 +1,6 @@
 _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
-    div({'class': "elections"}, function() {
+    div({'id': "electionOverview"}, function() {
       div({'class': "grid4"}, function() {
         h1({'class': "clickable"})
           .click('goToOrganization')

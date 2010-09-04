@@ -97,6 +97,54 @@ h1 {
       width: auto;
       float: right; }
 
+#organizationOverview #organizationHeader {
+  margin-bottom: 30px; }
+  #organizationOverview #organizationHeader h1, #organizationOverview #organizationHeader h2 {
+    display: inline; }
+  #organizationOverview #organizationHeader h1 {
+    margin-right: 10px; }
+#organizationOverview #createElectionLink {
+  float: right; }
+  #organizationOverview #createElectionLink:hover {
+    -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.25); }
+#organizationOverview #createElectionForm {
+  margin: 5px auto 10px; }
+  #organizationOverview #createElectionForm input {
+    font-size: 18px;
+    width: 780px;
+    margin-bottom: 10px;
+    padding: 10px; }
+  #organizationOverview #createElectionForm a {
+    float: right;
+    margin-top: 5px; }
+#organizationOverview .election {
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.35) 1px 1px 5px;
+  padding: 8px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  height: 220px;
+  overflow-y: hidden;
+  position: relative; }
+  #organizationOverview .election .body {
+    font-size: 20px;
+    line-height: 26px;
+    margin-bottom: 10px; }
+  #organizationOverview .election .fadeOut {
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgba(255, 255, 255, 0)), color-stop(0.8, white));
+    background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), white);
+    height: 50px;
+    width: 100%;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    color: #ffffcc; }
+  #organizationOverview .election .candidates li {
+    list-style: decimal;
+    list-style-position: inside;
+    font-size: 15px;
+    padding: 2px; }
+
 #addOrganization, #editOrganization {
   font-size: 21px; }
   #addOrganization input, #editOrganization input, #addOrganization textarea, #editOrganization textarea {
