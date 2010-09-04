@@ -97,27 +97,27 @@ h1 {
       width: auto;
       float: right; }
 
-#organizationOverview #organizationHeader {
+#app #organizationOverview #organizationHeader {
   margin-bottom: 30px; }
-  #organizationOverview #organizationHeader h1, #organizationOverview #organizationHeader h2 {
+  #app #organizationOverview #organizationHeader h1, #app #organizationOverview #organizationHeader h2 {
     display: inline; }
-  #organizationOverview #organizationHeader h1 {
+  #app #organizationOverview #organizationHeader h1 {
     margin-right: 10px; }
-#organizationOverview #createElectionLink {
+#app #organizationOverview #createElectionLink {
   float: right; }
-  #organizationOverview #createElectionLink:hover {
+  #app #organizationOverview #createElectionLink:hover {
     -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.25); }
-#organizationOverview #createElectionForm {
+#app #organizationOverview #createElectionForm {
   margin: 5px auto 10px; }
-  #organizationOverview #createElectionForm input {
+  #app #organizationOverview #createElectionForm input {
     font-size: 18px;
     width: 780px;
     margin-bottom: 10px;
     padding: 10px; }
-  #organizationOverview #createElectionForm a {
+  #app #organizationOverview #createElectionForm a {
     float: right;
     margin-top: 5px; }
-#organizationOverview .election {
+#app #organizationOverview .election {
   -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.35) 1px 1px 5px;
   padding: 8px;
@@ -126,11 +126,11 @@ h1 {
   height: 220px;
   overflow-y: hidden;
   position: relative; }
-  #organizationOverview .election .body {
+  #app #organizationOverview .election .body {
     font-size: 20px;
     line-height: 26px;
     margin-bottom: 10px; }
-  #organizationOverview .election .fadeOut {
+  #app #organizationOverview .election .fadeOut {
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgba(255, 255, 255, 0)), color-stop(0.8, white));
     background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), white);
     height: 50px;
@@ -139,45 +139,143 @@ h1 {
     left: 0px;
     bottom: 0px;
     color: #ffffcc; }
-  #organizationOverview .election .candidates li {
+  #app #organizationOverview .election .candidates li {
     list-style: decimal;
     list-style-position: inside;
     font-size: 15px;
     padding: 2px; }
-
-#addOrganization, #editOrganization {
+#app #electionOverview .electionBody {
+  margin-bottom: 20px; }
+#app #electionOverview div#createCandidateForm textarea {
+  font-size: 21px;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  display: block;
+  resize: vertical; }
+#app #electionOverview div#createCandidateForm button {
+  display: block;
+  font-size: 15px; }
+#app #electionOverview .candidatesListHeader {
+  font-size: 16px;
+  color: #999999;
+  margin-bottom: 5px; }
+#app #electionOverview ol.candidates {
+  background-color: #f4f2f2;
+  -moz-box-shadow: #c8c7c7 0px 0px 5px inset;
+  -webkit-box-shadow: #c8c7c7 0px 0px 5px inset;
+  overflow-x: hidden;
+  overflow-y: auto; }
+  #app #electionOverview ol.candidates li.separator {
+    text-align: center;
+    padding: 5px;
+    cursor: default; }
+    #app #electionOverview ol.candidates li.separator .up {
+      background: url("/images/arrow_up_white.png");
+      background-repeat: no-repeat;
+      padding-left: 20px;
+      height: 22px;
+      display: inline-block;
+      margin-right: 20px; }
+    #app #electionOverview ol.candidates li.separator .down {
+      background: url("/images/arrow_down_white.png");
+      background-repeat: no-repeat;
+      background-position: right;
+      padding-right: 20px;
+      height: 22px;
+      display: inline-block; }
+  #app #electionOverview ol.candidates li.candidate {
+    font-size: 15px;
+    padding: 5px;
+    border: 1px solid #c8c7c7;
+    border-bottom: none;
+    cursor: default;
+    background: white;
+    -moz-box-shadow: #c8c7c7 0px 1px 3px;
+    -webkit-box-shadow: #c8c7c7 0px 1px 3px;
+    position: relative; }
+    #app #electionOverview ol.candidates li.candidate:last-child {
+      border-bottom: 1px solid #d6d3d3; }
+    #app #electionOverview ol.candidates li.candidate.ui-draggable-dragging {
+      width: 288px;
+      list-style-type: none; }
+    #app #electionOverview ol.candidates li.candidate .expandArrow {
+      display: inline-block;
+      height: 13px;
+      width: 13px;
+      background-image: url(/images/expand_arrows.png);
+      background-repeat: no-repeat;
+      position: absolute;
+      top: 11px;
+      left: 5px;
+      margin-left: 1px;
+      margin-right: 4px; }
+      #app #electionOverview ol.candidates li.candidate .expandArrow:hover {
+        cursor: pointer;
+        background-position: -13px 0px; }
+      #app #electionOverview ol.candidates li.candidate .expandArrow.expanded {
+        background-position: -26px 0px; }
+        #app #electionOverview ol.candidates li.candidate .expandArrow.expanded:hover {
+          background-position: -39px 0px; }
+    #app #electionOverview ol.candidates li.candidate .bodyContainer {
+      margin-left: 19px;
+      margin-right: 22px; }
+      #app #electionOverview ol.candidates li.candidate .bodyContainer textarea {
+        outline: none;
+        resize: vertical;
+        width: 100%;
+        height: 60px;
+        padding: 4px; }
+    #app #electionOverview ol.candidates li.candidate button {
+      font-size: 12px; }
+    #app #electionOverview ol.candidates li.candidate .candidateIcon {
+      float: right;
+      position: relative;
+      top: 1px;
+      height: 20px;
+      width: 20px;
+      background-position: 5px 4px;
+      background-repeat: no-repeat; }
+    #app #electionOverview ol.candidates li.candidate .candidateRanked {
+      background-image: url(/images/check_12x10_light.png);
+      background-position: 5px 5px; }
+    #app #electionOverview ol.candidates li.candidate .unrankCandidate {
+      background-image: url(/images/x_11x11_light.png); }
+      #app #electionOverview ol.candidates li.candidate .unrankCandidate:hover {
+        cursor: pointer;
+        background-image: url(/images/x_11x11_dark.png); }
+#app #addOrganization, #app #editOrganization {
   font-size: 21px; }
-  #addOrganization input, #editOrganization input, #addOrganization textarea, #editOrganization textarea {
+  #app #addOrganization input, #app #editOrganization input, #app #addOrganization textarea, #app #editOrganization textarea {
     display: block;
     width: 100%;
     margin-bottom: 10px; }
-  #addOrganization button, #editOrganization button {
+  #app #addOrganization button, #app #editOrganization button {
     margin-top: 10px; }
-
-#editOrganization #overviewLink {
+#app #editOrganization #overviewLink {
   float: right; }
-#editOrganization div.addMember {
+#app #editOrganization div.addMember {
   font-size: medium;
   border-bottom: 1px solid #999999;
   margin-bottom: 10px;
   padding-bottom: 5px; }
-  #editOrganization div.addMember input, #editOrganization div.addMember select {
+  #app #editOrganization div.addMember input, #app #editOrganization div.addMember select {
     display: inline;
     margin-right: 10px; }
-  #editOrganization div.addMember input.name {
+  #app #editOrganization div.addMember input.name {
     width: 150px; }
-  #editOrganization div.addMember input.emailAddress {
+  #app #editOrganization div.addMember input.emailAddress {
     width: 250px; }
-#editOrganization table.members {
+#app #editOrganization table.members {
   width: 100%; }
-  #editOrganization table.members th {
+  #app #editOrganization table.members th {
     font-weight: bold; }
-  #editOrganization table.members td, #editOrganization table.members th {
+  #app #editOrganization table.members td, #app #editOrganization table.members th {
     border-bottom: 1px #999999 dashed; }
-  #editOrganization table.members .role {
+  #app #editOrganization table.members .role {
     width: 115px; }
-  #editOrganization table.members .remove {
+  #app #editOrganization table.members .remove {
     width: 80px; }
-  #editOrganization table.members .loading {
+  #app #editOrganization table.members .loading {
     position: relative;
     top: 5px; }
