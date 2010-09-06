@@ -122,27 +122,6 @@ textarea,
 select {
   *font-size: 100%; }
 
-body {
-  font: 13px/1.5 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif; }
-
-h1 {
-  font-size: 25px; }
-
-h2 {
-  font-size: 23px; }
-
-h3 {
-  font-size: 21px; }
-
-h4 {
-  font-size: 19px; }
-
-h5 {
-  font-size: 17px; }
-
-h6 {
-  font-size: 15px; }
-
 /*
 	960 Grid System ~ Core CSS.
 	Learn more ~ http://960.gs/
@@ -611,10 +590,18 @@ h6 {
 *:first-child + html .clearfix {
   zoom: 1; }
 
+body {
+  font: 13px/1.5 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif; }
+
 a, a:visited {
   color: #0e40ac; }
 
 h1 {
+  font-size: 25px;
+  font-weight: bold; }
+
+h2 {
+  font-size: 23px;
   font-weight: bold; }
 
 button {
@@ -926,7 +913,7 @@ button {
       background-image: url(/images/expand_arrows.png);
       background-repeat: no-repeat;
       position: absolute;
-      top: 11px;
+      top: 9px;
       left: 5px;
       margin-left: 1px;
       margin-right: 4px; }

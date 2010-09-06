@@ -1,13 +1,24 @@
 $blue: #0e40ac;
 $largeFont: 21px;
 
+body {
+  font: 13px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+}
+
 a, a:visited {
   color: $blue;
 }
 
 h1 {
+  font-size: 25px;
   font-weight: bold;
 }
+
+h2 {
+  font-size: 23px;
+  font-weight: bold;
+}
+
 
 button {
   padding: 5px;
