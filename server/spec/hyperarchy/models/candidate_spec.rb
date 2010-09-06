@@ -2,6 +2,18 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 
 module Models
   describe Candidate do
+
+    describe "before create" do
+      it "assigns the creator to the Model::Record.current_user" do
+        current_user = User.make
+        Monarch::Model::Record.current_user = current_user
+        election = Election.make
+
+        candidate = election.candidates.create(:body => "foo")
+        candidate.creator.should == current_user
+      end
+    end
+
     describe "after create" do
       attr_reader :election
       before do

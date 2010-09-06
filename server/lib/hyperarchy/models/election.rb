@@ -1,5 +1,6 @@
 class Election < Monarch::Model::Record
   column :organization_id, :key
+  column :creator_id, :key
   column :body, :string
   column :created_at, :datetime
   column :updated_at, :datetime
@@ -8,7 +9,12 @@ class Election < Monarch::Model::Record
   has_many :rankings
   has_many :majorities
 
+  belongs_to :creator, :class_name => "User"
   belongs_to :organization
+
+  def before_create
+    self.creator ||= current_user
+  end
 
   def compute_global_ranking
     puts "compute_global_ranking"

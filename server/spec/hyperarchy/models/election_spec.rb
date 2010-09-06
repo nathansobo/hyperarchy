@@ -15,6 +15,15 @@ module Models
       @unranked = election.candidates.create!(:body => "Unranked")
     end
 
+    describe "before create" do
+      it "assigns the creator to the Model::Record.current_user" do
+        current_user = User.make
+        Monarch::Model::Record.current_user = current_user
+        election = Election.make
+        election.creator.should == current_user
+      end
+    end
+
     describe "#compute_global_ranking" do
       it "uses the ranked-pairs algoritm to produce a global ranking, assigning a position of null to any unranked candidates" do
         Timecop.freeze(Time.now + 60)

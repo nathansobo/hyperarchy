@@ -1,9 +1,15 @@
 class Candidate < Monarch::Model::Record
   column :body, :string
   column :election_id, :key
+  column :creator_id, :key
   column :position, :integer
 
   belongs_to :election
+  belongs_to :creator, :class_name => "User"
+
+  def before_create
+    self.creator ||= current_user
+  end
 
   def after_create
     other_candidates.each do |other_candidate|
