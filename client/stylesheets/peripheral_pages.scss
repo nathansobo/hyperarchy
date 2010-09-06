@@ -1,0 +1,88 @@
+#home {
+  font-size: 22px;
+
+  #description {
+    margin-bottom: 40px;
+    text-align: justify;
+  }
+
+  #signUpOrLogIn {
+    text-align: right;
+
+    #signUp {
+      display: inline-block;
+      background-image: url("/images/sign_up.png");
+      background-repeat: no-repeat;
+      width: 158px;
+      height: 34px;
+      margin-right: 20px;
+      cursor: pointer;
+    }
+
+    #logIn {
+      display: inline-block;
+      background-image: url("/images/log_in.png");
+      background-repeat: no-repeat;
+      width: 127px;
+      height: 34px;
+      cursor: pointer;
+    }
+  }
+}
+
+#login {
+  #loginForm {
+    width: 350px;
+    font-size: 22px;
+    margin: 20px auto;
+
+    label { display: block; }
+
+    input {
+      display: block;
+      width: 350px;
+      margin-bottom: 10px;
+
+      &[type=submit] {
+        width: auto;
+        float: right;
+      }
+    }
+  }
+}
+
+#signup {
+  font-size: 22px;
+
+  label {
+    display: block;
+    font-size: 16px;
+
+    &.inline { display: inline }
+  }
+
+  input {
+    width: 100%;
+    display: block;
+    margin-bottom: 10px;
+
+    &[type=submit] {
+      margin-top: 20px;
+      width: auto;
+    }
+
+    &[type=checkbox] {
+      display: inline;
+      width: auto;
+    }
+  }
+
+
+  #bigLogo { margin-bottom: 40px; }
+
+  textarea {
+    height: 85px;
+    width: 100%;
+    resize: vertical;
+  }
+}

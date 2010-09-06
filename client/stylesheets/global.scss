@@ -1,0 +1,128 @@
+$blue: #0e40ac;
+$largeFont: 21px;
+
+a, a:visited {
+  color: $blue;
+}
+
+h1 {
+  font-weight: bold;
+}
+
+button {
+  padding: 5px;
+}
+
+.largeFont {
+  font-size: 21px;
+}
+
+.grayText {
+  color: #999999;
+}
+
+.errors {
+  margin-bottom: 20px;
+  font-size: 16px;
+  background: #ffe3e3;
+  padding: 10px;
+}
+
+.glossyBlack, .glossyBlack:visited {
+  color: white;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
+  background: -moz-linear-gradient(top, #6d6e70 0%, #3a3a3b 50%, #000000 51%, #1D1D1D 100%);
+}
+
+.roundedButton {
+  font-size: 20px;
+  border-radius: 3px;
+  padding: 3px 7px;
+  text-decoration:none;
+  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+  cursor: pointer;
+}
+
+.placeheld {
+  color: #999999;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.loading {
+  background-repeat: no-repeat;
+  background-image: url(/images/loading_arrows_light.gif);
+  background-position: 2px 2px;
+  width: 20px;
+  height: 20px;
+
+  &.inactive {
+    background: none;
+  }
+}
+
+#notification {
+  width: 100%;
+  height: 20px;
+  padding: 5px 5px 5px 10px;
+  background: #fff3c7;
+  background: -webkit-gradient(linear, left top, left bottom, from(#fff3c7), to(#fbe9a9));
+  background: -moz-linear-gradient(top, #fff3c7, #fbe9a9);
+  border-bottom: 1px solid #8e8e8e;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+#darkenBackground {
+  background-color: rgba(0, 0, 0, .5);
+  z-index: 20;
+  height: 100%;
+  width: 100%;
+  background-repeat: repeat;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+
+#feedback {
+  background: white;
+  height: 300px;
+  width: 600px;
+  position: absolute;
+  z-index: 21;
+  padding: 10px;
+  -moz-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
+  -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
+
+  #x {
+    float: right;
+    margin-left: 30px;
+    margin-bottom: 30px;
+    cursor: pointer;
+    height: 21px;
+    width: 21px;
+    background-image: url(/images/x_21x21_dark.png);
+
+  }
+
+  #thanks { margin-bottom: 10px; }
+
+  textarea {
+    width: 100%;
+    height: 185px;
+    padding: 10px;
+    margin-bottom: 10px;
+    resize: none;
+  }
+}
+
+#bigLogo {
+  background-image: url("/images/logo_large.png");
+  background-repeat: no-repeat;
+  width: 780px;
+  height: 100px;
+  margin-top: 100px;
+  margin-bottom: 20px;
+}
