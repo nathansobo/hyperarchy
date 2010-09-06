@@ -1,12 +1,12 @@
 _.constructor("Views.AddOrganization", View.Template, {
   content: function() { with(this.builder) {
-    div({'class': "addOrganization"}, function() {
+    div({id: "addOrganization"}, function() {
       div({'class': "grid5 largeFont"}, function() {
         label({'for': "name"}, "Organization Name");
         input({name: "name", 'class': "text"});
         label({'for': "description"}, "Description (Optional)");
         textarea({name: "description", 'class': "text"});
-        input({type: "submit", value: "Create and Invite Members"})
+        button("Create and Invite Members")
           .ref('createOrganizationButton')
           .click('createOrganization');
       })

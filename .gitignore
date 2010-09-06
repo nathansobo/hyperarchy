@@ -9,3 +9,4 @@ target
 .rvmrc
 log
 nginx_access.log
+.sass-cache

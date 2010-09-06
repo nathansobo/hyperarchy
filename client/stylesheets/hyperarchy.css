@@ -1,106 +1,51 @@
-body {
-  font-size: 15px;
-}
-
 a, a:visited {
-  color: #0e40ac;
-}
+  color: #0e40ac; }
 
 h1 {
-  font-weight: bold;
-}
-
-input.text, textarea.text {
-  display: block;
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.inline {
-  display: inline;
-}
-
-.marginBottom {
-  margin-bottom: 10px;
-}
-
-
-.bigMarginBottom {
-  margin-bottom: 30px;
-}
-
-.errors {
-  background: #ffcccc;
-  margin-bottom: 20px;
-  padding: 10px;
-}
-
-.block {
-  display: block;
-}
-
-.inlineBlock {
-  display: inline-block;
-}
+  font-weight: bold; }
 
 button {
-  padding: 5px;
-}
-
-.placeheld {
-  color: #999999;
-}
+  padding: 5px; }
 
 .largeFont {
-  font-size: 21px;
-}
-
-.smallFont {
-  font-size: 13px;
-}
+  font-size: 21px; }
 
 .grayText {
-  color: #999999;
-}
+  color: #999999; }
+
+.errors {
+  margin-bottom: 20px;
+  font-size: 16px;
+  background: #ffe3e3;
+  padding: 10px; }
 
 .glossyBlack, .glossyBlack:visited {
   color: white;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
-  background: -moz-linear-gradient(top, #6d6e70 0%, #3a3a3b 50%, #000000 51%, #1D1D1D 100%);
-}
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, black), color-stop(1, #1d1d1d));
+  background: -moz-linear-gradient(top, #6d6e70 0%, #3a3a3b 50%, black 51%, #1d1d1d 100%); }
 
 .roundedButton {
   font-size: 20px;
   border-radius: 3px;
   padding: 3px 7px;
-  text-decoration:none;
-  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
-  cursor: pointer;
-}
+  text-decoration: none;
+  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+  cursor: pointer; }
+
+.placeheld {
+  color: #999999; }
 
 .clickable {
-  cursor: pointer;
-}
+  cursor: pointer; }
 
-.ui-autocomplete {
-  position: absolute;
-  background: white;
-  padding: 3px;
-  border: 1px solid #999999; 
-}
-
-
-th, td {
-  padding: 5px 0 5px 0;
-}
-
-.x {
-  height: 21px;
-  width: 21px;
-  background-image: url(/images/x_21x21_dark.png);
-}
-
-/* layout */
+.loading {
+  background-repeat: no-repeat;
+  background-image: url(/images/loading_arrows_light.gif);
+  background-position: 2px 2px;
+  width: 20px;
+  height: 20px; }
+  .loading.inactive {
+    background: none; }
 
 #notification {
   width: 100%;
@@ -111,19 +56,17 @@ th, td {
   background: -moz-linear-gradient(top, #fff3c7, #fbe9a9);
   border-bottom: 1px solid #8e8e8e;
   margin-bottom: 5px;
-  font-size: 14px;
-}
+  font-size: 14px; }
 
 #darkenBackground {
-  background-color: rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 20;
   height: 100%;
   width: 100%;
   background-repeat: repeat;
   position: fixed;
   top: 0px;
-  left: 0px;
-}
+  left: 0px; }
 
 #feedback {
   background: white;
@@ -132,32 +75,24 @@ th, td {
   position: absolute;
   z-index: 21;
   padding: 10px;
-  -moz-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
-  -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
-}
-
-#feedback .x {
-  float: right;
-  margin-left: 30px;
-  margin-bottom: 30px;
-  cursor: pointer;
-}
-
-#feedback #thanks {
-  margin-bottom: 10px;
-}
-
-#feedback textarea {
-  width: 100%;
-  height: 185px;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-/* home page */
-body.home {
-  font-size: 22px;
-}
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 4px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 4px; }
+  #feedback #x {
+    float: right;
+    margin-left: 30px;
+    margin-bottom: 30px;
+    cursor: pointer;
+    height: 21px;
+    width: 21px;
+    background-image: url(/images/x_21x21_dark.png); }
+  #feedback #thanks {
+    margin-bottom: 10px; }
+  #feedback textarea {
+    width: 100%;
+    height: 185px;
+    padding: 10px;
+    margin-bottom: 10px;
+    resize: none; }
 
 #bigLogo {
   background-image: url("/images/logo_large.png");
@@ -165,423 +100,303 @@ body.home {
   width: 780px;
   height: 100px;
   margin-top: 100px;
-  margin-bottom: 20px;
-}
+  margin-bottom: 20px; }
 
-body.home #description {
-  margin-bottom: 40px;
-  text-align: justify;
-}
+#home {
+  font-size: 22px; }
+  #home #description {
+    margin-bottom: 40px;
+    text-align: justify; }
+  #home #signUpOrLogIn {
+    text-align: right; }
+    #home #signUpOrLogIn #signUp {
+      display: inline-block;
+      background-image: url("/images/sign_up.png");
+      background-repeat: no-repeat;
+      width: 158px;
+      height: 34px;
+      margin-right: 20px;
+      cursor: pointer; }
+    #home #signUpOrLogIn #logIn {
+      display: inline-block;
+      background-image: url("/images/log_in.png");
+      background-repeat: no-repeat;
+      width: 127px;
+      height: 34px;
+      cursor: pointer; }
 
-body.home #signUpOrLogIn {
-  text-align: right;
-}
-
-body.home #signUp {
-  display: inline-block;
-  background-image: url("/images/sign_up.png");
-  background-repeat: no-repeat;
-  width: 158px;
-  height: 34px;
-  margin-right: 20px;
-  cursor: pointer;
-}
-
-body.home #logIn {
-  display: inline-block;
-  background-image: url("/images/log_in.png");
-  background-repeat: no-repeat;
-  width: 127px;
-  height: 34px;
-  cursor: pointer;
-}
-
-/* login page */
-
-body.login #loginForm {
+#login #loginForm {
   width: 350px;
   font-size: 22px;
-  margin: 20px auto;
-}
+  margin: 20px auto; }
+  #login #loginForm label {
+    display: block; }
+  #login #loginForm input {
+    display: block;
+    width: 350px;
+    margin-bottom: 10px; }
+    #login #loginForm input[type=submit] {
+      width: auto;
+      float: right; }
 
-body.login #loginForm #errors {
-  margin-bottom: 20px;
-  font-size: 16px;
-  background: #ffe3e3;
-  padding: 5px;
-}
+#signup {
+  font-size: 22px; }
+  #signup label {
+    display: block;
+    font-size: 16px; }
+    #signup label.inline {
+      display: inline; }
+  #signup input {
+    width: 100%;
+    display: block;
+    margin-bottom: 10px; }
+    #signup input[type=submit] {
+      margin-top: 20px;
+      width: auto; }
+    #signup input[type=checkbox] {
+      display: inline;
+      width: auto; }
+  #signup #bigLogo {
+    margin-bottom: 40px; }
+  #signup textarea {
+    height: 85px;
+    width: 100%;
+    resize: vertical; }
 
-body.login #loginForm label {
-  display: block;
-}
-
-body.login #loginForm input {
-  display: block;
-  width: 350px;
-  margin-bottom: 10px;
-}
-
-body.login #loginForm input[type="submit"] {
-  width: auto;
-  float: right;
-}
-
-/* signup page */
-
-body.signup {
-  font-size: 22px;
-}
-
-body.signup label {
-  display: block;
-  font-size: 16px;
-}
-
-body.signup label.inline {
-  display: inline;
-}
-
-body.signup #bigLogo {
-  margin-bottom: 40px;
-}
-
-body.signup textarea.text {
-  height: 85px;
-}
-
-body.signup input[type=submit] {
-  margin-top: 10px;
-}
-
-/* confirm membership page */
-
-body.confirm_membership {
-  text-align: center;
-}
-
-
-/* add organization page */
-
-div.addOrganization input[type=submit] {
-  margin-top: 10px;
-}
-
-
-/* edit organization page */
-
-.editOrganization #overviewLink {
-  float: right;
-}
-
-div.addMember {
-  border-bottom: 1px solid #999999;
-  padding-bottom: 5px;
-}
-
-div.addMember input, div.addMember label, div.addMember select {
-  margin-right: 10px;
-}
-
-div.addMember input.name {
-  width: 150px;
-}
-
-div.addMember input.emailAddress {
-  width: 250px;
-}
-
-table.members {
-  width: 100%;
-}
-
-table.members td, table.members th {
-  border-bottom: 1px #999999 dashed;
-}
-
-table.members .role {
-  width: 115px;
-}
-
-table.members .remove {
-  width: 80px;
-}
-
-table.members .loading {
-  position: relative;
-  top: 5px;
-}
-
-table.members th {
-  font-weight: bold;
-}
-
-
-/* app page */
-
-#header {
+#app #header {
   border-bottom: 1px solid #cccccc;
   position: relative;
-  margin-bottom: 15px;
-}
-
-#header > div {
-  height: 30px;
-}
-
-#header .headerItem {
-  float: right;
-  margin-top: 2px;
-  margin-left: 6px;
-}
-
-.dropdownLink {
-  display: inline-block;
-  color: #0e40ac;
-  text-decoration: underline;
-  cursor: pointer;
-  padding-right: 15px;
-
-  background-image: url(/images/expand_arrow_blue.png);
-  background-repeat: no-repeat;
-  background-position: right;
-}
-
-.dropdownMenu {
-  z-index: 1;
-  position: absolute;
-  background: white;
-  border: 1px solid #cccccc;
-  border-top: none;
-  display: none;
-  width: auto;
-  -moz-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
-  -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
-  white-space: nowrap;
-}
-
-.dropdownMenu a {
-  padding: 2px 4px;
-  display: block;
-}
-
-.dropdownMenu a:hover {
-  background: #fff3c7;
-}
-
-#logo {
-  margin: 5px 0px;
-  background-image: url(/images/logo_small.png);
-  background-repeat: no-repeat;
-  width: 221px;
-  height: 25px;
-}
-
-#organizationHeader {
-  margin-bottom: 30px;
-}
-
-#organizationHeader h1 {
-  display: inline;
-  margin-right: 10px;
-}
-
-#organizationHeader h2 {
-  display: inline;
-}
-
-.elections .body {
-  margin-bottom: 20px;
-}
-
-
-a#createElectionLink {
-  float: right;
-}
-
-a#createElectionLink:hover {
-  -webkit-box-shadow: 2px 2px 3px rgba(0,0,0,.25);
-}
-
-a#createCandidate {
-  font-size: 21px;
-  color: #007100;
-  display: block;
-  margin-bottom: 20px;
-}
-
-div#createElectionForm {
-  margin: 5px auto 10px;
-}
-
-div#createElectionForm input {
-  font-size: 18px;
-  width: 780px;
-  margin-bottom: 10px;
-  padding: 10px;
-}
-
-div#createElectionForm a {
-  float: right;
-  margin-top: 5px;
-}
-
-.election {
-  -moz-box-shadow: rgba(0,0,0,.4) 1px 1px 6px;
-  -webkit-box-shadow: rgba(0,0,0,.35) 1px 1px 5px;
+  margin-bottom: 15px; }
+  #app #header > div {
+    height: 30px; }
+  #app #header .headerItem {
+    float: right;
+    margin-top: 2px;
+    margin-left: 6px; }
+  #app #header .dropdownLink {
+    display: inline-block;
+    color: #0e40ac;
+    text-decoration: underline;
+    cursor: pointer;
+    padding-right: 15px;
+    background-image: url(/images/expand_arrow_blue.png);
+    background-repeat: no-repeat;
+    background-position: right; }
+  #app #header .dropdownMenu {
+    z-index: 1;
+    position: absolute;
+    background: white;
+    border: 1px solid #cccccc;
+    border-top: none;
+    display: none;
+    width: auto;
+    -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
+    white-space: nowrap; }
+    #app #header .dropdownMenu a {
+      padding: 2px 4px;
+      display: block; }
+      #app #header .dropdownMenu a:hover {
+        background: #fff3c7; }
+  #app #header #logo {
+    margin: 5px 0px;
+    background-image: url(/images/logo_small.png);
+    background-repeat: no-repeat;
+    width: 221px;
+    height: 25px; }
+#app #organizationOverview #organizationHeader {
+  margin-bottom: 30px; }
+  #app #organizationOverview #organizationHeader h1, #app #organizationOverview #organizationHeader h2 {
+    display: inline; }
+  #app #organizationOverview #organizationHeader h1 {
+    margin-right: 10px; }
+#app #organizationOverview #createElectionLink {
+  float: right; }
+  #app #organizationOverview #createElectionLink:hover {
+    -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.25); }
+#app #organizationOverview #createElectionForm {
+  margin: 5px auto 10px; }
+  #app #organizationOverview #createElectionForm input {
+    font-size: 18px;
+    width: 780px;
+    margin-bottom: 10px;
+    padding: 10px; }
+  #app #organizationOverview #createElectionForm a {
+    float: right;
+    margin-top: 5px; }
+#app #organizationOverview .election {
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.35) 1px 1px 5px;
   padding: 8px;
   margin-bottom: 20px;
   cursor: pointer;
   height: 220px;
   overflow-y: hidden;
-  position: relative;
-}
-
-.election .body {
-  font-size: 20px;
-  line-height: 26px;
-  margin-bottom: 10px;
-}
-
-.election .fadeOut {
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, rgba(255, 255, 255, 0)), color-stop(0.8, rgba(255, 255, 255, 100)));
-  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 100));
-  height: 50px;
-  width: 100%;
-  position: absolute;
-  left: 0px;
-  bottom: 0px;
-  color: #ffffcc;
-}
-
-#organizations ol.candidates li {
-  list-style: decimal;
-  list-style-position: inside;
-  font-size: 15px;
-  padding: 2px;
-}
-
-div#createCandidateForm textarea {
+  position: relative; }
+  #app #organizationOverview .election .body {
+    font-size: 20px;
+    line-height: 26px;
+    margin-bottom: 10px; }
+  #app #organizationOverview .election .fadeOut {
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgba(255, 255, 255, 0)), color-stop(0.8, white));
+    background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), white);
+    height: 50px;
+    width: 100%;
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    color: #ffffcc; }
+  #app #organizationOverview .election .candidates li {
+    list-style: decimal;
+    list-style-position: inside;
+    font-size: 15px;
+    padding: 2px; }
+#app #electionOverview .electionBody {
+  margin-bottom: 20px; }
+#app #electionOverview div#createCandidateForm textarea {
   font-size: 21px;
   width: 100%;
   margin-bottom: 10px;
   padding: 10px;
   display: block;
-}
-
-div#createCandidateForm button {
+  resize: vertical; }
+#app #electionOverview div#createCandidateForm button {
   display: block;
-  font-size: 15px;
-}
-
-.elections .candidatesListHeader {
+  font-size: 15px; }
+#app #electionOverview .candidatesListHeader {
   font-size: 16px;
   color: #999999;
-  margin-bottom: 5px;
-}
-
-.elections ol.candidates {
+  margin-bottom: 5px; }
+#app #electionOverview ol.candidates {
   background-color: #f4f2f2;
   -moz-box-shadow: #c8c7c7 0px 0px 5px inset;
   -webkit-box-shadow: #c8c7c7 0px 0px 5px inset;
   overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.elections ol.candidates li.candidate {
-  font-size: 15px;
-  padding: 5px;
-  border: 1px solid #c8c7c7;
-  border-bottom: none;
-  cursor: default;
-  background: white;
-  -moz-box-shadow: #c8c7c7 0px 1px 3px;
-  -webkit-box-shadow: #c8c7c7 0px 1px 3px;
-}
-
-.elections ol.candidates li.separator {
-  text-align: center;
-  padding: 5px;
-  cursor: default;
-}
-
-.elections ol.candidates li.separator .up {
-  background: url("/images/arrow_up_white.png");
-  background-repeat: no-repeat;
-  padding-left: 20px;
-  height: 22px;
-  display: inline-block;
-  margin-right: 20px;
-}
-
-.elections ol.candidates li.separator .down {
-  background: url("/images/arrow_down_white.png");
-  background-repeat: no-repeat;
-  background-position: right;
-  padding-right: 20px;
-  height: 22px;
-  display: inline-block;
-}
-
-.elections ol.candidates li:last-child {
-  border-bottom: 1px solid #d6d3d3;
-}
-
-.elections ol.candidates li.ui-draggable-dragging {
-  width: 288px;
-  list-style-type: none;
-}
-
-.candidateIcon {
-  float: right;
-  position: relative;
-  top: 1px;
-  height: 20px;
-  width: 20px;
-  background-position: 5px 4px;
-  background-repeat: no-repeat;
-}
-
-.candidateRanked {
-  background-position: 5px 5px;
-  background-image: url(/images/check_12x10_light.png);
-}
-
-.unrankCandidate {
-  background-image: url(/images/x_11x11_light.png);
-}
-
-.loading {
-  background-repeat: no-repeat;
-  background-image: url(/images/loading_arrows_light.gif);
-  background-position: 2px 2px;
-  width: 20px;
-  height: 20px;
-  display: inline-block;
-}
-
-.inactive {
-  background: none;
-}
-
-div.unrankCandidate:hover {
-  cursor: pointer;
-  background-image: url(/images/x_11x11_dark.png);
-}
-
-/* invite page */
-
-#invite textarea {
+  overflow-y: auto; }
+  #app #electionOverview ol.candidates li.separator {
+    text-align: center;
+    padding: 5px;
+    cursor: default; }
+    #app #electionOverview ol.candidates li.separator .up {
+      background: url("/images/arrow_up_white.png");
+      background-repeat: no-repeat;
+      padding-left: 20px;
+      height: 22px;
+      display: inline-block;
+      margin-right: 20px; }
+    #app #electionOverview ol.candidates li.separator .down {
+      background: url("/images/arrow_down_white.png");
+      background-repeat: no-repeat;
+      background-position: right;
+      padding-right: 20px;
+      height: 22px;
+      display: inline-block; }
+  #app #electionOverview ol.candidates li.candidate {
+    font-size: 15px;
+    padding: 5px;
+    border: 1px solid #c8c7c7;
+    border-bottom: none;
+    cursor: default;
+    background: white;
+    -moz-box-shadow: #c8c7c7 0px 1px 3px;
+    -webkit-box-shadow: #c8c7c7 0px 1px 3px;
+    position: relative; }
+    #app #electionOverview ol.candidates li.candidate:last-child {
+      border-bottom: 1px solid #d6d3d3; }
+    #app #electionOverview ol.candidates li.candidate.ui-draggable-dragging {
+      width: 288px;
+      list-style-type: none; }
+    #app #electionOverview ol.candidates li.candidate .expandArrow {
+      display: inline-block;
+      height: 13px;
+      width: 13px;
+      background-image: url(/images/expand_arrows.png);
+      background-repeat: no-repeat;
+      position: absolute;
+      top: 11px;
+      left: 5px;
+      margin-left: 1px;
+      margin-right: 4px; }
+      #app #electionOverview ol.candidates li.candidate .expandArrow:hover {
+        cursor: pointer;
+        background-position: -13px 0px; }
+      #app #electionOverview ol.candidates li.candidate .expandArrow.expanded {
+        background-position: -26px 0px; }
+        #app #electionOverview ol.candidates li.candidate .expandArrow.expanded:hover {
+          background-position: -39px 0px; }
+    #app #electionOverview ol.candidates li.candidate .bodyContainer {
+      margin-left: 19px;
+      margin-right: 22px; }
+      #app #electionOverview ol.candidates li.candidate .bodyContainer textarea {
+        outline: none;
+        resize: vertical;
+        width: 100%;
+        height: 60px;
+        padding: 4px; }
+    #app #electionOverview ol.candidates li.candidate button {
+      font-size: 12px; }
+    #app #electionOverview ol.candidates li.candidate .candidateIcon {
+      float: right;
+      position: relative;
+      top: 1px;
+      height: 20px;
+      width: 20px;
+      background-position: 5px 4px;
+      background-repeat: no-repeat; }
+    #app #electionOverview ol.candidates li.candidate .candidateRanked {
+      background-image: url(/images/check_12x10_light.png);
+      background-position: 5px 5px; }
+    #app #electionOverview ol.candidates li.candidate .unrankCandidate {
+      background-image: url(/images/x_11x11_light.png); }
+      #app #electionOverview ol.candidates li.candidate .unrankCandidate:hover {
+        cursor: pointer;
+        background-image: url(/images/x_11x11_dark.png); }
+    #app #electionOverview ol.candidates li.candidate .loading {
+      background-position: 2px 2px; }
+#app #addOrganization, #app #editOrganization {
+  font-size: 21px; }
+  #app #addOrganization input, #app #editOrganization input, #app #addOrganization textarea, #app #editOrganization textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px; }
+  #app #addOrganization button, #app #editOrganization button {
+    margin-top: 10px; }
+#app #editOrganization #details {
+  margin-bottom: 30px; }
+#app #editOrganization #overviewLink {
+  float: right; }
+#app #editOrganization div.addMember {
+  font-size: medium;
+  border-bottom: 1px solid #999999;
+  margin-bottom: 10px;
+  padding-bottom: 5px; }
+  #app #editOrganization div.addMember input, #app #editOrganization div.addMember select {
+    display: inline;
+    margin-right: 10px; }
+  #app #editOrganization div.addMember input.name {
+    width: 150px; }
+  #app #editOrganization div.addMember input.emailAddress {
+    width: 250px; }
+#app #editOrganization table.members {
+  width: 100%; }
+  #app #editOrganization table.members th {
+    font-weight: bold; }
+  #app #editOrganization table.members td, #app #editOrganization table.members th {
+    border-bottom: 1px #999999 dashed;
+    padding: 5px 0 5px 0; }
+  #app #editOrganization table.members .role {
+    width: 115px; }
+  #app #editOrganization table.members .remove {
+    width: 80px; }
+  #app #editOrganization table.members .loading {
+    display: inline-block;
+    position: relative;
+    top: 5px; }
+#app #invite textarea {
   padding: 5px;
   width: 100%;
   height: 185px;
   margin-bottom: 10px;
-  overflow-y: auto;
-}
-
-#invite button {
-  margin-right: 10px;
-}
-
-#invite #skip {
-  padding: 15px 0 0 3px;
-}
+  overflow-y: auto; }
+#app #invite button {
+  margin-right: 10px; }

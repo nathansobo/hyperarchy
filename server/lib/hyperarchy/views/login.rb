@@ -7,7 +7,7 @@ module Views
 
           form :id => "loginForm", :action => "login", :method => "post" do
             if flash[:errors]
-              div flash[:errors], :id => "errors"
+              div flash[:errors], :class => "errors"
             end
 
             label "Email Address", :for => "email_address"

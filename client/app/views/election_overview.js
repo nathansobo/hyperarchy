@@ -1,12 +1,12 @@
 _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
-    div({'class': "elections"}, function() {
+    div({'id': "electionOverview"}, function() {
       div({'class': "grid4"}, function() {
         h1({'class': "clickable"})
           .click('goToOrganization')
           .ref('organizationName');
 
-        div({'class': "body largeFont"}).ref('bodyDiv');
+        div({'class': "electionBody largeFont"}).ref('bodyDiv');
 
         div({id: "createCandidateForm"}, function() {
           textarea({placeholder: "Type your own suggestion here.", rows: 3})

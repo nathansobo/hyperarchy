@@ -1,18 +1,18 @@
 _.constructor("Views.EditOrganization", View.Template, {
   content: function() { with(this.builder) {
-    div({'class': "editOrganization"}, function() {
-      div({'class': "grid5 largeFont bigMarginBottom"}, function() {
+    div({id: "editOrganization"}, function() {
+      div({id: "details", 'class': "grid5 largeFont"}, function() {
         label({'for': "name"}, "Organization Name");
         input({name: "name", 'class': "text"});
         label({'for': "description"}, "Description (Optional)");
         textarea({name: "description", 'class': "text"});
-        input({type: "submit", value: "Save Changes"})
-          .ref('createOrganizationButton')
-          .click('createOrganization');
+        button("Save Changes")
+          .ref('saveChangesButton')
+          .click('saveChanges');
       });
 
-      div({'class': "grid7 largeFont"}, function() {
-        a({href: "#", 'class': "glossyBlack roundedButton", id: "overviewLink"}, "View Questions")
+      div({'class': "grid7"}, function() {
+        a({'class': "glossyBlack roundedButton", id: "overviewLink"}, "View Questions")
           .ref('overviewLink')
           .click(function(view, e) {
             $.bbq.pushState({view: "organization", organizationId: view.model().id()});
@@ -20,12 +20,10 @@ _.constructor("Views.EditOrganization", View.Template, {
           });
       });
 
-
-
       div({'class': "grid12"}, function() {
-        label({'class': "largeFont block"}, "Members");
+        label("Members");
 
-        div({'class': "addMember marginBottom"}, function() {
+        div({'class': "addMember"}, function() {
           input({'class': "name", type: "text", placeholder: "First Name"}).ref('createMembershipFirstName');
           input({'class': "name", type: "text", placeholder: "Last Name"}).ref('createMembershipLastName');
           input({'class': "emailAddress", type: "text", placeholder: "Email Address"}).ref('createMembershipEmail');
@@ -33,7 +31,7 @@ _.constructor("Views.EditOrganization", View.Template, {
             option({value: "member"}, "Member");
             option({value: "owner"}, "Owner");
           }).ref("createMembershipRole");
-          input({type: "submit", value: "Add"}).click('createMembership');
+          button("Add").click('createMembership');
         });
 
         table({'class': "members"}, function() {
