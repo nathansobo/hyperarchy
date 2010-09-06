@@ -14,7 +14,8 @@ _.constructor("Views.RankedCandidateLi", Views.CandidateLi, {
   }},
 
   viewProperties: {
-    initialize: function() {
+    initialize: function($super) {
+      $super();
       if (!this.candidate) this.candidate = this.ranking.candidate();
       if (!this.ranking) this.ranking = this.candidate.rankingByCurrentUser().first();
     },

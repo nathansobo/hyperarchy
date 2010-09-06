@@ -591,7 +591,10 @@ select {
   zoom: 1; }
 
 body {
-  font: 13px/1.5 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif; }
+  font: 13px/1.3 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif; }
+
+textarea {
+  line-height: 1.3; }
 
 a, a:visited {
   color: #0e40ac; }
@@ -601,8 +604,7 @@ h1 {
   font-weight: bold; }
 
 h2 {
-  font-size: 23px;
-  font-weight: bold; }
+  font-size: 23px; }
 
 button {
   padding: 5px; }
@@ -929,12 +931,14 @@ button {
       margin-right: 22px; }
       #app #electionOverview ol.candidates li.candidate .bodyContainer textarea {
         outline: none;
-        resize: vertical;
         width: 100%;
-        height: 60px;
-        padding: 4px; }
+        padding: 4px;
+        padding-top: 2px;
+        resize: none;
+        margin-bottom: 5px; }
     #app #electionOverview ol.candidates li.candidate button {
-      font-size: 12px; }
+      font-size: 12px;
+      margin-left: 5px; }
     #app #electionOverview ol.candidates li.candidate .candidateIcon {
       float: right;
       position: relative;

@@ -2,9 +2,12 @@ _.constructor("Views.CandidateLi", View.Template, {
   content: function(params) { with(this.builder) {
     var candidate = params.candidate;
     li({ candidateId: candidate.id(), 'class': "candidate " + this.additionalClass }, function() {
-      div({'class': "expandArrow"})
-        .ref('expandArrow')
-        .click('expandOrContract');
+      if (candidate.belongsToCurrentUser()) {
+        div({'class': "expandArrow"})
+          .ref('expandArrow')
+          .click('expandOrContract');
+      }
+
       template.candidateIcon();
 
       div({'class': "bodyContainer"}, function() {
@@ -23,6 +26,12 @@ _.constructor("Views.CandidateLi", View.Template, {
   }},
 
   viewProperties: {
+    initialize: function() {
+      this.defer(function() {
+        this.bodyTextarea.elastic();
+      });
+    },
+
     expandOrContract: function() {
       if (this.expanded) {
         this.expanded = false;
@@ -33,6 +42,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       } else {
         this.expanded = true;
         this.bodyTextarea.show();
+        this.bodyTextarea.keyup();
         this.body.hide();
         this.expandArrow.addClass('expanded');
         this.expandedInfo.slideDown('fast');

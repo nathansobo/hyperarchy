@@ -56,9 +56,11 @@ _.constructor("Monarch.Model.Record", {
       });
     },
 
-    belongsTo: function(name) {
+    belongsTo: function(name, options) {
+      if (!options) options = {};
       var keyName = name + "Id";
-      var tableName = _.underscoreAndPluralize(name);
+      var tableName = options.constructorName ?
+        _.underscoreAndPluralize(options.constructorName) : _.underscoreAndPluralize(name);
       this.prototype[name] = function(model) {
         if (arguments.length == 0) {
           var id = this[keyName]();

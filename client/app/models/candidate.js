@@ -2,11 +2,13 @@ _.constructor("Candidate", Model.Record, {
   constructorInitialize: function() {
     this.columns({
       electionId: 'key',
+      creatorId: 'key',
       body: 'string',
       position: 'integer'
     });
 
     this.hasMany('rankings');
+    this.belongsTo('creator', {constructorName: "User"});
   },
 
   afterInitialize: function() {
@@ -21,5 +23,9 @@ _.constructor("Candidate", Model.Record, {
 
   rankingByCurrentUser: function() {
     return this.rankingByUser(Application.currentUser());
+  },
+
+  belongsToCurrentUser: function() {
+    return this.creator() === Application.currentUser();
   }
 });

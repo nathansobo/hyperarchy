@@ -7,7 +7,8 @@ _.constructor("Views.UnrankedCandidateLi", Views.CandidateLi, {
   additionalClass: "unranked",
 
   viewProperties: {
-    initialize: function() {
+    initialize: function($super) {
+      $super();
       var rankingRelation = this.candidate.rankingByCurrentUser();
 
       if (!rankingRelation.empty()) {

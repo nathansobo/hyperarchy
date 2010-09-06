@@ -225,15 +225,17 @@
 
           textarea {
             outline: none;
-            resize: vertical;
             width: 100%;
-            height: 60px;
             padding: 4px;
+            padding-top: 2px;
+            resize: none;
+            margin-bottom: 5px;
           }
         }
 
         button {
           font-size: 12px;
+          margin-left: 5px;
         }
 
         .candidateIcon {

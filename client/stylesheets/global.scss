@@ -2,7 +2,11 @@ $blue: #0e40ac;
 $largeFont: 21px;
 
 body {
-  font: 13px/1.5 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+  font: 13px/1.3 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+}
+
+textarea {
+  line-height: 1.3;
 }
 
 a, a:visited {
@@ -16,9 +20,7 @@ h1 {
 
 h2 {
   font-size: 23px;
-  font-weight: bold;
 }
-
 
 button {
   padding: 5px;
