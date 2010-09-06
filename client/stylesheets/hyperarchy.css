@@ -4,6 +4,25 @@ a, a:visited {
 h1 {
   font-weight: bold; }
 
+.glossyBlack, .glossyBlack:visited {
+  color: white;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, black), color-stop(1, #1d1d1d));
+  background: -moz-linear-gradient(top, #6d6e70 0%, #3a3a3b 50%, black 51%, #1d1d1d 100%); }
+
+.roundedButton {
+  font-size: 20px;
+  border-radius: 3px;
+  padding: 3px 7px;
+  text-decoration: none;
+  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+  cursor: pointer; }
+
+.placeheld {
+  color: #999999; }
+
+.clickable {
+  cursor: pointer; }
+
 #notification {
   width: 100%;
   height: 20px;
@@ -34,18 +53,22 @@ h1 {
   padding: 10px;
   -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 4px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 4px; }
-  #feedback .x {
+  #feedback #x {
     float: right;
     margin-left: 30px;
     margin-bottom: 30px;
-    cursor: pointer; }
+    cursor: pointer;
+    height: 21px;
+    width: 21px;
+    background-image: url(/images/x_21x21_dark.png); }
   #feedback #thanks {
     margin-bottom: 10px; }
   #feedback textarea {
     width: 100%;
     height: 185px;
     padding: 10px;
-    margin-bottom: 10px; }
+    margin-bottom: 10px;
+    resize: none; }
 
 #bigLogo {
   background-image: url("/images/logo_large.png");
@@ -97,6 +120,68 @@ h1 {
       width: auto;
       float: right; }
 
+#signup {
+  font-size: 22px; }
+  #signup label {
+    display: block;
+    font-size: 16px; }
+    #signup label.inline {
+      display: inline; }
+  #signup input {
+    width: 100%;
+    display: block;
+    margin-bottom: 10px; }
+  #signup input[type=submit] {
+    margin-top: 20px;
+    width: auto; }
+  #signup #bigLogo {
+    margin-bottom: 40px; }
+  #signup textarea {
+    height: 85px;
+    width: 100%;
+    resize: vertical; }
+
+#app #header {
+  border-bottom: 1px solid #cccccc;
+  position: relative;
+  margin-bottom: 15px; }
+  #app #header > div {
+    height: 30px; }
+  #app #header .headerItem {
+    float: right;
+    margin-top: 2px;
+    margin-left: 6px; }
+  #app #header .dropdownLink {
+    display: inline-block;
+    color: #0e40ac;
+    text-decoration: underline;
+    cursor: pointer;
+    padding-right: 15px;
+    background-image: url(/images/expand_arrow_blue.png);
+    background-repeat: no-repeat;
+    background-position: right; }
+  #app #header .dropdownMenu {
+    z-index: 1;
+    position: absolute;
+    background: white;
+    border: 1px solid #cccccc;
+    border-top: none;
+    display: none;
+    width: auto;
+    -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
+    white-space: nowrap; }
+    #app #header .dropdownMenu a {
+      padding: 2px 4px;
+      display: block; }
+      #app #header .dropdownMenu a:hover {
+        background: #fff3c7; }
+  #app #header #logo {
+    margin: 5px 0px;
+    background-image: url(/images/logo_small.png);
+    background-repeat: no-repeat;
+    width: 221px;
+    height: 25px; }
 #app #organizationOverview #organizationHeader {
   margin-bottom: 30px; }
   #app #organizationOverview #organizationHeader h1, #app #organizationOverview #organizationHeader h2 {
@@ -279,3 +364,11 @@ h1 {
   #app #editOrganization table.members .loading {
     position: relative;
     top: 5px; }
+#app #invite textarea {
+  padding: 5px;
+  width: 100%;
+  height: 185px;
+  margin-bottom: 10px;
+  overflow-y: auto; }
+#app #invite button {
+  margin-right: 10px; }

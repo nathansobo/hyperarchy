@@ -30,9 +30,6 @@ button {
   padding: 5px;
 }
 
-.placeheld {
-  color: #999999;
-}
 
 .largeFont {
   font-size: 21px;
@@ -46,72 +43,8 @@ button {
   color: #999999;
 }
 
-.glossyBlack, .glossyBlack:visited {
-  color: white;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
-  background: -moz-linear-gradient(top, #6d6e70 0%, #3a3a3b 50%, #000000 51%, #1D1D1D 100%);
-}
-
-.roundedButton {
-  font-size: 20px;
-  border-radius: 3px;
-  padding: 3px 7px;
-  text-decoration:none;
-  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
-  cursor: pointer;
-}
-
-.clickable {
-  cursor: pointer;
-}
-
-.ui-autocomplete {
-  position: absolute;
-  background: white;
-  padding: 3px;
-  border: 1px solid #999999; 
-}
-
-
 th, td {
   padding: 5px 0 5px 0;
-}
-
-.x {
-  height: 21px;
-  width: 21px;
-  background-image: url(/images/x_21x21_dark.png);
-}
-
-body.signup {
-  font-size: 22px;
-}
-
-body.signup label {
-  display: block;
-  font-size: 16px;
-}
-
-body.signup label.inline {
-  display: inline;
-}
-
-body.signup #bigLogo {
-  margin-bottom: 40px;
-}
-
-body.signup textarea.text {
-  height: 85px;
-}
-
-body.signup input[type=submit] {
-  margin-top: 10px;
-}
-
-/* confirm membership page */
-
-body.confirm_membership {
-  text-align: center;
 }
 
 
@@ -129,22 +62,4 @@ body.confirm_membership {
 
 .inactive {
   background: none;
-}
-
-/* invite page */
-
-#invite textarea {
-  padding: 5px;
-  width: 100%;
-  height: 185px;
-  margin-bottom: 10px;
-  overflow-y: auto;
-}
-
-#invite button {
-  margin-right: 10px;
-}
-
-#invite #skip {
-  padding: 15px 0 0 3px;
 }

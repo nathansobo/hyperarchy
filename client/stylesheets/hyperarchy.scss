@@ -9,6 +9,30 @@ h1 {
   font-weight: bold;
 }
 
+.glossyBlack, .glossyBlack:visited {
+  color: white;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
+  background: -moz-linear-gradient(top, #6d6e70 0%, #3a3a3b 50%, #000000 51%, #1D1D1D 100%);
+}
+
+.roundedButton {
+  font-size: 20px;
+  border-radius: 3px;
+  padding: 3px 7px;
+  text-decoration:none;
+  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+  cursor: pointer;
+}
+
+.placeheld {
+  color: #999999;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+
 #notification {
   width: 100%;
   height: 20px;
@@ -42,11 +66,15 @@ h1 {
   -moz-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
   -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
 
-  .x {
+  #x {
     float: right;
     margin-left: 30px;
     margin-bottom: 30px;
     cursor: pointer;
+    height: 21px;
+    width: 21px;
+    background-image: url(/images/x_21x21_dark.png);
+
   }
 
   #thanks { margin-bottom: 10px; }
@@ -56,6 +84,7 @@ h1 {
     height: 185px;
     padding: 10px;
     margin-bottom: 10px;
+    resize: none;
   }
 }
 
@@ -128,7 +157,93 @@ h1 {
   }
 }
 
+#signup {
+  font-size: 22px;
+
+  label {
+    display: block;
+    font-size: 16px;
+
+    &.inline { display: inline }
+  }
+
+  input {
+    width: 100%;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  input[type=submit] {
+    margin-top: 20px;
+    width: auto;
+  }
+
+  #bigLogo { margin-bottom: 40px; }
+
+  textarea {
+    height: 85px;
+    width: 100%;
+    resize: vertical;
+  }
+
+}
+
 #app {
+
+  #header {
+    border-bottom: 1px solid #cccccc;
+    position: relative;
+    margin-bottom: 15px;
+
+    & > div { height: 30px; }
+
+    .headerItem {
+      float: right;
+      margin-top: 2px;
+      margin-left: 6px;
+    }
+
+    .dropdownLink {
+      display: inline-block;
+      color: #0e40ac;
+      text-decoration: underline;
+      cursor: pointer;
+      padding-right: 15px;
+
+      background-image: url(/images/expand_arrow_blue.png);
+      background-repeat: no-repeat;
+      background-position: right;
+    }
+
+    .dropdownMenu {
+      z-index: 1;
+      position: absolute;
+      background: white;
+      border: 1px solid #cccccc;
+      border-top: none;
+      display: none;
+      width: auto;
+      -moz-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
+      -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
+      white-space: nowrap;
+
+      a {
+        padding: 2px 4px;
+        display: block;
+        &:hover { background: #fff3c7; }
+      }
+    }
+
+
+    #logo {
+      margin: 5px 0px;
+      background-image: url(/images/logo_small.png);
+      background-repeat: no-repeat;
+      width: 221px;
+      height: 25px;
+    }
+  }
+
   #organizationOverview {
     #organizationHeader {
       margin-bottom: 30px;
@@ -385,6 +500,20 @@ h1 {
         position: relative;
         top: 5px;
       }
+    }
+  }
+
+  #invite {
+    textarea {
+      padding: 5px;
+      width: 100%;
+      height: 185px;
+      margin-bottom: 10px;
+      overflow-y: auto;
+    }
+
+    button {
+      margin-right: 10px;
     }
   }
 }
