@@ -1,7 +1,7 @@
 _.constructor("Views.EditOrganization", View.Template, {
   content: function() { with(this.builder) {
     div({id: "editOrganization"}, function() {
-      div({'class': "grid5 largeFont bigMarginBottom"}, function() {
+      div({id: "details", 'class': "grid5 largeFont"}, function() {
         label({'for': "name"}, "Organization Name");
         input({name: "name", 'class': "text"});
         label({'for': "description"}, "Description (Optional)");

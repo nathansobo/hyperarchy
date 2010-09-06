@@ -9,6 +9,25 @@ h1 {
   font-weight: bold;
 }
 
+button {
+  padding: 5px;
+}
+
+.largeFont {
+  font-size: 21px;
+}
+
+.grayText {
+  color: #999999;
+}
+
+.errors {
+  margin-bottom: 20px;
+  font-size: 16px;
+  background: #ffe3e3;
+  padding: 10px;
+}
+
 .glossyBlack, .glossyBlack:visited {
   color: white;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
@@ -32,6 +51,17 @@ h1 {
   cursor: pointer;
 }
 
+.loading {
+  background-repeat: no-repeat;
+  background-image: url(/images/loading_arrows_light.gif);
+  background-position: 2px 2px;
+  width: 20px;
+  height: 20px;
+
+  &.inactive {
+    background: none;
+  }
+}
 
 #notification {
   width: 100%;
@@ -135,13 +165,6 @@ h1 {
     font-size: 22px;
     margin: 20px auto;
 
-    #errors {
-      margin-bottom: 20px;
-      font-size: 16px;
-      background: #ffe3e3;
-      padding: 5px;
-    }
-
     label { display: block; }
 
     input {
@@ -171,12 +194,18 @@ h1 {
     width: 100%;
     display: block;
     margin-bottom: 10px;
+
+    &[type=submit] {
+      margin-top: 20px;
+      width: auto;
+    }
+
+    &[type=checkbox] {
+      display: inline;
+      width: auto;
+    }
   }
 
-  input[type=submit] {
-    margin-top: 20px;
-    width: auto;
-  }
 
   #bigLogo { margin-bottom: 40px; }
 
@@ -205,7 +234,7 @@ h1 {
 
     .dropdownLink {
       display: inline-block;
-      color: #0e40ac;
+      color: $blue;
       text-decoration: underline;
       cursor: pointer;
       padding-right: 15px;
@@ -450,6 +479,10 @@ h1 {
             background-image: url(/images/x_11x11_dark.png);
           }
         }
+
+        .loading {
+          background-position: 2px 2px;
+        }
       }
     }
   }
@@ -468,6 +501,8 @@ h1 {
 
   #editOrganization {
     @extend #addOrganization;
+
+    #details { margin-bottom: 30px; }
 
     #overviewLink { float: right; }
 
@@ -490,13 +525,16 @@ h1 {
       width: 100%;
 
       th { font-weight: bold; }
+
       td, th {
         border-bottom: 1px #999999 dashed;
+        padding: 5px 0 5px 0;
       }
 
       .role { width: 115px; }
       .remove { width: 80px; }
       .loading {
+        display: inline-block;
         position: relative;
         top: 5px;
       }

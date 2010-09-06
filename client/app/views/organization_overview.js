@@ -46,12 +46,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.showCreateElectionFormButton.show();
     },
 
-    resetCreateElectionForm: function() {
-      this.createElectionInput.val("Type your question here.");
-      this.createElectionInput.addClass("grayText");
-      this.createElectionButton.attr('disabled', false);
-    },
-
     organizationId: {
       afterChange: function() {
         this.organizationName.html(this.organization().name());
