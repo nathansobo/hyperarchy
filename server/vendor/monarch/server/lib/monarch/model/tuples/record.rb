@@ -65,7 +65,7 @@ module Monarch
               target_class.where(target_class[:id].eq(foreign_key_field))
             end
             define_method "#{relation_name}=" do |record|
-              send("#{foreign_key_name}=", record.id)
+              send("#{foreign_key_name}=", record ? record.id : nil)
             end
           end
 

@@ -95,6 +95,9 @@ module Monarch
               blog_post.blog.should == Blog.find("grain")
               blog_post.blog = Blog.find("vegetable")
               blog_post.blog.should == Blog.find("vegetable")
+
+              blog_post.blog = nil
+              blog_post.blog_id.should == nil
             end
 
             context "when a :class_name option is passed" do
