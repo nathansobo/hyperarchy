@@ -78,7 +78,6 @@
 					var twinContent = $twin.html();
 					
 					if(widthChanged || textareaContent+'&nbsp;' != twinContent){
-					  console.debug("UPDATE");
 						// Add an extra white space so new rows are added when you are at the end of a row.
 						$twin.html(textareaContent+'&nbsp;');
 						
