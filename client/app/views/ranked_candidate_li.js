@@ -25,8 +25,8 @@ _.constructor("Views.RankedCandidateLi", Views.CandidateLi, {
     },
 
     stopLoading: function() {
-//      this.loadingIcon.hide();
-//      this.destroyRankingButton.show();
+      this.loadingIcon.hide();
+      this.destroyRankingButton.show();
     },
 
     destroyRanking: function() {
