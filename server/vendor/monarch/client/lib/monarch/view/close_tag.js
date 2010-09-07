@@ -47,6 +47,29 @@ _.constructor("Monarch.View.CloseTag", {
     return "</" + this.name + ">"
   },
 
+  bind: function() {
+    var args = _.toArray(arguments);
+    var lastArg = _.last(args);
+
+    this.onBuild(function(element, view) {
+      if (args.length === 1 && _.isObject(args[0])) {
+        args[0] = _.each(args[0], function(callback, eventName) {
+          args[0][eventName] = _.isFunction(callback) ?
+            function(event) { callback.call(element, view, event) } :
+              function(event) { view[callback].call(view, element, event); }
+        });
+      } else {
+        var callback = _.isFunction(lastArg) ?
+          function(event) { lastArg.call(element, view, event) } :
+            function(event) { view[lastArg].call(view, element, event); }
+
+        args[args.length - 1] = callback;
+      }
+
+      element.bind.apply(element, args);
+    });
+  },
+
   ref: function(name) {
     this.onBuild(function(element, view) {
       view[name] = element;

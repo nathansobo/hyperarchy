@@ -145,6 +145,55 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+    describe(".bind declarations", function() {
+      they("invoke the jquery bind method on the corresponding element when the view is built, mapping strings to method calls or passing the view as the first argument to functions", function() {
+        var clickHandler = mockFunction('clickHandler');
+
+        with(builder) {
+          div({'id': "root"}, function() {
+            div({'id': "child1"}).bind("keyup", {foo: "bar"}, "keyupMethod");
+            div({'id': "child2"}).bind("keyup", "keyupMethod");
+            div({'id': "child3"}).bind("click", clickHandler);
+            div({'id': "child4"}).bind("click", {baz: "quux"}, clickHandler);
+            div({'id': "child5"}).bind({ click: clickHandler, keyup: "keyupMethod"});
+          });
+        }
+
+        var view = builder.toView();
+        view.keyupMethod = mockFunction('keyupMethod');
+
+        view.find("#child1").keyup();
+        expect(view.keyupMethod).to(haveBeenCalled, once);
+        expect(view.keyupMethod.mostRecentArgs[1].data).to(equal, {foo: "bar"});
+        view.keyupMethod.clear();
+
+        view.find("#child2").keyup();
+        expect(view.keyupMethod).to(haveBeenCalled, once);
+        view.keyupMethod.clear();
+
+        view.find("#child3").click();
+        expect(clickHandler).to(haveBeenCalled, once);
+        expect(clickHandler.mostRecentArgs[0]).to(eq, view);
+        clickHandler.clear();
+
+        view.find("#child4").click();
+        expect(clickHandler).to(haveBeenCalled, once);
+        expect(clickHandler.mostRecentArgs[0]).to(eq, view);
+        expect(clickHandler.mostRecentArgs[1].data).to(equal, {baz: "quux"});
+        view.keyupMethod.clear();
+
+        view.find("#child5").click();
+        expect(clickHandler).to(haveBeenCalled);
+        expect(clickHandler.mostRecentArgs[0]).to(eq, view);
+        clickHandler.clear();
+
+        view.find("#child5").keyup();
+        expect(view.keyupMethod).to(haveBeenCalled, once);
+        expect(view.keyupMethod.mostRecentArgs[0].is("#child5")).to(beTrue);
+        view.keyupMethod.clear();
+      });
+    });
+
     describe(".ref declarations", function() {
       var view, childCallback;
 
