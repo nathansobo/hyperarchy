@@ -14,8 +14,13 @@ _.constructor("Views.SortedList", View.Template, {
       afterChange: function(relation) {
         if (this.subscriptions) this.subscriptions.destroy();
 
+        if (this.lisById) {
+          _.each(this.lisById, function(li) {
+            li.remove();
+          });
+        }
         this.lisById = {};
-        this.empty();
+
         relation.each(function(record) {
           this.append(this.liForRecord(record));
         }, this);
@@ -24,9 +29,11 @@ _.constructor("Views.SortedList", View.Template, {
           this.insertAtIndex(this.liForRecord(record), index);
         }, this));
 
-        this.subscriptions.add(relation.onRemoteUpdate(function(record, changes, index) {
-          this.insertAtIndex(this.liForRecord(record), index);
-        }, this));
+        if (!this.ignoreUpdate) {
+          this.subscriptions.add(relation.onRemoteUpdate(function(record, changes, index) {
+            this.insertAtIndex(this.liForRecord(record), index);
+          }, this));
+        }
 
         this.subscriptions.add(relation.onRemoteRemove(function(record, index) {
           this.liForRecord(record).remove();

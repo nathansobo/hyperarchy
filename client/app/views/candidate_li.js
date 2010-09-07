@@ -11,13 +11,17 @@ _.constructor("Views.CandidateLi", View.Template, {
       template.candidateIcon();
 
       div({'class': "bodyContainer"}, function() {
-        textarea({style: "display: none;"}, candidate.body()).ref('bodyTextarea');
+        textarea({style: "display: none;"}, candidate.body())
+          .bind('keyup paste', "enableOrDisableSaveButton")
+          .ref('bodyTextarea');
         span({'class': "body"}, candidate.body()).ref('body');
       }).ref('bodyContainer');
 
 
       div({'class': "expandedInfo", style: "display: none;"}, function() {
-        button({style: "float: right; margin-right: 5px;"}, "Save").click("editCandidate");
+        button({style: "float: right; margin-right: 5px;"}, "Save")
+          .ref('saveButton')
+          .click("saveCandidate");
         button({style: "float: right"}, "Delete").click("deleteCandidate");
 
         div({'class': "clear"});
@@ -27,9 +31,18 @@ _.constructor("Views.CandidateLi", View.Template, {
 
   viewProperties: {
     initialize: function() {
+      this.subscriptions = new Monarch.SubscriptionBundle;
+      this.subscriptions.add(this.candidate.remote.field('body').onUpdate(function(newBody) {
+        this.body.html(newBody)
+      }, this));
+
       this.defer(function() {
         this.bodyTextarea.elastic();
       });
+    },
+
+    afterRemove: function() {
+      this.subscriptions.destroy();
     },
 
     expandOrContract: function() {
@@ -43,10 +56,28 @@ _.constructor("Views.CandidateLi", View.Template, {
         this.expanded = true;
         this.bodyTextarea.show();
         this.bodyTextarea.keyup();
+        this.bodyTextarea.val(this.candidate.body());
         this.body.hide();
+        this.saveButton.attr('disabled', true);
         this.expandArrow.addClass('expanded');
         this.expandedInfo.slideDown('fast');
       }
+    },
+
+    enableOrDisableSaveButton: function() {
+      if (this.bodyTextarea.val() === this.candidate.body()) {
+        this.saveButton.attr('disabled', true);
+      } else {
+        this.saveButton.attr('disabled', false);
+      }
+    },
+
+    saveCandidate: function() {
+      this.saveButton.attr('disabled', true);
+      this.candidate.update({ body: this.bodyTextarea.val() })
+        .onSuccess(function() {
+          console.debug("SAVED!");
+        });
     }
   }
 });

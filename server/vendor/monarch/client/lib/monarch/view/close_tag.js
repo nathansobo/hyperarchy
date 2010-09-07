@@ -68,6 +68,8 @@ _.constructor("Monarch.View.CloseTag", {
 
       element.bind.apply(element, args);
     });
+
+    return this;
   },
 
   ref: function(name) {

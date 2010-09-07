@@ -104,6 +104,13 @@ _.constructor("Monarch.View.Template", {
       return result;
     },
 
+    remove: function($super, selector, keepData) {
+      if (!keepData && this.beforeRemove) this.beforeRemove();
+      var result = $super(selector, keepData);
+      if (!keepData && this.afterRemove) this.afterRemove();
+      return result;
+    },
+
     model: {
       afterWrite: function(model) {
         this.populateFormFields();

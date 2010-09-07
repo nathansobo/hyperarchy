@@ -10,3 +10,8 @@ target
 log
 nginx_access.log
 .sass-cache
+client/stylesheets/app_pages.css
+client/stylesheets/global.css
+client/stylesheets/peripheral_pages.css
+client/stylesheets/vendor/960.css
+client/stylesheets/vendor/reset.css
