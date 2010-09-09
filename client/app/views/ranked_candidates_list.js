@@ -39,6 +39,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
 
     populateRankings: function() {
       this.empty();
+
       this.rankings.each(function(ranking) {
         var li = Views.RankedCandidateLi.toView({ranking: ranking});
         li.stopLoading();
@@ -55,7 +56,9 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     empty: function() {
-      this.rankedCandidatesList.find("li:not(.separator)").remove();
+      this.rankedCandidatesList.find("li.candidate").each(function() {
+        $(this).view().remove();
+      });
     },
 
     handleReceive: function(event, ui) {
@@ -91,7 +94,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     findLi: function(candidate) {
-      return this.rankedCandidatesList.find("li[candidateId='" + candidate.id() + "']");
+      return this.rankedCandidatesList.find("li[candidateId='" + candidate.id() + "']").view();
     },
 
     adjustHeight: function() {
