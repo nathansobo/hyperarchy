@@ -94,7 +94,8 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     findLi: function(candidate) {
-      return this.rankedCandidatesList.find("li[candidateId='" + candidate.id() + "']").view();
+      var li = this.rankedCandidatesList.find("li[candidateId='" + candidate.id() + "']");
+      return li.view() ? li.view() : li;
     },
 
     adjustHeight: function() {
