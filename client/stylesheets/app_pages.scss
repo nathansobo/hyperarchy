@@ -233,10 +233,14 @@
           }
         }
 
-        button {
-          font-size: 12px;
-          margin-left: 5px;
+        .expandedInfo {
+          button {
+            float: right;
+            font-size: 12px;
+            margin-left: 5px;
+          }
         }
+
 
         .candidateIcon {
           float: right;

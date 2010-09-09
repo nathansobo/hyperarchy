@@ -8,6 +8,7 @@ _.constructor("Views.CandidateLi", View.Template, {
           .click('expandOrContract');
       }
 
+      div({'class': "loading candidateIcon", style: "display: none;"}).ref('loadingIcon');
       template.candidateIcon();
 
       div({'class': "bodyContainer"}, function() {
@@ -19,11 +20,10 @@ _.constructor("Views.CandidateLi", View.Template, {
 
 
       div({'class': "expandedInfo", style: "display: none;"}, function() {
-        button({style: "float: right; margin-right: 5px;"}, "Save")
+        button("Save")
           .ref('saveButton')
           .click("saveCandidate");
         button({style: "float: right"}, "Delete").click("deleteCandidate");
-
         div({'class': "clear"});
       }).ref('expandedInfo');
     });
@@ -73,11 +73,24 @@ _.constructor("Views.CandidateLi", View.Template, {
     },
 
     saveCandidate: function() {
+      this.startLoading();
       this.saveButton.attr('disabled', true);
       this.candidate.update({ body: this.bodyTextarea.val() })
         .onSuccess(function() {
-          console.debug("SAVED!");
-        });
+          this.stopLoading();
+          this.expandOrContract();
+        }, this);
+    },
+
+    startLoading: function() {
+      this.previouslyVisibleIcons = this.find('.candidateIcon:visible');
+      this.previouslyVisibleIcons.hide();
+      this.loadingIcon.show();
+    },
+
+    stopLoading: function() {
+      this.loadingIcon.hide();
+      this.previouslyVisibleIcons.show();
     }
   }
 });

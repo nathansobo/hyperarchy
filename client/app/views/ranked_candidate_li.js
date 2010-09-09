@@ -7,7 +7,6 @@ _.constructor("Views.RankedCandidateLi", Views.CandidateLi, {
   additionalClass: "ranked",
 
   candidateIcon: function() { with(this.builder) {
-    div({'class': "candidateIcon loading", style: "display: none;"}).ref('loadingIcon');
     div({'class': "candidateIcon unrankCandidate", style: "display: none;"})
       .ref('destroyRankingButton')
       .click('destroyRanking');

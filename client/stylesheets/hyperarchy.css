@@ -936,7 +936,8 @@ button {
         padding-top: 2px;
         resize: none;
         margin-bottom: 5px; }
-    #app #electionOverview ol.candidates li.candidate button {
+    #app #electionOverview ol.candidates li.candidate .expandedInfo button {
+      float: right;
       font-size: 12px;
       margin-left: 5px; }
     #app #electionOverview ol.candidates li.candidate .candidateIcon {
