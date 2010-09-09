@@ -29,11 +29,9 @@ _.constructor("Views.SortedList", View.Template, {
           this.insertAtIndex(this.liForRecord(record), index);
         }, this));
 
-        if (!this.ignoreUpdate) {
-          this.subscriptions.add(relation.onRemoteUpdate(function(record, changes, index) {
-            this.insertAtIndex(this.liForRecord(record), index);
-          }, this));
-        }
+        this.subscriptions.add(relation.onRemoteUpdate(function(record, changes, index) {
+          this.insertAtIndex(this.liForRecord(record), index);
+        }, this));
 
         this.subscriptions.add(relation.onRemoteRemove(function(record, index) {
           this.liForRecord(record).remove();
@@ -55,7 +53,7 @@ _.constructor("Views.SortedList", View.Template, {
     liForRecord: function(record) {
       var id = record.id();
       if (this.lisById[id]) {
-        return this.lisById[id];
+        return this.lisById[id].detach();
       } else {
         return this.lisById[id] = this.buildLi(record);
       }
