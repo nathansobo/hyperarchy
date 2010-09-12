@@ -30,7 +30,9 @@ _.constructor("Views.SortedList", View.Template, {
         }, this));
 
         this.subscriptions.add(relation.onRemoteUpdate(function(record, changes, index) {
-          this.insertAtIndex(this.liForRecord(record), index);
+          var li = this.liForRecord(record);
+          this.insertAtIndex(li, index);
+          if (this.onRemoteUpdate) this.onRemoteUpdate(record, changes, li);
         }, this));
 
         this.subscriptions.add(relation.onRemoteRemove(function(record, index) {
