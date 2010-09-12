@@ -878,7 +878,8 @@ button {
   #app #electionOverview ol.candidates li.separator {
     text-align: center;
     padding: 5px;
-    cursor: default; }
+    cursor: default;
+    font-size: 15px; }
     #app #electionOverview ol.candidates li.separator .up {
       background: url("/images/arrow_up_white.png");
       background-repeat: no-repeat;
