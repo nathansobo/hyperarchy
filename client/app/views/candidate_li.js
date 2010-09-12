@@ -13,6 +13,12 @@ _.constructor("Views.CandidateLi", View.Template, {
 
       div({'class': "bodyContainer"}, function() {
         textarea({style: "display: none;"}, candidate.body())
+          .keydown(function(view, e) {
+            if (e.keyCode == 13) {
+              view.saveCandidate();
+              e.preventDefault();
+            }
+          })
           .bind('keyup paste', "enableOrDisableSaveButton")
           .ref('bodyTextarea');
         span({'class': "body"}, candidate.body()).ref('body');
@@ -55,6 +61,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       } else {
         this.expanded = true;
         this.bodyTextarea.show();
+        this.bodyTextarea.focus();
         this.bodyTextarea.keyup();
         this.bodyTextarea.val(this.candidate.body());
         this.body.hide();
