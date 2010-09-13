@@ -139,3 +139,20 @@ button {
   margin-top: 100px;
   margin-bottom: 20px;
 }
+
+.expandArrow {
+  height: 13px;
+  width: 13px;
+  background-image: url(/images/expand_arrows.png);
+  background-repeat: no-repeat;
+
+  &:hover {
+    cursor: pointer;
+    background-position: -13px 0px;
+  }
+
+  &.expanded {
+    background-position: -26px 0px;
+    &:hover { background-position: -39px 0px; }
+  }
+}

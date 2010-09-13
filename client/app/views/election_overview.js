@@ -6,7 +6,21 @@ _.constructor("Views.ElectionOverview", View.Template, {
           .click('goToOrganization')
           .ref('organizationName');
 
-        div({'class': "electionBody largeFont"}).ref('bodyDiv');
+        // if (candidate.belongsToCurrentUser() || candidate.organization().currentUserIsOwner()) {
+        div({'class': "expandArrow"})
+          .ref('expandArrow')
+          .click('expandOrContract');
+
+        div({id: "electionBodyContainer"}, function() {
+          textarea({'class': "electionBody", style: "display: none;"}).ref('bodyTextarea');
+          div({'class': "electionBody largeFont"}).ref('bodyDiv');
+        });
+
+        div({id: "expandedArea", style: "display: none;"}, function() {
+          button("Save");
+          button("Delete Question");
+          div({'class': "clear"});
+        }).ref('expandedArea');
 
         div({id: "createCandidateForm"}, function() {
           textarea({placeholder: "Type your own suggestion here.", rows: 3})
@@ -42,6 +56,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.subscriptions = new Monarch.SubscriptionBundle();
       this.defer(function() {
         this.createCandidateTextarea.elastic();
+        this.bodyTextarea.elastic();
       });
     },
 
@@ -67,6 +82,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.subscriptions.destroy();
 
         this.organizationName.html(election.organization().name());
+        this.bodyTextarea.val(election.body());
         this.bodyDiv.html(election.body());
 
         this.candidatesList.empty();
@@ -98,6 +114,24 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     goToOrganization: function() {
       $.bbq.pushState({view: "organization", organizationId: this.election().organizationId() }, 2);
+    },
+
+    expandOrContract: function() {
+      if (this.expanded) {
+        this.expandArrow.removeClass('expanded');
+        this.expanded = false;
+        this.bodyTextarea.hide();
+        this.bodyDiv.show();
+        this.expandedArea.slideUp('fast');
+      } else {
+        this.expanded = true;
+        this.expandArrow.addClass('expanded');
+        this.bodyTextarea.keyup();       
+        this.bodyTextarea.show();
+        this.bodyTextarea.focus();
+        this.bodyDiv.hide();
+        this.expandedArea.slideDown('fast');
+      }
     }
   }
 });

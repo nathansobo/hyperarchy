@@ -704,6 +704,19 @@ button {
   margin-top: 100px;
   margin-bottom: 20px; }
 
+.expandArrow {
+  height: 13px;
+  width: 13px;
+  background-image: url(/images/expand_arrows.png);
+  background-repeat: no-repeat; }
+  .expandArrow:hover {
+    cursor: pointer;
+    background-position: -13px 0px; }
+  .expandArrow.expanded {
+    background-position: -26px 0px; }
+    .expandArrow.expanded:hover {
+      background-position: -39px 0px; }
+
 #home {
   font-size: 22px; }
   #home #description {
@@ -853,19 +866,39 @@ button {
     list-style-position: inside;
     font-size: 15px;
     padding: 2px; }
-#app #electionOverview .electionBody {
-  margin-bottom: 20px; }
-#app #electionOverview div#createCandidateForm textarea {
-  font-size: 21px;
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 10px;
-  display: block;
-  resize: none;
-  height: 95px; }
-#app #electionOverview div#createCandidateForm button {
-  display: block;
-  font-size: 15px; }
+#app #electionOverview .expandArrow {
+  float: left;
+  margin-right: 5px;
+  position: relative;
+  top: 7px; }
+#app #electionOverview #electionBodyContainer {
+  float: left;
+  width: 282px;
+  margin-bottom: 10px; }
+  #app #electionOverview #electionBodyContainer textarea.electionBody {
+    margin-top: 2px;
+    width: 100%;
+    resize: none;
+    font-size: 21px;
+    padding: 4px;
+    height: 50px; }
+#app #electionOverview #expandedArea button {
+  float: right;
+  margin-left: 5px; }
+#app #electionOverview div#createCandidateForm {
+  margin-top: 20px; }
+  #app #electionOverview div#createCandidateForm textarea {
+    font-size: 21px;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    display: block;
+    resize: none;
+    height: 95px; }
+  #app #electionOverview div#createCandidateForm button {
+    display: block;
+    font-size: 15px;
+    float: right; }
 #app #electionOverview .candidatesListHeader {
   font-size: 16px;
   color: #999999;
@@ -911,23 +944,11 @@ button {
       width: 288px;
       list-style-type: none; }
     #app #electionOverview ol.candidates li.candidate .expandArrow {
-      display: inline-block;
-      height: 13px;
-      width: 13px;
-      background-image: url(/images/expand_arrows.png);
-      background-repeat: no-repeat;
       position: absolute;
       top: 8px;
       left: 5px;
       margin-left: 1px;
       margin-right: 4px; }
-      #app #electionOverview ol.candidates li.candidate .expandArrow:hover {
-        cursor: pointer;
-        background-position: -13px 0px; }
-      #app #electionOverview ol.candidates li.candidate .expandArrow.expanded {
-        background-position: -26px 0px; }
-        #app #electionOverview ol.candidates li.candidate .expandArrow.expanded:hover {
-          background-position: -39px 0px; }
     #app #electionOverview ol.candidates li.candidate .bodyContainer {
       margin-left: 19px;
       margin-right: 22px; }

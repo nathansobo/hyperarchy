@@ -122,11 +122,38 @@
   }
 
   #electionOverview {
-    .electionBody {
-      margin-bottom: 20px;
+    .expandArrow {
+      float: left;
+      margin-right: 5px;
+      position: relative;
+      top: 7px;
+    }
+
+    #electionBodyContainer {
+      float: left;
+      width: 282px;
+      margin-bottom: 10px;
+
+      textarea.electionBody {
+        margin-top: 2px;
+        width: 100%;
+        resize: none;
+        font-size: 21px;
+        padding: 4px;
+        height: 50px;
+      }
+    }
+
+    #expandedArea {
+      button {
+        float: right;
+        margin-left: 5px;
+      }
     }
 
     div#createCandidateForm {
+      margin-top: 20px;
+
       textarea {
         font-size: 21px;
         width: 100%;
@@ -140,6 +167,7 @@
       button {
         display: block;
         font-size: 15px;
+        float: right;
       }
     }
 
@@ -200,25 +228,11 @@
         }
 
         .expandArrow {
-          display: inline-block;
-          height: 13px;
-          width: 13px;
-          background-image: url(/images/expand_arrows.png);
-          background-repeat: no-repeat;
           position: absolute;
           top: 8px;
           left: 5px;
           margin-left: 1px;
           margin-right: 4px;
-
-          &:hover {
-            cursor: pointer;
-            background-position: -13px 0px;
-          }
-          &.expanded {
-            background-position: -26px 0px;
-            &:hover { background-position: -39px 0px; }
-          }
         }
 
         .bodyContainer {
