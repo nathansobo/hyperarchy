@@ -40,6 +40,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
+      this.defer(function() {
+        this.createCandidateTextarea.elastic();
+      });
     },
 
     navigate: function(state) {

@@ -861,7 +861,8 @@ button {
   margin-bottom: 10px;
   padding: 10px;
   display: block;
-  resize: vertical; }
+  resize: none;
+  height: 95px; }
 #app #electionOverview div#createCandidateForm button {
   display: block;
   font-size: 15px; }
