@@ -29,7 +29,7 @@ _.constructor("Views.CandidateLi", View.Template, {
         button("Save")
           .ref('saveButton')
           .click("saveCandidate");
-        button({style: "float: right"}, "Delete").click("deleteCandidate");
+        button({style: "float: right"}, "Delete").click("destroyCandidate");
         div({'class': "clear"});
       }).ref('expandedInfo');
     });
@@ -86,6 +86,14 @@ _.constructor("Views.CandidateLi", View.Template, {
         .onSuccess(function() {
           this.stopLoading();
           this.expandOrContract();
+        }, this);
+    },
+
+    destroyCandidate: function() {
+      this.startLoading();
+      this.candidate.destroy()
+        .onSuccess(function() {
+          this.stopLoading();
         }, this);
     },
 

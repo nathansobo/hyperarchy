@@ -95,22 +95,27 @@ module Models
       end
     end
 
-    describe "#after_destroy" do
-      it "destroys any rankings associated with the candidate" do
+    describe "#before_destroy" do
+      it "destroys any rankings and majorities associated with the candidate" do
         user_1 = User.make
         user_2 = User.make
 
         candidate = election.candidates.create!(:body => "foo")
+        election.candidates.create!(:body => "bar")
 
         election.rankings.create(:user => user_1, :candidate => candidate, :position => 64)
         election.rankings.create(:user => user_1, :candidate => candidate, :position => 32)
         election.rankings.create(:user => user_2, :candidate => candidate, :position => 32)
 
         Ranking.where(:candidate_id => candidate.id).size.should == 3
+        Majority.where(:winner_id => candidate.id).size.should == 1
+        Majority.where(:loser_id => candidate.id).size.should == 1
 
         candidate.destroy
 
         Ranking.where(:candidate_id => candidate.id).should be_empty
+        Majority.where(:winner_id => candidate.id).should be_empty
+        Majority.where(:loser_id => candidate.id).should be_empty
       end
     end
   end

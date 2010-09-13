@@ -24,8 +24,11 @@ class Candidate < Monarch::Model::Record
     defeats_by(election.negative_candidate_ranking_counts).update(:con_count => :times_ranked)
   end
 
-  def after_destroy
+  def before_destroy
+    puts "destroying candidate #{id}"
     rankings.each(&:destroy)
+    winning_majorities.each(&:destroy)
+    losing_majorities.each(&:destroy)
   end
 
   def other_candidates
@@ -33,18 +36,22 @@ class Candidate < Monarch::Model::Record
   end
 
   def victories_over(other_candidate_ranking_counts)
-    election.
-      majorities.
-      where(:winner_id => id).
+    winning_majorities.
       join(other_candidate_ranking_counts).
         on(:loser_id => :candidate_id)
   end
 
   def defeats_by(other_candidate_ranking_counts)
-    election.
-      majorities.
-      where(:loser_id => id).
+    losing_majorities.
       join(other_candidate_ranking_counts).
         on(:winner_id => :candidate_id)
+  end
+
+  def winning_majorities
+    election.majorities.where(:winner_id => id)
+  end
+
+  def losing_majorities
+    election.majorities.where(:loser_id => id)
   end
 end
