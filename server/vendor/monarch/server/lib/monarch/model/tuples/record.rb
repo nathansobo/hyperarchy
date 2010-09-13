@@ -134,6 +134,7 @@ module Monarch
         end
 
         def destroy
+          before_destroy
           table.remove(self)
           after_destroy
         end
@@ -296,6 +297,10 @@ module Monarch
 
         protected
         attr_reader :synthetic_fields_by_column
+
+        def before_destroy
+          # override when needed
+        end
 
         def after_destroy
           # override when needed
