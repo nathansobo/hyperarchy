@@ -2,12 +2,15 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 
 module Models
   describe Candidate do
+    attr_reader :election
+    before do
+      @election = Election.make
+    end
 
     describe "before create" do
       it "assigns the creator to the Model::Record.current_user" do
         current_user = User.make
         Monarch::Model::Record.current_user = current_user
-        election = Election.make
 
         candidate = election.candidates.create(:body => "foo")
         candidate.creator.should == current_user
@@ -89,6 +92,25 @@ module Models
         find_majority(unranked, candidate).con_count.should == 0
         find_majority(candidate, unranked).pro_count.should == 0
         find_majority(candidate, unranked).con_count.should == 0
+      end
+    end
+
+    describe "#after_destroy" do
+      it "destroys any rankings associated with the candidate" do
+        user_1 = User.make
+        user_2 = User.make
+
+        candidate = election.candidates.create!(:body => "foo")
+
+        election.rankings.create(:user => user_1, :candidate => candidate, :position => 64)
+        election.rankings.create(:user => user_1, :candidate => candidate, :position => 32)
+        election.rankings.create(:user => user_2, :candidate => candidate, :position => 32)
+
+        Ranking.where(:candidate_id => candidate.id).size.should == 3
+
+        candidate.destroy
+
+        Ranking.where(:candidate_id => candidate.id).should be_empty
       end
     end
   end

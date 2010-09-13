@@ -6,6 +6,7 @@ class Candidate < Monarch::Model::Record
 
   belongs_to :election
   belongs_to :creator, :class_name => "User"
+  has_many :rankings
 
   def before_create
     self.creator ||= current_user
@@ -21,6 +22,10 @@ class Candidate < Monarch::Model::Record
     victories_over(election.positive_candidate_ranking_counts).update(:con_count => :times_ranked)
     defeats_by(election.positive_candidate_ranking_counts).update(:pro_count => :times_ranked)
     defeats_by(election.negative_candidate_ranking_counts).update(:con_count => :times_ranked)
+  end
+
+  def after_destroy
+    rankings.each(&:destroy)
   end
 
   def other_candidates
