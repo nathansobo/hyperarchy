@@ -8,6 +8,7 @@ _.constructor("Candidate", Model.Record, {
     });
 
     this.hasMany('rankings');
+    this.belongsTo('election');
     this.belongsTo('creator', {constructorName: "User"});
   },
 
@@ -27,5 +28,9 @@ _.constructor("Candidate", Model.Record, {
 
   belongsToCurrentUser: function() {
     return this.creator() === Application.currentUser();
+  },
+
+  organization: function() {
+    return this.election().organization();
   }
 });

@@ -16,6 +16,10 @@ _.constructor("Organization", Model.Record, {
     global: function() {
       return this.find({name: "Alpha Testers"});
     }
-  }
+  },
 
+  currentUserIsOwner: function() {
+    var currentUserMembership = this.memberships().find({userId: Application.currentUserId});
+    return currentUserMembership.role() === "owner";
+  }
 });
