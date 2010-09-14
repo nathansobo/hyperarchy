@@ -42,7 +42,11 @@ _.constructor("Monarch.Http.Server", {
     this.post(Repository.originUrl + "/subscribe", {
       real_time_client_id: this.cometClient.clientId,
       relations: _.map(relations, function(relation) {
-        return relation.wireRepresentation();
+        if (relation.isA(Monarch.Model.Record)) {
+          return relation.table.where({id: relation.id()}).wireRepresentation();
+        } else {
+          return relation.wireRepresentation();
+        }
       })
     }).onSuccess(function(subscriptionIds) {
       subscribeFuture.triggerSuccess(_.map(subscriptionIds, function(subscriptionId, index) {

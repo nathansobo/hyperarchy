@@ -149,6 +149,18 @@ Screw.Unit(function(c) { with(c) {
 
           expect(Repository.mutate).to(haveBeenCalled, withArgs([['create', 'blogs', { id: 'animals' }]]));
         });
+
+        it("interprets a record as a subscription to a where relation constrained to the record's id", function() {
+          var blog = Blog.createFromRemote({id: 1});
+          var subscribeFuture = server.subscribe([blog]);
+          fakeCometClient.simulateConnectSuccess("sample-id");
+
+          expect(server.posts.length).to(eq, 1);
+          expect(server.lastPost.data).to(equal, {
+            real_time_client_id: "sample-id",
+            relations: [Blog.where({id: 1}).wireRepresentation()]
+          });
+        });
       });
 
       describe("#unsubscribe(remoteSubscriptions)", function() {
