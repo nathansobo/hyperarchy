@@ -97,8 +97,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.bodyDiv.html(election.body());
 
         this.subscriptions.add(election.remote.field('body').onUpdate(function(newBody) {
-          this.bodyTextarea.val(election.body());
-          this.bodyDiv.html(election.body());
+          this.bodyTextarea.val(newBody);
+          this.bodyDiv.html(newBody);
         }, this));
 
         this.candidatesList.empty();
@@ -110,9 +110,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
             this.rankedCandidatesList.election(election);
           }, this);
 
-        election.candidates().subscribe().onSuccess(function(subscription) {
-          this.subscriptions.add(subscription);
-        }, this);
+        Server.subscribe([election, election.candidates()])
+          .onSuccess(function(subscriptions) {
+            this.subscriptions.add(subscriptions);
+          }, this);
       }
     },
 

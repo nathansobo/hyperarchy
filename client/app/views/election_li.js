@@ -28,7 +28,6 @@ _.constructor("Views.ElectionLi", View.Template, {
       $.bbq.pushState({view: "election", electionId: this.election.id()});
     },
 
-
     initialize: function() {
       this.candidatesList.relation(this.election.candidates());
     }
