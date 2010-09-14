@@ -40,6 +40,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.subscriptions = new Monarch.SubscriptionBundle;
       this.subscriptions.add(this.candidate.remote.field('body').onUpdate(function(newBody) {
         this.body.html(newBody)
+        this.bodyTextarea.val(newBody)
       }, this));
 
       this.defer(function() {

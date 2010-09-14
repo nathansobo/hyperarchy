@@ -14,7 +14,6 @@ _.constructor("Views.ElectionLi", View.Template, {
           },
           onRemoteUpdate: function(record, changes, li) {
             if (!changes.body) return;
-            console.debug(changes.body.oldValue, changes.body.newValue);
             li.html(changes.body.newValue);
           }
         });
