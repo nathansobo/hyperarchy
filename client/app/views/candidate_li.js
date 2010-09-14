@@ -14,7 +14,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       div({'class': "bodyContainer"}, function() {
         textarea({style: "display: none;"}, candidate.body())
           .keydown(function(view, e) {
-            if (e.keyCode == 13) {
+            if (e.keyCode === 13) {
               view.saveCandidate();
               e.preventDefault();
             }

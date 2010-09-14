@@ -12,13 +12,24 @@ _.constructor("Views.ElectionOverview", View.Template, {
           .click('expandOrContract');
 
         div({id: "electionBodyContainer"}, function() {
-          textarea({'class': "electionBody", style: "display: none;"}).ref('bodyTextarea');
+          textarea({'class': "electionBody", style: "display: none;"})
+            .ref('bodyTextarea')
+            .bind('keyup paste', 'enableOrDisableSaveButton')
+            .keydown(function(view, event) {
+              if (event.keyCode === 13) {
+                view.updateElectionBody();
+                event.preventDefault();
+              }
+            });
           div({'class': "electionBody largeFont"}).ref('bodyDiv');
         });
 
         div({id: "expandedArea", style: "display: none;"}, function() {
-          button("Save");
-          button("Delete Question");
+          button("Save")
+            .ref('saveButton')
+            .click('updateElectionBody');
+          button("Delete Question")
+            .click('destroyElection');
           div({'class': "clear"});
         }).ref('expandedArea');
 
@@ -85,6 +96,11 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.bodyTextarea.val(election.body());
         this.bodyDiv.html(election.body());
 
+        this.subscriptions.add(election.remote.field('body').onUpdate(function(newBody) {
+          this.bodyTextarea.val(election.body());
+          this.bodyDiv.html(election.body());
+        }, this));
+
         this.candidatesList.empty();
         this.rankedCandidatesList.empty();
 
@@ -132,6 +148,21 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.bodyDiv.hide();
         this.expandedArea.slideDown('fast');
       }
+    },
+
+    enableOrDisableSaveButton: function() {
+      if (this.bodyTextarea.val() === this.election().body()) {
+        this.saveButton.attr('disabled', true);
+      } else {
+        this.saveButton.attr('disabled', false);
+      }
+    },
+
+    updateElectionBody: function() {
+      this.election().update({body: this.bodyTextarea.val()})
+        .onSuccess(function() {
+          this.expandOrContract();
+        }, this);
     }
   }
 });
