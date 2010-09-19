@@ -143,8 +143,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
       } else {
         this.expanded = true;
         this.expandArrow.addClass('expanded');
-        this.bodyTextarea.keyup();       
         this.bodyTextarea.show();
+        this.bodyTextarea.keyup();
         this.bodyTextarea.focus();
         this.bodyDiv.hide();
         this.expandedArea.slideDown('fast');

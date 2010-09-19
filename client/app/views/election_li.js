@@ -4,7 +4,7 @@ _.constructor("Views.ElectionLi", View.Template, {
 
     li({'class': "grid6"}, function() {
       div({'class': "election"}, function() {
-        div({'class': "body"}, election.body());
+        div({'class': "body"}, election.body()).ref('body');
         subview('candidatesList', Views.SortedList, {
           olAttributes: {'class': "candidates"},
           buildLi: function(candidate) {

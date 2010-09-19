@@ -79,6 +79,11 @@ _.constructor("Views.OrganizationOverview", View.Template, {
               this.electionsList.prepend(electionLi);
               electionLi.find("> div").effect('highlight', {color:"#ffffcc"}, 2000);
             }
+
+            if (changes.body) {
+              var electionLi = this.electionLi(election);
+              electionLi.body.html(changes.body.newValue);
+            }
           }, this);
 
           Server.subscribe([
