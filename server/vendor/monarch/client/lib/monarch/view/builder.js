@@ -115,6 +115,10 @@ _.constructor("Monarch.View.Builder", {
     this.instructions.push(new Monarch.View.TextNode(text));
   },
 
+  raw: function(text) {
+    this.instructions.push(new Monarch.View.TextNode(text, true));
+  },
+
   selfClosingTag: function(tagArgs) {
     if (tagArgs.text || tagArgs.body) throw new Error("Self-closing tag " + tagArgs.name + " cannot contain text or have body content");
     var tagInstruction = new Monarch.View.SelfClosingTag(tagArgs.name, tagArgs.attributes);
