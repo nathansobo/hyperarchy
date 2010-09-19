@@ -599,6 +599,12 @@ textarea {
 a, a:visited {
   color: #0e40ac; }
 
+strong {
+  font-weight: bold; }
+
+em {
+  font-style: italic; }
+
 h1 {
   font-size: 25px;
   font-weight: bold; }
@@ -670,6 +676,15 @@ button {
   top: 0px;
   left: 0px; }
 
+.dismissX {
+  float: right;
+  margin-left: 30px;
+  margin-bottom: 30px;
+  cursor: pointer;
+  height: 21px;
+  width: 21px;
+  background-image: url(/images/x_21x21_dark.png); }
+
 #feedback {
   background: white;
   height: 300px;
@@ -679,14 +694,6 @@ button {
   padding: 10px;
   -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 4px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 4px; }
-  #feedback #x {
-    float: right;
-    margin-left: 30px;
-    margin-bottom: 30px;
-    cursor: pointer;
-    height: 21px;
-    width: 21px;
-    background-image: url(/images/x_21x21_dark.png); }
   #feedback #thanks {
     margin-bottom: 10px; }
   #feedback textarea {
@@ -839,6 +846,13 @@ button {
   #app #organizationOverview #createElectionForm a {
     float: right;
     margin-top: 5px; }
+#app #organizationOverview #welcomeBlurb {
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.35) 1px 1px 5px;
+  background: #ffffcc;
+  margin-bottom: 30px;
+  padding: 10px;
+  font-size: 18px; }
 #app #organizationOverview .election {
   -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.35) 1px 1px 5px;

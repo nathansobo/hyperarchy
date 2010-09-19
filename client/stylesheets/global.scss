@@ -13,6 +13,14 @@ a, a:visited {
   color: $blue;
 }
 
+strong {
+  font-weight: bold;
+}
+
+em {
+  font-style: italic;
+}
+
 h1 {
   font-size: 25px;
   font-weight: bold;
@@ -99,6 +107,16 @@ button {
   left: 0px;
 }
 
+.dismissX {
+  float: right;
+  margin-left: 30px;
+  margin-bottom: 30px;
+  cursor: pointer;
+  height: 21px;
+  width: 21px;
+  background-image: url(/images/x_21x21_dark.png);
+}
+
 #feedback {
   background: white;
   height: 300px;
@@ -108,17 +126,6 @@ button {
   padding: 10px;
   -moz-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
   -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
-
-  #x {
-    float: right;
-    margin-left: 30px;
-    margin-bottom: 30px;
-    cursor: pointer;
-    height: 21px;
-    width: 21px;
-    background-image: url(/images/x_21x21_dark.png);
-
-  }
 
   #thanks { margin-bottom: 10px; }
 

@@ -2,6 +2,11 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizationOverview"}, function() {
       div({'class': "top grid12"}, function() {
+        div({id: "welcomeBlurb"}, function() {
+          div({class: "dismissX"}).click('dismissWelcomeBlurb');
+          raw(template.welcomeBlurbText);
+        }).ref('welcomeBlurb');
+
         div({'id': "organizationHeader"}, function() {
           div({'id': "title"}, function() {
             a({href: "#", id: 'createElectionLink', 'class': "glossyBlack roundedButton"}, "Raise A New Question")
@@ -25,9 +30,9 @@ _.constructor("Views.OrganizationOverview", View.Template, {
               })
               .ref('createElectionInput');
           }).ref('createElectionForm');
-        })
-
+        });
       }).ref('topDiv');
+
 
       ol(function() {
         
@@ -132,6 +137,12 @@ _.constructor("Views.OrganizationOverview", View.Template, {
           this.createElectionInput.val("");
           $.bbq.pushState({view: "election", electionId: election.id()});
         }, this);
+    },
+
+    dismissWelcomeBlurb: function() {
+      this.welcomeBlurb.slideUp('fast');
     }
-  }
+  },
+
+  welcomeBlurbText: "<strong>Thanks for trying out Hyperarchy.</strong> This is the Alpha Testers group, where you can interact with everyone else we have invited. You can create and access your own private groups from the <em>Organizations</em> menu above. If you have any ideas or concerns, please raise them here so everyone can vote on them. But feel free to raise questions about anything in this group. It doesn't need to relate to Hyperarchy directly."
 });
