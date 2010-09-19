@@ -6,8 +6,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
           .click('goToOrganization')
           .ref('organizationName');
 
-        // if (candidate.belongsToCurrentUser() || candidate.organization().currentUserIsOwner()) {
-        div({'class': "expandArrow"})
+        div({'class': "expandArrow", style: "display: none;"})
           .ref('expandArrow')
           .click('expandOrContract');
 
@@ -95,6 +94,13 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.organizationName.html(election.organization().name());
         this.bodyTextarea.val(election.body());
         this.bodyDiv.html(election.body());
+
+        if (election.belongsToCurrentUser() || election.organization().currentUserIsOwner()) {
+          this.expandArrow.show();
+        } else {
+          this.expandArrow.hide();
+        }
+
 
         this.subscriptions.add(election.remote.field('body').onUpdate(function(newBody) {
           this.bodyTextarea.val(newBody);

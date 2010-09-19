@@ -2,6 +2,7 @@ _.constructor("Election", Model.Record, {
   constructorInitialize: function() {
     this.columns({
       organizationId: 'key',
+      creatorId: 'key',
       body: 'string',
       updatedAt: 'datetime'
     });
@@ -10,6 +11,7 @@ _.constructor("Election", Model.Record, {
     this.hasMany('rankings', {orderBy: 'position desc'});
 
     this.belongsTo('organization');
+    this.belongsTo('creator', {constructorName: 'User'});
   },
 
   afterInitialize: function() {
@@ -32,6 +34,10 @@ _.constructor("Election", Model.Record, {
     var userId = user.id();
     if (this.rankedCandidatesByUserId[userId]) return this.rankedCandidatesByUserId[userId];
     return this.rankedCandidatesByUserId[userId] = this.rankingsForUser(user).joinThrough(Candidate);
+  },
+
+  belongsToCurrentUser: function() {
+    return this.creator() === Application.currentUser();
   },
 
   unrankedCandidatesForUser: function(user) {
