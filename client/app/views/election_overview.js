@@ -95,6 +95,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.bodyTextarea.val(election.body());
         this.bodyDiv.html(election.body());
 
+        this.contract(true);
         if (election.belongsToCurrentUser() || election.organization().currentUserIsOwner()) {
           this.expandArrow.show();
         } else {
@@ -141,19 +142,32 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     expandOrContract: function() {
       if (this.expanded) {
-        this.expandArrow.removeClass('expanded');
-        this.expanded = false;
-        this.bodyTextarea.hide();
-        this.bodyDiv.show();
-        this.expandedArea.slideUp('fast');
+        this.contract();
       } else {
-        this.expanded = true;
-        this.expandArrow.addClass('expanded');
-        this.bodyTextarea.show();
-        this.bodyTextarea.keyup();
-        this.bodyTextarea.focus();
-        this.bodyDiv.hide();
-        this.expandedArea.slideDown('fast');
+        this.expand();
+      }
+    },
+
+    expand: function() {
+      this.expanded = true;
+      this.expandArrow.addClass('expanded');
+      this.bodyTextarea.show();
+      this.bodyTextarea.keyup();
+      this.bodyTextarea.focus();
+      this.bodyDiv.hide();
+      this.expandedArea.slideDown('fast');
+    },
+
+    contract: function(dontAnimate) {
+      this.expandArrow.removeClass('expanded');
+      this.expanded = false;
+      this.bodyTextarea.hide();
+      this.bodyDiv.show();
+
+      if (dontAnimate) {
+        this.expandedArea.hide();
+      } else {
+        this.expandedArea.slideUp('fast');
       }
     },
 
@@ -169,6 +183,13 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.election().update({body: this.bodyTextarea.val()})
         .onSuccess(function() {
           this.expandOrContract();
+        }, this);
+    },
+
+    destroyElection: function() {
+      this.election().destroy()
+        .onSuccess(function() {
+          $.bbq.pushState({view: "organization", organizationId: this.election().organizationId()});
         }, this);
     }
   }

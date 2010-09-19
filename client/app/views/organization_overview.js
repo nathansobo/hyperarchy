@@ -78,6 +78,10 @@ _.constructor("Views.OrganizationOverview", View.Template, {
             this.electionsList.prepend(this.electionLi(election));
           }, this);
 
+          elections.onRemoteRemove(function(election) {
+            this.electionLi(election).remove();
+          }, this);
+
           elections.onRemoteUpdate(function(election, changes) {
             if (changes.updatedAt) {
               var electionLi = this.electionLi(election);

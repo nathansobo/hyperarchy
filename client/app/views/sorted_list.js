@@ -5,7 +5,6 @@ _.constructor("Views.SortedList", View.Template, {
   },
 
   viewProperties: {
-
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
     },
