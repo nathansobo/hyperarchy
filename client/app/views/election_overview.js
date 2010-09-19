@@ -29,6 +29,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
             .click('updateElectionBody');
           button("Delete Question")
             .click('destroyElection');
+          div({'class': "loading", style: "display: none;"}).ref('loading');
           div({'class': "clear"});
         }).ref('expandedArea');
 
@@ -180,15 +181,19 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     updateElectionBody: function() {
+      this.loading.show();
       this.election().update({body: this.bodyTextarea.val()})
         .onSuccess(function() {
+          this.loading.hide();
           this.expandOrContract();
         }, this);
     },
 
     destroyElection: function() {
+      this.loading.show();
       this.election().destroy()
         .onSuccess(function() {
+          this.loading.hide();
           $.bbq.pushState({view: "organization", organizationId: this.election().organizationId()});
         }, this);
     }

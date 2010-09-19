@@ -885,6 +885,10 @@ button {
 #app #electionOverview #expandedArea button {
   float: right;
   margin-left: 5px; }
+#app #electionOverview #expandedArea .loading {
+  float: right;
+  top: 2px;
+  position: relative; }
 #app #electionOverview div#createCandidateForm {
   margin-top: 20px; }
   #app #electionOverview div#createCandidateForm textarea {
