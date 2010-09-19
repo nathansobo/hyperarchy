@@ -30,6 +30,10 @@ _.constructor("Views.ElectionLi", View.Template, {
 
     initialize: function() {
       this.candidatesList.relation(this.election.candidates());
+    },
+
+    afterRemove: function() {
+      this.candidatesList.remove();
     }
   }
 });

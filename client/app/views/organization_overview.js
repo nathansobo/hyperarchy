@@ -58,8 +58,13 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     displayElections: function() {
+
+      if (this.electionLisById) {
+        _.each(this.electionLisById, function(li) {
+          li.remove();
+        });
+      }
       this.electionLisById = {};
-      this.electionsList.empty();
 
       Server.fetch([this.organization().elections(), this.organization().elections().joinTo(Candidate)])
         .onSuccess(function() {

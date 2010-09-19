@@ -14,12 +14,7 @@ _.constructor("Views.SortedList", View.Template, {
       afterChange: function(relation) {
         if (this.subscriptions) this.subscriptions.destroy();
 
-        if (this.lisById) {
-          _.each(this.lisById, function(li) {
-            li.remove();
-          });
-        }
-        this.lisById = {};
+        this.empty();
 
         relation.each(function(record) {
           this.append(this.liForRecord(record));
@@ -61,9 +56,17 @@ _.constructor("Views.SortedList", View.Template, {
       }
     },
 
-    remove: function($super) {
-      $super();
+    afterRemove: function() {
       this.subscriptions.destroy();
+    },
+
+    empty: function() {
+      if (this.lisById) {
+        _.each(this.lisById, function(li) {
+          li.remove();
+        });
+      }
+      this.lisById = {};
     }
   }
 });
