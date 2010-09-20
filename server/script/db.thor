@@ -17,7 +17,13 @@ class Db < Thor
 
   desc "migrate [env=development]", "run migrations against the given environment"
   method_options :current => nil, :target => nil
-  def migrate(env="development")
+  def migrate(env=nil)
+    unless env
+      migrate("development")
+      migrate("test")
+      return
+    end
+    
     Sequel.extension :migration
     migration_dir = File.expand_path("#{dir}/../migrations")
     Sequel::IntegerMigrator.new(db(env), migration_dir, options).run
