@@ -90,5 +90,10 @@ module Hyperarchy
       )
       successful_json_response
     end
+
+    post "/dismiss_welcome_blurb" do
+      current_user.update(:dismissed_welcome_blurb => true)
+      successful_json_response
+    end
   end
 end

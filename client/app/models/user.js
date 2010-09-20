@@ -3,7 +3,8 @@ _.constructor("User", Model.Record, {
     this.columns({
       firstName: 'string',
       lastName: 'string',
-      emailAddress: 'string'
+      emailAddress: 'string',
+      dismissedWelcomeBlurb: 'boolean'
     });
 
     this.hasMany('rankings');

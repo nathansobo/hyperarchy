@@ -44,6 +44,10 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     defaultView: true,
     viewName: 'organization',
 
+    beforeShow: function() {
+      if (Application.currentUser().dismissedWelcomeBlurb()) this.welcomeBlurb.hide();
+    },
+
     navigate: function(state) {
       var organizationId = state.organizationId || Organization.find({name: "Alpha Testers"}).id();
       this.organizationId(organizationId);
@@ -141,6 +145,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     dismissWelcomeBlurb: function() {
       this.welcomeBlurb.slideUp('fast');
+      Server.post("/dismiss_welcome_blurb")
     }
   },
 

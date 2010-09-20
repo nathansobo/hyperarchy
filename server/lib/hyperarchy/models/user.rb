@@ -3,6 +3,7 @@ class User < Monarch::Model::Record
   column :last_name, :string
   column :email_address, :string
   column :encrypted_password, :string
+  column :dismissed_welcome_blurb, :string
 
   def self.encrypt_password(unencrypted_password)
     BCrypt::Password.create(unencrypted_password).to_s
