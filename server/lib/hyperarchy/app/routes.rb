@@ -76,10 +76,15 @@ module Hyperarchy
     end
 
     post "/invite" do
+      rejected = []
       params[:email_addresses].from_json.each do |email_address|
-        Invitation.create!(:inviter => current_user, :sent_to_address => email_address, :send_email => true)
+        if Invitation.find(:sent_to_address => email_address)
+          rejected.push(email_address)
+        else
+          Invitation.create!(:inviter => current_user, :sent_to_address => email_address, :send_email => true)
+        end
       end
-      successful_json_response
+      successful_json_response(:rejected => rejected)
     end
 
     post "/feedback" do
