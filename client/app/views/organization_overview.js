@@ -3,7 +3,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     div({id: "organizationOverview"}, function() {
       div({'class': "top grid12"}, function() {
         div({id: "welcomeBlurb"}, function() {
-          div({class: "dismissX"}).click('dismissWelcomeBlurb');
+          div({'class': "dismissX"}).click('dismissWelcomeBlurb');
           raw(template.welcomeBlurbText);
         }).ref('welcomeBlurb');
 
