@@ -904,7 +904,8 @@ button {
   top: 2px;
   position: relative; }
 #app #electionOverview div#createCandidateForm {
-  margin-top: 20px; }
+  margin-top: 20px;
+  clear: both; }
   #app #electionOverview div#createCandidateForm textarea {
     font-size: 21px;
     width: 100%;

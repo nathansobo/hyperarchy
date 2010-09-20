@@ -6,22 +6,27 @@ _.constructor("Views.ElectionOverview", View.Template, {
           .click('goToOrganization')
           .ref('organizationName');
 
-        div({'class': "expandArrow", style: "display: none;"})
-          .ref('expandArrow')
-          .click('expandOrContract');
+        div(function() {
+          div({'class': "expandArrow", style: "display: none;"})
+            .ref('expandArrow')
+            .click('expandOrContract');
 
-        div({id: "electionBodyContainer"}, function() {
-          textarea({'class': "electionBody", style: "display: none;"})
-            .ref('bodyTextarea')
-            .bind('keyup paste', 'enableOrDisableSaveButton')
-            .keydown(function(view, event) {
-              if (event.keyCode === 13) {
-                view.updateElectionBody();
-                event.preventDefault();
-              }
-            });
-          div({'class': "electionBody largeFont"}).ref('bodyDiv');
+          div({id: "electionBodyContainer"}, function() {
+            textarea({'class': "electionBody", style: "display: none;"})
+              .ref('bodyTextarea')
+              .bind('keyup paste', 'enableOrDisableSaveButton')
+              .keydown(function(view, event) {
+                if (event.keyCode === 13) {
+                  view.updateElectionBody();
+                  event.preventDefault();
+                }
+              });
+            div({'class': "electionBody largeFont"}).ref('bodyDiv');
+          });
+
+          div({'class': "clear"});
         });
+
 
         div({id: "expandedArea", style: "display: none;"}, function() {
           button("Save")
