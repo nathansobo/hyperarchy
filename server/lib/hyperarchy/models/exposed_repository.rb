@@ -6,11 +6,11 @@ module Models
     end
 
     expose :organizations do
-      Organization.table
+      user.organizations
     end
 
     expose :memberships do
-      Membership.table
+      organizations.join_through(Membership)
     end
 
     expose :users do
@@ -18,15 +18,15 @@ module Models
     end
 
     expose :elections do
-      Election.table
+      organizations.join_through(Election)
     end
 
     expose :candidates do
-      Candidate.table
+      elections.join_through(Candidate)
     end
 
     expose :rankings do
-      Ranking.table
+      elections.join_through(Ranking)
     end
   end
 end
