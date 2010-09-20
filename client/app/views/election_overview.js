@@ -114,6 +114,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
           this.bodyDiv.html(newBody);
         }, this));
 
+        this.subscriptions.add(election.onRemoteDestroy(function() {
+          this.goToOrganization();
+        }, this));
+
         this.candidatesList.empty();
         this.rankedCandidatesList.empty();
 
@@ -199,7 +203,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.election().destroy()
         .onSuccess(function() {
           this.loading.hide();
-          $.bbq.pushState({view: "organization", organizationId: this.election().organizationId()});
         }, this);
     }
   }
