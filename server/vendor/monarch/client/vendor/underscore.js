@@ -74,7 +74,10 @@
         }
       }
     } catch(e) {
-      if (e != breaker) throw e;
+      if (e != breaker) {
+        debugger;
+        throw e;
+      }
     }
     return obj;
   };
