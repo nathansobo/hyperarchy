@@ -200,6 +200,11 @@
       overflow-x: hidden;
       overflow-y: auto;
 
+      #goodCandidatesExplanation, #badCandidatesExplanation {
+        padding: 20px;
+        height:100px;
+      }
+
       li.separator {
         text-align: center;
         padding: 5px;

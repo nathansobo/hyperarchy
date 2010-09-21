@@ -928,6 +928,9 @@ button {
   -webkit-box-shadow: #c8c7c7 0px 0px 5px inset;
   overflow-x: hidden;
   overflow-y: auto; }
+  #app #electionOverview ol.candidates #goodCandidatesExplanation, #app #electionOverview ol.candidates #badCandidatesExplanation {
+    padding: 20px;
+    height: 100px; }
   #app #electionOverview ol.candidates li.separator {
     text-align: center;
     padding: 5px;

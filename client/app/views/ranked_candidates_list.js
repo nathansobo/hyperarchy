@@ -4,10 +4,16 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       div({'class': "candidatesListHeader"}, "Your Ranking");
       ol({id: "rankedCandidates", 'class': "candidates ranked"}, function() {
 
+        li({id: "goodCandidatesExplanation"},"Drag answers you like here, in order of preference.")
+          .ref('goodCandidatesExplanation');
+
         li({'class': "separator glossyBlack"}, function() {
           div({'class': "up"}, "good ideas");
           div({'class': "down"}, "bad ideas");
         }).ref('separator');
+
+        li({id: "badCandidatesExplanation"}, "Drag answers you dislike here, in order of preference.")
+          .ref('badCandidatesExplanation');
 
       }).ref('rankedCandidatesList');
     });
@@ -18,7 +24,8 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       this.subscriptions = new Monarch.SubscriptionBundle();
       this.rankedCandidatesList.sortable({
         update: this.hitch('handleUpdate'),
-        receive: this.hitch('handleReceive')
+        receive: this.hitch('handleReceive'),
+        sort: this.hitch('handleSort')
       });
       this.separator.mousedown(function(e) {
         return false;
@@ -89,6 +96,16 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
         });
     },
 
+    handleSort:  function(event, ui) {
+      var placeholder = ui.placeholder;
+      var beforeSeparator = placeholder.nextAll(".separator").length === 1;
+
+      if (beforeSeparator && this.goodCandidatesExplanation.is(":visible")) {
+        placeholder.hide();
+      }
+
+    },
+
     findPreviousLi: function(candidate) {
       return this.rankedCandidatesList.find("li.ranked.candidate[candidateId='" + candidate.id() + "']");
     },
@@ -99,7 +116,16 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     adjustHeight: function() {
-      this.rankedCandidatesList.height($(window).height() - this.rankedCandidatesList.offset().top - 20);
+      var height = $(window).height() - this.rankedCandidatesList.offset().top - 20
+      this.rankedCandidatesList.height(height);
+    },
+    
+    hasPositiveRankings: function() {
+      return this.rankings.find(Ranking.position.gt(0)) !== null;
+    },
+
+    hasNegativeRankings: function() {
+      return this.rankings.find(Ranking.position.lt(0)) !== null;
     }
   }
 });
