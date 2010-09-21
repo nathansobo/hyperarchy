@@ -49,6 +49,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       afterChange: function(election) {
         this.subscriptions.destroy();
         this.rankings = election.rankingsForCurrentUser();
+        if (!election.candidates().empty()) this.show();
         this.populateRankings();
       }
     },
@@ -84,8 +85,8 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
 
     handleReceive: function(event, ui) {
       var candidate = Candidate.find(ui.item.attr('candidateId'));
-      var rankedCandidateView = Views.RankedCandidateLi.toView({candidate: candidate});
-      this.findPreviousLi(candidate).remove(); // may have already been ranked
+      var previousLi = this.findPreviousLi(candidate); // may have already been ranked before
+      var rankedCandidateView = previousLi ? previousLi.detach() : Views.RankedCandidateLi.toView({candidate: candidate});
       this.findLi(candidate).replaceWith(rankedCandidateView); // replace the clone of the draggable li with a real view
     },
 
@@ -127,7 +128,8 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     findPreviousLi: function(candidate) {
-      return this.rankedCandidatesList.find("li.ranked.candidate[candidateId='" + candidate.id() + "']");
+      var previousLi = this.rankedCandidatesList.find("li.ranked.candidate[candidateId='" + candidate.id() + "']");
+      return previousLi.length > 0 ? previousLi : null;
     },
 
     findLi: function(candidate) {
@@ -138,6 +140,15 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     adjustHeight: function() {
       this.rankedCandidatesList.height($(window).height() - this.rankedCandidatesList.offset().top - 20);
       this.adjustDragTargetExplanationHeights();
+    },
+
+    fadeIn: function($super) {
+      $super();
+      this.adjustHeight();
+    },
+
+    afterShow: function() {
+      this.adjustHeight();
     },
 
     adjustDragTargetExplanationHeights: function() {

@@ -77,6 +77,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     navigate: function(state) {
+      this.rankedCandidatesList.hide();
       var electionId = state.electionId;
       var election = Election.find(electionId);
 
@@ -100,14 +101,13 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.organizationName.html(election.organization().name());
         this.bodyTextarea.val(election.body());
         this.bodyDiv.html(election.body());
-
         this.contract(true);
+
         if (election.belongsToCurrentUser() || election.organization().currentUserIsOwner()) {
           this.expandArrow.show();
         } else {
           this.expandArrow.hide();
         }
-
 
         this.subscriptions.add(election.remote.field('body').onUpdate(function(newBody) {
           this.bodyTextarea.val(newBody);
@@ -116,6 +116,14 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
         this.subscriptions.add(election.onRemoteDestroy(function() {
           this.goToOrganization();
+        }, this));
+
+        this.subscriptions.add(election.candidates().onRemoteInsert(function() {
+          if (this.rankedCandidatesList.is(":hidden")) this.rankedCandidatesList.fadeIn();
+        }, this));
+
+        this.subscriptions.add(election.candidates().onRemoteRemove(function() {
+          if (election.candidates().empty()) this.rankedCandidatesList.fadeOut();
         }, this));
 
         this.candidatesList.empty();
