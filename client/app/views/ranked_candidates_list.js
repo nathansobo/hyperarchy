@@ -78,6 +78,8 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       this.rankedCandidatesList.find("li.candidate").each(function() {
         $(this).view().remove();
       });
+      this.find('.dragTargetExplanation').show();
+      this.adjustDragTargetExplanationHeights();
     },
 
     handleReceive: function(event, ui) {
