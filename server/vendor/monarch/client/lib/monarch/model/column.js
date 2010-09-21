@@ -15,6 +15,22 @@ _.constructor("Monarch.Model.Column", {
     return new Monarch.Model.Predicates.Neq(this, rightOperand);
   },
 
+  gt: function(rightOperand) {
+    return new Monarch.Model.Predicates.Gt(this, rightOperand);
+  },
+
+  gte: function(rightOperand) {
+    return new Monarch.Model.Predicates.Gte(this, rightOperand);
+  },
+
+  lt: function(rightOperand) {
+    return new Monarch.Model.Predicates.Lt(this, rightOperand);
+  },
+
+  lte: function(rightOperand) {
+    return new Monarch.Model.Predicates.Lte(this, rightOperand);
+  },
+
   asc: function() {
     return new Monarch.Model.SortSpecification(this, 'asc');
   },
