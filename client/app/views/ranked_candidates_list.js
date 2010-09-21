@@ -4,8 +4,10 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       div({'class': "candidatesListHeader"}, "Your Ranking");
       ol({id: "rankedCandidates", 'class': "candidates ranked"}, function() {
 
-        li({id: "goodCandidatesExplanation"}, function() {
-          span("Drag answers you like here, in order of preference.");
+        li({'class': "dragTargetExplanation"}, function() {
+          span(function() {
+            raw("Drag answers you <em>like</em> here, in order of preference.")
+          });
         }).ref('goodCandidatesExplanation');
 
         li({'class': "separator glossyBlack"}, function() {
@@ -13,8 +15,10 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
           div({'class': "down"}, "bad ideas");
         }).ref('separator');
 
-        li({id: "badCandidatesExplanation"}, function() {
-          span("Drag answers you dislike here, in order of preference.");
+        li({'class': "dragTargetExplanation"}, function() {
+          span(function() {
+            raw("Drag answers you <em>dislike</em> here, in order of preference.")
+          });
         }).ref('badCandidatesExplanation');
 
       }).ref('rankedCandidatesList');
@@ -30,9 +34,11 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
         receive: this.hitch('handleReceive'),
         sort: this.hitch('handleSort')
       });
-      this.separator.mousedown(function(e) {
-        return false;
-      });
+
+      var returnFalse = function(e) { return false; };
+      this.separator.mousedown(returnFalse);
+      this.goodCandidatesExplanation.mousedown(returnFalse);
+      this.badCandidatesExplanation.mousedown(returnFalse);
 
       var adjustHeight = this.hitch('adjustHeight');
       _.defer(adjustHeight);
@@ -128,8 +134,21 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     adjustHeight: function() {
-      var height = $(window).height() - this.rankedCandidatesList.offset().top - 20
-      this.rankedCandidatesList.height(height);
+      this.rankedCandidatesList.height($(window).height() - this.rankedCandidatesList.offset().top - 20);
+      this.adjustDragTargetExplanationHeights();
+    },
+
+    adjustDragTargetExplanationHeights: function() {
+      var explanationHeight = (this.rankedCandidatesList.height() - this.separator.outerHeight()) / 2;
+      this.find('.dragTargetExplanation').each(function() {
+        var elt = $(this);
+        elt.height(explanationHeight);
+        elt.find('span').position({
+          my: 'center center',
+          at: 'center center',
+          of: elt
+        });
+      });
     },
     
     hasPositiveRankings: function() {
@@ -152,6 +171,8 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       } else {
         this.badCandidatesExplanation.show();
       }
+
+      this.adjustDragTargetExplanationHeights();
     }
   }
 });

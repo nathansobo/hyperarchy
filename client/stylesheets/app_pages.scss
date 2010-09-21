@@ -200,9 +200,10 @@
       overflow-x: hidden;
       overflow-y: auto;
 
-      #goodCandidatesExplanation, #badCandidatesExplanation {
-        padding: 20px;
-        height:100px;
+      .dragTargetExplanation {
+        font-size: 15px;
+        padding: 0 40px;
+        text-align: center;
       }
 
       li.separator {
