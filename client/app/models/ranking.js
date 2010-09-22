@@ -14,15 +14,18 @@ _.constructor("Ranking", Model.Record, {
     },
 
     createOrUpdate: function(user, election, candidate, predecessor, successor, belowSeparator) {
-      var newPositionFieldValue = { position: this.determinePosition(user, predecessor, successor, belowSeparator) };
-      var otherFieldValues = {userId: user.id(), electionId: election.id(), candidateId: candidate.id()};
+      var future = new Monarch.Http.AjaxFuture();
 
-      var existingRanking = Ranking.find(otherFieldValues);
-      if (existingRanking) {
-        return existingRanking.update(newPositionFieldValue);
-      } else {
-        return this.create(_.extend(otherFieldValues, newPositionFieldValue));
-      }
+      Server.post("/rankings", {
+        user_id: user.id(),
+        election_id: election.id(),
+        candidate_id: candidate.id(),
+        position: this.determinePosition(user, predecessor, successor, belowSeparator)
+      }).onSuccess(function(data) {
+        future.triggerSuccess(Ranking.find(data.ranking_id));
+      });
+
+      return future;
     },
 
     // private

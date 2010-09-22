@@ -5,7 +5,7 @@ Screw.Unit(function(c) { with(c) {
     useLocalFixtures();
 
     describe(".createOrUpdate(candidate, predecessor, successor)", function() {
-      it("creates or updates the ranking for the candidate, with a position that places it between the predecessor and successor and with the correct sign", function() {
+      it("posts to /rankings with a position that places the ranked candidate between the predecessor and successor and with the correct sign", function() {
         Ranking.table.clear();
 
         var user = User.fixture('nathan');
@@ -14,12 +14,32 @@ Screw.Unit(function(c) { with(c) {
         var b = Candidate.fixture('fish');
         var c = Candidate.fixture('salad');
         var aRanking, bRanking, cRanking;
+        var callback = mockFunction("callback");
 
-        Ranking.createOrUpdate(user, election, a, null, null, false).afterEvents(function(ranking) {
-          aRanking = ranking;
-          expect(ranking.position()).to(eq, 64);
+        Ranking.createOrUpdate(user, election, a, null, null, false).onSuccess(callback);
+        expect(Server.posts.length).to(eq, 1);
+        expect(Server.lastPost.data).to(equal, {
+          user_id: user.id(),
+          election_id: election.id(),
+          candidate_id: a.id(),
+          position: 64
         });
-        
+
+        Server.lastPost.simulateSuccess({ranking_id: 1}, {
+          rankings: {
+            1: {
+              user_id: user.id(),
+              election_id: election.id(),
+              candidate_id: a.id(),
+              position: 64
+            }
+          }
+        });
+
+        expect(callback).to(haveBeenCalled, withArgs(Ranking.find(1)));
+
+
+
         var bRanking;
         Ranking.createOrUpdate(user, election, b, null, a, false).afterEvents(function(ranking) {
           bRanking = ranking;

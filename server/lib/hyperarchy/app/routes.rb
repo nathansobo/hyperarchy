@@ -100,5 +100,14 @@ module Hyperarchy
       current_user.update(:dismissed_welcome_blurb => true)
       successful_json_response
     end
+
+    post "/rankings" do
+      if ranking = Ranking.find(:user_id => params[:user_id], :candidate_id => params[:candidate_id])
+        ranking.update(:position => params[:position])
+      else
+        ranking = Ranking.create!(params)
+      end
+      successful_json_response({:ranking_id => ranking.id}, ranking)
+    end
   end
 end

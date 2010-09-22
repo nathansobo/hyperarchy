@@ -26,7 +26,15 @@ module Models
     end
 
     expose :rankings do
-      elections.join_through(Ranking)
+      elections.join_through(Ranking) do
+
+        puts "evaling"
+
+        def create(field_values)
+          puts "creating"
+          super
+        end
+      end
     end
   end
 end
