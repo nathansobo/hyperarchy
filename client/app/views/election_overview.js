@@ -92,6 +92,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.candidatesList.adjustHeight();
       this.rankedCandidatesList.adjustHeight();
       this.election(election);
+      if (!election.candidates().empty()) this.rankedCandidatesList.show();
     },
 
     election: {

@@ -49,7 +49,6 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       afterChange: function(election) {
         this.subscriptions.destroy();
         this.rankings = election.rankingsForCurrentUser();
-        if (!election.candidates().empty()) this.show();
         this.populateRankings();
       }
     },
