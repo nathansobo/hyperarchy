@@ -3,6 +3,7 @@
 _.constructor("Monarch.Model.Repository", {
   initialize: function() {
     this.tables = {};
+    this.mutationsPausedCount = 0;
     this.mutationsPaused = false;
   },
 
@@ -19,14 +20,20 @@ _.constructor("Monarch.Model.Repository", {
   },
 
   pauseMutations: function() {
-    this.mutationsPaused = true;
-    this.enqueuedMutations = [];
+    this.mutationsPausedCount++;
+    if (!this.mutationsPaused) {
+      this.mutationsPaused = true;
+      this.enqueuedMutations = [];
+    }
   },
 
   resumeMutations: function() {
-    this.mutationsPaused = false;
-    this.mutate(this.enqueuedMutations);
-    this.enqueuedMutations = null;
+    this.mutationsPausedCount--;
+    if (this.mutationsPausedCount === 0) {
+      this.mutationsPaused = false;
+      this.mutate(this.enqueuedMutations);
+      this.enqueuedMutations = null;
+    }
   },
 
   update: function(dataset) {

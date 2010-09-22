@@ -36,7 +36,9 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#pauseMutations and #resumeMutations", function() {
-      they("enqueue mutations while they are paused and execute enqueued mutations plus any further mutations after resuming", function() {
+      they("enqueue mutations while they are paused and executes enqueued mutations plus any further mutations after resuming", function() {
+        repository.pauseMutations();
+        // should only resume after all calls to pauseMutations are matched with a call to resumeMutations
         repository.pauseMutations();
 
         repository.mutate([
@@ -51,7 +53,13 @@ Screw.Unit(function(c) { with(c) {
 
         expect(User.find('jan')).toNot(beNull);
 
-        repository.resumeMutations();
+        repository.resumeMutations(); // 2 outstanding pauses, should not yet resume
+
+        expect(BlogPost.find('running')).to(beNull);
+        expect(Blog.find('recipes').name()).toNot(equal, "Absolutely Disgusting Food");
+        expect(User.find('jan')).toNot(beNull);
+
+        repository.resumeMutations(); // now 1 outstanding pause, should resume
 
         expect(BlogPost.find('running')).toNot(beNull);
         expect(Blog.find('recipes').name()).to(eq, "Absolutely Disgusting Food");

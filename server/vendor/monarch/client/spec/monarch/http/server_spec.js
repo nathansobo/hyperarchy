@@ -689,9 +689,10 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        it("pauses mutations before sending the save to the server and resumes them once the server responds", function() {
-          var record = User.localCreate({id: 'jesus', fullName: "Jesus Chang"});
-          server.save(record);
+        it("pauses mutations before sending the save to the server and resumes them once the server responds to all outstanding save requests", function() {
+          var record1 = User.localCreate({id: 'jesus', fullName: "Jesus Chang"});
+          var record2 = User.localCreate({id: 'joseph', fullName: "Joseph Smith"});
+          server.save(record1);
 
           expect(Repository.mutationsPaused).to(beTrue);
           server.lastPost.simulateFailure({
@@ -700,15 +701,29 @@ Screw.Unit(function(c) { with(c) {
           });
           expect(Repository.mutationsPaused).to(beFalse);
 
-          server.save(record);
+          server.save(record1);
           expect(Repository.mutationsPaused).to(beTrue);
-          server.lastPost.simulateSuccess({
+
+          server.save(record2);
+
+          server.posts[0].simulateSuccess({
             primary: [{
               full_name: "Jesus Chang",
               user_id: 'jesus'
             }],
             secondary: []
           });
+
+          expect(Repository.mutationsPaused).to(beTrue);
+
+          server.posts[0].simulateSuccess({
+            primary: [{
+              full_name: "Joseph Smith",
+              user_id: 'joseph'
+            }],
+            secondary: []
+          });
+
           expect(Repository.mutationsPaused).to(beFalse);
         });
       });
