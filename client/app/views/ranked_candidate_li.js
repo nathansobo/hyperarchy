@@ -23,6 +23,35 @@ _.constructor("Views.RankedCandidateLi", Views.CandidateLi, {
       }, this));
     },
 
+    handleUpdate: function() {
+      this.startLoading();
+      this.rankingPosition = this.determineRankingPosition();
+      Ranking.createOrUpdate(Application.currentUser(), this.candidate, this.rankingPosition)
+        .onSuccess(function(ranking) {
+          this.ranking = ranking;
+          this.stopLoading();
+        }, this);
+    },
+
+    determineRankingPosition: function() {
+      var belowSeparator = this.prevAll('.separator').length > 0;
+      var successor = this.prevAll('.candidate:first, .separator').view();
+      var predecessor = this.nextAll('.candidate:first, .separator').view();
+      var successorPosition = successor ? successor.rankingPosition : null;
+      var predecessorPosition = predecessor ? predecessor.rankingPosition : null;
+
+      if (belowSeparator) {
+        if (!successorPosition) successorPosition = 0;
+        if (!predecessorPosition) predecessorPosition = successorPosition - 128;
+      } else {
+        if (!predecessorPosition) predecessorPosition = 0;
+        if (!successorPosition) successorPosition = predecessorPosition + 128;
+      }
+
+      return (predecessorPosition + successorPosition) / 2;
+    },
+
+
     startLoading: function() {
       this.loadingIcon.show();
       this.destroyRankingButton.hide();

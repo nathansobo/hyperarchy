@@ -84,33 +84,16 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
 
     handleReceive: function(event, ui) {
       var candidate = Candidate.find(ui.item.attr('candidateId'));
-      var previousLi = this.findPreviousLi(candidate); // may have already been ranked before
-      var rankedCandidateView = previousLi ? previousLi.detach() : Views.RankedCandidateLi.toView({candidate: candidate});
+      var previouslyRankedLi = this.findPreviouslyRankedLi(candidate); // may have already been ranked before
+      var rankedCandidateView = previouslyRankedLi ? previouslyRankedLi.detach() : Views.RankedCandidateLi.toView({candidate: candidate});
       this.findLi(candidate).replaceWith(rankedCandidateView); // replace the clone of the draggable li with a real view
     },
 
     handleUpdate: function(event, ui) {
       this.showOrHideDragTargetExplanations();
-      
       var candidate = Candidate.find(ui.item.attr('candidateId'));
-      // received items are replaced with different object, so need to find from the list
       var rankedCandidateLi = this.findLi(candidate);
-      rankedCandidateLi.view().startLoading();
-
-      var belowSeparator = rankedCandidateLi.prevAll('.separator').length > 0;
-      // the successor is higher in the list, the predecessor is lower.
-      // we use prevAll/nextAll to skip the hidden explanation list elements if they are in the way
-      var successorId = rankedCandidateLi.prevAll('.candidate:first, .separator').attr('candidateId');
-      var predecessorId = rankedCandidateLi.nextAll('.candidate:first, .separator').attr('candidateId');
-      var predecessor = predecessorId ? Candidate.find(predecessorId) : null;
-      var successor = successorId ? Candidate.find(successorId) : null;
-
-      Ranking.createOrUpdate(Application.currentUser(), this.election(), candidate, predecessor, successor, belowSeparator)
-        .onSuccess(function(ranking) {
-          if (!ranking) debugger;
-          rankedCandidateLi.view().ranking = ranking;
-          rankedCandidateLi.view().stopLoading();
-        });
+      rankedCandidateLi.handleUpdate();
     },
 
     handleSort:  function(event, ui) {
@@ -126,9 +109,9 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       }
     },
 
-    findPreviousLi: function(candidate) {
-      var previousLi = this.rankedCandidatesList.find("li.ranked.candidate[candidateId='" + candidate.id() + "']");
-      return previousLi.length > 0 ? previousLi : null;
+    findPreviouslyRankedLi: function(candidate) {
+      var previouslyRankedLi = this.rankedCandidatesList.find("li.ranked.candidate[candidateId='" + candidate.id() + "']");
+      return previouslyRankedLi.length > 0 ? previouslyRankedLi : null;
     },
 
     findLi: function(candidate) {
