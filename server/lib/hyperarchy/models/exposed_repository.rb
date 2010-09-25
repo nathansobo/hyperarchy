@@ -10,7 +10,7 @@ module Models
     end
 
     expose :memberships do
-      organizations.join_through(Membership)
+      Membership.table
     end
 
     expose :users do
@@ -26,15 +26,7 @@ module Models
     end
 
     expose :rankings do
-      elections.join_through(Ranking) do
-
-        puts "evaling"
-
-        def create(field_values)
-          puts "creating"
-          super
-        end
-      end
+      elections.join_through(Ranking)
     end
   end
 end
