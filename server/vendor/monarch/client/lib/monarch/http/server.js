@@ -153,6 +153,7 @@ _.constructor("Monarch.Http.Server", {
       dataType: 'json',
       data: this.stringifyJsonData(data),
       success: function(response) {
+        if (!response) throw new Error("Ajax response was null for url ", url);
         future.handleResponse(response);
       },
       error: function(xhr, status, errorThrown) {

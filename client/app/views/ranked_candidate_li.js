@@ -17,6 +17,7 @@ _.constructor("Views.RankedCandidateLi", Views.CandidateLi, {
       $super();
       if (!this.candidate) this.candidate = this.ranking.candidate();
       if (!this.ranking) this.ranking = this.candidate.rankingByCurrentUser().first();
+      if (this.ranking) this.rankingPosition = this.ranking.position();
 
       this.subscriptions.add(this.candidate.onRemoteDestroy(function() {
         this.remove();
@@ -25,11 +26,12 @@ _.constructor("Views.RankedCandidateLi", Views.CandidateLi, {
 
     handleUpdate: function() {
       this.startLoading();
-      this.rankingPosition = this.determineRankingPosition();
+      var rankingPosition = this.determineRankingPosition();
+      this.rankingPosition = rankingPosition;
       Ranking.createOrUpdate(Application.currentUser(), this.candidate, this.rankingPosition)
         .onSuccess(function(ranking) {
           this.ranking = ranking;
-          this.stopLoading();
+          if (rankingPosition === this.rankingPosition) this.stopLoading();
         }, this);
     },
 
