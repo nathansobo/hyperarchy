@@ -326,7 +326,21 @@
   #editOrganization {
     @extend #addOrganization;
 
-    #details { margin-bottom: 30px; }
+    #details {
+      margin-bottom: 30px;
+      textarea {
+        resize: none;
+      }
+      button {
+        display: inline-block;
+      }
+      .loading {
+        display: inline-block;
+        position: relative;
+        top: 3px;
+        left: 5px;
+      }
+    }
 
     #overviewLink { float: right; }
 

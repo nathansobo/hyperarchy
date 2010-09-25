@@ -1014,6 +1014,15 @@ button {
     margin-top: 10px; }
 #app #editOrganization #details {
   margin-bottom: 30px; }
+  #app #editOrganization #details textarea {
+    resize: none; }
+  #app #editOrganization #details button {
+    display: inline-block; }
+  #app #editOrganization #details .loading {
+    display: inline-block;
+    position: relative;
+    top: 3px;
+    left: 5px; }
 #app #editOrganization #overviewLink {
   float: right; }
 #app #editOrganization div.addMember {

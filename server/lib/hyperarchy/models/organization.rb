@@ -1,6 +1,6 @@
 class Organization < Monarch::Model::Record
   column :name, :string
-  column :description, :string
+  column :description, :string, :default => ""
 
   has_many :elections
   has_many :memberships

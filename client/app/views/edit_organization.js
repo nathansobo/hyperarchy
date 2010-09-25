@@ -3,12 +3,23 @@ _.constructor("Views.EditOrganization", View.Template, {
     div({id: "editOrganization"}, function() {
       div({id: "details", 'class': "grid5 largeFont"}, function() {
         label({'for': "name"}, "Organization Name");
-        input({name: "name", 'class': "text"});
+        input({name: "name", 'class': "text"})
+          .ref('nameField')
+          .keydown(function(view, e) {
+            if (e.keyCode === 13) {
+              view.saveOrganization();
+              e.preventDefault();
+            }
+          })
+          .keyup('disableOrEnableSaveButton');
         label({'for': "description"}, "Description (Optional)");
-        textarea({name: "description", 'class': "text"});
+        textarea({name: "description", 'class': "text"})
+          .ref('descriptionField')
+          .keyup('disableOrEnableSaveButton');
         button("Save Changes")
           .ref('saveChangesButton')
-          .click('saveChanges');
+          .click('saveOrganization');
+        div({'class': "loading", style: "display: none"}).ref('loading');
       });
 
       div({'class': "grid7"}, function() {
@@ -60,6 +71,10 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.createMembershipFirstName.placeHeld();
       this.createMembershipLastName.placeHeld();
       this.createMembershipEmail.placeHeld();
+      this.subscriptions = new Monarch.SubscriptionBundle();
+      this.defer(function() {
+        this.find('textarea').elastic();
+      });
     },
 
     navigate: function(state) {
@@ -73,8 +88,10 @@ _.constructor("Views.EditOrganization", View.Template, {
     },
 
     modelAssigned: function(model) {
+      this.subscriptions.destroy();
+      this.saveChangesButton.attr('disabled', true);
       this.membersTbody.empty();
-      this.model().memberships().each(this.hitch('appendMembershipTr'));
+      model.memberships().each(this.hitch('appendMembershipTr'));
     },
 
     appendMembershipTr: function(membership) {
@@ -128,6 +145,26 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.createMembershipFirstName.val("");
       this.createMembershipLastName.val("");
       this.createMembershipEmail.val("");
+    },
+
+    saveOrganization: function() {
+      this.saveChangesButton.attr('disabled', true);
+      this.loading.show();
+      this.save().onSuccess(function() {
+        this.loading.hide();
+      }, this);
+    },
+
+    disableOrEnableSaveButton: function() {
+      var valuesDiffer =
+        this.nameField.val() !== this.model().name() ||
+          this.descriptionField.val() !== this.model().description();
+
+      if (valuesDiffer) {
+        this.saveChangesButton.attr('disabled', false);
+      } else {
+        this.saveChangesButton.attr('disabled', true);
+      }
     }
   }
 });

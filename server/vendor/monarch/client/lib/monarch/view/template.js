@@ -156,7 +156,7 @@ _.constructor("Monarch.View.Template", {
         this.model()[name](value);
       }, this);
 
-      this.find("input:text").keyup(function() {
+      this.find("input:text,textarea").keyup(function() {
         var elt = $(this);
         assignFieldValue(elt.attr('name'), elt.val());
       });
