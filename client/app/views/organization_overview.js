@@ -44,6 +44,10 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     defaultView: true,
     viewName: 'organization',
 
+    initialize: function() {
+      this.subscriptions = new Monarch.SubscriptionBundle();
+    },
+
     beforeShow: function() {
       if (Application.currentUser().dismissedWelcomeBlurb()) this.welcomeBlurb.hide();
     },
@@ -57,6 +61,11 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     organizationId: {
       afterChange: function() {
+        this.subscriptions.destroy();
+        this.subscriptions.add(this.organization().field('name').onUpdate(function(newName) {
+          this.organizationName.html(newName);
+        }, this));
+
         this.organizationName.html(this.organization().name());
         this.displayElections();
       }

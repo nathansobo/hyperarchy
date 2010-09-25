@@ -70,7 +70,7 @@ _.constructor("Views.Layout", View.Template, {
 
         this.addOrganizationLi.before(View.build(function(b) {
           b.li(function() {
-            b.a({href: "#"}, organization.name()).click(function(view, e) {
+            b.a({href: "#", organizationId: organization.id()}, organization.name()).click(function(view, e) {
               $.bbq.pushState({view: "organization", organizationId: organization.id()});
               e.preventDefault();
             });
@@ -81,13 +81,21 @@ _.constructor("Views.Layout", View.Template, {
           this.adminMenuLink.show();
           this.adminMenu.append(View.build(function(b) {
             b.li(function() {
-              b.a({href: "#"}, organization.name() + " Admin").click(function(view, e) {
+              b.a({href: "#", organizationId: organization.id()}, organization.name() + " Admin").click(function(view, e) {
                 $.bbq.pushState({view: "editOrganization", organizationId: organization.id()});
                 e.preventDefault();
               });
             });
           }))
         }
+      }, this);
+
+      Organization.onRemoteUpdate(function(organization, changes) {
+        if (!changes.name) return;
+        var name = organization.name();
+        var selector = 'a[organizationId=' + organization.id() + ']';
+        this.organizationsMenu.find(selector).html(name);
+        this.adminMenu.find(selector).html(name + " Admin");
       }, this);
     },
 
