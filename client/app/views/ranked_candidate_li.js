@@ -25,6 +25,7 @@ _.constructor("Views.RankedCandidateLi", Views.CandidateLi, {
     },
 
     handleUpdate: function() {
+      this.containingList.showOrHideDragTargetExplanations();
       this.startLoading();
       var rankingPosition = this.determineRankingPosition();
       this.rankingPosition = rankingPosition;
@@ -67,6 +68,10 @@ _.constructor("Views.RankedCandidateLi", Views.CandidateLi, {
     destroyRanking: function() {
       this.startLoading();
       this.ranking.destroy();
+    },
+
+    afterRemove: function() {
+      this.containingList.showOrHideDragTargetExplanations();
     }
   }
 });

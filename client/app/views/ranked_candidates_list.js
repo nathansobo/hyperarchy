@@ -1,6 +1,6 @@
 _.constructor("Views.RankedCandidatesList", View.Template, {
   content: function() { with(this.builder) {
-    div(function() {
+    div({id: "rankedCandidatesList"}, function() {
       div({'class': "candidatesListHeader"}, "Your Ranking");
       ol({id: "rankedCandidates", 'class': "candidates ranked"}, function() {
 
@@ -57,7 +57,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       this.empty();
 
       this.rankings.each(function(ranking) {
-        var li = Views.RankedCandidateLi.toView({ranking: ranking});
+        var li = Views.RankedCandidateLi.toView({ranking: ranking, containingList: this});
         li.stopLoading();
 
         if (ranking.position() > 0) {
@@ -70,7 +70,6 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       }, this);
       this.subscriptions.add(this.rankings.onRemoteRemove(function(ranking) {
         this.findLi(ranking.candidate()).remove();
-        this.showOrHideDragTargetExplanations();
       }, this));
     },
 
@@ -85,12 +84,11 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     handleReceive: function(event, ui) {
       var candidate = Candidate.find(ui.item.attr('candidateId'));
       var previouslyRankedLi = this.findPreviouslyRankedLi(candidate); // may have already been ranked before
-      var rankedCandidateView = previouslyRankedLi ? previouslyRankedLi.detach() : Views.RankedCandidateLi.toView({candidate: candidate});
+      var rankedCandidateView = previouslyRankedLi ? previouslyRankedLi.detach() : Views.RankedCandidateLi.toView({candidate: candidate, containingList: this});
       this.findLi(candidate).replaceWith(rankedCandidateView); // replace the clone of the draggable li with a real view
     },
 
     handleUpdate: function(event, ui) {
-      this.showOrHideDragTargetExplanations();
       var candidate = Candidate.find(ui.item.attr('candidateId'));
       var rankedCandidateLi = this.findLi(candidate);
       rankedCandidateLi.handleUpdate();
