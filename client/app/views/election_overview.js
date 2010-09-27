@@ -34,7 +34,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
             .click('updateElectionBody');
           button("Delete Question")
             .click('destroyElection');
-          div({'class': "loading", style: "display: none;"}).ref('loading');
+          div({'class': "loading", style: "display: none;"}).ref('electionSpinner');
           div({'class': "clear"});
         }).ref('expandedArea');
 
@@ -43,14 +43,20 @@ _.constructor("Views.ElectionOverview", View.Template, {
             .ref('createCandidateTextarea')
             .keypress(function(view, e) {
               if (e.keyCode === 13) {
-                view.createCandidateButton.click();
+
+                if (!view.createCandidateButton.is(":disabled")) {
+                  view.createCandidateButton.click();
+                }
                 return false;
               }
             });
 
+
           button("Suggest Answer")
             .click('createCandidate')
             .ref('createCandidateButton');
+
+          div({'class': "loading", style: "display: none"}).ref('createCandidateSpinner');
         }).ref('createCandidateForm');
       });
 
@@ -146,12 +152,16 @@ _.constructor("Views.ElectionOverview", View.Template, {
     createCandidate: function() {
       var body = this.createCandidateTextarea.val();
       if (body === "") return;
-      
+
+      this.createCandidateSpinner.show();
+      this.createCandidateTextarea.attr('disabled', true)
       this.createCandidateButton.attr('disabled', true);
       this.election().candidates().create({body: body})
         .onSuccess(function() {
-          this.createCandidateButton.attr('disabled', false);
+          this.createCandidateSpinner.hide();
           this.createCandidateTextarea.val("");
+          this.createCandidateTextarea.attr('disabled', false)
+          this.createCandidateButton.attr('disabled', false);
         }, this);
     },
 
@@ -199,19 +209,19 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     updateElectionBody: function() {
-      this.loading.show();
+      this.electionSpinner.show();
       this.election().update({body: this.bodyTextarea.val()})
         .onSuccess(function() {
-          this.loading.hide();
+          this.electionSpinner.hide();
           this.expandOrContract();
         }, this);
     },
 
     destroyElection: function() {
-      this.loading.show();
+      this.electionSpinner.show();
       this.election().destroy()
         .onSuccess(function() {
-          this.loading.hide();
+          this.electionSpinner.hide();
         }, this);
     }
   }

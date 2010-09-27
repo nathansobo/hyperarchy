@@ -914,6 +914,11 @@ button {
     display: block;
     resize: none;
     height: 95px; }
+  #app #electionOverview div#createCandidateForm .loading {
+    float: right;
+    margin-right: 4px;
+    position: relative;
+    top: 3px; }
   #app #electionOverview div#createCandidateForm button {
     display: block;
     font-size: 15px;
