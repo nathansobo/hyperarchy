@@ -22,6 +22,8 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
         }).ref('badCandidatesExplanation');
 
       }).ref('rankedCandidatesList');
+
+      div({'class': "loading fetching", style: "display: none"}).ref('loading');
     });
   }},
 
@@ -120,6 +122,11 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     adjustHeight: function() {
       this.rankedCandidatesList.height($(window).height() - this.rankedCandidatesList.offset().top - 20);
       this.adjustDragTargetExplanationHeights();
+      this.loading.position({
+        my: 'center center',
+        at: 'center center',
+        of: this.rankedCandidatesList
+      });
     },
 
     fadeIn: function($super) {
@@ -166,6 +173,16 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       }
 
       this.adjustDragTargetExplanationHeights();
+    },
+
+    startLoading: function() {
+      this.rankedCandidatesList.children().hide();
+      this.loading.show();
+    },
+
+    stopLoading: function() {
+      this.loading.hide();
+      this.rankedCandidatesList.children().show();
     }
   }
 });

@@ -88,10 +88,15 @@ _.constructor("Views.ElectionOverview", View.Template, {
       var election = Election.find(electionId);
 
       if (!election) {
+        this.startLoading();
         Server.fetch([
           Election.where({id: electionId}).joinTo(Organization),
           Candidate.where({electionId: electionId})
-        ]).onSuccess(this.hitch('navigate', state));
+        ]).onSuccess(function() {
+          this.stopLoading();
+          this.navigate(state);
+        }, this);
+        
         return;
       }
 
@@ -137,8 +142,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.rankedCandidatesList.empty();
 
         this.candidatesList.election(election);
+        this.rankedCandidatesList.startLoading();
         election.rankingsForCurrentUser().fetch()
           .onSuccess(function() {
+            this.rankedCandidatesList.stopLoading();
             this.rankedCandidatesList.election(election);
           }, this);
 
@@ -223,6 +230,14 @@ _.constructor("Views.ElectionOverview", View.Template, {
         .onSuccess(function() {
           this.electionSpinner.hide();
         }, this);
+    },
+
+    startLoading: function() {
+
+    },
+
+    stopLoading: function() {
+      
     }
   }
 });

@@ -200,6 +200,10 @@
       margin-bottom: 5px;
     }
 
+    .fetching {
+      position: absolute;
+    }
+
     ol.candidates {
       background-color: #f4f2f2;
       -moz-box-shadow: #c8c7c7 0px 0px 5px inset;

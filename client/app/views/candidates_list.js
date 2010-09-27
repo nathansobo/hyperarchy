@@ -9,6 +9,8 @@ _.constructor("Views.CandidatesList", View.Template, {
           return Views.UnrankedCandidateLi.toView({candidate: candidate});
         }
       });
+
+      div({'class': "loading fetching", style: "display: none"}).ref('loading');
     });
   }},
 
@@ -30,7 +32,12 @@ _.constructor("Views.CandidatesList", View.Template, {
     },
 
     adjustHeight: function() {
-      this.candidatesList.height($(window).height() - this.candidatesList.offset().top - 20); 
+      this.candidatesList.height($(window).height() - this.candidatesList.offset().top - 20);
+      this.loading.position({
+        my: 'center center',
+        at: 'center center',
+        of: this.rankedCandidatesList
+      });
     }
   }
 });
