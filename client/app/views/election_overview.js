@@ -136,9 +136,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.candidatesList.empty();
         this.rankedCandidatesList.empty();
 
-        Server.fetch([election.candidates(), election.rankingsForCurrentUser()])
+        this.candidatesList.election(election);
+        election.rankingsForCurrentUser().fetch()
           .onSuccess(function() {
-            this.candidatesList.election(election);
             this.rankedCandidatesList.election(election);
           }, this);
 
