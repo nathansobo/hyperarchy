@@ -7,8 +7,10 @@ module Monarch
             case representation["type"]
               when "eq"
                 Eq.from_wire_representation(representation, repository)
+              when "and"
+                And.from_wire_representation(representation, repository)
               else
-                raise "No way to translate #{representation} into a Predicate"
+                raise "No way to translate #{representation.inspect} into an Expression"
             end
           end
         end
