@@ -6,10 +6,18 @@ module Views
         $(function() {
           #{store_organizations_in_repository}
           #{store_current_user_in_repository}
+          $("#loadingPage").remove();
           window.Application = new Controllers.Application(#{(current_user ? current_user.id : nil).to_json});
           window.Application.initializeNavigation();
         });
       ]
+    end
+
+    def body_content
+      div :id => "loadingPage" do
+        div :id => "mediumLogo"
+        div :class => "bigLoading"
+      end
     end
 
     def store_organizations_in_repository

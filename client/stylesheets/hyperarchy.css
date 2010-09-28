@@ -655,6 +655,14 @@ button {
   .loading.inactive {
     background: none; }
 
+.bigLoading {
+  background-repeat: no-repeat;
+  background-image: url(/images/loading_arrows_large_white_bg.gif);
+  width: 80px;
+  height: 80px; }
+  .bigLoading.grayBackground {
+    background-image: url(/images/loading_arrows_large_gray_bg.gif); }
+
 #notification {
   width: 100%;
   height: 20px;
@@ -702,6 +710,18 @@ button {
     padding: 10px;
     margin-bottom: 10px;
     resize: none; }
+
+#logo {
+  background-image: url(/images/logo_small.png);
+  background-repeat: no-repeat;
+  width: 221px;
+  height: 25px; }
+
+#mediumLogo {
+  background-image: url(/images/logo_medium.png);
+  background-repeat: no-repeat;
+  width: 468px;
+  height: 60px; }
 
 #bigLogo {
   background-image: url("/images/logo_large.png");
@@ -785,6 +805,20 @@ button {
     width: 100%;
     resize: vertical; }
 
+#app #loadingPage {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-left: -279;
+  margin-top: -60px;
+  text-align: center;
+  width: 553; }
+  #app #loadingPage #mediumLogo {
+    float: left; }
+  #app #loadingPage .bigLoading {
+    float: right;
+    position: relative;
+    top: -12px; }
 #app #header {
   border-bottom: 1px solid #cccccc;
   position: relative;
@@ -821,11 +855,7 @@ button {
       #app #header .dropdownMenu a:hover {
         background: #fff3c7; }
   #app #header #logo {
-    margin: 5px 0px;
-    background-image: url(/images/logo_small.png);
-    background-repeat: no-repeat;
-    width: 221px;
-    height: 25px; }
+    margin: 5px 0px; }
 #app #organizationOverview #organizationHeader {
   margin-bottom: 30px; }
   #app #organizationOverview #organizationHeader h1, #app #organizationOverview #organizationHeader h2 {
@@ -927,11 +957,8 @@ button {
   font-size: 16px;
   color: #999999;
   margin-bottom: 5px; }
-#app #electionOverview .fetching {
-  position: absolute;
-  background-image: url(/images/loading_arrows_large_gray_bg.gif);
-  width: 80px;
-  height: 80px; }
+#app #electionOverview .bigLoading {
+  position: absolute; }
 #app #electionOverview ol.candidates {
   background-color: #f4f2f2;
   -moz-box-shadow: #c8c7c7 0px 0px 5px inset;

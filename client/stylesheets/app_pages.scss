@@ -1,4 +1,27 @@
 #app {
+
+
+
+  #loadingPage {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-left: -((468 + 90) / 2);
+    margin-top: -60px;
+    text-align: center;
+    width: 468 + 85;
+
+    #mediumLogo {
+      float: left;
+    }
+
+    .bigLoading {
+      float: right;
+      position: relative;
+      top: -12px;
+    }
+  }
+
   #header {
     border-bottom: 1px solid #cccccc;
     position: relative;
@@ -43,13 +66,8 @@
       }
     }
 
-
     #logo {
       margin: 5px 0px;
-      background-image: url(/images/logo_small.png);
-      background-repeat: no-repeat;
-      width: 221px;
-      height: 25px;
     }
   }
 
@@ -200,11 +218,8 @@
       margin-bottom: 5px;
     }
 
-    .fetching {
+    .bigLoading {
       position: absolute;
-      background-image: url(/images/loading_arrows_large_gray_bg.gif);
-      width: 80px;
-      height: 80px;
     }
 
     ol.candidates {

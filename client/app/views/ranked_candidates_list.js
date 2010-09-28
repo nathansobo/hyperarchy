@@ -23,7 +23,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
 
       }).ref('rankedCandidatesList');
 
-      div({'class': "loading fetching", style: "display: none"}).ref('loading');
+      div({'class': "bigLoading grayBackground", style: "display: none"}).ref('loading');
     });
   }},
 

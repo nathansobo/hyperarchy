@@ -84,6 +84,17 @@ button {
   }
 }
 
+.bigLoading {
+  background-repeat: no-repeat;
+  background-image: url(/images/loading_arrows_large_white_bg.gif);
+  width: 80px;
+  height: 80px;
+
+  &.grayBackground {
+    background-image: url(/images/loading_arrows_large_gray_bg.gif);
+  }
+}
+
 #notification {
   width: 100%;
   height: 20px;
@@ -136,6 +147,20 @@ button {
     margin-bottom: 10px;
     resize: none;
   }
+}
+
+#logo {
+  background-image: url(/images/logo_small.png);
+  background-repeat: no-repeat;
+  width: 221px;
+  height: 25px;
+}
+
+#mediumLogo {
+  background-image: url(/images/logo_medium.png);
+  background-repeat: no-repeat;
+  width: 468px;
+  height: 60px;
 }
 
 #bigLogo {
