@@ -202,6 +202,9 @@
 
     .fetching {
       position: absolute;
+      background-image: url(/images/loading_arrows_large_gray_bg.gif);
+      width: 80px;
+      height: 80px;
     }
 
     ol.candidates {

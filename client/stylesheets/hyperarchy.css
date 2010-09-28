@@ -928,7 +928,10 @@ button {
   color: #999999;
   margin-bottom: 5px; }
 #app #electionOverview .fetching {
-  position: absolute; }
+  position: absolute;
+  background-image: url(/images/loading_arrows_large_gray_bg.gif);
+  width: 80px;
+  height: 80px; }
 #app #electionOverview ol.candidates {
   background-color: #f4f2f2;
   -moz-box-shadow: #c8c7c7 0px 0px 5px inset;
