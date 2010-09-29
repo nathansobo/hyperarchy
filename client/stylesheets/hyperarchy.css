@@ -910,6 +910,12 @@ button {
     list-style-position: inside;
     font-size: 15px;
     padding: 2px; }
+#app #organizationOverview .bigLoading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -40px;
+  margin-top: -40px; }
 #app #electionOverview .expandArrow {
   float: left;
   margin-right: 5px;

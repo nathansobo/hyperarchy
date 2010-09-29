@@ -37,6 +37,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       ol(function() {
         
       }).ref('electionsList');
+
+      div({'class': "bigLoading", 'style': "display: none;"}).ref('loading');
     });
   }},
 
@@ -84,8 +86,11 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       }
       this.electionLisById = {};
 
+      this.startLoading();
+
       Server.fetch([this.organization().elections(), this.organization().elections().joinTo(Candidate)])
         .onSuccess(function() {
+          this.stopLoading();
           var elections = this.organization().elections();
 
           elections.each(function(election) {
@@ -155,6 +160,14 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     dismissWelcomeBlurb: function() {
       this.welcomeBlurb.slideUp('fast');
       Server.post("/dismiss_welcome_blurb")
+    },
+
+    startLoading: function() {
+      this.loading.show();
+    },
+
+    stopLoading: function() {
+      this.loading.hide();
     }
   },
 
