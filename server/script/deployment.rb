@@ -16,11 +16,13 @@ class Deployment
     git :reset, "--hard", ref
     git :clean, "-df"
     bundle :install if gemfile_changed?(old_ref, new_ref)
-    god :stop, "hyperarchy_#{env}"
+    god :unmonitor, "hyperarchy_#{env}"
+    thor "server:stop", env
     sleep 1
     thor "db:migrate", env
     thor "deploy:minify_js", env
-    god :start, "hyperarchy_#{env}"
+    thor "server:start", env
+    god :monitor, "hyperarchy_#{env}"
   end
 
   def deploy_global_config
