@@ -55,14 +55,16 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     navigate: function(state) {
-      var organizationId = state.organizationId || Organization.find({name: "Alpha Testers"}).id();
+      var organizationId = state.organizationId || Organization.global().id();
       this.organizationId(organizationId);
       this.createElectionForm.hide();
       this.showCreateElectionFormButton.show();
     },
 
     organizationId: {
-      afterChange: function() {
+      afterChange: function(organizationId) {
+        $("#application").view().lastOrganizationId = organizationId;
+
         this.subscriptions.destroy();
         this.subscriptions.add(this.organization().field('name').onUpdate(function(newName) {
           this.organizationName.html(newName);

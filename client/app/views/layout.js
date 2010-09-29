@@ -20,7 +20,7 @@ _.constructor("Views.Layout", View.Template, {
       div({'class': "container12"}, function() {
         div({id: "header", 'class': "grid12"}, function() {
           div({'class': "grid3 alpha"}, function() {
-            div({id: "logo"});
+            div({id: "logo"}).click('goToLastOrganization');
           });
 
           div({'class': "grid9 omega"}, function() {
@@ -170,6 +170,12 @@ _.constructor("Views.Layout", View.Template, {
         this.hideFeedbackForm();
         this.notify("Thanks for the feedback!")
       }, this);
-    }
+    },
+
+    goToLastOrganization: function() {
+      var organizationId = this.lastOrganizationId || Organization.global().id()
+      $.bbq.pushState({view: "organization", organizationId: organizationId }, 2);
+    },
+
   }
 });
