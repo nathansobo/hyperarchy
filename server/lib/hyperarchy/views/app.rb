@@ -1,6 +1,6 @@
 module Views
   class App < Views::Layout
-    def head_content
+    def below_body_content
       application_javascript_tags
       javascript %[
         $(function() {

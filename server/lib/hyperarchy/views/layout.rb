@@ -15,6 +15,7 @@ module Views
           body_content
         end
 
+        below_body_content
         mixpanel_javascript
       end
     end
@@ -23,6 +24,9 @@ module Views
     end
 
     def body_content
+    end
+
+    def below_body_content
     end
 
     def store_in_repository(dataset)
