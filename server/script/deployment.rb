@@ -20,7 +20,7 @@ class Deployment
     git :clean, "-df"
     thor "server:stop", env
     thor "db:migrate", env
-    thor "deploy:target:copy_assets", env
+    thor "deploy:target:copy_assets"
     thor "deploy:target:minify_js", env
     thor "server:start", env
     god :monitor, "hyperarchy_#{env}"
@@ -30,6 +30,15 @@ class Deployment
   def deploy_global_config
     system("rsync -ave ssh #{ROOT}/global_config hyperarchy@hyperarchy.com:")
     god :load, "/home/hyperarchy/global_config/hyperarchy.god"
+    reload_nginx_config
+  end
+
+  def reload_nginx_config
+    if sudo "nginx -t -p ~/global_config/ -c nginx.conf"
+      sudo "nginx -p ~/global_config/ -c nginx.conf -s reload"
+    else
+      puts "syntax error in nginx config. did not attempt to load it."
+    end
   end
 
   protected
