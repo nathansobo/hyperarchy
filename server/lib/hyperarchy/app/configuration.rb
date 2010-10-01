@@ -13,6 +13,8 @@ module Hyperarchy
       end
     end
 
+    configure(:development) { use GiftWrapper }
+
     register Monarch
     helpers Hyperarchy::Helpers
 

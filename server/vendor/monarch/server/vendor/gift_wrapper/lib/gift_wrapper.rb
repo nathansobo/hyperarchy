@@ -67,6 +67,8 @@ class GiftWrapper
   end
 
   def combine_js(*paths)
+    require "fileutils"
+
     raise "Package dir not assigned" unless package_dir
     context = RequireContext.new(true)
     walk_require_graph(paths, context)
@@ -81,6 +83,7 @@ class GiftWrapper
     end
 
     minify(combined_path, minified_path)
+    FileUtils.rm(combined_path)
 
     metadata[paths] = digest
 

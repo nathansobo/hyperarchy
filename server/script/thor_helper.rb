@@ -1,6 +1,6 @@
 dir = File.dirname(__FILE__)
-ROOT = File.expand_path("#{dir}/../..")
 
+require File.expand_path("#{dir}/../lib/paths")
 require "rubygems"
 require "thor"
 require "bundler"

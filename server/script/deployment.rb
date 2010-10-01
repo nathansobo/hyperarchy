@@ -14,15 +14,17 @@ class Deployment
 
     git :fetch
     git :reset, "--hard", ref
-    git :clean, "-df"
     bundle :install if gemfile_changed?(old_ref, new_ref)
     god :unmonitor, "hyperarchy_#{env}"
+    thor "deploy:target:display_maintenance_page"
+    git :clean, "-df"
     thor "server:stop", env
-    sleep 1
     thor "db:migrate", env
-    thor "deploy:minify_js", env
+    thor "deploy:target:copy_assets", env
+    thor "deploy:target:minify_js", env
     thor "server:start", env
     god :monitor, "hyperarchy_#{env}"
+    thor "deploy:target:remove_maintenance_page"
   end
 
   def deploy_global_config
@@ -64,5 +66,5 @@ class Deployment
     end
   end
 
-  commands :cd, :git, :bundle, :thor, :sudo
+  commands :cd, :git, :bundle, :thor, :sudo, :touch, :rm
 end

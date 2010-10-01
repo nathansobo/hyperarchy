@@ -34,7 +34,6 @@ module Monarch
 
     def registered(app)
       app.helpers Monarch::Helpers, Util::BuildRelationalDataset
-      app.use GiftWrapper
       app.use Rack::RealTimeHub
 
       app.get "#{MONARCH_PATH_PREFIX}/repository/fetch" do

@@ -15,3 +15,5 @@ client/stylesheets/global.css
 client/stylesheets/peripheral_pages.css
 client/stylesheets/vendor/960.css
 client/stylesheets/vendor/reset.css
+offline
+public
