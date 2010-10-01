@@ -55,8 +55,11 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     navigate: function(state) {
-      var organizationId = state.organizationId || Organization.global().id();
-      this.organizationId(organizationId);
+      if (!state.organizationId) {
+        $.bbq.pushState({view: 'organization', organizationId: Organization.global().id()});
+        return;
+      }
+      this.organizationId(state.organizationId);
       this.createElectionForm.hide();
       this.showCreateElectionFormButton.show();
     },
