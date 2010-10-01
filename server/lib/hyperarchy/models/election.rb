@@ -16,6 +16,12 @@ class Election < Monarch::Model::Record
     self.creator ||= current_user
   end
 
+  def before_destroy
+    candidates.each do |candidate|
+      candidate.destroy
+    end
+  end
+
   def compute_global_ranking
     puts "compute_global_ranking"
     already_processed = []

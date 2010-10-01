@@ -24,6 +24,18 @@ module Models
       end
     end
 
+    describe "before destroy" do
+      it "destroys any candidates that belong to the election" do
+        election = Election.make
+        election.candidates.create!(:body => "A")
+        election.candidates.create!(:body => "B")
+
+        election.candidates.size.should == 2
+        election.destroy
+        election.candidates.should be_empty
+      end
+    end
+
     describe "#compute_global_ranking" do
       it "uses the ranked-pairs algoritm to produce a global ranking, assigning a position of null to any unranked candidates" do
         Timecop.freeze(Time.now + 60)
