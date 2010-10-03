@@ -13,7 +13,10 @@ module Hyperarchy
       end
     end
 
-    configure(:development) { use GiftWrapper }
+    configure(:development) do
+      use GiftWrapper
+      use Sass::Plugin::Rack
+    end
 
     register Monarch
     helpers Hyperarchy::Helpers
@@ -30,6 +33,7 @@ module Hyperarchy
 
     configure(:development) do
       GiftWrapper.development_mode = true
+      Sass::Plugin.options[:template_location] = { "#{CLIENT_ROOT}/stylesheets" => "#{CLIENT_ROOT}/stylesheets" }
       ::LOGGER = Logger.new(STDOUT)
       set :port, 9000
       Mailer.base_url = "localhost:9000"

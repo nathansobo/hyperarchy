@@ -12,13 +12,17 @@ gem "cramp", "0.10"
 
 ## hyperarchy
 gem "thin", "1.2.7"
-gem "sinatra-reloader", "0.4.1", :require => "sinatra/reloader"
 gem "warden", "0.10.7"
 gem "erector", "0.6.7"
 gem "rack-flash", "0.1.1"
 gem "bcrypt-ruby", "2.1.1", :require => "bcrypt"
 gem "pony", "1.0"
 gem "rgl", "0.4.0", :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
+
+group :development do
+  gem "sinatra-reloader", "0.4.1", :require => "sinatra/reloader"
+  gem "haml", "3.0.18", :require => "sass/plugin/rack"
+end
 
 group :test do
   gem "rspec", "1.2.6", :require => "spec"

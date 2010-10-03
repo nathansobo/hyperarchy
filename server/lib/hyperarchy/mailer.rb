@@ -21,6 +21,10 @@ end
 class FakeMailer < Mailer
   attr_reader :emails
 
+  class << self
+    public :new
+  end
+
   def initialize
     reset
   end
