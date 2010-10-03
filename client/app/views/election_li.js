@@ -4,6 +4,11 @@ _.constructor("Views.ElectionLi", View.Template, {
 
     li({'class': "grid6"}, function() {
       div({'class': "election"}, function() {
+        div({'class': "voteCount"}, function() {
+          div({'class': "number"}, election.voteCount().toString()).ref('voteCountNumber');
+          div("votes").ref('voteCountWord');
+        }).ref('voteCountBox');
+
         div({'class': "body"}, election.body()).ref('body');
         subview('candidatesList', Views.SortedList, {
           olAttributes: {'class': "candidates"},
@@ -13,8 +18,7 @@ _.constructor("Views.ElectionLi", View.Template, {
             });
           },
           onRemoteUpdate: function(record, changes, li) {
-            if (!changes.body) return;
-            li.html(changes.body.newValue);
+            if (changes.body) li.html(changes.body.newValue);
           }
         });
 
@@ -30,10 +34,22 @@ _.constructor("Views.ElectionLi", View.Template, {
 
     initialize: function() {
       this.candidatesList.relation(this.election.candidates());
+      this.updateVoteCount(this.election.voteCount(), true);
     },
 
     afterRemove: function() {
       this.candidatesList.remove();
+    },
+
+    updateVoteCount: function(voteCount, suppressFlash) {
+      this.voteCountNumber.html(voteCount.toString());
+      if (voteCount === 1) {
+        this.voteCountWord.html("vote");
+      } else {
+        this.voteCountWord.html("votes");
+      }
+
+      if (!suppressFlash) this.voteCountBox.effect('highlight', {color:"#ffd5cc"}, 2000);
     }
   }
 });

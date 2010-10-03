@@ -4,6 +4,7 @@ _.constructor("Election", Model.Record, {
       organizationId: 'key',
       creatorId: 'key',
       body: 'string',
+      voteCount: 'integer',
       updatedAt: 'datetime'
     });
 

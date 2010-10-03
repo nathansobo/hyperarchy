@@ -121,6 +121,11 @@ _.constructor("Views.OrganizationOverview", View.Template, {
               var electionLi = this.electionLi(election);
               electionLi.body.html(changes.body.newValue);
             }
+
+            if (changes.voteCount) {
+              var electionLi = this.electionLi(election);
+              electionLi.updateVoteCount(changes.voteCount.newValue);
+            }
           }, this);
 
           Server.subscribe([

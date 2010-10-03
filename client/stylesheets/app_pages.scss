@@ -120,6 +120,21 @@
       overflow-y: hidden;
       position: relative;
 
+      .voteCount {
+        padding: 5px;
+        margin: 0 0 5px 5px;
+        float: right;
+        background: #d1d1d1;
+        min-width: 37px;
+        line-height: 1;
+        text-align: center;
+
+        .number {
+          font-weight: bold;
+          font-size: 24px;
+        }
+      }
+
       .body {
         font-size: 20px;
         line-height: 26px;

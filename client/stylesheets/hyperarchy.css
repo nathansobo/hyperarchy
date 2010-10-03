@@ -893,6 +893,17 @@ button {
   height: 220px;
   overflow-y: hidden;
   position: relative; }
+  #app #organizationOverview .election .voteCount {
+    padding: 5px;
+    margin: 0 0 5px 5px;
+    float: right;
+    background: #d1d1d1;
+    min-width: 37px;
+    line-height: 1;
+    text-align: center; }
+    #app #organizationOverview .election .voteCount .number {
+      font-weight: bold;
+      font-size: 24px; }
   #app #organizationOverview .election .body {
     font-size: 20px;
     line-height: 26px;
