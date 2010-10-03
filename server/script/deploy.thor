@@ -41,7 +41,6 @@ class Deploy < Thor
 
       FileUtils.mkdir_p(PUBLIC_ROOT)
       FileUtils.rm_r(Dir.glob("#{PUBLIC_ROOT}/**/*"),:force => true)
-      FileUtils.cp("#{CLIENT_ROOT}/maintenance.html", PUBLIC_ROOT)
       FileUtils.cp_r("#{CLIENT_ROOT}/images", "#{PUBLIC_ROOT}/images")
       FileUtils.mkdir("#{PUBLIC_ROOT}/stylesheets")
       FileUtils.cp("#{CLIENT_ROOT}/stylesheets/hyperarchy.css", "#{PUBLIC_ROOT}/stylesheets")
