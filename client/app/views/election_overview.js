@@ -57,7 +57,11 @@ _.constructor("Views.ElectionOverview", View.Template, {
             .ref('createCandidateButton');
 
           div({'class': "loading", style: "display: none"}).ref('createCandidateSpinner');
+          div({'class': "clear"});
         }).ref('createCandidateForm');
+
+        div({'class': "voteCount"}, "8 Votes");
+
       });
 
 

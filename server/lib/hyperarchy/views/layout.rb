@@ -7,6 +7,7 @@ module Views
         head do
           title "Hyperarchy"
           link :rel => "stylesheet", :type => "text/css", :href => "/stylesheets/hyperarchy.css"
+          link :rel => "shortcut icon", :href => "/images/icon.png"
 
           head_content
         end
