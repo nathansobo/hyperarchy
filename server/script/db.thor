@@ -26,7 +26,13 @@ class Db < Thor
     
     Sequel.extension :migration
     migration_dir = File.expand_path("#{dir}/../migrations")
-    Sequel::IntegerMigrator.new(db(env), migration_dir, options).run
+
+    opts = {}
+
+    opts[:current] = options[:current].to_i if options[:current]
+    opts[:target] = options[:target].to_i if options[:target]
+
+    Sequel::IntegerMigrator.new(db(env), migration_dir, opts).run
   end
 
   desc "load_examples [env=development]", "load the example data into the development database"
