@@ -295,6 +295,15 @@ module Monarch
           self
         end
 
+        def soft_update_clean_fields(values_by_field_name)
+          values_by_field_name.each do |field_name, value|
+            if the_field = field(field_name)
+              the_field.value = value unless the_field.dirty?
+            end
+          end
+          self
+        end
+
         protected
         attr_reader :synthetic_fields_by_column
 

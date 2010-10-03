@@ -52,6 +52,12 @@ module Monarch
             record = all.first
             record.should equal(record_in_id_map)
             record.body.should == "New Body"
+
+            record.body = "Dirty Body" # should not get passively updated
+            Origin.execute_dui("update blog_posts set body = 'Shiny Body' where id = #{record_in_id_map.id}")
+            Origin.read(BlogPost.where(BlogPost[:id].eq("grain_quinoa")))
+
+            record.body.should == "Dirty Body"
           end
         end
 
