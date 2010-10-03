@@ -7,6 +7,20 @@ class Vote < Monarch::Model::Record
   belongs_to :user
   belongs_to :election
 
+
+  # note: this approach to incrementing / decrementing is not atomic!
+  # but currently plan to serialize all operations per election so it's ok
+  # we want to go through the record so the update gets broadcast
+  def after_create
+    election.vote_count = election.vote_count + 1
+    election.save
+  end
+
+  def after_destroy
+    election.vote_count -= 1
+    election.save
+  end
+
   def updated
     update(:updated_at => Time.now)
   end

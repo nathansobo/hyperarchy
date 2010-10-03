@@ -2,6 +2,7 @@ class Election < Monarch::Model::Record
   column :organization_id, :key
   column :creator_id, :key
   column :body, :string
+  column :vote_count, :integer, :default => 0
   column :created_at, :datetime
   column :updated_at, :datetime
 
