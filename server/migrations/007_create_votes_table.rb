@@ -7,5 +7,7 @@ Sequel.migration do
       Time :created_at
       Time :updated_at
     end
+
+    add_column(:rankings, :vote_id, Integer)
   end
 end
