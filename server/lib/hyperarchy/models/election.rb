@@ -6,6 +6,7 @@ class Election < Monarch::Model::Record
   column :updated_at, :datetime
 
   has_many :candidates
+  has_many :votes
   has_many :rankings
   has_many :majorities
 

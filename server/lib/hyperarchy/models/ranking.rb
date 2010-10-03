@@ -2,11 +2,18 @@ class Ranking < Monarch::Model::Record
   column :user_id, :key
   column :election_id, :key
   column :candidate_id, :key
+  column :vote_id, :key
   column :position, :float
 
   belongs_to :user
   belongs_to :candidate
   belongs_to :election
+  belongs_to :vote
+
+  def before_create
+    self.vote = election.votes.find_or_create(:user_id => user_id)
+    vote.updated
+  end
 
   def after_create
     if position > 0
@@ -31,6 +38,7 @@ class Ranking < Monarch::Model::Record
       after_ranking_moved_down(old_position)
     end
 
+    election.votes.find(:user_id => user_id).updated
     election.compute_global_ranking
   end
 
@@ -68,6 +76,11 @@ class Ranking < Monarch::Model::Record
       decrement_defeats_by(candidates_not_ranked_by_same_user)
     end
 
+    if rankings_by_same_user.empty?
+      vote.destroy
+    else
+      vote.updated
+    end
     election.compute_global_ranking
   end
 

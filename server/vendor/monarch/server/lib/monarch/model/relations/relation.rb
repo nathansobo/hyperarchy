@@ -34,7 +34,8 @@ module Monarch
           where(id_or_predicate_or_hash).first
         end
 
-        def find_or_create(predicate)
+        def find_or_create(predicate_or_id_or_hash)
+          predicate = convert_to_predicate_if_needed(predicate_or_id_or_hash)
           extant_record = find(predicate)
           if extant_record
             extant_record

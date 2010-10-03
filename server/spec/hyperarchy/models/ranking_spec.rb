@@ -235,6 +235,43 @@ module Models
         find_majority(candidate_3, candidate_2).pro_count.should == 0
         find_majority(candidate_3, candidate_1).pro_count.should == 0
       end
+
+      specify "it creates, updates, or destroys the associated vote as appropriate" do
+        Timecop.freeze(Time.now)
+        users_votes = election.votes.where(:user => user)
+
+        users_votes.should be_empty
+
+        ranking_1 = election.rankings.create(:user => user, :candidate => candidate_1, :position => 64)
+
+        users_votes.size.should == 1
+        vote = election.votes.find(:user => user)
+        ranking_1.vote.should == vote
+        vote.created_at.should == Time.now
+        vote.updated_at.should == Time.now
+
+        Timecop.freeze(Time.now + 60)
+
+        ranking_2 = election.rankings.create(:user => user, :candidate => candidate_2, :position => 32)
+        users_votes.size.should == 1
+        ranking_2.vote.should == vote
+        vote.updated_at.should == Time.now
+
+        Timecop.freeze(Time.now + 60)
+
+        ranking_1.update(:position => 16)
+        users_votes.size.should == 1
+        vote.updated_at.should == Time.now
+
+        Timecop.freeze(Time.now + 60)
+
+        ranking_2.destroy
+        users_votes.size.should == 1
+        vote.updated_at.should == Time.now
+
+        ranking_1.destroy
+        users_votes.should be_empty
+      end
     end
   end
 end
