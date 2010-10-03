@@ -1,0 +1,57 @@
+#app {
+  #editOrganization {
+    @extend #addOrganization;
+
+    #details {
+      margin-bottom: 30px;
+      textarea {
+        resize: none;
+      }
+      button {
+        display: inline-block;
+      }
+      .loading {
+        display: inline-block;
+        position: relative;
+        top: 3px;
+        left: 5px;
+      }
+    }
+
+    #overviewLink { float: right; }
+
+    div.addMember {
+      font-size: medium;
+      border-bottom: 1px solid #999999;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+
+      input, select {
+        display: inline;
+        margin-right: 10px;
+      }
+
+      input.name { width: 150px; }
+      input.emailAddress { width: 250px; }
+    }
+
+    table.members {
+      width: 100%;
+
+      th { font-weight: bold; }
+
+      td, th {
+        border-bottom: 1px #999999 dashed;
+        padding: 5px 0 5px 0;
+      }
+
+      .role { width: 115px; }
+      .remove { width: 80px; }
+      .loading {
+        display: inline-block;
+        position: relative;
+        top: 5px;
+      }
+    }
+  }
+}

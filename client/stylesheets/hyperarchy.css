@@ -819,6 +819,7 @@ button {
     float: right;
     position: relative;
     top: -12px; }
+
 #app #header {
   border-bottom: 1px solid #cccccc;
   position: relative;
@@ -857,6 +858,7 @@ button {
   #app #header #logo {
     margin: 5px 0px;
     cursor: pointer; }
+
 #app #organizationOverview #organizationHeader {
   margin-bottom: 30px; }
   #app #organizationOverview #organizationHeader h1, #app #organizationOverview #organizationHeader h2 {
@@ -930,6 +932,7 @@ button {
   left: 50%;
   margin-left: -40px;
   margin-top: -40px; }
+
 #app #electionOverview .expandArrow {
   float: left;
   margin-right: 5px;
@@ -1061,6 +1064,7 @@ button {
         background-image: url(/images/x_11x11_dark.png); }
     #app #electionOverview ol.candidates li.candidate .loading {
       background-position: 2px 2px; }
+
 #app #addOrganization, #app #editOrganization {
   font-size: 21px; }
   #app #addOrganization input, #app #editOrganization input, #app #addOrganization textarea, #app #editOrganization textarea {
@@ -1069,6 +1073,7 @@ button {
     margin-bottom: 10px; }
   #app #addOrganization button, #app #editOrganization button {
     margin-top: 10px; }
+
 #app #editOrganization #details {
   margin-bottom: 30px; }
   #app #editOrganization #details textarea {
@@ -1109,6 +1114,7 @@ button {
     display: inline-block;
     position: relative;
     top: 5px; }
+
 #app #invite textarea {
   padding: 5px;
   width: 100%;

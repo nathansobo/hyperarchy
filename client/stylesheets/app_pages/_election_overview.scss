@@ -1,0 +1,193 @@
+#app {
+  #electionOverview {
+    .expandArrow {
+      float: left;
+      margin-right: 5px;
+      position: relative;
+      top: 7px;
+    }
+
+    #electionBodyContainer {
+      float: left;
+      width: 282px;
+      margin-bottom: 10px;
+
+      textarea.electionBody {
+        margin-top: 2px;
+        width: 100%;
+        resize: none;
+        font-size: 21px;
+        padding: 4px;
+        height: 50px;
+      }
+    }
+
+    #expandedArea {
+      button {
+        float: right;
+        margin-left: 5px;
+      }
+
+      .loading {
+        float: right;
+        top: 2px;
+        position: relative;
+      }
+    }
+
+    div#createCandidateForm {
+      margin-top: 20px;
+      clear: both;
+
+      textarea {
+        font-size: 21px;
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 10px;
+        display: block;
+        resize: none;
+        height: 95px;
+      }
+
+      .loading {
+        float: right;
+        margin-right: 4px;
+        position: relative;
+        top: 3px;
+      }
+
+      button {
+        display: block;
+        font-size: 15px;
+        float: right;
+      }
+    }
+
+    .candidatesListHeader {
+      font-size: 16px;
+      color: #999999;
+      margin-bottom: 5px;
+    }
+
+    .bigLoading {
+      position: absolute;
+    }
+
+    ol.candidates {
+      background-color: #f4f2f2;
+      -moz-box-shadow: #c8c7c7 0px 0px 5px inset;
+      -webkit-box-shadow: #c8c7c7 0px 0px 5px inset;
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      .dragTargetExplanation {
+        font-size: 15px;
+        padding: 0 40px;
+        text-align: center;
+      }
+
+      li.separator {
+        text-align: center;
+        padding: 5px;
+        cursor: default;
+        font-size: 15px;
+
+        .up {
+          background: url("/images/arrow_up_white.png");
+          background-repeat: no-repeat;
+          padding-left: 20px;
+          height: 22px;
+          display: inline-block;
+          margin-right: 20px;
+        }
+
+        .down {
+          background: url("/images/arrow_down_white.png");
+          background-repeat: no-repeat;
+          background-position: right;
+          padding-right: 20px;
+          height: 22px;
+          display: inline-block;
+        }
+      }
+
+      li.candidate {
+        font-size: 15px;
+        padding: 5px;
+        border: 1px solid #c8c7c7;
+        border-bottom: none;
+        cursor: default;
+        background: white;
+        -moz-box-shadow: #c8c7c7 0px 1px 3px;
+        -webkit-box-shadow: #c8c7c7 0px 1px 3px;
+        position: relative;
+
+        &:last-child { border-bottom: 1px solid #d6d3d3; }
+
+        &.ui-draggable-dragging {
+          width: 288px;
+          list-style-type: none;
+        }
+
+        .expandArrow {
+          position: absolute;
+          top: 8px;
+          left: 5px;
+          margin-left: 1px;
+          margin-right: 4px;
+        }
+
+        .bodyContainer {
+          margin-left: 19px;
+          margin-right: 22px;
+
+          textarea {
+            outline: none;
+            width: 100%;
+            padding: 4px;
+            padding-top: 2px;
+            resize: none;
+            margin-bottom: 5px;
+          }
+        }
+
+        .expandedInfo {
+          button {
+            float: right;
+            font-size: 12px;
+            margin-left: 5px;
+          }
+        }
+
+
+        .candidateIcon {
+          float: right;
+          position: relative;
+          top: 1px;
+          height: 20px;
+          width: 20px;
+          background-position: 5px 4px;
+          background-repeat: no-repeat;
+        }
+
+        .candidateRanked {
+          background-image: url(/images/check_12x10_light.png);
+          background-position: 5px 5px;
+        }
+
+        .unrankCandidate {
+          background-image: url(/images/x_11x11_light.png);
+
+          &:hover {
+            cursor: pointer;
+            background-image: url(/images/x_11x11_dark.png);
+          }
+        }
+
+        .loading {
+          background-position: 2px 2px;
+        }
+      }
+    }
+  }
+}

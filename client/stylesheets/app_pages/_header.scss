@@ -1,0 +1,51 @@
+#app {
+  #header {
+    border-bottom: 1px solid #cccccc;
+    position: relative;
+    margin-bottom: 15px;
+
+    & > div { height: 30px; }
+
+    .headerItem {
+      float: right;
+      margin-top: 2px;
+      margin-left: 6px;
+    }
+
+    .dropdownLink {
+      display: inline-block;
+      color: $blue;
+      text-decoration: underline;
+      cursor: pointer;
+      padding-right: 15px;
+
+      background-image: url(/images/expand_arrow_blue.png);
+      background-repeat: no-repeat;
+      background-position: right;
+    }
+
+    .dropdownMenu {
+      z-index: 1;
+      position: absolute;
+      background: white;
+      border: 1px solid #cccccc;
+      border-top: none;
+      display: none;
+      width: auto;
+      -moz-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
+      -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
+      white-space: nowrap;
+
+      a {
+        padding: 2px 4px;
+        display: block;
+        &:hover { background: #fff3c7; }
+      }
+    }
+
+    #logo {
+      margin: 5px 0px;
+      cursor: pointer;
+    }
+  }
+}

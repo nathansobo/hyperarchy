@@ -60,7 +60,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
           div({'class': "clear"});
         }).ref('createCandidateForm');
 
-        div({'class': "voteCount"}, "8 Votes");
+        div({'class': "voteCount"}, "8 Other Voters");
 
       });
 
