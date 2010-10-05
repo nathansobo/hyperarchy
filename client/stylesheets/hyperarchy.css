@@ -976,6 +976,11 @@ button {
     display: block;
     font-size: 15px;
     float: right; }
+#app #electionOverview #otherVoters {
+  margin-top: 40px; }
+  #app #electionOverview #otherVoters #voteCount {
+    font-size: 21px;
+    border-bottom: 1px solid gray; }
 #app #electionOverview .candidatesListHeader {
   font-size: 16px;
   color: #999999;

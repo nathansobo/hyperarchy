@@ -63,6 +63,15 @@
       }
     }
 
+    #otherVoters {
+      margin-top: 40px;
+
+      #voteCount {
+        font-size: 21px;
+        border-bottom: 1px solid gray;
+      }
+    }
+
     .candidatesListHeader {
       font-size: 16px;
       color: #999999;
@@ -158,7 +167,6 @@
             margin-left: 5px;
           }
         }
-
 
         .candidateIcon {
           float: right;

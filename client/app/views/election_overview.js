@@ -60,8 +60,18 @@ _.constructor("Views.ElectionOverview", View.Template, {
           div({'class': "clear"});
         }).ref('createCandidateForm');
 
-        div({'class': "voteCount"}, "8 Other Voters");
 
+//        div({id: "otherVoters"}, function() {
+//          div({id: "voteCount"}, "8 Other Voters");
+//
+//
+//          div({'class': "otherVoter"}, function() {
+//            img({src: "http://www.gravatar.com/avatar/810b29fa00f1cd48bb2605c8649ebe58.png?s=50"});
+//            span("Nathan Sobo");
+//          });
+//
+//
+//        });
       });
 
 
