@@ -8,6 +8,11 @@ jQuery.fn.extend({
 
   view: function() {
     return this.data('view');
+  },
+
+  fillVerticalSpace: function(spaceAtBottom) {
+    var height = $(window).height() - this.offset().top - spaceAtBottom;
+    this.height(height);
   }
 });
 
