@@ -78,28 +78,33 @@
         }
       }
 
-      .vote {
-        margin-top: 5px;
+      ol {
+        overflow-y: auto;
+
+        .vote {
+          margin-top: 5px;
 //        cursor: pointer;
-        
+
 //        &:hover {
 //          background-color: #ffffcc;
 //        }
 
-        .avatar {
-          float: left;
-          margin-right: 5px;
+          .avatar {
+            float: left;
+            margin-right: 5px;
+          }
+
+          .name {
+            font-size: 15px;
+            margin-bottom: 2px;
+          }
+
+          .votedAt {
+            color: #999999;
+            font-size: 12px;
+          }
         }
 
-        .name {
-          font-size: 15px;
-          margin-bottom: 2px;
-        }
-
-        .votedAt {
-          color: #999999;
-          font-size: 12px;
-        }
       }
     }
 

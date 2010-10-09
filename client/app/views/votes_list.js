@@ -26,6 +26,9 @@ _.constructor("Views.VotesList", View.Template, {
   viewProperties: {
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
+      var adjustHeight = this.hitch('adjustHeight');
+      _.defer(adjustHeight);
+      $(window).resize(adjustHeight);
     },
 
     election: {
@@ -55,6 +58,10 @@ _.constructor("Views.VotesList", View.Template, {
     },
 
     stopLoading: function() {
+    },
+
+    adjustHeight: function() {
+      this.votes.fillVerticalSpace(20);
     }
   }
 });

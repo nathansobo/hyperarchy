@@ -32,7 +32,7 @@ _.constructor("Views.CandidatesList", View.Template, {
     },
 
     adjustHeight: function() {
-      this.candidatesList.height($(window).height() - this.candidatesList.offset().top - 20);
+      this.candidatesList.fillVerticalSpace(20);
       this.loading.position({
         my: 'center center',
         at: 'center center',

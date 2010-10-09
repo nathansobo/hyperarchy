@@ -120,7 +120,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     adjustHeight: function() {
-      this.rankedCandidatesList.height($(window).height() - this.rankedCandidatesList.offset().top - 20);
+      this.rankedCandidatesList.fillVerticalSpace(20);
       this.adjustDragTargetExplanationHeights();
       this.loading.position({
         my: 'center center',

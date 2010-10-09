@@ -983,17 +983,19 @@ button {
     border-bottom: 1px solid gray; }
     #app #electionOverview #votes #voteCount .instructions {
       display: none; }
-  #app #electionOverview #votes .vote {
-    margin-top: 5px; }
-    #app #electionOverview #votes .vote .avatar {
-      float: left;
-      margin-right: 5px; }
-    #app #electionOverview #votes .vote .name {
-      font-size: 15px;
-      margin-bottom: 2px; }
-    #app #electionOverview #votes .vote .votedAt {
-      color: #999999;
-      font-size: 12px; }
+  #app #electionOverview #votes ol {
+    overflow-y: auto; }
+    #app #electionOverview #votes ol .vote {
+      margin-top: 5px; }
+      #app #electionOverview #votes ol .vote .avatar {
+        float: left;
+        margin-right: 5px; }
+      #app #electionOverview #votes ol .vote .name {
+        font-size: 15px;
+        margin-bottom: 2px; }
+      #app #electionOverview #votes ol .vote .votedAt {
+        color: #999999;
+        font-size: 12px; }
 #app #electionOverview .candidatesListHeader {
   font-size: 16px;
   color: #999999;
