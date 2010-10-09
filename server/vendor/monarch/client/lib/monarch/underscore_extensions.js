@@ -19,5 +19,14 @@ _.mixin({
       comparator(obj, array[mid]) == 1 ? low = mid + 1 : high = mid;
     }
     return low;
+  },
+
+  repeat: function(callback, context, interval) {
+    if (!interval) interval = 31;
+    if (context) callback = _.bind(callback, context);
+    var intervalId = setInterval(callback, interval);
+    return function() {
+      clearInterval(intervalId);
+    };
   }
 });
