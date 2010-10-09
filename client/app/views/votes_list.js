@@ -27,13 +27,13 @@ _.constructor("Views.VotesList", View.Template, {
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
       var adjustHeight = this.hitch('adjustHeight');
-      _.defer(adjustHeight);
       $(window).resize(adjustHeight);
     },
 
     election: {
       afterChange: function(election) {
         this.updateVoteCount();
+        this.adjustHeight();
         this.subscriptions.destroy();
         this.subscriptions.add(election.votes().onRemoteInsert(this.hitch('updateVoteCount')));
         this.subscriptions.add(election.votes().onRemoteRemove(this.hitch('updateVoteCount')));

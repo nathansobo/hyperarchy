@@ -198,7 +198,11 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.bodyTextarea.keyup();
       this.bodyTextarea.focus();
       this.bodyDiv.hide();
-      this.expandedArea.slideDown('fast');
+
+      this.votersList.adjustHeight();
+      this.expandedArea.slideDown('fast', _.repeat(function() {
+        this.votersList.adjustHeight();
+      }, this));
     },
 
     contract: function(dontAnimate) {
@@ -210,8 +214,12 @@ _.constructor("Views.ElectionOverview", View.Template, {
       if (dontAnimate) {
         this.expandedArea.hide();
       } else {
-        this.expandedArea.slideUp('fast');
+        this.expandedArea.slideUp('fast', _.repeat(function() {
+          this.votersList.adjustHeight();
+        }, this));
       }
+
+      this.votersList.adjustHeight();
     },
 
     enableOrDisableSaveButton: function() {

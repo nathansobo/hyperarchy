@@ -977,7 +977,8 @@ button {
     font-size: 15px;
     float: right; }
 #app #electionOverview #votes {
-  margin-top: 40px; }
+  margin-top: 40px;
+  background: red; }
   #app #electionOverview #votes #voteCount {
     font-size: 21px;
     border-bottom: 1px solid gray; }
