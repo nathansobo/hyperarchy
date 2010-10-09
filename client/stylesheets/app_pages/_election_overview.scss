@@ -63,12 +63,43 @@
       }
     }
 
-    #otherVoters {
+    #votes {
       margin-top: 40px;
 
       #voteCount {
         font-size: 21px;
         border-bottom: 1px solid gray;
+
+        .instructions {
+          display: none;
+//          margin-left: 10px;
+//          font-size: 14px;
+//          color: #999999;
+        }
+      }
+
+      .vote {
+        margin-top: 5px;
+//        cursor: pointer;
+        
+//        &:hover {
+//          background-color: #ffffcc;
+//        }
+
+        .avatar {
+          float: left;
+          margin-right: 5px;
+        }
+
+        .name {
+          font-size: 15px;
+          margin-bottom: 2px;
+        }
+
+        .votedAt {
+          color: #999999;
+          font-size: 12px;
+        }
       }
     }
 

@@ -4,6 +4,7 @@ _.constructor("Ranking", Model.Record, {
       this.columns({
         candidateId: 'key',
         electionId: 'key',
+        voteId: 'key',
         userId: 'key',
         position: 'float'
       });

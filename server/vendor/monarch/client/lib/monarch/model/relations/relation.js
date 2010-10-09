@@ -314,7 +314,9 @@ _.constructor("Monarch.Model.Relations.Relation", {
   predicateFromHash: function(hash) {
     var predicates = [];
     _.each(hash, function(value, key) {
-      predicates.push(this.column(key).eq(value))
+      var column = this.column(key);
+      if (!column) { debugger; throw new Error("No column named " + key + " found."); }
+      predicates.push(column.eq(value))
     }, this);
 
     if (_.isEmpty(predicates)) throw new Error("No key value pairs provided for predication");

@@ -51,7 +51,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
               }
             });
 
-
           button("Suggest Answer")
             .click('createCandidate')
             .ref('createCandidateButton');
@@ -60,18 +59,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
           div({'class': "clear"});
         }).ref('createCandidateForm');
 
-
-//        div({id: "otherVoters"}, function() {
-//          div({id: "voteCount"}, "8 Other Voters");
-//
-//
-//          div({'class': "otherVoter"}, function() {
-//            img({src: "http://www.gravatar.com/avatar/810b29fa00f1cd48bb2605c8649ebe58.png?s=50"});
-//            span("Nathan Sobo");
-//          });
-//
-//
-//        });
+        subview('votersList', Views.VotesList);
       });
 
 
@@ -154,16 +142,21 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
         this.candidatesList.empty();
         this.rankedCandidatesList.empty();
+        this.votersList.empty();
 
         this.candidatesList.election(election);
         this.rankedCandidatesList.startLoading();
-        election.rankingsForCurrentUser().fetch()
+        this.votersList.startLoading();
+
+        election.fetchData()
           .onSuccess(function() {
             this.rankedCandidatesList.stopLoading();
+            this.votersList.stopLoading();
             this.rankedCandidatesList.election(election);
+            this.votersList.election(election);
           }, this);
 
-        Server.subscribe([election, election.candidates()])
+        Server.subscribe([election, election.candidates(), election.votes()])
           .onSuccess(function(subscriptions) {
             this.subscriptions.add(subscriptions);
           }, this);

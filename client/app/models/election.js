@@ -9,6 +9,11 @@ _.constructor("Election", Model.Record, {
     });
 
     this.hasMany('candidates', {orderBy: 'position asc'});
+    this.hasMany('votes', {orderBy: 'updatedAt desc'});
+    this.relatesToMany('voters', function() {
+      return this.votes().joinThrough(User);
+    });
+
     this.hasMany('rankings', {orderBy: 'position desc'});
 
     this.belongsTo('organization');
@@ -45,5 +50,9 @@ _.constructor("Election", Model.Record, {
     var userId = user.id();
     if (this.unrankedCandidatesByUserId[userId]) return this.unrankedCandidatesByUserId[userId];
     return this.unrankedCandidatesByUserId[userId] = this.candidates().difference(this.rankedCandidatesForUser(user));
+  },
+
+  fetchData: function() {
+    return Server.fetch([this.rankingsForCurrentUser(), this.votes(), this.voters()]);
   }
 });

@@ -25,6 +25,10 @@ module Models
       elections.join_through(Candidate)
     end
 
+    expose :votes do
+      elections.join_through(Vote)
+    end
+
     expose :rankings do
       elections.join_through(Ranking)
     end

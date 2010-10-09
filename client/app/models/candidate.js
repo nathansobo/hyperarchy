@@ -23,6 +23,7 @@ _.constructor("Candidate", Model.Record, {
   },
 
   rankingByCurrentUser: function() {
+    if (!Application.currentUser()) throw new Error("There is no current user");
     return this.rankingByUser(Application.currentUser());
   },
 

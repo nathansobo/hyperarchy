@@ -12,6 +12,7 @@
 //= require <jquery-ui/jquery.effects.highlight>
 //= require <jquery.elastic.source>
 //= require <jquery.placeheld>
+//= require <jquery.phpdate>
 //= require "models"
 //= require "views"
 //= require "controllers"

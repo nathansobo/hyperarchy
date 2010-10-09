@@ -3,4 +3,5 @@
 //= require "models/membership"
 //= require "models/election"
 //= require "models/candidate"
+//= require "models/vote"
 //= require "models/ranking"

@@ -976,11 +976,24 @@ button {
     display: block;
     font-size: 15px;
     float: right; }
-#app #electionOverview #otherVoters {
+#app #electionOverview #votes {
   margin-top: 40px; }
-  #app #electionOverview #otherVoters #voteCount {
+  #app #electionOverview #votes #voteCount {
     font-size: 21px;
     border-bottom: 1px solid gray; }
+    #app #electionOverview #votes #voteCount .instructions {
+      display: none; }
+  #app #electionOverview #votes .vote {
+    margin-top: 5px; }
+    #app #electionOverview #votes .vote .avatar {
+      float: left;
+      margin-right: 5px; }
+    #app #electionOverview #votes .vote .name {
+      font-size: 15px;
+      margin-bottom: 2px; }
+    #app #electionOverview #votes .vote .votedAt {
+      color: #999999;
+      font-size: 12px; }
 #app #electionOverview .candidatesListHeader {
   font-size: 16px;
   color: #999999;
