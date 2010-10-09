@@ -143,6 +143,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.candidatesList.empty();
         this.rankedCandidatesList.empty();
         this.votersList.empty();
+        this.votersList.adjustHeight();
 
         this.candidatesList.election(election);
         this.rankedCandidatesList.startLoading();
