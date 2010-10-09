@@ -51,7 +51,8 @@ _.constructor("Views.VotesList", View.Template, {
     },
 
     empty: function() {
-      
+      this.voteCount.empty();
+      this.votes.empty();
     },
 
     startLoading: function() {
