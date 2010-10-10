@@ -92,19 +92,25 @@
           .avatar {
             float: left;
             margin-right: 5px;
+            width: 40px;
+            height: 40px;
+            background-color: #999999;
           }
 
-          .name {
-            font-size: 15px;
-            margin-bottom: 2px;
-          }
+          .details {
+            padding-top: 2px;
 
-          .votedAt {
-            color: #999999;
-            font-size: 12px;
+            .name {
+              font-size: 15px;
+              margin-bottom: 2px;
+            }
+
+            .votedAt {
+              color: #999999;
+              font-size: 12px;
+            }
           }
         }
-
       }
     }
 

@@ -989,13 +989,18 @@ button {
       margin-top: 5px; }
       #app #electionOverview #votes ol .vote .avatar {
         float: left;
-        margin-right: 5px; }
-      #app #electionOverview #votes ol .vote .name {
-        font-size: 15px;
-        margin-bottom: 2px; }
-      #app #electionOverview #votes ol .vote .votedAt {
-        color: #999999;
-        font-size: 12px; }
+        margin-right: 5px;
+        width: 40px;
+        height: 40px;
+        background-color: #999999; }
+      #app #electionOverview #votes ol .vote .details {
+        padding-top: 2px; }
+        #app #electionOverview #votes ol .vote .details .name {
+          font-size: 15px;
+          margin-bottom: 2px; }
+        #app #electionOverview #votes ol .vote .details .votedAt {
+          color: #999999;
+          font-size: 12px; }
 #app #electionOverview .candidatesListHeader {
   font-size: 16px;
   color: #999999;

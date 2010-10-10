@@ -203,7 +203,7 @@
   // 12-Hour clock
   function TwelveHourClock(iHours) {
     if (iHours == 0) {
-      iHours = 24;
+      iHours = 12;
     } else if (iHours > 12) {
       iHours -= 12;
     }

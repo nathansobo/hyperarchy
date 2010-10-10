@@ -2,8 +2,10 @@ _.constructor("Views.VoteLi", View.Template, {
   content: function(attrs) { with(this.builder) {
     div({'class': "vote", 'style': "display: none;"}, function() {
       img({'class': "avatar", src: ""}).ref('avatar');
-      div({'class': "name"}, "").ref('name');
-      div({'class': "votedAt"}, "").ref('votedAt');
+      div({'class': "details"}, function() {
+        div({'class': "name"}, "").ref('name');
+        div({'class': "votedAt"}, "").ref('votedAt');
+      });
       div({'class': "clear"});
     });
   }},

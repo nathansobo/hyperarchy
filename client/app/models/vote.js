@@ -12,6 +12,6 @@ _.constructor("Vote", Model.Record, {
   },
 
   formattedUpdatedAt: function() {
-    return $.PHPDate("M j, Y @ h:ia", this.updatedAt());
+    return $.PHPDate("M j, Y @ g:ia", this.updatedAt());
   }
 });
