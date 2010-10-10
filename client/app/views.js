@@ -13,4 +13,5 @@
 //= require "views/ranked_candidate_li"
 //= require "views/sorted_list"
 //= require "views/candidates_list"
+//= require "views/avatar"
 

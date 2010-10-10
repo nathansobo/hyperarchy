@@ -744,6 +744,13 @@ button {
     .expandArrow.expanded:hover {
       background-position: -39px 0px; }
 
+#simpleTooltip {
+  width: 200px;
+  padding: 5px;
+  background: white;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 5px; }
+
 #home {
   font-size: 22px; }
   #home #description {
@@ -881,7 +888,7 @@ button {
     margin-top: 5px; }
 #app #organizationOverview #welcomeBlurb {
   -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.35) 1px 1px 5px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 5px;
   background: #ffffcc;
   margin-bottom: 30px;
   padding: 10px;
@@ -992,7 +999,7 @@ button {
         margin-right: 5px;
         width: 40px;
         height: 40px;
-        background-color: #999999; }
+        background: #999999 url(/images/mystery_man.jpeg) no-repeat top left; }
       #app #electionOverview #votes ol .vote .details {
         padding-top: 2px; }
         #app #electionOverview #votes ol .vote .details .name {

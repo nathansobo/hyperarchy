@@ -18,13 +18,17 @@ _.constructor("User", Model.Record, {
     });
   },
 
+  isCurrent: function() {
+    return Application.currentUserId == this.id();
+  },
+
   fullName: function() {
     return this.firstName() + " " + this.lastName();
   },
 
   gravatarUrl: function(size) {
     if (!size) size = 40;
-    return "http://www.gravatar.com/avatar/" + this.emailHash() + "?s=40&d=mm"
+    return "http://www.gravatar.com/avatar/" + this.emailHash() + "?s=" + size.toString() + "&d=404"
   },
 
   emailHash: function() {

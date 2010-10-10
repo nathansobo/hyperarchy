@@ -188,3 +188,11 @@ button {
     &:hover { background-position: -39px 0px; }
   }
 }
+
+#simpleTooltip {
+  width: 200px;
+  padding: 5px;
+  background: white;
+  -moz-box-shadow: rgba(0,0,0,.4) 1px 1px 6px;
+  -webkit-box-shadow: rgba(0,0,0,.4) 1px 1px 5px;
+}

@@ -1,7 +1,7 @@
 _.constructor("Views.VoteLi", View.Template, {
   content: function(attrs) { with(this.builder) {
     div({'class': "vote", 'style': "display: none;"}, function() {
-      img({'class': "avatar", src: ""}).ref('avatar');
+      subview('avatar', Views.Avatar, { size: 40 });
       div({'class': "details"}, function() {
         div({'class': "name"}, "").ref('name');
         div({'class': "votedAt"}, "").ref('votedAt');
@@ -21,7 +21,7 @@ _.constructor("Views.VoteLi", View.Template, {
       }
 
       this.name.html(user.fullName());
-      this.avatar.attr('src', user.gravatarUrl());
+      this.avatar.user(user);
       this.updateVotedAt();
       this.show();
     },
