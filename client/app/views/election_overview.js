@@ -86,59 +86,36 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     navigate: function(state) {
       this.rankedCandidatesList.hide();
-      var electionId = state.electionId;
-      var election = Election.find(electionId);
+      this.candidatesList.adjustHeight();
+      this.rankedCandidatesList.adjustHeight();
 
+      var election = Election.find(state.electionId);
       if (!election) {
-        this.startLoading();
-        Server.fetch([
-          Election.where({id: electionId}).joinTo(Organization),
-          Candidate.where({electionId: electionId})
-        ]).onSuccess(function() {
-          this.stopLoading();
-          this.navigate(state);
-        }, this);
-        
+        this.retryNavigateAfterFetchingElection(state);
         return;
       }
 
-      this.candidatesList.adjustHeight();
-      this.rankedCandidatesList.adjustHeight();
       this.election(election);
       if (!election.candidates().empty()) this.rankedCandidatesList.show();
     },
 
+    retryNavigateAfterFetchingElection: function(state) {
+      this.startLoading();
+
+      var electionId = state.electionId;
+      Server.fetch([
+        Election.where({id: electionId}).joinTo(Organization),
+        Candidate.where({electionId: electionId})
+      ]).onSuccess(function() {
+        this.stopLoading();
+        this.navigate(state);
+      }, this);
+    },
+
     election: {
       afterChange: function(election) {
-        this.subscriptions.destroy();
-
-        this.organizationName.html(election.organization().name());
-        this.bodyTextarea.val(election.body());
-        this.bodyDiv.html(election.body());
-        this.contract(true);
-
-        if (election.belongsToCurrentUser() || election.organization().currentUserIsOwner()) {
-          this.expandArrow.show();
-        } else {
-          this.expandArrow.hide();
-        }
-
-        this.subscriptions.add(election.remote.field('body').onUpdate(function(newBody) {
-          this.bodyTextarea.val(newBody);
-          this.bodyDiv.html(newBody);
-        }, this));
-
-        this.subscriptions.add(election.onRemoteDestroy(function() {
-          this.goToOrganization();
-        }, this));
-
-        this.subscriptions.add(election.candidates().onRemoteInsert(function() {
-          if (this.rankedCandidatesList.is(":hidden")) this.rankedCandidatesList.fadeIn();
-        }, this));
-
-        this.subscriptions.add(election.candidates().onRemoteRemove(function() {
-          if (election.candidates().empty()) this.rankedCandidatesList.fadeOut();
-        }, this));
+        this.populateElectionDetails(election);
+        this.subscribeToElectionChanges(election);
 
         this.candidatesList.empty();
         this.rankedCandidatesList.empty();
@@ -162,6 +139,39 @@ _.constructor("Views.ElectionOverview", View.Template, {
             this.subscriptions.add(subscriptions);
           }, this);
       }
+    },
+
+    populateElectionDetails: function(election) {
+      this.organizationName.html(election.organization().name());
+      this.bodyTextarea.val(election.body());
+      this.bodyDiv.html(election.body());
+      if (election.belongsToCurrentUser() || election.organization().currentUserIsOwner()) {
+        this.expandArrow.show();
+      } else {
+        this.expandArrow.hide();
+      }
+      this.contract(true);
+    },
+
+    subscribeToElectionChanges: function(election) {
+      this.subscriptions.destroy();
+      this.subscriptions.add(election.remote.field('body').onUpdate(function(newBody) {
+        this.bodyTextarea.val(newBody);
+        this.bodyDiv.html(newBody);
+      }, this));
+
+      this.subscriptions.add(election.onRemoteDestroy(function() {
+        this.goToOrganization();
+      }, this));
+
+      this.subscriptions.add(election.candidates().onRemoteInsert(function() {
+        if (this.rankedCandidatesList.is(":hidden")) this.rankedCandidatesList.fadeIn();
+      }, this));
+
+      this.subscriptions.add(election.candidates().onRemoteRemove(function() {
+        if (election.candidates().empty()) this.rankedCandidatesList.fadeOut();
+      }, this));
+
     },
 
     createCandidate: function() {
