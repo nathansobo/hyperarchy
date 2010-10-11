@@ -89,7 +89,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.candidatesList.adjustHeight();
       this.rankedCandidatesList.adjustHeight();
 
-
       var rankingsUserId = state.rankingsUserId || Application.currentUserId;
       var election = Election.find(state.electionId);
       var rankingsUser = User.find(rankingsUserId);
@@ -99,6 +98,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       }
 
       this.election(election);
+      this.rankedCandidatesList.rankingsRelation(election.rankingsForUser(rankingsUser));
       if (!election.candidates().empty()) this.rankedCandidatesList.show();
     },
 
@@ -135,14 +135,13 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.votersList.empty();
 
         this.candidatesList.election(election);
-        this.rankedCandidatesList.startLoading();
+        this.rankedCandidatesList.election(election);
+
         this.votersList.startLoading();
 
         election.fetchVotesAndRankings()
           .onSuccess(function() {
-            this.rankedCandidatesList.stopLoading();
             this.votersList.stopLoading();
-            this.rankedCandidatesList.election(election);
             this.votersList.election(election);
           }, this);
 
@@ -184,7 +183,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.subscriptions.add(election.candidates().onRemoteRemove(function() {
         if (election.candidates().empty()) this.rankedCandidatesList.fadeOut();
       }, this));
-
     },
 
     createCandidate: function() {

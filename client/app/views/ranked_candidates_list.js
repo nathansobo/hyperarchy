@@ -28,6 +28,8 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
   }},
 
   viewProperties: {
+    propertyAccessors: ["election"],
+
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
       this.rankedCandidatesList.sortable({
@@ -47,18 +49,21 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       $(window).resize(adjustHeight);
     },
 
-    election: {
-      afterChange: function(election) {
-        this.subscriptions.destroy();
-        this.rankings = election.rankingsForCurrentUser();
-        this.populateRankings();
+    rankingsRelation: {
+      afterChange: function(rankingsRelation) {
+        this.startLoading();
+        rankingsRelation.fetch().onSuccess(function() {
+          this.stopLoading();
+          this.populateRankings();
+        }, this);
       }
     },
 
     populateRankings: function() {
       this.empty();
+      this.subscriptions.destroy();
 
-      this.rankings.each(function(ranking) {
+      this.rankingsRelation().each(function(ranking) {
         var li = Views.RankedCandidateLi.toView({ranking: ranking, containingList: this});
         li.stopLoading();
 
@@ -70,7 +75,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
           this.rankedCandidatesList.append(li);
         }
       }, this);
-      this.subscriptions.add(this.rankings.onRemoteRemove(function(ranking) {
+      this.subscriptions.add(this.rankingsRelation().onRemoteRemove(function(ranking) {
         this.findLi(ranking.candidate()).remove();
       }, this));
     },
@@ -176,6 +181,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     startLoading: function() {
+      this.empty();
       this.rankedCandidatesList.children().hide();
       this.loading.show();
     },
