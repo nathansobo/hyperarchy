@@ -117,10 +117,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.populateElectionDetails(election);
         this.subscribeToElectionChanges(election);
 
-        this.candidatesList.empty();
         this.rankedCandidatesList.empty();
         this.votersList.empty();
-        this.votersList.adjustHeight();
 
         this.candidatesList.election(election);
         this.rankedCandidatesList.startLoading();
@@ -151,6 +149,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.expandArrow.hide();
       }
       this.contract(true);
+      this.votersList.adjustHeight();
     },
 
     subscribeToElectionChanges: function(election) {
