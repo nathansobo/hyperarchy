@@ -59,7 +59,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
           div({'class': "clear"});
         }).ref('createCandidateForm');
 
-        subview('votersList', Views.VotesList);
+        subview('votesList', Views.VotesList);
       });
 
 
@@ -126,24 +126,14 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.populateElectionDetails(election);
         this.subscribeToElectionChanges(election);
 
-        this.rankedCandidatesList.empty();
-        this.votersList.empty();
-
-        this.candidatesList.election(election);
-        this.rankedCandidatesList.election(election);
-
-        this.votersList.startLoading();
-
-        election.fetchVotesAndRankings()
-          .onSuccess(function() {
-            this.votersList.stopLoading();
-            this.votersList.election(election);
-          }, this);
-
         Server.subscribe([election, election.candidates(), election.votes()])
           .onSuccess(function(subscriptions) {
             this.subscriptions.add(subscriptions);
           }, this);
+
+        this.candidatesList.election(election);
+        this.rankedCandidatesList.election(election);
+        this.votesList.election(election);
       }
     },
 
@@ -157,7 +147,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.expandArrow.hide();
       }
       this.contract(true);
-      this.votersList.adjustHeight();
+      this.votesList.adjustHeight();
     },
 
     subscribeToElectionChanges: function(election) {
@@ -216,9 +206,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.bodyTextarea.focus();
       this.bodyDiv.hide();
 
-      this.votersList.adjustHeight();
+      this.votesList.adjustHeight();
       this.expandedArea.slideDown('fast', _.repeat(function() {
-        this.votersList.adjustHeight();
+        this.votesList.adjustHeight();
       }, this));
     },
 
@@ -232,11 +222,11 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.expandedArea.hide();
       } else {
         this.expandedArea.slideUp('fast', _.repeat(function() {
-          this.votersList.adjustHeight();
+          this.votesList.adjustHeight();
         }, this));
       }
 
-      this.votersList.adjustHeight();
+      this.votesList.adjustHeight();
     },
 
     enableOrDisableSaveButton: function() {

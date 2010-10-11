@@ -52,7 +52,7 @@ _.constructor("Election", Model.Record, {
     return this.unrankedCandidatesByUserId[userId] = this.candidates().difference(this.rankedCandidatesForUser(user));
   },
 
-  fetchVotesAndRankings: function() {
-    return Server.fetch([this.rankingsForCurrentUser(), this.votes(), this.voters()]);
+  fetchVotes: function() {
+    return Server.fetch([this.votes(), this.voters()]);
   }
 });

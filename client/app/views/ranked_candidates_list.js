@@ -49,6 +49,14 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       $(window).resize(adjustHeight);
     },
 
+    election: {
+      afterChange: function() {
+        // if the election changes, the rankings relation will change when the
+        // rankings user is assigned so we show loading until then
+        this.startLoading(); 
+      }
+    },
+
     rankingsUser: {
       afterWrite: function(rankingsUser) {
         this.rankingsRelation(this.election().rankingsForUser(rankingsUser));

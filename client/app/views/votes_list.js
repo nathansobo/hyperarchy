@@ -32,12 +32,17 @@ _.constructor("Views.VotesList", View.Template, {
 
     election: {
       afterChange: function(election) {
-        this.updateVoteCount();
-        this.adjustHeight();
-        this.subscriptions.destroy();
-        this.subscriptions.add(election.votes().onRemoteInsert(this.hitch('updateVoteCount')));
-        this.subscriptions.add(election.votes().onRemoteRemove(this.hitch('updateVoteCount')));
-        this.votes.relation(election.votes());
+        this.startLoading();
+        election.fetchVotes()
+          .onSuccess(function() {
+            this.stopLoading();
+            this.updateVoteCount();
+            this.adjustHeight();
+            this.subscriptions.destroy();
+            this.subscriptions.add(election.votes().onRemoteInsert(this.hitch('updateVoteCount')));
+            this.subscriptions.add(election.votes().onRemoteRemove(this.hitch('updateVoteCount')));
+            this.votes.relation(election.votes());
+          }, this);
       }
     },
 
@@ -56,6 +61,7 @@ _.constructor("Views.VotesList", View.Template, {
     },
 
     startLoading: function() {
+      this.empty();
     },
 
     stopLoading: function() {
