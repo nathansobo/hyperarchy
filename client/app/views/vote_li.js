@@ -7,7 +7,7 @@ _.constructor("Views.VoteLi", View.Template, {
         div({'class': "votedAt"}, "").ref('votedAt');
       });
       div({'class': "clear"});
-    });
+    }).click('showRankings');
   }},
   
   viewProperties: {
@@ -28,6 +28,10 @@ _.constructor("Views.VoteLi", View.Template, {
 
     updateVotedAt: function() {
       this.votedAt.html(this.vote.formattedUpdatedAt());
+    },
+
+    showRankings: function() {
+      $.bbq.pushState({rankingsUserId: this.vote.userId()});
     }
   }
 });
