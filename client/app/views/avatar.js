@@ -31,7 +31,7 @@ _.constructor("Views.Avatar", View.Template, {
       this.simpletooltip();
       this.click(function(event) {
         window.open("http://gravatar.com", "Gravatar");
-        event.preventDefault();
+        event.stopPropagation();
       });
     }
   }

@@ -71,10 +71,9 @@
         border-bottom: 1px solid gray;
 
         .instructions {
-          display: none;
-//          margin-left: 10px;
-//          font-size: 14px;
-//          color: #999999;
+          margin-left: 10px;
+          font-size: 14px;
+          color: #999999;
         }
       }
 
@@ -83,11 +82,11 @@
 
         .vote {
           margin-top: 5px;
-//        cursor: pointer;
+          cursor: pointer;
 
-//        &:hover {
-//          background-color: #ffffcc;
-//        }
+          &:hover {
+            background-color: #ffffcc;
+          }
 
           .avatar {
             float: left;

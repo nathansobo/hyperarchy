@@ -116,6 +116,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         var rankingsUser = User.find(rankingsUserId);
         if (!rankingsUser) {
           User.fetch(rankingsUserId).onSuccess(this.hitch('rankingsUserId', rankingsUserId));
+          return;
         }
         this.rankedCandidatesList.rankingsUser(rankingsUser);
       }

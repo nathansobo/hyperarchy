@@ -989,11 +989,16 @@ button {
     font-size: 21px;
     border-bottom: 1px solid gray; }
     #app #electionOverview #votes #voteCount .instructions {
-      display: none; }
+      margin-left: 10px;
+      font-size: 14px;
+      color: #999999; }
   #app #electionOverview #votes ol {
     overflow-y: auto; }
     #app #electionOverview #votes ol .vote {
-      margin-top: 5px; }
+      margin-top: 5px;
+      cursor: pointer; }
+      #app #electionOverview #votes ol .vote:hover {
+        background-color: #ffffcc; }
       #app #electionOverview #votes ol .vote .avatar {
         float: left;
         margin-right: 5px;
