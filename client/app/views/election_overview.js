@@ -89,41 +89,36 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.candidatesList.adjustHeight();
       this.rankedCandidatesList.adjustHeight();
 
-      var rankingsUserId = state.rankingsUserId || Application.currentUserId;
       var election = Election.find(state.electionId);
-      var rankingsUser = User.find(rankingsUserId);
-      if (!election || !rankingsUser) {
-        this.retryNavigateAfterFetchingNeededData(state, election, rankingsUser);
+      if (!election) {
+        this.retryNavigateAfterFetchingNeededData(state);
         return;
       }
-
       this.election(election);
-      this.rankedCandidatesList.rankingsRelation(election.rankingsForUser(rankingsUser));
+      this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
       if (!election.candidates().empty()) this.rankedCandidatesList.show();
     },
 
-    retryNavigateAfterFetchingNeededData: function(state, election, rankingsUser) {
+    retryNavigateAfterFetchingNeededData: function(state) {
       this.startLoading();
-
       var electionId = state.electionId;
-      var rankingsUserId = state.rankingsUserId || Application.currentUserId;
-
-      var relations = [];
-      if (!election) {
-        relations.push(
-          Election.where({id: electionId}).joinTo(Organization), 
-          Candidate.where({electionId: electionId})
-        );
-      }
-
-      if (!rankingsUser) {
-        relations.push(User.where({id: rankingsUserId}));
-      }
-
-      Server.fetch(relations).onSuccess(function() {
+      Server.fetch([
+        Election.where({id: electionId}).joinTo(Organization),
+        Candidate.where({electionId: electionId})
+      ]).onSuccess(function() {
         this.stopLoading();
         this.navigate(state);
       }, this);
+    },
+
+    rankingsUserId: {
+      afterWrite: function(rankingsUserId) {
+        var rankingsUser = User.find(rankingsUserId);
+        if (!rankingsUser) {
+          User.fetch(rankingsUserId).onSuccess(this.hitch('rankingsUserId', rankingsUserId));
+        }
+        this.rankedCandidatesList.rankingsUser(rankingsUser);
+      }
     },
 
     election: {

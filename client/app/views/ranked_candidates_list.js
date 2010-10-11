@@ -49,6 +49,12 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       $(window).resize(adjustHeight);
     },
 
+    rankingsUser: {
+      afterWrite: function(rankingsUser) {
+        this.rankingsRelation(this.election().rankingsForUser(rankingsUser));
+      }
+    },
+
     rankingsRelation: {
       afterChange: function(rankingsRelation) {
         this.startLoading();
