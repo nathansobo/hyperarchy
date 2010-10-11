@@ -29,7 +29,7 @@ _.constructor("Views.ElectionLi", View.Template, {
 
   viewProperties: {
     displayElection: function() {
-      $.bbq.pushState({view: "election", electionId: this.election.id()});
+      $.bbq.pushState({view: "election", electionId: this.election.id()}, 2);
     },
 
     initialize: function() {

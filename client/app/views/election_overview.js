@@ -89,9 +89,12 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.candidatesList.adjustHeight();
       this.rankedCandidatesList.adjustHeight();
 
+
+      var rankingsUserId = state.rankingsUserId || Application.currentUserId;
       var election = Election.find(state.electionId);
-      if (!election) {
-        this.retryNavigateAfterFetchingElection(state);
+      var rankingsUser = User.find(rankingsUserId);
+      if (!election || !rankingsUser) {
+        this.retryNavigateAfterFetchingNeededData(state, election, rankingsUser);
         return;
       }
 
@@ -99,14 +102,25 @@ _.constructor("Views.ElectionOverview", View.Template, {
       if (!election.candidates().empty()) this.rankedCandidatesList.show();
     },
 
-    retryNavigateAfterFetchingElection: function(state) {
+    retryNavigateAfterFetchingNeededData: function(state, election, rankingsUser) {
       this.startLoading();
 
       var electionId = state.electionId;
-      Server.fetch([
-        Election.where({id: electionId}).joinTo(Organization),
-        Candidate.where({electionId: electionId})
-      ]).onSuccess(function() {
+      var rankingsUserId = state.rankingsUserId || Application.currentUserId;
+
+      var relations = [];
+      if (!election) {
+        relations.push(
+          Election.where({id: electionId}).joinTo(Organization), 
+          Candidate.where({electionId: electionId})
+        );
+      }
+
+      if (!rankingsUser) {
+        relations.push(User.where({id: rankingsUserId}));
+      }
+
+      Server.fetch(relations).onSuccess(function() {
         this.stopLoading();
         this.navigate(state);
       }, this);
@@ -124,7 +138,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.rankedCandidatesList.startLoading();
         this.votersList.startLoading();
 
-        election.fetchData()
+        election.fetchVotesAndRankings()
           .onSuccess(function() {
             this.rankedCandidatesList.stopLoading();
             this.votersList.stopLoading();
