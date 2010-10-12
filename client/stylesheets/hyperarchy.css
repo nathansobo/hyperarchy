@@ -1025,29 +1025,6 @@ button {
   -webkit-box-shadow: #c8c7c7 0px 0px 5px inset;
   overflow-x: hidden;
   overflow-y: auto; }
-  #app #electionOverview ol.candidates .dragTargetExplanation {
-    font-size: 15px;
-    padding: 0 40px;
-    text-align: center; }
-  #app #electionOverview ol.candidates li.separator {
-    text-align: center;
-    padding: 5px;
-    cursor: default;
-    font-size: 15px; }
-    #app #electionOverview ol.candidates li.separator .up {
-      background: url("/images/arrow_up_white.png");
-      background-repeat: no-repeat;
-      padding-left: 20px;
-      height: 22px;
-      display: inline-block;
-      margin-right: 20px; }
-    #app #electionOverview ol.candidates li.separator .down {
-      background: url("/images/arrow_down_white.png");
-      background-repeat: no-repeat;
-      background-position: right;
-      padding-right: 20px;
-      height: 22px;
-      display: inline-block; }
   #app #electionOverview ol.candidates li.candidate {
     font-size: 15px;
     padding: 5px;
@@ -1091,18 +1068,45 @@ button {
       width: 20px;
       background-position: 5px 4px;
       background-repeat: no-repeat; }
-    #app #electionOverview ol.candidates li.candidate .candidateRanked {
-      background-image: url(/images/check_12x10_light.png);
-      background-position: 5px 5px; }
-    #app #electionOverview ol.candidates li.candidate .unrankCandidate {
-      background-image: url(/images/x_11x11_light.png); }
-      #app #electionOverview ol.candidates li.candidate .unrankCandidate:hover {
-        cursor: pointer;
-        background-image: url(/images/x_11x11_dark.png); }
     #app #electionOverview ol.candidates li.candidate .loading {
       background-position: 2px 2px; }
-#app #electionOverview #rankedCandidatesList #back {
+#app #electionOverview #candidatesList ol#candidates li.candidate .candidateRanked {
+  background-image: url(/images/check_12x10_light.png);
+  background-position: 5px 5px; }
+#app #electionOverview #rankedCandidatesList.otherUser ol#rankedCandidates .dragTargetExplanation {
+  visibility: hidden; }
+#app #electionOverview #rankedCandidatesList.otherUser ol#rankedCandidates li.candidate .unrankCandidate {
+  visibility: hidden; }
+#app #electionOverview #rankedCandidatesList .candidatesListHeader #back {
   float: right; }
+#app #electionOverview #rankedCandidatesList ol#rankedCandidates .dragTargetExplanation {
+  font-size: 15px;
+  padding: 0 40px;
+  text-align: center; }
+#app #electionOverview #rankedCandidatesList ol#rankedCandidates li.candidate .unrankCandidate {
+  background-image: url(/images/x_11x11_light.png); }
+  #app #electionOverview #rankedCandidatesList ol#rankedCandidates li.candidate .unrankCandidate:hover {
+    cursor: pointer;
+    background-image: url(/images/x_11x11_dark.png); }
+#app #electionOverview #rankedCandidatesList ol#rankedCandidates li.separator {
+  text-align: center;
+  padding: 5px;
+  cursor: default;
+  font-size: 15px; }
+  #app #electionOverview #rankedCandidatesList ol#rankedCandidates li.separator .up {
+    background: url("/images/arrow_up_white.png");
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    height: 22px;
+    display: inline-block;
+    margin-right: 20px; }
+  #app #electionOverview #rankedCandidatesList ol#rankedCandidates li.separator .down {
+    background: url("/images/arrow_down_white.png");
+    background-repeat: no-repeat;
+    background-position: right;
+    padding-right: 20px;
+    height: 22px;
+    display: inline-block; }
 
 #app #addOrganization, #app #editOrganization {
   font-size: 21px; }

@@ -123,43 +123,13 @@
       position: absolute;
     }
 
+    // specific styles for global consensus / ranked candidates below
     ol.candidates {
       background-color: #f4f2f2;
       -moz-box-shadow: #c8c7c7 0px 0px 5px inset;
       -webkit-box-shadow: #c8c7c7 0px 0px 5px inset;
       overflow-x: hidden;
       overflow-y: auto;
-
-      .dragTargetExplanation {
-        font-size: 15px;
-        padding: 0 40px;
-        text-align: center;
-      }
-
-      li.separator {
-        text-align: center;
-        padding: 5px;
-        cursor: default;
-        font-size: 15px;
-
-        .up {
-          background: url("/images/arrow_up_white.png");
-          background-repeat: no-repeat;
-          padding-left: 20px;
-          height: 22px;
-          display: inline-block;
-          margin-right: 20px;
-        }
-
-        .down {
-          background: url("/images/arrow_down_white.png");
-          background-repeat: no-repeat;
-          background-position: right;
-          padding-right: 20px;
-          height: 22px;
-          display: inline-block;
-        }
-      }
 
       li.candidate {
         font-size: 15px;
@@ -219,29 +189,86 @@
           background-repeat: no-repeat;
         }
 
-        .candidateRanked {
-          background-image: url(/images/check_12x10_light.png);
-          background-position: 5px 5px;
-        }
-
-        .unrankCandidate {
-          background-image: url(/images/x_11x11_light.png);
-
-          &:hover {
-            cursor: pointer;
-            background-image: url(/images/x_11x11_dark.png);
-          }
-        }
-
         .loading {
           background-position: 2px 2px;
         }
       }
     }
 
+    #candidatesList {
+      ol#candidates {
+        li.candidate {
+          .candidateRanked {
+            background-image: url(/images/check_12x10_light.png);
+            background-position: 5px 5px;
+          }
+        }
+      }
+    }
+
     #rankedCandidatesList {
-      #back {
-        float: right;
+      &.otherUser {
+        ol#rankedCandidates {
+          .dragTargetExplanation {
+            visibility: hidden;
+          }
+
+          li.candidate {
+            .unrankCandidate {
+              visibility: hidden;
+            }
+          }
+        }
+      }
+
+      .candidatesListHeader {
+        #back {
+          float: right;
+        }
+      }
+
+      ol#rankedCandidates {
+        .dragTargetExplanation {
+          font-size: 15px;
+          padding: 0 40px;
+          text-align: center;
+        }
+
+        li.candidate {
+          .unrankCandidate {
+            background-image: url(/images/x_11x11_light.png);
+
+            &:hover {
+              cursor: pointer;
+              background-image: url(/images/x_11x11_dark.png);
+            }
+          }
+        }
+
+        li.separator {
+          text-align: center;
+          padding: 5px;
+          cursor: default;
+          font-size: 15px;
+
+          .up {
+            background: url("/images/arrow_up_white.png");
+            background-repeat: no-repeat;
+            padding-left: 20px;
+            height: 22px;
+            display: inline-block;
+            margin-right: 20px;
+          }
+
+          .down {
+            background: url("/images/arrow_down_white.png");
+            background-repeat: no-repeat;
+            background-position: right;
+            padding-right: 20px;
+            height: 22px;
+            display: inline-block;
+          }
+        }
       }
     }
   }
