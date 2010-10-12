@@ -70,11 +70,13 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
         if (rankingsUser.isCurrent()) {
           this.rankingsUserName.html("Your Ranking");
           this.backLink.hide();
+          this.rankedCandidatesList.sortable('enable');
           this.removeClass('otherUser');
         } else {
           this.rankingsUserName.html(rankingsUser.fullName() + "'s Ranking");
           this.backLink.show();
           this.adjustHeight(); // in case the header changed height from assigning the ranker
+          this.rankedCandidatesList.sortable('disable');
           this.addClass('otherUser');
         }
       }
