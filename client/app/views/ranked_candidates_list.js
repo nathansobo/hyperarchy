@@ -1,9 +1,13 @@
 _.constructor("Views.RankedCandidatesList", View.Template, {
   content: function() { with(this.builder) {
     div({id: "rankedCandidatesList"}, function() {
-      div({'class': "candidatesListHeader"}, "Your Ranking");
+      div({'class': "candidatesListHeader"}, function() {
+        a({id: "back", href: "#", style: "display: none;"}, "Back")
+          .ref('backLink')
+          .click('backToCurrentUserRankings');
+        span(function() { raw("&nbsp;"); }).ref('rankingsUserName');
+      });
       ol({id: "rankedCandidates", 'class': "candidates ranked"}, function() {
-
         li({'class': "dragTargetExplanation"}, function() {
           span(function() {
             raw("Drag answers you <em>like</em> here, in order of preference.")
@@ -60,6 +64,17 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     rankingsUser: {
       afterWrite: function(rankingsUser) {
         this.rankingsRelation(this.election().rankingsForUser(rankingsUser));
+      },
+
+      afterChange: function(rankingsUser) {
+        if (rankingsUser.isCurrent()) {
+          this.rankingsUserName.html("Your Ranking");
+          this.backLink.hide();
+        } else {
+          this.rankingsUserName.html(rankingsUser.fullName() + "'s Ranking");
+          this.backLink.show();
+          this.adjustHeight(); // in case the header changed height from assigning the ranker
+        }
       }
     },
 
@@ -203,6 +218,11 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     stopLoading: function() {
       this.loading.hide();
       this.rankedCandidatesList.children().show();
+    },
+
+    backToCurrentUserRankings: function(elt, event) {
+      $.bbq.removeState('rankingsUserId');
+      return false;
     }
   }
 });

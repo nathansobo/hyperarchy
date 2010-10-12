@@ -31,7 +31,11 @@ _.constructor("Views.VoteLi", View.Template, {
     },
 
     showRankings: function() {
-      $.bbq.pushState({rankingsUserId: this.vote.userId()});
+      if (this.vote.user().isCurrent()) {
+        $.bbq.removeState('rankingsUserId');
+      } else {
+        $.bbq.pushState({rankingsUserId: this.vote.userId()});
+      }
     }
   }
 });

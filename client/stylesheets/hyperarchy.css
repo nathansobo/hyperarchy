@@ -1101,6 +1101,8 @@ button {
         background-image: url(/images/x_11x11_dark.png); }
     #app #electionOverview ol.candidates li.candidate .loading {
       background-position: 2px 2px; }
+#app #electionOverview #rankedCandidatesList #back {
+  float: right; }
 
 #app #addOrganization, #app #editOrganization {
   font-size: 21px; }

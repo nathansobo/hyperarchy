@@ -115,6 +115,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       afterWrite: function(rankingsUserId) {
         var rankingsUser = User.find(rankingsUserId);
         if (!rankingsUser) {
+          this.rankedCandidatesList.startLoading();
           User.fetch(rankingsUserId).onSuccess(this.hitch('rankingsUserId', rankingsUserId));
           return;
         }
