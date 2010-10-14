@@ -29,7 +29,7 @@ _.constructor("Election", Model.Record, {
   rankingsForUser: function(user) {
     var userId = user.id();
     if (this.rankingsByUserId[userId]) return this.rankingsByUserId[userId];
-    return this.rankingsByUserId[userId] = this.rankings().where({userId: userId})
+    return this.rankingsByUserId[userId] = this.rankings().where({userId: userId}).orderBy(Ranking.position.desc());
   },
 
   rankingsForCurrentUser: function() {

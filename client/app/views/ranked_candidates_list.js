@@ -85,16 +85,18 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     rankingsRelation: {
       afterChange: function(rankingsRelation) {
         this.startLoading();
+        this.subscriptions.destroy();
+        rankingsRelation.subscribe(this.subscriptions.hitch('add'));
         rankingsRelation.fetch().onSuccess(function() {
           this.stopLoading();
           this.populateRankings();
+          this.subscribeToRankingsChanges();
         }, this);
       }
     },
 
     populateRankings: function() {
       this.empty();
-      this.subscriptions.destroy();
 
       this.rankingsRelation().each(function(ranking) {
         var li = Views.RankedCandidateLi.toView({ranking: ranking, containingList: this});
@@ -110,6 +112,22 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       }, this);
       this.subscriptions.add(this.rankingsRelation().onRemoteRemove(function(ranking) {
         this.findLi(ranking.candidate()).remove();
+      }, this));
+    },
+
+    subscribeToRankingsChanges: function() {
+      var rankings = this.rankingsRelation();
+
+      this.subscriptions.add(rankings.onRemoteInsert(function(ranking, index) {
+        var li = this.findOrCreateRankedCandidateLi(ranking).detach();
+        if (ranking.position() < 0) index++; // to skip the separator element
+        var precedes = this.rankedCandidatesList.children("li.candidate,li.separator").eq(index);
+        if (precedes.length > 0) {
+          precedes.before(li);
+        } else {
+          this.rankedCandidatesList.append(li);
+        }
+        this.showOrHideDragTargetExplanations();
       }, this));
     },
 
@@ -145,6 +163,11 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       } else {
         placeholder.show();
       }
+    },
+
+    findOrCreateRankedCandidateLi: function(ranking) {
+      return this.findPreviouslyRankedLi(ranking.candidate()) ||
+        Views.RankedCandidateLi.toView({ranking: ranking, containingList: this});
     },
 
     findPreviouslyRankedLi: function(candidate) {
