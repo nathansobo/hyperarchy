@@ -66,7 +66,7 @@ module Hyperarchy
           :address => "smtp.gmail.com",
           :port => 587,
           :user_name => "admin@hyperarchy.com",
-          :password => "thepresent",
+          :password => "eltortuga",
           :authentication => :plain,
           :domain => "hyperarchy.com"
         }
@@ -86,7 +86,7 @@ module Hyperarchy
           :address => "smtp.gmail.com",
           :port => 587,
           :user_name => "admin@hyperarchy.com",
-          :password => "thepresent",
+          :password => "eltortuga",
           :authentication => :plain,
           :domain => "hyperarchy.com"
         }
