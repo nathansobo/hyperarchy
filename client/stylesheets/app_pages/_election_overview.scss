@@ -70,10 +70,18 @@
         font-size: 21px;
         border-bottom: 1px solid gray;
 
-        .instructions {
+        #instructions {
           margin-left: 10px;
           font-size: 14px;
           color: #999999;
+        }
+
+        &.noVotes {
+          border-bottom: none;
+
+          #instructions {
+            display: none;
+          }
         }
       }
 

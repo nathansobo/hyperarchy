@@ -3,8 +3,8 @@ _.constructor("Views.VotesList", View.Template, {
     div({id: "votes"}, function() {
       div({id: "voteCount"}, function() {
         span("").ref('voteCount');
-        span({'class': "instructions"}, "Click to view");
-      });
+        span({id: "instructions"}, "Click to view");
+      }).ref('headerArea');
 
       subview('votes', Views.SortedList, {
         buildLi: function(vote) {
@@ -48,10 +48,17 @@ _.constructor("Views.VotesList", View.Template, {
 
     updateVoteCount: function() {
       var voteCount = this.election().votes().size();
+
       if (voteCount === 1) {
         this.voteCount.html("1 Vote");
       } else {
         this.voteCount.html(voteCount + " Votes");
+      }
+
+      if (voteCount === 0) {
+        this.headerArea.addClass('noVotes')
+      } else {
+        this.headerArea.removeClass('noVotes')
       }
     },
 

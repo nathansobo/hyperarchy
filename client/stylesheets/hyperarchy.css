@@ -988,10 +988,14 @@ button {
   #app #electionOverview #votes #voteCount {
     font-size: 21px;
     border-bottom: 1px solid gray; }
-    #app #electionOverview #votes #voteCount .instructions {
+    #app #electionOverview #votes #voteCount #instructions {
       margin-left: 10px;
       font-size: 14px;
       color: #999999; }
+    #app #electionOverview #votes #voteCount.noVotes {
+      border-bottom: none; }
+      #app #electionOverview #votes #voteCount.noVotes #instructions {
+        display: none; }
   #app #electionOverview #votes ol {
     overflow-y: auto; }
     #app #electionOverview #votes ol .vote {
