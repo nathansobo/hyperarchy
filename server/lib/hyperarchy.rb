@@ -17,6 +17,8 @@ require "#{dir}/hyperarchy/models"
 require "#{dir}/hyperarchy/views"
 require "#{dir}/hyperarchy/app"
 
+require "newrelic_rpm"
+
 GiftWrapper.mount("#{CLIENT_ROOT}/app", "/javascript/app")
 GiftWrapper.mount("#{CLIENT_ROOT}/vendor", "/javascript/vendor")
 GiftWrapper.mount("#{CLIENT_ROOT}/stylesheets", "/stylesheets")
