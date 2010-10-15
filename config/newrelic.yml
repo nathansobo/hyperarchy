@@ -204,7 +204,8 @@ development:
   # NOTE: There is substantial overhead when running in developer mode.
   # Do not use for production or load testing.  
   developer_mode: true
-  
+  log_file_name: newrelic_agent_development.log
+
   # Enable textmate links
   # textmate: true
 
@@ -213,6 +214,8 @@ test:
   # It almost never makes sense to turn on the agent when running
   # unit, functional or integration tests or the like.
   monitor_mode: false
+  log_file_name: newrelic_agent_test.log
+
 
 # Turn on the agent in production for 24x7 monitoring.  NewRelic
 # testing shows an average performance impact of < 5 ms per
@@ -221,6 +224,7 @@ test:
 production:
   <<: *default_settings
   monitor_mode: true
+  log_file_name: newrelic_agent_production.log
 
 # Many applications have a staging environment which behaves
 # identically to production.  Support for that environment is provided
@@ -229,3 +233,4 @@ demo:
   <<: *default_settings
   monitor_mode: true
   app_name: Hyperarchy (Demo)
+  log_file_name: newrelic_agent_demo.log
