@@ -119,16 +119,25 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       var rankings = this.rankingsRelation();
 
       this.subscriptions.add(rankings.onRemoteInsert(function(ranking, index) {
-        var li = this.findOrCreateRankedCandidateLi(ranking).detach();
-        if (ranking.position() < 0) index++; // to skip the separator element
-        var precedes = this.rankedCandidatesList.children("li.candidate,li.separator").eq(index);
-        if (precedes.length > 0) {
-          precedes.before(li);
-        } else {
-          this.rankedCandidatesList.append(li);
-        }
-        this.showOrHideDragTargetExplanations();
+        this.insertRankedCandidateLi(ranking, index);
       }, this));
+
+      this.subscriptions.add(rankings.onRemoteUpdate(function(ranking, changes, index) {
+        this.insertRankedCandidateLi(ranking, index);
+      }, this));
+    },
+
+    insertRankedCandidateLi: function(ranking, index) {
+      var li = this.findOrCreateRankedCandidateLi(ranking).detach();
+      if (ranking.position() < 0) index++; // to skip the separator element
+      var precedes = this.rankedCandidatesList.children("li.candidate,li.separator").eq(index);
+      if (precedes.length > 0) {
+        precedes.before(li);
+      } else {
+        this.rankedCandidatesList.append(li);
+      }
+      li.stopLoading();
+      this.showOrHideDragTargetExplanations();
     },
 
     empty: function() {
@@ -172,7 +181,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
 
     findPreviouslyRankedLi: function(candidate) {
       var previouslyRankedLi = this.rankedCandidatesList.find("li.ranked.candidate[candidateId='" + candidate.id() + "']");
-      return previouslyRankedLi.length > 0 ? previouslyRankedLi : null;
+      return previouslyRankedLi.length > 0 ? previouslyRankedLi.view() : null;
     },
 
     findLi: function(candidate) {
