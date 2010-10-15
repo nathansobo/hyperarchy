@@ -18,6 +18,7 @@ gem "rack-flash", "0.1.1"
 gem "bcrypt-ruby", "2.1.1", :require => "bcrypt"
 gem "pony", "1.0"
 gem "rgl", "0.4.0", :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
+gem "newrelic_rpm", "2.13.2"
 
 group :development do
   gem "sinatra-reloader", "0.4.1", :require => "sinatra/reloader"
