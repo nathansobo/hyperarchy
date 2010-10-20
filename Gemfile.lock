@@ -57,7 +57,7 @@ GEM
       rake
       stream (>= 0.5)
     rr (0.10.0)
-    rspec (1.2.6)
+    rspec (1.3.0)
     sequel (3.12.0)
     sinatra (1.0)
       rack (>= 1.0)
@@ -108,7 +108,7 @@ DEPENDENCIES
   rack-test (= 0.5.3)
   rgl (= 0.4.0)
   rr (= 0.10.0)
-  rspec (= 1.2.6)
+  rspec (= 1.3.0)
   sequel (= 3.12.0)
   sinatra (= 1.0)
   sinatra-reloader (= 0.4.1)
