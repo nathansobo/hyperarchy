@@ -4,7 +4,7 @@ source :gemcutter
 gem "rack", "1.1.0"
 gem "sinatra", "1.0"
 gem "pg", "0.9.0"
-gem "sequel", "3.12.0"
+gem "sequel", "3.16.0"
 gem "activesupport", "3.0.0.beta"
 gem "json", "1.2.0"
 gem "guid", "0.1.1"
@@ -23,6 +23,7 @@ gem "newrelic_rpm", "2.13.2"
 group :development do
   gem "sinatra-reloader", "0.4.1", :require => "sinatra/reloader"
   gem "haml", "3.0.18", :require => "sass/plugin/rack"
+  gem "ruby-prof", "0.9.2"
 end
 
 group :test do
@@ -39,7 +40,7 @@ group :thor do
   gem "net-ssh", "2.0.23"
   gem "git", "1.2.5"
   gem "daemons", "1.0.10"
-  gem "sequel", "3.12.0"
+  gem "sequel", "3.16.0"
   gem "pg", "0.9.0"
   gem "mysql", "2.8.1"
 end

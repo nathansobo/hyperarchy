@@ -1,5 +1,11 @@
 module Hyperarchy
   class App < Sinatra::Base
+
+    configure(:development) do
+      require 'new_relic/rack_app'
+      use NewRelic::Rack::DeveloperMode
+    end
+
     use Monarch::Rack::IdentityMapManager unless RACK_ENV == "test"
     use Rack::Session::Cookie
     use Rack::Flash
