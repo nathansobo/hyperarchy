@@ -157,6 +157,16 @@
           list-style-type: none;
         }
 
+        &.expanded {
+          background-color: #ffffee;
+          background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffea), color-stop(1.0, #fffffa));
+          background: -moz-linear-gradient(top, #ffffea 0%, #fffffa 100%);
+
+          .expandedInfoSpacer {
+            display: block;
+          }
+        }
+
         .expandArrow {
           position: absolute;
           top: 8px;
@@ -184,61 +194,49 @@
           margin-right: 22px;
         }
 
-        &.expanded {
-//          -moz-box-shadow: #c8c7c7 0px 0px 30px;
-//          -webkit-box-shadow: #c8c7c7 0px 0px 30px;
-          background-color: #ffffee;
-          background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffea), color-stop(1.0, #fffffa));
-          background: -moz-linear-gradient(top, #ffffea 0%, #fffffa 100%);
+        .expandedInfoSpacer {
+          display: none;
+          height: 25px;
+        }
 
-          z-index: 100000;
+        .expandedInfo {
+          margin: 0 10px 10px 10px;
+          font-size: 13px;
 
-          .candidateIcon {
-            margin-left: 0;
+          label {
+            display: block;
+            margin-bottom: 2px;
           }
 
-          .expandedInfoSpacer {
-            height: 25px;
-          }
 
-          .expandedInfo {
-            margin-left: 10px;
-            margin-right: 10px;
-            font-size: 13px;
+          .bodyContainer {
+            margin-bottom: 5px;
 
-            .detailsLabel {
-              margin-top: 10px;
+            textarea {
+              outline: none;
+              width: 100%;
+              padding: 4px;
+              padding-top: 2px;
+              resize: none;
               margin-bottom: 5px;
             }
+          }
 
-            .bodyContainer {
-              textarea {
-                font-size: 14px;
-                outline: none;
-                width: 100%;
-                padding: 4px;
-                padding-top: 2px;
-                resize: none;
-                margin-bottom: 5px;
-              }
+          .detailsContainer {
+            margin-bottom: 10px;
+
+            textarea {
+              width: 100%;
+              height: 150px;
+              padding: 5px;
+              resize: vertical;
             }
+          }
 
-            .detailsContainer {
-              margin-bottom: 10px;
-
-              textarea {
-                width: 100%;
-                height: 150px;
-                padding: 5px;
-                resize: vertical;
-              }
-            }
-
-            button {
-              float: right;
-              font-size: 12px;
-              margin-left: 5px;
-            }
+          button {
+            float: right;
+            font-size: 12px;
+            margin-left: 5px;
           }
         }
       }

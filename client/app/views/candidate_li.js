@@ -16,10 +16,9 @@ _.constructor("Views.CandidateLi", View.Template, {
       div({'class': "expandedInfoSpacer"}).ref('expandedInfoSpacer')
 
       div({'class': "expandedInfo", style: "display: none;"}, function() {
-        div({'class': "bodyLabel"}, "Answer");
-        
+        label("Answer");
         div({'class': "bodyContainer"}, function() {
-          textarea({style: "display: none;"}, candidate.body())
+          textarea(candidate.body())
             .keydown(function(view, e) {
               if (e.keyCode === 13) {
                 view.saveCandidate();
@@ -30,7 +29,7 @@ _.constructor("Views.CandidateLi", View.Template, {
             .ref('bodyTextarea');
         });
 
-        div({'class': "detailsLabel"}, "Details");
+        label("Details");
         div({'class': "detailsContainer"}, function() {
           textarea({'class': "details"}, "These are some details about the answer. I think this " +
             "is a good answer because I like it. And that's all that really matters. And it's " +
@@ -68,7 +67,6 @@ _.constructor("Views.CandidateLi", View.Template, {
     expandOrContract: function() {
       if (this.expanded) {
         this.expanded = false;
-        this.bodyTextarea.hide();
         this.body.show();
         this.removeClass("expanded")
         this.expandArrow.removeClass('expanded');
@@ -76,16 +74,19 @@ _.constructor("Views.CandidateLi", View.Template, {
         this.expandedInfo.slideUp('fast');
       } else {
         this.expanded = true;
-        this.bodyTextarea.show();
         this.bodyTextarea.focus();
-        this.bodyTextarea.keyup();
         this.bodyTextarea.val(this.candidate.body());
+        this.bodyTextarea.keyup();
         this.body.hide();
         this.saveButton.attr('disabled', true);
         this.expandArrow.addClass('expanded');
         this.addClass("expanded")
         this.expandedInfoSpacer.show();
-        this.expandedInfo.slideDown('fast');
+
+
+        this.expandedInfo.slideDown('fast', _.repeat(function() {
+          this.bodyTextarea.keyup();
+        }, this));
       }
     },
 
