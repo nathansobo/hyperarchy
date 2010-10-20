@@ -12,15 +12,23 @@ _.constructor("Views.ElectionLi", View.Template, {
         div({'class': "body"}, election.body()).ref('body');
         subview('candidatesList', Views.SortedList, {
           olAttributes: {'class': "candidates"},
-          buildLi: function(candidate) {
-            return View.build(function(b) {
-              b.li(function() {
-                b.div(candidate.body());
+          buildLi: function(candidate, index) {
+            return View.build(function(b) { with(b) {
+              li(function() {
+                table(function() {
+                  tr(function() {
+                    td({'class': "number"}, index + 1 + ".");
+                    td({'class': "candidateBody"}, candidate.body());
+                  });
+                });
               });
-            });
+            }});
           },
-          onRemoteUpdate: function(li, record, changes) {
-            if (changes.body) li.html(changes.body.newValue);
+          onRemoteUpdate: function(li, record, changes, index) {
+            if (changes.body) li.find('.candidateBody').html(changes.body.newValue);
+          },
+          updateIndex: function(li, index) {
+            li.find('.number').html(index + 1 + ".");
           }
         });
 
