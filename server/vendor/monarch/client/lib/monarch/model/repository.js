@@ -97,6 +97,9 @@ _.constructor("Monarch.Model.Repository", {
     _.each(this.tables, function(table) {
       table.clear();
     });
+    this.enqueuedMutations = null;
+    this.mutationsPaused = false;
+    this.mutationsPausedCount = 0;
   },
 
   cloneSchema: function() {
