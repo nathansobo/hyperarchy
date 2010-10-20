@@ -1055,20 +1055,6 @@ button {
       left: 5px;
       margin-left: 1px;
       margin-right: 4px; }
-    #app #electionOverview ol.candidates li.candidate .bodyContainer {
-      margin-left: 19px;
-      margin-right: 22px; }
-      #app #electionOverview ol.candidates li.candidate .bodyContainer textarea {
-        outline: none;
-        width: 100%;
-        padding: 4px;
-        padding-top: 2px;
-        resize: none;
-        margin-bottom: 5px; }
-    #app #electionOverview ol.candidates li.candidate .expandedInfo button {
-      float: right;
-      font-size: 12px;
-      margin-left: 5px; }
     #app #electionOverview ol.candidates li.candidate .candidateIcon {
       float: right;
       position: relative;
@@ -1079,6 +1065,44 @@ button {
       background-repeat: no-repeat; }
     #app #electionOverview ol.candidates li.candidate .loading {
       background-position: 2px 2px; }
+    #app #electionOverview ol.candidates li.candidate .body {
+      margin-left: 19px;
+      margin-right: 22px; }
+    #app #electionOverview ol.candidates li.candidate.expanded {
+      background-color: #ffffee;
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffea), color-stop(1, #fffffa));
+      background: -moz-linear-gradient(top, #ffffea 0%, #fffffa 100%);
+      z-index: 100000; }
+      #app #electionOverview ol.candidates li.candidate.expanded .candidateIcon {
+        margin-left: 0; }
+      #app #electionOverview ol.candidates li.candidate.expanded .expandedInfoSpacer {
+        height: 25px; }
+      #app #electionOverview ol.candidates li.candidate.expanded .expandedInfo {
+        margin-left: 10px;
+        margin-right: 10px;
+        font-size: 13px; }
+        #app #electionOverview ol.candidates li.candidate.expanded .expandedInfo .detailsLabel {
+          margin-top: 10px;
+          margin-bottom: 5px; }
+        #app #electionOverview ol.candidates li.candidate.expanded .expandedInfo .bodyContainer textarea {
+          font-size: 14px;
+          outline: none;
+          width: 100%;
+          padding: 4px;
+          padding-top: 2px;
+          resize: none;
+          margin-bottom: 5px; }
+        #app #electionOverview ol.candidates li.candidate.expanded .expandedInfo .detailsContainer {
+          margin-bottom: 10px; }
+          #app #electionOverview ol.candidates li.candidate.expanded .expandedInfo .detailsContainer textarea {
+            width: 100%;
+            height: 150px;
+            padding: 5px;
+            resize: vertical; }
+        #app #electionOverview ol.candidates li.candidate.expanded .expandedInfo button {
+          float: right;
+          font-size: 12px;
+          margin-left: 5px; }
 #app #electionOverview #candidatesList ol#candidates li.candidate .candidateRanked {
   background-image: url(/images/check_12x10_light.png);
   background-position: 5px 5px; }

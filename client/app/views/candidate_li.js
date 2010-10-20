@@ -11,21 +11,34 @@ _.constructor("Views.CandidateLi", View.Template, {
       div({'class': "loading candidateIcon", style: "display: none;"}).ref('loadingIcon');
       template.candidateIcon();
 
-      div({'class': "bodyContainer"}, function() {
-        textarea({style: "display: none;"}, candidate.body())
-          .keydown(function(view, e) {
-            if (e.keyCode === 13) {
-              view.saveCandidate();
-              e.preventDefault();
-            }
-          })
-          .bind('keyup paste', "enableOrDisableSaveButton")
-          .ref('bodyTextarea');
-        span({'class': "body"}, candidate.body()).ref('body');
-      }).ref('bodyContainer');
+      div({'class': "body"}, candidate.body()).ref('body');
 
+      div({'class': "expandedInfoSpacer"}).ref('expandedInfoSpacer')
 
       div({'class': "expandedInfo", style: "display: none;"}, function() {
+        div({'class': "bodyLabel"}, "Answer");
+        
+        div({'class': "bodyContainer"}, function() {
+          textarea({style: "display: none;"}, candidate.body())
+            .keydown(function(view, e) {
+              if (e.keyCode === 13) {
+                view.saveCandidate();
+                e.preventDefault();
+              }
+            })
+            .bind('keyup paste', "enableOrDisableSaveButton")
+            .ref('bodyTextarea');
+        });
+
+        div({'class': "detailsLabel"}, "Details");
+        div({'class': "detailsContainer"}, function() {
+          textarea({'class': "details"}, "These are some details about the answer. I think this " +
+            "is a good answer because I like it. And that's all that really matters. And it's " +
+            "related to hippos, my favorite animal. Hippos are fat and swim a lot. You can't " +
+            "blame them for being fat though. It's just part of their DNA. Crocodiles are not " +
+            "as fat but they're kind of assholes. They grab wildebeasts while they are drinking");
+        });
+
         button("Save")
           .ref('saveButton')
           .click("saveCandidate");
@@ -57,7 +70,9 @@ _.constructor("Views.CandidateLi", View.Template, {
         this.expanded = false;
         this.bodyTextarea.hide();
         this.body.show();
+        this.removeClass("expanded")
         this.expandArrow.removeClass('expanded');
+        this.expandedInfoSpacer.hide();
         this.expandedInfo.slideUp('fast');
       } else {
         this.expanded = true;
@@ -68,6 +83,8 @@ _.constructor("Views.CandidateLi", View.Template, {
         this.body.hide();
         this.saveButton.attr('disabled', true);
         this.expandArrow.addClass('expanded');
+        this.addClass("expanded")
+        this.expandedInfoSpacer.show();
         this.expandedInfo.slideDown('fast');
       }
     },

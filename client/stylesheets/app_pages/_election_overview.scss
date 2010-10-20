@@ -165,28 +165,6 @@
           margin-right: 4px;
         }
 
-        .bodyContainer {
-          margin-left: 19px;
-          margin-right: 22px;
-
-          textarea {
-            outline: none;
-            width: 100%;
-            padding: 4px;
-            padding-top: 2px;
-            resize: none;
-            margin-bottom: 5px;
-          }
-        }
-
-        .expandedInfo {
-          button {
-            float: right;
-            font-size: 12px;
-            margin-left: 5px;
-          }
-        }
-
         .candidateIcon {
           float: right;
           position: relative;
@@ -199,6 +177,69 @@
 
         .loading {
           background-position: 2px 2px;
+        }
+
+        .body {
+          margin-left: 19px;
+          margin-right: 22px;
+        }
+
+        &.expanded {
+//          -moz-box-shadow: #c8c7c7 0px 0px 30px;
+//          -webkit-box-shadow: #c8c7c7 0px 0px 30px;
+          background-color: #ffffee;
+          background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffea), color-stop(1.0, #fffffa));
+          background: -moz-linear-gradient(top, #ffffea 0%, #fffffa 100%);
+
+          z-index: 100000;
+
+          .candidateIcon {
+            margin-left: 0;
+          }
+
+          .expandedInfoSpacer {
+            height: 25px;
+          }
+
+          .expandedInfo {
+            margin-left: 10px;
+            margin-right: 10px;
+            font-size: 13px;
+
+            .detailsLabel {
+              margin-top: 10px;
+              margin-bottom: 5px;
+            }
+
+            .bodyContainer {
+              textarea {
+                font-size: 14px;
+                outline: none;
+                width: 100%;
+                padding: 4px;
+                padding-top: 2px;
+                resize: none;
+                margin-bottom: 5px;
+              }
+            }
+
+            .detailsContainer {
+              margin-bottom: 10px;
+
+              textarea {
+                width: 100%;
+                height: 150px;
+                padding: 5px;
+                resize: vertical;
+              }
+            }
+
+            button {
+              float: right;
+              font-size: 12px;
+              margin-left: 5px;
+            }
+          }
         }
       }
     }
