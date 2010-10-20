@@ -40,7 +40,7 @@ module Models
         Majority.find(:winner => fish, :loser => tacos, :election => election).should_not be_nil
       end
 
-      it "makes the new candidate lose to every positively ranked candidate and win over every negatively ranked one" do
+      it "makes the new candidate lose to every positively ranked candidate and win over every negatively ranked one, then recomputes the election results" do
         user_1 = User.make
         user_2 = User.make
         user_3 = User.make
@@ -66,7 +66,11 @@ module Models
         election.rankings.create(:user => user_3, :candidate => _1_up_2_down, :position => -32)
         election.rankings.create(:user => user_3, :candidate => _0_up_3_down, :position => -64)
 
+        mock.proxy(election).compute_global_ranking
         candidate = election.candidates.create(:body => "Alpaca")
+        # new candidate is tied with 'Unranked' so could go either before it or after it
+        # until we handle ties, but it should be less than the negatively ranked candidates
+        candidate.position.should be < 5
 
         find_majority(_3_up_0_down, candidate).pro_count.should == 3
         find_majority(_3_up_0_down, candidate).con_count.should == 0
