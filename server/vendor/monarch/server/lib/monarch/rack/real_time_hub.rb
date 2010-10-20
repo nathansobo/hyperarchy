@@ -47,7 +47,7 @@ module Monarch
         on_finish :register_disconnection
 
         def respond_with
-          [200, {'Content-Type', 'application/x-event-stream'}]
+          [200, {'Content-Type' => 'application/x-event-stream'}]
         end
 
         def register_connection

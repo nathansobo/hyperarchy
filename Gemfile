@@ -3,7 +3,7 @@ source :gemcutter
 # monarch
 gem "rack", "1.1.0"
 gem "sinatra", "1.0"
-gem "postgres", "0.7.9.2008.01.28"
+gem "pg", "0.9.0"
 gem "sequel", "3.12.0"
 gem "activesupport", "3.0.0.beta"
 gem "json", "1.2.0"
@@ -27,7 +27,7 @@ end
 
 group :test do
   gem "rspec", "1.2.6", :require => "spec"
-  gem "rr", "0.10.0"
+  gem "rr", "1.0.0"
   gem "rack-test", "0.5.3", :require => "rack/test"
   gem "machinist", "1.0.6", :require => ["machinist", "machinist/blueprints", "sham"]
   gem "faker", "0.3.1"
@@ -40,6 +40,6 @@ group :thor do
   gem "git", "1.2.5"
   gem "daemons", "1.0.10"
   gem "sequel", "3.12.0"
-  gem "postgres", "0.7.9.2008.01.28"
+  gem "pg", "0.9.0"
   gem "mysql", "2.8.1"
 end
