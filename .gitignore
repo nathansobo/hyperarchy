@@ -6,7 +6,6 @@ client/pkg
 target
 .DS_Store
 .idea
-.rvmrc
 log
 nginx_access.log
 .sass-cache
