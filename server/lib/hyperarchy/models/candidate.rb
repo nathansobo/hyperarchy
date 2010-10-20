@@ -22,6 +22,8 @@ class Candidate < Monarch::Model::Record
     victories_over(election.positive_candidate_ranking_counts).update(:con_count => :times_ranked)
     defeats_by(election.positive_candidate_ranking_counts).update(:pro_count => :times_ranked)
     defeats_by(election.negative_candidate_ranking_counts).update(:con_count => :times_ranked)
+
+    election.compute_global_ranking
   end
 
   def before_destroy

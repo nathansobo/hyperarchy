@@ -26,7 +26,7 @@ group :development do
 end
 
 group :test do
-  gem "rspec", "1.2.6", :require => "spec"
+  gem "rspec", "1.3.0", :require => "spec"
   gem "rr", "1.0.0"
   gem "rack-test", "0.5.3", :require => "rack/test"
   gem "machinist", "1.0.6", :require => ["machinist", "machinist/blueprints", "sham"]

@@ -211,6 +211,18 @@ Screw.Unit(function(c) { with(c) {
         expect(User.tuples()).to(beEmpty);
         expect(Blog.tuples()).to(beEmpty);
       });
+
+      it("removes all pending mutations and takes the repository out of a paused state", function() {
+        repository.pauseMutations();
+        repository.mutate([
+          ['create', 'blog_posts', { id: 'running', name: "It Keeps You Running" }],
+          ['update', 'blogs', 'recipes', { name: "Absolutely Disgusting Food"}]
+        ]);
+        repository.clear();
+        expect(repository.enqueuedMutations).to(beNull);
+        expect(repository.mutationsPaused).to(beFalse);
+        expect(repository.mutationsPausedCount).to(eq, 0);
+      });
     });
 
     describe("#cloneSchema", function() {

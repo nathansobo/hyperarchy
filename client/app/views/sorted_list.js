@@ -15,24 +15,24 @@ _.constructor("Views.SortedList", View.Template, {
 
         this.empty();
 
-        relation.each(function(record) {
-          this.append(this.liForRecord(record));
+        relation.each(function(record, index) {
+          this.append(this.liForRecord(record, index));
         }, this);
 
         this.subscriptions.add(relation.onRemoteInsert(function(record, index) {
-          var li = this.liForRecord(record);
+          var li = this.liForRecord(record, index);
           this.insertAtIndex(li, index);
           if (this.onRemoteInsert) this.onRemoteInsert(record, li);
         }, this));
 
         this.subscriptions.add(relation.onRemoteUpdate(function(record, changes, index) {
-          var li = this.liForRecord(record);
+          var li = this.liForRecord(record, index);
           this.insertAtIndex(li, index);
-          if (this.onRemoteUpdate) this.onRemoteUpdate(record, changes, li);
+          if (this.onRemoteUpdate) this.onRemoteUpdate(li, record, changes, index);
         }, this));
 
         this.subscriptions.add(relation.onRemoteRemove(function(record, index) {
-          this.liForRecord(record).remove();
+          this.liForRecord(record, index).remove();
         }, this));
       }
     },
@@ -43,22 +43,31 @@ _.constructor("Views.SortedList", View.Template, {
 
       if (insertBefore.length > 0) {
         insertBefore.before(li);
+        this.updateIndices();
       } else {
         this.append(li);
       }
     },
 
-    liForRecord: function(record) {
+    liForRecord: function(record, index) {
       var id = record.id();
       if (this.lisById[id]) {
         return this.lisById[id].detach();
       } else {
-        return this.lisById[id] = this.buildLi(record);
+        return this.lisById[id] = this.buildLi(record, index);
       }
     },
 
     afterRemove: function() {
       this.subscriptions.destroy();
+    },
+
+    updateIndices: function() {
+      if (!this.updateIndex) return;
+      var self = this;
+      this.children().each(function(index) {
+        self.updateIndex($(this), index);
+      });
     },
 
     empty: function() {

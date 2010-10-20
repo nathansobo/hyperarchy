@@ -904,7 +904,7 @@ button {
   position: relative; }
   #app #organizationOverview .election .voteCount {
     padding: 5px;
-    margin: 0 0 5px 5px;
+    margin: 0 0 10px 10px;
     float: right;
     background: #eeebe8;
     min-width: 37px;
@@ -929,10 +929,15 @@ button {
     bottom: 0px;
     color: #ffffcc; }
   #app #organizationOverview .election .candidates li {
-    list-style: decimal;
-    list-style-position: inside;
     font-size: 15px;
     padding: 2px; }
+    #app #organizationOverview .election .candidates li .number {
+      display: inline-block;
+      font-weight: bold;
+      vertical-align: top;
+      padding-right: 6px; }
+    #app #organizationOverview .election .candidates li .candidateBody {
+      padding-top: 1px; }
 #app #organizationOverview .bigLoading {
   position: fixed;
   top: 50%;

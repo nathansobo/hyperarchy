@@ -344,6 +344,27 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
+      context("when called with the name of a tag and a number", function() {
+        context("if the tag is self-closing", function() {
+          it("throws an exception", function() {
+            expect(function() {
+              builder.tag("br", 25);
+            }).to(throwException);
+          });
+        });
+
+        context("if the tag is not self-closing", function() {
+          it("generates an open tag and a close tag surrounding the number converted to a string", function() {
+            builder.tag("div", function() {
+              builder.tag("div", 25);
+              builder.tag("div", 2.5);
+            });
+            expect(builder.toHtml()).to(eq, "<div><div>25</div><div>2.5</div></div>");
+          });
+        });
+      });
+
+
       context("when called with the name of a tag and a function", function() {
         context("if the tag is self-closing", function() {
           it("throws an exception", function() {

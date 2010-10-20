@@ -52,7 +52,7 @@
 
       .voteCount {
         padding: 5px;
-        margin: 0 0 5px 5px;
+        margin: 0 0 10px 10px;
         float: right;
         background: #eeebe8;
         min-width: 37px;
@@ -85,10 +85,19 @@
       }
 
       .candidates li {
-        list-style: decimal;
-        list-style-position: inside;
         font-size: 15px;
         padding: 2px;
+
+        .number {
+          display: inline-block;
+          font-weight: bold;
+          vertical-align: top;
+          padding-right: 6px;
+        }
+
+        .candidateBody {
+          padding-top: 1px;
+        }
       }
     }
 

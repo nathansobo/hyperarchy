@@ -13,7 +13,7 @@ _.constructor("Views.VotesList", View.Template, {
         onRemoteInsert: function(vote, li) {
           li.effect('highlight');
         },
-        onRemoteUpdate: function(vote, changes, li) {
+        onRemoteUpdate: function(li, vote, changes) {
           if (changes.updatedAt) {
             li.updateVotedAt();
             li.effect('highlight');
