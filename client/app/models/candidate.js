@@ -32,6 +32,10 @@ _.constructor("Candidate", Model.Record, {
     return this.creator() === Application.currentUser();
   },
 
+  editableByCurrentUser: function() {
+    return this.belongsToCurrentUser() || this.organization().currentUserIsOwner();
+  },
+
   organization: function() {
     return this.election().organization();
   }

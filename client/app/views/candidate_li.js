@@ -2,7 +2,7 @@ _.constructor("Views.CandidateLi", View.Template, {
   content: function(params) { with(this.builder) {
     var candidate = params.candidate;
     li({ candidateId: candidate.id(), 'class': "candidate " + this.additionalClass }, function() {
-      if (candidate.belongsToCurrentUser() || candidate.organization().currentUserIsOwner()) {
+      if (candidate.editableByCurrentUser()) {
         div({'class': "expandArrow"})
           .ref('expandArrow')
           .click('expandOrContract');
