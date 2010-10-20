@@ -67,11 +67,16 @@ _.constructor("Views.CandidateLi", View.Template, {
     expandOrContract: function() {
       if (this.expanded) {
         this.expanded = false;
-        this.body.show();
-        this.removeClass("expanded")
         this.expandArrow.removeClass('expanded');
-        this.expandedInfoSpacer.hide();
-        this.expandedInfo.slideUp('fast');
+
+        this.delay(function() {
+          this.expandedInfoSpacer.slideUp('fast');
+          this.body.show();
+        }, 90);
+
+        this.expandedInfo.slideUp('fast', this.bind(function() {
+          this.removeClass("expanded")
+        }));
       } else {
         this.expanded = true;
         this.bodyTextarea.focus();
@@ -82,8 +87,6 @@ _.constructor("Views.CandidateLi", View.Template, {
         this.expandArrow.addClass('expanded');
         this.addClass("expanded")
         this.expandedInfoSpacer.show();
-
-
         this.expandedInfo.slideDown('fast', _.repeat(function() {
           this.bodyTextarea.keyup();
         }, this));
