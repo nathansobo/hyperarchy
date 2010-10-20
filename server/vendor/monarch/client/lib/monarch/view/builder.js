@@ -144,6 +144,7 @@ _.constructor("Monarch.View.Builder", {
     }
     _.each(args, function(arg) {
       if (typeof arg == "string") tagArguments.text = arg;
+      if (typeof arg == "number") tagArguments.text = arg.toString();
       if (typeof arg == "object") tagArguments.attributes = arg;
       if (typeof arg == "function") tagArguments.body = arg;
     })
