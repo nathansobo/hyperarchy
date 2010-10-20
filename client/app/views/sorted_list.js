@@ -29,12 +29,6 @@ _.constructor("Views.SortedList", View.Template, {
           var li = this.liForRecord(record, index);
           this.insertAtIndex(li, index);
           if (this.onRemoteUpdate) this.onRemoteUpdate(li, record, changes, index);
-          if (this.updateIndex) {
-            var self = this;
-            this.children().each(function(index) {
-              self.updateIndex($(this), index);
-            });
-          }
         }, this));
 
         this.subscriptions.add(relation.onRemoteRemove(function(record, index) {
@@ -49,6 +43,7 @@ _.constructor("Views.SortedList", View.Template, {
 
       if (insertBefore.length > 0) {
         insertBefore.before(li);
+        this.updateIndices();
       } else {
         this.append(li);
       }
@@ -65,6 +60,14 @@ _.constructor("Views.SortedList", View.Template, {
 
     afterRemove: function() {
       this.subscriptions.destroy();
+    },
+
+    updateIndices: function() {
+      if (!this.updateIndex) return;
+      var self = this;
+      this.children().each(function(index) {
+        self.updateIndex($(this), index);
+      });
     },
 
     empty: function() {
