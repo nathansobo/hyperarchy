@@ -14,10 +14,12 @@ _.constructor("Views.ElectionLi", View.Template, {
           olAttributes: {'class': "candidates"},
           buildLi: function(candidate) {
             return View.build(function(b) {
-              b.li(candidate.body());
+              b.li(function() {
+                b.div(candidate.body());
+              });
             });
           },
-          onRemoteUpdate: function(record, changes, li) {
+          onRemoteUpdate: function(li, record, changes) {
             if (changes.body) li.html(changes.body.newValue);
           }
         });
