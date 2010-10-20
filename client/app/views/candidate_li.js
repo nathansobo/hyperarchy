@@ -25,17 +25,15 @@ _.constructor("Views.CandidateLi", View.Template, {
                 e.preventDefault();
               }
             })
-            .bind('keyup paste', "enableOrDisableSaveButton")
+            .bind('keyup paste change', "deferredEnableOrDisableSaveButton")
             .ref('bodyTextarea');
         });
 
         label("Details");
         div({'class': "detailsContainer"}, function() {
-          textarea({'class': "details"}, "These are some details about the answer. I think this " +
-            "is a good answer because I like it. And that's all that really matters. And it's " +
-            "related to hippos, my favorite animal. Hippos are fat and swim a lot. You can't " +
-            "blame them for being fat though. It's just part of their DNA. Crocodiles are not " +
-            "as fat but they're kind of assholes. They grab wildebeasts while they are drinking");
+          textarea({'class': "details"})
+            .bind('keyup paste change', "deferredEnableOrDisableSaveButton")
+            .ref('detailsTextarea');
         });
 
         button("Save")
@@ -50,9 +48,14 @@ _.constructor("Views.CandidateLi", View.Template, {
   viewProperties: {
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle;
-      this.subscriptions.add(this.candidate.remote.field('body').onUpdate(function(newBody) {
-        this.body.html(newBody)
-        this.bodyTextarea.val(newBody)
+      this.subscriptions.add(this.candidate.onRemoteUpdate(function(changes) {
+        if (changes.body) {
+          this.body.html(changes.body.newValue)
+          this.bodyTextarea.val(changes.body.newValue)
+        }
+        if (changes.details) {
+          this.detailsTextarea.val(changes.details.newValue);
+        }
       }, this));
 
       this.defer(function() {
@@ -82,7 +85,9 @@ _.constructor("Views.CandidateLi", View.Template, {
         this.bodyTextarea.focus();
         this.bodyTextarea.val(this.candidate.body());
         this.bodyTextarea.keyup();
+        this.detailsTextarea.val(this.candidate.details());
         this.body.hide();
+
         this.saveButton.attr('disabled', true);
         this.expandArrow.addClass('expanded');
         this.addClass("expanded")
@@ -94,17 +99,31 @@ _.constructor("Views.CandidateLi", View.Template, {
     },
 
     enableOrDisableSaveButton: function() {
-      if (this.bodyTextarea.val() === this.candidate.body()) {
+      if (this.fieldsAreClean()) {
         this.saveButton.attr('disabled', true);
       } else {
         this.saveButton.attr('disabled', false);
       }
     },
 
+    deferredEnableOrDisableSaveButton: function() {
+      this.defer(function() {
+        this.enableOrDisableSaveButton();
+      });
+    },
+
+    fieldsAreClean: function() {
+      return this.bodyTextarea.val() === this.candidate.body()
+        && this.detailsTextarea.val() === this.candidate.details();
+    },
+
     saveCandidate: function() {
       this.startLoading();
       this.saveButton.attr('disabled', true);
-      this.candidate.update({ body: this.bodyTextarea.val() })
+      this.candidate.update({
+        body: this.bodyTextarea.val(),
+        details: this.detailsTextarea.val()
+      })
         .onSuccess(function() {
           this.stopLoading();
           this.expandOrContract();

@@ -4,6 +4,7 @@ _.constructor("Candidate", Model.Record, {
       electionId: 'key',
       creatorId: 'key',
       body: 'string',
+      details: 'string',
       position: 'integer'
     });
 
