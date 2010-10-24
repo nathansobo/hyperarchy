@@ -2,11 +2,9 @@ _.constructor("Views.CandidateLi", View.Template, {
   content: function(params) { with(this.builder) {
     var candidate = params.candidate;
     li({ candidateId: candidate.id(), 'class': "candidate " + this.additionalClass }, function() {
-      if (candidate.editableByCurrentUser()) {
-        div({'class': "expandArrow"})
-          .ref('expandArrow')
-          .click('expandOrContract');
-      }
+      div({'class': "expandArrow"})
+        .ref('expandArrow')
+        .click('expandOrContract');
 
       div({'class': "loading candidateIcon", style: "display: none;"}).ref('loadingIcon');
       template.candidateIcon();
@@ -60,7 +58,13 @@ _.constructor("Views.CandidateLi", View.Template, {
 
       this.defer(function() {
         this.bodyTextarea.elastic();
+        this.detailsTextarea.elastic();
       });
+
+      if (!this.candidate.editableByCurrentUser()) {
+        this.expandedInfo.find('textarea').attr('disabled', true);
+        this.expandedInfo.find('button').hide();
+      }
     },
 
     afterRemove: function() {
@@ -85,6 +89,7 @@ _.constructor("Views.CandidateLi", View.Template, {
         this.bodyTextarea.focus();
         this.bodyTextarea.val(this.candidate.body());
         this.bodyTextarea.keyup();
+        this.detailsTextarea.keyup();
         this.detailsTextarea.val(this.candidate.details());
         this.body.hide();
 
@@ -94,6 +99,7 @@ _.constructor("Views.CandidateLi", View.Template, {
         this.expandedInfoSpacer.show();
         this.expandedInfo.slideDown('fast', _.repeat(function() {
           this.bodyTextarea.keyup();
+          this.detailsTextarea.keyup();
         }, this));
       }
     },

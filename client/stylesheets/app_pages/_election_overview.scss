@@ -227,9 +227,10 @@
 
             textarea {
               width: 100%;
-              height: 150px;
+              height: 30px;
               padding: 5px;
-              resize: vertical;
+              max-height: 150px;
+              resize: none;
             }
           }
 
