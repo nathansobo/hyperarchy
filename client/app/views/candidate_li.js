@@ -9,7 +9,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       div({'class': "loading candidateIcon", style: "display: none;"}).ref('loadingIcon');
       template.candidateIcon();
 
-      div({'class': "body"}, candidate.body()).ref('body');
+      div({'class': "body"}).ref('body');
 
       div({'class': "expandedInfoSpacer"}).ref('expandedInfoSpacer')
 
@@ -25,6 +25,8 @@ _.constructor("Views.CandidateLi", View.Template, {
             })
             .bind('keyup paste change', "deferredEnableOrDisableSaveButton")
             .ref('bodyTextarea');
+          div({'class': "nonEditable"})
+            .ref('nonEditableBody');
         });
 
         label("Details");
@@ -32,6 +34,8 @@ _.constructor("Views.CandidateLi", View.Template, {
           textarea({'class': "details"})
             .bind('keyup paste change', "deferredEnableOrDisableSaveButton")
             .ref('detailsTextarea');
+          div({'class': "nonEditable"})
+            .ref('nonEditableDetails');
         });
 
         button("Save")
@@ -46,13 +50,15 @@ _.constructor("Views.CandidateLi", View.Template, {
   viewProperties: {
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle;
+      this.assignBody(this.candidate.body());
+      this.assignDetails(this.candidate.details());
+
       this.subscriptions.add(this.candidate.onRemoteUpdate(function(changes) {
         if (changes.body) {
-          this.body.html(changes.body.newValue)
-          this.bodyTextarea.val(changes.body.newValue)
+          this.assignBody(changes.body.newValue);
         }
         if (changes.details) {
-          this.detailsTextarea.val(changes.details.newValue);
+          this.assignDetails(changes.details.newValue);
         }
       }, this));
 
@@ -61,8 +67,12 @@ _.constructor("Views.CandidateLi", View.Template, {
         this.detailsTextarea.elastic();
       });
 
-      if (!this.candidate.editableByCurrentUser()) {
-        this.expandedInfo.find('textarea').attr('disabled', true);
+      if (this.candidate.editableByCurrentUser()) {
+        this.nonEditableBody.hide();
+        this.nonEditableDetails.hide();
+      } else {
+        this.detailsTextarea.hide();
+        this.bodyTextarea.hide();
         this.expandedInfo.find('button').hide();
       }
     },
@@ -87,11 +97,10 @@ _.constructor("Views.CandidateLi", View.Template, {
       } else {
         this.expanded = true;
         this.bodyTextarea.focus();
-        this.bodyTextarea.val(this.candidate.body());
-        this.bodyTextarea.keyup();
-        this.detailsTextarea.keyup();
-        this.detailsTextarea.val(this.candidate.details());
         this.body.hide();
+
+        this.assignBody(this.candidate.body());
+        this.assignDetails(this.candidate.details());
 
         this.saveButton.attr('disabled', true);
         this.expandArrow.addClass('expanded');
@@ -153,6 +162,19 @@ _.constructor("Views.CandidateLi", View.Template, {
     stopLoading: function() {
       this.loadingIcon.hide();
       this.previouslyVisibleIcons.show();
+    },
+
+    assignBody: function(body) {
+      this.body.html(body);
+      this.bodyTextarea.val(body);
+      this.bodyTextarea.keyup();
+      this.nonEditableBody.html(body);
+    },
+
+    assignDetails: function(details) {
+      this.detailsTextarea.val(details);
+      this.detailsTextarea.keyup();
+      this.nonEditableDetails.html(htmlEscape(details));
     }
   }
 });

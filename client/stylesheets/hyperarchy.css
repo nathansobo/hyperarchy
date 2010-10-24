@@ -1084,14 +1084,13 @@ button {
         display: block;
         margin-bottom: 2px; }
       #app #electionOverview ol.candidates li.candidate .expandedInfo .bodyContainer {
-        margin-bottom: 5px; }
+        margin-bottom: 10px; }
         #app #electionOverview ol.candidates li.candidate .expandedInfo .bodyContainer textarea {
           outline: none;
           width: 100%;
           padding: 4px;
           padding-top: 2px;
-          resize: none;
-          margin-bottom: 5px; }
+          resize: none; }
       #app #electionOverview ol.candidates li.candidate .expandedInfo .detailsContainer {
         margin-bottom: 10px; }
         #app #electionOverview ol.candidates li.candidate .expandedInfo .detailsContainer textarea {
@@ -1100,6 +1099,13 @@ button {
           padding: 5px;
           max-height: 150px;
           resize: none; }
+      #app #electionOverview ol.candidates li.candidate .expandedInfo .nonEditable {
+        background: white;
+        border: 1px solid #737373;
+        padding: 5px;
+        max-height: 150px;
+        overflow-y: auto;
+        color: #333; }
       #app #electionOverview ol.candidates li.candidate .expandedInfo button {
         float: right;
         font-size: 12px;
