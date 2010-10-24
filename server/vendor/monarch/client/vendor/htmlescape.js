@@ -19,76 +19,76 @@
 	{
  	   	var found=true;
   	   	var thechar=original.charCodeAt(0);
-		switch(thechar) {
-				case '\n': return "<br/>"; break; //newline
-				case '\r': break;
+    switch(thechar) {
+				case 10: return "<br/>"; break; //newline
+				case 13: break;
 				case 60:return "&lt;"; break; //<
 				case 62:return "&gt;"; break; //>
 				case 38:return "&amp;"; break; //&
 				case 34:return "&quot;"; break; //"
-				case 198:return "&AElig;"; break; //Æ
-				case 193:return "&Aacute;"; break; //Á
-				case 194:return "&Acirc;"; break; //Â
-				case 192:return "&Agrave;"; break; //À
-				case 197:return "&Aring;"; break; //Å
-				case 195:return "&Atilde;"; break; //Ã
-				case 196:return "&Auml;"; break; //Ä
-				case 199:return "&Ccedil;"; break; //Ç
-				case 208:return "&ETH;"; break; //Ð
-				case 201:return "&Eacute;"; break; //É
-				case 202:return "&Ecirc;"; break; //Ê
-				case 200:return "&Egrave;"; break; //È
-				case 203:return "&Euml;"; break; //Ë
-				case 205:return "&Iacute;"; break; //Í
-				case 206:return "&Icirc;"; break; //Î
-				case 204:return "&Igrave;"; break; //Ì
-				case 207:return "&Iuml;"; break; //Ï
-				case 209:return "&Ntilde;"; break; //Ñ
-				case 211:return "&Oacute;"; break; //Ó
-				case 212:return "&Ocirc;"; break; //Ô
-				case 210:return "&Ograve;"; break; //Ò
-				case 216:return "&Oslash;"; break; //Ø
-				case 213:return "&Otilde;"; break; //Õ
-				case 214:return "&Ouml;"; break; //Ö
-				case 222:return "&THORN;"; break; //Þ
-				case 218:return "&Uacute;"; break; //Ú
-				case 219:return "&Ucirc;"; break; //Û
-				case 217:return "&Ugrave;"; break; //Ù
-				case 220:return "&Uuml;"; break; //Ü
-				case 221:return "&Yacute;"; break; //Ý
-				case 225:return "&aacute;"; break; //á
-				case 226:return "&acirc;"; break; //â
-				case 230:return "&aelig;"; break; //æ
-				case 224:return "&agrave;"; break; //à
-				case 229:return "&aring;"; break; //å
-				case 227:return "&atilde;"; break; //ã
-				case 228:return "&auml;"; break; //ä
-				case 231:return "&ccedil;"; break; //ç
-				case 233:return "&eacute;"; break; //é
-				case 234:return "&ecirc;"; break; //ê
-				case 232:return "&egrave;"; break; //è
-				case 240:return "&eth;"; break; //ð
-				case 235:return "&euml;"; break; //ë
-				case 237:return "&iacute;"; break; //í
-				case 238:return "&icirc;"; break; //î
-				case 236:return "&igrave;"; break; //ì
-				case 239:return "&iuml;"; break; //ï
-				case 241:return "&ntilde;"; break; //ñ
-				case 243:return "&oacute;"; break; //ó
-				case 244:return "&ocirc;"; break; //ô
-				case 242:return "&ograve;"; break; //ò
-				case 248:return "&oslash;"; break; //ø
-				case 245:return "&otilde;"; break; //õ
-				case 246:return "&ouml;"; break; //ö
-				case 223:return "&szlig;"; break; //ß
-				case 254:return "&thorn;"; break; //þ
-				case 250:return "&uacute;"; break; //ú
-				case 251:return "&ucirc;"; break; //û
-				case 249:return "&ugrave;"; break; //ù
-				case 252:return "&uuml;"; break; //ü
-				case 253:return "&yacute;"; break; //ý
-				case 255:return "&yuml;"; break; //ÿ
-				case 162:return "&cent;"; break; //¢
+				case 198:return "&AElig;"; break; //ï¿½
+				case 193:return "&Aacute;"; break; //ï¿½
+				case 194:return "&Acirc;"; break; //ï¿½
+				case 192:return "&Agrave;"; break; //ï¿½
+				case 197:return "&Aring;"; break; //ï¿½
+				case 195:return "&Atilde;"; break; //ï¿½
+				case 196:return "&Auml;"; break; //ï¿½
+				case 199:return "&Ccedil;"; break; //ï¿½
+				case 208:return "&ETH;"; break; //ï¿½
+				case 201:return "&Eacute;"; break; //ï¿½
+				case 202:return "&Ecirc;"; break; //ï¿½
+				case 200:return "&Egrave;"; break; //ï¿½
+				case 203:return "&Euml;"; break; //ï¿½
+				case 205:return "&Iacute;"; break; //ï¿½
+				case 206:return "&Icirc;"; break; //ï¿½
+				case 204:return "&Igrave;"; break; //ï¿½
+				case 207:return "&Iuml;"; break; //ï¿½
+				case 209:return "&Ntilde;"; break; //ï¿½
+				case 211:return "&Oacute;"; break; //ï¿½
+				case 212:return "&Ocirc;"; break; //ï¿½
+				case 210:return "&Ograve;"; break; //ï¿½
+				case 216:return "&Oslash;"; break; //ï¿½
+				case 213:return "&Otilde;"; break; //ï¿½
+				case 214:return "&Ouml;"; break; //ï¿½
+				case 222:return "&THORN;"; break; //ï¿½
+				case 218:return "&Uacute;"; break; //ï¿½
+				case 219:return "&Ucirc;"; break; //ï¿½
+				case 217:return "&Ugrave;"; break; //ï¿½
+				case 220:return "&Uuml;"; break; //ï¿½
+				case 221:return "&Yacute;"; break; //ï¿½
+				case 225:return "&aacute;"; break; //ï¿½
+				case 226:return "&acirc;"; break; //ï¿½
+				case 230:return "&aelig;"; break; //ï¿½
+				case 224:return "&agrave;"; break; //ï¿½
+				case 229:return "&aring;"; break; //ï¿½
+				case 227:return "&atilde;"; break; //ï¿½
+				case 228:return "&auml;"; break; //ï¿½
+				case 231:return "&ccedil;"; break; //ï¿½
+				case 233:return "&eacute;"; break; //ï¿½
+				case 234:return "&ecirc;"; break; //ï¿½
+				case 232:return "&egrave;"; break; //ï¿½
+				case 240:return "&eth;"; break; //ï¿½
+				case 235:return "&euml;"; break; //ï¿½
+				case 237:return "&iacute;"; break; //ï¿½
+				case 238:return "&icirc;"; break; //ï¿½
+				case 236:return "&igrave;"; break; //ï¿½
+				case 239:return "&iuml;"; break; //ï¿½
+				case 241:return "&ntilde;"; break; //ï¿½
+				case 243:return "&oacute;"; break; //ï¿½
+				case 244:return "&ocirc;"; break; //ï¿½
+				case 242:return "&ograve;"; break; //ï¿½
+				case 248:return "&oslash;"; break; //ï¿½
+				case 245:return "&otilde;"; break; //ï¿½
+				case 246:return "&ouml;"; break; //ï¿½
+				case 223:return "&szlig;"; break; //ï¿½
+				case 254:return "&thorn;"; break; //ï¿½
+				case 250:return "&uacute;"; break; //ï¿½
+				case 251:return "&ucirc;"; break; //ï¿½
+				case 249:return "&ugrave;"; break; //ï¿½
+				case 252:return "&uuml;"; break; //ï¿½
+				case 253:return "&yacute;"; break; //ï¿½
+				case 255:return "&yuml;"; break; //ï¿½
+				case 162:return "&cent;"; break; //ï¿½
 				default:
 					found=false;
 					break;
