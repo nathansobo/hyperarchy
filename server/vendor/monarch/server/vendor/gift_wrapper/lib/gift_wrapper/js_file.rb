@@ -11,11 +11,16 @@ class GiftWrapper
 
     def expand_require_graph(require_context)
       return if require_context.already_required?(self)
-      each_line do |line|
-        if match = RELATIVE_REQUIRE_REGEX.match(line)
-          relative_require(match[1], require_context)
-        elsif match = LOAD_PATH_REQUIRE_REGEX.match(line)
-          load_path_require(match[1], require_context)
+      each_line do |line, no|
+        begin
+          if match = RELATIVE_REQUIRE_REGEX.match(line)
+            relative_require(match[1], require_context)
+          elsif match = LOAD_PATH_REQUIRE_REGEX.match(line)
+            load_path_require(match[1], require_context)
+          end
+        rescue ArgumentError => e
+          puts "Error reading #{location} at line #{no}. Re-raising."
+          raise e
         end
       end
       require_context.add_require(self)
@@ -51,7 +56,9 @@ class GiftWrapper
 
     def each_line(&block)
       File.open(physical_path, "r") do |file|
-        file.lines.each(&block)
+        file.lines.each_with_index do |line, index|
+          block.call(line, index + 1)
+        end
       end
     end
   end
