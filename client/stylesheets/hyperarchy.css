@@ -1103,7 +1103,7 @@ button {
           resize: none; }
       #app #electionOverview ol.candidates li.candidate .expandedInfo .nonEditable {
         background: white;
-        border: 1px solid #737373;
+        border: 1px dashed #737373;
         padding: 5px;
         max-height: 150px;
         overflow-y: auto;

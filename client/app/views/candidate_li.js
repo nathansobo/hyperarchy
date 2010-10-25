@@ -179,8 +179,10 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.nonEditableDetails.html(htmlEscape(details));
       if (details) {
         this.detailsIcon.show();
+        this.expandArrow.show();
       } else {
         this.detailsIcon.hide();
+        if (!this.candidate.editableByCurrentUser()) this.expandArrow.hide();
       }
     }
   }
