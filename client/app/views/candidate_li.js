@@ -9,7 +9,9 @@ _.constructor("Views.CandidateLi", View.Template, {
       div({'class': "loading candidateIcon", style: "display: none;"}).ref('loadingIcon');
 
       template.candidateIcon();
-      div({'class': "candidateIcon detailsIcon"}).ref('detailsIcon');
+      div({'class': "candidateIcon detailsIcon"})
+        .click('expandOrContract')
+        .ref('detailsIcon');
 
       div({'class': "body"}).ref('body');
 
@@ -85,34 +87,46 @@ _.constructor("Views.CandidateLi", View.Template, {
 
     expandOrContract: function() {
       if (this.expanded) {
-        this.expanded = false;
-        this.expandArrow.removeClass('expanded');
-
-        this.delay(function() {
-          this.expandedInfoSpacer.slideUp('fast');
-          this.body.show();
-        }, 90);
-
-        this.expandedInfo.slideUp('fast', this.bind(function() {
-          this.removeClass("expanded")
-        }));
+        this.contract();
       } else {
-        this.expanded = true;
-        this.bodyTextarea.focus();
-        this.body.hide();
-
-        this.assignBody(this.candidate.body());
-        this.assignDetails(this.candidate.details());
-
-        this.saveButton.attr('disabled', true);
-        this.expandArrow.addClass('expanded');
-        this.addClass("expanded")
-        this.expandedInfoSpacer.show();
-        this.expandedInfo.slideDown('fast', _.repeat(function() {
-          this.bodyTextarea.keyup();
-          this.detailsTextarea.keyup();
-        }, this));
+        this.expand();
       }
+    },
+
+    expand: function() {
+      if (this.expanded) return;
+
+      this.expanded = true;
+      this.bodyTextarea.focus();
+      this.body.hide();
+
+      this.assignBody(this.candidate.body());
+      this.assignDetails(this.candidate.details());
+
+      this.saveButton.attr('disabled', true);
+      this.expandArrow.addClass('expanded');
+      this.addClass("expanded")
+      this.expandedInfoSpacer.show();
+      this.expandedInfo.slideDown('fast', _.repeat(function() {
+        this.bodyTextarea.keyup();
+        this.detailsTextarea.keyup();
+      }, this));
+    },
+
+    contract: function() {
+      if (!this.expanded) return;
+
+      this.expanded = false;
+      this.expandArrow.removeClass('expanded');
+
+      this.delay(function() {
+        this.expandedInfoSpacer.slideUp('fast');
+        this.body.show();
+      }, 90);
+
+      this.expandedInfo.slideUp('fast', this.bind(function() {
+        this.removeClass("expanded")
+      }));
     },
 
     enableOrDisableSaveButton: function() {

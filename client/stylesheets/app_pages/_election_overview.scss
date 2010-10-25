@@ -187,6 +187,11 @@
 
         .detailsIcon {
           background-image: url(/images/speech_light.png);
+          cursor: pointer;
+
+          &:hover {
+            background-image: url(/images/speech_dark.png);
+          }
         }
 
         .loading {

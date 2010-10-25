@@ -1070,7 +1070,10 @@ button {
       background-position: 4px 4px;
       background-repeat: no-repeat; }
     #app #electionOverview ol.candidates li.candidate .detailsIcon {
-      background-image: url(/images/speech_light.png); }
+      background-image: url(/images/speech_light.png);
+      cursor: pointer; }
+      #app #electionOverview ol.candidates li.candidate .detailsIcon:hover {
+        background-image: url(/images/speech_dark.png); }
     #app #electionOverview ol.candidates li.candidate .loading {
       background-position: 2px 2px; }
     #app #electionOverview ol.candidates li.candidate .body {
