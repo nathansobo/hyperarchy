@@ -9,7 +9,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       div({'class': "loading candidateIcon", style: "display: none;"}).ref('loadingIcon');
 
       template.candidateIcon();
-      div({'class': "candidateIcon detailsIcon"});
+      div({'class': "candidateIcon detailsIcon"}).ref('detailsIcon');
 
       div({'class': "body"}).ref('body');
 
@@ -141,7 +141,7 @@ _.constructor("Views.CandidateLi", View.Template, {
         body: this.bodyTextarea.val(),
         details: this.detailsTextarea.val()
       })
-        .onSuccess(function() {
+        .beforeEvents(function() {
           this.stopLoading();
           this.expandOrContract();
         }, this);
@@ -177,6 +177,11 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.detailsTextarea.val(details);
       this.detailsTextarea.keyup();
       this.nonEditableDetails.html(htmlEscape(details));
+      if (details) {
+        this.detailsIcon.show();
+      } else {
+        this.detailsIcon.hide();
+      }
     }
   }
 });
