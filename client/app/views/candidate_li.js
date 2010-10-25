@@ -7,7 +7,9 @@ _.constructor("Views.CandidateLi", View.Template, {
         .click('expandOrContract');
 
       div({'class': "loading candidateIcon", style: "display: none;"}).ref('loadingIcon');
+
       template.candidateIcon();
+      div({'class': "candidateIcon detailsIcon"});
 
       div({'class': "body"}).ref('body');
 
