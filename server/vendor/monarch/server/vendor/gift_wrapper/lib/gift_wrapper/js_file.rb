@@ -19,7 +19,7 @@ class GiftWrapper
             load_path_require(match[1], require_context)
           end
         rescue ArgumentError => e
-          puts "Error reading #{location} at line #{no}. Re-raising."
+          puts "Error reading #{physical_path} at line #{no}. Re-raising."
           raise e
         end
       end
