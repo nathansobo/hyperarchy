@@ -1,5 +1,6 @@
 class Candidate < Monarch::Model::Record
   column :body, :string
+  column :details, :string, :default => ""
   column :election_id, :key
   column :creator_id, :key
   column :position, :integer

@@ -157,6 +157,16 @@
           list-style-type: none;
         }
 
+        &.expanded {
+          background-color: #ffffee;
+          background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffea), color-stop(1.0, #fffffa));
+          background: -moz-linear-gradient(top, #ffffea 0%, #fffffa 100%);
+
+          .expandedInfoSpacer {
+            display: block;
+          }
+        }
+
         .expandArrow {
           position: absolute;
           top: 8px;
@@ -165,40 +175,88 @@
           margin-right: 4px;
         }
 
-        .bodyContainer {
-          margin-left: 19px;
-          margin-right: 22px;
-
-          textarea {
-            outline: none;
-            width: 100%;
-            padding: 4px;
-            padding-top: 2px;
-            resize: none;
-            margin-bottom: 5px;
-          }
-        }
-
-        .expandedInfo {
-          button {
-            float: right;
-            font-size: 12px;
-            margin-left: 5px;
-          }
-        }
-
         .candidateIcon {
           float: right;
           position: relative;
           top: 1px;
           height: 20px;
-          width: 20px;
-          background-position: 5px 4px;
+          width: 18px;
+          background-position: 4px 4px;
           background-repeat: no-repeat;
+        }
+
+        .detailsIcon {
+          background-image: url(/images/speech_light.png);
+          cursor: pointer;
+
+          &:hover {
+            background-image: url(/images/speech_dark.png);
+          }
         }
 
         .loading {
           background-position: 2px 2px;
+        }
+
+        .body {
+          margin-left: 19px;
+          margin-right: 22px;
+        }
+
+        .expandedInfoSpacer {
+          display: none;
+          height: 25px;
+        }
+
+        .expandedInfo {
+          margin: 0 10px 10px 10px;
+          font-size: 13px;
+
+          label {
+            display: block;
+            margin-bottom: 2px;
+          }
+
+
+          .bodyContainer {
+            margin-bottom: 10px;
+
+            textarea {
+              outline: none;
+              width: 100%;
+              padding: 4px;
+              padding-top: 2px;
+              resize: none;
+            }
+          }
+
+          .detailsContainer {
+            margin-bottom: 10px;
+
+            textarea {
+              width: 100%;
+              height: 30px;
+              padding: 5px;
+              max-height: 150px;
+              resize: none;
+            }
+          }
+
+          // inside body and details containers
+          .nonEditable {
+            background: white;
+            border: 1px dashed #737373;
+            padding: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+            color: #333;
+          }
+
+          button {
+            float: right;
+            font-size: 12px;
+            margin-left: 5px;
+          }
         }
       }
     }
@@ -208,7 +266,6 @@
         li.candidate {
           .candidateRanked {
             background-image: url(/images/check_12x10_light.png);
-            background-position: 5px 5px;
           }
         }
       }

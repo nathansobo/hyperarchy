@@ -2,30 +2,46 @@ _.constructor("Views.CandidateLi", View.Template, {
   content: function(params) { with(this.builder) {
     var candidate = params.candidate;
     li({ candidateId: candidate.id(), 'class': "candidate " + this.additionalClass }, function() {
-      if (candidate.belongsToCurrentUser() || candidate.organization().currentUserIsOwner()) {
-        div({'class': "expandArrow"})
-          .ref('expandArrow')
-          .click('expandOrContract');
-      }
+      div({'class': "expandArrow"})
+        .ref('expandArrow')
+        .click('expandOrContract');
 
       div({'class': "loading candidateIcon", style: "display: none;"}).ref('loadingIcon');
+
       template.candidateIcon();
+      div({'class': "candidateIcon detailsIcon"})
+        .click('expandOrContract')
+        .ref('detailsIcon');
 
-      div({'class': "bodyContainer"}, function() {
-        textarea({style: "display: none;"}, candidate.body())
-          .keydown(function(view, e) {
-            if (e.keyCode === 13) {
-              view.saveCandidate();
-              e.preventDefault();
-            }
-          })
-          .bind('keyup paste', "enableOrDisableSaveButton")
-          .ref('bodyTextarea');
-        span({'class': "body"}, candidate.body()).ref('body');
-      }).ref('bodyContainer');
+      div({'class': "body"}).ref('body');
 
+      div({'class': "expandedInfoSpacer"}).ref('expandedInfoSpacer')
 
       div({'class': "expandedInfo", style: "display: none;"}, function() {
+        label("Answer");
+        div({'class': "bodyContainer"}, function() {
+          textarea(candidate.body())
+            .keydown(function(view, e) {
+              if (e.keyCode === 13) {
+                view.saveCandidate();
+                e.preventDefault();
+              }
+            })
+            .bind('keyup paste change', "deferredEnableOrDisableSaveButton")
+            .ref('bodyTextarea');
+          div({'class': "nonEditable"})
+            .ref('nonEditableBody');
+        });
+
+        label("Details");
+        div({'class': "detailsContainer"}, function() {
+          textarea({'class': "details"})
+            .bind('keyup paste change', "deferredEnableOrDisableSaveButton")
+            .ref('detailsTextarea');
+          div({'class': "nonEditable"})
+            .ref('nonEditableDetails');
+        });
+
         button("Save")
           .ref('saveButton')
           .click("saveCandidate");
@@ -38,14 +54,31 @@ _.constructor("Views.CandidateLi", View.Template, {
   viewProperties: {
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle;
-      this.subscriptions.add(this.candidate.remote.field('body').onUpdate(function(newBody) {
-        this.body.html(newBody)
-        this.bodyTextarea.val(newBody)
+      this.assignBody(this.candidate.body());
+      this.assignDetails(this.candidate.details());
+
+      this.subscriptions.add(this.candidate.onRemoteUpdate(function(changes) {
+        if (changes.body) {
+          this.assignBody(changes.body.newValue);
+        }
+        if (changes.details) {
+          this.assignDetails(changes.details.newValue);
+        }
       }, this));
 
       this.defer(function() {
         this.bodyTextarea.elastic();
+        this.detailsTextarea.elastic();
       });
+
+      if (this.candidate.editableByCurrentUser()) {
+        this.nonEditableBody.hide();
+        this.nonEditableDetails.hide();
+      } else {
+        this.detailsTextarea.hide();
+        this.bodyTextarea.hide();
+        this.expandedInfo.find('button').hide();
+      }
     },
 
     afterRemove: function() {
@@ -54,37 +87,75 @@ _.constructor("Views.CandidateLi", View.Template, {
 
     expandOrContract: function() {
       if (this.expanded) {
-        this.expanded = false;
-        this.bodyTextarea.hide();
-        this.body.show();
-        this.expandArrow.removeClass('expanded');
-        this.expandedInfo.slideUp('fast');
+        this.contract();
       } else {
-        this.expanded = true;
-        this.bodyTextarea.show();
-        this.bodyTextarea.focus();
-        this.bodyTextarea.keyup();
-        this.bodyTextarea.val(this.candidate.body());
-        this.body.hide();
-        this.saveButton.attr('disabled', true);
-        this.expandArrow.addClass('expanded');
-        this.expandedInfo.slideDown('fast');
+        this.expand();
       }
     },
 
+    expand: function() {
+      if (this.expanded) return;
+
+      this.expanded = true;
+      this.bodyTextarea.focus();
+      this.body.hide();
+
+      this.assignBody(this.candidate.body());
+      this.assignDetails(this.candidate.details());
+
+      this.saveButton.attr('disabled', true);
+      this.expandArrow.addClass('expanded');
+      this.addClass("expanded")
+      this.expandedInfoSpacer.show();
+      this.expandedInfo.slideDown('fast', _.repeat(function() {
+        this.bodyTextarea.keyup();
+        this.detailsTextarea.keyup();
+      }, this));
+    },
+
+    contract: function() {
+      if (!this.expanded) return;
+
+      this.expanded = false;
+      this.expandArrow.removeClass('expanded');
+
+      this.delay(function() {
+        this.expandedInfoSpacer.slideUp('fast');
+        this.body.show();
+      }, 90);
+
+      this.expandedInfo.slideUp('fast', this.bind(function() {
+        this.removeClass("expanded")
+      }));
+    },
+
     enableOrDisableSaveButton: function() {
-      if (this.bodyTextarea.val() === this.candidate.body()) {
+      if (this.fieldsAreClean()) {
         this.saveButton.attr('disabled', true);
       } else {
         this.saveButton.attr('disabled', false);
       }
     },
 
+    deferredEnableOrDisableSaveButton: function() {
+      this.defer(function() {
+        this.enableOrDisableSaveButton();
+      });
+    },
+
+    fieldsAreClean: function() {
+      return this.bodyTextarea.val() === this.candidate.body()
+        && this.detailsTextarea.val() === this.candidate.details();
+    },
+
     saveCandidate: function() {
       this.startLoading();
       this.saveButton.attr('disabled', true);
-      this.candidate.update({ body: this.bodyTextarea.val() })
-        .onSuccess(function() {
+      this.candidate.update({
+        body: this.bodyTextarea.val(),
+        details: this.detailsTextarea.val()
+      })
+        .beforeEvents(function() {
           this.stopLoading();
           this.expandOrContract();
         }, this);
@@ -107,6 +178,26 @@ _.constructor("Views.CandidateLi", View.Template, {
     stopLoading: function() {
       this.loadingIcon.hide();
       this.previouslyVisibleIcons.show();
+    },
+
+    assignBody: function(body) {
+      this.body.html(body);
+      this.bodyTextarea.val(body);
+      this.bodyTextarea.keyup();
+      this.nonEditableBody.html(body);
+    },
+
+    assignDetails: function(details) {
+      this.detailsTextarea.val(details);
+      this.detailsTextarea.keyup();
+      this.nonEditableDetails.html(htmlEscape(details));
+      if (details) {
+        this.detailsIcon.show();
+        this.expandArrow.show();
+      } else {
+        this.detailsIcon.hide();
+        if (!this.candidate.editableByCurrentUser()) this.expandArrow.hide();
+      }
     }
   }
 });

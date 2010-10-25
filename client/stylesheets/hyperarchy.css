@@ -1049,39 +1049,74 @@ button {
     #app #electionOverview ol.candidates li.candidate.ui-draggable-dragging {
       width: 288px;
       list-style-type: none; }
+    #app #electionOverview ol.candidates li.candidate.expanded {
+      background-color: #ffffee;
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffea), color-stop(1, #fffffa));
+      background: -moz-linear-gradient(top, #ffffea 0%, #fffffa 100%); }
+      #app #electionOverview ol.candidates li.candidate.expanded .expandedInfoSpacer {
+        display: block; }
     #app #electionOverview ol.candidates li.candidate .expandArrow {
       position: absolute;
       top: 8px;
       left: 5px;
       margin-left: 1px;
       margin-right: 4px; }
-    #app #electionOverview ol.candidates li.candidate .bodyContainer {
-      margin-left: 19px;
-      margin-right: 22px; }
-      #app #electionOverview ol.candidates li.candidate .bodyContainer textarea {
-        outline: none;
-        width: 100%;
-        padding: 4px;
-        padding-top: 2px;
-        resize: none;
-        margin-bottom: 5px; }
-    #app #electionOverview ol.candidates li.candidate .expandedInfo button {
-      float: right;
-      font-size: 12px;
-      margin-left: 5px; }
     #app #electionOverview ol.candidates li.candidate .candidateIcon {
       float: right;
       position: relative;
       top: 1px;
       height: 20px;
-      width: 20px;
-      background-position: 5px 4px;
+      width: 18px;
+      background-position: 4px 4px;
       background-repeat: no-repeat; }
+    #app #electionOverview ol.candidates li.candidate .detailsIcon {
+      background-image: url(/images/speech_light.png);
+      cursor: pointer; }
+      #app #electionOverview ol.candidates li.candidate .detailsIcon:hover {
+        background-image: url(/images/speech_dark.png); }
     #app #electionOverview ol.candidates li.candidate .loading {
       background-position: 2px 2px; }
+    #app #electionOverview ol.candidates li.candidate .body {
+      margin-left: 19px;
+      margin-right: 22px; }
+    #app #electionOverview ol.candidates li.candidate .expandedInfoSpacer {
+      display: none;
+      height: 25px; }
+    #app #electionOverview ol.candidates li.candidate .expandedInfo {
+      margin: 0 10px 10px 10px;
+      font-size: 13px; }
+      #app #electionOverview ol.candidates li.candidate .expandedInfo label {
+        display: block;
+        margin-bottom: 2px; }
+      #app #electionOverview ol.candidates li.candidate .expandedInfo .bodyContainer {
+        margin-bottom: 10px; }
+        #app #electionOverview ol.candidates li.candidate .expandedInfo .bodyContainer textarea {
+          outline: none;
+          width: 100%;
+          padding: 4px;
+          padding-top: 2px;
+          resize: none; }
+      #app #electionOverview ol.candidates li.candidate .expandedInfo .detailsContainer {
+        margin-bottom: 10px; }
+        #app #electionOverview ol.candidates li.candidate .expandedInfo .detailsContainer textarea {
+          width: 100%;
+          height: 30px;
+          padding: 5px;
+          max-height: 150px;
+          resize: none; }
+      #app #electionOverview ol.candidates li.candidate .expandedInfo .nonEditable {
+        background: white;
+        border: 1px dashed #737373;
+        padding: 5px;
+        max-height: 150px;
+        overflow-y: auto;
+        color: #333; }
+      #app #electionOverview ol.candidates li.candidate .expandedInfo button {
+        float: right;
+        font-size: 12px;
+        margin-left: 5px; }
 #app #electionOverview #candidatesList ol#candidates li.candidate .candidateRanked {
-  background-image: url(/images/check_12x10_light.png);
-  background-position: 5px 5px; }
+  background-image: url(/images/check_12x10_light.png); }
 #app #electionOverview #rankedCandidatesList.otherUser ol#rankedCandidates .dragTargetExplanation {
   visibility: hidden; }
 #app #electionOverview #rankedCandidatesList.otherUser ol#rankedCandidates li.candidate .unrankCandidate {

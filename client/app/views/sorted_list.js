@@ -43,10 +43,10 @@ _.constructor("Views.SortedList", View.Template, {
 
       if (insertBefore.length > 0) {
         insertBefore.before(li);
-        this.updateIndices();
       } else {
         this.append(li);
       }
+      this.updateIndices();
     },
 
     liForRecord: function(record, index) {

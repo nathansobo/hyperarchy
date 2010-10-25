@@ -4,6 +4,7 @@ _.constructor("Candidate", Model.Record, {
       electionId: 'key',
       creatorId: 'key',
       body: 'string',
+      details: 'string',
       position: 'integer'
     });
 
@@ -29,6 +30,10 @@ _.constructor("Candidate", Model.Record, {
 
   belongsToCurrentUser: function() {
     return this.creator() === Application.currentUser();
+  },
+
+  editableByCurrentUser: function() {
+    return this.belongsToCurrentUser() || this.organization().currentUserIsOwner();
   },
 
   organization: function() {

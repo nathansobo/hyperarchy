@@ -19,9 +19,9 @@
 	{
  	   	var found=true;
   	   	var thechar=original.charCodeAt(0);
-		switch(thechar) {
-				case '\n': return "<br/>"; break; //newline
-				case '\r': break;
+    switch(thechar) {
+				case 10: return "<br/>"; break; //newline
+				case 13: break;
 				case 60:return "&lt;"; break; //<
 				case 62:return "&gt;"; break; //>
 				case 38:return "&amp;"; break; //&
