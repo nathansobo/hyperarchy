@@ -10,7 +10,7 @@ module Monarch
           @concrete_columns_by_name = ActiveSupport::OrderedHash.new
           @synthetic_columns_by_name = ActiveSupport::OrderedHash.new
           @global_identity_map = {}
-
+          @lock_pool = LockPool.new
           initialize_event_system
         end
 
@@ -160,7 +160,17 @@ module Monarch
           Origin.drop_table(global_name)
         end
 
+        def lock(id)
+          lock_pool.lock("#{global_name}.#{id}")
+        end
+
+        def unlock(id)
+          lock_pool.unlock("#{global_name}.#{id}")
+        end
+
         protected
+        attr_reader :lock_pool
+
         def internal_sql_select_list(state)
           state[self][:internal_sql_select_list] ||= [Sql::Asterisk.new(internal_sql_table_ref(state))]
         end

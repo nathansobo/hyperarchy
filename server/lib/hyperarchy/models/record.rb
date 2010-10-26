@@ -12,6 +12,14 @@ module Monarch
       end
 
       delegate :current_user, :to => "self.class"
+
+      def lock
+        table.lock(id)
+      end
+
+      def unlock
+        table.unlock(id)
+      end
     end
   end
 end
