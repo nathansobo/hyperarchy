@@ -2,6 +2,8 @@ dir = File.expand_path(File.dirname(__FILE__))
 
 ENV['RACK_ENV'] = "development" unless ENV.has_key?('RACK_ENV')
 RACK_ENV = ENV['RACK_ENV']
+Encoding.default_external = Encoding::UTF_8
+
 require File.expand_path("#{dir}/paths")
 require "rubygems"
 require "bundler"
