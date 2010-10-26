@@ -10,7 +10,7 @@ module Monarch
           @concrete_columns_by_name = ActiveSupport::OrderedHash.new
           @synthetic_columns_by_name = ActiveSupport::OrderedHash.new
           @global_identity_map = {}
-          @lock_pool = LockPool.new
+          @lock_pool = Util::LockPool.new
           initialize_event_system
         end
 
