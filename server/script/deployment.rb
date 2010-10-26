@@ -14,6 +14,7 @@ class Deployment
 
     git :fetch
     git :reset, "--hard", ref
+    source ".rvmrc" if rvmrc_changed?(old_ref, new_ref)
     bundle :install if gemfile_changed?(old_ref, new_ref)
     god :unmonitor, "hyperarchy_#{env}"
     thor "deploy:target:display_maintenance_page"
@@ -55,6 +56,10 @@ class Deployment
     local_repo.diff(old_ref, new_ref).path('Gemfile').patch != ""
   end
 
+  def rvmrc_changed?(old_ref, new_ref)
+    local_repo.diff(old_ref, new_ref).path('.rvmrc').patch != ""
+  end
+
   def deploy_dir(env)
     "/home/hyperarchy/#{env}"
   end
@@ -75,5 +80,5 @@ class Deployment
     end
   end
 
-  commands :cd, :git, :bundle, :thor, :sudo, :touch, :rm
+  commands :cd, :git, :bundle, :thor, :sudo, :touch, :rm, :source
 end
