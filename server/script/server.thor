@@ -5,18 +5,13 @@ class Server < Thor
   
   desc "start [environment=development] [port]", "starts the app server for the specified environment in the background"
   def start(env="development", port=nil)
-    require "daemons"
-    options = daemon_options(:start)
-    Dir.mkdir(options[:dir]) unless File.exist?(options[:dir]) || File.symlink?(options[:dir])
-    Daemons.run_proc("hyperarchy_#{env}", options) do
-      require_and_run(env, port)
-    end
+    require_and_run(env, port, :daemonize)
   end
 
   desc "stop [environment=development]", "stops the app server for the specified environment"
   def stop(env="development")
-    require "daemons"
-    Daemons.run_proc("hyperarchy_#{env}", daemon_options(:stop)) {}
+    require "thin"
+    Thin::Server.kill(pid_file(env), 0)
   end
 
   desc "foreground [environment=development] [port]", "runs the app server in the foreground"
@@ -26,24 +21,27 @@ class Server < Thor
 
   private
 
-  def daemon_options(start_or_stop)
-    {
-      :app_name   => "hyperarchy_server",
-      :ARGV       => [start_or_stop.to_s],
-      :dir_mode   => :normal,
-      :dir        => File.expand_path("#{dir}/../../log"),
-      :multiple   => false,
-      :mode       => :exec,
-      :backtrace  => true,
-      :log_output => true
-    }
+  def require_and_run(env, port_override, daemonize=false)
+    require_hyperarchy(env)
+    port = port_override || Hyperarchy::App.port
+    server = Thin::Server.new(Hyperarchy::App, port, :threaded => true)
+
+    if daemonize
+      server.log_file = log_file(env)
+      server.pid_file = pid_file(env)
+      server.daemonize
+      Signal.trap("QUIT") { exit }
+      Signal.trap("INT") { exit }
+    end
+    server.start
   end
 
-  def require_and_run(env, port)
-    require_hyperarchy(env)
-    options = { :host => 'localhost' }
-    options[:port] = port if port
-    Hyperarchy::App.run!(options)
+  def pid_file(env)
+    "#{LOG_DIR}/hyperarchy_#{env}.pid"
+  end
+
+  def log_file(env)
+    "#{LOG_DIR}/thin_#{env}.log"
   end
 
   def dir

@@ -36,6 +36,7 @@ group :test do
 end
 
 group :thor do
+  gem "thin", "1.2.7"
   gem "bcrypt-ruby", "2.1.1", :require => "bcrypt"
   gem "net-ssh", "2.0.23"
   gem "git", "1.2.5"
