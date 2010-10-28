@@ -6,7 +6,7 @@ LOGGER = Logger.new(File.open("/dev/null", "w+"))
 require "rubygems"
 require "bundler"
 
-ENV['BUNDLE_GEMFILE'] = "#{dir}/../Gemfile"
+ENV['BUNDLE_GEMFILE'] = File.expand_path("#{dir}/../../Gemfile")
 Bundler.setup(:default, :test)
 require "spec"
 require "set"

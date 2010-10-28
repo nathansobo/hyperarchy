@@ -2,6 +2,18 @@ class Class
   def basename
     name.split("::").last
   end
+
+  def thread_local_accessor(*names)
+    names.each do |name|
+      define_method(name) do
+        Thread.current["#{name}_#{hash}"]
+      end
+
+      define_method("#{name}=") do |val|
+        Thread.current["#{name}_#{hash}"] = val
+      end
+    end
+  end
 end
 
 class Object

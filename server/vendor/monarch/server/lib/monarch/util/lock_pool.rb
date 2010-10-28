@@ -26,6 +26,8 @@ module Monarch
         named_mutex.ref_count -= 1
         puts "Unlocking #{name} -- #{named_mutex.ref_count}"
         named_mutexes.delete(name) if named_mutex.ref_count == 0
+        p named_mutexes.keys
+
         named_mutex.mutex.unlock
         outer_mutex.unlock
       end

@@ -37,7 +37,11 @@ module Monarch
       end
 
       describe "#pause and #resume" do
-        specify "#pause enqueues events and does not fire callbacks until #resume flushes them, after which callbacks are triggered normally" do
+        specify "#pause causes events on the current thread to be enqueued and does not fire callbacks until #resume flushes them, after which callbacks are triggered normally" do
+          fake_thread_1 = {}
+          fake_thread_2 = {}
+
+          stub(Thread).current { fake_thread_1 }
           node.pause
           node.publish("a", "b")
           node.publish("x", "y")
@@ -45,6 +49,15 @@ module Monarch
           subscription_1_args.should be_empty
           subscription_2_args.should be_empty
 
+          stub(Thread).current { fake_thread_2 }
+
+          node.publish("z", "z")
+          subscription_1_args.should == [["z", "z"]]
+          subscription_2_args.should == [["z", "z"]]
+          subscription_1_args.clear
+          subscription_2_args.clear
+
+          stub(Thread).current { fake_thread_1 }
           node.resume
 
           subscription_1_args.should == [["a", "b"], ["x", "y"]]
@@ -59,12 +72,25 @@ module Monarch
 
       describe "#pause and #cancel" do
         specify "#pause enqueues events and does not fire callbacks, then #cancel does not flush enqueued events but causes callbacks to trigger normally after it is called" do
+          fake_thread_1 = {}
+          fake_thread_2 = {}
+
+          stub(Thread).current { fake_thread_1 }
+
           node.pause
           node.publish("a", "b")
 
           subscription_1_args.should be_empty
           subscription_2_args.should be_empty
 
+          stub(Thread).current { fake_thread_2 }
+          node.pause
+          node.publish("a", "b")
+          subscription_1_args.should be_empty
+          subscription_2_args.should be_empty
+
+
+          stub(Thread).current { fake_thread_1 }
           node.cancel
 
           subscription_1_args.should be_empty
@@ -74,6 +100,15 @@ module Monarch
 
           subscription_1_args.should == [["foo", "bar"]]
           subscription_2_args.should == [["foo", "bar"]]
+
+          subscription_1_args.clear
+          subscription_2_args.clear
+
+          stub(Thread).current { fake_thread_2 }
+          node.resume
+
+          subscription_1_args.should == [["a", "b"]]
+          subscription_2_args.should == [["a", "b"]]
         end
       end
     end

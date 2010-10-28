@@ -1,9 +1,10 @@
 module Monarch
   module Util
     class SubscriptionNode
+      thread_local_accessor :events_paused, :enqueued_events
+
       def initialize
         @subscriptions = []
-        @events_paused = false
       end
 
       def subscribe(&proc)
@@ -31,21 +32,21 @@ module Monarch
       end
 
       def pause
-        @events_paused = true
-        @enqueued_events = []
+        self.events_paused = true
+        self.enqueued_events = []
       end
 
       def resume
-        @events_paused = false
+        self.events_paused = false
         enqueued_events.each do |event|
           publish(*event)
         end
-        @enqueued_events = nil
+        self.enqueued_events = nil
       end
 
       def cancel
-        @events_paused = false
-        @enqueued_events = nil
+        self.events_paused = false
+        self.enqueued_events = nil
       end
 
       def count
@@ -54,11 +55,11 @@ module Monarch
 
       def clear
         @subscriptions = []
-        @enqueued_events = nil
+        self.enqueued_events = nil
       end
 
       protected
-      attr_reader :subscriptions, :events_paused, :enqueued_events, :on_unsubscribe_node
+      attr_reader :subscriptions, :on_unsubscribe_node
     end
   end
 end
