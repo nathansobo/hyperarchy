@@ -1,3 +1,13 @@
+<<<<<<< HEAD
+=======
+GIT
+  remote: git://github.com/eventmachine/eventmachine
+  revision: 6c79977980345f2e3b55b18a8cd690485793f8fe
+  tag: 6c79977980345f2e3b55
+  specs:
+    eventmachine (0.12.11)
+
+>>>>>>> 4200200... Using :git source for eventmachine 0.12.11
 GEM
   remote: http://rubygems.org/
   specs:

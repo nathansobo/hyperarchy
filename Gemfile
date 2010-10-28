@@ -12,6 +12,7 @@ gem "cramp", "0.10"
 
 ## hyperarchy
 gem "thin", "1.2.7"
+gem "eventmachine", "0.12.11", :git => "git://github.com/eventmachine/eventmachine", :tag => "6c79977980345f2e3b55"
 gem "warden", "0.10.7"
 gem "erector", "0.6.7"
 gem "rack-flash", "0.1.1"
