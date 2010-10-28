@@ -20,6 +20,12 @@ module Monarch
       def unlock
         table.unlock(id)
       end
+
+      def synchronize
+        lock
+        yield
+        unlock
+      end
     end
   end
 end
