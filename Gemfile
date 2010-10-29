@@ -34,6 +34,8 @@ group :test do
   gem "machinist", "1.0.6", :require => ["machinist", "machinist/blueprints", "sham"]
   gem "faker", "0.3.1"
   gem "timecop", "0.3.4"
+  gem "ruby-debug-base19", "0.11.23"
+  gem "ruby-debug19", "0.11.6", :require => "ruby-debug"
 end
 
 group :thor do

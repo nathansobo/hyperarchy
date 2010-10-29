@@ -6,18 +6,19 @@ module Monarch
       RACK_ENV_HUB_KEY = "real_time_hub"
       RACK_ENV_CLIENT_KEY = "real_time_client"
 
-      attr_reader :app, :comet_handler, :clients
+      attr_reader :app, :comet_handler, :clients, :clients_mutex
       def initialize(app)
         @app = app
         @comet_handler = CometHandler
         @clients = Hash.new { |clients, id| clients[id] = RealTimeClient.new(id, self) }
+        @clients_mutex = Mutex.new
       end
 
       def call(env)
         request = ::Rack::Request.new(env)
         env[RACK_ENV_HUB_KEY] = self
         if client_id = request.params["real_time_client_id"]
-          env[RACK_ENV_CLIENT_KEY] = clients[client_id]
+          env[RACK_ENV_CLIENT_KEY] = client(client_id)
         end
 
         case request.path_info
@@ -29,15 +30,21 @@ module Monarch
       end
 
       def client_connected(client_id, connection)
-        clients[client_id].connection = connection
+        client(client_id).connection = connection
       end
 
       def client_disconnected(client_id)
-        clients[client_id].connection = nil
+        client(client_id).connection = nil
       end
 
       def remove_client(client_id)
-        clients.delete(client_id)
+        clients_mutex.synchronize do
+          clients.delete(client_id)
+        end
+      end
+
+      def client(client_id)
+        clients_mutex.synchronize { clients[client_id] }
       end
 
       class CometHandler < Cramp::Controller::Action

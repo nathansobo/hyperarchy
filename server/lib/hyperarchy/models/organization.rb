@@ -10,4 +10,8 @@ class Organization < Monarch::Model::Record
   def after_create
     memberships.create(:user => current_user, :role => "owner", :pending => false) unless suppress_membership_creation
   end
+
+  def organization_ids
+    [id]
+  end
 end

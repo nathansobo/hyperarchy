@@ -13,8 +13,14 @@ Spec::Runner.configure do |config|
     Monarch::Model::Repository.clear_tables
     Organization.create!(:name => ALPHA_TEST_ORG_NAME, :suppress_membership_creation => true)
     Monarch::Model::Repository.initialize_local_identity_map
+    SubscriptionManager.start
     Sham.reset
     Mailer.reset
+    stub(EventMachine).add_timer
+
+    def EM.defer
+      yield
+    end
   end
 
   config.after do

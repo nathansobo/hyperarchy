@@ -1,6 +1,5 @@
 module Hyperarchy
   class App < Sinatra::Base
-
     configure(:development) do
       require 'new_relic/rack_app'
       use NewRelic::Rack::DeveloperMode
@@ -28,6 +27,7 @@ module Hyperarchy
     helpers Hyperarchy::Helpers
 
     Origin.connection = Sequel.postgres("hyperarchy_#{RACK_ENV}", :user => 'hyperarchy', :encoding => 'utf8')
+    SubscriptionManager.start
 
     configure(:test) do
       GiftWrapper.development_mode = true

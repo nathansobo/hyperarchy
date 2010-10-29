@@ -3,18 +3,24 @@ module Monarch
     class SubscriptionNode
       thread_local_accessor :events_paused, :enqueued_events
 
-      def initialize
+      def initialize(thread_safe=false)
         @subscriptions = []
+        @thread_safe = thread_safe
+        @publish_mutex = Mutex.new if thread_safe?
       end
 
       def subscribe(&proc)
         subscription = Subscription.new(self, proc)
-        subscriptions.push(subscription)
+        synchronize_if_needed do
+          subscriptions.push(subscription)
+        end
         subscription
       end
 
       def unsubscribe(subscription)
-        subscriptions.delete(subscription)
+        synchronize_if_needed do
+          subscriptions.delete(subscription)
+        end
         on_unsubscribe_node.publish if on_unsubscribe_node
       end
 
@@ -22,7 +28,9 @@ module Monarch
         if events_paused
           enqueued_events.push(args)
         else
-          subscriptions.each { |subscription| subscription.call(*args) }
+          synchronize_if_needed do
+            subscriptions.each { |subscription| subscription.call(*args) }
+          end
         end
       end
 
@@ -58,8 +66,20 @@ module Monarch
         self.enqueued_events = nil
       end
 
+      def thread_safe?
+        @thread_safe
+      end
+
       protected
-      attr_reader :subscriptions, :on_unsubscribe_node
+      attr_reader :subscriptions, :on_unsubscribe_node, :publish_mutex
+
+      def synchronize_if_needed(&block)
+        if thread_safe?
+          publish_mutex.synchronize(&block)
+        else
+          block.call
+        end
+      end
     end
   end
 end
