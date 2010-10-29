@@ -11,7 +11,7 @@ class Ranking < Monarch::Model::Record
   belongs_to :vote
 
   def before_create
-    election.lock
+#    election.lock
     self.vote = election.votes.find_or_create(:user_id => user_id)
     vote.updated
   end
@@ -28,11 +28,11 @@ class Ranking < Monarch::Model::Record
     end
 
     election.compute_global_ranking
-    election.unlock
+#    election.unlock
   end
 
   def before_update(changeset)
-    election.lock
+#    election.lock
   end
 
   def after_update(changeset)
@@ -46,7 +46,7 @@ class Ranking < Monarch::Model::Record
 
     election.votes.find(:user_id => user_id).updated
     election.compute_global_ranking
-    election.unlock
+#    election.unlock
   end
 
   def after_ranking_moved_up(old_position)
@@ -73,7 +73,7 @@ class Ranking < Monarch::Model::Record
   end
 
   def before_destroy
-    election.lock
+#    election.lock
   end
 
   def after_destroy
@@ -93,7 +93,7 @@ class Ranking < Monarch::Model::Record
       vote.updated
     end
     election.compute_global_ranking
-    election.unlock
+#    election.unlock
   end
 
   def increment_victories_over(rankings_or_candidates)

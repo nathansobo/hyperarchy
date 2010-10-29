@@ -10,7 +10,7 @@ class Candidate < Monarch::Model::Record
   has_many :rankings
 
   def before_create
-    election.lock
+#    election.lock
     self.creator ||= current_user
   end
 
@@ -26,11 +26,11 @@ class Candidate < Monarch::Model::Record
     defeats_by(election.negative_candidate_ranking_counts).update(:con_count => :times_ranked)
 
     election.compute_global_ranking
-    election.unlock
+#    election.unlock
   end
 
   def before_destroy
-    election.lock
+#    election.lock
     puts "destroying candidate #{id}"
     rankings.each(&:destroy)
     winning_majorities.each(&:destroy)
@@ -38,7 +38,7 @@ class Candidate < Monarch::Model::Record
   end
 
   def after_destroy
-    election.unlock
+#    election.unlock
   end
 
   def other_candidates
