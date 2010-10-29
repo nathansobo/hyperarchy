@@ -37,7 +37,21 @@ module Monarch
         end
       end
 
-      def subscribe(relation)
+      def subscribe(node_or_relation)
+        subscription = node_or_relation.is_a?(Model::Relations::Relation) ?
+          subscribe_to_relation(node_or_relation) : subscribe_to_node(node_or_relation)
+        subscription_id = Guid.new.to_s
+        current_subscriptions[subscription_id] = subscription
+        subscription_id
+      end
+
+      def subscribe_to_node(node)
+        node.subscribe do |message|
+          send(message)
+        end
+      end
+
+      def subscribe_to_relation(relation)
         bundle = Util::SubscriptionBundle.new
 
         bundle.add(relation.on_insert do |record|
@@ -52,19 +66,17 @@ module Monarch
           send(["destroy", relation.exposed_name.to_s, record.id])
         end)
 
-        subscription_id = Guid.new.to_s
-        current_subscriptions[subscription_id] = bundle
-        subscription_id
+        bundle
       end
 
       def unsubscribe(subscription_id)
         subscription_bundle = current_subscriptions.delete(subscription_id)
-        subscription_bundle.destroy_all
+        subscription_bundle.destroy
       end
 
       def unsubscribe_all
-        current_subscriptions.values.each do |subscription_bundle|
-          subscription_bundle.destroy_all
+        current_subscriptions.values.each do |subscription|
+          subscription.destroy
         end
       end
 

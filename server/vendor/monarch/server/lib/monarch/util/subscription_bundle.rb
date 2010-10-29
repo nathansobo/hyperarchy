@@ -11,7 +11,7 @@ module Monarch
         subscriptions.push(subscription)
       end
 
-      def destroy_all
+      def destroy
         subscriptions.each {|s| s.destroy}
       end
     end

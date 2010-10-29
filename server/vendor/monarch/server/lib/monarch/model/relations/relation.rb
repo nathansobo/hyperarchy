@@ -194,7 +194,7 @@ module Monarch
 
           event_nodes.each do |node|
             node.on_unsubscribe do
-              operand_subscriptions.destroy_all if num_subscriptions == 0
+              operand_subscriptions.destroy if num_subscriptions == 0
             end
           end
         end

@@ -16,46 +16,58 @@ module Monarch
       end
 
       describe "#subscribe and #unsubscribe" do
-        specify "#subscribe causes all insert, update, and remove events on the given relation to send a message to the client and #unsubscribe cancels those events" do
-          Timecop.freeze(Time.now)
-          subscription_1_id = client.subscribe(BlogPost.table)
-
-          sent_message = nil
-          stub(client).send do |message|
-            sent_message = message
+        context "when #subscribe is called with a subscription node" do
+          it "sends anything published on the node to the client" do
+            node = Monarch::Util::SubscriptionNode.new
+            client.subscribe(node)
+            message = ["foo", {"bar" => "baz"}]
+            mock(client).send(message)
+            node.publish(message)
           end
+        end
 
-          record = BlogPost.create!(:title => "FiberForce Muffins", :body => "Betcha can't eat these.")
-          sent_message.should == ["create", "blog_posts", {"created_at"=>nil, "title"=>"FiberForce Muffins", "body"=>"Betcha can't eat these.", "featured"=>nil, "blog_id"=>nil, "id" => record.id, "created_at" => Time.now.to_millis, "updated_at" => Time.now.to_millis }]
+        context "when #subscribe is called with a relation" do
+          specify "#subscribe causes all insert, update, and remove events on the given relation to send a message to the client and #unsubscribe cancels those events" do
+            Timecop.freeze(Time.now)
+            subscription_1_id = client.subscribe(BlogPost.table)
 
-          RR.reset_double(client, :send)
+            sent_message = nil
+            stub(client).send do |message|
+              sent_message = message
+            end
 
-          expected_message = ["update", "blog_posts", record.id, { "title" => "Tejava", "body" => "I love this tea and so does Brian Takita!" }]
-          mock(client).send(expected_message)
-          record.update(:title => "Tejava", :body => "I love this tea and so does Brian Takita!")
+            record = BlogPost.create!(:title => "FiberForce Muffins", :body => "Betcha can't eat these.")
+            sent_message.should == ["create", "blog_posts", {"created_at"=>nil, "title"=>"FiberForce Muffins", "body"=>"Betcha can't eat these.", "featured"=>nil, "blog_id"=>nil, "id" => record.id, "created_at" => Time.now.to_millis, "updated_at" => Time.now.to_millis }]
 
-          expected_message = ["destroy", "blog_posts", record.id]
-          mock(client).send(expected_message)
-          record.destroy
+            RR.reset_double(client, :send)
 
-          client.subscribe(Blog.table)
-          client.unsubscribe(subscription_1_id)
+            expected_message = ["update", "blog_posts", record.id, { "title" => "Tejava", "body" => "I love this tea and so does Brian Takita!" }]
+            mock(client).send(expected_message)
+            record.update(:title => "Tejava", :body => "I love this tea and so does Brian Takita!")
 
-          dont_allow(client).send
-          blog_post = BlogPost.create!(:title => "This one should have no event", :body => "Event free")
+            expected_message = ["destroy", "blog_posts", record.id]
+            mock(client).send(expected_message)
+            record.destroy
 
-          blog = Blog.find("grain")
-          expected_message = ["update", "blogs", blog.id, { "title" => "My new title" }]
-          RR.reset_double(client, :send)
-          mock(client).send(expected_message)
-          blog.update(:title => "My new title")
+            client.subscribe(Blog.table)
+            client.unsubscribe(subscription_1_id)
 
-          subscription_3_id = client.subscribe(BlogPost.table)
-          subscription_3_id.should_not == subscription_1_id
+            dont_allow(client).send
+            blog_post = BlogPost.create!(:title => "This one should have no event", :body => "Event free")
 
-          expected_message = ["update", "blog_posts", blog_post.id, { "title" => "Kukicha" }]
-          mock(client).send(expected_message)
-          blog_post.update(:title => "Kukicha")
+            blog = Blog.find("grain")
+            expected_message = ["update", "blogs", blog.id, { "title" => "My new title" }]
+            RR.reset_double(client, :send)
+            mock(client).send(expected_message)
+            blog.update(:title => "My new title")
+
+            subscription_3_id = client.subscribe(BlogPost.table)
+            subscription_3_id.should_not == subscription_1_id
+
+            expected_message = ["update", "blog_posts", blog_post.id, { "title" => "Kukicha" }]
+            mock(client).send(expected_message)
+            blog_post.update(:title => "Kukicha")
+          end
         end
       end
 
