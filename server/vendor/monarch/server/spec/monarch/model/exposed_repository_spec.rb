@@ -3,6 +3,8 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 module Monarch
   module Model
     describe ExposedRepository do
+      include Monarch
+
       attr_reader :user, :exposed_repository
       before do
         @user = User.find("jan")

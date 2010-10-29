@@ -29,9 +29,6 @@ require "#{dir}/../vendor/gift_wrapper/lib/gift_wrapper"
 
 module Monarch
   class << self
-    delegate :add_location, :add_js_location, :virtual_dependency_paths_from_load_path,
-             :to => "Monarch::Rack::AssetService::AssetManager.instance"
-
     def registered(app)
       app.helpers Monarch::Helpers, Util::BuildRelationalDataset
       app.use Rack::RealTimeHub

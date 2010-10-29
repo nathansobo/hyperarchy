@@ -3,7 +3,7 @@ module Monarch
   module Model
     module ForwardsArrayMethodsToRecords
       def each(&block)
-        all.each(&block)
+        all.each &block
       end
 
       def each_cons(&block)

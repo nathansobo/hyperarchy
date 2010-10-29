@@ -4,6 +4,8 @@ module Monarch
   module Model
     module Tuples
       describe Record do
+        include Monarch::Model
+
         describe "when a subclass in created" do
           it "assigns its .table to a new Table with the underscored-pluralized name of the class as its #global_name" do
             BlogPost.table.global_name.should == :blog_posts
@@ -148,9 +150,8 @@ module Monarch
               all = []
               stub(BlogPost.table).all { all }
 
-              block = lambda {}
-              mock(all).each(&block)
-              BlogPost.each(&block)
+              mock(all).each
+              BlogPost.each {}
             end
           end
         end
@@ -237,7 +238,7 @@ module Monarch
             it "can return concrete or synthetic fields" do
               record.field(:full_name).should be_an_instance_of(ConcreteField)
               record.field(User[:full_name]).should be_an_instance_of(ConcreteField)
-              record.field(:great_name).should be_an_instance_of(SyntheticField)
+              record.field(:great_name).should be_an_instance_of(Monarch::Model::SyntheticField)
             end
           end
 

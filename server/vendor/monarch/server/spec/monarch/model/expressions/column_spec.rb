@@ -4,6 +4,8 @@ module Monarch
   module Model
     module Expressions
       describe ConcreteColumn do
+        include Monarch::Model
+
         describe "class methods" do
           describe ".from_wire_representation" do
             it "returns a ConcreteColumn based on the 'table' and 'name' of the given representation" do

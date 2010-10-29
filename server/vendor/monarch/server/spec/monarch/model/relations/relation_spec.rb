@@ -275,9 +275,8 @@ module Monarch
               all = []
               stub(BlogPost.table).all { all }
 
-              block = lambda {}
-              mock(all).each(&block)
-              BlogPost.table.each(&block)
+              mock(all).each
+              BlogPost.table.each {}
             end
           end
         end

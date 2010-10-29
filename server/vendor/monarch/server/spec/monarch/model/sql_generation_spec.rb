@@ -231,7 +231,7 @@ module Monarch
           from (
             select blogs.id as blog_id, count(blog_posts.id) as num_posts
             from blogs left outer join blog_posts on blogs.id = blog_posts.blog_id
-            where blogs.user_id = 909647828
+            where blogs.user_id = #{"jan".to_key}
             group by blogs.id
           ) as t1
           where t1.num_posts = 5
@@ -249,7 +249,7 @@ module Monarch
           from blogs, (
             select blogs.id as blog_id, count(blog_posts.id) as num_posts
             from blogs left outer join blog_posts on blogs.id = blog_posts.blog_id
-            where blogs.user_id = 909647828 group by blogs.id
+            where blogs.user_id = #{"jan".to_key} group by blogs.id
           ) as t1
           where blogs.id = t1.blog_id
         })

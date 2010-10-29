@@ -4,6 +4,8 @@ module Monarch
   module Model
     module Relations
       describe Table do
+        include Monarch
+        
         attr_reader :table
         before do
           @table = BlogPost.table

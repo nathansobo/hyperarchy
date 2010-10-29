@@ -4,6 +4,8 @@ module Monarch
   module Model
     module Relations
       describe Selection do
+        include Monarch::Model
+
         describe "class methods" do
           describe ".from_wire_representation" do
             it "builds a Selection with an #operand resolved in the given repository" do
