@@ -25,7 +25,7 @@ class Server < Thor
     require_hyperarchy(env)
     port = port_override || Hyperarchy::App.port
     server = Thin::Server.new(Hyperarchy::App, port)
-    server.threaded = false
+    server.threaded = true
 
     if daemonize
       server.log_file = log_file(env)
