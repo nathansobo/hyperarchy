@@ -22,6 +22,10 @@ class User < Monarch::Model::Record
     Candidate.table
   end
 
+  def organization_ids
+    memberships.map(&:organization_id)
+  end
+
   def after_create
     memberships.create!(:organization => Organization.find(:name => ALPHA_TEST_ORG_NAME), :suppress_invite_email => true, :pending => false)
   end

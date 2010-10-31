@@ -27,7 +27,7 @@ module Hyperarchy
     helpers Hyperarchy::Helpers
 
     Origin.connection = Sequel.postgres("hyperarchy_#{RACK_ENV}", :user => 'hyperarchy', :encoding => 'utf8')
-    SubscriptionManager.start
+    SubscriptionManager.start unless RACK_ENV == 'test'
 
     configure(:test) do
       GiftWrapper.development_mode = true

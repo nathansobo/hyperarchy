@@ -9,6 +9,8 @@ class Candidate < Monarch::Model::Record
   belongs_to :creator, :class_name => "User"
   has_many :rankings
 
+  delegate :organization_ids, :to => :election
+
   def before_create
     election.lock
     self.creator ||= current_user

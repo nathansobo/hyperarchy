@@ -17,6 +17,10 @@ class Membership < Monarch::Model::Record
   attr_accessor :suppress_invite_email
   delegate :email_address, :first_name, :last_name, :to => :user_details_delegate
 
+  def organization_ids
+    [organization_id]
+  end
+
   def email_address
     @email_address || user_details_delegate.email_address
   end

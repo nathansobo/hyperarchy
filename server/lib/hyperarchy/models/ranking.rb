@@ -10,6 +10,8 @@ class Ranking < Monarch::Model::Record
   belongs_to :election
   belongs_to :vote
 
+  delegate :organization_ids, :to => :election
+
   def before_create
     election.lock
     self.vote = election.votes.find_or_create(:user_id => user_id)

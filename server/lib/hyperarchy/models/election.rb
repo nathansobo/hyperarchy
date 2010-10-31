@@ -14,6 +14,10 @@ class Election < Monarch::Model::Record
   belongs_to :creator, :class_name => "User"
   belongs_to :organization
 
+  def organization_ids
+    [organization_id]
+  end
+
   def before_create
     self.creator ||= current_user
   end
