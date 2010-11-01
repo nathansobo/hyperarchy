@@ -101,6 +101,11 @@ module Hyperarchy
       successful_json_response
     end
 
+    post "/subscribe_to_organization/:id" do |organization_id|
+      organization = Organization.find(organization_id)
+      SubscriptionManager.subscribe_to_organization(current_real_time_client, organization)
+    end
+
     post "/rankings" do
       if ranking = Ranking.find(:user_id => params[:user_id], :candidate_id => params[:candidate_id])
         ranking.update(:position => params[:position])

@@ -17,8 +17,9 @@ class SubscriptionManager
     subscribe_to_tables
   end
 
-  def subscribe_to_organization(real_time_client, organization_id)
-    real_time_client.subscribe(organization_node(organization_id))
+  def subscribe_to_organization(real_time_client, organization)
+    raise Hyperarchy::Unauthorized unless organization.has_member?(real_time_client.user)
+    real_time_client.subscribe(organization_node(organization.id))
   end
 
   protected

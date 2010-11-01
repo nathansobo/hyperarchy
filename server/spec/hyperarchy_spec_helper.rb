@@ -57,6 +57,11 @@ class RackExampleGroup < Spec::Example::ExampleGroup
   def current_user
     warden.user
   end
+
+  def login_as(user, opts={})
+    super
+    user
+  end
 end
 
 class RackExampleGroup < Spec::Example::ExampleGroup

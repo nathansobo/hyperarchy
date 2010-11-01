@@ -3,6 +3,7 @@ module Monarch
     class RealTimeClient
       RECONNECT_INTERVAL = 5
       attr_reader :id, :connection, :hub
+      attr_accessor :user
 
       def initialize(id, hub)
         @id, @hub = id, hub

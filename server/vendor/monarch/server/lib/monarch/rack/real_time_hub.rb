@@ -18,7 +18,9 @@ module Monarch
         request = ::Rack::Request.new(env)
         env[RACK_ENV_HUB_KEY] = self
         if client_id = request.params["real_time_client_id"]
-          env[RACK_ENV_CLIENT_KEY] = client(client_id)
+          client = client(client_id)
+          client.user = env["warden"].user if env["warden"]
+          env[RACK_ENV_CLIENT_KEY] = client 
         end
 
         case request.path_info
