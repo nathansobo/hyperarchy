@@ -25,5 +25,11 @@ _.constructor("Controllers.Application", {
 
   currentUser: function() {
     return User.find(this.currentUserId);
+  },
+
+  currentOrganizationId: {
+    afterChange: function(organizationId) {
+      Server.post("/subscribe_to_organization/" + organizationId, { real_time_client_id: Server.realTimeClientId() });
+    }
   }
 });

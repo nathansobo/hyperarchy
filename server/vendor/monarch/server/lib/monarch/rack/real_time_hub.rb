@@ -60,7 +60,8 @@ module Monarch
         end
 
         def register_connection
-          @client_id = params["client_id"] || Guid.new.to_s
+          @client_id = params["real_time_client_id"]
+          raise "No real_time_client_id param available with the request" unless client_id
           hub.client_connected(client_id, self)
           padding_for_safari = " " * 256
           render(padding_for_safari + ["connected", client_id].to_json)

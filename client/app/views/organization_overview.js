@@ -67,7 +67,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     organizationId: {
       afterChange: function(organizationId) {
         $("#application").view().lastOrganizationId = organizationId;
-
+        Application.currentOrganizationId(organizationId);
+        
         this.subscriptions.destroy();
         this.subscriptions.add(this.organization().field('name').onUpdate(function(newName) {
           this.organizationName.html(newName);
@@ -127,11 +128,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
               electionLi.updateVoteCount(changes.voteCount.newValue);
             }
           }, this);
-
-          Server.subscribe([
-            elections,
-            elections.joinThrough(Candidate)
-          ]);
         }, this);
     },
 

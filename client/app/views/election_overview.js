@@ -125,14 +125,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     election: {
       afterChange: function(election) {
+        Application.currentOrganizationId(election.organizationId());
         this.populateElectionDetails(election);
         this.subscribeToElectionChanges(election);
-
-        Server.subscribe([election, election.candidates(), election.votes()])
-          .onSuccess(function(subscriptions) {
-            this.subscriptions.add(subscriptions);
-          }, this);
-
         this.candidatesList.election(election);
         this.rankedCandidatesList.election(election);
         this.votesList.election(election);

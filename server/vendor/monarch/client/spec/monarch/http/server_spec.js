@@ -1,15 +1,13 @@
-
 //= require "../../monarch_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Http.Server", function() {
-    var server, fakeCometClient;
+    var server;
 
     before(function() {
       server = new Monarch.Http.Server();
-      fakeCometClient = new FakeServer.FakeCometClient();
-      mock(server, 'newCometClient', function() {
-        return fakeCometClient;
+      mock(server, 'newRealTimeClient', function() {
+        return new FakeServer.FakeCometClient();
       });
     });
 
@@ -110,11 +108,9 @@ Screw.Unit(function(c) { with(c) {
         useExampleDomainModel();
 
         it("initializes and connects the client if needed, then performs the request", function() {
-          expect(server.cometClient).to(beNull);
+          server.realTimeClientId('sample-id');
+          
           var subscribeFuture = server.subscribe([Blog.table, BlogPost.table]);
-          expect(server.cometClient).toNot(beNull);
-          expect(fakeCometClient.connecting).to(beTrue);
-          fakeCometClient.simulateConnectSuccess("sample-id");
 
           expect(server.posts.length).to(eq, 1);
           expect(server.lastPost.type).to(eq, "post");
@@ -135,25 +131,29 @@ Screw.Unit(function(c) { with(c) {
           expect(remoteSubscriptions[1].relation).to(eq, BlogPost.table);
           expect(remoteSubscriptions[1].id).to(eq, "mockSubscriptionId2");
 
-          server.newCometClient.clear();
+          server.newRealTimeClient.clear();
           server.subscribe([User.table]);
-          expect(server.newCometClient).toNot(haveBeenCalled);
+          expect(server.newRealTimeClient).toNot(haveBeenCalled);
         });
 
         it("causes all mutation commands received to be sent to Repository.mutate", function() {
           mock(Repository, "mutate");
 
+          server.realTimeClientId("sample-id");
+          server.realTimeClient.simulateConnectSuccess("sample-id");
+
           server.subscribe([Blog.table, BlogPost.table]);
-          server.cometClient.simulateConnectSuccess("sample-id");
-          server.cometClient.simulateReceive(['create', 'blogs', { id: 'animals' }]);
+          server.realTimeClient.simulateReceive(['create', 'blogs', { id: 'animals' }]);
 
           expect(Repository.mutate).to(haveBeenCalled, withArgs([['create', 'blogs', { id: 'animals' }]]));
         });
 
         it("interprets a record as a subscription to a where relation constrained to the record's id", function() {
+          server.realTimeClientId("sample-id");
+          server.realTimeClient.simulateConnectSuccess("sample-id");
+
           var blog = Blog.createFromRemote({id: 1});
           var subscribeFuture = server.subscribe([blog]);
-          fakeCometClient.simulateConnectSuccess("sample-id");
 
           expect(server.posts.length).to(eq, 1);
           expect(server.lastPost.data).to(equal, {
@@ -170,8 +170,7 @@ Screw.Unit(function(c) { with(c) {
           var remoteSubscription1 = new Monarch.Http.RemoteSubscription("fakeSubscription1", Blog.table);
           var remoteSubscription2 = new Monarch.Http.RemoteSubscription("fakeSubscription2", BlogPost.table);
 
-          server.cometClient = fakeCometClient;
-          fakeCometClient.clientId = "sample-id"
+          server.realTimeClientId("sample-id");
 
           server.unsubscribe([remoteSubscription1, remoteSubscription2]);
           expect(server.posts.length).to(eq, 1);
@@ -780,8 +779,7 @@ Screw.Unit(function(c) { with(c) {
 
         // data is url-encoded and appended as params for delete requests
         if (requestMethod == "delete_") {
-          var expectedData = _.extend({cometClientId: window.COMET_CLIENT_ID}, data)
-          expect(ajaxOptions.url).to(eq, '/users?' + jQuery.param(server.stringifyJsonData(expectedData)));
+          expect(ajaxOptions.url).to(eq, '/users?' + jQuery.param(server.stringifyJsonData(data)));
           expect(ajaxOptions.data).to(beNull);
         } else {
           expect(ajaxOptions.url).to(eq, '/users');

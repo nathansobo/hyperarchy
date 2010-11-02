@@ -32,5 +32,9 @@ module Models
     expose :rankings do
       elections.join_through(Ranking)
     end
+
+    def subscribe(*args)
+      raise Hyperarchy::Unauthorized
+    end
   end
 end

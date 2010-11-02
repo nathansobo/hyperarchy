@@ -1,7 +1,8 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Http.CometClient", {
-  initialize: function() {
+  initialize: function(realTimeClientId) {
+    this.realTimeClientId = realTimeClientId;
     this.onReceiveNode = new Monarch.SubscriptionNode();
   },
 
@@ -14,7 +15,7 @@ _.constructor("Monarch.Http.CometClient", {
       var xhr = jQuery.ajax({
         type: "post",
         url: Server.cometHubUrl,
-        data: { client_id: self.clientId }
+        data: { real_time_client_id: self.realTimeClientId }
       });
 
       xhr.onreadystatechange = function() {
@@ -25,7 +26,6 @@ _.constructor("Monarch.Http.CometClient", {
             _.each(data.split("\n"), function(messageString) {
               var message = JSON.parse(messageString);
               if (message[0] == "connected") {
-                self.clientId = message[1];
                 connectFuture.triggerSuccess();
               } else {
                 self.onReceiveNode.publish(message);

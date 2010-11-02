@@ -1,5 +1,9 @@
 module Hyperarchy
   class App < Sinatra::Base
+    error Hyperarchy::Unauthorized do
+      "Sorry. That action is not authorized."
+    end
+
     get "/" do
       redirect "/app#view=organization" and return if current_user
       render_page Views::Home

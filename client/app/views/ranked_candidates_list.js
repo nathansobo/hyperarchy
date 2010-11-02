@@ -86,7 +86,6 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       afterChange: function(rankingsRelation) {
         this.startLoading();
         this.subscriptions.destroy();
-        rankingsRelation.subscribe(this.subscriptions.hitch('add'));
         rankingsRelation.fetch().onSuccess(function() {
           this.stopLoading();
           this.populateRankings();
