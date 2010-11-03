@@ -5,36 +5,45 @@ class Server < Thor
   
   desc "start [environment=development] [port]", "starts the app server for the specified environment in the background"
   def start(env="development", port=nil)
-    require_and_run(env, port, :daemonize)
+    run(:start, env, true, port)
   end
 
   desc "stop [environment=development]", "stops the app server for the specified environment"
   def stop(env="development")
-    require "thin"
-    Thin::Server.kill(pid_file(env), 0)
+    run(:stop, env, true)
   end
 
   desc "foreground [environment=development] [port]", "runs the app server in the foreground"
   def foreground(env="development", port=nil)
-    require_and_run(env, port)
+    run(:start, env, false, port)
   end
 
   private
 
-  def require_and_run(env, port_override, daemonize=false)
-    require_hyperarchy(env)
-    port = port_override || Hyperarchy::App.port
-    server = Thin::Server.new(Hyperarchy::App, port)
-    server.threaded = true
+  PORTS = {
+    "development" => 9000,
+    "demo" => 3001,
+    "production" => 3000
+  }
+
+  def run(command, env, daemonize, port_override=nil)
+    require "thin"
+    options = {
+      :rackup => "#{SERVER_ROOT}/script/hyperarchy.ru",
+      :daemonize => daemonize,
+      :environment => env,
+      :port => port_override || PORTS[env],
+      :threaded => true,
+    }
 
     if daemonize
-      server.log_file = log_file(env)
-      server.pid_file = pid_file(env)
-      server.daemonize
-      Signal.trap("QUIT") { exit }
-      Signal.trap("INT") { exit }
+      options[:pid] = pid_file(env)
+      options[:log] = log_file(env)
     end
-    server.start
+
+    Thin::Command.script = "bundle exec thin"
+    command = Thin::Command.new(command, options)
+    exec(command.shellify)
   end
 
   def pid_file(env)

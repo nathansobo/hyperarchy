@@ -41,7 +41,6 @@ module Hyperarchy
       GiftWrapper.development_mode = true
       Sass::Plugin.options[:template_location] = { "#{CLIENT_ROOT}/stylesheets" => "#{CLIENT_ROOT}/stylesheets" }
       ::LOGGER = Logger.new(STDOUT)
-      set :port, 9000
       Mailer.base_url = "localhost:9000"
       Mailer.default_options = {
         :from => '"Hyperarchy" <admin@hyperarchy.com>',
@@ -63,7 +62,6 @@ module Hyperarchy
       Mailer.base_url = "demo.hyperarchy.com"
 
       ::LOGGER = Logger.new($stdout)
-      set :port, 3001
 
       Mailer.default_options = {
         :via => :smtp,
@@ -83,7 +81,6 @@ module Hyperarchy
       Mailer.base_url = "hyperarchy.com"
 
       ::LOGGER = Logger.new($stdout)
-      set :port, 3000
 
       Mailer.default_options = {
         :from => '"Hyperarchy" <admin@hyperarchy.com>',
