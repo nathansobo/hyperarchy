@@ -25,6 +25,6 @@ class Nginx < Thor
   protected
 
   def nginx_command
-    "sudo nginx -p #{ROOT}/global_config/ -c nginx.conf"
+    "sudo nginx -p #{HYPERARCHY_ROOT}/global_config/ -c nginx.conf"
   end
 end

@@ -26,13 +26,13 @@ class Deploy < Thor
     desc "display_maintenance_page", "touches the 'offline' file in the application directory, which causes nginx to display the maintenance page"
     def display_maintenance_page
       require "fileutils"
-      FileUtils.touch("#{ROOT}/offline")
+      FileUtils.touch("#{HYPERARCHY_ROOT}/offline")
     end
 
     desc "display_maintenance_page", "removes the 'offline' file in the application directory, which causes nginx to not display the maintenance page"
     def remove_maintenance_page
       require "fileutils"
-      FileUtils.rm("#{ROOT}/offline")
+      FileUtils.rm("#{HYPERARCHY_ROOT}/offline")
     end
     
     desc "copy_assets", "copy static assets to the public directory to be served by nginx"
