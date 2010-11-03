@@ -50,7 +50,7 @@ class SubscriptionManager
   end
 
   def each_organization_node(record, &block)
-    EM.defer do
+    Hyperarchy.defer do
       organization_nodes(record).each(&block)
     end
   end
