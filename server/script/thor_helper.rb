@@ -5,11 +5,11 @@ require "rubygems"
 require "thor"
 require "bundler"
 
-ENV['BUNDLE_GEMFILE'] ||= "#{ROOT}/Gemfile"
+ENV['BUNDLE_GEMFILE'] ||= "#{HYPERARCHY_ROOT}/Gemfile"
 Bundler.setup(:thor)
 require "sequel"
 
 def require_hyperarchy(env)
   ENV['RACK_ENV'] = env
-  require "#{ROOT}/server/lib/hyperarchy"
+  require "#{HYPERARCHY_ROOT}/server/lib/hyperarchy"
 end

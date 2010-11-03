@@ -1,4 +1,4 @@
-$: << "#{ROOT}/server/vendor/net-ssh-shell/lib"
+$: << "#{HYPERARCHY_ROOT}/server/vendor/net-ssh-shell/lib"
 require "net/ssh/shell"
 require "git"
 
@@ -6,7 +6,7 @@ class Deployment
   attr_reader :shell, :local_repo
 
   def deploy(env, ref)
-    @local_repo = Git.open(ROOT)
+    @local_repo = Git.open(HYPERARCHY_ROOT)
 
     cd deploy_dir(env)
     old_ref = git "rev-parse", :HEAD
@@ -29,7 +29,7 @@ class Deployment
   end
 
   def deploy_global_config
-    system("rsync -ave ssh #{ROOT}/global_config hyperarchy@hyperarchy.com:")
+    system("rsync -ave ssh #{HYPERARCHY_ROOT}/global_config hyperarchy@hyperarchy.com:")
     god :load, "/home/hyperarchy/global_config/hyperarchy.god"
     reload_nginx_config
   end
