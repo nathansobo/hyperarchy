@@ -11,6 +11,7 @@ module Monarch
         end
 
         def lock
+          self.lock_depth = 0 if lock_depth.nil?
           self.lock_depth += 1
           mutex.lock if lock_depth == 1
         end
