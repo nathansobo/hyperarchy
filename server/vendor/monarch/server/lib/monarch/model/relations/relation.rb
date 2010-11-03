@@ -272,7 +272,7 @@ module Monarch
             else
 
               left_operand = if key.instance_of?(Symbol)
-                returning(column(key)) do |column|
+                column(key).tap do |column|
                   raise "No such column: #{key}" unless column
                 end
               else
@@ -280,7 +280,7 @@ module Monarch
               end
 
               right_operand = if value.instance_of?(Symbol)
-                returning(column(value)) do |column|
+                column(value).tap do |column|
                   raise "No such column: #{value}" unless column
                 end
               else

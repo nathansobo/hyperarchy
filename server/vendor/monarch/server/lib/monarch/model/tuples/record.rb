@@ -120,7 +120,7 @@ module Monarch
         end
 
         def update!(values_by_method_name)
-          returning update(values_by_method_name) do
+          update(values_by_method_name).tap do
             raise InvalidRecordException.new(self, validation_errors_by_column_name) unless valid?
           end
         end

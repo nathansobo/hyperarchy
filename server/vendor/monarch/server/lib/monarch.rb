@@ -12,7 +12,7 @@ require "json"
 
 require "active_support/ordered_hash"
 require "active_support/core_ext/module/delegation"
-require "active_support/core_ext/object/misc"
+require "active_support/core_ext/object/returning"
 require "active_support/core_ext/hash/keys"
 require "active_support/core_ext/hash/indifferent_access"
 require "active_support/core_ext/enumerable"
