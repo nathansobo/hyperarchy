@@ -10,7 +10,9 @@ class Ranking < Monarch::Model::Record
   belongs_to :election
   belongs_to :vote
 
-  delegate :organization_ids, :to => :election
+  def organization_ids
+    election ? election.organization_ids : []
+  end
 
   def before_create
     election.lock

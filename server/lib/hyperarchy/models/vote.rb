@@ -7,7 +7,9 @@ class Vote < Monarch::Model::Record
   belongs_to :user
   belongs_to :election
 
-  delegate :organization_ids, :to => :election 
+  def organization_ids
+    election ? election.organization_ids : []
+  end
 
   # note: this approach to incrementing / decrementing is not atomic!
   # but currently plan to serialize all operations per election so it's ok
