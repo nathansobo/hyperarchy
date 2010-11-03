@@ -1,4 +1,15 @@
 module Hyperarchy
+  def self.defer(&block)
+    EM.defer do
+      begin
+        block.call
+      rescue Exception => e
+        msg = ["#{e.class} - #{e.message}:", *e.backtrace].join("\n ")
+        LOGGER.error(msg)
+      end
+    end
+  end
+
   class App < Sinatra::Base
     configure(:development) do
       require 'new_relic/rack_app'
