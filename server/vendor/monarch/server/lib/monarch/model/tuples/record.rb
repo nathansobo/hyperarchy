@@ -142,6 +142,7 @@ module Monarch
         end
 
         def destroy
+          raise Monarch::Unauthorized unless can_destroy?
           before_destroy
           table.remove(self)
           after_destroy
@@ -349,7 +350,11 @@ module Monarch
         end
 
         def can_create?
-          true # override when needed
+          true
+        end
+
+        def can_destroy?
+          true
         end
 
         protected

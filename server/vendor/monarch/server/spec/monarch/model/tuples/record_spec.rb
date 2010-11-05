@@ -228,6 +228,24 @@ module Monarch
               BlogPost.table.global_identity_map.should_not have_key(record.id)
               BlogPost.find(record.id).should be_nil
             end
+
+            context "if the record has a #can_destroy? method" do
+              it "calls the method, and only destroys the record if it returns true" do
+                mock.instance_of(BlogPost).can_destroy? { true }
+                record.destroy
+                BlogPost.find(record.id).should be_nil
+              end
+
+              it "raises an exception and does not destroy the record if it returns false" do
+                mock.instance_of(BlogPost).can_destroy? { false }
+
+                lambda do
+                  record.destroy
+                end.should raise_error(Monarch::Unauthorized)
+                
+                BlogPost.find(record.id).should_not be_nil
+              end
+            end
           end
 
           describe "#field(column_or_name)" do
