@@ -56,6 +56,12 @@ module Monarch
       end
     end
   end
+
+  class Unauthorized < Exception
+    def code
+      401
+    end
+  end
 end
 
 Origin = Monarch::Model::RemoteRepository.new

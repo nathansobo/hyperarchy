@@ -100,12 +100,20 @@ module Monarch
             end
           end
 
-          context "if the record has a can_create? method" do
-            it "calls the method and only creates the record if it returns true" do
-              pending
+          context "if the record has a #can_create? method" do
+            it "calls the method and creates the record if it returns true" do
               mock.instance_of(BlogPost).can_create? { true }
-              mock.proxy(table).insert(instance_of(BlogPost))
+              mock.proxy(Origin).insert(table, instance_of(BlogPost))
               table.create!(:body => "Gargoyle")
+            end
+
+            it "does not create the record or execute any other hooks if #can_create? returns false" do
+              mock.instance_of(BlogPost).can_create? { false }
+              dont_allow(Origin).insert
+
+              lambda do
+                table.create!(:body => "Monster")
+              end.should raise_error(Monarch::Unauthorized)
             end
           end
 

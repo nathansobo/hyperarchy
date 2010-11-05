@@ -326,28 +326,34 @@ module Monarch
           unlock
         end
 
-        protected
-        attr_reader :synthetic_fields_by_column
+        ## Hooks - Override when needed
+        def before_create
+        end
+
+        def after_create
+        end
 
         def before_destroy
-          # override when needed
         end
 
         def after_destroy
-          # override when needed
         end
 
         def before_validate
-          # override when needed
         end
 
         def before_update(changeset)
-          # override when needed
         end
 
         def after_update(changeset)
-          # override when needed
         end
+
+        def can_create?
+          true # override when needed
+        end
+
+        protected
+        attr_reader :synthetic_fields_by_column
 
         def initialize_relations
           @relations_by_name = {}

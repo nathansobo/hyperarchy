@@ -1,6 +1,6 @@
 module Hyperarchy
   class App < Sinatra::Base
-    error Hyperarchy::Unauthorized do
+    error Monarch::Unauthorized do
       "Sorry. That action is not authorized."
     end
 

@@ -39,7 +39,7 @@ module Models
 
     def subscribe(*args)
       # subscribe is disabled for now in favor of the custom SubscriptionManager
-      raise Hyperarchy::Unauthorized
+      raise Monarch::Unauthorized
     end
   end
 end

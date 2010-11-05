@@ -57,7 +57,7 @@ describe SubscriptionManager do
 
     lambda do
       SubscriptionManager.subscribe_to_organization(client, org)
-    end.should raise_error(Hyperarchy::Unauthorized)
+    end.should raise_error(Monarch::Unauthorized)
 
     user.update(:admin => true)
     SubscriptionManager.subscribe_to_organization(client, org)

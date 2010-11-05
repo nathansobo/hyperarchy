@@ -58,6 +58,7 @@ module Monarch
         end
 
         def insert(record)
+          raise Monarch::Unauthorized unless record.can_create?
           record.before_create if record.respond_to?(:before_create)
           return record if !record.valid?
 
@@ -70,7 +71,7 @@ module Monarch
           on_insert_node.publish(record)
           local_identity_map[record.id] = record if local_identity_map
           record.mark_clean
-          record.after_create if record.respond_to?(:after_create)
+          record.after_create
           record
         end
 

@@ -18,7 +18,7 @@ class SubscriptionManager
   end
 
   def subscribe_to_organization(client, organization)
-    raise Hyperarchy::Unauthorized unless client.user.admin? || organization.has_member?(client.user)
+    raise Monarch::Unauthorized unless client.user.admin? || organization.has_member?(client.user)
     client.subscribe(organization_node(organization.id))
   end
 
