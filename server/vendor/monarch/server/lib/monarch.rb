@@ -6,10 +6,10 @@ MONARCH_SERVER_ROOT = File.expand_path(File.join(MONARCH_ROOT, 'server'))
 require "rubygems"
 require "thin"
 require "sequel"
-require "sequel/extensions/inflector"
 require "guid"
 require "json"
 
+require "active_support/inflector"
 require "active_support/ordered_hash"
 require "active_support/core_ext/module/delegation"
 require "active_support/core_ext/object/returning"

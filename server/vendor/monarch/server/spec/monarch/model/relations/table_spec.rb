@@ -77,14 +77,14 @@ module Monarch
             record.should_not be_dirty
           end
 
-          context "if the #tuple_class defines a #before_create hook" do
+          context "if the record has a #before_create hook" do
             it "calls the after inserting the record" do
               mock.instance_of(BlogPost).before_create
               table.create!(:body => "Couscous")
             end
           end
 
-          context "if the #tuple_class defines an #after_create hook" do
+          context "if the record has an #after_create hook" do
             it "calls the after inserting the record" do
               mock.instance_of(BlogPost).after_create
               table.create!(:body => "Couscous")
@@ -99,6 +99,16 @@ module Monarch
               User.find(User[:full_name].eq("Invalid Bob")).should be_nil
             end
           end
+
+          context "if the record has a can_create? method" do
+            it "calls the method and only creates the record if it returns true" do
+              pending
+              mock.instance_of(BlogPost).can_create? { true }
+              mock.proxy(table).insert(instance_of(BlogPost))
+              table.create!(:body => "Gargoyle")
+            end
+          end
+
         end
 
         describe "#create!" do

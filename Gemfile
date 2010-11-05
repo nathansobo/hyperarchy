@@ -36,6 +36,9 @@ group :test do
   gem "timecop", "0.3.4"
   gem "ruby-debug-base19", "0.11.23"
   gem "ruby-debug19", "0.11.6", :require => "ruby-debug"
+
+  # for monarch specs, since rubymine forces me to run them with this gemfile
+  gem "sqlite3-ruby", "1.2.4", :require => "sqlite3"
 end
 
 group :thor do
