@@ -150,8 +150,9 @@ module Monarch
 
         def save
           unless persisted?
-            return false unless valid?
-            return table.insert(self)
+            record = table.insert(self)
+            return false unless record.valid?
+            record
           end
 
           return self unless dirty?
