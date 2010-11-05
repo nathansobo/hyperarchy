@@ -61,34 +61,23 @@ _.constructor("Views.Layout", View.Template, {
         this.body.append(view);
       }, this);
 
+      this.populateOrganizations();
+    },
+
+    populateOrganizations: function() {
       var memberships = Application.currentUser().confirmedMemberships();
 
-      if (memberships.where({role: "owner"}).empty()) this.adminMenuLink.hide();
-
-      memberships.onEach(function(membership) {
-        var organization = membership.organization();
-
-        this.addOrganizationLi.before(View.build(function(b) {
-          b.li(function() {
-            b.a({href: "#", organizationId: organization.id()}, organization.name()).click(function(view, e) {
-              $.bbq.pushState({view: "organization", organizationId: organization.id()});
-              e.preventDefault();
-            });
-          });
-        }));
-
-        if (membership.role() == "owner") {
-          this.adminMenuLink.show();
-          this.adminMenu.append(View.build(function(b) {
-            b.li(function() {
-              b.a({href: "#", organizationId: organization.id()}, organization.name() + " Admin").click(function(view, e) {
-                $.bbq.pushState({view: "editOrganization", organizationId: organization.id()});
-                e.preventDefault();
-              });
-            });
-          }))
-        }
-      }, this);
+      if (Application.currentUser().admin()) {
+        Organization.onEach(function(organization) {
+          this.populateOrganization(organization, true);
+        }, this);
+      } else {
+        this.adminMenuLink.hide(); // will be shown if needed
+        memberships.onEach(function(membership) {
+          var organization = membership.organization();
+          this.populateOrganization(organization, membership.role() == "owner");
+        }, this);
+      }
 
       Organization.onRemoteUpdate(function(organization, changes) {
         if (!changes.name) return;
@@ -97,6 +86,29 @@ _.constructor("Views.Layout", View.Template, {
         this.organizationsMenu.find(selector).html(name);
         this.adminMenu.find(selector).html(name + " Admin");
       }, this);
+    },
+
+    populateOrganization: function(organization, addToAdminMenu) {
+      this.addOrganizationLi.before(View.build(function(b) {
+        b.li(function() {
+          b.a({href: "#", organizationId: organization.id()}, organization.name()).click(function(view, e) {
+            $.bbq.pushState({view: "organization", organizationId: organization.id()});
+            e.preventDefault();
+          });
+        });
+      }));
+
+      if (addToAdminMenu) {
+        this.adminMenuLink.show();
+        this.adminMenu.append(View.build(function(b) {
+          b.li(function() {
+            b.a({href: "#", organizationId: organization.id()}, organization.name() + " Admin").click(function(view, e) {
+              $.bbq.pushState({view: "editOrganization", organizationId: organization.id()});
+              e.preventDefault();
+            });
+          });
+        }))
+      }
     },
 
     notify: function(message) {

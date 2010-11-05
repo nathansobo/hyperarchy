@@ -6,7 +6,11 @@ module Models
     end
 
     expose :organizations do
-      user.organizations
+      if user.admin?
+        Organization.table
+      else
+        user.organizations
+      end
     end
 
     expose :memberships do
@@ -34,6 +38,7 @@ module Models
     end
 
     def subscribe(*args)
+      # subscribe is disabled for now in favor of the custom SubscriptionManager
       raise Hyperarchy::Unauthorized
     end
   end

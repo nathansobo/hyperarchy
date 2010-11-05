@@ -4,6 +4,7 @@ _.constructor("User", Model.Record, {
       firstName: 'string',
       lastName: 'string',
       emailAddress: 'string',
+      admin: 'boolean',
       dismissedWelcomeBlurb: 'boolean'
     });
 

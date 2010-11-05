@@ -47,7 +47,7 @@ describe SubscriptionManager do
     create_message[2].should == election.wire_representation
   end
 
-  it "only allows members of an organization to subscribe to it" do
+  it "only allows members of an organization to subscribe to it, unless the subscriber is an admin" do
     user = User.make
     client = RealTimeClient.new("client_1", "fake hub")
     client.user = user
@@ -58,5 +58,10 @@ describe SubscriptionManager do
     lambda do
       SubscriptionManager.subscribe_to_organization(client, org)
     end.should raise_error(Hyperarchy::Unauthorized)
+
+    user.update(:admin => true)
+    SubscriptionManager.subscribe_to_organization(client, org)
+    mock(client).send(anything)
+    org.update(:name => "Pink Panther Party")
   end
 end

@@ -22,7 +22,11 @@ module Views
     end
 
     def store_organizations_in_repository
-      store_in_repository(Organization.table)
+      if current_user.admin?
+        store_in_repository(Organization.table)
+      else
+        store_in_repository(current_user.organizations)
+      end
     end
 
     def store_current_user_in_repository
