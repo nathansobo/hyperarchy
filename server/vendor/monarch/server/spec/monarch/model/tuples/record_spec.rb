@@ -426,7 +426,18 @@ module Monarch
                 record.age = 2
                 record.save.should be_false
               end
-              
+
+              context "if #can_update? is defined" do
+                it "calls #can_update? and raises an Unauthorized exception if it returns false" do
+                  mock(record).can_update? { false }
+                  record.body = "Hello, sunshine."
+                  lambda do
+                    record.save
+                  end.should raise_error(Monarch::Unauthorized)
+                  record.reload.body.should_not == "Hello, sunshine."
+                end
+              end
+
               context "if #update_whitelist / #update_blacklist are defined" do
                 it "raises an Unauthorized exception if any dirty fields are not on the whitelist" do
                   mock(record).update_whitelist { [:title] }
@@ -434,6 +445,7 @@ module Monarch
                   lambda do
                     record.save
                   end.should raise_error(Monarch::Unauthorized)
+                  record.reload.body.should_not == "Hi you!"
                 end
 
                 it "raises an Unauthorized exception if any dirty fields are on the blacklist" do

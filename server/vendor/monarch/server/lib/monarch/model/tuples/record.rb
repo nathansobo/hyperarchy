@@ -160,7 +160,7 @@ module Monarch
 
           return self unless dirty?
 
-          raise Monarch::Unauthorized unless can_update_columns?
+          raise Monarch::Unauthorized unless can_update? && can_update_columns?
 
           before_update(dirty_concrete_field_values_by_column_name)
           return false unless valid?
@@ -311,13 +311,17 @@ module Monarch
           self
         end
 
-        def soft_update_clean_fields(values_by_field_name)
+        def soft_update_fields(values_by_field_name, include_dirty=true)
           values_by_field_name.each do |field_name, value|
             if the_field = field(field_name)
-              the_field.value = value unless the_field.dirty?
+              the_field.value = value if !the_field.dirty? || include_dirty
             end
           end
           self
+        end
+
+        def soft_update_clean_fields(values_by_field_name)
+          soft_update_fields(values_by_field_name, false)
         end
 
         def lock
@@ -357,6 +361,10 @@ module Monarch
         end
 
         def can_create?
+          true
+        end
+
+        def can_update?
           true
         end
 
