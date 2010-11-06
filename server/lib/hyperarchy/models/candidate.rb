@@ -18,6 +18,12 @@ class Candidate < Monarch::Model::Record
     election.organization.has_member?(current_user)
   end
 
+  def can_update?
+    return true 
+#    return true unless current_user
+#    current_user.admin? || election.organization.has_owner?(current_user)
+  end
+
   def before_create
     election.lock
     self.creator ||= current_user

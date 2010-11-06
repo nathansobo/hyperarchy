@@ -124,13 +124,18 @@ module Models
     end
 
     describe "security" do
-      describe "creation" do
-        specify "only members of the candidate's election can create it" do
-          member = User.make
-          non_member = User.make
-          election = Election.make
-          election.organization.memberships.create!(:user => member, :suppress_invite_email => true)
+      attr_reader :member, :non_member, :membership, :election, :candidate
 
+      before do
+        @member = User.make
+        @non_member = User.make
+        @election = Election.make
+        @membership = election.organization.memberships.create!(:user => member, :suppress_invite_email => true)
+        @candidate = election.candidates.create!(:body => "Hey you!")
+      end
+
+      describe "creating" do
+        specify "only members of the candidate's election can create it" do
           set_current_user(member)
           election.candidates.create!(:body => "What should we do about all the possums?")
 
@@ -138,6 +143,30 @@ module Models
           lambda do
             election.candidates.create!(:body => "What should we do about all the whales?")
           end.should raise_error(Monarch::Unauthorized)
+        end
+      end
+
+      describe "updating" do
+        specify "only admins, organization owners, and the candidate creator can update only its body and details" do
+          pending "Repository.disable_security"
+
+          set_current_user(non_member)
+          lambda do
+            candidate.update!(:body => "Duck Liver")
+          end.should raise_error(Monarch::Unauthorized)
+
+          non_member.update!(:admin => true)
+          candidate.update!(:body => "Duck Liver")
+          candidate.body.should == "Duck Liver"
+
+          set_current_user(member)
+          lambda do
+            candidate.update!(:body => "Foie Gras")
+          end.should raise_error(Monarch::Unauthorized)
+
+          membership.update!(:role => "owner")
+          candidate.update!(:body => "Foie Gras")
+          candidate.body.should == "Foie Gras"
         end
       end
     end
