@@ -42,13 +42,15 @@ class Election < Monarch::Model::Record
       graph.remove_edge(winner_id, loser_id) unless graph.acyclic?
     end
 
-    graph.topsort_iterator.each_with_index do |candidate_id, index|
-      candidate = candidates.find(candidate_id)
-      puts "updating #{candidate.body.inspect} from #{candidate.position} to #{index}"
-      candidate.update(:position => index + 1)
-    end
+    without_security do
+      graph.topsort_iterator.each_with_index do |candidate_id, index|
+        candidate = candidates.find(candidate_id)
+        puts "updating #{candidate.body.inspect} from #{candidate.position} to #{index}"
+        candidate.update!(:position => index + 1)
+      end
 
-    update(:updated_at => Time.now)
+      update!(:updated_at => Time.now)
+    end
   end
 
   def positive_rankings
