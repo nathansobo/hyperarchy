@@ -366,7 +366,6 @@ module Monarch
               end
 
               it "calls #after_update if it is defined on the record with the dirty fields" do
-                def record.after_update; end
                 mock(record).after_update(is_a(Monarch::Model::Changeset)) do |changeset|
                   changeset.wire_representation.should == {"title" => "Queso"}
                 end
@@ -417,6 +416,24 @@ module Monarch
                 record = User.find("jan")
                 record.age = 2
                 record.save.should be_false
+              end
+              
+              context "if #update_whitelist / #update_blacklist are defined" do
+                it "raises an Unauthorized exception if any dirty fields are not on the whitelist" do
+                  mock(record).update_whitelist { [:title] }
+                  record.body = "Hi you!"
+                  lambda do
+                    record.save
+                  end.should raise_error(Monarch::Unauthorized)
+                end
+
+                it "raises an Unauthorized exception if any dirty fields are on the blacklist" do
+                  mock(record).update_blacklist { [:title] }
+                  record.title = "Purple Rain"
+                  lambda do
+                    record.save
+                  end.should raise_error(Monarch::Unauthorized)
+                end
               end
             end
           end

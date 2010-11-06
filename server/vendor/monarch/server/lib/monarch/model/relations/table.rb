@@ -22,6 +22,10 @@ module Monarch
           synthetic_columns_by_name[name] = Expressions::SyntheticColumn.new(self, name, type, signal_definition)
         end
 
+        def columns
+          concrete_columns + synthetic_columns
+        end
+
         def concrete_columns
           concrete_columns_by_name.values
         end

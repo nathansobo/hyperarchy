@@ -101,6 +101,7 @@ module Monarch
 
         attr_reader :relations_by_name
         delegate :table, :current_user, :to => "self.class"
+        delegate :columns, :to => "table"
 
         def initialize(field_values = {})
           field_values.delete(:id)
@@ -151,11 +152,17 @@ module Monarch
         def save
           unless persisted?
             record = table.insert(self)
-            return false unless record.valid?
-            record
+            if record.valid?
+              return record
+            else
+              return false
+            end
           end
 
           return self unless dirty?
+
+          raise Monarch::Unauthorized unless can_update_columns?
+
           before_update(dirty_concrete_field_values_by_column_name)
           return false unless valid?
 
@@ -358,6 +365,14 @@ module Monarch
           true
         end
 
+        def update_whitelist
+          columns.map(&:name)
+        end
+
+        def update_blacklist
+          []
+        end
+
         protected
         attr_reader :synthetic_fields_by_column
 
@@ -382,6 +397,14 @@ module Monarch
           relation.synthetic_columns.each do |column|
             synthetic_fields_by_column[column] = SyntheticField.new(self, column)
           end
+        end
+
+        def can_update_columns?
+          permitted_columns = update_whitelist - update_blacklist
+          dirty_fields.each do |field|
+            return false unless permitted_columns.include?(field.name)
+          end
+          true
         end
       end
     end
