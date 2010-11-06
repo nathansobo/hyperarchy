@@ -23,6 +23,10 @@ class Candidate < Monarch::Model::Record
     current_user.admin? || creator_id == current_user.id || election.organization.has_owner?(current_user)
   end
 
+  def update_whitelist
+    [:body, :details]
+  end
+
   def before_create
     election.lock
     self.creator ||= current_user

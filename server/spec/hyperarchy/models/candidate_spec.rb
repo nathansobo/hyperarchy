@@ -170,6 +170,11 @@ module Models
           without_security { candidate.update!(:creator_id => member.id) }
           candidate.update!(:body => "Inhumane?")
           candidate.body.should == "Inhumane?"
+
+          # no one can update properties other than body and details
+          lambda do
+            candidate.update!(:election_id => 666)
+          end.should raise_error(Monarch::Unauthorized)
         end
       end
     end
