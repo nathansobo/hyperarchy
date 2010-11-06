@@ -25,7 +25,7 @@ Spec::Runner.configure do |config|
 
   config.after do
     Monarch::Model::Repository.clear_local_identity_map
-    Monarch::Model::Record.current_user = nil
+    set_current_user(nil)
     Timecop.return
   end
 end
@@ -36,11 +36,11 @@ module Spec::Example::Subject::ExampleMethods
   end
 
   def set_current_user(user)
-    Monarch::Model::Record.current_user = user
+    Monarch::Model::Repository.current_user = user
   end
 
   def current_user
-    Monarch::Model::Record.current_user
+    Monarch::Model::Repository.current_user
   end
 end
 

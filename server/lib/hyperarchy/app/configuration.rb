@@ -110,7 +110,7 @@ module Hyperarchy
     ::LOGGER.level = Logger::INFO
 
     Warden::Manager.after_set_user do |user, auth, options|
-      Monarch::Model::Record.current_user = user
+      Monarch::Model::Repository.current_user = user
     end
 
     ::ALPHA_TEST_ORG_NAME = "Alpha Testers"

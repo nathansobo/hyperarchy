@@ -2,11 +2,10 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 
 module Models
   describe Membership do
-    attr_reader :organization, :current_user
+    attr_reader :organization
     before do
       @organization = Organization.make
-      @current_user = User.make
-      Monarch::Model::Record.current_user = current_user
+      set_current_user(User.make)
     end
 
     describe "when not pending" do

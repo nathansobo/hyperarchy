@@ -79,14 +79,6 @@ module Monarch
             @relation_definitions ||= ActiveSupport::OrderedHash.new
           end
 
-          def current_user=(user)
-            Thread.current["current_user"] = user
-          end
-
-          def current_user
-            Thread.current["current_user"]
-          end
-
           delegate :create, :create!, :unsafe_create, :where, :project, :join, :join_to, :join_through, :aggregate, :find,
                    :size, :concrete_columns_by_name, :[], :create_table, :drop_table, :clear_table, :all, :find_or_create,
                    :left_join, :left_join_to, :group_by, :on_insert, :on_remove, :on_update, :to => :table
@@ -100,7 +92,8 @@ module Monarch
         end
 
         attr_reader :relations_by_name
-        delegate :table, :current_user, :to => "self.class"
+        delegate :table, :to => "self.class"
+        delegate :current_user, :to => "::Monarch::Model::Repository"
 
         def initialize(field_values = {})
           field_values.delete(:id)

@@ -17,8 +17,7 @@ module Models
 
     describe "before create" do
       it "assigns the creator to the Model::Record.current_user" do
-        current_user = User.make
-        Monarch::Model::Record.current_user = current_user
+        set_current_user(User.make)
         election = Election.make
         election.creator.should == current_user
       end
