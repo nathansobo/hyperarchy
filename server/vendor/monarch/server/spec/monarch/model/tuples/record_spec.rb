@@ -271,6 +271,15 @@ module Monarch
               record.created_at = nil
               record.wire_representation['created_at'].should == nil
             end
+
+            it "only includes fields that appear on the #read_whitelist and not on the #read_blacklist" do
+              mock(record).read_whitelist { [:id, :body, :blog_id] }
+              mock(record).read_blacklist { [:blog_id] }
+              wire_representation = record.wire_representation
+              wire_representation.size.should == 2
+              wire_representation.should have_key("id")
+              wire_representation.should have_key("body")
+            end
           end
 
           describe "#update(values_by_method_name)" do

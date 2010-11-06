@@ -18,6 +18,10 @@ module Monarch
           end
         end
 
+        def columns
+          concrete_columns
+        end
+
         def value
           first[0]
         end

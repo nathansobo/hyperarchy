@@ -101,7 +101,6 @@ module Monarch
 
         attr_reader :relations_by_name
         delegate :table, :current_user, :to => "self.class"
-        delegate :columns, :to => "table"
 
         def initialize(field_values = {})
           field_values.delete(:id)

@@ -25,7 +25,7 @@ module Monarch
           end
         end
         delegate :relation, :to => "self.class"
-        delegate :column, :to => :relation
+        delegate :column, :columns, :to => :relation
 
         def initialize(field_values)
           initialize_fields
@@ -73,8 +73,10 @@ module Monarch
 
         def wire_representation
           wire_representation = {}
-          fields.each do |field|
-            wire_representation[field.name.to_s] = field.value_wire_representation
+
+          permitted_column_names = read_whitelist - read_blacklist
+          permitted_column_names.each do |column_name|
+            wire_representation[column_name.to_s] = field(column_name).value_wire_representation
           end
           wire_representation
         end
@@ -124,6 +126,14 @@ module Monarch
 
         def exposed_name
           relation.exposed_name
+        end
+
+        def read_whitelist
+          columns.map(&:name)
+        end
+
+        def read_blacklist
+          []
         end
 
         protected
