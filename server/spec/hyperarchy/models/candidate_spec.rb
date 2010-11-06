@@ -177,6 +177,32 @@ module Models
           end.should raise_error(Monarch::Unauthorized)
         end
       end
+
+      describe "destroying" do
+        specify "only admins, organization owners, and the candidate creator can destroy a candidate" do
+          c1 = election.candidates.create!(:body => "1")
+          c2 = election.candidates.create!(:body => "2")
+          c3 = election.candidates.create!(:body => "2", :creator => member)
+
+          set_current_user(non_member)
+          lambda do
+            c1.destroy
+          end.should raise_error(Monarch::Unauthorized)
+
+          non_member.update!(:admin => true)
+          c1.destroy
+
+          set_current_user(member)
+          lambda do
+            c2.destroy
+          end.should raise_error(Monarch::Unauthorized)
+          membership.update!(:role => "owner")
+          c2.destroy
+
+          membership.update!(:role => "member")
+          c3.destroy # no error because 'member' created c3
+        end
+      end
     end
   end
 end
