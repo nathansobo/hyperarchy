@@ -25,6 +25,7 @@ Spec::Runner.configure do |config|
 
   config.after do
     Monarch::Model::Repository.clear_local_identity_map
+    Monarch::Model::Record.current_user = nil
     Timecop.return
   end
 end
@@ -32,6 +33,14 @@ end
 module Spec::Example::Subject::ExampleMethods
   def find_majority(winner, loser)
     election.majorities.find(:winner => winner, :loser => loser).reload
+  end
+
+  def set_current_user(user)
+    Monarch::Model::Record.current_user = user
+  end
+
+  def current_user
+    Monarch::Model::Record.current_user
   end
 end
 
@@ -62,9 +71,6 @@ class RackExampleGroup < Spec::Example::ExampleGroup
     super
     user
   end
-end
-
-class RackExampleGroup < Spec::Example::ExampleGroup
 end
 
 class Rack::MockResponse

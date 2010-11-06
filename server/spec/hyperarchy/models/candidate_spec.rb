@@ -9,8 +9,8 @@ module Models
 
     describe "before create" do
       it "assigns the creator to the Model::Record.current_user" do
-        current_user = User.make
-        Monarch::Model::Record.current_user = current_user
+        set_current_user(User.make)
+        election.organization.memberships.create!(:user => current_user)
 
         candidate = election.candidates.create(:body => "foo")
         candidate.creator.should == current_user
@@ -120,6 +120,25 @@ module Models
         Ranking.where(:candidate_id => candidate.id).should be_empty
         Majority.where(:winner_id => candidate.id).should be_empty
         Majority.where(:loser_id => candidate.id).should be_empty
+      end
+    end
+
+    describe "security" do
+      describe "creation" do
+        specify "only members of the candidate's election can create it" do
+          member = User.make
+          non_member = User.make
+          election = Election.make
+          election.organization.memberships.create!(:user => member, :suppress_invite_email => true)
+
+          set_current_user(member)
+          election.candidates.create!(:body => "What should we do about all the possums?")
+
+          set_current_user(non_member)
+          lambda do
+            election.candidates.create!(:body => "What should we do about all the whales?")
+          end.should raise_error(Monarch::Unauthorized)
+        end
       end
     end
   end

@@ -13,6 +13,11 @@ class Candidate < Monarch::Model::Record
     election ? election.organization_ids : []
   end
 
+  def can_create?
+    return true unless current_user
+    election.organization.has_member?(current_user)
+  end
+
   def before_create
     election.lock
     self.creator ||= current_user
