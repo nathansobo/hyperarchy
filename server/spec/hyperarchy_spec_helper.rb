@@ -31,6 +31,8 @@ Spec::Runner.configure do |config|
 end
 
 module Spec::Example::Subject::ExampleMethods
+  delegate :without_security, :to => "::Monarch::Model::Repository"
+
   def find_majority(winner, loser)
     election.majorities.find(:winner => winner, :loser => loser).reload
   end

@@ -148,8 +148,6 @@ module Models
 
       describe "updating" do
         specify "only admins, organization owners, and the candidate creator can update only its body and details" do
-          pending "Repository.disable_security"
-
           set_current_user(non_member)
           lambda do
             candidate.update!(:body => "Duck Liver")
@@ -167,6 +165,11 @@ module Models
           membership.update!(:role => "owner")
           candidate.update!(:body => "Foie Gras")
           candidate.body.should == "Foie Gras"
+
+          membership.update!(:role => "member")
+          without_security { candidate.update!(:creator_id => member.id) }
+          candidate.update!(:body => "Inhumane?")
+          candidate.body.should == "Inhumane?"
         end
       end
     end

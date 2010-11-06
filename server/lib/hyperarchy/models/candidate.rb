@@ -20,7 +20,7 @@ class Candidate < Monarch::Model::Record
 
   def can_update?
     return true unless current_user
-    current_user.admin? || election.organization.has_owner?(current_user)
+    current_user.admin? || creator_id == current_user.id || election.organization.has_owner?(current_user)
   end
 
   def before_create
