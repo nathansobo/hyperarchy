@@ -93,7 +93,8 @@ module Monarch
 
         attr_reader :relations_by_name
         delegate :table, :to => "self.class"
-        delegate :current_user, :to => "::Monarch::Model::Repository"
+        delegate :current_user, :security_enabled?, :disable_security, :enable_security, :without_security,
+                 :to => "::Monarch::Model::Repository"
 
         def initialize(field_values = {})
           field_values.delete(:id)
@@ -135,7 +136,9 @@ module Monarch
         end
 
         def destroy
-          raise Monarch::Unauthorized unless can_destroy?
+          if security_enabled?
+            raise Monarch::Unauthorized unless can_destroy?
+          end
           before_destroy
           table.remove(self)
           after_destroy
@@ -153,7 +156,9 @@ module Monarch
 
           return self unless dirty?
 
-          raise Monarch::Unauthorized unless can_update? && can_update_columns?
+          if security_enabled?
+            raise Monarch::Unauthorized unless can_update? && can_update_columns?
+          end
 
           before_update(dirty_concrete_field_values_by_column_name)
           return false unless valid?

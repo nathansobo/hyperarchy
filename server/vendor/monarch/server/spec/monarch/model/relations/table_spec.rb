@@ -115,6 +115,13 @@ module Monarch
                 table.create!(:body => "Monster")
               end.should raise_error(Monarch::Unauthorized)
             end
+
+            it "does not call the method is security is disabled" do
+              dont_allow.instance_of(BlogPost).can_create?
+              Model::Repository.without_security do
+                table.create!(:body => "Monster")
+              end
+            end
           end
 
         end

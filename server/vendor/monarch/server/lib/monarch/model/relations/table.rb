@@ -5,6 +5,8 @@ module Monarch
         attr_reader :global_name, :tuple_class, :concrete_columns_by_name, :synthetic_columns_by_name,
                     :global_identity_map
 
+        delegate :security_enabled?, :to => "::Monarch::Model::Repository"
+
         def initialize(global_name, tuple_class)
           @global_name, @tuple_class = global_name, tuple_class
           @concrete_columns_by_name = ActiveSupport::OrderedHash.new
@@ -62,7 +64,9 @@ module Monarch
         end
 
         def insert(record)
-          raise Monarch::Unauthorized unless record.can_create?
+          if security_enabled?
+            raise Monarch::Unauthorized unless record.can_create?
+          end
           record.before_create if record.respond_to?(:before_create)
           return record if !record.valid?
 

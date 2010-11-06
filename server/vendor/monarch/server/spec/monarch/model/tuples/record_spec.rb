@@ -245,6 +245,13 @@ module Monarch
                 
                 BlogPost.find(record.id).should_not be_nil
               end
+
+              it "does not call can_destroy? if security is disabled" do
+                dont_allow(record).can_destroy?
+                Monarch::Model::Repository.without_security do
+                  record.destroy
+                end
+              end
             end
           end
 
@@ -436,6 +443,13 @@ module Monarch
                   end.should raise_error(Monarch::Unauthorized)
                   record.reload.body.should_not == "Hello, sunshine."
                 end
+
+                it "does not call #can_update? if security is disabled" do
+                  dont_allow(record).can_update?
+                  Monarch::Model::Repository.without_security do
+                    record.update!(:body => "Popcorn")
+                  end
+                end
               end
 
               context "if #update_whitelist / #update_blacklist are defined" do
@@ -454,6 +468,14 @@ module Monarch
                   lambda do
                     record.save
                   end.should raise_error(Monarch::Unauthorized)
+                end
+
+                it "does not consult the whitelist / blacklist or raise any exception if security is disabled" do
+                  dont_allow(record).update_whitelist
+                  dont_allow(record).update_blacklist
+                  Monarch::Model::Repository.without_security do
+                    record.update(:body => "Carbonara Sauce")
+                  end
                 end
               end
             end
