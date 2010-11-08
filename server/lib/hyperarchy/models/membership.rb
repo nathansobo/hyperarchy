@@ -17,6 +17,22 @@ class Membership < Monarch::Model::Record
   attr_accessor :suppress_invite_email
   delegate :email_address, :first_name, :last_name, :to => :user_details_delegate
 
+
+  def can_mutate?
+    current_user.admin? || organization.has_owner?(current_user)
+  end
+  alias can_create? can_mutate?
+  alias can_update? can_mutate?
+  alias can_destroy? can_mutate?
+
+  def create_whitelist
+    [:organization_id, :user_id, :role]
+  end
+
+  def update_whitelist
+    [:role]
+  end
+
   def organization_ids
     [organization_id]
   end

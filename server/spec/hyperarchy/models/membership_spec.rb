@@ -84,5 +84,35 @@ module Models
         Membership.find(membership_2.id).should be_nil
       end
     end
+
+    describe "security" do
+      describe "#can_create?, #can_update?, #can_destroy?" do
+        it "only allows admins and organization owners to modify memberships" do
+          organization = Organization.make
+          member = make_member(organization)
+          owner = make_owner(organization)
+          admin = User.make(:admin => true)
+          other_user = User.make
+
+          new_membership = organization.memberships.build(:user => other_user)
+          membership = organization.memberships.find(:user => member)
+
+          set_current_user(member)
+          new_membership.can_create?.should be_false
+          membership.can_update?.should be_false
+          membership.can_destroy?.should be_false
+
+          set_current_user(owner)
+          new_membership.can_create?.should be_true
+          membership.can_update?.should be_true
+          membership.can_destroy?.should be_true
+
+          set_current_user(admin)
+          new_membership.can_create?.should be_true
+          membership.can_update?.should be_true
+          membership.can_destroy?.should be_true
+        end
+      end
+    end
   end
 end
