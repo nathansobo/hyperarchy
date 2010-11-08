@@ -25,6 +25,10 @@ class Candidate < Monarch::Model::Record
   alias can_update? can_update_or_destroy?
   alias can_destroy? can_update_or_destroy?
 
+  def create_whitelist
+    [:body, :details, :election_id]
+  end
+
   def update_whitelist
     [:body, :details]
   end

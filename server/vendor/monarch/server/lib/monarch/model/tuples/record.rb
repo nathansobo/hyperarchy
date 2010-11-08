@@ -372,20 +372,29 @@ module Monarch
           true
         end
 
-        def create_whitelist
+
+        def whitelist
           columns.map(&:name)
+        end
+
+        def blacklist
+          []
+        end
+
+        def create_whitelist
+          whitelist
         end
 
         def create_blacklist
-          []
+          blacklist
         end
 
         def update_whitelist
-          columns.map(&:name)
+          whitelist
         end
 
         def update_blacklist
-          []
+          blacklist
         end
 
         protected
