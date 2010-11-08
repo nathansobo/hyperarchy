@@ -18,6 +18,10 @@ module Monarch
           @operand, @predicate = operand, predicate
         end
 
+        def build(field_values={})
+          operand.build(predicate.force_matching_field_values(field_values))
+        end
+
         def create(field_values={})
           operand.create(predicate.force_matching_field_values(field_values))
         end

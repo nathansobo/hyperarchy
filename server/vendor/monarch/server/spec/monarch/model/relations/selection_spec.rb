@@ -70,6 +70,13 @@ module Monarch
           end
         end
 
+        describe "#build(field_values)" do
+          it "introduces an additional field value to match its predicate if needed" do
+            mock(operand).build(:blog_id => "grain".hash, :body => "Barley", :title => "Barely Barley")
+            composite_selection.build(:title => "Barely Barley")
+          end
+        end
+
         describe "#create(field_values)" do
           it "introduces an additional field value to match its predicate if needed" do
             mock(operand).create!(:blog_id => "grain".hash, :body => "Barley", :title => "Barely Barley")

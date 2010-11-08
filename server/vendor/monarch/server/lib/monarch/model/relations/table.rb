@@ -49,8 +49,12 @@ module Monarch
           self
         end
 
+        def build(field_values = {})
+          tuple_class.new(field_values)
+        end
+
         def create(field_values = {})
-          insert(tuple_class.new(field_values))
+          insert(build(field_values))
         end
 
         def create!(field_values = {})

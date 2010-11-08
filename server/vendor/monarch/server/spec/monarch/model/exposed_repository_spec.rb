@@ -269,8 +269,12 @@ module Monarch
           end
 
           context "when the associated record class defines #can_destroy?" do
+            attr_reader :record
+            before do
+              @record = User.find('jan')
+            end
+
             it "calls #can_destroy, and only precedes with the destruction if it returns true" do
-              record = User.find('jan')
               mock(record).can_destroy? { false }
               lambda do
                 exposed_repository.mutate([['destroy', 'users', 'jan']])

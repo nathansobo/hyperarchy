@@ -62,8 +62,17 @@ module Monarch
           end
         end
 
+        describe "#build" do
+          it "instantiates an instance of #tuple_class with the given field values, without inserting it into the database" do
+            record = table.build(:body => "Brown Rice", :blog_id => "grain")
+            record.body.should == "Brown Rice"
+            record.blog_id.should == "grain".to_key
+            record.should_not be_persisted
+          end
+        end
+
         describe "#create" do
-          it "instantiates an instance of #tuple_class with the given concrete_columns, #inserts it, sets its timestamps if the columns are present, and returns it in a non-dirty state with its id assigned" do
+          it "instantiates an instance of #tuple_class with the given field values, #inserts it, sets its timestamps if the columns are present, and returns it in a non-dirty state with its id assigned" do
             now = Time.now
             Timecop.freeze(now)
 
@@ -99,31 +108,6 @@ module Monarch
               User.find(User[:full_name].eq("Invalid Bob")).should be_nil
             end
           end
-
-          context "if the record has a #can_create? method" do
-            it "calls the method and creates the record if it returns true" do
-              mock.instance_of(BlogPost).can_create? { true }
-              mock.proxy(Origin).insert(table, instance_of(BlogPost))
-              table.create!(:body => "Gargoyle")
-            end
-
-            it "does not create the record or execute any other hooks if #can_create? returns false" do
-              mock.instance_of(BlogPost).can_create? { false }
-              dont_allow(Origin).insert
-
-              lambda do
-                table.create!(:body => "Monster")
-              end.should raise_error(Monarch::Unauthorized)
-            end
-
-            it "does not call the method is security is disabled" do
-              dont_allow.instance_of(BlogPost).can_create?
-              Model::Repository.without_security do
-                table.create!(:body => "Monster")
-              end
-            end
-          end
-
         end
 
         describe "#create!" do

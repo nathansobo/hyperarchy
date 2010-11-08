@@ -228,31 +228,6 @@ module Monarch
               BlogPost.table.global_identity_map.should_not have_key(record.id)
               BlogPost.find(record.id).should be_nil
             end
-
-            context "if the record has a #can_destroy? method" do
-              it "calls the method, and only destroys the record if it returns true" do
-                mock.instance_of(BlogPost).can_destroy? { true }
-                record.destroy
-                BlogPost.find(record.id).should be_nil
-              end
-
-              it "raises an exception and does not destroy the record if it returns false" do
-                mock.instance_of(BlogPost).can_destroy? { false }
-
-                lambda do
-                  record.destroy
-                end.should raise_error(Monarch::Unauthorized)
-                
-                BlogPost.find(record.id).should_not be_nil
-              end
-
-              it "does not call can_destroy? if security is disabled" do
-                dont_allow(record).can_destroy?
-                Monarch::Model::Repository.without_security do
-                  record.destroy
-                end
-              end
-            end
           end
 
           describe "#field(column_or_name)" do
@@ -432,51 +407,6 @@ module Monarch
                 record = User.find("jan")
                 record.age = 2
                 record.save.should be_false
-              end
-
-              context "if #can_update? is defined" do
-                it "calls #can_update? and raises an Unauthorized exception if it returns false" do
-                  mock(record).can_update? { false }
-                  record.body = "Hello, sunshine."
-                  lambda do
-                    record.save
-                  end.should raise_error(Monarch::Unauthorized)
-                  record.reload.body.should_not == "Hello, sunshine."
-                end
-
-                it "does not call #can_update? if security is disabled" do
-                  dont_allow(record).can_update?
-                  Monarch::Model::Repository.without_security do
-                    record.update!(:body => "Popcorn")
-                  end
-                end
-              end
-
-              context "if #update_whitelist / #update_blacklist are defined" do
-                it "raises an Unauthorized exception if any dirty fields are not on the whitelist" do
-                  mock(record).update_whitelist { [:title] }
-                  record.body = "Hi you!"
-                  lambda do
-                    record.save
-                  end.should raise_error(Monarch::Unauthorized)
-                  record.reload.body.should_not == "Hi you!"
-                end
-
-                it "raises an Unauthorized exception if any dirty fields are on the blacklist" do
-                  mock(record).update_blacklist { [:title] }
-                  record.title = "Purple Rain"
-                  lambda do
-                    record.save
-                  end.should raise_error(Monarch::Unauthorized)
-                end
-
-                it "does not consult the whitelist / blacklist or raise any exception if security is disabled" do
-                  dont_allow(record).update_whitelist
-                  dont_allow(record).update_blacklist
-                  Monarch::Model::Repository.without_security do
-                    record.update(:body => "Carbonara Sauce")
-                  end
-                end
               end
             end
           end

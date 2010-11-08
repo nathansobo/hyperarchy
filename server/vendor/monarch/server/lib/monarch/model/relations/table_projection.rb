@@ -11,7 +11,7 @@ module Monarch
         end
 
         attr_reader :operand, :projected_table
-        delegate :column, :create, :exposed_name, :to => :projected_table
+        delegate :column, :build, :create, :create!, :exposed_name, :to => :projected_table
         def initialize(operand, projected_table, &block)
           super(&block)
           @operand, @projected_table = operand, projected_table
