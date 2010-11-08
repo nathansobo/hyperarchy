@@ -7,6 +7,13 @@ class Vote < Monarch::Model::Record
   belongs_to :user
   belongs_to :election
 
+  def can_mutate?
+    false
+  end
+  alias can_create? can_mutate?
+  alias can_update? can_mutate?
+  alias can_destroy? can_mutate?
+
   def organization_ids
     election ? election.organization_ids : []
   end
