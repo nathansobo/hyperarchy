@@ -134,73 +134,42 @@ module Models
         @candidate = election.candidates.create!(:body => "Hey you!")
       end
 
-      describe "creating" do
+      describe "#can_create?" do
         specify "only members of the candidate's election can create it" do
           set_current_user(member)
-          election.candidates.create!(:body => "What should we do about all the possums?")
+          election.candidates.build(:body => "What should we do about all the possums?").can_create?.should be_true
 
           set_current_user(non_member)
-          lambda do
-            election.candidates.create!(:body => "What should we do about all the whales?")
-          end.should raise_error(Monarch::Unauthorized)
+          election.candidates.build(:body => "What should we do about all the whales?").can_create?.should be_false
         end
       end
 
-      describe "updating" do
-        specify "only admins, organization owners, and the candidate creator can update only its body and details" do
+      describe "#can_update? and #can_destroy?" do
+        specify "only admins, organization owners, and the candidate creator can destroy it or update its body and details" do
           set_current_user(non_member)
-          lambda do
-            candidate.update!(:body => "Duck Liver")
-          end.should raise_error(Monarch::Unauthorized)
+          candidate.can_update?.should be_false
+          candidate.can_destroy?.should be_false
 
           non_member.update!(:admin => true)
-          candidate.update!(:body => "Duck Liver")
-          candidate.body.should == "Duck Liver"
+          candidate.can_update?.should be_true
+          candidate.can_destroy?.should be_true
 
           set_current_user(member)
-          lambda do
-            candidate.update!(:body => "Foie Gras")
-          end.should raise_error(Monarch::Unauthorized)
+          candidate.can_update?.should be_false
+          candidate.can_destroy?.should be_false
 
           membership.update!(:role => "owner")
-          candidate.update!(:body => "Foie Gras")
-          candidate.body.should == "Foie Gras"
+          candidate.can_update?.should be_true
+          candidate.can_destroy?.should be_true
 
           membership.update!(:role => "member")
-          without_security { candidate.update!(:creator_id => member.id) }
-          candidate.update!(:body => "Inhumane?")
-          candidate.body.should == "Inhumane?"
+          candidate.update!(:creator_id => member.id)
+          candidate.can_update?.should be_true
+          candidate.can_destroy?.should be_true
 
           # no one can update properties other than body and details
-          lambda do
-            candidate.update!(:election_id => 666)
-          end.should raise_error(Monarch::Unauthorized)
-        end
-      end
-
-      describe "destroying" do
-        specify "only admins, organization owners, and the candidate creator can destroy a candidate" do
-          c1 = election.candidates.create!(:body => "1")
-          c2 = election.candidates.create!(:body => "2")
-          c3 = election.candidates.create!(:body => "2", :creator => member)
-
-          set_current_user(non_member)
-          lambda do
-            c1.destroy
-          end.should raise_error(Monarch::Unauthorized)
-
-          non_member.update!(:admin => true)
-          c1.destroy
-
-          set_current_user(member)
-          lambda do
-            c2.destroy
-          end.should raise_error(Monarch::Unauthorized)
-          membership.update!(:role => "owner")
-          c2.destroy
-
-          membership.update!(:role => "member")
-          c3.destroy # no error because 'member' created c3
+          candidate.election_id = 666
+          candidate.can_update_columns?.should be_false
         end
       end
     end

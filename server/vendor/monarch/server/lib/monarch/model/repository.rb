@@ -8,11 +8,10 @@ module Monarch
 
         delegate :new_table, :tables_by_name, :load_fixtures, :clear_tables, :create_schema, :num_subscriptions,
                  :tables, :initialize_local_identity_map, :clear_local_identity_map, :with_local_identity_map,
-                 :transaction, :current_user, :current_user=, :disable_security, :enable_security, :without_security,
-                 :security_enabled?, :to => :instance
+                 :transaction, :current_user, :current_user=, :to => :instance
       end
 
-      thread_local_accessor :current_user, :security_disabled
+      thread_local_accessor :current_user
       attr_reader :tables_by_name
       def initialize
         @tables_by_name = {}
@@ -46,24 +45,6 @@ module Monarch
 
       def cancel_events
         tables.each {|table| table.cancel_events}
-      end
-
-      def without_security
-        disable_security
-        yield
-        enable_security
-      end
-
-      def disable_security
-        self.security_disabled = true
-      end
-
-      def enable_security
-        self.security_disabled = false
-      end
-
-      def security_enabled?
-        !self.security_disabled
       end
 
       def num_subscriptions

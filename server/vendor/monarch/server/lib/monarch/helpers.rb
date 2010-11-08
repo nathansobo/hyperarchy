@@ -1,7 +1,5 @@
 module Monarch
   module Helpers
-    delegate :without_security, :disable_security, :enable_security, :to => "::Monarch::Model::Repository"
-
     def successful_json_response(data={}, dataset=nil)
       json_response(true, data, dataset)
     end

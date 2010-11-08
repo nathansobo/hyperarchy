@@ -93,8 +93,7 @@ module Monarch
 
         attr_reader :relations_by_name
         delegate :table, :to => "self.class"
-        delegate :current_user, :security_enabled?, :disable_security, :enable_security, :without_security,
-                 :to => "::Monarch::Model::Repository"
+        delegate :current_user, :to => "::Monarch::Model::Repository"
 
         def initialize(field_values = {})
           field_values.delete(:id)
