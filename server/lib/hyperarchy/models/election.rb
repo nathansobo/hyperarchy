@@ -24,6 +24,13 @@ class Election < Monarch::Model::Record
   alias can_update? can_update_or_destroy?
   alias can_destroy? can_update_or_destroy?
 
+  def create_whitelist
+    [:organization_id, :body]
+  end
+
+  def update_whitelist
+    [:body]
+  end
 
   def organization_ids
     [organization_id]
