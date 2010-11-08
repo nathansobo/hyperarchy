@@ -6,7 +6,13 @@ class Organization < Monarch::Model::Record
   has_many :memberships
 
   attr_accessor :suppress_membership_creation
-  
+
+  def can_update_or_destroy?
+    current_user.admin? || has_owner?(current_user)
+  end
+  alias can_update? can_update_or_destroy?
+  alias can_destroy? can_update_or_destroy?
+
   def after_create
     memberships.create(:user => current_user, :role => "owner", :pending => false) unless suppress_membership_creation
   end

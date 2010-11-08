@@ -124,12 +124,13 @@ module Models
     end
 
     describe "security" do
-      attr_reader :member, :non_member, :membership, :election, :candidate
+      attr_reader :member, :owner, :non_member, :membership, :election, :candidate
 
       before do
-        @member = User.make
-        @non_member = User.make
         @election = Election.make
+        @member = make_member(election.organization)
+        @owner = make_owner(election.organization)
+        @non_member = User.make
         @membership = election.organization.memberships.create!(:user => member, :suppress_invite_email => true)
         @candidate = election.candidates.create!(:body => "Hey you!")
       end
@@ -158,11 +159,11 @@ module Models
           candidate.can_update?.should be_false
           candidate.can_destroy?.should be_false
 
-          membership.update!(:role => "owner")
+          set_current_user(owner)
           candidate.can_update?.should be_true
           candidate.can_destroy?.should be_true
 
-          membership.update!(:role => "member")
+          set_current_user(member)
           candidate.update!(:creator_id => member.id)
           candidate.can_update?.should be_true
           candidate.can_destroy?.should be_true

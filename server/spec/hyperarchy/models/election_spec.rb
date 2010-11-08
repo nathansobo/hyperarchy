@@ -88,13 +88,10 @@ module Models
 
       before do
         @organization = Organization.make
-        @member = User.make
-        @owner = User.make
+        @member = make_member(organization)
+        @owner = make_owner(organization)
         @admin = User.make(:admin => true)
         @non_member = User.make
-
-        organization.memberships.create!(:user => member, :suppress_invite_email => true)
-        organization.memberships.create!(:user => owner, :role => "owner", :suppress_invite_email => true)
       end
 
       describe "#can_create?" do
