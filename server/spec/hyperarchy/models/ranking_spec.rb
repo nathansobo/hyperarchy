@@ -273,5 +273,40 @@ module Models
         users_votes.should be_empty
       end
     end
+
+    describe "security" do
+      attr_reader :creator, :other_member, :ranking, :candidate
+      before do
+        election = Election.make
+        @candidate = election.candidates.create!(:body => "candidate")
+        @creator = make_member(candidate.election.organization)
+        @other_member = make_member(candidate.election.organization)
+        @ranking = Ranking.create!(:user => creator, :candidate => candidate, :position => 64)
+      end
+
+      describe "#can_create? and #can_update?" do
+        it "does not allow anyone to create or update, because that is done through a custom action" do
+          new_ranking = Ranking.new(:user => creator, :candidate => candidate, :position => 64)
+
+          set_current_user(other_member)
+          new_ranking.can_create?.should be_false
+          ranking.can_update?.should be_false
+
+          set_current_user(creator)
+          new_ranking.can_create?.should be_false
+          ranking.can_update?.should be_false
+        end
+      end
+
+      describe "#can_destroy?" do
+        it "only allows the user who created the ranking to destroy it" do
+          set_current_user(other_member)
+          ranking.can_destroy?.should be_false
+
+          set_current_user(creator)
+          ranking.can_destroy?.should be_true
+        end
+      end
+    end
   end
 end

@@ -10,12 +10,15 @@ class Ranking < Monarch::Model::Record
   belongs_to :election
   belongs_to :vote
 
-  def can_mutate?
+  def can_create_or_update?
     false
   end
-  alias can_create? can_mutate?
-  alias can_update? can_mutate?
-  alias can_destroy? can_mutate?
+  alias can_create? can_create_or_update?
+  alias can_update? can_create_or_update?
+
+  def can_destroy?
+    user_id == current_user.id
+  end
 
   def organization_ids
     election ? election.organization_ids : []
