@@ -136,9 +136,6 @@ module Monarch
         end
 
         def destroy
-          if security_enabled?
-            raise Monarch::Unauthorized unless can_destroy?
-          end
           before_destroy
           table.remove(self)
           after_destroy
@@ -155,10 +152,6 @@ module Monarch
           end
 
           return self unless dirty?
-
-          if security_enabled?
-            raise Monarch::Unauthorized unless can_update? && can_update_columns?
-          end
 
           before_update(dirty_concrete_field_values_by_column_name)
           return false unless valid?
@@ -366,6 +359,14 @@ module Monarch
           true
         end
 
+        def can_update_columns?
+          permitted_columns = update_whitelist - update_blacklist
+          dirty_fields.each do |field|
+            return false unless permitted_columns.include?(field.name)
+          end
+          true
+        end
+
         def can_destroy?
           true
         end
@@ -402,14 +403,6 @@ module Monarch
           relation.synthetic_columns.each do |column|
             synthetic_fields_by_column[column] = SyntheticField.new(self, column)
           end
-        end
-
-        def can_update_columns?
-          permitted_columns = update_whitelist - update_blacklist
-          dirty_fields.each do |field|
-            return false unless permitted_columns.include?(field.name)
-          end
-          true
         end
       end
     end

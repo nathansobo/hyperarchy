@@ -68,9 +68,6 @@ module Monarch
         end
 
         def insert(record)
-          if security_enabled?
-            raise Monarch::Unauthorized unless record.can_create?
-          end
           record.before_create if record.respond_to?(:before_create)
           return record if !record.valid?
 

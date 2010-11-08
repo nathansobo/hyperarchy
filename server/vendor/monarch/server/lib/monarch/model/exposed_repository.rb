@@ -89,9 +89,10 @@ module Monarch
 
       def perform_create(table_name, field_values)
         relation = resolve_table_name(table_name)
-        record = relation.create(field_values)
+        record = relation.build(field_values)
+        raise Monarch::Unauthorized unless record.can_create?
 
-        if record.valid?
+        if record.save
           valid_result(record.wire_representation)
         else
           invalid_result(record.validation_errors_by_column_name.stringify_keys)
@@ -101,9 +102,11 @@ module Monarch
       def perform_update(table_name, id, field_values)
         relation = resolve_table_name(table_name)
         record = relation.find(id)
-        record.update_fields(field_values)
+        record.soft_update_fields(field_values)
 
-        if record.valid?
+        raise Monarch::Unauthorized unless record.can_update? && record.can_update_columns?
+
+        if record.save
           if relation.find(id)
             return valid_result(record.wire_representation.stringify_keys)
           else
@@ -116,7 +119,9 @@ module Monarch
 
       def perform_destroy(table_name, id)
         relation = resolve_table_name(table_name)
-        relation.destroy(id)
+        record = relation.find(id)
+        raise Monarch::Unauthorized unless record.can_destroy?
+        record.destroy
         valid_result(nil)
       end
 
