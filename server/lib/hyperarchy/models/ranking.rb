@@ -22,6 +22,7 @@ class Ranking < Monarch::Model::Record
   end
 
   def before_create
+    self.election_id = candidate.election_id
     election.lock
     self.vote = election.votes.find_or_create(:user_id => user_id)
     vote.updated

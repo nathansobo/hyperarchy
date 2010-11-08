@@ -1,6 +1,8 @@
 module Hyperarchy
   class App < Sinatra::Base
     error Monarch::Unauthorized do
+      status 401
+      warden.custom_failure!
       "Sorry. That action is not authorized."
     end
 
@@ -111,10 +113,17 @@ module Hyperarchy
     end
 
     post "/rankings" do
-      if ranking = Ranking.find(:user_id => params[:user_id], :candidate_id => params[:candidate_id])
+      organization = Candidate.find(params[:candidate_id]).election.organization
+      unless current_user && organization.has_member?(current_user)
+        raise Monarch::Unauthorized
+      end
+
+      attributes = { :user_id => current_user.id, :candidate_id => params[:candidate_id] }
+
+      if ranking = Ranking.find(attributes)
         ranking.update(:position => params[:position])
       else
-        ranking = Ranking.create!(params)
+        ranking = Ranking.create!(attributes.merge(:position => params[:position]))
       end
       successful_json_response({:ranking_id => ranking.id}, ranking)
     end
