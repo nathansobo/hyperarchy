@@ -168,8 +168,7 @@ module Models
           candidate.can_destroy?.should be_true
 
           # no one can update properties other than body and details
-          candidate.election_id = 666
-          candidate.can_update_columns?.should be_false
+          candidate.can_update_columns?([:election_id, :creator_id, :position]).should be_false
         end
       end
     end

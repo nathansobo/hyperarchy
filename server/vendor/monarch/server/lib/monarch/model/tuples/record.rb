@@ -354,20 +354,30 @@ module Monarch
           true
         end
 
+        def can_create_with_columns?(columns)
+          permitted_columns = create_whitelist - create_blacklist
+          (columns.map(&:to_sym) - permitted_columns).empty?
+        end
+
         def can_update?
           true
         end
 
-        def can_update_columns?
+        def can_update_columns?(columns)
           permitted_columns = update_whitelist - update_blacklist
-          dirty_fields.each do |field|
-            return false unless permitted_columns.include?(field.name)
-          end
-          true
+          (columns.map(&:to_sym) - permitted_columns).empty?
         end
 
         def can_destroy?
           true
+        end
+
+        def create_whitelist
+          columns.map(&:name)
+        end
+
+        def create_blacklist
+          []
         end
 
         def update_whitelist

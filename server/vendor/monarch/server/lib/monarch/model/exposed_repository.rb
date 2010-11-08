@@ -90,7 +90,10 @@ module Monarch
       def perform_create(table_name, field_values)
         relation = resolve_table_name(table_name)
         record = relation.build(field_values)
-        raise Monarch::Unauthorized unless record.can_create?
+
+        unless record.can_create? && record.can_create_with_columns?(field_values.keys)
+          raise Monarch::Unauthorized
+        end
 
         if record.save
           valid_result(record.wire_representation)
@@ -104,7 +107,9 @@ module Monarch
         record = relation.find(id)
         record.soft_update_fields(field_values)
 
-        raise Monarch::Unauthorized unless record.can_update? && record.can_update_columns?
+        unless record.can_update? && record.can_update_columns?(field_values.keys)
+          raise Monarch::Unauthorized
+        end
 
         if record.save
           if relation.find(id)

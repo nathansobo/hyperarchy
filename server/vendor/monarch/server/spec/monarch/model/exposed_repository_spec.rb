@@ -142,6 +142,28 @@ module Monarch
                 end.should raise_error(Monarch::Unauthorized)
               end
             end
+
+            context "when the associated record class defines #create_whitelist / #create_blacklist methods" do
+              it "only allows the record to be instantiated with the permitted columns" do
+                user = User.new
+                # this is a very convoluted approach, but RR seems to only allow me to stub one method at a time with
+                # the stub.instance_of(User) approach, so I create a stand-in instance to stub instead
+                stub(User.table).build { user }
+                stub(user).create_blacklist { [:has_hair] }
+                stub(user).create_whitelist { [:full_name, :great_name, :has_hair] }
+                exposed_repository.mutate([['create', 'users', {'full_name' => "Justin Timberlake"}]])
+
+                # on blacklist
+                lambda do
+                  exposed_repository.mutate([['create', 'users', {'full_name' => "Justin Timberlake", 'has_hair' => true}]])
+                end.should raise_error(Monarch::Unauthorized)
+
+                # not on whitelist
+                lambda do
+                  exposed_repository.mutate([['create', 'users', {'full_name' => "Justin Timberlake", 'age' => 32}]])
+                end.should raise_error(Monarch::Unauthorized)
+              end
+            end
           end
 
           context "when the given field values are invalid" do

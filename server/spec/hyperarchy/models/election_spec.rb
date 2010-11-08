@@ -82,5 +82,11 @@ module Models
         election.updated_at.to_i.should == Time.now.to_i
       end
     end
+
+    describe "security" do
+      describe "#can_create?" do
+        it "only allows admins and members of an organization to create elections in it"
+      end
+    end
   end
 end
