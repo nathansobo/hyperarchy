@@ -31,5 +31,29 @@ module Models
         user.password.should_not == "foo"
       end
     end
+
+    describe "security" do
+      describe "#can_update? and #can_destroy?" do
+        it "only allows admins and the users themselves to update / destroy user records, and only allows admins to set the admin flag" do
+          user = User.make
+          admin = User.make(:admin => true)
+          other_user = User.make
+
+          set_current_user(other_user)
+          user.can_update?.should be_false
+          user.can_destroy?.should be_false
+
+          set_current_user(admin)
+          user.can_update?.should be_true
+          user.can_destroy?.should be_true
+          user.can_update_columns?([:admin]).should be_true
+
+          set_current_user(user)
+          user.can_update?.should be_true
+          user.can_destroy?.should be_true
+          user.can_update_columns?([:admin]).should be_false
+        end
+      end
+    end
   end
 end
