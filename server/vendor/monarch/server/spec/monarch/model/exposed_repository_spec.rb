@@ -131,6 +131,17 @@ module Monarch
                 'secondary' => []
               }
             end
+
+            context "when the associated record class defines a #can_create? method" do
+              it "calls the #can_create? method and only precedes with the creation if it returns true" do
+                mock.instance_of(User).can_create? { true }
+                exposed_repository.mutate([['create', 'users', {'full_name' => "John Madden"}]])
+                mock.instance_of(User).can_create? { false }
+                lambda do
+                  exposed_repository.mutate([['create', 'users', {'full_name' => "Ted Leitner"}]])
+                end.should raise_error(Monarch::Unauthorized)
+              end
+            end
           end
 
           context "when the given field values are invalid" do
@@ -157,8 +168,12 @@ module Monarch
 
         context "when called with a single update operation" do
           context "when the given field values are valid" do
+            attr_reader :record
+            before do
+              @record = User.find('jan')
+            end
+
             it "finds the record with the given 'id' in the given 'relation', then updates it with the given field values and returns its wire representation" do
-              record = User.find('jan')
               new_signed_up_at = record.signed_up_at - 1.hours
               field_values = {
                 'great_name' => "Jan Christian Nelson",
@@ -178,6 +193,35 @@ module Monarch
                 'primary' => [record.wire_representation.stringify_keys],
                 'secondary' => []
               }
+            end
+
+            context "when the associated record class defines a #can_update? method" do
+              it "calls #can_update?, and only precedes with the update if it returns true" do
+                mock(record).can_update? { true }
+                exposed_repository.mutate([['update', 'users', 'jan', {'full_name' => "Janford Nelson"}]])
+                mock(record).can_update? { false }
+                lambda do
+                  exposed_repository.mutate([['update', 'users', 'jan', {'full_name' => "Elizabeth Scarborough"}]])
+                end.should raise_error(Monarch::Unauthorized)
+              end
+            end
+
+            context "when the associated record class defines #update_whitelist / #update_blacklist methods" do
+              it "only precedes with the update if updating fields that are not black-listed" do
+                stub(record).update_whitelist { [:full_name, :great_name, :has_hair] }
+                stub(record).update_blacklist { [:has_hair] }
+                exposed_repository.mutate([['update', 'users', 'jan', {'full_name' => "Justin Timberlake"}]])
+
+                # on blacklist
+                lambda do
+                  exposed_repository.mutate([['update', 'users', 'jan', {'has_hair' => false}]])
+                end.should raise_error(Monarch::Unauthorized)
+
+                # not on whitelist
+                lambda do
+                  exposed_repository.mutate([['update', 'users', 'jan', {'age' => 99}]])
+                end.should raise_error(Monarch::Unauthorized)
+              end
             end
           end
 
@@ -222,6 +266,18 @@ module Monarch
               'primary' => [nil],
               'secondary' => []
             }
+          end
+
+          context "when the associated record class defines #can_destroy?" do
+            it "calls #can_destroy, and only precedes with the destruction if it returns true" do
+              record = User.find('jan')
+              mock(record).can_destroy? { false }
+              lambda do
+                exposed_repository.mutate([['destroy', 'users', 'jan']])
+              end.should raise_error(Monarch::Unauthorized)
+              mock(record).can_destroy? { true }
+              exposed_repository.mutate([['destroy', 'users', 'jan']])
+            end
           end
         end
 
