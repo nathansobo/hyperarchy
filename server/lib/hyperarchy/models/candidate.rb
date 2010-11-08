@@ -14,12 +14,10 @@ class Candidate < Monarch::Model::Record
   end
 
   def can_create?
-    return true unless current_user
     election.organization.has_member?(current_user)
   end
 
   def can_update_or_destroy?
-    return true unless current_user
     current_user.admin? || creator_id == current_user.id || election.organization.has_owner?(current_user)
   end
   alias can_update? can_update_or_destroy?

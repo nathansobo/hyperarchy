@@ -14,6 +14,17 @@ class Election < Monarch::Model::Record
   belongs_to :creator, :class_name => "User"
   belongs_to :organization
 
+  def can_create?
+    current_user.admin? || organization.has_member?(current_user)
+  end
+
+  def can_update_or_destroy?
+    current_user.admin? || creator_id == current_user.id || organization.has_owner?(current_user)
+  end
+  alias can_update? can_update_or_destroy?
+  alias can_destroy? can_update_or_destroy?
+
+
   def organization_ids
     [organization_id]
   end

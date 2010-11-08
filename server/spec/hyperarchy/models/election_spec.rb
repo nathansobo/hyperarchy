@@ -84,8 +84,57 @@ module Models
     end
 
     describe "security" do
+      attr_reader :organization, :member, :owner, :admin, :non_member
+
+      before do
+        @organization = Organization.make
+        @member = User.make
+        @owner = User.make
+        @admin = User.make(:admin => true)
+        @non_member = User.make
+
+        organization.memberships.create!(:user => member, :suppress_invite_email => true)
+        organization.memberships.create!(:user => owner, :role => "owner", :suppress_invite_email => true)
+      end
+
       describe "#can_create?" do
-        it "only allows admins and members of an organization to create elections in it"
+        it "only allows admins and members of an organization to create elections in it" do
+          set_current_user(non_member)
+          election = organization.elections.build(:body => "What should we do?")
+
+          election.can_create?.should be_false
+
+          set_current_user(member)
+          election.can_create?.should be_true
+
+          set_current_user(admin)
+          election.can_create?.should be_true
+        end
+      end
+
+      describe "#can_update? and #can_destroy?" do
+        it "only allows admins, organization owners, and the creator of the election itself to update or destroy it" do
+          other_member = set_current_user(User.make)
+          organization.memberships.create!(:user => other_member, :suppress_invite_email => true)
+          election = organization.elections.create!(:body => "What should we do?")
+
+          set_current_user(member)
+          election.can_update?.should be_false
+          election.can_destroy?.should be_false
+
+
+          set_current_user(other_member)
+          election.can_update?.should be_true
+          election.can_destroy?.should be_true
+
+          set_current_user(owner)
+          election.can_update?.should be_true
+          election.can_destroy?.should be_true
+
+          set_current_user(admin)
+          election.can_update?.should be_true
+          election.can_destroy?.should be_true
+        end
       end
     end
   end
