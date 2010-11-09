@@ -26,7 +26,7 @@ class Membership < Monarch::Model::Record
   alias can_destroy? can_mutate?
 
   def create_whitelist
-    [:organization_id, :user_id, :role]
+    [:organization_id, :user_id, :role, :first_name, :last_name, :email_address]
   end
 
   def update_whitelist
