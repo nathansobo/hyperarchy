@@ -10,6 +10,8 @@ class Ranking < Monarch::Model::Record
   belongs_to :election
   belongs_to :vote
 
+  attr_accessor :suppress_vote_update
+
   def can_create_or_update?
     false
   end
@@ -104,7 +106,7 @@ class Ranking < Monarch::Model::Record
 
     if rankings_by_same_user.empty?
       vote.destroy
-    else
+    elsif !suppress_vote_update
       vote.updated
     end
     election.compute_global_ranking

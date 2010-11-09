@@ -100,26 +100,39 @@ module Models
     end
 
     describe "#before_destroy" do
-      it "destroys any rankings and majorities associated with the candidate" do
+      it "destroys any rankings and majorities associated with the candidate, but does not change the updated_at time of associated votes" do
         user_1 = User.make
         user_2 = User.make
 
-        candidate = election.candidates.create!(:body => "foo")
-        election.candidates.create!(:body => "bar")
+        candidate_1 = election.candidates.create!(:body => "foo")
+        candidate_2 = election.candidates.create!(:body => "bar")
 
-        election.rankings.create(:user => user_1, :candidate => candidate, :position => 64)
-        election.rankings.create(:user => user_1, :candidate => candidate, :position => 32)
-        election.rankings.create(:user => user_2, :candidate => candidate, :position => 32)
+        Timecop.freeze(Time.now)
+        voting_time = Time.now
 
-        Ranking.where(:candidate_id => candidate.id).size.should == 3
-        Majority.where(:winner_id => candidate.id).size.should == 1
-        Majority.where(:loser_id => candidate.id).size.should == 1
+        election.rankings.create(:user => user_1, :candidate => candidate_1, :position => 64)
+        election.rankings.create(:user => user_1, :candidate => candidate_2, :position => 32)
+        election.rankings.create(:user => user_2, :candidate => candidate_1, :position => 32)
 
-        candidate.destroy
+        Ranking.where(:candidate_id => candidate_1.id).size.should == 2
+        Majority.where(:winner_id => candidate_1.id).size.should == 1
+        Majority.where(:loser_id => candidate_1.id).size.should == 1
 
-        Ranking.where(:candidate_id => candidate.id).should be_empty
-        Majority.where(:winner_id => candidate.id).should be_empty
-        Majority.where(:loser_id => candidate.id).should be_empty
+        election.votes.size.should == 2
+        election.votes.each do |vote|
+          vote.updated_at.should == Time.now
+        end
+
+        Timecop.freeze(Time.now + 60)
+
+        candidate_1.destroy
+
+        Ranking.where(:candidate_id => candidate_1.id).should be_empty
+        Majority.where(:winner_id => candidate_1.id).should be_empty
+        Majority.where(:loser_id => candidate_1.id).should be_empty
+
+        election.votes.size.should == 1
+        election.votes.first.updated_at.should == voting_time
       end
     end
 
