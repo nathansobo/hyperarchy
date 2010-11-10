@@ -67,7 +67,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       },
 
       afterChange: function(rankingsUser) {
-        if (rankingsUser.isCurrent()) {
+        if (rankingsUser.isCurrent() && this.election().organization().currentUserIsMember()) {
           this.rankingsUserName.html("Your Ranking");
           this.backLink.hide();
           this.rankedCandidatesList.sortable('enable');

@@ -18,6 +18,14 @@ _.constructor("Organization", Model.Record, {
     }
   },
 
+  userIsMember: function(user) {
+    return this.memberships().find({userId: user.id()}) != null;
+  },
+
+  currentUserIsMember: function() {
+    return this.userIsMember(Application.currentUser());
+  },
+
   currentUserIsOwner: function() {
     var currentUserMembership = this.memberships().find({userId: Application.currentUserId});
     return currentUserMembership.role() === "owner";
