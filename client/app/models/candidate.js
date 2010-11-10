@@ -33,7 +33,7 @@ _.constructor("Candidate", Model.Record, {
   },
 
   editableByCurrentUser: function() {
-    return this.belongsToCurrentUser() || this.organization().currentUserIsOwner();
+    return Application.currentUser().admin() || this.belongsToCurrentUser() || this.organization().currentUserIsOwner();
   },
 
   organization: function() {

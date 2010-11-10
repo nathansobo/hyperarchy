@@ -42,6 +42,10 @@ _.constructor("Election", Model.Record, {
     return this.rankedCandidatesByUserId[userId] = this.rankingsForUser(user).joinThrough(Candidate);
   },
 
+  editableByCurrentUser: function() {
+    return Application.currentUser().admin() || this.belongsToCurrentUser() || this.organization().currentUserIsOwner();
+  },
+
   belongsToCurrentUser: function() {
     return this.creator() === Application.currentUser();
   },

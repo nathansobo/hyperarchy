@@ -138,7 +138,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.organizationName.html(election.organization().name());
       this.bodyTextarea.val(election.body());
       this.bodyDiv.html(election.body());
-      if (election.belongsToCurrentUser() || election.organization().currentUserIsOwner()) {
+      if (election.editableByCurrentUser()) {
         this.expandArrow.show();
       } else {
         this.expandArrow.hide();
