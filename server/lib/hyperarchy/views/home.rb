@@ -7,19 +7,33 @@ module Views
     def body_content
       div :id => "notification", :style => "display: none"
 
-      div :class => "container12" do
-        div :class => "grid10 prefix1 suffix1" do
-          div :id => "bigLogo"
+      div :id => "header", :class => "container12" do
+        div :class => "grid6" do
+          div :id => "smallLogo"
         end
-
-        div :id => "description", :class => "grid10 prefix1 suffix1" do
-          rawtext description
-        end
-
-        div :id => "signUpOrLogIn", :class => "grid10 prefix1 suffix1" do
-          a :id => "signUp", :href => "/signup"
+        div :id => "links", :class => "grid6" do
           a :id => "logIn", :href => "/login"
+          a :id => "signUp", :href => "/signup"
         end
+      end
+
+      div :class => "container12" do
+        div :class => "grid6" do
+          div :id => "screenshot"
+        end
+
+        div :class => "grid6" do
+          div "Know where everyone stands before everyone sits down.", :id => "headline"
+          div "Micro-elections make it easy for your organization to put anything to a vote. Raise a question, then watch in real time as your team suggests and ranks answers. Hyperarchy computes the consensus instantly using a state-of-the-art electoral algorithm.", :id => "description"
+
+
+#          ol :id => "description" do
+#            li "Micro-elections make it easy for your organization to put anything to a vote."
+#            li "Raise a question, then watch in real time as your team suggests and ranks answers."
+#            li "Hyperarchy computes the consensus instantly using a state-of-the-art electoral algorithm."
+#          end
+        end
+
       end
     end
 

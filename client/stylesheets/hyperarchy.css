@@ -712,10 +712,16 @@ button {
     resize: none; }
 
 #logo {
-  background-image: url(/images/logo_small.png);
+  background-image: url(/images/logo_tiny.png);
   background-repeat: no-repeat;
   width: 221px;
   height: 25px; }
+
+#smallLogo {
+  background-image: url(/images/home_page_sprite.png);
+  background-repeat: no-repeat;
+  width: 256px;
+  height: 33px; }
 
 #mediumLogo {
   background-image: url(/images/logo_medium.png);
@@ -753,9 +759,45 @@ button {
 
 #home {
   font-size: 22px; }
+  #home #header {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ccc;
+    height: 32px; }
+    #home #header #links {
+      height: 100%;
+      position: relative; }
+      #home #header #links a {
+        position: absolute;
+        bottom: 0px;
+        height: 18px;
+        background-image: url(/images/home_page_sprite.png);
+        background-repeat: none; }
+      #home #header #links #signUp {
+        width: 72px;
+        background-position: -260px 0px;
+        right: 69px; }
+      #home #header #links #logIn {
+        width: 54px;
+        background-position: -400px 0px;
+        right: 0px; }
+  #home #screenshot {
+    background-image: url(/images/home_page_sprite.png);
+    background-repeat: none;
+    background-position: 0px -50px;
+    width: 470px;
+    height: 260px;
+    position: relative;
+    left: -5px; }
+  #home #headline {
+    font-family: Verdana;
+    line-height: 1.15;
+    font-size: 31px;
+    margin-top: 20px;
+    margin-bottom: 15px; }
   #home #description {
-    margin-bottom: 40px;
-    text-align: justify; }
+    font-size: 19px; }
   #home #signUpOrLogIn {
     text-align: right; }
     #home #signUpOrLogIn #signUp {

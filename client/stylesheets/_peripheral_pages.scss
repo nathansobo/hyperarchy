@@ -1,9 +1,59 @@
 #home {
   font-size: 22px;
 
+  #header {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ccc;
+    height: 32px;
+
+    #links {
+      height: 100%;
+      position: relative;
+
+      a {
+        position: absolute;
+        bottom: 0px;
+        height: 18px;
+        background-image: url(/images/home_page_sprite.png);
+        background-repeat: none;
+      }
+
+      #signUp {
+        width: 72px;
+        background-position: -260px 0px;
+        right: 69px;
+      }
+
+      #logIn {
+        width: 54px;
+        background-position: -400px 0px;
+        right: 0px;
+      }
+    }
+  }
+
+  #screenshot {
+    background-image: url(/images/home_page_sprite.png);
+    background-repeat: none;
+    background-position: 0px -50px;
+    width: 470px;
+    height: 260px;
+    position: relative;
+    left: -5px;
+  }
+
+  #headline {
+    font-family: Verdana;
+    line-height: 1.15;
+    font-size: 31px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+  }
+
   #description {
-    margin-bottom: 40px;
-    text-align: justify;
+    font-size: 19px;
   }
 
   #signUpOrLogIn {

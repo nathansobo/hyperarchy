@@ -150,10 +150,17 @@ button {
 }
 
 #logo {
-  background-image: url(/images/logo_small.png);
+  background-image: url(/images/logo_tiny.png);
   background-repeat: no-repeat;
   width: 221px;
   height: 25px;
+}
+
+#smallLogo {
+  background-image: url(/images/home_page_sprite.png);
+  background-repeat: no-repeat;
+  width: 256px;
+  height: 33px;
 }
 
 #mediumLogo {
