@@ -15,6 +15,15 @@ module Views
           a :id => "logIn", :href => "/login"
           a :id => "signUp", :href => "/signup"
         end
+        div :class => "clear"
+      end
+
+      div :class => "container12" do
+        div :class => "grid12", :style => "text-align: center;" do
+          div "Help your team hear itself think.", :id => "headline"
+          div "Real-time collaborative decision making for organizations", :id => "tagline"
+        end
+        div :class => "clear"
       end
 
       div :class => "container12" do
@@ -23,17 +32,26 @@ module Views
         end
 
         div :class => "grid6" do
-          div "Know where everyone stands before everyone sits down.", :id => "headline"
-          div "Micro-elections make it easy for your organization to put anything to a vote. Raise a question, then watch in real time as your team suggests and ranks answers. Hyperarchy computes the consensus instantly using a state-of-the-art electoral algorithm.", :id => "description"
-
-
-#          ol :id => "description" do
-#            li "Micro-elections make it easy for your organization to put anything to a vote."
-#            li "Raise a question, then watch in real time as your team suggests and ranks answers."
-#            li "Hyperarchy computes the consensus instantly using a state-of-the-art electoral algorithm."
-#          end
+          ol :id => "description" do
+            li "Converge on the best answers to your team's most important questions."
+            li "Vote by ranking your favorite ideas and watch Hyperarchy compute the consensus instantly."
+            li "Build shared confidence in your team's direction. Cut through confusion and resolve debates."
+          end
         end
 
+        div :class => "clear"
+      end
+
+      div :id => "lowerRegion", :class => "container12" do
+        div :class => "grid4 prefix1 suffix1" do
+          a "Learn More", :href => "/learn_more", :id => "learnMoreButton", :class => "roundedButton glossyBlack"
+          div "View screenshots and learn how Hyperarchy can help your team.", :class => "buttonDescription"
+        end
+        div :class => "grid4 prefix1 suffix1" do
+          a "Sign Up Free", :href => "/signup", :id => "signUpButton", :class => "roundedButton glossyBlack"
+          div "Invite your teammates and start voting on your first question now.", :class => "buttonDescription"
+        end
+        div :class => "clear"
       end
     end
 

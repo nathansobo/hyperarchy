@@ -1,8 +1,10 @@
 #home {
   font-size: 22px;
+  font-family: Verdana, sans-serif;
+  margin: 0;
 
   #header {
-    margin-top: 20px;
+    padding-top: 10px;
     margin-bottom: 30px;
     padding-bottom: 8px;
     border-bottom: 1px solid #ccc;
@@ -45,37 +47,48 @@
   }
 
   #headline {
-    font-family: Verdana;
+    font-weight: bold;
     line-height: 1.15;
-    font-size: 31px;
+    font-size: 34px;
     margin-top: 20px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+  }
+
+  #tagline {
+    margin-bottom: 50px;
+    font-size: 24px;
   }
 
   #description {
-    font-size: 19px;
+    font-size: 18px;
+    margin-top: 20px;
+    margin-left: 20px;
+
+    li {
+      list-style: square outside;
+      margin-bottom: 32px;
+    }
   }
 
-  #signUpOrLogIn {
-    text-align: right;
+  #lowerRegion {
+    border-top: 1px solid #ccc;
+    padding-top: 50px;
+    text-align: center;
 
-    #signUp {
-      display: inline-block;
-      background-image: url("/images/sign_up.png");
-      background-repeat: no-repeat;
-      width: 158px;
-      height: 34px;
-      margin-right: 20px;
-      cursor: pointer;
+    a {
+      font-size: 34px;
+      padding: 10px 0;
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+
+      &#learnMoreButton {
+        margin-right: 40px;
+      }
     }
 
-    #logIn {
-      display: inline-block;
-      background-image: url("/images/log_in.png");
-      background-repeat: no-repeat;
-      width: 127px;
-      height: 34px;
-      cursor: pointer;
+    .buttonDescription {
+      font-size: 16px;
     }
   }
 }

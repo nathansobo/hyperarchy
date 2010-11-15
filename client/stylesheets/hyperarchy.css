@@ -758,9 +758,11 @@ button {
   -webkit-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 5px; }
 
 #home {
-  font-size: 22px; }
+  font-size: 22px;
+  font-family: Verdana, sans-serif;
+  margin: 0; }
   #home #header {
-    margin-top: 20px;
+    padding-top: 10px;
     margin-bottom: 30px;
     padding-bottom: 8px;
     border-bottom: 1px solid #ccc;
@@ -791,30 +793,35 @@ button {
     position: relative;
     left: -5px; }
   #home #headline {
-    font-family: Verdana;
+    font-weight: bold;
     line-height: 1.15;
-    font-size: 31px;
+    font-size: 34px;
     margin-top: 20px;
-    margin-bottom: 15px; }
+    margin-bottom: 10px; }
+  #home #tagline {
+    margin-bottom: 50px;
+    font-size: 24px; }
   #home #description {
-    font-size: 19px; }
-  #home #signUpOrLogIn {
-    text-align: right; }
-    #home #signUpOrLogIn #signUp {
-      display: inline-block;
-      background-image: url("/images/sign_up.png");
-      background-repeat: no-repeat;
-      width: 158px;
-      height: 34px;
-      margin-right: 20px;
-      cursor: pointer; }
-    #home #signUpOrLogIn #logIn {
-      display: inline-block;
-      background-image: url("/images/log_in.png");
-      background-repeat: no-repeat;
-      width: 127px;
-      height: 34px;
-      cursor: pointer; }
+    font-size: 18px;
+    margin-top: 20px;
+    margin-left: 20px; }
+    #home #description li {
+      list-style: square outside;
+      margin-bottom: 32px; }
+  #home #lowerRegion {
+    border-top: 1px solid #ccc;
+    padding-top: 50px;
+    text-align: center; }
+    #home #lowerRegion a {
+      font-size: 34px;
+      padding: 10px 0;
+      display: block;
+      width: 100%;
+      margin-bottom: 10px; }
+      #home #lowerRegion a#learnMoreButton {
+        margin-right: 40px; }
+    #home #lowerRegion .buttonDescription {
+      font-size: 16px; }
 
 #login #loginForm {
   width: 350px;
