@@ -11,6 +11,10 @@ module Hyperarchy
       render_page Views::Home
     end
 
+    get "/learn_more" do
+      render_page Views::LearnMore
+    end
+
     get "/app" do
       redirect redirect "/login" and return unless current_user
       render_page Views::App
