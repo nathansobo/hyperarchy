@@ -718,6 +718,7 @@ button {
   height: 25px; }
 
 #smallLogo {
+  display: block;
   background-image: url(/images/home_page_sprite.png);
   background-repeat: no-repeat;
   width: 256px;
@@ -851,6 +852,17 @@ button {
       font-size: 15px;
       font-weight: bold;
       margin-bottom: 5px; }
+  #learn_more #signUpArea {
+    margin-top: 30px;
+    margin-bottom: 100px; }
+    #learn_more #signUpArea #signUpExplanation {
+      font-size: 18px;
+      padding-top: 10px; }
+    #learn_more #signUpArea a {
+      display: block;
+      font-size: 34px;
+      padding: 10px;
+      text-align: center; }
 
 #login #loginForm {
   width: 350px;

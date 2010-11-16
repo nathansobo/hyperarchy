@@ -137,6 +137,23 @@
       margin-bottom: 5px;
     }
   }
+
+  #signUpArea {
+    margin-top: 30px;
+    margin-bottom: 100px;
+
+    #signUpExplanation {
+      font-size: 18px;
+      padding-top: 10px;
+    }
+
+    a {
+      display: block;
+      font-size: 34px;
+      padding: 10px;
+      text-align: center;
+    }
+  }
 }
 
 #login {

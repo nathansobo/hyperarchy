@@ -3,7 +3,7 @@ module Views
     def body_content
       div :id => "header", :class => "container12" do
         div :class => "grid6" do
-          div :id => "smallLogo"
+          a :href => "/", :id => "smallLogo"
         end
         div :id => "links", :class => "grid6" do
           a :id => "logIn", :href => "/login"
@@ -60,6 +60,16 @@ module Views
           div "Hyperarchy feels more like a desktop application than a clunky traditional web-app. The interaction is smooth and responsive, and you perform ranking by dragging and dropping. It keeps you aware of the consensus without slowing you down or getting in the way."
         end
 
+        div :class => "clear"
+      end
+
+      div :id => "signUpArea", :class => "container12" do
+        div :class => "grid5 prefix1" do
+          div "Hyperarchy is free. Sign up and create your first election in less than a minute.", :id => "signUpExplanation"
+        end
+        div :class => "grid5 suffix1" do
+          a "Sign Up Free", :href => "/signup", :class => "glossyBlack roundedButton"
+        end
         div :class => "clear"
       end
     end
