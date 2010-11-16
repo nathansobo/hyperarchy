@@ -21,7 +21,7 @@ module Views
       div :class => "container12" do
         div :class => "grid12", :style => "text-align: center;" do
           div "Help your team hear itself think.", :id => "headline"
-          div "Real-time collaborative decision making for organizations", :id => "tagline"
+          div "Real-time collaborative decision-making for organizations", :id => "tagline"
         end
         div :class => "clear"
       end
