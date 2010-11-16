@@ -36,8 +36,20 @@
 
 #home {
   font-size: 22px;
-  font-family: Verdana, sans-serif;
   margin: 0;
+
+  #headline {
+    font-weight: bold;
+    line-height: 1.15;
+    font-size: 40px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+
+  #tagline {
+    margin-bottom: 50px;
+    font-size: 28px;
+  }
 
   #screenshot {
     background-image: url(/images/home_page_sprite.png);
@@ -49,22 +61,9 @@
     left: -5px;
   }
 
-  #headline {
-    font-weight: bold;
-    line-height: 1.15;
-    font-size: 34px;
-    margin-top: 20px;
-    margin-bottom: 10px;
-  }
-
-  #tagline {
-    margin-bottom: 50px;
-    font-size: 24px;
-  }
-
   #description {
-    font-size: 18px;
-    margin-top: 20px;
+    font-size: 19px;
+    margin-top: 15px;
     margin-left: 20px;
 
     li {
@@ -79,7 +78,8 @@
     text-align: center;
 
     a {
-      font-size: 34px;
+      font-size: 40px;
+      letter-spacing: 1;
       padding: 10px 0;
       display: block;
       width: 100%;
@@ -91,7 +91,7 @@
     }
 
     .buttonDescription {
-      font-size: 16px;
+      font-size: 19px;
     }
   }
 }

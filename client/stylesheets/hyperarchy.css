@@ -784,8 +784,16 @@ button {
 
 #home {
   font-size: 22px;
-  font-family: Verdana, sans-serif;
   margin: 0; }
+  #home #headline {
+    font-weight: bold;
+    line-height: 1.15;
+    font-size: 40px;
+    margin-top: 15px;
+    margin-bottom: 10px; }
+  #home #tagline {
+    margin-bottom: 50px;
+    font-size: 28px; }
   #home #screenshot {
     background-image: url(/images/home_page_sprite.png);
     background-repeat: none;
@@ -794,18 +802,9 @@ button {
     height: 260px;
     position: relative;
     left: -5px; }
-  #home #headline {
-    font-weight: bold;
-    line-height: 1.15;
-    font-size: 34px;
-    margin-top: 20px;
-    margin-bottom: 10px; }
-  #home #tagline {
-    margin-bottom: 50px;
-    font-size: 24px; }
   #home #description {
-    font-size: 18px;
-    margin-top: 20px;
+    font-size: 19px;
+    margin-top: 15px;
     margin-left: 20px; }
     #home #description li {
       list-style: square outside;
@@ -815,7 +814,8 @@ button {
     padding-top: 50px;
     text-align: center; }
     #home #lowerRegion a {
-      font-size: 34px;
+      font-size: 40px;
+      letter-spacing: 1;
       padding: 10px 0;
       display: block;
       width: 100%;
@@ -823,7 +823,7 @@ button {
       #home #lowerRegion a#learnMoreButton {
         margin-right: 40px; }
     #home #lowerRegion .buttonDescription {
-      font-size: 16px; }
+      font-size: 19px; }
 
 #learn_more {
   font-size: 14px; }
