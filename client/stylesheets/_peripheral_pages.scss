@@ -105,6 +105,8 @@
     margin-bottom: 20px;
     background-image: url(/images/learn_more_sprite.png);
     background-repeat: none;
+    position: relative;
+    left: -5px;
 
     &#screenshot2 {
       background-position: 0px 300px;
