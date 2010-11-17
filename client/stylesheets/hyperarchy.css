@@ -634,6 +634,7 @@ button {
 
 .roundedButton {
   font-size: 20px;
+  border: 0;
   border-radius: 3px;
   padding: 3px 7px;
   text-decoration: none;
@@ -883,29 +884,39 @@ button {
       width: auto;
       float: right; }
 
-#signup {
-  font-size: 22px; }
-  #signup label {
+#signup #signupForm {
+  font-size: 22px;
+  width: 320px;
+  padding: 20px;
+  margin: 50px auto;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px; }
+  #signup #signupForm label {
     display: block;
-    font-size: 16px; }
-    #signup label.inline {
+    font-size: 16px;
+    margin-bottom: 3px; }
+    #signup #signupForm label.inline {
       display: inline; }
-  #signup input {
+  #signup #signupForm #canChangeLater {
+    font-size: 12px;
+    color: gray;
+    font-style: italic;
+    float: right;
+    position: relative;
+    top: 5px; }
+  #signup #signupForm input {
     width: 100%;
     display: block;
     margin-bottom: 10px; }
-    #signup input[type=submit] {
-      margin-top: 20px;
-      width: auto; }
-    #signup input[type=checkbox] {
+    #signup #signupForm input[type=checkbox] {
       display: inline;
       width: auto; }
-  #signup #bigLogo {
-    margin-bottom: 40px; }
-  #signup textarea {
-    height: 85px;
-    width: 100%;
-    resize: vertical; }
+    #signup #signupForm input[type=submit] {
+      display: inline;
+      padding: 10px;
+      margin: 15px auto 0;
+      width: 150px;
+      float: right; }
 
 #app #loadingPage {
   position: fixed;
@@ -990,7 +1001,7 @@ button {
   font-size: 18px; }
 #app #organizationOverview .election {
   -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.35) 1px 1px 5px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
   padding: 8px;
   margin-bottom: 20px;
   cursor: pointer;

@@ -3,37 +3,71 @@ module Views
     attr_reader :invitation, :user
     
     def body_content
-      div :class => "container12" do
-        div :class => "grid10 prefix1 suffix1" do
-          div :id => "bigLogo"
-        end
-
-        if invitation
-          signup_form
-        else
-          interested_form
-        end
+      if invitation
+        signup_with_invitation
+      else
+        signup_without_invitation
       end
     end
 
-    def signup_form
-      has_memberships = !invitation.memberships.empty?
+    def signup_without_invitation
+      form :id => "signupForm", :action => "/signup", :method => "post" do
+
+        div :style => "border-bottom: 1px solid #ccc; margin-bottom: 20px;" do
+          div :id => "smallLogo", :style => "margin: 0 auto 10px;"
+        end
+
+        label "First Name", :for => "user[first_name]"
+        input :class => "text", :name => "user[first_name]"
+
+        label "Last Name", :for => "user[last_name]"
+        input :class => "text", :name => "user[last_name]"
+
+        label "Email Address", :for => "user[email_address]"
+        input :class => "text", :name => "user[email_address]"
+
+        label "Choose Your Password", :for => "user[password]"
+        input :class => "text", :name => "user[password]", :type => "password"
+
+        span "You can change this later.", :id => "canChangeLater"
+        label "Organization Name", :for => "organization[name]"
+        input :class => "text", :name => "organization[name]"
+
+        input :type => "submit", :value =>"Sign Up", :class => "glossyBlack roundedButton"
+        div :class => "clear"
+      end
+    end
+
+
+    def signup_with_invitation
+      has_memberships = false
+      auto_fill = {
+        :first_name => user.first_name,
+        :last_name => user.last_name,
+        :email_address => user.email_address,
+      }
+
+      if invitation
+        has_memberships = !invitation.memberships.empty?
+        auto_fill[:first_name] ||= invitation.first_name
+        auto_fill[:last_name] ||= invitation.last_name
+        auto_fill[:email_address] ||= invitation.email_address
+      end
+
       two_columns = has_memberships || flash[:errors]
 
       form :id => "signupForm", :action => "/signup", :method => "post" do
         div :class => two_columns ? "grid4 prefix1 suffix1" : "grid4 prefix4 suffix4" do
-          input :type => "hidden", :name => "invitation_code", :value => invitation.guid
-
           label "First Name", :for => "first_name"
-          input :class => "text", :name => "redeem[user[first_name]]", :value => user.first_name || invitation.first_name || ""
+          input :class => "text", :name => "redeem[user[first_name]]", :value => auto_fill[:first_name] || ""
 
           label "Last Name", :for => "last_name"
-          input :class => "text", :name => "redeem[user[last_name]]", :value => user.last_name || invitation.last_name || ""
+          input :class => "text", :name => "redeem[user[last_name]]", :value => auto_fill[:last_name] || ""
 
           label "Email Address", :for => "email_address"
-          input :class => "text", :name => "redeem[user[email_address]]", :value => user.email_address || invitation.sent_to_address || ""
+          input :class => "text", :name => "redeem[user[email_address]]", :value => auto_fill[:email_address] || ""
 
-          label "Password", :for => "password"
+          label "Choose Password", :for => "password"
           input :class => "text", :name => "redeem[user[password]]", :type => "password", :value => ""
 
           input :type => "submit", :value =>"Sign Up"
