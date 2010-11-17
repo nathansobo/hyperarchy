@@ -14,8 +14,8 @@ module Views
 
       div :class => "container12" do
         div :id => "screenshots", :class => "grid6" do
-          div :class => "screenshot"
-          div :class => "screenshot"
+          div :id => "screenshot1", :class => "screenshot"
+          div :id => "screenshot2", :class => "screenshot"
         end
         div :id => "benefits", :class => "grid6" do
           div "Hyperarchy makes it easy for your organization to put anything to a vote. Raise a question, then watch in real time as your team suggests and ranks answers. Hyperarchy computes the consensus instantly using a state-of-the-art electoral algorithm.", :id => "summary"
