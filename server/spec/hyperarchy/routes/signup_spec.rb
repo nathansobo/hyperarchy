@@ -38,6 +38,28 @@ describe "/signup", :type => :rack do
       }
     end
 
+    context "if no invitation code has been associated with the session" do
+      it "creates a user with the given attributes and makes them owner of an organization with the given name, then redirects to that organization" do
+        post "/signup", :user => user_attributes, :organization => { :name => "The Foo Bar" }
+        current_user.should_not be_nil
+        current_user.should be_persisted
+        current_user.first_name.should == user_attributes[:first_name]
+        current_user.last_name.should == user_attributes[:last_name]
+        current_user.email_address.should == user_attributes[:email_address]
+        current_user.password.should == user_attributes[:password]
+
+        current_user.memberships.size.should == 1
+        current_user.memberships.first.role.should == "owner"
+
+        organization = current_user.organizations.first
+        organization.name.should == "The Foo Bar"
+
+        last_response.should be_redirect
+        last_response.location.should == "/app#view=organization&organizationId=#{organization.id}"
+      end
+    end
+
+
     context "if the invite code is valid" do
       attr_reader :invitation, :membership_1, :membership_2, :membership_3
 

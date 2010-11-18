@@ -55,12 +55,13 @@ module Hyperarchy
     end
 
     post "/signup" do
-      invitation = validate_invitation_code(params[:invitation_code])
-      new_user = invitation.redeem(params[:redeem])
-
+#      invitation = validate_invitation_code(params[:invitation_code])
+#      new_user = invitation.redeem(params[:redeem])
+      new_user = User.create(params[:user])
       if new_user.valid?
-        request.env['warden'].set_user(new_user)
-        redirect "/app#view=organization"
+        warden.set_user(new_user)
+        organization = Organization.create!(:name => params[:organization][:name])
+        redirect "/app#view=organization&organizationId=#{organization.id}"
       else
         flash.now[:errors] = new_user.validation_errors
         render_page Views::Signup, :invitation => invitation, :user => new_user

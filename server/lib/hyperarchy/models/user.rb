@@ -40,10 +40,6 @@ class User < Monarch::Model::Record
     memberships.map(&:organization_id)
   end
 
-  def after_create
-    memberships.create!(:organization => Organization.find(:name => ALPHA_TEST_ORG_NAME), :suppress_invite_email => true, :pending => false)
-  end
-
   def password=(unencrypted_password)
     return nil if unencrypted_password.blank?
     self.encrypted_password = self.class.encrypt_password(unencrypted_password)
