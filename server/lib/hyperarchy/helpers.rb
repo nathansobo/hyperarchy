@@ -20,15 +20,15 @@ module Hyperarchy
 
     def validate_invitation_code(invitation_code)
       invitation = Invitation.find(:guid => invitation_code)
-
+      
       if !invitation
-        flash[:invalid_invitation_code] = true
+        flash[:invalid_invitation_code] = invitation_code
         redirect "/signup"
         return false
       end
 
       if invitation.redeemed?
-        flash[:already_redeemed] = true
+        flash[:already_redeemed] = invitation_code
         redirect "/signup"
         return false
       end

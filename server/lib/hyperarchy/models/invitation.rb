@@ -10,6 +10,9 @@ class Invitation < Monarch::Model::Record
   belongs_to :inviter, :class_name => "User"
   belongs_to :invitee, :class_name => "User"
   has_many :memberships
+  relates_to_many :organizations do
+    memberships.join_through(Organization)
+  end
 
   attr_accessor :send_email
 

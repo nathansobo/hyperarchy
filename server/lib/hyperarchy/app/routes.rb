@@ -49,6 +49,7 @@ module Hyperarchy
     get "/signup" do
       if params[:invitation_code]
         invitation = validate_invitation_code(params[:invitation_code])
+        session[:invitation_code] = invitation.guid
       end
 
       render_page Views::Signup, :invitation => invitation, :user => User.new
@@ -64,7 +65,7 @@ module Hyperarchy
         redirect "/app#view=organization&organizationId=#{organization.id}"
       else
         flash.now[:errors] = new_user.validation_errors
-        render_page Views::Signup, :invitation => invitation, :user => new_user
+        render_page Views::Signup, :user => new_user
       end
     end
 

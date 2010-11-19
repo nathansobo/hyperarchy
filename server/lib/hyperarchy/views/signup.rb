@@ -3,41 +3,65 @@ module Views
     attr_reader :invitation, :user
     
     def body_content
-      if invitation
-        signup_with_invitation
-      else
-        signup_without_invitation
-      end
-    end
+      div :id => "centeredWrapper", :class => wrapper_class do
+        form :id => "signupForm", :action => "/signup", :method => "post" do
+          div :style => "border-bottom: 1px solid #ccc; margin-bottom: 20px;" do
+            div :id => "smallLogo", :style => "margin: 0 auto 10px;"
+          end
 
-    def signup_without_invitation
-      form :id => "signupForm", :action => "/signup", :method => "post" do
+          if flash[:errors]
+            div :id => "errors" do
+              div "Whoops! Please correct the following problems and try again:", :id => "pleaseCorrect"
+              ul do
+                flash[:errors].each do |error|
+                  li error
+                end
+              end
+            end
+          end
 
-        div :style => "border-bottom: 1px solid #ccc; margin-bottom: 20px;" do
-          div :id => "smallLogo", :style => "margin: 0 auto 10px;"
+          label "First Name", :for => "user[first_name]"
+          input :class => "text", :name => "user[first_name]", :value => user.first_name
+
+          label "Last Name", :for => "user[last_name]"
+          input :class => "text", :name => "user[last_name]", :value => user.last_name
+
+          label "Email Address", :for => "user[email_address]"
+          input :class => "text", :name => "user[email_address]"
+
+          label "Choose Your Password", :for => "user[password]"
+          input :class => "text", :name => "user[password]", :type => "password"
+
+          unless invitation
+            span "You can change this later.", :id => "canChangeLater"
+            label "Organization Name", :for => "organization[name]"
+            input :class => "text", :name => "organization[name]"
+          end
+
+          input :type => "submit", :value =>"Sign Up", :class => "glossyBlack roundedButton"
+          div :class => "clear"
         end
 
-        label "First Name", :for => "user[first_name]"
-        input :class => "text", :name => "user[first_name]"
+        if invitation
+          div :id => "invitationInfo" do
+            h1 "Join the discussion."
+            h2 "#{invitation.inviter.full_name} wants you to contribute your ideas and opinions to #{invitation.organizations.first.name} on Hyperarchy.", :id => "subheadline"
 
-        label "Last Name", :for => "user[last_name]"
-        input :class => "text", :name => "user[last_name]"
+            ol :id => "description" do
+              li "Converge on the best answers to your team's most important questions."
+              li "Vote by ranking your favorite ideas and watch Hyperarchy compute the consensus instantly."
+              li "Build shared confidence in your team's direction. Cut through confusion and resolve debates."
+            end
 
-        label "Email Address", :for => "user[email_address]"
-        input :class => "text", :name => "user[email_address]"
-
-        label "Choose Your Password", :for => "user[password]"
-        input :class => "text", :name => "user[password]", :type => "password"
-
-        span "You can change this later.", :id => "canChangeLater"
-        label "Organization Name", :for => "organization[name]"
-        input :class => "text", :name => "organization[name]"
-
-        input :type => "submit", :value =>"Sign Up", :class => "glossyBlack roundedButton"
-        div :class => "clear"
+            a "Learn More", :id => "learnMore", :href => "/learn_more", :class => "glossyGray roundedButton"
+          end
+        end
       end
     end
 
+    def wrapper_class
+      invitation ? "wide" : nil
+    end
 
     def signup_with_invitation
       has_memberships = false

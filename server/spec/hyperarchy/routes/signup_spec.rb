@@ -2,26 +2,50 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 
 describe "/signup", :type => :rack do
   describe "GET /signup" do
+
+    context "if an invitation code is specified" do
+      attr_reader :invitation
+
+      before do
+        @invitation = Invitation.create!(:inviter => User.make, :sent_to_address => "steph@example.com")
+      end
+
+      context "if the invitation code is valid" do
+        it "sets the invitation code in the session object" do
+          get "/signup", :invitation_code => invitation.guid
+          session[:invitation_code].should == invitation.guid
+        end
+      end
+
+      context "if the invitation code is not valid" do
+        it "redirects to /signup with no query params, does not set the invitation code in the cookie, and sets :invalid_invitation_code in the flash" do
+          get "/signup", :invitation_code => "garbage"
+          last_response.should be_redirect
+          last_response.location.should == "/signup"
+          session[:invitation_code].should be_nil
+          flash[:invalid_invitation_code].should == "garbage"
+        end
+      end
+
+      context "if the invitation code has already been redeemed" do
+        it "redirects to /signup with no query params, does not set the invitation code in the cookie, and sets the :already_redeemed code in the flash" do
+          invitation.update!(:redeemed => true)
+
+          get "/signup", :invitation_code => invitation.guid
+          last_response.should be_redirect
+          last_response.location.should == "/signup"
+          session[:invitation_code].should be_nil
+          flash[:already_redeemed].should == invitation.guid
+        end
+      end
+    end
+
     context "if an invalid invitation code is specified" do
       it "sets :invalid_invitation_code in the flash and redirects back to /signup with no params" do
         get "/signup", :invitation_code => "junk"
         last_response.should be_redirect
         last_response.location.should == "/signup"
         flash[:invalid_invitation_code].should == true
-      end
-    end
-
-    context "if an already-redeemed invitation code is specified" do
-      attr_reader :invitation
-      before do
-        @invitation = Invitation.create!(:inviter => User.make, :sent_to_address => "steph@example.com", :redeemed => true)
-      end
-
-      it "sets :already_redeemed in the flash and redirects back to /signup with no params" do
-        get "/signup", :invitation_code => invitation.guid
-        last_response.should be_redirect
-        last_response.location.should == "/signup"
-        flash[:already_redeemed].should == true
       end
     end
   end

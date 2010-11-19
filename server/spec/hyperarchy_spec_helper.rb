@@ -71,6 +71,10 @@ class RackExampleGroup < Spec::Example::ExampleGroup
     last_request.env["x-rack.flash"]
   end
 
+  def session
+    last_request.env['rack.session']
+  end
+
   def warden
     last_request.env["warden"]
   end

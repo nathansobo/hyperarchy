@@ -629,16 +629,23 @@ button {
 
 .glossyBlack, .glossyBlack:visited {
   color: white;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, black), color-stop(1, #1d1d1d));
-  background: -moz-linear-gradient(top, #6d6e70 0%, #3a3a3b 50%, black 51%, #1d1d1d 100%); }
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), black;
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), black; }
+
+.glossyGray, .glossyGray:visited {
+  color: white;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), #6b6b6b;
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #6b6b6b; }
 
 .roundedButton {
   font-size: 20px;
   border: 0;
-  border-radius: 3px;
   padding: 3px 7px;
   text-decoration: none;
-  -webkit-box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-box-shadow: 0px 0px 2px black inset;
+  -moz-box-shadow: 0px 0px 2px black inset;
   cursor: pointer; }
 
 .placeheld {
@@ -884,39 +891,78 @@ button {
       width: auto;
       float: right; }
 
-#signup #signupForm {
-  font-size: 22px;
-  width: 320px;
-  padding: 20px;
+#signup #centeredWrapper {
   margin: 50px auto;
-  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px; }
-  #signup #signupForm label {
-    display: block;
+  width: 360px; }
+  #signup #centeredWrapper.wide {
+    width: 960px; }
+  #signup #centeredWrapper .roundedButton {
+    font-size: 22px;
+    padding: 10px;
+    letter-spacing: 1;
+    width: 150px;
+    display: inline-block;
+    text-align: center; }
+  #signup #centeredWrapper #signupForm {
     font-size: 16px;
-    margin-bottom: 3px; }
-    #signup #signupForm label.inline {
-      display: inline; }
-  #signup #signupForm #canChangeLater {
-    font-size: 12px;
-    color: gray;
-    font-style: italic;
-    float: right;
-    position: relative;
-    top: 5px; }
-  #signup #signupForm input {
-    width: 100%;
-    display: block;
-    margin-bottom: 10px; }
-    #signup #signupForm input[type=checkbox] {
-      display: inline;
-      width: auto; }
-    #signup #signupForm input[type=submit] {
-      display: inline;
+    width: 320px;
+    padding: 20px;
+    -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+    float: left; }
+    #signup #centeredWrapper #signupForm #errors {
+      background-color: #FFE0E4;
       padding: 10px;
-      margin: 15px auto 0;
-      width: 150px;
-      float: right; }
+      margin-bottom: 20px; }
+      #signup #centeredWrapper #signupForm #errors #pleaseCorrect {
+        font-weight: bold;
+        margin-bottom: 5px; }
+      #signup #centeredWrapper #signupForm #errors ul li {
+        list-style: disc inside; }
+    #signup #centeredWrapper #signupForm label {
+      display: block;
+      margin-bottom: 3px; }
+      #signup #centeredWrapper #signupForm label.inline {
+        display: inline; }
+    #signup #centeredWrapper #signupForm #canChangeLater {
+      font-size: 12px;
+      color: gray;
+      font-style: italic;
+      float: right;
+      position: relative;
+      top: 5px; }
+    #signup #centeredWrapper #signupForm input {
+      font-size: 22px;
+      width: 100%;
+      display: block;
+      margin-bottom: 10px; }
+      #signup #centeredWrapper #signupForm input[type=checkbox] {
+        display: inline;
+        width: auto; }
+      #signup #centeredWrapper #signupForm input[type=submit] {
+        margin-top: 15px;
+        width: 150px;
+        float: right; }
+  #signup #centeredWrapper #invitationInfo {
+    float: right;
+    width: 550px;
+    margin-top: 20px; }
+    #signup #centeredWrapper #invitationInfo h1 {
+      font-size: 28px; }
+    #signup #centeredWrapper #invitationInfo h2 {
+      font-size: 22px;
+      margin-bottom: 30px; }
+    #signup #centeredWrapper #invitationInfo #description {
+      font-size: 18px;
+      margin-left: 20px; }
+      #signup #centeredWrapper #invitationInfo #description li {
+        list-style-type: disc;
+        margin-bottom: 20px; }
+    #signup #centeredWrapper #invitationInfo #learnMore {
+      float: right;
+      margin-top: 15px;
+      margin-right: 20px;
+      color: white; }
 
 #app #loadingPage {
   position: fixed;

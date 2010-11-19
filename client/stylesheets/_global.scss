@@ -49,19 +49,35 @@ button {
   padding: 10px;
 }
 
+
+@mixin glossyColor($color) {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .5)), color-stop(0.5, rgba(255, 255, 255, .2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, .1))), $color;
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, .1) 100%), $color;
+}
+
+@mixin borderRadius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+}
+
 .glossyBlack, .glossyBlack:visited {
   color: white;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #6d6e70), color-stop(0.5, #3a3a3b), color-stop(0.51, #000000), color-stop(1.0, #1D1D1D));
-  background: -moz-linear-gradient(top, #6d6e70 0%, #3a3a3b 50%, #000000 51%, #1D1D1D 100%);
+  @include glossyColor(black);
+}
+
+.glossyGray, .glossyGray:visited {
+  color: white;
+  @include glossyColor(#6B6B6B);
 }
 
 .roundedButton {
   font-size: 20px;
   border: 0;
-  border-radius: 3px;
   padding: 3px 7px;
   text-decoration:none;
-  -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+  @include borderRadius(3px);
+  -webkit-box-shadow: 0px 0px 2px black inset;
+  -moz-box-shadow: 0px 0px 2px black inset;
   cursor: pointer;
 }
 
