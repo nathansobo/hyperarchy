@@ -2,7 +2,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizationOverview"}, function() {
       div({'class': "top grid12"}, function() {
-        div({id: "welcomeBlurb"}, function() {
+        div({id: "welcomeBlurb", 'class': "dropShadow"}, function() {
           div({'class': "dismissX"}).click('dismissWelcomeBlurb');
           raw(template.welcomeBlurbText);
         }).ref('welcomeBlurb');

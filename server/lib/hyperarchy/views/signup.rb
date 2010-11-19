@@ -18,7 +18,7 @@ module Views
     end
 
     def signup_form
-      form :id => "signupForm", :action => "/signup", :method => "post" do
+      form :id => "signupForm", :class => "dropShadow", :action => "/signup", :method => "post" do
         div :style => "border-bottom: 1px solid #ccc; margin-bottom: 20px;" do
           div :id => "smallLogo", :style => "margin: 0 auto 10px;"
         end

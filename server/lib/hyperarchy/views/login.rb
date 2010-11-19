@@ -1,25 +1,29 @@
 module Views
   class Login < Layout
     def body_content
-      div :class => "container12" do
-        div :class => "grid10 prefix1 suffix1" do
-          div :id => "bigLogo"
+      form :id => "loginForm", :class => "dropShadow", :action => "login", :method => "post" do
+        div :style => "border-bottom: 1px solid #ccc; margin-bottom: 20px;" do
+          div :id => "smallLogo", :style => "margin: 0 auto 10px;"
+        end
 
-          form :id => "loginForm", :action => "login", :method => "post" do
-            if flash[:errors]
-              div flash[:errors].join("\n"), :class => "errors"
-            end
+        if flash[:errors]
+          div flash[:errors].join("\n"), :class => "errors"
+        end
 
-            label "Email Address", :for => "email_address"
-            input :name => "email_address", :value => flash[:entered_email_address]
-            label "Password", :for => "password"
-            input :type => "password", :name => "password"
-            input :value => "Log In", :type => "submit"
+        if flash[:already_redeemed]
+          div "The invitation code you entered has already been redeemed. If you've created an account you can log in.", :class => "errors"
+        end
 
-            if params[:redirected_from]
-              input :type => "hidden", :name => "redirected_from", :value => params[:redirected_from]
-            end
-          end
+        label "Email Address", :for => "email_address"
+        input :name => "email_address", :value => flash[:entered_email_address]
+        label "Password", :for => "password"
+        input :type => "password", :name => "password"
+        input :value => "Log In", :type => "submit", :class => "glossyBlack roundedButton"
+
+        div :class => "clear"
+
+        if params[:redirected_from]
+          input :type => "hidden", :name => "redirected_from", :value => params[:redirected_from]
         end
       end
     end

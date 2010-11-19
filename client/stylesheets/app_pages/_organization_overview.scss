@@ -12,7 +12,6 @@
 
     #createElectionLink {
       float: right;
-      &:hover { -webkit-box-shadow: 2px 2px 3px rgba(0,0,0,.25); }
     }
 
     #createElectionForm {
@@ -32,8 +31,6 @@
     }
 
     #welcomeBlurb {
-      -moz-box-shadow: rgba(0,0,0,.4) 1px 1px 6px;
-      -webkit-box-shadow: rgba(0,0,0,.4) 1px 1px 5px;
       background: #ffffcc;
       margin-bottom: 30px;
       padding: 10px;
@@ -41,8 +38,6 @@
     }
 
     .election {
-      -moz-box-shadow: rgba(0,0,0,.4) 1px 1px 6px;
-      -webkit-box-shadow: rgba(0,0,0,.4) 1px 1px 6px;
       padding: 8px;
       margin-bottom: 20px;
       cursor: pointer;

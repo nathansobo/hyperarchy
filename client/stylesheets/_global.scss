@@ -82,6 +82,11 @@ button {
   cursor: pointer;
 }
 
+.dropShadow {
+  -moz-box-shadow: rgba(0,0,0,.4) 1px 1px 6px;
+  -webkit-box-shadow: rgba(0,0,0,.4) 1px 1px 6px;
+}
+
 .placeheld {
   color: #999999;
 }
@@ -153,8 +158,6 @@ button {
   position: absolute;
   z-index: 21;
   padding: 10px;
-  -moz-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
-  -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 0px 4px;
 
   #thanks { margin-bottom: 10px; }
 
@@ -216,9 +219,8 @@ button {
 }
 
 #simpleTooltip {
+  @extend .dropShadow;
   width: 200px;
   padding: 5px;
   background: white;
-  -moz-box-shadow: rgba(0,0,0,.4) 1px 1px 6px;
-  -webkit-box-shadow: rgba(0,0,0,.4) 1px 1px 5px;
 }

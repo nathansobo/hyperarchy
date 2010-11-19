@@ -3,7 +3,7 @@ _.constructor("Views.ElectionLi", View.Template, {
     var election = params.election;
 
     li({'class': "grid6"}, function() {
-      div({'class': "election"}, function() {
+      div({'class': "election dropShadow"}, function() {
         div({'class': "voteCount"}, function() {
           div({'class': "number"}, election.voteCount().toString()).ref('voteCountNumber');
           div("votes").ref('voteCountWord');

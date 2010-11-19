@@ -648,6 +648,10 @@ button {
   -moz-box-shadow: 0px 0px 2px black inset;
   cursor: pointer; }
 
+.dropShadow, #simpleTooltip {
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px; }
+
 .placeheld {
   color: #999999; }
 
@@ -707,9 +711,7 @@ button {
   width: 600px;
   position: absolute;
   z-index: 21;
-  padding: 10px;
-  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 4px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 4px; }
+  padding: 10px; }
   #feedback #thanks {
     margin-bottom: 10px; }
   #feedback textarea {
@@ -762,9 +764,7 @@ button {
 #simpleTooltip {
   width: 200px;
   padding: 5px;
-  background: white;
-  -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 5px; }
+  background: white; }
 
 #home #header, #learn_more #header {
   padding-top: 10px;
@@ -820,7 +820,8 @@ button {
   #home #lowerRegion {
     border-top: 1px solid #ccc;
     padding-top: 50px;
-    text-align: center; }
+    text-align: center;
+    margin-bottom: 50px; }
     #home #lowerRegion a {
       font-size: 40px;
       letter-spacing: 1;
@@ -877,20 +878,6 @@ button {
       padding: 10px;
       text-align: center; }
 
-#login #loginForm {
-  width: 350px;
-  font-size: 22px;
-  margin: 20px auto; }
-  #login #loginForm label {
-    display: block; }
-  #login #loginForm input {
-    display: block;
-    width: 350px;
-    margin-bottom: 10px; }
-    #login #loginForm input[type=submit] {
-      width: auto;
-      float: right; }
-
 #signup #centeredWrapper {
   margin: 50px auto;
   width: 360px; }
@@ -907,8 +894,6 @@ button {
     font-size: 16px;
     width: 320px;
     padding: 20px;
-    -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
     float: left; }
     #signup #centeredWrapper #signupForm #errors {
       background-color: #ffe0e4;
@@ -970,6 +955,29 @@ button {
         margin-bottom: 10px; }
       #signup #centeredWrapper #invitationInfo #invitationError #description {
         margin-left: 0; }
+
+#login #loginForm {
+  font-size: 16px;
+  width: 320px;
+  padding: 20px;
+  margin: 50px auto; }
+  #login #loginForm label {
+    display: block;
+    margin-bottom: 3px; }
+  #login #loginForm input {
+    font-size: 22px;
+    display: block;
+    width: 100%;
+    margin-bottom: 10px; }
+    #login #loginForm input[type=submit] {
+      font-size: 22px;
+      padding: 10px;
+      letter-spacing: 1;
+      width: 120px;
+      margin-top: 15px;
+      display: inline-block;
+      text-align: center;
+      float: right; }
 
 #app #loadingPage {
   position: fixed;
@@ -1033,8 +1041,6 @@ button {
     margin-right: 10px; }
 #app #organizationOverview #createElectionLink {
   float: right; }
-  #app #organizationOverview #createElectionLink:hover {
-    -webkit-box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.25); }
 #app #organizationOverview #createElectionForm {
   margin: 5px auto 10px; }
   #app #organizationOverview #createElectionForm input {
@@ -1046,15 +1052,11 @@ button {
     float: right;
     margin-top: 5px; }
 #app #organizationOverview #welcomeBlurb {
-  -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 5px;
   background: #ffffcc;
   margin-bottom: 30px;
   padding: 10px;
   font-size: 18px; }
 #app #organizationOverview .election {
-  -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
   padding: 8px;
   margin-bottom: 20px;
   cursor: pointer;
