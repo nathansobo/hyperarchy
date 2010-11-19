@@ -20,12 +20,12 @@ module Monarch
           if connection
             puts "Got new connection for #{id}"
             cancel_reconnect_timer
-            flush_queued_messages
           else
             puts "Connection dropped for #{id}, dying in #{RECONNECT_INTERVAL} seconds"
             start_reconnect_timer
           end
         end
+        flush_queued_messages if connection
       end
 
       def send(message)
