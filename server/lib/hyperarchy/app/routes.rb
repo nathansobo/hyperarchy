@@ -47,25 +47,53 @@ module Hyperarchy
     end
 
     get "/signup" do
-      if params[:invitation_code]
-        invitation = validate_invitation_code(params[:invitation_code])
-        session[:invitation_code] = invitation.guid
+      if invitation_code = params[:invitation_code] || session[:invitation_code]
+        invitation = validate_invitation_code(invitation_code)
+        session[:invitation_code] = invitation_code
       end
 
       render_page Views::Signup, :invitation => invitation, :user => User.new
     end
 
     post "/signup" do
-#      invitation = validate_invitation_code(params[:invitation_code])
-#      new_user = invitation.redeem(params[:redeem])
+      if invitation_code = session[:invitation_code]
+        invitation = validate_invitation_code(invitation_code)
+      else
+        organization_name = params[:organization][:name]
+        if organization_name.blank?
+          flash[:errors] = ["You must enter an organization name."]
+          redirect "/signup"
+          return
+        end
+      end
+
+      if invitation
+        redeem_invitation(invitation)
+      else
+        create_user_and_organization(organization_name)
+      end
+    end
+
+    def redeem_invitation(invitation)
+      new_user = invitation.redeem(params[:user])
+      if new_user.valid?
+        warden.set_user(new_user)
+        redirect "/app#view=organization&organizationId=#{new_user.organizations.first.id}"
+      else
+        flash[:errors] = new_user.validation_errors
+        redirect "/signup"
+      end
+    end
+
+    def create_user_and_organization(organization_name)
       new_user = User.create(params[:user])
       if new_user.valid?
         warden.set_user(new_user)
-        organization = Organization.create!(:name => params[:organization][:name])
+        organization = Organization.create!(:name => organization_name)
         redirect "/app#view=organization&organizationId=#{organization.id}"
       else
-        flash.now[:errors] = new_user.validation_errors
-        render_page Views::Signup, :user => new_user
+        flash[:errors] = new_user.validation_errors
+        redirect "/signup"
       end
     end
 

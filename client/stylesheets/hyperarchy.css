@@ -911,7 +911,7 @@ button {
     -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
     float: left; }
     #signup #centeredWrapper #signupForm #errors {
-      background-color: #FFE0E4;
+      background-color: #ffe0e4;
       padding: 10px;
       margin-bottom: 20px; }
       #signup #centeredWrapper #signupForm #errors #pleaseCorrect {
@@ -963,6 +963,13 @@ button {
       margin-top: 15px;
       margin-right: 20px;
       color: white; }
+    #signup #centeredWrapper #invitationInfo #invitationError {
+      background-color: #ffe0e4;
+      padding: 10px; }
+      #signup #centeredWrapper #invitationInfo #invitationError h1 {
+        margin-bottom: 10px; }
+      #signup #centeredWrapper #invitationInfo #invitationError #description {
+        margin-left: 0; }
 
 #app #loadingPage {
   position: fixed;

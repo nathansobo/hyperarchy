@@ -16,13 +16,6 @@ module Models
       end
     end
 
-    describe "after create" do
-      it "automatically creates a membership for the 'Alpha Testers' organization" do
-        alpha_org = Organization.find(:name => ALPHA_TEST_ORG_NAME)
-        user.memberships.find(:pending => false, :organization => alpha_org).should_not be_nil
-      end
-    end
-
     describe "#password and #password=" do
       specify "#password= assigns #encrypted_password such that #password returns a BCrypt::Password object that will be == to the assigned unencrypted password" do
         user.password = "password"

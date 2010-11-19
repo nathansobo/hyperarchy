@@ -23,13 +23,15 @@ module Hyperarchy
       
       if !invitation
         flash[:invalid_invitation_code] = invitation_code
+        session.delete(:invitation_code)
         redirect "/signup"
         return false
       end
 
       if invitation.redeemed?
         flash[:already_redeemed] = invitation_code
-        redirect "/signup"
+        session.delete(:invitation_code)
+        redirect "/login"
         return false
       end
 

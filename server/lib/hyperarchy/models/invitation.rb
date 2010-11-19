@@ -33,12 +33,10 @@ class Invitation < Monarch::Model::Record
     sent_to_address
   end
 
-  def redeem(attributes)
+  def redeem(user_attributes)
     raise "Already redeemed" if redeemed?
 
-    confirm_memberships = (attributes[:confirm_memberships] || []).map(&:to_i)
-
-    user = User.new(attributes[:user])
+    user = User.new(user_attributes)
     if user.valid?
       user.save
     else
@@ -49,11 +47,7 @@ class Invitation < Monarch::Model::Record
     save
 
     memberships.each do |membership|
-      if confirm_memberships.include?(membership.id)
-        membership.update!(:pending => false, :user => user)
-      else
-        membership.destroy
-      end
+      membership.update!(:pending => false, :user => user)
     end
     user
   end

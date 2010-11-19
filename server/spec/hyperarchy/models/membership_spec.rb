@@ -70,18 +70,6 @@ module Models
         invite_email_2[:subject].should include(current_user.full_name)
         invite_email_2[:subject].should include(organization_2.name)
         invite_email_2[:body].should match(/signup\?invitation_code=#{invitation.guid}/)
-
-        # A third membership just to test redemption below
-        organization_3 = Organization.make
-        membership_3 = organization_3.memberships.create!(:email_address => email_address)
-
-        # Become a member only of the specified organizations, delete the other memberships
-        user = invitation.redeem(:user => User.plan, :confirm_memberships => [membership_1.id, membership_3.id])
-        membership_1.should_not be_pending
-        membership_1.user.should == user
-        membership_3.should_not be_pending
-        membership_3.user.should == user
-        Membership.find(membership_2.id).should be_nil
       end
     end
 

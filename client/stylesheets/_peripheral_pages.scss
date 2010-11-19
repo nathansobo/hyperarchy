@@ -211,7 +211,7 @@
       float: left;
 
       #errors {
-        background-color: #FFE0E4;
+        background-color: $errorBackground;
         padding: 10px;
         margin-bottom: 20px;
 
@@ -288,6 +288,19 @@
         margin-top: 15px;
         margin-right: 20px;
         color: white;
+      }
+
+      #invitationError {
+        background-color: $errorBackground;
+        padding: 10px;
+
+        h1 {
+          margin-bottom: 10px;
+        }
+
+        #description {
+          margin-left: 0;
+        }
       }
     }
   }

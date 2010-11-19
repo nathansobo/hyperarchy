@@ -46,7 +46,7 @@ module Models
     describe "#redeem" do
       it "if not already redeemed, creates and returns a user with the given properties, otherwise raises" do
         invitation.should_not be_redeemed
-        user = invitation.redeem(:user => {:first_name => "Chevy", :last_name => "Chase", :email_address => "chevy@example.com", :password => "password"})
+        user = invitation.redeem(:first_name => "Chevy", :last_name => "Chase", :email_address => "chevy@example.com", :password => "password")
         invitation.should be_redeemed
         invitation.invitee.should == user
 
