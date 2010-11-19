@@ -3,7 +3,7 @@ module Views
     def body_content
       form :id => "loginForm", :class => "dropShadow", :action => "login", :method => "post" do
         div :style => "border-bottom: 1px solid #ccc; margin-bottom: 20px;" do
-          div :id => "smallLogo", :style => "margin: 0 auto 10px;"
+          a :id => "smallLogo", :href => "/"
         end
 
         if flash[:errors]
@@ -19,6 +19,11 @@ module Views
         label "Password", :for => "password"
         input :type => "password", :name => "password"
         input :value => "Log In", :type => "submit", :class => "glossyBlack roundedButton"
+
+        div :id => "signUp" do
+          div "Don't have an account?"
+          a "Click here to sign up.", :href => "/signup"
+        end
 
         div :class => "clear"
 

@@ -895,6 +895,8 @@ button {
     width: 320px;
     padding: 20px;
     float: left; }
+    #signup #centeredWrapper #signupForm #smallLogo {
+      margin: 0 auto 10px; }
     #signup #centeredWrapper #signupForm #errors {
       background-color: #ffe0e4;
       padding: 10px;
@@ -916,6 +918,14 @@ button {
       float: right;
       position: relative;
       top: 5px; }
+    #signup #centeredWrapper #signupForm #logIn {
+      font-size: 12px;
+      color: gray;
+      font-style: italic;
+      position: relative;
+      top: 23px;
+      text-align: right;
+      width: 150px; }
     #signup #centeredWrapper #signupForm input {
       font-size: 22px;
       width: 100%;
@@ -961,6 +971,8 @@ button {
   width: 320px;
   padding: 20px;
   margin: 50px auto; }
+  #login #loginForm #smallLogo {
+    margin: 0 auto 10px; }
   #login #loginForm label {
     display: block;
     margin-bottom: 3px; }
@@ -978,6 +990,14 @@ button {
       display: inline-block;
       text-align: center;
       float: right; }
+  #login #loginForm #signUp {
+    font-size: 12px;
+    color: gray;
+    font-style: italic;
+    position: relative;
+    top: 23px;
+    text-align: right;
+    width: 180px; }
 
 #app #loadingPage {
   position: fixed;

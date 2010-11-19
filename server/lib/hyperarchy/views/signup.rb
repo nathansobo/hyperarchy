@@ -6,6 +6,7 @@ module Views
       div :id => "centeredWrapper", :class => wrapper_class do
         signup_form
         invitation_info
+        div :class => "clear"
       end
     end
 
@@ -20,7 +21,7 @@ module Views
     def signup_form
       form :id => "signupForm", :class => "dropShadow", :action => "/signup", :method => "post" do
         div :style => "border-bottom: 1px solid #ccc; margin-bottom: 20px;" do
-          div :id => "smallLogo", :style => "margin: 0 auto 10px;"
+          a :id => "smallLogo", :href => "/"
         end
 
         errors_section
@@ -44,6 +45,12 @@ module Views
         end
 
         input :type => "submit", :value =>"Sign Up", :class => "glossyBlack roundedButton"
+
+        div :id => "logIn" do
+          div "Already have an account?"
+          a "Click here to log in.", :href => "/login"
+        end
+
         div :class => "clear"
       end
     end
