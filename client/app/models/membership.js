@@ -7,7 +7,8 @@ _.constructor("Membership", Model.Record, {
       pending: "boolean",
       firstName: "string",
       lastName: "string",
-      emailAddress: "string"
+      emailAddress: "string",
+      lastVisited: "datetime"
     });
 
     this.belongsTo("organization");

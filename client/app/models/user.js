@@ -34,5 +34,9 @@ _.constructor("User", Model.Record, {
 
   emailHash: function() {
     return hex_md5(this.emailAddress().toLowerCase());
+  },
+
+  lastVisitedOrganization: function() {
+    return this.memberships().orderBy(Membership.lastVisited.desc()).first().organization();
   }
 });
