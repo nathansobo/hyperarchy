@@ -8,6 +8,14 @@ module Models
       set_current_user(User.make)
     end
 
+    describe "before create" do
+      it "assigns last_visited to the current time" do
+        Timecop.freeze(Time.now)
+        membership = organization.memberships.create!(:user => User.make)
+        membership.last_visited.should == Time.now
+      end
+    end
+
     describe "when not pending" do
       it "does not send a confirmation email" do
         organization.memberships.create!(:user => User.make, :pending => false)

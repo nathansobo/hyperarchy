@@ -7,7 +7,10 @@ module Hyperarchy
     end
 
     get "/" do
-      redirect "/app#view=organization" and return if current_user
+      if current_user
+        redirect "/app#view=organization&organizationId=#{current_user.last_visited_organization.id}"
+        return
+      end
       render_page Views::Home
     end
 

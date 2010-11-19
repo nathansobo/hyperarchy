@@ -4,6 +4,7 @@ class Membership < Monarch::Model::Record
   column :invitation_id, :key
   column :role, :string, :default => "member"
   column :pending, :boolean, :default => true
+  column :last_visited, :datetime
 
   synthetic_column :first_name, :string
   synthetic_column :last_name, :string
@@ -58,6 +59,8 @@ class Membership < Monarch::Model::Record
   end
 
   def before_create
+    self.last_visited = Time.now
+
     if user = User.find(:email_address => email_address)
       self.user = user
     else

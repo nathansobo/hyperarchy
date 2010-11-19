@@ -60,4 +60,8 @@ class User < Monarch::Model::Record
     validation_error(:email_address, "You must enter an email address.") if email_address.blank?
     validation_error(:encrypted_password, "You must enter a password.") if encrypted_password.blank?
   end
+
+  def last_visited_organization
+    memberships.order_by(Membership[:last_visited].desc).first.organization
+  end
 end
