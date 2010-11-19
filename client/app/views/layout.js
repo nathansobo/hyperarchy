@@ -185,7 +185,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     goToLastOrganization: function() {
-      var organizationId = this.lastOrganizationId || Organization.global().id()
+      var organizationId = Application.currentUser().lastVisitedOrganization().id();
       $.bbq.pushState({view: "organization", organizationId: organizationId }, 2);
     }
   }

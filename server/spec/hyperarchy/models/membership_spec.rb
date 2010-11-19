@@ -83,7 +83,7 @@ module Models
 
     describe "security" do
       describe "#can_create?, #can_update?, #can_destroy?" do
-        it "only allows admins and organization owners to modify memberships" do
+        it "only allows admins, organization owners to modify memberships. the members themselves can update only the last_visited column" do
           organization = Organization.make
           member = make_member(organization)
           owner = make_owner(organization)
@@ -95,8 +95,11 @@ module Models
 
           set_current_user(member)
           new_membership.can_create?.should be_false
-          membership.can_update?.should be_false
+          membership.can_update?.should be_true
           membership.can_destroy?.should be_false
+          membership.can_update_columns?([:role]).should be_false
+          membership.can_update_columns?([:last_visited]).should be_true
+
 
           set_current_user(owner)
           new_membership.can_create?.should be_true

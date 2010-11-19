@@ -19,19 +19,26 @@ class Membership < Monarch::Model::Record
   delegate :email_address, :first_name, :last_name, :to => :user_details_delegate
 
 
-  def can_mutate?
+  def current_user_is_admin_or_organization_owner?
     current_user.admin? || organization.has_owner?(current_user)
   end
-  alias can_create? can_mutate?
-  alias can_update? can_mutate?
-  alias can_destroy? can_mutate?
+  alias can_create? current_user_is_admin_or_organization_owner?
+  alias can_destroy? current_user_is_admin_or_organization_owner?
+
+  def can_update?
+    current_user_is_admin_or_organization_owner? || user == current_user
+  end
 
   def create_whitelist
     [:organization_id, :user_id, :role, :first_name, :last_name, :email_address]
   end
 
   def update_whitelist
-    [:role]
+    if current_user_is_admin_or_organization_owner?
+      [:role, :last_visited]
+    else
+      [:last_visited]
+    end
   end
 
   def organization_ids

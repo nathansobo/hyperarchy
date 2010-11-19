@@ -66,8 +66,9 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     organizationId: {
       afterChange: function(organizationId) {
-        $("#application").view().lastOrganizationId = organizationId;
         Application.currentOrganizationId(organizationId);
+        var membership = this.organization().membershipForCurrentUser();
+        if (membership) membership.update({lastVisited: new Date()});
         
         this.subscriptions.destroy();
         this.subscriptions.add(this.organization().field('name').onUpdate(function(newName) {
