@@ -78,6 +78,7 @@ module Hyperarchy
       new_user = invitation.redeem(params[:user])
       if new_user.valid?
         warden.set_user(new_user)
+        session.delete(:invitation_code)
         redirect "/app#view=organization&organizationId=#{new_user.organizations.first.id}"
       else
         flash[:errors] = new_user.validation_errors

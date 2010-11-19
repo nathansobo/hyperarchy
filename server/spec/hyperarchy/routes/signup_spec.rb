@@ -127,6 +127,7 @@ describe "/signup", :type => :rack do
             dont_allow(Organization).create!
 
             post "/signup", :user => user_attributes
+            session.should_not have_key(:invitation_code)
 
             current_user.should_not be_nil
             current_user.should be_persisted
@@ -159,9 +160,10 @@ describe "/signup", :type => :rack do
       end
 
       context "if the invitation has been already redeemed" do
-        it "redirects to /login without creating a user" do
+        it "redirects to /login without creating a user, sets :already_redeemed in the flash and clears the invitation_code from the session" do
           invitation.update!(:redeemed => true)
           post "/signup", :user => user_attributes
+          session.should_not have_key(:invitation_code)
 
           last_response.should be_redirect
           last_response.location.should == "/login"
