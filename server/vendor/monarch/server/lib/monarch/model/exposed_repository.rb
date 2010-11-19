@@ -108,7 +108,7 @@ module Monarch
         record.soft_update_fields(field_values)
 
         unless record.can_update? && record.can_update_columns?(field_values.keys)
-          raise Monarch::Unauthorized
+          raise Monarch::Unauthorized, "Not allowed to perform update: #{table_name}, #{id}, #{field_values.inspect}"
         end
 
         if record.save
