@@ -16,7 +16,7 @@ class Deployment
     git :reset, "--hard", ref
     source ".rvmrc" if rvmrc_changed?(old_ref, new_ref)
     bundle :install if gemfile_changed?(old_ref, new_ref)
-    god :unmonitor, "hyperarchy_#{env}"
+    sudo :monit, :unmonitor, "hyperarchy_#{env}"
     thor "deploy:target:display_maintenance_page"
     git :clean, "-df"
     thor "server:stop", env
@@ -24,14 +24,22 @@ class Deployment
     thor "deploy:target:copy_assets"
     thor "deploy:target:minify_js", env
     thor "server:start", env
-    god :monitor, "hyperarchy_#{env}"
+    sudo :monit, :monitor, "hyperarchy_#{env}"
     thor "deploy:target:remove_maintenance_page"
   end
 
   def deploy_global_config
     system("rsync -ave ssh #{HYPERARCHY_ROOT}/global_config hyperarchy@hyperarchy.com:")
-    god :load, "/home/hyperarchy/global_config/hyperarchy.god"
+    reload_monit_config
     reload_nginx_config
+  end
+
+  def reload_monit_config
+    if sudo :monit, "-t"
+      sudo :monit, :reload
+    else
+      puts "syntax error in monit config. did not attempt to load it."
+    end
   end
 
   def reload_nginx_config
