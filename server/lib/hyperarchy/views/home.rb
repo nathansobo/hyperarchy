@@ -71,7 +71,7 @@ module Views
             }, 4000);
           }
 
-          mpmetrics.track('view home page');
+          mpq.push(['track', 'view home page']);
         });
       ]
     end

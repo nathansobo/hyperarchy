@@ -2,6 +2,18 @@ module Views
   class Layout < Erector::Widget
     include Monarch::Util::BuildRelationalDataset
 
+    GOOGLE_ANALYTICS_CODES = {
+      "production" => 'UA-19678731-1',
+      "demo" => 'UA-19678731-2',
+      "development" => 'UA-19678731-3'
+    }
+
+    MIXPANEL_CODES = {
+      "production" => 'f75e7802da27692104957ff1af6c2847',
+      "demo" => 'dbf5ec251d715d9fc674a01c9db17ebd',
+      "development" => 'a946479bf02e338e4da47b2f0fac1fec'
+    }
+
     def content
       html do
         head do
@@ -36,20 +48,12 @@ module Views
     end
 
     def google_analytics_javascript
-#      return unless RACK_ENV =~ /^(production|demo)$/
-      property_id = case RACK_ENV
-        when 'production'
-          'UA-19678731-1'
-        when 'demo'
-          'UA-19678731-2'
-        when 'development'
-          'UA-19678731-3'
-        end
+#      return unless RACK_ENV == "production"
 
       javascript %[
         var trackPageviewManually = #{track_pageview_manually.inspect};
         var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', '#{property_id}']);
+        _gaq.push(['_setAccount', '#{GOOGLE_ANALYTICS_CODES[RACK_ENV]}']);
         _gaq.push(['_setAllowAnchor', true]);
         if (!trackPageviewManually) _gaq.push(['_trackPageview']);
 
@@ -66,11 +70,20 @@ module Views
     end
 
     def mixpanel_javascript
-      if RACK_ENV == 'production'
-        javascript %[var mp_protocol = (('https:' == document.location.protocol) ? 'https://' : 'http://'); document.write(unescape('%3Cscript src="' + mp_protocol + 'api.mixpanel.com/site_media/js/api/mixpanel.js" type="text/javascript"%3E%3C/script%3E')); </script> <script type='text/javascript'> try {  var mpmetrics = new MixpanelLib('f75e7802da27692104957ff1af6c2847'); } catch(err) { null_fn = function () {}; var mpmetrics = {  track: null_fn,  track_funnel: null_fn,  register: null_fn,  register_once: null_fn, register_funnel: null_fn }; }]
-      else
-        javascript %[null_fn = function () {}; var mpmetrics = {  track: null_fn,  track_funnel: null_fn,  register: null_fn,  register_once: null_fn, register_funnel: null_fn };]
-      end
+#      unless RACK_ENV == "production"
+#        javascript %[ var mpq = []; ]
+#        return
+#      end
+
+      javascript %[
+        var mpq = [];
+        mpq.push(["init", "#{MIXPANEL_CODES[RACK_ENV]}"]);
+        (function() {
+          var mp = document.createElement("script"); mp.type = "text/javascript"; mp.async = true;
+          mp.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + "//api.mixpanel.com/site_media/js/api/mixpanel.js";
+          var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(mp, s);
+        })();
+      ]
     end
 
     def javascript(text=nil, &block)

@@ -46,7 +46,7 @@ module Views
             $("#loginForm input[name='password']").focus();
           }
 
-          mpmetrics.track('view login page');
+          mpq.push(['track', 'view login page']);
         });
       ]
     end

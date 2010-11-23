@@ -112,11 +112,7 @@ module Views
 
         $(function() {
           $("input[value='']:first").focus();
-          if (hasInvitation) {
-            mpmetrics.track('view signup page');
-          } else {
-            mpmetrics.track('view interested page');
-          }
+          mpq.push(['track', 'view signup page', {hasInvitation: hasInvitation}]);
         });
       ]
     end

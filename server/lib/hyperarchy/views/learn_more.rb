@@ -73,5 +73,13 @@ module Views
         div :class => "clear"
       end
     end
+
+    def head_content
+      javascript %[
+        $(function() {
+          mpq.push(['track', 'view learn more page']);
+        });
+      ]
+    end
   end
 end
