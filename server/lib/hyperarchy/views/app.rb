@@ -1,5 +1,9 @@
 module Views
   class App < Views::Layout
+    def track_pageview_manually
+      true
+    end
+
     def below_body_content
       application_javascript_tags
       javascript %[

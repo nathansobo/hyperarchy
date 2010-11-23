@@ -10,6 +10,7 @@ module Views
           link :rel => "shortcut icon", :href => "/images/icon.png"
 
           head_content
+          google_analytics_javascript
         end
 
         body :id => self.class.basename.underscore do
@@ -32,6 +33,35 @@ module Views
 
     def store_in_repository(dataset)
       %{Repository.update(#{build_relational_dataset(dataset).to_json});}
+    end
+
+    def google_analytics_javascript
+#      return unless RACK_ENV =~ /^(production|demo)$/
+      property_id = case RACK_ENV
+        when 'production'
+          'UA-19678731-1'
+        when 'demo'
+          'UA-19678731-2'
+        when 'development'
+          'UA-19678731-3'
+        end
+
+      javascript %[
+        var trackPageviewManually = #{track_pageview_manually.inspect};
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '#{property_id}']);
+        if (!trackPageviewManually) _gaq.push(['_trackPageview']);
+
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+      ]
+    end
+
+    def track_pageview_manually
+      false
     end
 
     def mixpanel_javascript
