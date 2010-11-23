@@ -6,7 +6,12 @@ set mailserver smtp.gmail.com port 587
     using tlsv1
     with timeout 30 seconds
 
-set alert admin+monit@hyperarchy.com
+set alert admin+monit@hyperarchy.com not {action}
+set alert 4159946841@txt.att.net not {instance, action} with mail-format {
+  from: admin@hyperarchy.com
+  subject: Monit Alert
+  message: $SERVICE $EVENT at $DATE on $HOST
+}
 
 set httpd port 2812 and
     use address localhost
