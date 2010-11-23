@@ -50,6 +50,7 @@ module Views
         var trackPageviewManually = #{track_pageview_manually.inspect};
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', '#{property_id}']);
+        _gaq.push(['_setAllowAnchor', true]);
         if (!trackPageviewManually) _gaq.push(['_trackPageview']);
 
         (function() {

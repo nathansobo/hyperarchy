@@ -53,6 +53,7 @@ _.constructor("Monarch.View.Template", {
         if ((this.viewName && state.view == this.viewName) || (this.defaultView && !state.view)) {
           this.show();
           if (_.isFunction(this.navigate)) this.navigate(state);
+          if (_gaq) _gaq.push(['_trackPageview', window.location.href]);
         } else {
           this.hide();
         }
