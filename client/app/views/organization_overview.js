@@ -178,5 +178,5 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     }
   },
 
-  welcomeBlurbText: "<strong>Thanks for trying out Hyperarchy.</strong> This is the Alpha Testers group, where you can interact with everyone else we have invited. You can create and access your own private groups from the <em>Organizations</em> menu above. If you have any ideas or concerns, please raise them here so everyone can vote on them. But feel free to raise questions about anything in this group&mdash;they don't need to relate to Hyperarchy directly. Looking forward to your feedback!"
+  welcomeBlurbText: "<strong>Welcome to Hyperarchy.</strong> This is a private discussion area for your organization. Start by raising a question and adding a few answers. Then you can invite people to vote from the <em>Admin</em> menu at the top of the page."
 });
