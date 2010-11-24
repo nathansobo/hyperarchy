@@ -11,11 +11,11 @@ _.constructor("Views.EditOrganization", View.Template, {
               e.preventDefault();
             }
           })
-          .keyup('disableOrEnableSaveButton');
+          .keyup('enableOrDisableSaveButton');
         label({'for': "description"}, "Description (Optional)");
         textarea({name: "description", 'class': "text"})
           .ref('descriptionField')
-          .keyup('disableOrEnableSaveButton');
+          .keyup('enableOrDisableSaveButton');
         button("Save Changes")
           .ref('saveChangesButton')
           .click('saveOrganization');
@@ -37,13 +37,17 @@ _.constructor("Views.EditOrganization", View.Template, {
         div({'class': "addMember"}, function() {
           input({'class': "name", type: "text", placeholder: "First Name"}).ref('createMembershipFirstName');
           input({'class': "name", type: "text", placeholder: "Last Name"}).ref('createMembershipLastName');
-          input({'class': "emailAddress", type: "text", placeholder: "Email Address"}).ref('createMembershipEmail');
+          input({'class': "emailAddress", type: "text", placeholder: "Email Address"})
+            .keyup('enableOrDisableCreateMembership')
+            .ref('createMembershipEmail');
           select(function() {
             option({value: "member"}, "Member");
             option({value: "owner"}, "Owner");
           }).ref("createMembershipRole");
-          button("Add").click('createMembership');
-        });
+          button({disabled: true}, "Add")
+            .ref('createMembershipButton')
+            .click('createMembership');
+        }).ref('addMemberSection');
 
         table({'class': "members"}, function() {
           thead(function() {
@@ -79,6 +83,13 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.defer(function() {
         this.find('textarea').elastic();
       });
+
+      this.addMemberSection.find('input,select').keyup(this.bind(function(e) {
+        if (e.keyCode === 13) {
+          if (this.createMembershipButton.is(":enabled")) this.createMembership();
+          e.preventDefault();
+        }
+      }));
     },
 
     navigate: function(state) {
@@ -109,6 +120,8 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.createMembershipFirstName.val("");
       this.createMembershipLastName.val("");
       this.createMembershipEmail.val("");
+      this.enableOrDisableCreateMembership();
+      this.createMembershipFirstName.focus();
     },
 
     saveOrganization: function() {
@@ -119,7 +132,15 @@ _.constructor("Views.EditOrganization", View.Template, {
       }, this);
     },
 
-    disableOrEnableSaveButton: function() {
+    enableOrDisableCreateMembership: function() {
+      if (this.createMembershipEmail.val().match(/.+@.+\..+/)) {
+        this.createMembershipButton.attr('disabled', false);
+      } else {
+        this.createMembershipButton.attr('disabled', true);
+      }
+    },
+
+    enableOrDisableSaveButton: function() {
       var valuesDiffer =
         this.nameField.val() !== this.model().name() ||
           this.descriptionField.val() !== this.model().description();
