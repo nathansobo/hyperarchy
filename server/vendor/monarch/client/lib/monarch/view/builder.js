@@ -54,8 +54,13 @@ _.constructor("Monarch.View.Builder", {
 
   subview: function() {
     var args = this.parseSubviewArguments(arguments);
+    var tagName = 'div';
+    if (args.properties && args.properties.placeholderTag) {
+      tagName = args.properties.placeholderTag;
+      delete args.properties.placeholderTag;
+    }
 
-    this.div().onBuild(function(element, view) {
+    this.tag(tagName).onBuild(function(element, view) {
       var subview = args.template.toView(jQuery.extend({parentView: view}, args.properties));
       if (args.collectionName) {
         if (!view[args.collectionName]) view[args.collectionName] = {};

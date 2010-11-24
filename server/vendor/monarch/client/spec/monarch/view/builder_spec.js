@@ -265,8 +265,8 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
-      context("when given a hash name and an index", function() {
-        it("assigns the subview to an index on a hash with the given name, creating it if it doesn't exist", function() {
+      context("when given a collection name and a key", function() {
+        it("assigns the subview to a key on a hash with the given collection name, creating it if it doesn't exist", function() {
           builder.div({id: "root"}, function() {
             builder.subview("subviews", "one", ExampleSubviewTemplate, { subviewNumber: 1});
             builder.subview("subviews", "two", ExampleSubviewTemplate, { subviewNumber: 2});
@@ -277,6 +277,40 @@ Screw.Unit(function(c) { with(c) {
           expect(view.subviews.two.subviewNumber).to(eq, 2);
         });
       });
+
+      context("when given placeholderTag as an option", function() {
+        before(function() {
+          _.constructor("ExampleSubviewTemplate", Monarch.View.Template, {
+            content: function(props) { with (this.builder) {
+              tbody({'class': "subview"}, function() {
+                tr(function() {
+                  td("row 1");
+                });
+              });
+            }}
+          });
+        });
+
+        it("uses the given placeholder tag instead of the default div (which is useful for making a 'tbody' subview)", function() {
+          with(builder) {
+            table(function() {
+              thead(function() {
+                tr(function() {
+                  th("The heading");
+                })
+              });
+
+              subview('myTbody', ExampleSubviewTemplate, {
+                placeholderTag: "tbody"
+              });
+            });
+          }
+
+          var view = builder.toView();
+          expect(view.find("td").length).toNot(eq, 0);
+          expect(view.placeholderTag).to(beUndefined);
+        });
+      })
     });
 
     describe("#tag", function() {
