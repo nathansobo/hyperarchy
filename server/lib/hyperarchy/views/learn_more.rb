@@ -75,6 +75,8 @@ module Views
     end
 
     def head_content
+      javascript_include "underscore", "jquery-1.4.2"
+      
       javascript %[
         $(function() {
           mpq.push(['track', 'view learn more page']);
