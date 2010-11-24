@@ -6,7 +6,7 @@ Screw.Unit(function(c) { with(c) {
 
     before(function() {
       view = Views.SortedList.toView({
-        buildLi: function(candidate) {
+        buildElement: function(candidate) {
           return $("<li>" + candidate.body() + "</li>");
         }
       });

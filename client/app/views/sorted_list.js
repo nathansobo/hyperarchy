@@ -1,7 +1,8 @@
 _.constructor("Views.SortedList", View.Template, {
   content: function(params) {
-    var olAttributes = params.olAttributes || {};
-    this.builder.ol(olAttributes);
+    var rootTag = params.rootTag || "ol";
+    var rootAttributes = params.rootAttributes || {};
+    this.builder.tag(rootTag, rootAttributes);
   },
 
   viewProperties: {
@@ -54,7 +55,7 @@ _.constructor("Views.SortedList", View.Template, {
       if (this.lisById[id]) {
         return this.lisById[id].detach();
       } else {
-        return this.lisById[id] = this.buildLi(record, index);
+        return this.lisById[id] = this.buildElement(record, index);
       }
     },
 

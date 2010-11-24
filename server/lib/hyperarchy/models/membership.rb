@@ -18,7 +18,6 @@ class Membership < Monarch::Model::Record
   attr_accessor :suppress_invite_email
   delegate :email_address, :first_name, :last_name, :to => :user_details_delegate
 
-
   def current_user_is_admin_or_organization_owner?
     current_user.admin? || organization.has_owner?(current_user)
   end
@@ -35,7 +34,7 @@ class Membership < Monarch::Model::Record
 
   def update_whitelist
     if current_user_is_admin_or_organization_owner?
-      [:role, :last_visited]
+      [:first_name, :last_name, :role, :last_visited]
     else
       [:last_visited]
     end

@@ -11,8 +11,8 @@ _.constructor("Views.ElectionLi", View.Template, {
 
         div({'class': "body"}, election.body()).ref('body');
         subview('candidatesList', Views.SortedList, {
-          olAttributes: {'class': "candidates"},
-          buildLi: function(candidate, index) {
+          rootAttributes: {'class': "candidates"},
+          buildElement: function(candidate, index) {
             return View.build(function(b) { with(b) {
               li(function() {
                 table(function() {

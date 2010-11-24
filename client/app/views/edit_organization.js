@@ -56,9 +56,13 @@ _.constructor("Views.EditOrganization", View.Template, {
             })
           });
 
-          tbody(function() {
-
-          }).ref("membersTbody");
+          subview('membersTbody', Views.SortedList, {
+            rootTag: 'tbody',
+            placeholderTag: 'tbody',
+            buildElement: function(membership) {
+              return Views.MembershipTr.toView({membership: membership});
+            }
+          });
         });
       });
     });
@@ -87,51 +91,11 @@ _.constructor("Views.EditOrganization", View.Template, {
       }, this);
     },
 
-    modelAssigned: function(model) {
+    modelAssigned: function(organization) {
+      Application.currentOrganizationId(organization.id());
       this.subscriptions.destroy();
       this.saveChangesButton.attr('disabled', true);
-      this.membersTbody.empty();
-      model.memberships().each(this.hitch('appendMembershipTr'));
-    },
-
-    appendMembershipTr: function(membership) {
-      var membershipTr = Monarch.View.build(function(b) {
-        b.tr(function() {
-          b.td(membership.fullName());
-          b.td(membership.emailAddress());
-          b.td({'class': "role"}, function() {
-            if (membership.user() !== Application.currentUser()) {
-              b.select(function() {
-                b.option({selected: membership.role() === "member", value: "member"}, "Member");
-                b.option({selected: membership.role() === "owner", value: "owner"}, "Owner");
-              }).change(function(view) {
-                view.roleChangePending.removeClass('inactive');
-                membership.update({role: this.val()}).onSuccess(function() {
-                  view.roleChangePending.addClass('inactive');
-                });
-              });
-              b.div({'class': "loading inactive"}).ref('roleChangePending');
-            } else {
-              b.text(_.capitalize(membership.role()));
-            }
-          });
-          b.td(membership.pending() ? "Pending" : "Accepted");
-          b.td({'class': "remove"}, function() {
-            if (membership.user() !== Application.currentUser()) {
-              b.a({href: "#"}, "Remove").click(function(view) {
-                view.destroyPending.removeClass('inactive');
-                membership.destroy().onSuccess(function() {
-                  membershipTr.remove();
-                }, this);
-                return false;
-              });
-              b.div({'class': "loading inactive"}).ref('destroyPending');
-            }
-          });
-        })
-      });
-
-      this.membersTbody.append(membershipTr);
+      this.membersTbody.relation(organization.memberships());
     },
 
     createMembership: function() {
@@ -140,7 +104,7 @@ _.constructor("Views.EditOrganization", View.Template, {
         lastName: this.createMembershipLastName.val(),
         emailAddress: this.createMembershipEmail.val(),
         role: this.createMembershipRole.val()
-      }).onSuccess(this.hitch('appendMembershipTr'));
+      });
 
       this.createMembershipFirstName.val("");
       this.createMembershipLastName.val("");

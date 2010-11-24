@@ -7,7 +7,7 @@ _.constructor("Organization", Model.Record, {
       });
 
       this.hasMany("elections", {orderBy: "updatedAt desc"});
-      this.hasMany("memberships");
+      this.hasMany("memberships", {orderBy: ["firstName asc", "emailAddress asc"]});
       this.relatesToMany("members", function() {
         return this.memberships().joinThrough(User);
       });

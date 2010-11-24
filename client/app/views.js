@@ -1,5 +1,6 @@
 //= require "views/add_organization"
 //= require "views/edit_organization"
+//= require "views/membership_tr"
 //= require "views/invite"
 //= require "views/layout"
 //= require "views/organization_overview"

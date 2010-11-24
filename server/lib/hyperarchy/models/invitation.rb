@@ -1,8 +1,8 @@
 class Invitation < Monarch::Model::Record
   column :guid, :string
   column :sent_to_address, :string
-  column :first_name, :string
-  column :last_name, :string
+  column :first_name, :string, :default => ""
+  column :last_name, :string, :default => ""
   column :redeemed, :boolean
   column :inviter_id, :key
   column :invitee_id, :key

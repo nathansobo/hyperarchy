@@ -7,7 +7,7 @@ _.constructor("Views.VotesList", View.Template, {
       }).ref('headerArea');
 
       subview('votes', Views.SortedList, {
-        buildLi: function(vote) {
+        buildElement: function(vote) {
           return Views.VoteLi.toView({vote: vote});
         },
         onRemoteInsert: function(vote, li) {

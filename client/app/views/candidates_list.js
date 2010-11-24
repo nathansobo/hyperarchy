@@ -4,8 +4,8 @@ _.constructor("Views.CandidatesList", View.Template, {
       div({'class': "candidatesListHeader"}, "Current Consensus");
 
       subview('candidatesList', Views.SortedList, {
-        olAttributes: { id: "candidates", 'class': "candidates" },
-        buildLi: function(candidate) {
+        rootAttributes: { id: "candidates", 'class': "candidates" },
+        buildElement: function(candidate) {
           return Views.UnrankedCandidateLi.toView({candidate: candidate});
         }
       });
