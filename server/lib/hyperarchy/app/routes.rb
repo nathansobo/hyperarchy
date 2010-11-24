@@ -7,14 +7,12 @@ module Hyperarchy
     end
 
     get "/" do
-      if current_user
-        redirect "/app#view=organization&organizationId=#{current_user.last_visited_organization.id}"
-        return
-      end
+      redirect_if_logged_in
       render_page Views::Home
     end
 
     get "/learn_more" do
+      redirect_if_logged_in
       render_page Views::LearnMore
     end
 
@@ -50,6 +48,7 @@ module Hyperarchy
     end
 
     get "/signup" do
+      redirect_if_logged_in
       if invitation_code = params[:invitation_code] || session[:invitation_code]
         invitation = validate_invitation_code(invitation_code)
         session[:invitation_code] = invitation_code
@@ -59,6 +58,7 @@ module Hyperarchy
     end
 
     post "/signup" do
+      redirect_if_logged_in
       if invitation_code = session[:invitation_code]
         invitation = validate_invitation_code(invitation_code)
       else

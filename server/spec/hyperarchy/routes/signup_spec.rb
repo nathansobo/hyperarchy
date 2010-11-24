@@ -3,6 +3,18 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 describe "/signup", :type => :rack do
   describe "GET /signup" do
 
+    context "if a user is already logged in" do
+      it "redirects them to their last-visited organization" do
+        org = Organization.make
+        user = make_member(org)
+        login_as(user)
+
+        get "/signup"
+        last_response.should be_redirect
+        last_response.location.should == "/app#view=organization&organizationId=#{org.id}"
+      end
+    end
+
     context "if an invitation code is specified" do
       attr_reader :invitation
 

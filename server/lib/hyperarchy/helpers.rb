@@ -18,6 +18,12 @@ module Hyperarchy
       halt
     end
 
+    def redirect_if_logged_in
+      return unless current_user
+      redirect "/app#view=organization&organizationId=#{current_user.last_visited_organization.id}"
+      halt
+    end
+
     def validate_invitation_code(invitation_code)
       invitation = Invitation.find(:guid => invitation_code)
       
