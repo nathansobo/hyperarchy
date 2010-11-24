@@ -31,14 +31,19 @@ module Hyperarchy
         flash[:invalid_invitation_code] = invitation_code
         session.delete(:invitation_code)
         redirect "/signup"
-        return false
+        halt
       end
 
       if invitation.redeemed?
         flash[:already_redeemed] = invitation_code
         session.delete(:invitation_code)
         redirect "/login"
-        return false
+        halt
+      end
+
+      if invitation.memberships.empty?
+        redirect "/"
+        halt
       end
 
       invitation

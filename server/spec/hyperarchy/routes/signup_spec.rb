@@ -30,6 +30,15 @@ describe "/signup", :type => :rack do
         end
       end
 
+      context "if the invitation is no longer associated with any memberships (because they were deleted)" do
+        it "redirects to /" do
+          invitation.memberships.each(&:destroy)
+          get "/signup", :invitation_code => invitation.guid
+          last_response.should be_redirect
+          last_response.location.should == "/"
+        end
+      end
+
       context "if the invitation code is not valid" do
         it "redirects to /signup with no query params, clears the invitation code in the session, and sets :invalid_invitation_code in the flash" do
           get "/signup", :invitation_code => "garbage"
