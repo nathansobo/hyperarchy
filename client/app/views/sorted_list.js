@@ -17,45 +17,45 @@ _.constructor("Views.SortedList", View.Template, {
         this.empty();
 
         relation.each(function(record, index) {
-          this.append(this.liForRecord(record, index));
+          this.append(this.elementForRecord(record, index));
         }, this);
 
         this.subscriptions.add(relation.onRemoteInsert(function(record, index) {
-          var li = this.liForRecord(record, index);
-          this.insertAtIndex(li, index);
-          if (this.onRemoteInsert) this.onRemoteInsert(record, li);
+          var element = this.elementForRecord(record, index);
+          this.insertAtIndex(element, index);
+          if (this.onRemoteInsert) this.onRemoteInsert(record, element);
         }, this));
 
         this.subscriptions.add(relation.onRemoteUpdate(function(record, changes, index) {
-          var li = this.liForRecord(record, index);
-          this.insertAtIndex(li, index);
-          if (this.onRemoteUpdate) this.onRemoteUpdate(li, record, changes, index);
+          var element = this.elementForRecord(record, index);
+          this.insertAtIndex(element, index);
+          if (this.onRemoteUpdate) this.onRemoteUpdate(element, record, changes, index);
         }, this));
 
         this.subscriptions.add(relation.onRemoteRemove(function(record, index) {
-          this.liForRecord(record, index).remove();
+          this.elementForRecord(record, index).remove();
         }, this));
       }
     },
 
-    insertAtIndex: function(li, index) {
-      li.detach();
+    insertAtIndex: function(element, index) {
+      element.detach();
       var insertBefore = this.find("> :eq(" + index + ")");
 
       if (insertBefore.length > 0) {
-        insertBefore.before(li);
+        insertBefore.before(element);
       } else {
-        this.append(li);
+        this.append(element);
       }
       this.updateIndices();
     },
 
-    liForRecord: function(record, index) {
+    elementForRecord: function(record, index) {
       var id = record.id();
-      if (this.lisById[id]) {
-        return this.lisById[id].detach();
+      if (this.elementsById[id]) {
+        return this.elementsById[id].detach();
       } else {
-        return this.lisById[id] = this.buildElement(record, index);
+        return this.elementsById[id] = this.buildElement(record, index);
       }
     },
 
@@ -72,12 +72,12 @@ _.constructor("Views.SortedList", View.Template, {
     },
 
     empty: function() {
-      if (this.lisById) {
-        _.each(this.lisById, function(li) {
-          li.remove();
+      if (this.elementsById) {
+        _.each(this.elementsById, function(element) {
+          element.remove();
         });
       }
-      this.lisById = {};
+      this.elementsById = {};
     }
   }
 });
