@@ -19,7 +19,7 @@ _.constructor("Views.EditOrganization", View.Template, {
         button("Save Changes")
           .ref('saveChangesButton')
           .click('saveOrganization');
-        div({'class': "loading", style: "display: none"}).ref('loading');
+        div({'class': "loading", style: "display: none"}).ref('creatingMembership');
       });
 
       div({'class': "grid7"}, function() {
@@ -47,6 +47,7 @@ _.constructor("Views.EditOrganization", View.Template, {
           button({disabled: true}, "Add")
             .ref('createMembershipButton')
             .click('createMembership');
+          div({'class': "loading", style: "display: none"}).ref('loading');
         }).ref('addMemberSection');
 
         table({'class': "members"}, function() {
@@ -110,12 +111,15 @@ _.constructor("Views.EditOrganization", View.Template, {
     },
 
     createMembership: function() {
+      this.creatingMembership.show();
       this.model().memberships().create({
         firstName: this.createMembershipFirstName.val(),
         lastName: this.createMembershipLastName.val(),
         emailAddress: this.createMembershipEmail.val(),
         role: this.createMembershipRole.val()
-      });
+      }).onSuccess(function() {
+        this.creatingMembership.hide();
+      }, this);
 
       this.createMembershipFirstName.val("");
       this.createMembershipLastName.val("");

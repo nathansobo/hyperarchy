@@ -1368,6 +1368,11 @@ button {
     width: 150px; }
   #app #editOrganization div.addMember input.emailAddress {
     width: 250px; }
+  #app #editOrganization div.addMember div.loading {
+    display: inline-block;
+    position: relative;
+    top: 5px;
+    left: 5px; }
 #app #editOrganization table.members {
   width: 100%; }
   #app #editOrganization table.members th {
