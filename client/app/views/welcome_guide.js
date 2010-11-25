@@ -63,16 +63,19 @@ _.constructor("Views.WelcomeGuide", View.Template, {
 
     organization: {
       afterChange: function(organization) {
-        this.determineStep();
-        var stateChangeRelations = [
+        var keyRelations = [
           organization.elections(),
           organization.candidates(),
           organization.votes(),
           organization.memberships()
         ];
-        _.each(stateChangeRelations, function(relation) {
-          relation.onRemoteInsert(this.hitch('determineStep'));
-          relation.onRemoteRemove(this.hitch('determineStep'));
+
+        Server.fetch(keyRelations).onSuccess(function() {
+          this.determineStep();
+          _.each(keyRelations, function(relation) {
+            relation.onRemoteInsert(this.hitch('determineStep'));
+            relation.onRemoteRemove(this.hitch('determineStep'));
+          }, this);
         }, this);
       }
     },
@@ -101,7 +104,7 @@ _.constructor("Views.WelcomeGuide", View.Template, {
           this.setStep(4, "B");
         }
       } else {
-        throw new Error("This shouldn't be visible ahhh!");
+        this.hide();
       }
     },
 
