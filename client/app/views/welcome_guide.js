@@ -1,6 +1,6 @@
 _.constructor("Views.WelcomeGuide", View.Template, {
   content: function() { with(this.builder) {
-    div({'class': "grid12"}, function() {
+    div({'class': "grid12", style: "display: none;"}, function() {
       table({id: "welcomeGuide", 'class': "dropShadow"}, function() {
         thead(function() {
           tr(function() {
@@ -45,6 +45,9 @@ _.constructor("Views.WelcomeGuide", View.Template, {
                 div({'class': "step"}, function() {
                   h2("Go To Edit Organization To Invite Your Team");
                 }).ref("step4B");
+                div({'class': "step"}, function() {
+                  h2("Done");
+                }).ref("step5");
               });
             });
           });
@@ -57,12 +60,18 @@ _.constructor("Views.WelcomeGuide", View.Template, {
     initialize: function() {
       Application.welcomeGuide = this;
       this.find(".step").hide();
-      this.step1A.show();
       $(window).bind('hashchange', this.hitch('determineStep'));
     },
 
     organization: {
       afterChange: function(organization) {
+        if (organization.dismissedWelcomeGuide() || Application.currentUser().dismissedWelcomeGuide()) {
+          this.hide();
+          return;
+        } else {
+          this.show();
+        }
+
         var keyRelations = [
           organization.elections(),
           organization.candidates(),
@@ -104,7 +113,11 @@ _.constructor("Views.WelcomeGuide", View.Template, {
           this.setStep(4, "B");
         }
       } else {
-        this.finish();
+        if ($.bbq.getState().view == "editOrganization") {
+          this.setStep(5, "");
+        } else {
+          this.finish();
+        }
       }
     },
 
@@ -134,6 +147,7 @@ _.constructor("Views.WelcomeGuide", View.Template, {
     finish: function() {
       this.hide();
       $(window).trigger('resize');
+      Server.post("/dismiss_welcome_guide", {organization_id: this.organization().id()});
     },
 
     raiseQuestionClicked: function() {

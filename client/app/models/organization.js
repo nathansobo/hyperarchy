@@ -3,7 +3,8 @@ _.constructor("Organization", Model.Record, {
     initialize: function() {
       this.columns({
         name: "string",
-        description: "string"
+        description: "string",
+        dismissedWelcomeGuide: 'boolean'
       });
 
       this.hasMany("elections", {orderBy: "updatedAt desc"});

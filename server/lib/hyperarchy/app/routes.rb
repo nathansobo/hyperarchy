@@ -145,6 +145,13 @@ module Hyperarchy
       successful_json_response
     end
 
+    post "/dismiss_welcome_guide" do
+      organization = Organization.find(params[:organization_id])
+      organization.update!(:dismissed_welcome_guide => true)
+      current_user.update!(:dismissed_welcome_guide => true)
+      successful_json_response
+    end
+
     post "/subscribe_to_organization/:id" do |organization_id|
       organization = Organization.find(organization_id)
       SubscriptionManager.subscribe_to_organization(current_real_time_client, organization)

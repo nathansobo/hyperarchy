@@ -5,7 +5,8 @@ _.constructor("User", Model.Record, {
       lastName: 'string',
       emailAddress: 'string',
       admin: 'boolean',
-      dismissedWelcomeBlurb: 'boolean'
+      dismissedWelcomeBlurb: 'boolean',
+      dismissedWelcomeGuide: 'boolean'
     });
 
     this.hasMany('rankings');
