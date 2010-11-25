@@ -1035,7 +1035,7 @@ button {
     background-repeat: no-repeat;
     background-position: right; }
   #app #header .dropdownMenu {
-    z-index: 1;
+    z-index: 100;
     position: absolute;
     background: white;
     border: 1px solid #cccccc;
@@ -1053,6 +1053,64 @@ button {
   #app #header #logo {
     margin: 5px 0px;
     cursor: pointer; }
+
+#welcomeGuide {
+  width: 100%;
+  margin-bottom: 30px;
+  position: relative; }
+  #welcomeGuide thead tr {
+    height: 42px; }
+    #welcomeGuide thead tr th {
+      width: 256px;
+      height: 24;
+      background-image: url(/images/welcome_wizard_sprites.png);
+      position: absolute;
+      font-size: 20px;
+      padding: 9px 0;
+      text-align: center;
+      color: white;
+      letter-spacing: 1px; }
+      #welcomeGuide thead tr th.pending {
+        background-position-y: -100px;
+        color: #343434; }
+      #welcomeGuide thead tr th.done {
+        background-position-y: -50px; }
+      #welcomeGuide thead tr th#gloss {
+        width: 936;
+        height: 20;
+        top: 2px;
+        left: 2px;
+        z-index: 5;
+        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1)));
+        background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%); }
+      #welcomeGuide thead tr th#step1 {
+        left: 0px;
+        z-index: 4;
+        padding-right: 12px;
+        width: 244; }
+      #welcomeGuide thead tr th#step2 {
+        left: 235px;
+        z-index: 3; }
+      #welcomeGuide thead tr th#step3 {
+        left: 470;
+        z-index: 2; }
+      #welcomeGuide thead tr th#step4 {
+        padding-left: 5px;
+        left: 705;
+        background-position-x: -300px;
+        z-index: 1;
+        width: 230; }
+  #welcomeGuide td#currentStep {
+    background: #343434;
+    padding: 0 2px 2px 2px; }
+    #welcomeGuide td#currentStep > div {
+      padding: 25px;
+      background: white; }
+      #welcomeGuide td#currentStep > div h2 {
+        margin-bottom: 10px; }
+      #welcomeGuide td#currentStep > div div.stepDescription {
+        font-size: 20px;
+        margin-bottom: 20px; }
 
 #app #organizationOverview #organizationHeader {
   margin-bottom: 30px; }

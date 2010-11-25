@@ -1,0 +1,84 @@
+#welcomeGuide {
+  width: 100%;
+  margin-bottom: 30px;
+  position: relative;
+
+  thead tr {
+    height: 42px;
+
+    th {
+      width: 256px;
+      height: 42 - (9 * 2);
+      background-image: url(/images/welcome_wizard_sprites.png);
+      position: absolute;
+      font-size: 20px;
+      padding: 9px 0;
+      text-align: center;
+      color: white;
+      letter-spacing: 1px;
+
+      &.pending {
+        background-position-y: -100px;
+        color: #343434;
+      }
+
+      &.done {
+        background-position-y: -50px;
+      }
+
+      &#gloss {
+        width: 940 - (2 * 2);
+        height: 42 - (9 * 2) - (2 * 2);
+        top: 2px;
+        left: 2px;
+        z-index: 5;
+        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .5)), color-stop(0.5, rgba(255, 255, 255, .2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, .1)));
+        background: -moz-linear-gradient(top, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, .1) 100%);
+      }
+
+      &#step1 {
+        left: 0px;
+        z-index: 4;
+        padding-right: 12px;
+        width: 256 - 12;
+      }
+
+      &#step2 {
+        left: 235px;
+        z-index: 3;
+      }
+
+      &#step3 {
+        left: 235 * 2;
+        z-index: 2;
+      }
+
+      &#step4 {
+        padding-left: 5px;
+        left: 235 * 3;
+        background-position-x: -300px;
+        z-index: 1;
+        width: 235 - 5;
+      }
+    }
+  }
+
+  td#currentStep {
+    background: #343434;
+    padding: 0 2px 2px 2px;
+
+    > div {
+      padding: 25px;
+      background: white;
+
+      h2 {
+        margin-bottom: 10px;
+      }
+
+      div.stepDescription {
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
+    }
+  }
+}

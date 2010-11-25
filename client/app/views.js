@@ -3,6 +3,7 @@
 //= require "views/membership_tr"
 //= require "views/invite"
 //= require "views/layout"
+//= require "views/welcome_guide"
 //= require "views/organization_overview"
 //= require "views/election_overview"
 //= require "views/votes_list"

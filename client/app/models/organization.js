@@ -7,6 +7,13 @@ _.constructor("Organization", Model.Record, {
       });
 
       this.hasMany("elections", {orderBy: "updatedAt desc"});
+      this.relatesToMany("candidates", function() {
+        return this.elections().joinThrough(Candidate);
+      });
+      this.relatesToMany("votes", function() {
+        return this.elections().joinThrough(Vote);
+      });
+
       this.hasMany("memberships", {orderBy: ["firstName asc", "emailAddress asc"]});
       this.relatesToMany("members", function() {
         return this.memberships().joinThrough(User);

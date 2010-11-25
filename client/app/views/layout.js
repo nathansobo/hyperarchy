@@ -28,7 +28,6 @@ _.constructor("Views.Layout", View.Template, {
               $("<form action='/logout' method='post'>").appendTo($("body")).submit();
             });
             a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
-//            a({'class': "invite headerItem", href: "#view=invite"}, "Invite");
 
             a({'class': "headerItem dropdownLink", href: "#"}, "Admin")
               .ref('adminMenuLink')
@@ -48,6 +47,7 @@ _.constructor("Views.Layout", View.Template, {
             }).ref('organizationsMenu');
           });
         });
+        subview("welcomeGuide", Views.WelcomeGuide);
       }).ref('body');
     })
   }},

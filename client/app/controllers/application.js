@@ -27,9 +27,14 @@ _.constructor("Controllers.Application", {
     return User.find(this.currentUserId);
   },
 
+  currentOrganization: function() {
+    return Organization.find(this.currentOrganizationId());
+  },
+
   currentOrganizationId: {
     afterChange: function(organizationId) {
       Server.post("/subscribe_to_organization/" + organizationId, { real_time_client_id: Server.realTimeClientId() });
+      this.welcomeGuide.organization(this.currentOrganization());
     }
   }
 });

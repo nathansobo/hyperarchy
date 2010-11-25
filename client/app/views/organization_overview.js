@@ -69,7 +69,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         Application.currentOrganizationId(organizationId);
         var membership = this.organization().membershipForCurrentUser();
         if (membership) membership.update({lastVisited: new Date()});
-        if (membership.role() !== "owner") this.welcomeBlurb.hide();
+        if (membership && membership.role() !== "owner") this.welcomeBlurb.hide();
         
         this.subscriptions.destroy();
         this.subscriptions.add(this.organization().field('name').onUpdate(function(newName) {
@@ -147,6 +147,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     showCreateElectionForm: function(elt, e) {
+      Application.welcomeGuide.raiseQuestionClicked();
       this.createElectionForm.show();
       this.showCreateElectionFormButton.hide();
       this.createElectionInput.focus();
