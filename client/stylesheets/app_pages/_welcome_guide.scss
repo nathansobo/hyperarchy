@@ -18,12 +18,12 @@
       letter-spacing: 1px;
 
       &.pending {
-        background-position-y: -100px;
-        color: #343434;
+        background-position-y: -50px;
       }
 
       &.done {
-        background-position-y: -50px;
+        background-position-y: -100px;
+        color: #343434;
       }
 
       &#gloss {

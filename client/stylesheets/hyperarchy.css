@@ -1071,10 +1071,10 @@ button {
       color: white;
       letter-spacing: 1px; }
       #welcomeGuide thead tr th.pending {
+        background-position-y: -50px; }
+      #welcomeGuide thead tr th.done {
         background-position-y: -100px;
         color: #343434; }
-      #welcomeGuide thead tr th.done {
-        background-position-y: -50px; }
       #welcomeGuide thead tr th#gloss {
         width: 936;
         height: 20;

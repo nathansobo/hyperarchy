@@ -104,7 +104,7 @@ _.constructor("Views.WelcomeGuide", View.Template, {
           this.setStep(4, "B");
         }
       } else {
-        this.hide();
+        this.finish();
       }
     },
 
@@ -123,10 +123,17 @@ _.constructor("Views.WelcomeGuide", View.Template, {
           header.removeClass('done').addClass('pending');
         }
       }
+
+      $(window).trigger('resize');
     },
 
     stepHeader: function(step) {
       return this['step' + step + 'Header'];
+    },
+
+    finish: function() {
+      this.hide();
+      $(window).trigger('resize');
     },
 
     raiseQuestionClicked: function() {
