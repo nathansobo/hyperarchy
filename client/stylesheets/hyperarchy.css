@@ -1109,8 +1109,7 @@ button {
       #welcomeGuide td#currentStep > div h2 {
         margin-bottom: 10px; }
       #welcomeGuide td#currentStep > div div.stepDescription {
-        font-size: 20px;
-        margin-bottom: 20px; }
+        font-size: 20px; }
 
 #app #organizationOverview #organizationHeader {
   margin-bottom: 30px; }

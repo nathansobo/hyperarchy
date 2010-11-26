@@ -23,7 +23,7 @@ _.constructor("Views.EditOrganization", View.Template, {
       });
 
       div({'class': "grid7"}, function() {
-        a({'class': "glossyBlack roundedButton", id: "overviewLink"}, "View Questions")
+        a({'class': "glossyBlack roundedButton", id: "overviewLink"}, "Back To Questions")
           .ref('overviewLink')
           .click(function(view, e) {
             $.bbq.pushState({view: "organization", organizationId: view.model().id()});
@@ -31,7 +31,7 @@ _.constructor("Views.EditOrganization", View.Template, {
           });
       });
 
-      div({'class': "grid12"}, function() {
+      div({id: "editOrganizationMembers", 'class': "grid12"}, function() {
         label("Members");
 
         div({'class': "addMember"}, function() {
