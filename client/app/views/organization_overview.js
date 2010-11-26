@@ -2,11 +2,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizationOverview"}, function() {
       div({'class': "top grid12"}, function() {
-        div({id: "welcomeBlurb", 'class': "dropShadow"}, function() {
-          div({'class': "dismissX"}).click('dismissWelcomeBlurb');
-          raw(template.welcomeBlurbText);
-        }).ref('welcomeBlurb');
-
         div({'id': "organizationHeader"}, function() {
           div({'id': "title"}, function() {
             a({href: "#", id: 'createElectionLink', 'class': "glossyBlack roundedButton"}, "Raise A New Question")
@@ -50,10 +45,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.subscriptions = new Monarch.SubscriptionBundle();
     },
 
-    beforeShow: function() {
-      if (Application.currentUser().dismissedWelcomeBlurb()) this.welcomeBlurb.hide();
-    },
-
     navigate: function(state) {
       if (!state.organizationId) {
         $.bbq.pushState({view: 'organization', organizationId: Application.currentUser().lastVisitedOrganization().id()});
@@ -69,8 +60,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         Application.currentOrganizationId(organizationId);
         var membership = this.organization().membershipForCurrentUser();
         if (membership) membership.update({lastVisited: new Date()});
-        if (membership && membership.role() !== "owner") this.welcomeBlurb.hide();
-        
+
         this.subscriptions.destroy();
         this.subscriptions.add(this.organization().field('name').onUpdate(function(newName) {
           this.organizationName.html(newName);
@@ -166,11 +156,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         }, this);
     },
 
-    dismissWelcomeBlurb: function() {
-      this.welcomeBlurb.slideUp('fast');
-      Server.post("/dismiss_welcome_blurb")
-    },
-
     startLoading: function() {
       this.loading.show();
     },
@@ -178,7 +163,5 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     stopLoading: function() {
       this.loading.hide();
     }
-  },
-
-  welcomeBlurbText: "<strong>Welcome to Hyperarchy.</strong> This is a private discussion area for your organization. Start by raising a question and adding a few answers. Then you can invite people to vote from the <em>Admin</em> menu at the top of the page."
+  }
 });
