@@ -1,6 +1,6 @@
 _.constructor("Views.CandidatesList", View.Template, {
   content: function() { with(this.builder) {
-    div({id: "candidatesList"}, function() {
+    div({id: "candidatesList", style: "display: none;"}, function() {
       div({'class': "candidatesListHeader"}, "Current Consensus");
 
       subview('candidatesList', Views.SortedList, {
@@ -29,6 +29,10 @@ _.constructor("Views.CandidatesList", View.Template, {
 
     empty: function() {
       this.candidatesList.empty();
+    },
+
+    afterShow: function() {
+      this.adjustHeight();
     },
 
     adjustHeight: function() {

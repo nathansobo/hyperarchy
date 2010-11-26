@@ -4,7 +4,6 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       div({'class': "candidatesListHeader"}, function() {
         a({id: "back", href: "#", style: "display: none;"}, "Back")
           .ref('backLink')
-          .click('backToCurrentUserRankings');
         span(function() { raw("&nbsp;"); }).ref('rankingsUserName');
       });
       ol({id: "rankedCandidates", 'class': "candidates ranked"}, function() {

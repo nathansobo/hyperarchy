@@ -96,7 +96,13 @@ _.constructor("Views.ElectionOverview", View.Template, {
       }
       this.election(election);
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
-      if (!election.candidates().empty()) this.rankedCandidatesList.show();
+      if (election.candidates().empty()) {
+        this.candidatesList.hide();
+        this.rankedCandidatesList.hide();
+      } else {
+        this.candidatesList.show();
+        this.rankedCandidatesList.show();
+      }
     },
 
     retryNavigateAfterFetchingNeededData: function(state) {
@@ -159,11 +165,17 @@ _.constructor("Views.ElectionOverview", View.Template, {
       }, this));
 
       this.subscriptions.add(election.candidates().onRemoteInsert(function() {
-        if (this.rankedCandidatesList.is(":hidden")) this.rankedCandidatesList.fadeIn();
+        if (this.candidatesList.is(":hidden")) {
+          this.candidatesList.fadeIn();
+          this.rankedCandidatesList.fadeIn();
+        }
       }, this));
 
       this.subscriptions.add(election.candidates().onRemoteRemove(function() {
-        if (election.candidates().empty()) this.rankedCandidatesList.fadeOut();
+        if (election.candidates().empty()) {
+          this.candidatesList.fadeOut();
+          this.rankedCandidatesList.fadeOut();
+        }
       }, this));
     },
 

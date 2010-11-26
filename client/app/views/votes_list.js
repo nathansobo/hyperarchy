@@ -1,6 +1,6 @@
 _.constructor("Views.VotesList", View.Template, {
   content: function() { with(this.builder) {
-    div({id: "votes"}, function() {
+    div({id: "votes", style: "display: none;"}, function() {
       div({id: "voteCount"}, function() {
         span("").ref('voteCount');
         span({id: "instructions"}, "Click to view");
@@ -48,6 +48,11 @@ _.constructor("Views.VotesList", View.Template, {
 
     updateVoteCount: function() {
       var voteCount = this.election().votes().size();
+      if (voteCount === 0) {
+        this.hide();
+      } else {
+        this.show();
+      }
 
       if (voteCount === 1) {
         this.voteCount.html("1 Vote");
@@ -60,6 +65,10 @@ _.constructor("Views.VotesList", View.Template, {
       } else {
         this.headerArea.removeClass('noVotes')
       }
+    },
+
+    afterShow: function() {
+      this.adjustHeight();
     },
 
     empty: function() {
