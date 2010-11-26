@@ -31,6 +31,11 @@ _.constructor("Views.CandidatesList", View.Template, {
       this.candidatesList.empty();
     },
 
+    fadeIn: function($super) {
+      $super();
+      this.adjustHeight();
+    },
+
     afterShow: function() {
       this.adjustHeight();
     },
