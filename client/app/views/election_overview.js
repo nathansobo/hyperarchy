@@ -1,11 +1,12 @@
 _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'id': "electionOverview"}, function() {
-      div({'class': "grid4"}, function() {
-        h1({'class': "clickable"})
+      div({'class': "grid12"}, function() {
+        h1({'class': "clickable", 'style': "margin-bottom: 15px;"})
           .click('goToOrganization')
           .ref('organizationName');
-
+      });
+      div({'class': "grid4"}, function() {
         div(function() {
           div({'class': "expandArrow", style: "display: none;"})
             .ref('expandArrow')
@@ -26,7 +27,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
           div({'class': "clear"});
         });
-
 
         div({id: "expandedArea", style: "display: none;"}, function() {
           button("Save")
