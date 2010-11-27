@@ -17,6 +17,7 @@ end
 Election.blueprint do
   body { Sham.question }
   organization { Organization.make }
+  suppress_notification_email { true }
 end
 
 Organization.blueprint do

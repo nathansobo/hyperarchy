@@ -14,6 +14,8 @@ class Election < Monarch::Model::Record
   belongs_to :creator, :class_name => "User"
   belongs_to :organization
 
+  attr_accessor :suppress_notification_email
+
   def can_create?
     current_user.admin? || organization.has_member?(current_user)
   end
@@ -38,6 +40,31 @@ class Election < Monarch::Model::Record
 
   def before_create
     self.creator ||= current_user
+  end
+
+  def after_create
+    return if suppress_notification_email
+    notify_users = organization.memberships.
+      where(:notify_of_new_elections => true).
+      where(Membership[:user_id].neq(creator_id)).
+      join_through(User)
+
+    unless notify_users.empty?
+      Mailer.send(:to => notify_users.map(&:email_address), :subject => email_subject, :body => email_body)
+    end
+  end
+
+  def email_subject
+    "#{creator.full_name} added a new question on Hyperarchy"
+  end
+
+  def email_body
+    "#{creator.full_name} added a new question to #{organization.name}.
+
+\"#{body}\"
+
+To view this question in Hyperarchy, visit this link:
+http://hyperarchy.com/app#view=election&electionId=#{id}"
   end
 
   def before_destroy

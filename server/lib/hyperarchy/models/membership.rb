@@ -5,6 +5,8 @@ class Membership < Monarch::Model::Record
   column :role, :string, :default => "member"
   column :pending, :boolean, :default => true
   column :last_visited, :datetime
+  column :notify_of_new_elections, :boolean, :default => true
+  column :notify_of_new_candidates, :boolean, :default => true
 
   synthetic_column :first_name, :string
   synthetic_column :last_name, :string

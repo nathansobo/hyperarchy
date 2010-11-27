@@ -41,7 +41,7 @@ describe SubscriptionManager do
     mock(client_1).send(anything) do |message|
       create_message = message
     end
-    election = org_2.elections.create!(:body => "What's your name?")
+    election = org_2.elections.create!(:body => "What's your name?", :suppress_notification_email => true)
     create_message[0].should == "create"
     create_message[1].should == "elections"
     create_message[2].should == election.wire_representation
