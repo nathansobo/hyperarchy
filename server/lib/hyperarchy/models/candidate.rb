@@ -49,6 +49,8 @@ class Candidate < Monarch::Model::Record
 
     election.compute_global_ranking
     election.unlock
+
+    send_notifications
   end
 
   def before_destroy
@@ -88,5 +90,36 @@ class Candidate < Monarch::Model::Record
 
   def losing_majorities
     election.majorities.where(:loser_id => id)
+  end
+
+  protected
+
+  def send_notifications
+    notify_users = election.votes.
+      join(Membership).
+        on(Vote[:user_id].eq(Membership[:user_id])).
+      where(:notify_of_new_candidates => true).
+      where(Membership[:user_id].neq(creator_id)).
+      join_through(User)
+
+    unless notify_users.empty?
+      Mailer.send(:to => notify_users.map(&:email_address), :subject => email_subject, :body => email_body)
+    end
+  end
+
+  def email_subject
+    "#{creator.full_name} added an answer on Hyperarchy"
+  end
+
+  def email_body
+    "You previously voted on the question:
+\"#{election.body}\"
+
+#{creator.full_name} added a new answer:
+\"#{body}\"
+
+If you would like to vote on it, visit the following link:
+http://hyperarchy.com/app#view=election&electionId=#{election_id}
+"
   end
 end

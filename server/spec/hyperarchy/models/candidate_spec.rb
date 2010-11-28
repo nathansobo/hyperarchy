@@ -18,11 +18,6 @@ module Models
     end
 
     describe "after create" do
-      attr_reader :election
-      before do
-        @election = Election.make
-      end
-
       it "creates a winning and losing majority every pairing of the created candidate with other candidates" do
         election.candidates.should be_empty
 
@@ -96,6 +91,34 @@ module Models
         find_majority(unranked, candidate).con_count.should == 0
         find_majority(candidate, unranked).pro_count.should == 0
         find_majority(candidate, unranked).con_count.should == 0
+      end
+
+      it "sends a notification email to every user that has voted in the answer's election" do
+        creator = User.make
+        opted_in_voter = User.make
+        opted_out_voter = User.make
+        opted_in_non_voter = User.make
+        set_current_user(creator)
+
+        organization = election.organization
+        organization.memberships.create!(:user => creator, :suppress_invite_email => true)
+        organization.memberships.create!(:user => opted_in_voter, :suppress_invite_email => true)
+        organization.memberships.create!(:user => opted_out_voter, :notify_of_new_candidates => false, :suppress_invite_email => true)
+        organization.memberships.create!(:user => opted_in_non_voter, :suppress_invite_email => true)
+
+        c1 = election.candidates.create!(:body => "A")
+        Mailer.emails.should be_empty
+
+        Ranking.create!(:candidate => c1, :user => creator, :position => 64)
+        Ranking.create!(:candidate => c1, :user => opted_in_voter, :position => 64)
+        Ranking.create!(:candidate => c1, :user => opted_out_voter, :position => 64)
+
+        c2 = election.candidates.create!(:body => "B")
+
+        Mailer.emails.length.should == 1
+        email = Mailer.emails.first
+        email[:to].should == [opted_in_voter.email_address]
+        email[:body].should include(c2.body)
       end
     end
 
