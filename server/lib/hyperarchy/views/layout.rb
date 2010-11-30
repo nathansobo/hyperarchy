@@ -48,10 +48,11 @@ module Views
     end
 
     def google_analytics_javascript
+      return unless analytics_enabled?
 #      return unless RACK_ENV == "production"
 
       javascript %[
-        var trackPageviewManually = #{track_pageview_manually.inspect};
+        var trackPageviewManually = #{track_pageview_manually?.inspect};
         var _gaq = _gaq || [];
         _gaq.push(['_setAccount', '#{GOOGLE_ANALYTICS_CODES[RACK_ENV]}']);
         _gaq.push(['_setAllowAnchor', true]);
@@ -65,11 +66,16 @@ module Views
       ]
     end
 
-    def track_pageview_manually
+    def analytics_enabled?
+      true
+    end
+
+    def track_pageview_manually?
       false
     end
 
     def mixpanel_javascript
+      return unless analytics_enabled?
 #      unless RACK_ENV == "production"
 #        javascript %[ var mpq = []; ]
 #        return

@@ -14,8 +14,9 @@ module Hyperarchy
 
     def authentication_required
       return if current_user
-      redirect "/login?redirected_from=#{request.fullpath}"
-      halt
+
+#      redirect "/login?redirected_from=#{request.fullpath}"
+      halt render_page(Views::RedirectToLogin)
     end
 
     def redirect_if_logged_in

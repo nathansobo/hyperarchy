@@ -17,7 +17,7 @@ module Hyperarchy
     end
 
     get "/app" do
-      redirect redirect "/login" and return unless current_user
+      authentication_required
       render_page Views::App
     end
 
@@ -107,16 +107,6 @@ module Hyperarchy
       membership = Membership.find(membership_id)
       membership.update(:pending => false) if membership.user == current_user
       redirect "/app#view=organization&organizationId=#{membership.organization_id}"
-    end
-
-    post "/interested" do
-      Mailer.send(
-        :to => ["admin@hyperarchy.com", "nathansobo+hyperarchy@gmail.com"],
-        :subject => "#{params[:email_address]} is interested in Hyperarchy",
-        :body => "Their comments: #{params[:comments]}"
-      )
-      flash[:notification] = "Thanks. We'll contact you soon."
-      redirect "/"
     end
 
     post "/invite" do

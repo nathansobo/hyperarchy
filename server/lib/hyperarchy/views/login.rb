@@ -28,7 +28,7 @@ module Views
         div :class => "clear"
 
         if params[:redirected_from]
-          input :type => "hidden", :name => "redirected_from", :value => params[:redirected_from]
+          input :type => "hidden", :name => "redirected_from", :value => raw(params[:redirected_from])
         end
       end
     end

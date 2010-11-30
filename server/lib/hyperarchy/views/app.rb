@@ -1,6 +1,6 @@
 module Views
   class App < Views::Layout
-    def track_pageview_manually
+    def track_pageview_manually?
       true
     end
 
