@@ -52,7 +52,6 @@ button {
 
 
 @mixin glossyColor($color) {
-  background-color: $color;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .5)), color-stop(0.5, rgba(255, 255, 255, .2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, .1))), $color;
   background: -moz-linear-gradient(top, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, .1) 100%), $color;
 }
@@ -64,11 +63,14 @@ button {
 
 .glossyBlack, .glossyBlack:visited {
   color: white;
+  background-color: black;
+  background: -moz-linear-gradient(top, #5e5e5e 0%, #121212 50%, #010101 51%, #101010 100%);
   @include glossyColor(black);
 }
 
 .glossyGray, .glossyGray:visited {
   color: white;
+  background-color: #6B6B6B;
   @include glossyColor(#6B6B6B);
 }
 

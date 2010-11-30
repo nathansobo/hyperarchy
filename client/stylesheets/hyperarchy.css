@@ -629,13 +629,13 @@ button {
 
 .glossyBlack, .glossyBlack:visited {
   color: white;
-  background-color: black;
+  background: -moz-linear-gradient(top, #5e5e5e 0%, #121212 50%, #010101 51%, #101010 100%);
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), black;
   background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), black; }
 
 .glossyGray, .glossyGray:visited {
   color: white;
-  background-color: #6b6b6b;
+  background-color: #6B6B6B;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), #6b6b6b;
   background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #6b6b6b; }
 
