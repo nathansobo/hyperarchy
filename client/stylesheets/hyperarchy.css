@@ -1454,3 +1454,18 @@ button {
   overflow-y: auto; }
 #app #invite button {
   margin-right: 10px; }
+
+#app h1 {
+  margin-bottom: 10px; }
+#app #account .emailPreferences {
+  padding: 10px;
+  margin-bottom: 10px; }
+  #app #account .emailPreferences .loading {
+    float: right; }
+  #app #account .emailPreferences .organizationName {
+    font-size: 20px;
+    margin-bottom: 5px; }
+  #app #account .emailPreferences .emailPreference {
+    margin-bottom: 3px; }
+    #app #account .emailPreferences .emailPreference input {
+      margin-right: 5px; }

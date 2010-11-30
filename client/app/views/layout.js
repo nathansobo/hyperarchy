@@ -29,6 +29,8 @@ _.constructor("Views.Layout", View.Template, {
             });
             a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
 
+            a({'class': "feedback headerItem", href: "#view=account"}, "Account");
+
             a({'class': "headerItem dropdownLink", href: "#"}, "Admin")
               .ref('adminMenuLink')
               .click('toggleAdminMenu');

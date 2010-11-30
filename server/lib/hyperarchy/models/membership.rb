@@ -31,14 +31,14 @@ class Membership < Monarch::Model::Record
   end
 
   def create_whitelist
-    [:organization_id, :user_id, :role, :first_name, :last_name, :email_address]
+    [:organization_id, :user_id, :role, :first_name, :last_name, :email_address, :notify_of_new_elections, :notify_of_new_candidates]
   end
 
   def update_whitelist
     if current_user_is_admin_or_organization_owner?
-      [:first_name, :last_name, :role, :last_visited]
+      [:first_name, :last_name, :role, :last_visited, :notify_of_new_elections, :notify_of_new_candidates]
     else
-      [:last_visited]
+      [:last_visited, :notify_of_new_elections, :notify_of_new_candidates]
     end
   end
 

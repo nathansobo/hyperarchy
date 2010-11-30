@@ -7,7 +7,7 @@ _.constructor("Controllers.Application", {
       editOrganization: Views.EditOrganization.toView(),
       organizations: Views.OrganizationOverview.toView(),
       elections: Views.ElectionOverview.toView(),
-      invite: Views.Invite.toView()
+      account: Views.Account.toView()
     };
     // don't render the view until initializeNavigation is called,
     // so that the Application global is assigned.

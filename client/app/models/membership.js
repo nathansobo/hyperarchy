@@ -8,7 +8,9 @@ _.constructor("Membership", Model.Record, {
       firstName: "string",
       lastName: "string",
       emailAddress: "string",
-      lastVisited: "datetime"
+      lastVisited: "datetime",
+      notifyOfNewElections: "boolean",
+      notifyOfNewCandidates: "boolean"
     });
 
     this.belongsTo("organization");
