@@ -631,13 +631,13 @@ button {
   color: white;
   background-color: black;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), black;
-  background: -moz-linear-gradient(top left, bottom left, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), black; }
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), black; }
 
 .glossyGray, .glossyGray:visited {
   color: white;
   background-color: #6b6b6b;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), #6b6b6b;
-  background: -moz-linear-gradient(top left, bottom left, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #6b6b6b; }
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #6b6b6b; }
 
 .roundedButton {
   font-size: 20px;
@@ -782,7 +782,7 @@ button {
       bottom: 0px;
       height: 18px;
       background-image: url(/images/home_page_sprite.png);
-      background-repeat: none; }
+      background-repeat: no-repeat; }
     #home #header #links #signUp, #learn_more #header #links #signUp {
       width: 72px;
       background-position: -260px 0px;
@@ -806,7 +806,7 @@ button {
     font-size: 28px; }
   #home #screenshot {
     background-image: url(/images/home_page_sprite.png);
-    background-repeat: none;
+    background-repeat: no-repeat;
     background-position: 0px -50px;
     width: 470px;
     height: 260px;
@@ -843,7 +843,7 @@ button {
     height: 300px;
     margin-bottom: 20px;
     background-image: url(/images/learn_more_sprite.png);
-    background-repeat: none;
+    background-repeat: no-repeat;
     position: relative;
     left: -5px; }
     #learn_more .screenshot#screenshot2 {
@@ -1073,9 +1073,9 @@ button {
       color: white;
       letter-spacing: 1px; }
       #welcomeGuide thead tr th.pending {
-        background-position-y: -50px; }
+        background-position: 0px -50px; }
       #welcomeGuide thead tr th.done {
-        background-position-y: -100px;
+        background-position: 0px -100px;
         color: #343434; }
       #welcomeGuide thead tr th#gloss {
         width: 936;
@@ -1099,9 +1099,13 @@ button {
       #welcomeGuide thead tr th#step4 {
         padding-left: 5px;
         left: 705;
-        background-position-x: -300px;
+        background-position: -300px 0;
         z-index: 1;
         width: 230; }
+        #welcomeGuide thead tr th#step4.pending {
+          background-position: -300px -50px; }
+        #welcomeGuide thead tr th#step4.done {
+          background-position: -300px -100px; }
   #welcomeGuide td#currentStep {
     background: #343434;
     padding: 0 2px 2px 2px; }

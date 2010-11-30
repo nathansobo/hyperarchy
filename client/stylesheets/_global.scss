@@ -54,7 +54,7 @@ button {
 @mixin glossyColor($color) {
   background-color: $color;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .5)), color-stop(0.5, rgba(255, 255, 255, .2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, .1))), $color;
-  background: -moz-linear-gradient(top left, bottom left, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, .1) 100%), $color;
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, .1) 100%), $color;
 }
 
 @mixin borderRadius($radius) {
