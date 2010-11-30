@@ -847,7 +847,7 @@ button {
     position: relative;
     left: -5px; }
     #learn_more .screenshot#screenshot2 {
-      background-position: 0px 300px; }
+      background-position: 0px -300px; }
   #learn_more #summary {
     font-size: 18px;
     margin-bottom: 30px; }
