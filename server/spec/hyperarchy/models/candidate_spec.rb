@@ -100,10 +100,13 @@ module Models
         opted_in_non_voter = User.make
         set_current_user(creator)
 
+        other_org = Organization.make
+
         organization = election.organization
         organization.memberships.create!(:user => creator, :suppress_invite_email => true)
         organization.memberships.create!(:user => opted_in_voter, :suppress_invite_email => true)
         organization.memberships.create!(:user => opted_out_voter, :notify_of_new_candidates => false, :suppress_invite_email => true)
+        other_org.memberships.create!(:user => opted_out_voter, :notify_of_new_candidates => true, :suppress_invite_email => true)
         organization.memberships.create!(:user => opted_in_non_voter, :suppress_invite_email => true)
 
         c1 = election.candidates.create!(:body => "A")

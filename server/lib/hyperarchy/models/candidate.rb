@@ -96,7 +96,7 @@ class Candidate < Monarch::Model::Record
 
   def send_notifications
     notify_users = election.votes.
-      join(Membership).
+      join(Membership.where(:organization_id => election.organization_id)).
         on(Vote[:user_id].eq(Membership[:user_id])).
       where(:notify_of_new_candidates => true).
       where(Membership[:user_id].neq(creator_id)).
