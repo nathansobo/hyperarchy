@@ -103,7 +103,13 @@ class Candidate < Monarch::Model::Record
       join_through(User)
 
     unless notify_users.empty?
-      Mailer.send(:to => notify_users.map(&:email_address), :subject => email_subject, :body => email_body)
+      to = notify_users.map(&:email_address)
+      subject = email_subject
+      body = email_body
+
+      Hyperarchy.defer do
+        Mailer.send(:to => to, :subject => subject, :body => body)
+      end
     end
   end
 
