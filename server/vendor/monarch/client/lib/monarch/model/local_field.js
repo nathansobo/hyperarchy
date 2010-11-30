@@ -67,20 +67,21 @@ _.constructor("Monarch.Model.LocalField", Monarch.Model.ConcreteField, {
   // private
   
   valueAssigned: function(newValue, oldValue) {
+    if (!this.updateEventsEnabled) return;
+
+    this.version = this.record.nextLocalVersion();
+
     if (this.valueEquals(this.remoteField().value())) {
       this.markClean();
     } else {
       this.markDirty();
     }
 
-    if (this.updateEventsEnabled) {
-      this.version = this.record.nextLocalVersion();
-      var batchAlreadyInProgress = this.fieldset.batchInProgress;
-      if (!batchAlreadyInProgress) this.fieldset.beginBatchUpdate();
-      this.fieldset.fieldUpdated(this, newValue, oldValue);
-      if (this.onUpdateNode) this.onUpdateNode.publish(newValue, oldValue);
-      if (!batchAlreadyInProgress) this.fieldset.finishBatchUpdate();
-    }
+    var batchAlreadyInProgress = this.fieldset.batchInProgress;
+    if (!batchAlreadyInProgress) this.fieldset.beginBatchUpdate();
+    this.fieldset.fieldUpdated(this, newValue, oldValue);
+    if (this.onUpdateNode) this.onUpdateNode.publish(newValue, oldValue);
+    if (!batchAlreadyInProgress) this.fieldset.finishBatchUpdate();
   }
 });
 
