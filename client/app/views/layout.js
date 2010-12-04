@@ -6,6 +6,9 @@ _.constructor("Views.Layout", View.Template, {
       div({id: "darkenBackground", style: "display: none"})
         .click('hideFeedbackForm')
         .ref('darkenBackground');
+
+      subview('inviteForm', Views.Invite);
+
       div({id: "feedback", style: "display: none", 'class': "dropShadow"}, function() {
         div({'class': "dismissX"}).click('hideFeedbackForm');
         div({id: "thanks", 'class': "largeFont"}, function() {
@@ -29,7 +32,9 @@ _.constructor("Views.Layout", View.Template, {
             });
             a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
 
-            a({'class': "feedback headerItem", href: "#view=account"}, "Account");
+            a({id: "inviteLink", 'class': "headerItem", href: "#"}, "Invite").click('showInviteForm');
+
+            a({'class': "headerItem", href: "#view=account"}, "Account");
 
             a({'class': "headerItem dropdownLink", href: "#"}, "Admin")
               .ref('adminMenuLink')
@@ -159,7 +164,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     showFeedbackForm: function(elt, e) {
-      this.darkenBackground.show();
+      this.darkenBackground.fadeIn();
 
       this.feedbackForm
         .show()
@@ -170,6 +175,17 @@ _.constructor("Views.Layout", View.Template, {
         });
 
       e.preventDefault();
+    },
+
+    showInviteForm: function(elt, e) {
+      this.darkenBackground.fadeIn();
+      this.inviteForm
+        .show()
+        .position({
+          my: "center",
+          at: "center",
+          of: this.darkenBackground
+        });
     },
 
     hideFeedbackForm: function(elt, e) {

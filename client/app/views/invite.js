@@ -1,41 +1,76 @@
 _.constructor("Views.Invite", View.Template, {
   content: function() { with(this.builder) {
-    div({id: "invite"}, function() {
-      div({'class': "grid6"}, function() {
-        textarea({'class': "largeFont"}).ref('emailAddresses');
-      });
-      div({'class': "grid6 largeFont"},
-        "Enter your friends' email addresses, and we'll send them an invitation to join Hyperarchy's alpha testing group. " +
-        "They will also be able to add their own organizations. " +
-        "If you would like to invite someone as a member of your organization, do that from its admin screen."
+    div({id: "invite", 'class': "dropShadow", style: "display: none;"}, function() {
+      div({'class': "dismissX"}).click('hide');
+
+      div({id: "instructions", 'class': "largeFont"},
+        "Enter one or more email addresses, separated by commas:"
       );
 
-      div({'class': "grid12"}, function() {
-        button('Send Invitations').ref('sendInvitationsButton').click('sendInvitations');
-        span({'class': "grayText"}, "Separate with spaces, line-breaks, or commas");
+      div(function() {
+        textarea().ref('emailAddresses');
       });
+
+      div({'class': "clear"});
+
+      div({id: "whichOrganizations"}, "Which organizations should we invite them to join?");
+
+
+      subview('organizations', Views.SortedList, {
+        buildElement: function(organization) {
+          var parentView = this.parentView;
+          return Monarch.View.build(function(b) {
+            var checkboxId = "inviteTo" + organization.id();
+            b.li(function() {
+              b.input({type: "checkbox", checked: true, value: organization.id(), id: checkboxId}).change(parentView.hitch('disableOrEnableCheckboxes'));
+              b.label({'for': checkboxId},  organization.name());
+            });
+          });
+        }
+      });
+
+      a({'class': "glossyBlack roundedButton", href: "#"}, 'Send Invitations').ref('sendInvitationsButton').click('sendInvitations');
     });
   }},
 
   viewProperties: {
-    viewName: 'invite',
+    initialize: function() {
+      this.defer(function() {
+        this.emailAddresses.elastic();
+      });
+    },
 
-    navigate: function() {
-      this.emailAddresses.val("");
+    beforeShow: function() {
+      this.organizations.relation(Application.currentUser().organizations());
+      this.disableOrEnableCheckboxes();
+      $("#darkenBackground").one('click', this.hitch('hide'));
+    },
+
+    disableOrEnableCheckboxes: function() {
+      var checkedBoxes = this.organizations.find(":checked");
+      if (checkedBoxes.length === 1) {
+        checkedBoxes.attr('disabled', true);
+      } else {
+        checkedBoxes.attr('disabled', false);
+      }
+    },
+
+    afterHide: function() {
+      $("#darkenBackground").hide();
+    },
+
+    organizationIds: function() {
+      return this.organizations.find(":checked").map(function() {
+        return $(this).val();
+      }).toArray();
     },
 
     sendInvitations: function() {
-      var emailAddresses = _.filter(this.emailAddresses.val().split(/\s+|\s*,\s*/), function(address) {
-        return address !== "";
-      });
-      if (emailAddresses.length == 0) return;
-
       this.sendInvitationsButton.attr('disabled', true);
-      Server.post("/invite", {email_addresses: emailAddresses})
+      Server.post("/invite", { email_addresses: this.emailAddresses.val(), organization_ids: this.organizationIds() })
         .onSuccess(function() {
           this.sendInvitationsButton.attr('disabled', false);
-          jQuery.bbq.pushState({view: "organization"});
-          window.notify("Thank you. Your invitations have been sent.");
+          this.hide();
         }, this);
     }
   }

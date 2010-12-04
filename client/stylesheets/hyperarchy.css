@@ -688,16 +688,6 @@ button {
   margin-bottom: 5px;
   font-size: 14px; }
 
-#darkenBackground {
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 20;
-  height: 100%;
-  width: 100%;
-  background-repeat: repeat;
-  position: fixed;
-  top: 0px;
-  left: 0px; }
-
 .dismissX {
   float: right;
   margin-left: 30px;
@@ -706,22 +696,6 @@ button {
   height: 21px;
   width: 21px;
   background-image: url(/images/x_21x21_dark.png); }
-
-#feedback {
-  background: white;
-  height: 300px;
-  width: 600px;
-  position: absolute;
-  z-index: 21;
-  padding: 10px; }
-  #feedback #thanks {
-    margin-bottom: 10px; }
-  #feedback textarea {
-    width: 100%;
-    height: 185px;
-    padding: 10px;
-    margin-bottom: 10px;
-    resize: none; }
 
 #logo {
   background-image: url(/images/logo_tiny.png);
@@ -1055,6 +1029,30 @@ button {
   #app #header #logo {
     margin: 5px 0px;
     cursor: pointer; }
+#app #feedback {
+  background: white;
+  height: 300px;
+  width: 600px;
+  position: absolute;
+  z-index: 100;
+  padding: 10px; }
+  #app #feedback #thanks {
+    margin-bottom: 10px; }
+  #app #feedback textarea {
+    width: 100%;
+    height: 185px;
+    padding: 10px;
+    margin-bottom: 10px;
+    resize: none; }
+#app #darkenBackground {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  height: 100%;
+  width: 100%;
+  background-repeat: repeat;
+  position: fixed;
+  top: 0px;
+  left: 0px; }
 
 #welcomeGuide {
   width: 100%;
@@ -1452,14 +1450,32 @@ button {
     position: relative;
     top: 5px; }
 
-#app #invite textarea {
-  padding: 5px;
-  width: 100%;
-  height: 185px;
-  margin-bottom: 10px;
-  overflow-y: auto; }
-#app #invite button {
-  margin-right: 10px; }
+#app #invite {
+  background: white;
+  position: absolute;
+  width: 450px;
+  z-index: 100;
+  padding: 20px;
+  font-size: 16px; }
+  #app #invite #instructions {
+    margin-bottom: 10px;
+    font-size: 20px; }
+  #app #invite textarea {
+    padding: 5px;
+    width: 100%;
+    height: 60px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    resize: none; }
+  #app #invite #whichOrganizations {
+    margin-bottom: 5px; }
+  #app #invite ol {
+    margin-bottom: 20px; }
+    #app #invite ol input[type="checkbox"] {
+      margin-right: 5px; }
+  #app #invite a {
+    float: right;
+    padding: 5px; }
 
 #app h1 {
   margin-bottom: 10px; }
