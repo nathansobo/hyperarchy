@@ -1404,6 +1404,34 @@ button {
   #app #addOrganization button, #app #editOrganization button {
     margin-top: 10px; }
 
+#app #editOrganization #organizationHeader {
+  margin-bottom: 10px; }
+#app #editOrganization #tabs {
+  position: relative;
+  left: -5px; }
+  #app #editOrganization #tabs .tab {
+    display: inline-block;
+    height: 37px;
+    padding: 5px 5px 0 5px;
+    overflow: hidden; }
+    #app #editOrganization #tabs .tab span {
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+      padding: 5px 10px;
+      background: white;
+      -webkit-border-top-left-radius: 3px;
+      -webkit-border-top-right-radius: 3px;
+      -moz-border-radius-topleft: 3px;
+      -moz-border-radius-topright: 3px;
+      border-top-left-radius: 3px;
+      border-top-right-radius: 3px; }
+      #app #editOrganization #tabs .tab span.selected {
+        z-index: 10; }
+#app #editOrganization #content {
+  position: relative;
+  z-index: 4;
+  padding: 30px; }
 #app #editOrganization #details {
   margin-bottom: 30px; }
   #app #editOrganization #details textarea {

@@ -1,74 +1,99 @@
 _.constructor("Views.EditOrganization", View.Template, {
   content: function() { with(this.builder) {
     div({id: "editOrganization"}, function() {
-      div({id: "details", 'class': "grid5 largeFont"}, function() {
-        label({'for': "name"}, "Organization Name");
-        input({name: "name", 'class': "text"})
-          .ref('nameField')
-          .keydown(function(view, e) {
-            if (e.keyCode === 13) {
-              view.saveOrganization();
-              e.preventDefault();
-            }
-          })
-          .keyup('enableOrDisableSaveButton');
-        label({'for': "description"}, "Description (Optional)");
-        textarea({name: "description", 'class': "text"})
-          .ref('descriptionField')
-          .keyup('enableOrDisableSaveButton');
-        button("Save Changes")
-          .ref('saveChangesButton')
-          .click('saveOrganization');
-        div({'class': "loading", style: "display: none"}).ref('loading');
-      });
 
-      div({'class': "grid7"}, function() {
+
+      div({id: "organizationHeader", 'class': "grid12"}, function() {
         a({'class': "glossyBlack roundedButton", id: "overviewLink"}, "Back To Questions")
           .ref('overviewLink')
           .click(function(view, e) {
             $.bbq.pushState({view: "organization", organizationId: view.model().id()});
             e.preventDefault();
           });
+        h1("Alpha Testers");
       });
 
-      div({id: "editOrganizationMembers", 'class': "grid12"}, function() {
-        label("Members");
-
-        div({'class': "addMember"}, function() {
-          input({'class': "name", type: "text", placeholder: "First Name"}).ref('createMembershipFirstName');
-          input({'class': "name", type: "text", placeholder: "Last Name"}).ref('createMembershipLastName');
-          input({'class': "emailAddress", type: "text", placeholder: "Email Address"})
-            .keyup('enableOrDisableCreateMembership')
-            .ref('createMembershipEmail');
-          select(function() {
-            option({value: "member"}, "Member");
-            option({value: "owner"}, "Owner");
-          }).ref("createMembershipRole");
-          button({disabled: true}, "Add")
-            .ref('createMembershipButton')
-            .click('createMembership');
-          div({'class': "loading", style: "display: none"}).ref('creatingMembership');
-        }).ref('addMemberSection');
-
-        table({'class': "members"}, function() {
-          thead(function() {
-            tr(function() {
-              th("Name");
-              th("Email Address");
-              th("Role");
-              th("Invitation");
-              th("");
-            })
+      div({'class': "grid12"}, function() {
+        ol({id: "tabs"}, function() {
+          li({'class': "tab"}, function() {
+            span({'class': "dropShadow"}, "Organization Details")
+              .ref("detailsTab")
+              .click(function() {
+                $.bbq.pushState({tab: "details"});
+              });
           });
-
-          subview('membersTbody', Views.SortedList, {
-            rootTag: 'tbody',
-            placeholderTag: 'tbody',
-            buildElement: function(membership) {
-              return Views.MembershipTr.toView({membership: membership});
-            }
+          li({'class': "tab"}, function() {
+            span({'class': "dropShadow selected"}, "Members")
+              .ref("membersTab")
+              .click(function() {
+                $.bbq.pushState({tab: "members"});
+              });
           });
-        });
+        }).ref("tabs");
+
+        div({id: "content", 'class': "dropShadow"}, function() {
+          div({id: "details", 'class': "largeFont", style: "display: none"}, function() {
+            label({'for': "name"}, "Organization Name");
+            input({name: "name", 'class': "text"})
+              .ref('nameField')
+              .keydown(function(view, e) {
+                if (e.keyCode === 13) {
+                  view.saveOrganization();
+                  e.preventDefault();
+                }
+              })
+              .keyup('enableOrDisableSaveButton');
+            label({'for': "description"}, "Description (Optional)");
+            textarea({name: "description", 'class': "text"})
+              .ref('descriptionField')
+              .keyup('enableOrDisableSaveButton');
+            button("Save Changes")
+              .ref('saveChangesButton')
+              .click('saveOrganization');
+            div({'class': "loading", style: "display: none"}).ref('loading');
+          }).ref("details");
+
+
+          div({id: "members", style: "display: none;"}, function() {
+            label("Members");
+
+            div({'class': "addMember"}, function() {
+              input({'class': "name", type: "text", placeholder: "First Name"}).ref('createMembershipFirstName');
+              input({'class': "name", type: "text", placeholder: "Last Name"}).ref('createMembershipLastName');
+              input({'class': "emailAddress", type: "text", placeholder: "Email Address"})
+                .keyup('enableOrDisableCreateMembership')
+                .ref('createMembershipEmail');
+              select(function() {
+                option({value: "member"}, "Member");
+                option({value: "owner"}, "Owner");
+              }).ref("createMembershipRole");
+              button({disabled: true}, "Add")
+                .ref('createMembershipButton')
+                .click('createMembership');
+              div({'class': "loading", style: "display: none"}).ref('creatingMembership');
+            }).ref('addMemberSection');
+
+            table({'class': "members"}, function() {
+              thead(function() {
+                tr(function() {
+                  th("Name");
+                  th("Email Address");
+                  th("Role");
+                  th("Invitation");
+                  th("");
+                })
+              });
+
+              subview('membersTbody', Views.SortedList, {
+                rootTag: 'tbody',
+                placeholderTag: 'tbody',
+                buildElement: function(membership) {
+                  return Views.MembershipTr.toView({membership: membership});
+                }
+              });
+            });
+          }).ref("members");
+        }).ref("content");
       });
     });
   }},
@@ -80,7 +105,6 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.createMembershipFirstName.placeHeld();
       this.createMembershipLastName.placeHeld();
       this.createMembershipEmail.placeHeld();
-      this.subscriptions = new Monarch.SubscriptionBundle();
       this.defer(function() {
         this.find('textarea').elastic();
       });
@@ -94,20 +118,25 @@ _.constructor("Views.EditOrganization", View.Template, {
     },
 
     navigate: function(state) {
-      var organizationId = state.organizationId;
-      Server.fetch([
-        Organization.where({id: organizationId}),
-        Membership.where({organizationId: organizationId})
-      ]).onSuccess(function() {
-        this.model(Organization.find(state.organizationId));
-      }, this);
+      this.model(Organization.find(state.organizationId));
+      this.tabs.find("span").removeClass("selected");
+      this.content.children().hide();
+
+      if (state.tab === "members") {
+        this.membersTab.addClass("selected");
+        this.members.show();
+      } else {
+        this.detailsTab.addClass("selected");
+        this.details.show();
+      }
     },
 
     modelAssigned: function(organization) {
       Application.currentOrganizationId(organization.id());
-      this.subscriptions.destroy();
-      this.saveChangesButton.attr('disabled', true);
-      this.membersTbody.relation(organization.memberships());
+      organization.memberships().fetch().onSuccess(function() {
+        this.saveChangesButton.attr('disabled', true);
+        this.membersTbody.relation(organization.memberships());
+      }, this);
     },
 
     createMembership: function() {

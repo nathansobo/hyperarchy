@@ -2,6 +2,48 @@
   #editOrganization {
     @extend #addOrganization;
 
+    #organizationHeader {
+      margin-bottom: 10px;
+    }
+
+    #tabs {
+      position: relative;
+      left: -5px;
+
+      .tab {
+        display: inline-block;
+        height: 37px;
+        padding: 5px 5px 0 5px;
+        overflow: hidden;
+
+        span {
+          cursor: pointer;
+          position: relative;
+          display: inline-block;
+          padding: 5px 10px;
+          background: white;
+          -webkit-border-top-left-radius: 3px;
+          -webkit-border-top-right-radius: 3px;
+          -moz-border-radius-topleft: 3px;
+          -moz-border-radius-topright: 3px;
+          border-top-left-radius: 3px;
+          border-top-right-radius: 3px;
+
+          &.selected {
+            z-index: 10;
+          }
+        }
+      }
+    }
+
+    #content {
+      position: relative;
+      z-index: 4;
+      padding: 30px;
+    }
+
+
+
     #details {
       margin-bottom: 30px;
       textarea {

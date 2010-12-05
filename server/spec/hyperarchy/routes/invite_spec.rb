@@ -5,7 +5,7 @@ describe "POST /invite", :type => :rack do
     login_as User.make
   end
 
-  it "creates an invitation for each of the given email addresses, unless one already exists" do
+  it "creates a pending membership for each of the requested organizations" do
     Invitation.create!(:sent_to_address => "duplicate@example.com")
 
     post "/invite", :email_addresses => ["nathan@example.com", "stephanie@example.com", "duplicate@example.com"].to_json
