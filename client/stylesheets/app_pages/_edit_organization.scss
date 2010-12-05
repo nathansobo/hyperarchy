@@ -42,16 +42,40 @@
       padding: 30px;
     }
 
-
-
     #details {
-      margin-bottom: 30px;
+      label {
+        margin-bottom: 5px;
+      }
+
+      input[name="name"] {
+        width: 300px;
+      }
+
       textarea {
         resize: none;
+        width: 500px;
       }
+
+      #membersCanInviteSection {
+        margin-top: 10px;
+
+        #membersCanInvite {
+          margin-right: 10px;
+          display: inline;
+          width: auto;
+        }
+
+        label {
+          position: relative;
+          top: 2px;
+        }
+
+      }
+
       button {
         display: inline-block;
       }
+      
       .loading {
         display: inline-block;
         position: relative;
@@ -91,6 +115,7 @@
       td, th {
         border-bottom: 1px #999999 dashed;
         padding: 5px 0 5px 0;
+        height: 40px;
       }
 
       .role { width: 115px; }

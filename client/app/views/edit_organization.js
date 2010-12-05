@@ -10,7 +10,7 @@ _.constructor("Views.EditOrganization", View.Template, {
             $.bbq.pushState({view: "organization", organizationId: view.model().id()});
             e.preventDefault();
           });
-        h1("Alpha Testers");
+        h1("").ref('organizationName');
       });
 
       div({'class': "grid12"}, function() {
@@ -47,6 +47,15 @@ _.constructor("Views.EditOrganization", View.Template, {
             textarea({name: "description", 'class': "text"})
               .ref('descriptionField')
               .keyup('enableOrDisableSaveButton');
+
+            div({id: "membersCanInviteSection"}, function() {
+              input({id: "membersCanInvite", type: "checkbox", name: "membersCanInvite"})
+                .ref("membersCanInvite")
+                .change('enableOrDisableSaveButton');
+              label({'for': "membersCanInvite"}, "Allow members to invite other people to join the organization.")
+            });
+
+
             button("Save Changes")
               .ref('saveChangesButton')
               .click('saveOrganization');
@@ -105,6 +114,7 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.createMembershipFirstName.placeHeld();
       this.createMembershipLastName.placeHeld();
       this.createMembershipEmail.placeHeld();
+      this.subscriptions = new Monarch.SubscriptionBundle();
       this.defer(function() {
         this.find('textarea').elastic();
       });
@@ -132,7 +142,15 @@ _.constructor("Views.EditOrganization", View.Template, {
     },
 
     modelAssigned: function(organization) {
+      this.subscriptions.destroy();
       Application.currentOrganizationId(organization.id());
+
+      this.organizationName.html(organization.name());
+      this.subscriptions.add(organization.field('name').onUpdate(function() {
+        this.organizationName.html(organization.name());
+      }, this));
+
+
       organization.memberships().fetch().onSuccess(function() {
         this.saveChangesButton.attr('disabled', true);
         this.membersTbody.relation(organization.memberships());
@@ -176,7 +194,8 @@ _.constructor("Views.EditOrganization", View.Template, {
     enableOrDisableSaveButton: function() {
       var valuesDiffer =
         this.nameField.val() !== this.model().name() ||
-          this.descriptionField.val() !== this.model().description();
+          this.descriptionField.val() !== this.model().description() ||
+            this.membersCanInvite.is(":checked") !== this.model().membersCanInvite();
 
       if (valuesDiffer) {
         this.saveChangesButton.attr('disabled', false);

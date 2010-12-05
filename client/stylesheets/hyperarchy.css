@@ -1432,17 +1432,29 @@ button {
   position: relative;
   z-index: 4;
   padding: 30px; }
-#app #editOrganization #details {
-  margin-bottom: 30px; }
-  #app #editOrganization #details textarea {
-    resize: none; }
-  #app #editOrganization #details button {
-    display: inline-block; }
-  #app #editOrganization #details .loading {
-    display: inline-block;
+#app #editOrganization #details label {
+  margin-bottom: 5px; }
+#app #editOrganization #details input[name="name"] {
+  width: 300px; }
+#app #editOrganization #details textarea {
+  resize: none;
+  width: 500px; }
+#app #editOrganization #details #membersCanInviteSection {
+  margin-top: 10px; }
+  #app #editOrganization #details #membersCanInviteSection #membersCanInvite {
+    margin-right: 10px;
+    display: inline;
+    width: auto; }
+  #app #editOrganization #details #membersCanInviteSection label {
     position: relative;
-    top: 3px;
-    left: 5px; }
+    top: 2px; }
+#app #editOrganization #details button {
+  display: inline-block; }
+#app #editOrganization #details .loading {
+  display: inline-block;
+  position: relative;
+  top: 3px;
+  left: 5px; }
 #app #editOrganization #overviewLink {
   float: right; }
 #app #editOrganization div.addMember {
@@ -1468,7 +1480,8 @@ button {
     font-weight: bold; }
   #app #editOrganization table.members td, #app #editOrganization table.members th {
     border-bottom: 1px #999999 dashed;
-    padding: 5px 0 5px 0; }
+    padding: 5px 0 5px 0;
+    height: 40px; }
   #app #editOrganization table.members .role {
     width: 115px; }
   #app #editOrganization table.members .remove {

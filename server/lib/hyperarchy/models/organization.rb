@@ -1,6 +1,7 @@
 class Organization < Monarch::Model::Record
   column :name, :string
   column :description, :string, :default => ""
+  column :members_can_invite, :boolean, :default => false
   column :dismissed_welcome_guide, :boolean, :default => false
 
   has_many :elections

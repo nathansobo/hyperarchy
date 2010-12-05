@@ -4,6 +4,7 @@ _.constructor("Organization", Model.Record, {
       this.columns({
         name: "string",
         description: "string",
+        membersCanInvite: "boolean",
         dismissedWelcomeGuide: 'boolean'
       });
 
