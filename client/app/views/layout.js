@@ -32,7 +32,9 @@ _.constructor("Views.Layout", View.Template, {
             });
             a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
 
-            a({id: "inviteLink", 'class': "headerItem", href: "#"}, "Invite").click('showInviteForm');
+            a({id: "inviteLink", 'class': "headerItem", href: "#"}, "Invite")
+              .ref('inviteLink')
+              .click('showInviteForm');
 
             a({'class': "headerItem", href: "#view=account"}, "Account");
 
@@ -69,6 +71,11 @@ _.constructor("Views.Layout", View.Template, {
       }, this);
 
       this.populateOrganizations();
+
+      var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
+      organizationsPermitted.onRemoteInsert(this.hitch('showOrHideInviteLink'));
+      organizationsPermitted.onRemoteRemove(this.hitch('showOrHideInviteLink'));
+      this.showOrHideInviteLink();
     },
 
     populateOrganizations: function() {
@@ -115,6 +122,14 @@ _.constructor("Views.Layout", View.Template, {
             });
           });
         }))
+      }
+    },
+
+    showOrHideInviteLink: function() {
+      if (Application.currentUser().organizationsPermittedToInvite().empty()) {
+        this.inviteLink.hide();
+      } else {
+        this.inviteLink.show();
       }
     },
 
@@ -186,6 +201,7 @@ _.constructor("Views.Layout", View.Template, {
           at: "center",
           of: this.darkenBackground
         });
+      e.preventDefault();
     },
 
     hideFeedbackForm: function(elt, e) {

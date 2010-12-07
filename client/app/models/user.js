@@ -18,6 +18,11 @@ _.constructor("User", Model.Record, {
     this.relatesToMany('organizations', function() {
       return this.confirmedMemberships().joinThrough(Organization);
     });
+
+    this.relatesToMany('organizationsPermittedToInvite', function() {
+      return this.memberships().where({role: "owner"}).joinThrough(Organization)
+        .union(this.organizations().where({membersCanInvite: true}));
+    });
   },
 
   isCurrent: function() {

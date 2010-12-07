@@ -41,7 +41,7 @@ _.constructor("Views.Invite", View.Template, {
     },
 
     beforeShow: function() {
-      this.organizations.relation(Application.currentUser().organizations());
+      this.organizations.relation(Application.currentUser().organizationsPermittedToInvite());
       this.disableOrEnableCheckboxes();
       $("#darkenBackground").one('click', this.hitch('hide'));
     },
