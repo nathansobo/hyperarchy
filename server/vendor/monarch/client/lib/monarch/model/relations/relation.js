@@ -28,7 +28,6 @@ _.constructor("Monarch.Model.Relations.Relation", {
       predicate = this.predicateFromHash(predicateOrConditionsHash);
     }
     return new Monarch.Model.Relations.Selection(this, predicate);
-
   },
 
   project: function() {
@@ -103,6 +102,10 @@ _.constructor("Monarch.Model.Relations.Relation", {
 
   difference: function(rightOperand) {
     return new Monarch.Model.Relations.Difference(this, rightOperand);
+  },
+
+  union: function(rightOperand) {
+    return new Monarch.Model.Relations.Union(this, rightOperand);
   },
 
   tuples: function() {
@@ -330,9 +333,9 @@ _.constructor("Monarch.Model.Relations.Relation", {
 
   findJoinColumns: function(left, right) {
     var foreignKey;
-    if (foreignKey = right.column(_.singularize(left.globalName) + "Id")) {
+    if (foreignKey = right.column(_.camelize(_.singularize(left.globalName), true) + "Id")) {
       return [left.column("id"), foreignKey];
-    } else if (foreignKey = left.column(_.singularize(right.globalName) + "Id")) {
+    } else if (foreignKey = left.column(_.camelize(_.singularize(right.globalName), true) + "Id")) {
       return [foreignKey, right.column("id")];
     } else {
       throw new Error("No foreign key found for #joinTo operation");

@@ -52,6 +52,27 @@ Screw.Unit(function(c) {
           this.relatesToMany("blogs2", function() {
             return Blog.where(Blog.userId.eq(this.id()));
           });
+
+          this.relatesToMany("blogPosts", function() {
+            return this.blogs().joinThrough(BlogPost);
+          });
+
+          this.hasMany("favoritings");
+          this.relatesToMany("favoriteBlogPosts", function() {
+            return this.favoritings().joinThrough(BlogPost);
+          });
+        }
+      });
+
+      _.constructor("Favoriting", Monarch.Model.Record, {
+        constructorInitialize: function() {
+          this.columns({
+            userId: "key",
+            blogPostId: "key"
+          });
+
+          this.belongsTo("user");
+          this.belongsTo("blogPost");
         }
       });
     });

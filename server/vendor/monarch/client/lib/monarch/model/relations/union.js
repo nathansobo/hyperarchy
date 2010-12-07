@@ -7,10 +7,6 @@ _.constructor("Monarch.Model.Relations.Union", Monarch.Model.Relations.Relation,
     this.initializeEventsSystem();
   },
 
-  contains: function(record) {
-    return record.id() in this.tuplesById;
-  },
-
   allTuples: function() {
     if (this._tuples) return this._tuples;
 
@@ -30,28 +26,38 @@ _.constructor("Monarch.Model.Relations.Union", Monarch.Model.Relations.Relation,
   },
   
   // private
-
   subscribeToOperands: function() {
     this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteInsert(function(record) {
-      if (!this.rightOperand.find(record.id())) this.tupleInsertedRemotely(record);
+      if (!this.rightOperand.contains(record)) this.tupleInsertedRemotely(record);
+    }, this));
+
+    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteInsert(function(record) {
+      if (!this.leftOperand.contains(record)) this.tupleInsertedRemotely(record);
     }, this));
 
     this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteUpdate(function(record, changes) {
       if (this.contains(record)) this.tupleUpdatedRemotely(record, changes);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteRemove(function(record) {
-      if (this.contains(record)) this.tupleRemovedRemotely(record);
+    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteUpdate(function(record, changes) {
+      if (this.contains(record)) this.tupleUpdatedRemotely(record, changes);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteInsert(function(record) {
-      if (this.contains(record)) this.tupleRemovedRemotely(record);
+    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteRemove(function(record) {
+      if (!this.rightOperand.contains(record)) this.tupleRemovedRemotely(record);
     }, this));
 
     this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteRemove(function(record) {
-      if (this.leftOperand.find(record.id())) this.tupleInsertedRemotely(record);
+      if (!this.leftOperand.contains(record)) this.tupleRemovedRemotely(record);
     }, this));
+  },
+
+  tupleUpdatedRemotely: function($super, record, changes) {
+    if (this.lastChanges == changes) return;
+    this.lastChanges = changes;
+    $super(record, changes);
   }
+
 });
 
 })(Monarch);

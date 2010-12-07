@@ -31,21 +31,21 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("event handling", function() {
-      var table1, table2, difference, record, insertCallback, updateCallback, removeCallback;
-      init(function() {
-        leftOperand = Blog.table;
-        rightOperand = Blog.table;
-      });
+      var user, union, insertCallback, updateCallback, removeCallback;
+      useLocalFixtures();
 
       before(function() {
-        difference = new Monarch.Model.Relations.Difference(leftOperand, rightOperand);
+        user = User.find("jan");
+        var leftOperand = user.blogPosts();
+        var rightOperand = user.favoriteBlogPosts();
+        union = new Monarch.Model.Relations.Union(leftOperand, rightOperand);
 
         insertCallback = mockFunction("insertCallback");
         updateCallback = mockFunction("updateCallback");
         removeCallback = mockFunction("removeCallback");
-        difference.onRemoteInsert(insertCallback);
-        difference.onRemoteUpdate(updateCallback);
-        difference.onRemoteRemove(removeCallback);
+        union.onRemoteInsert(insertCallback);
+        union.onRemoteUpdate(updateCallback);
+        union.onRemoteRemove(removeCallback);
       });
 
       function expectNoCallbacksToHaveBeenCalled() {
@@ -54,26 +54,54 @@ Screw.Unit(function(c) { with(c) {
         expect(removeCallback).toNot(haveBeenCalled);
       }
 
+      function clearCallbackMocks() {
+        insertCallback.clear();
+        updateCallback.clear();
+        removeCallback.clear();
+      }
+
       describe("when a record is inserted in the left operand", function() {
         context("if the record is not present in the right operand", function() {
           it("triggers insert callbacks with the record", function() {
+            var post = BlogPost.find("frying");
+            post.remotelyUpdated({blogId: "motorcycle"})
+
+            expect(insertCallback).to(haveBeenCalled, withArgs(post));
+            expect(updateCallback).toNot(haveBeenCalled);
+            expect(removeCallback).toNot(haveBeenCalled);
           });
         });
 
         context("if the record is present in the right operand", function() {
-          it("does not trigger any callbacks", function() {
+          it("does not trigger an insert callbacks", function() {
+            var post = BlogPost.find("frying");
+            user.favoritings().createFromRemote({blogPostId: post.id()});
+            clearCallbackMocks();
+
+            post.remotelyUpdated({blogId: "motorcycle"})
+            expect(insertCallback).toNot(haveBeenCalled);
+            // update callback gets called as an artifact of how we insert into the left operand
+            expect(updateCallback).to(haveBeenCalled, once);
+            expect(removeCallback).toNot(haveBeenCalled);
           });
         });
       });
 
       describe("when a record is inserted in the right operand", function() {
         context("if the record is not present in the left operand", function() {
-          it("does not trigger any callbacks", function() {
+          it("triggers insert callbacks with the record", function() {
+            var post = BlogPost.find("frying");
+            user.favoritings().createFromRemote({blogPostId: post.id()});
+            expect(insertCallback).to(haveBeenCalled, withArgs(post));
+            expect(updateCallback).toNot(haveBeenCalled);
+            expect(removeCallback).toNot(haveBeenCalled);
           });
         });
 
         context("if the record is present in the left operand", function() {
-          it("triggers remove callbacks with the record", function() {
+          it("does not trigger any callbacks", function() {
+            user.favoritings().createFromRemote({blogPostId: "helmet"});
+            expectNoCallbacksToHaveBeenCalled();
           });
         });
       });
@@ -81,11 +109,23 @@ Screw.Unit(function(c) { with(c) {
       describe("when a record is updated in the left operand", function() {
         context("if the record is not present in the right operand", function() {
           it("triggers update callbacks with the record", function() {
+            var post = user.blogPosts().first();
+            post.remotelyUpdated({name: "New Name"});
+            expect(updateCallback).to(haveBeenCalled, once);
+            expect(updateCallback.mostRecentArgs[0]).to(eq, post);
+            expect(insertCallback).toNot(haveBeenCalled);
+            expect(removeCallback).toNot(haveBeenCalled);
           });
         });
 
         context("if the record is present in the right operand", function() {
-          it("does not trigger any callbacks", function() {
+          it("triggers update callbacks with the record, but not twice", function() {
+            var post = user.blogPosts().first();
+            user.favoritings().createFromRemote({blogPostId: post.id()})
+            clearCallbackMocks();
+
+            post.update({name: "New Name"});
+            expect(updateCallback).to(haveBeenCalled, once);
           });
         });
       });
@@ -93,23 +133,39 @@ Screw.Unit(function(c) { with(c) {
       describe("when a record is removed from the left operand", function() {
         context("if the record is not present in the right operand", function() {
           it("triggers remove callbacks with the record", function() {
+            var post = user.blogPosts().first();
+            post.remotelyDestroyed();
+            expect(removeCallback).to(haveBeenCalled, once);
           });
         });
 
         context("if the record is present in the right operand", function() {
           it("does not trigger any callbacks", function() {
+            var post = user.blogPosts().first();
+            user.favoritings().createFromRemote({blogPostId: post.id()});
+            post.remotelyUpdated({blogId: "recipes"});
+            expect(removeCallback).toNot(haveBeenCalled);
           });
         });
       });
 
       describe("when a record is removed from the right operand", function() {
         context("if the record is not present in the left operand", function() {
-          it("does not trigger any callbacks", function() {
+          it("triggers remove callbacks with the record", function() {
+            var post = BlogPost.find("frying");
+            var favoriting = user.favoritings().createFromRemote({blogPostId: post.id()});
+            favoriting.destroy();
+            expect(removeCallback).to(haveBeenCalled, withArgs(post));
           });
         });
 
-        context("if the record is present in the left operand", function() {
+        context("it does not trigger any callbacks", function() {
           it("triggers insert callbacks with the record", function() {
+            var post = user.blogPosts().first();
+            var favoriting = user.favoritings().createFromRemote({blogPostId: post.id()});
+            clearCallbackMocks();
+            favoriting.destroy();
+            expect(removeCallback).toNot(haveBeenCalled);
           });
         });
       });

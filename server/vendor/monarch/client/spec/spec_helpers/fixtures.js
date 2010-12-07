@@ -31,6 +31,20 @@ Screw.Unit(function(c) {
               userId: 'jan',
               startedAt: 1253742929201
             }
+          },
+          blog_posts: {
+            frying: {
+              name: 'Frying On Your Hot Gun',
+              blogId: 'recipes'
+            },
+            exhaust: {
+              name: 'Exhausted With This Exhaust System',
+              blogId: 'motorcycle'
+            },
+            helmet: {
+              name: 'Puking In Your Helmet',
+              blogId: 'motorcycle'
+            }
           }
         });
       });
