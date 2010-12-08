@@ -47,15 +47,15 @@ class Membership < Monarch::Model::Record
   end
 
   def email_address
-    @email_address || user_details_delegate.email_address
+    @email_address || (user_details_delegate ? user_details_delegate.email_address : nil)
   end
 
   def first_name
-    @first_name || user_details_delegate.first_name
+    @first_name || (user_details_delegate ? user_details_delegate.first_name : nil)
   end
 
   def last_name
-    @last_name || user_details_delegate.last_name
+    @last_name || (user_details_delegate ? user_details_delegate.last_name : nil)
   end
 
   def user_details_delegate

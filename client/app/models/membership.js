@@ -18,6 +18,10 @@ _.constructor("Membership", Model.Record, {
   },
 
   fullName: function() {
-    return this.firstName() + " " + this.lastName();
+    if (this.firstName() && this.lastName()) {
+      return this.firstName() + " " + this.lastName();
+    } else {
+      return null;
+    }
   }
 });

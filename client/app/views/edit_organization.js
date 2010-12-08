@@ -78,7 +78,7 @@ _.constructor("Views.EditOrganization", View.Template, {
               }).ref("createMembershipRole");
               button({disabled: true}, "Add")
                 .ref('createMembershipButton')
-                .click('createMembership');
+                  .click('createMembership');
               div({'class': "loading", style: "display: none"}).ref('creatingMembership');
             }).ref('addMemberSection');
 
@@ -114,7 +114,6 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.createMembershipFirstName.placeHeld();
       this.createMembershipLastName.placeHeld();
       this.createMembershipEmail.placeHeld();
-      this.subscriptions = new Monarch.SubscriptionBundle();
       this.defer(function() {
         this.find('textarea').elastic();
       });
@@ -142,14 +141,9 @@ _.constructor("Views.EditOrganization", View.Template, {
     },
 
     modelAssigned: function(organization) {
-      this.subscriptions.destroy();
       Application.currentOrganizationId(organization.id());
 
-      this.organizationName.html(organization.name());
-      this.subscriptions.add(organization.field('name').onUpdate(function() {
-        this.organizationName.html(organization.name());
-      }, this));
-
+      this.organizationName.bindHtml(organization, 'name');
 
       organization.memberships().fetch().onSuccess(function() {
         this.saveChangesButton.attr('disabled', true);

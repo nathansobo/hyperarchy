@@ -65,13 +65,14 @@ _.constructor("Views.Invite", View.Template, {
       }).toArray();
     },
 
-    sendInvitations: function() {
+    sendInvitations: function(elt, e) {
       this.sendInvitationsButton.attr('disabled', true);
       Server.post("/invite", { email_addresses: this.emailAddresses.val(), organization_ids: this.organizationIds() })
         .onSuccess(function() {
           this.sendInvitationsButton.attr('disabled', false);
           this.hide();
         }, this);
+      e.preventDefault();
     }
   }
 });

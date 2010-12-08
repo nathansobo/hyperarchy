@@ -141,9 +141,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     populateElectionDetails: function(election) {
-      this.organizationName.html(election.organization().name());
+      this.organizationName.bindHtml(election.organization(), 'name');
       this.bodyTextarea.val(election.body());
-      this.bodyDiv.html(election.body());
+      this.bodyDiv.bindHtml(election, 'body');
       if (election.editableByCurrentUser()) {
         this.expandArrow.show();
       } else {
@@ -157,7 +157,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.subscriptions.destroy();
       this.subscriptions.add(election.remote.field('body').onUpdate(function(newBody) {
         this.bodyTextarea.val(newBody);
-        this.bodyDiv.html(newBody);
       }, this));
 
       this.subscriptions.add(election.onRemoteDestroy(function() {

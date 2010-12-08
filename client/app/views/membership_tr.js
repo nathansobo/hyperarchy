@@ -1,7 +1,7 @@
 _.constructor("Views.MembershipTr", View.Template, {
   content: function(params) { with(this.builder) {
     var membership = params.membership;
-    tr(function() {
+    tr({'class': "membershipTr"}, function() {
       td(membership.fullName());
       td(membership.emailAddress());
       td({'class': "role"}, function() {

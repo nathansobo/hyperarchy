@@ -75,7 +75,7 @@ _.constructor("Views.WelcomeGuide", View.Template, {
           this.hide();
           return;
         } else {
-          this.find("#welcomeGuideOrganizationName").html(organization.name());
+          this.find("#welcomeGuideOrganizationName").bindHtml(organization, 'name');
           this.show();
         }
 

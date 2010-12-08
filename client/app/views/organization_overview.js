@@ -62,11 +62,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         if (membership) membership.update({lastVisited: new Date()});
 
         this.subscriptions.destroy();
-        this.subscriptions.add(this.organization().field('name').onUpdate(function(newName) {
-          this.organizationName.html(newName);
-        }, this));
 
-        this.organizationName.html(this.organization().name());
+        this.organizationName.bindHtml(this.organization(), 'name');
         this.displayElections();
       }
     },
