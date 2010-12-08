@@ -49,15 +49,15 @@ class Election < Monarch::Model::Record
       where(Membership[:user_id].neq(creator_id)).
       join_through(User)
 
-
-
     unless notify_users.empty?
-      to = notify_users.map(&:email_address)
+      to_addresses = notify_users.map(&:email_address)
       subject = email_subject
       body = email_body
 
       Hyperarchy.defer do
-        Mailer.send(:to => to, :subject => subject, :body => body)
+        to_addresses.each do |to_address|
+          Mailer.send(:to => to_address, :subject => subject, :body => body)
+        end
       end
     end
   end
