@@ -29,7 +29,7 @@ _.constructor("Views.Invite", View.Template, {
               b.label({'for': checkboxId},  organization.name());
             });
           });
-        },
+        }
       });
 
       a({'class': "glossyBlack roundedButton", href: "#"}, 'Send Invitations').ref('sendInvitationsButton').click('sendInvitations');
