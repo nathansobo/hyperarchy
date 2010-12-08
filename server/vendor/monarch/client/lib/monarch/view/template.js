@@ -107,9 +107,16 @@ _.constructor("Monarch.View.Template", {
 
     remove: function($super, selector, keepData) {
       if (!keepData && this.beforeRemove) this.beforeRemove();
+      this.cleanUpBindHtmlSubscriptions();
       var result = $super(selector, keepData);
       if (!keepData && this.afterRemove) this.afterRemove();
       return result;
+    },
+
+    cleanUpBindHtmlSubscriptions: function() {
+      this.find("*[htmlIsBound=true]").each(function() {
+        $(this).data('bindHtmlSubscription').destroy();
+      });
     },
 
     model: {
