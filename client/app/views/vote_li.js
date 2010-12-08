@@ -20,7 +20,7 @@ _.constructor("Views.VoteLi", View.Template, {
         return;
       }
 
-      this.name.bindHtml(user, 'fullName');
+      this.name.html(user.fullName());
       this.avatar.user(user);
       this.updateVotedAt();
       this.show();
