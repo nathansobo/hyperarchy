@@ -123,7 +123,13 @@ module Hyperarchy
 
       memberships = organizations.map do |organization|
         email_addresses.map do |email_address|
-          organization.memberships.create!(:email_address => email_address)
+          if existing_user = User.find(:email_address => email_address)
+            organization.memberships.find_or_create(:user => existing_user)
+          elsif existing_invitation = Invitation.find(:sent_to_address => email_address)
+            organization.memberships.find_or_create(:invitation => existing_invitation)
+          else
+            organization.memberships.create!(:email_address => email_address)
+          end
         end
       end.flatten
 

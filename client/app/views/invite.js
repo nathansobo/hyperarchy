@@ -26,6 +26,14 @@ _.constructor("Views.Invite", View.Template, {
               b.label({'for': checkboxId},  organization.name());
             });
           });
+        },
+
+        onRemoteInsert: function() {
+          this.parentView.disableOrEnableCheckboxes();
+        },
+
+        onRemoteInsert: function() {
+          this.parentView.disableOrEnableCheckboxes();
         }
       });
 
