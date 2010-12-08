@@ -1498,9 +1498,11 @@ button {
   z-index: 100;
   padding: 20px;
   font-size: 16px; }
-  #app #invite #instructions {
+  #app #invite #instructions, #app #invite #errorMessage {
     margin-bottom: 10px;
     font-size: 20px; }
+  #app #invite #errorMessage {
+    color: red; }
   #app #invite textarea {
     padding: 5px;
     width: 100%;
@@ -1508,6 +1510,8 @@ button {
     overflow-y: auto;
     margin-bottom: 20px;
     resize: none; }
+    #app #invite textarea.error {
+      border-color: red; }
   #app #invite #whichOrganizations {
     margin-bottom: 5px; }
   #app #invite ol {

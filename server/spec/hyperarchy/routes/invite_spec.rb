@@ -19,6 +19,8 @@ describe "POST /invite", :type => :rack do
   it "creates a pending membership for each of the requested organizations" do
     login_as owner
 
+    Invitation.find(:sent_to_address => "existing@example.com").should_not be_nil
+
     email_addresses = "nathan@example.com, stephanie@example.com, existing@example.com, #{member.email_address}"
     post "/invite", :email_addresses => email_addresses, :organization_ids => [organization_1.id, organization_2.id].to_json
     last_response.should be_ok
@@ -50,5 +52,11 @@ describe "POST /invite", :type => :rack do
     post "/invite", :email_addresses => "foo@example.com", :organization_ids => [organization_1.id, organization_2.id].to_json
 
     last_response.status.should == 401
+  end
+
+  it "if the email adresses are invalid, responds with a failure" do
+    login_as member
+    post "/invite", :email_addresses => "gar% ba$ge @ zz", :organization_ids => [organization_1.id].to_json
+    last_response.body_from_json["successful"].should be_false 
   end
 end

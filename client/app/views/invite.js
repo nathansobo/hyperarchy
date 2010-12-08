@@ -5,7 +5,11 @@ _.constructor("Views.Invite", View.Template, {
 
       div({id: "instructions", 'class': "largeFont"},
         "Enter one or more email addresses, separated by commas:"
-      );
+      ).ref('instructions');
+
+      div({id: "errorMessage"},
+        "Sorry, there was a problem with the format of your email addresses."
+      ).ref('errorMessage');
 
       div(function() {
         textarea().ref('emailAddresses');
@@ -18,23 +22,14 @@ _.constructor("Views.Invite", View.Template, {
 
       subview('organizations', Views.SortedList, {
         buildElement: function(organization) {
-          var parentView = this.parentView;
           return Monarch.View.build(function(b) {
             var checkboxId = "inviteTo" + organization.id();
             b.li(function() {
-              b.input({type: "checkbox", checked: true, value: organization.id(), id: checkboxId}).change(parentView.hitch('disableOrEnableCheckboxes'));
+              b.input({type: "checkbox", checked: true, value: organization.id(), id: checkboxId});
               b.label({'for': checkboxId},  organization.name());
             });
           });
         },
-
-        onRemoteInsert: function() {
-          this.parentView.disableOrEnableCheckboxes();
-        },
-
-        onRemoteInsert: function() {
-          this.parentView.disableOrEnableCheckboxes();
-        }
       });
 
       a({'class': "glossyBlack roundedButton", href: "#"}, 'Send Invitations').ref('sendInvitationsButton').click('sendInvitations');
@@ -46,21 +41,19 @@ _.constructor("Views.Invite", View.Template, {
       this.defer(function() {
         this.emailAddresses.elastic();
       });
+      this.emailAddresses.bind('keydown', 'return', this.bind(function(e) {
+        this.sendInvitationsButton.click();
+        e.preventDefault();
+      }));
     },
 
     beforeShow: function() {
       this.organizations.relation(Application.currentUser().organizationsPermittedToInvite());
-      this.disableOrEnableCheckboxes();
       $("#darkenBackground").one('click', this.hitch('hide'));
-    },
-
-    disableOrEnableCheckboxes: function() {
-      var checkedBoxes = this.organizations.find(":checked");
-      if (checkedBoxes.length === 1) {
-        checkedBoxes.attr('disabled', true);
-      } else {
-        checkedBoxes.attr('disabled', false);
-      }
+      this.instructions.show();
+      this.errorMessage.hide();
+      this.emailAddresses.val("");
+      this.emailAddresses.removeClass("error");
     },
 
     afterHide: function() {
@@ -79,7 +72,13 @@ _.constructor("Views.Invite", View.Template, {
         .onSuccess(function() {
           this.sendInvitationsButton.attr('disabled', false);
           this.hide();
+        }, this)
+        .onFailure(function() {
+          this.instructions.hide();
+          this.errorMessage.show();
+          this.emailAddresses.addClass('error');
         }, this);
+
       e.preventDefault();
     }
   }

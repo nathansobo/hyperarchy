@@ -14,6 +14,7 @@
 //= require <jquery.placeheld>
 //= require <jquery.phpdate>
 //= require <jquery.tooltip.v.1.1>
+//= require <jquery.hotkeys>
 //= require "models"
 //= require "views"
 //= require "controllers"

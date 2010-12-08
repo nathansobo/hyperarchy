@@ -110,7 +110,13 @@ module Hyperarchy
     end
 
     post "/invite" do
-      email_addresses = Mail::AddressList.new(params[:email_addresses]).addresses.map(&:address)
+
+      begin
+        email_addresses = Mail::AddressList.new(params[:email_addresses]).addresses.map(&:address)
+      rescue Mail::Field::ParseError => e
+        halt unsuccessful_json_response
+      end
+
       organizations = params[:organization_ids].from_json.map {|id| Organization.find(id)}
 
       unless current_user.admin?
@@ -126,7 +132,7 @@ module Hyperarchy
           if existing_user = User.find(:email_address => email_address)
             organization.memberships.find_or_create(:user => existing_user)
           elsif existing_invitation = Invitation.find(:sent_to_address => email_address)
-            organization.memberships.find_or_create(:invitation => existing_invitation)
+            organization.memberships.find_or_create(:invitation_id => existing_invitation.id)
           else
             organization.memberships.create!(:email_address => email_address)
           end
