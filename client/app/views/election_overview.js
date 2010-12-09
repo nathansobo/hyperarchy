@@ -81,6 +81,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
       div({'class': "grid4"}, function() {
         subview('rankedCandidatesList', Views.RankedCandidatesList);
       });
+
+      div({'class': "clear"});
     });
   }},
 
@@ -92,6 +94,13 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.defer(function() {
         this.find('textarea').elastic();
       });
+
+      this.defer(function() {
+        this.fillVerticalSpace();
+      });
+      $(window).resize(this.bind(function() {
+        this.fillVerticalSpace();
+      }));
     },
 
     navigate: function(state) {
@@ -232,9 +241,16 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       if (instantly) {
         this.createCandidateForm.hide();
-        whenDone();
+        this.votesList.adjustHeight();
+        if (whenDone) whenDone();
       } else {
-        this.createCandidateForm.slideUp('fast', whenDone || _.identity);
+        var cancelResize = _.repeat(function() {
+          this.votesList.adjustHeight();
+        }, this);
+        this.createCandidateForm.slideUp('fast', function() {
+          cancelResize();
+          if (whenDone) whenDone();
+        });
       }
 
       return false;

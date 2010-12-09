@@ -1,5 +1,8 @@
 #app {
   #electionOverview {
+    clear: both;
+    overflow-y: hidden;
+
     .expandArrow {
       float: left;
       margin-right: 5px;

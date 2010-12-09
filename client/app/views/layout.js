@@ -1,6 +1,5 @@
 _.constructor("Views.Layout", View.Template, {
   content: function() { with(this.builder) {
-
     div({id: "application"}, function() {
       div({id: "notification", style: "display: none"}).ref("notification");
       div({id: "darkenBackground", style: "display: none"})
@@ -25,7 +24,6 @@ _.constructor("Views.Layout", View.Template, {
           div({'class': "grid3 alpha"}, function() {
             div({id: "logo"}).click('goToLastOrganization');
           });
-
           div({'class': "grid9 omega"}, function() {
             a({'class': "logout headerItem", href: "#"}, "Log Out").click(function() {
               $("<form action='/logout' method='post'>").appendTo($("body")).submit();
@@ -55,6 +53,7 @@ _.constructor("Views.Layout", View.Template, {
               }).ref('addOrganizationLi')
             }).ref('organizationsMenu');
           });
+          div({'class': "clear"});
         });
         subview("welcomeGuide", Views.WelcomeGuide);
       }).ref('body');
