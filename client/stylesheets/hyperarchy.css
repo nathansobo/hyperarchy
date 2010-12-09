@@ -1009,9 +1009,8 @@ button {
 #app #header {
   border-bottom: 1px solid #cccccc;
   position: relative;
-  margin-bottom: 15px; }
-  #app #header > div {
-    height: 30px; }
+  margin-bottom: 15px;
+  height: 30px; }
   #app #header .headerItem {
     float: right;
     margin-top: 2px;
