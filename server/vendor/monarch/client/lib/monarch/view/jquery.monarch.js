@@ -26,7 +26,7 @@ jQuery.fn.extend({
   },
 
   fillVerticalSpace: function(spaceAtBottom) {
-    var height = $(window).height() - this.offset().top - spaceAtBottom;
+    var height = $(window).height() - this.offset().top - (spaceAtBottom || 0);
     this.height(height);
   }
 });
