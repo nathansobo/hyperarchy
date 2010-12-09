@@ -57,15 +57,15 @@ _.constructor("Views.ElectionOverview", View.Template, {
           div({'class': "clear"});
         }).ref('createCandidateForm');
 
-        a({id: "cancelCreateCandidateButton", 'class': "glossyLightGray roundedButton", style: "display: none;", href: "#"}, function() {
-          div({'class': "cancelX"});
+        a({id: "cancelCreateCandidateButton", 'class': "glossyBlack roundedButton", style: "display: none;", href: "#"}, function() {
+          div({'class': "cancelX white"});
         }).ref('cancelCreateCandidateButton')
           .click(function(view) {
             view.hideCreateCandidateForm();
             return false;
           });
 
-        a({id: "createCandidateButton", href: "#", 'class': "glossyLightGray roundedButton"}, "Suggest An Answer")
+        a({id: "createCandidateButton", href: "#", 'class': "glossyBlack roundedButton"}, "Suggest An Answer")
           .click('createCandidateButtonClicked')
           .ref('createCandidateButton');
 
