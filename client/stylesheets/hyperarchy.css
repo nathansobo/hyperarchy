@@ -599,6 +599,9 @@ textarea {
 a, a:visited {
   color: #0e40ac; }
 
+a:active, a:focus {
+  outline: 0; }
+
 strong {
   font-weight: bold; }
 
@@ -638,6 +641,12 @@ button {
   background-color: #6b6b6b;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), #6b6b6b;
   background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #6b6b6b; }
+
+.glossyLightGray, .glossyLightGray:visited {
+  color: black;
+  background-color: #f2f2f2;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), #f2f2f2;
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #f2f2f2; }
 
 .roundedButton {
   font-size: 20px;
@@ -688,14 +697,18 @@ button {
   margin-bottom: 5px;
   font-size: 14px; }
 
-.dismissX {
-  float: right;
-  margin-left: 30px;
-  margin-bottom: 30px;
-  cursor: pointer;
+.cancelX, .rightCancelX {
   height: 21px;
   width: 21px;
-  background-image: url(/images/x_21x21_dark.png); }
+  background-image: url(/images/x_21x21_dark.png);
+  background-repeat: no-repeat;
+  cursor: pointer;
+  display: block; }
+
+.rightCancelX {
+  float: right;
+  margin-left: 30px;
+  margin-bottom: 30px; }
 
 #logo {
   background-image: url(/images/logo_tiny.png);
@@ -1211,26 +1224,37 @@ button {
   float: right;
   top: 2px;
   position: relative; }
+#app #electionOverview #cancelCreateCandidateButton {
+  float: left;
+  position: relative;
+  padding: 12px;
+  width: 22;
+  height: 22; }
+#app #electionOverview #createCandidateButton {
+  padding: 10px;
+  display: block;
+  text-align: center; }
+  #app #electionOverview #createCandidateButton.open {
+    width: 230px;
+    float: right; }
 #app #electionOverview div#createCandidateForm {
-  margin-top: 20px;
-  clear: both; }
+  margin-top: 20px; }
+  #app #electionOverview div#createCandidateForm label {
+    font-size: 15px;
+    margin-bottom: 5px; }
   #app #electionOverview div#createCandidateForm textarea {
-    font-size: 21px;
+    font-size: 15px;
     width: 100%;
     margin-bottom: 10px;
-    padding: 10px;
+    padding: 5px;
     display: block;
     resize: none;
-    height: 95px; }
-  #app #electionOverview div#createCandidateForm .loading {
-    float: right;
-    margin-right: 4px;
-    position: relative;
-    top: 3px; }
-  #app #electionOverview div#createCandidateForm button {
-    display: block;
-    font-size: 15px;
-    float: right; }
+    line-height: 1.1; }
+    #app #electionOverview div#createCandidateForm textarea#shortAnswer {
+      height: 49px;
+      margin-bottom: 5px; }
+    #app #electionOverview div#createCandidateForm textarea#optionalDetails {
+      height: 80px; }
 #app #electionOverview #votes {
   margin-top: 40px; }
   #app #electionOverview #votes #voteCount {
@@ -1266,13 +1290,13 @@ button {
           color: #999999;
           font-size: 12px; }
 #app #electionOverview .candidatesListHeader {
-  font-size: 16px;
+  font-size: 15px;
   color: #999999;
   margin-bottom: 5px; }
 #app #electionOverview .bigLoading {
   position: absolute; }
 #app #electionOverview ol.candidates {
-  background-color: #f4f2f2;
+  background-color: #f2f2f2;
   -moz-box-shadow: #c8c7c7 0px 0px 5px inset;
   -webkit-box-shadow: #c8c7c7 0px 0px 5px inset;
   overflow-x: hidden;

@@ -1,7 +1,7 @@
 _.constructor("Views.Invite", View.Template, {
   content: function() { with(this.builder) {
     div({id: "invite", 'class': "dropShadow", style: "display: none;"}, function() {
-      div({'class': "dismissX"}).click('hide');
+      div({'class': "rightCancelX"}).click('hide');
 
       div({id: "instructions", 'class': "largeFont"},
         "Enter one or more email addresses, separated by commas:"
