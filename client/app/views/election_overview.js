@@ -269,19 +269,11 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       this.election().candidates().create({body: body, details: details})
         .onSuccess(function() {
-          var enableForm = this.bind(function() {
+          this.hideCreateCandidateForm(this.bind(function() {
             this.createCandidateBodyTextarea.attr('disabled', false);
             this.createCandidateDetailsTextarea.attr('disabled', false);
             this.candidateCreationDisabled = false;
-          });
-
-          if (this.election().candidates().size() === 1) {
-            this.delay(function() {
-              this.hideCreateCandidateForm(enableForm);
-            }, 200)
-          } else {
-            this.hideCreateCandidateForm(enableForm);
-          }
+          }));
         }, this);
     },
 
