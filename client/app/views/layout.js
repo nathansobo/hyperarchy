@@ -19,44 +19,48 @@ _.constructor("Views.Layout", View.Template, {
         input({type: "submit", 'class': "largeFont", value: "Send Feedback"}).click('sendFeedback');
       }).ref("feedbackForm");
 
-      div({'class': "container12"}, function() {
-        div({id: "header", 'class': "grid12"}, function() {
-          div({'class': "grid3 alpha"}, function() {
-            div({id: "logo"}).click('goToLastOrganization');
-          });
-          div({'class': "grid9 omega"}, function() {
-            a({'class': "logout headerItem", href: "#"}, "Log Out").click(function() {
-              $("<form action='/logout' method='post'>").appendTo($("body")).submit();
-            });
-            a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
+      div({id: "header"}, function() {
+        div({id: "logoWrapper"}, function() {
+          div({id: "logo"});
+        }).click('goToLastOrganization');
 
-            a({id: "inviteLink", 'class': "headerItem", href: "#"}, "Invite")
-              .ref('inviteLink')
-              .click('showInviteForm');
-
-            a({'class': "headerItem", href: "#view=account"}, "Account");
-
-            a({'class': "headerItem dropdownLink", href: "#"}, "Admin")
-              .ref('adminMenuLink')
-              .click('toggleAdminMenu');
-
-            ol({'class': "dropdownMenu"}, function() {
-            }).ref('adminMenu');
-
-            a({'class': "headerItem dropdownLink", href: "#"}, "Organizations")
-              .ref('organizationsMenuLink')
-              .click('toggleOrganizationsMenu');
-
-            ol({'class': "dropdownMenu"}, function() {
-              li(function() {
-                a({href: "#view=addOrganization"}, "Add Organization...")
-              }).ref('addOrganizationLi')
-            }).ref('organizationsMenu');
-          });
-          div({'class': "clear"});
+        a({'class': "logout headerItem", href: "#"}, "Log Out").click(function() {
+          $("<form action='/logout' method='post'>").appendTo($("body")).submit();
         });
-        subview("welcomeGuide", Views.WelcomeGuide);
-      }).ref('body');
+        a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
+
+        a({id: "inviteLink", 'class': "headerItem", href: "#"}, "Invite")
+          .ref('inviteLink')
+          .click('showInviteForm');
+
+        a({'class': "headerItem", href: "#view=account"}, "Account");
+
+        a({'class': "headerItem dropdownLink", href: "#"}, "Admin")
+          .ref('adminMenuLink')
+          .click('toggleAdminMenu');
+
+        ol({'class': "dropdownMenu"}, function() {
+        }).ref('adminMenu');
+
+        a({'class': "headerItem dropdownLink", href: "#"}, "Organizations")
+          .ref('organizationsMenuLink')
+          .click('toggleOrganizationsMenu');
+
+        ol({'class': "dropdownMenu"}, function() {
+          li(function() {
+            a({href: "#view=addOrganization"}, "Add Organization...")
+          }).ref('addOrganizationLi')
+        }).ref('organizationsMenu');
+        div({'class': "clear"});
+
+        h1({id: "organizationName", style: "font-size: 23px; margin-top: 10px;"}, "Alpha Testers");
+      });
+
+      div({id: "mainContent"}, function() {
+        div({'class': "container12"}, function() {
+          subview("welcomeGuide", Views.WelcomeGuide);
+        }).ref('body');
+      });
     })
   }},
 

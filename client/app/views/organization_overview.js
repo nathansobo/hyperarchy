@@ -33,6 +33,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         
       }).ref('electionsList');
 
+      div({'class': "clear"});
       div({'class': "bigLoading", 'style': "display: none;"}).ref('loading');
     });
   }},
