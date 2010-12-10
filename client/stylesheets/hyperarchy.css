@@ -1214,10 +1214,11 @@ button {
       margin-top: 2px; }
       #app #electionOverview #electionOverviewHeader #electionBodyContainer .expandArrow {
         float: left;
+        margin-left: 7px;
         margin-right: 5px;
         margin-top: 8px; }
       #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight {
-        width: 602px;
+        width: 595px;
         display: inline-block; }
         #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight h2 {
           display: inline;

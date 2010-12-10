@@ -104,6 +104,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     navigate: function(state) {
+      this.showCreateCandidateFormButton.hide();
+      this.hideCreateCandidateForm(true); 
+      this.candidatesList.hide();
       this.rankedCandidatesList.hide();
       this.candidatesList.adjustHeight();
       this.rankedCandidatesList.adjustHeight();
@@ -116,9 +119,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.election(election);
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
       if (election.candidates().empty()) {
-        this.candidatesList.hide();
-        this.rankedCandidatesList.hide();
+        this.showCreateCandidateForm("instantly");
       } else {
+        this.showCreateCandidateFormButton.show();
+        this.hideCreateCandidateForm(true);
         this.candidatesList.show();
         this.rankedCandidatesList.show();
       }
@@ -151,11 +155,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
     election: {
       afterChange: function(election) {
         Application.currentOrganizationId(election.organizationId());
-        if (election.candidates().empty()) {
-          this.showCreateCandidateForm("instantly");
-        } else {
-          this.hideCreateCandidateForm(_.identity, "instantly");
-        }
         this.populateElectionDetails(election);
         this.subscribeToElectionChanges(election);
         this.candidatesList.election(election);
@@ -189,6 +188,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       this.subscriptions.add(election.candidates().onRemoteInsert(function() {
         if (this.candidatesList.is(":hidden")) {
+          this.showCreateCandidateFormButton.show();
+          this.hideCreateCandidateForm(true);
           this.candidatesList.fadeIn();
           this.rankedCandidatesList.fadeIn();
         }
@@ -197,7 +198,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.subscriptions.add(election.candidates().onRemoteRemove(function() {
         if (election.candidates().empty()) {
           this.candidatesList.fadeOut();
-          this.rankedCandidatesList.fadeOut();
+          this.showCreateCandidateFormButton.hide();
+          this.rankedCandidatesList.fadeOut(this.bind(function() {
+            this.showCreateCandidateForm();
+          }));
         }
       }, this));
     },
@@ -232,7 +236,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       }
     },
 
-    hideCreateCandidateForm: function(whenDone, instantly) {
+    hideCreateCandidateForm: function(instantly, whenDone) {
       this.showCreateCandidateFormButton.removeClass('pressed');
 
       this.createCandidateBodyTextarea.val("");
@@ -271,7 +275,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       this.election().candidates().create({body: body, details: details})
         .onSuccess(function() {
-          this.hideCreateCandidateForm(this.bind(function() {
+          this.hideCreateCandidateForm(false, this.bind(function() {
             this.createCandidateBodyTextarea.attr('disabled', false);
             this.createCandidateDetailsTextarea.attr('disabled', false);
             this.candidateCreationDisabled = false;
