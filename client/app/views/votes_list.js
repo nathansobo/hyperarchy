@@ -1,9 +1,8 @@
 _.constructor("Views.VotesList", View.Template, {
   content: function() { with(this.builder) {
     div({id: "votes", style: "display: none;"}, function() {
-      div({id: "voteCount"}, function() {
+      div({id: "voteCount", 'class': "columnHeader"}, function() {
         span("").ref('voteCount');
-        span({id: "instructions"}, "Click to view");
       }).ref('headerArea');
 
       subview('votes', Views.SortedList, {

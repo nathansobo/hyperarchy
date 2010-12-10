@@ -1,20 +1,20 @@
 _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'id': "electionOverview"}, function() {
-      div({'class': "grid12"}, function() {
-        h1({'class': "clickable", 'style': "margin-bottom: 15px;"})
-          .click('goToOrganization')
-          .ref('organizationName');
-      });
+      div({id: "electionOverviewHeader"}, function() {
+        div({'class': "grid8"}, function() {
+          h1({'class': "clickable", style: "display: none"})
+            .click('goToOrganization')
+            .ref('organizationName');
 
-      div({'class': "grid4"}, function() {
-        div({style: "margin-bottom: 20px;"}, function() {
-          div(function() {
+          div({id: "electionBodyContainer"}, function() {
             div({'class': "expandArrow", style: "display: none;"})
-              .ref('expandArrow')
+              .ref('expandLink')
               .click('expandOrContract');
 
-            div({id: "electionBodyContainer"}, function() {
+            div({id: "electionBodyContainerRight"}, function() {
+              h2({'class': "electionBody"}).ref('bodyElement');
+
               textarea({'class': "electionBody", style: "display: none;"})
                 .ref('bodyTextarea')
                 .bind('keyup paste', 'enableOrDisableSaveButton')
@@ -24,54 +24,27 @@ _.constructor("Views.ElectionOverview", View.Template, {
                     event.preventDefault();
                   }
                 });
-              div({'class': "electionBody largeFont"}).ref('bodyDiv');
+
+              div({id: "expandedArea", style: "display: none;"}, function() {
+                button("Save")
+                  .ref('saveButton')
+                  .click('updateElectionBody');
+                button("Delete Question")
+                  .click('destroyElection');
+                div({'class': "loading", style: "display: none;"}).ref('electionSpinner');
+                div({'class': "clear"});
+              }).ref('expandedArea');
             });
-
-            div({'class': "clear"});
           });
-
-          div({id: "expandedArea", style: "display: none;"}, function() {
-            button("Save")
-              .ref('saveButton')
-              .click('updateElectionBody');
-            button("Delete Question")
-              .click('destroyElection');
-            div({'class': "loading", style: "display: none;"}).ref('electionSpinner');
-            div({'class': "clear"});
-          }).ref('expandedArea');
         });
 
-        div({id: "createCandidateForm", style: "display: none;"}, function() {
-          label("Short Answer");
-          textarea({id: "shortAnswer"})
-            .ref('createCandidateBodyTextarea')
-            .keypress(function(view, e) {
-              if (e.keyCode === 13) {
-                view.createCandidateButton.click();
-                return false;
-              }
-            });
-
-          label("Optional Details")
-          textarea({id: "optionalDetails"}).ref('createCandidateDetailsTextarea');
-          div({'class': "clear"});
-        }).ref('createCandidateForm');
-
-        a({id: "cancelCreateCandidateButton", 'class': "glossyBlack roundedButton", style: "display: none;", href: "#"}, function() {
-          div({'class': "cancelX white"});
-        }).ref('cancelCreateCandidateButton')
-          .click(function(view) {
-            view.hideCreateCandidateForm();
-            return false;
-          });
-
-        a({id: "createCandidateButton", href: "#", 'class': "glossyBlack roundedButton"}, "Suggest An Answer")
-          .click('createCandidateButtonClicked')
-          .ref('createCandidateButton');
+        div({'class': 'grid4'}, function() {
+          a({id: "showCreateCandidateFormButton", 'class': "glossyLightGray roundedButton"}, "Suggest An Answer")
+            .click('showOrHideCreateCandidateForm')
+            .ref('showCreateCandidateFormButton');
+        })
 
         div({'class': "clear"});
-
-        subview('votesList', Views.VotesList);
       });
 
       div({'class': "grid4"}, function() {
@@ -80,6 +53,33 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       div({'class': "grid4"}, function() {
         subview('rankedCandidatesList', Views.RankedCandidatesList);
+      });
+
+      div({'class': "grid4"}, function() {
+        div({id: "createCandidateForm", style: "display: none;"}, function() {
+          div({'class': "columnHeader"}, "Enter Your Answer");
+          
+          textarea({id: "shortAnswer"})
+            .ref('createCandidateBodyTextarea')
+            .keypress(function(view, e) {
+              if (e.keyCode === 13) {
+                view.createCandidateButton.click();
+                return false;
+              }
+            });
+          textarea({id: "optionalDetails", placeholder: "Further Details (Optional)"}).ref('createCandidateDetailsTextarea');
+          div({'class': "clear"});
+
+          a({id: "createCandidateButton", 'class': "glossyLightGray roundedButton", href: "#"}, "Suggest This Answer")
+            .ref('createCandidateButton')
+            .click('createCandidate');
+
+          div({'class': "clear"});
+          
+        }).ref('createCandidateForm');
+
+
+        subview('votesList', Views.VotesList);
       });
 
       div({'class': "clear"});
@@ -167,11 +167,11 @@ _.constructor("Views.ElectionOverview", View.Template, {
     populateElectionDetails: function(election) {
       this.organizationName.bindHtml(election.organization(), 'name');
       this.bodyTextarea.val(election.body());
-      this.bodyDiv.bindHtml(election, 'body');
+      this.bodyElement.bindHtml(election, 'body');
       if (election.editableByCurrentUser()) {
-        this.expandArrow.show();
+        this.expandLink.show();
       } else {
-        this.expandArrow.hide();
+        this.expandLink.hide();
       }
       this.contract(true);
       this.votesList.adjustHeight();
@@ -202,30 +202,30 @@ _.constructor("Views.ElectionOverview", View.Template, {
       }, this));
     },
 
-    createCandidateButtonClicked: function() {
+    showOrHideCreateCandidateForm: function() {
       if (this.createCandidateForm.is(":visible")) {
-        this.createCandidate();
+        this.hideCreateCandidateForm();
       } else {
         this.showCreateCandidateForm();
       }
       return false;
     },
 
-    showCreateCandidateForm: function(showInstantly) {
+    showCreateCandidateForm: function(instantly) {
+      this.showCreateCandidateFormButton.addClass('pressed');
+
       var cancelResize = _.repeat(function() {
         this.votesList.adjustHeight();
       }, this);
 
       var afterFormIsShown = this.bind(function() {
         this.createCandidateBodyTextarea.focus();
-        this.cancelCreateCandidateButton.show();
-        this.createCandidateButton.addClass('open');
-        this.createCandidateButton.html("Suggest This Answer");
         cancelResize();
       });
 
-      if (showInstantly) {
+      if (instantly) {
         this.createCandidateForm.show();
+        this.votesList.adjustHeight();
         afterFormIsShown();
       } else {
         this.createCandidateForm.slideDown('fast', afterFormIsShown);
@@ -233,11 +233,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     hideCreateCandidateForm: function(whenDone, instantly) {
+      this.showCreateCandidateFormButton.removeClass('pressed');
+
       this.createCandidateBodyTextarea.val("");
       this.createCandidateDetailsTextarea.val("");
-      this.createCandidateButton.removeClass('open');
-      this.createCandidateButton.html("Suggest An Answer");
-      this.cancelCreateCandidateButton.hide();
 
       if (instantly) {
         this.createCandidateForm.hide();
@@ -256,8 +255,11 @@ _.constructor("Views.ElectionOverview", View.Template, {
       return false;
     },
 
-    createCandidate: function() {
-      if (this.candidateCreationDisabled) return false;
+    createCandidate: function(elt, e) {
+      elt.blur();
+      e.preventDefault();
+
+      if (this.candidateCreationDisabled) return;
 
       var body = this.createCandidateBodyTextarea.val();
       var details = this.createCandidateDetailsTextarea.val();
@@ -291,30 +293,31 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     expand: function() {
       this.expanded = true;
-      this.expandArrow.addClass('expanded');
+      this.expandLink.addClass('expanded');
       this.bodyTextarea.show();
       this.bodyTextarea.keyup();
       this.bodyTextarea.focus();
-      this.bodyDiv.hide();
+      this.bodyElement.hide();
 
-      this.votesList.adjustHeight();
+      $(window).resize();
       this.expandedArea.slideDown('fast', _.repeat(function() {
-        this.votesList.adjustHeight();
-      }, this));
+        $(window).resize();
+      }));
     },
 
     contract: function(dontAnimate) {
-      this.expandArrow.removeClass('expanded');
+      this.expandLink.removeClass('expanded');
       this.expanded = false;
       this.bodyTextarea.hide();
-      this.bodyDiv.show();
+      this.bodyElement.show();
 
       if (dontAnimate) {
         this.expandedArea.hide();
+        $(window).resize();
       } else {
         this.expandedArea.slideUp('fast', _.repeat(function() {
-          this.votesList.adjustHeight();
-        }, this));
+          $(window).resize();
+        }));
       }
 
       this.votesList.adjustHeight();

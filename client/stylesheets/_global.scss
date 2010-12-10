@@ -13,10 +13,7 @@ textarea {
 
 a, a:visited {
   color: $blue;
-}
-
-a:active, a:focus {
-  outline: 0;
+  cursor: pointer;
 }
 
 strong {
@@ -84,6 +81,7 @@ button {
 
 .roundedButton {
   font-size: 20px;
+  text-align: center;
   border: 0;
   padding: 3px 7px;
   text-decoration:none;

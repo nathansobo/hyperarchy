@@ -1,7 +1,7 @@
 _.constructor("Views.CandidatesList", View.Template, {
   content: function() { with(this.builder) {
     div({id: "candidatesList", style: "display: none;"}, function() {
-      div({'class': "candidatesListHeader"}, "Current Consensus");
+      div({'class': "columnHeader"}, "Current Consensus");
 
       subview('candidatesList', Views.SortedList, {
         rootAttributes: { id: "candidates", 'class': "candidates" },

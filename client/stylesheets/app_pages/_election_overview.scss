@@ -3,67 +3,70 @@
     clear: both;
     overflow-y: hidden;
 
-    .expandArrow {
-      float: left;
-      margin-right: 5px;
-      position: relative;
-      top: 7px;
-    }
+    #electionOverviewHeader {
+      margin-bottom: 40px;
 
-    #electionBodyContainer {
-      float: left;
-      width: 282px;
-      margin-bottom: 10px;
+      h1 {
+        margin-bottom: 0;
+      }
 
-      textarea.electionBody {
+      #electionBodyContainer {
         margin-top: 2px;
-        width: 100%;
-        resize: none;
-        font-size: 21px;
-        padding: 4px;
-        height: 50px;
+
+        .expandArrow {
+          float: left;
+          margin-right: 5px;
+          margin-top: 8px;
+        }
+
+        #electionBodyContainerRight {
+          width: 602px;
+          display: inline-block;
+
+          h2 {
+            display: inline;
+            margin-right: 5px;
+          }
+
+          textarea.electionBody {
+            width: 100%;
+            resize: none;
+            font-size: 23px;
+            padding: 4px;
+            height: 50px;
+            margin-bottom: 10px;
+          }
+
+          #expandedArea {
+            button {
+              float: right;
+              margin-left: 5px;
+            }
+
+            .loading {
+              float: right;
+              top: 2px;
+              position: relative;
+            }
+          }
+        }
       }
     }
 
-    #expandedArea {
-      button {
-        float: right;
-        margin-left: 5px;
-      }
-
-      .loading {
-        float: right;
-        top: 2px;
-        position: relative;
-      }
-    }
-
-    #cancelCreateCandidateButton {
-      float: left;
-      position: relative;
-      padding: 12px;
-      width: 46 - 12 * 2;
-      height: 46 - 12 * 2;
-    }
-
-    #createCandidateButton {
-      padding: 10px;
-      display: block;
+    #showCreateCandidateFormButton {
+      padding: 6px 20px;
+      float: right;
+      display: inline-block;
       text-align: center;
 
-      &.open {
-        width: 230px;
-        float: right;
+      &.pressed {
+        -webkit-box-shadow: 0px 0px 4px black inset;
+        -moz-box-shadow: 0px 0px 4px black inset;
       }
     }
 
     div#createCandidateForm {
-      margin-top: 20px;
-
-      label {
-        font-size: 15px;
-        margin-bottom: 5px;
-      }
+      margin-bottom: 30px;
 
       textarea {
         font-size: 15px;
@@ -73,37 +76,30 @@
         display: block;
         resize: none;
         line-height: 1.1;
+        border: 1px solid #c8c7c7;
 
         &#shortAnswer {
           height: 49px;
-          margin-bottom: 5px;
         }
 
         &#optionalDetails {
           height: 80px;
         }
       }
+
+      #createCandidateButton {
+        display: inline-block;
+        padding: 5px 10px;
+        font-size: 18px;
+      }
     }
 
     #votes {
-      margin-top: 40px;
-
       #voteCount {
-        font-size: 21px;
-        border-bottom: 1px solid gray;
-
-        #instructions {
-          margin-left: 10px;
-          font-size: 14px;
-          color: #999999;
-        }
+        border-bottom: 1px solid #e0e0e0;
 
         &.noVotes {
           border-bottom: none;
-
-          #instructions {
-            display: none;
-          }
         }
       }
 
@@ -143,10 +139,10 @@
       }
     }
 
-    .candidatesListHeader {
-      font-size: 15px;
+    .columnHeader {
+      font-size: 18px;
       color: #999999;
-      margin-bottom: 5px;
+      padding-bottom: 5px;
     }
 
     .bigLoading {
@@ -308,7 +304,7 @@
         }
       }
 
-      .candidatesListHeader {
+      .columnHeader {
         #back {
           float: right;
         }
