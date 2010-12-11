@@ -34,6 +34,7 @@ _.constructor("Controllers.Application", {
   currentOrganizationId: {
     afterChange: function(organizationId) {
       Server.post("/subscribe_to_organization/" + organizationId, { real_time_client_id: Server.realTimeClientId() });
+      this.layout.organization(this.currentOrganization());
       this.welcomeGuide.organization(this.currentOrganization());
     }
   }

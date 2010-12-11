@@ -1081,6 +1081,7 @@ button {
     -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 1px;
     -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 1px;
     width: 940;
+    height: 36;
     margin: 0 auto;
     padding: 5px 30px;
     margin: 0;
@@ -1090,7 +1091,8 @@ button {
       margin: 0;
       font-size: 28px;
       display: inline-block;
-      letter-spacing: 1.1; }
+      letter-spacing: 1.1;
+      cursor: pointer; }
 #app #feedback {
   background: white;
   height: 300px;

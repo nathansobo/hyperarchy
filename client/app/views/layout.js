@@ -59,7 +59,9 @@ _.constructor("Views.Layout", View.Template, {
 
       div({id: "mainContent"}, function() {
         div({id: "orgHeader", 'class': "glossyDarkGray"}, function() {
-          h2({id: "organizationName"}, "Alpha Testers");
+          h2({id: "organizationName"})
+            .click('goToOrganization')
+            .ref('organizationName');
 //          a("Settings");
         });
 
@@ -91,6 +93,13 @@ _.constructor("Views.Layout", View.Template, {
 //      organizationsPermitted.onRemoteInsert(this.hitch('showOrHideInviteLink'));
 //      organizationsPermitted.onRemoteRemove(this.hitch('showOrHideInviteLink'));
       this.showOrHideInviteLink();
+    },
+
+
+    organization: {
+      afterChange: function(organization) {
+        this.organizationName.bindHtml(organization, 'name');
+      }
     },
 
     populateOrganizations: function() {
@@ -231,6 +240,11 @@ _.constructor("Views.Layout", View.Template, {
         this.hideFeedbackForm();
         this.notify("Thanks for the feedback!")
       }, this);
+    },
+
+    goToOrganization: function() {
+      $.bbq.pushState({view: "organization", organizationId: this.organization().id() }, 2);
+      return false;
     },
 
     goToLastOrganization: function() {
