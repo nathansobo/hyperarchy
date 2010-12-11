@@ -748,8 +748,8 @@ button {
 #logo {
   background-image: url(/images/logo_tiny.png);
   background-repeat: no-repeat;
-  width: 139px;
-  height: 19px; }
+  width: 157px;
+  height: 21px; }
 
 #smallLogo {
   display: block;
@@ -1043,7 +1043,7 @@ button {
   width: 1000px;
   margin: 0 auto;
   padding-top: 5px;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   height: auto; }
   #app #header .headerItem {
     float: right;
@@ -1059,7 +1059,8 @@ button {
       padding-right: 15px; }
   #app #header #logoWrapper {
     float: left;
-    margin: 0; }
+    margin: 5px;
+    margin-left: 6px; }
 #app #mainContent {
   background: white;
   width: 1000;
