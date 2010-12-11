@@ -20,43 +20,49 @@ _.constructor("Views.Layout", View.Template, {
       }).ref("feedbackForm");
 
       div({id: "header"}, function() {
-        div({id: "logoWrapper"}, function() {
-          div({id: "logo"});
-        }).click('goToLastOrganization');
-
-        a({'class': "logout headerItem", href: "#"}, "Log Out").click(function() {
-          $("<form action='/logout' method='post'>").appendTo($("body")).submit();
+        div({id: "logoWrapper", 'class': "headerItemX"}, function() {
+          div({id: "logo"}).click('goToLastOrganization');
         });
-        a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
 
+
+        a({'class': "headerItem dropdownLink", href: "#view=account"}, "Account");
         a({id: "inviteLink", 'class': "headerItem", href: "#"}, "Invite")
           .ref('inviteLink')
           .click('showInviteForm');
-
-        a({'class': "headerItem", href: "#view=account"}, "Account");
-
-        a({'class': "headerItem dropdownLink", href: "#"}, "Admin")
-          .ref('adminMenuLink')
-          .click('toggleAdminMenu');
-
-        ol({'class': "dropdownMenu"}, function() {
-        }).ref('adminMenu');
-
-        a({'class': "headerItem dropdownLink", href: "#"}, "Organizations")
-          .ref('organizationsMenuLink')
-          .click('toggleOrganizationsMenu');
-
-        ol({'class': "dropdownMenu"}, function() {
-          li(function() {
-            a({href: "#view=addOrganization"}, "Add Organization...")
-          }).ref('addOrganizationLi')
-        }).ref('organizationsMenu');
+        a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
         div({'class': "clear"});
 
-        h1({id: "organizationName", style: "font-size: 23px; margin-top: 10px;"}, "Alpha Testers");
+
+
+//        a({'class': "logout headerItem", href: "#"}, "Log Out").click(function() {
+//          $("<form action='/logout' method='post'>").appendTo($("body")).submit();
+//        });
+//        a({'class': "headerItem dropdownLink", href: "#"}, "Admin")
+//          .ref('adminMenuLink')
+//          .click('toggleAdminMenu');
+//
+//        ol({'class': "dropdownMenu"}, function() {
+//        }).ref('adminMenu');
+//
+//        a({'class': "headerItem dropdownLink", href: "#"}, "Organizations")
+//          .ref('organizationsMenuLink')
+//          .click('toggleOrganizationsMenu');
+//
+//        ol({'class': "dropdownMenu"}, function() {
+//          li(function() {
+//            a({href: "#view=addOrganization"}, "Add Organization...")
+//          }).ref('addOrganizationLi')
+//        }).ref('organizationsMenu');
+//        div({'class': "clear"});
+        div({'class': "clear"});
       });
 
       div({id: "mainContent"}, function() {
+        div({id: "orgHeader", 'class': "glossyDarkGray"}, function() {
+          h2({id: "organizationName"}, "Alpha Testers");
+//          a("Settings");
+        });
+
         div({'class': "container12"}, function() {
           subview("welcomeGuide", Views.WelcomeGuide);
         }).ref('body');
@@ -73,11 +79,11 @@ _.constructor("Views.Layout", View.Template, {
         this.body.append(view);
       }, this);
 
-      this.populateOrganizations();
+//      this.populateOrganizations();
 
-      var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
-      organizationsPermitted.onRemoteInsert(this.hitch('showOrHideInviteLink'));
-      organizationsPermitted.onRemoteRemove(this.hitch('showOrHideInviteLink'));
+//      var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
+//      organizationsPermitted.onRemoteInsert(this.hitch('showOrHideInviteLink'));
+//      organizationsPermitted.onRemoteRemove(this.hitch('showOrHideInviteLink'));
       this.showOrHideInviteLink();
     },
 

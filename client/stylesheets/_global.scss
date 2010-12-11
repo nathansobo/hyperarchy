@@ -5,7 +5,7 @@ $lightGray: #F2F2F2;
 
 body {
   font: 13px/1.3 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
-  background: #eee;
+  background: #e6e6e6;
 }
 
 textarea {
@@ -60,6 +60,12 @@ button {
   background: -moz-linear-gradient(top, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, .1) 100%), $color;
 }
 
+@mixin semiGlossyColor($color) {
+  background-color: $color;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .33)), color-stop(0.5, rgba(255, 255, 255, .1)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, .1))), $color;
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, .1) 100%), $color;
+}
+
 @mixin borderRadius($radius) {
   -webkit-border-radius: $radius;
   -moz-border-radius: $radius;
@@ -73,6 +79,16 @@ button {
 .glossyGray, .glossyGray:visited {
   color: white;
   @include glossyColor(#6B6B6B);
+}
+
+.glossyDarkGray, .glossyDarkGray:visited {
+  color: white;
+  @include semiGlossyColor(#44464A);
+//  @include semiGlossyColor(#66696E);
+//  @include semiGlossyColor(#717780);
+//  @include semiGlossyColor(#6B6B6B);
+//  @include semiGlossyColor(#555);
+//  @include semiGlossyColor(#be5e3b);
 }
 
 .glossyLightGray, .glossyLightGray:visited {
@@ -95,6 +111,37 @@ button {
 .dropShadow {
   -moz-box-shadow: rgba(0,0,0,.4) 1px 1px 6px;
   -webkit-box-shadow: rgba(0,0,0,.4) 1px 1px 6px;
+}
+
+.dropdownLink {
+  display: inline-block;
+  color: $blue;
+  text-decoration: underline;
+  cursor: pointer;
+  padding-right: 15px;
+
+  background-image: url(/images/expand_arrow_blue.png);
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+.dropdownMenu {
+  z-index: 100;
+  position: absolute;
+  background: white;
+  border: 1px solid #cccccc;
+  border-top: none;
+  display: none;
+  width: auto;
+  -moz-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
+  -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
+  white-space: nowrap;
+
+  a {
+    padding: 2px 4px;
+    display: block;
+    &:hover { background: #fff3c7; }
+  }
 }
 
 .placeheld {
@@ -164,7 +211,7 @@ button {
 #logo {
   background-image: url(/images/logo_tiny.png);
   background-repeat: no-repeat;
-  width: 134px;
+  width: 139px;
   height: 19px;
 }
 

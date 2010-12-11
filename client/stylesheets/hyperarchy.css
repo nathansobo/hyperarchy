@@ -592,7 +592,7 @@ select {
 
 body {
   font: 13px/1.3 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif;
-  background: #eee; }
+  background: #e6e6e6; }
 
 textarea {
   line-height: 1.3; }
@@ -641,6 +641,12 @@ button {
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), #6b6b6b;
   background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #6b6b6b; }
 
+.glossyDarkGray, .glossyDarkGray:visited {
+  color: white;
+  background-color: #44464a;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.33)), color-stop(0.5, rgba(255, 255, 255, 0.1)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), #44464a;
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #44464a; }
+
 .glossyLightGray, .glossyLightGray:visited {
   color: black;
   background-color: #f2f2f2;
@@ -662,6 +668,33 @@ button {
 .dropShadow, #simpleTooltip {
   -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px; }
+
+.dropdownLink {
+  display: inline-block;
+  color: #0e40ac;
+  text-decoration: underline;
+  cursor: pointer;
+  padding-right: 15px;
+  background-image: url(/images/expand_arrow_blue.png);
+  background-repeat: no-repeat;
+  background-position: right; }
+
+.dropdownMenu {
+  z-index: 100;
+  position: absolute;
+  background: white;
+  border: 1px solid #cccccc;
+  border-top: none;
+  display: none;
+  width: auto;
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
+  white-space: nowrap; }
+  .dropdownMenu a {
+    padding: 2px 4px;
+    display: block; }
+    .dropdownMenu a:hover {
+      background: #fff3c7; }
 
 .placeheld {
   color: #999999; }
@@ -715,7 +748,7 @@ button {
 #logo {
   background-image: url(/images/logo_tiny.png);
   background-repeat: no-repeat;
-  width: 134px;
+  width: 139px;
   height: 19px; }
 
 #smallLogo {
@@ -1007,58 +1040,54 @@ button {
     top: -12px; }
 
 #app #header {
-  width: 1000;
+  width: 1000px;
   margin: 0 auto;
-  position: relative;
-  margin-bottom: 15px;
-  height: 60px; }
+  padding-top: 5px;
+  margin-bottom: 20px;
+  height: auto; }
   #app #header .headerItem {
     float: right;
-    margin-top: 2px;
-    margin-left: 6px; }
-  #app #header .dropdownLink {
+    margin-left: 6px;
     display: inline-block;
-    color: #0e40ac;
-    text-decoration: underline;
-    cursor: pointer;
-    padding-right: 15px;
-    background-image: url(/images/expand_arrow_blue.png);
-    background-repeat: no-repeat;
-    background-position: right; }
-  #app #header .dropdownMenu {
-    z-index: 100;
-    position: absolute;
-    background: white;
-    border: 1px solid #cccccc;
-    border-top: none;
-    display: none;
-    width: auto;
-    -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
-    white-space: nowrap; }
-    #app #header .dropdownMenu a {
-      padding: 2px 4px;
-      display: block; }
-      #app #header .dropdownMenu a:hover {
-        background: #fff3c7; }
+    background-color: #efefef;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    padding: 5px 10px;
+    overflow: hidden;
+    text-decoration: none; }
+    #app #header .headerItem.dropdownLink {
+      padding-right: 15px; }
   #app #header #logoWrapper {
     float: left;
-    padding: 5px 10px;
-    background: white;
-    -moz-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 2px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 2px;
-    width: 134px;
-    cursor: pointer; }
-  #app #header #organizationName {
-    margin-top: 4px;
-    font-size: 19px; }
+    margin: 0; }
 #app #mainContent {
   background: white;
-  padding-top: 30px;
   width: 1000;
   margin: 0 auto;
   -moz-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px; }
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
+  -webkit-border-top-left-radius: 6px;
+  -webkit-border-top-right-radius: 6px;
+  -moz-border-radius-topleft: 6px;
+  -moz-border-radius-topright: 6px; }
+  #app #mainContent #orgHeader {
+    -webkit-border-top-left-radius: 6px;
+    -webkit-border-top-right-radius: 6px;
+    -moz-border-radius-topleft: 6px;
+    -moz-border-radius-topright: 6px;
+    -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 1px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 1px;
+    width: 940;
+    margin: 0 auto;
+    padding: 5px 30px;
+    margin: 0;
+    margin-bottom: 30px; }
+    #app #mainContent #orgHeader #organizationName {
+      padding: 0;
+      margin: 0;
+      font-size: 28px;
+      display: inline-block;
+      letter-spacing: 1.1; }
 #app #feedback {
   background: white;
   height: 300px;
@@ -1231,7 +1260,6 @@ button {
       margin-top: 2px; }
       #app #electionOverview #electionOverviewHeader #electionBodyContainer .expandArrow {
         float: left;
-        margin-left: 7px;
         margin-right: 5px;
         margin-top: 8px; }
       #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight {

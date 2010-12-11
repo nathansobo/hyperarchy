@@ -1,76 +1,71 @@
 #app {
   #header {
-    width: 1000;
+    width: 1000px;
     margin: 0 auto;
-    position: relative;
-    margin-bottom: 15px;
-    height: 60px;
+    padding-top: 5px;
+    margin-bottom: 20px;
+    height: auto;
 
     .headerItem {
       float: right;
-      margin-top: 2px;
       margin-left: 6px;
-    }
-
-    .dropdownLink {
       display: inline-block;
-      color: $blue;
-      text-decoration: underline;
-      cursor: pointer;
-      padding-right: 15px;
+      background-color: #efefef;
+      @include borderRadius(3px);
+      padding: 5px 10px;
+      overflow: hidden;
+      text-decoration:none;
+//      border: 1px solid #ccc;
+//      color: black;
 
-      background-image: url(/images/expand_arrow_blue.png);
-      background-repeat: no-repeat;
-      background-position: right;
-    }
-
-    .dropdownMenu {
-      z-index: 100;
-      position: absolute;
-      background: white;
-      border: 1px solid #cccccc;
-      border-top: none;
-      display: none;
-      width: auto;
-      -moz-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
-      -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
-      white-space: nowrap;
-
-      a {
-        padding: 2px 4px;
-        display: block;
-        &:hover { background: #fff3c7; }
+      &.dropdownLink {
+        padding-right: 15px;
       }
     }
 
     #logoWrapper {
       float: left;
-      padding: 5px 10px;
-      background: white;
-      -moz-box-shadow: rgba(0, 0, 0, .5) 1px 1px 2px;
-      -webkit-box-shadow: rgba(0, 0, 0, .5) 1px 1px 2px;
-      width: 134px;
-      cursor: pointer;
-
-      #logo {
-      
-      }
-    }
-
-
-    #organizationName {
-      margin-top: 4px;
-      font-size: 19px;
+      margin: 0;
     }
   }
 
   #mainContent {
     background: white;
-    padding-top: 30px;
     width: 1000;
     margin: 0 auto;
     -moz-box-shadow: rgba(0, 0, 0, .5) 1px 1px 6px;
     -webkit-box-shadow: rgba(0, 0, 0, .5) 1px 1px 6px;
+    -webkit-border-top-left-radius: 6px;
+    -webkit-border-top-right-radius: 6px;
+    -moz-border-radius-topleft: 6px;
+    -moz-border-radius-topright: 6px;
+
+    #orgHeader {
+      -webkit-border-top-left-radius: 6px;
+      -webkit-border-top-right-radius: 6px;
+      -moz-border-radius-topleft: 6px;
+      -moz-border-radius-topright: 6px;
+
+      -moz-box-shadow: rgba(0, 0, 0, .5) 0px 1px 1px;
+      -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 1px 1px;
+
+
+      width: 1000 - 60;
+      margin: 0 auto;
+      padding: 5px 30px;
+      margin: 0;
+      margin-bottom: 30px;
+
+
+      #organizationName {
+        padding: 0;
+        margin: 0;
+        font-size: 28px;
+        display: inline-block;
+        letter-spacing: 1.1;
+      }
+    }
+
   }
 
   #feedback {
