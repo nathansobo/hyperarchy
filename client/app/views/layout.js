@@ -66,7 +66,7 @@ _.constructor("Views.Layout", View.Template, {
         div({'class': "container12"}, function() {
           subview("welcomeGuide", Views.WelcomeGuide);
         }).ref('body');
-      });
+      }).ref('mainContentArea');
     })
   }},
 
@@ -74,10 +74,16 @@ _.constructor("Views.Layout", View.Template, {
     initialize: function() {
       window.notify = this.hitch('notify');
 
+      this.mainContentArea.fillVerticalSpace(30, 'min-height');
+      $(window).resize(this.bind(function() {
+        this.mainContentArea.fillVerticalSpace(30, 'min-height');
+      }));
+      
       _.each(this.views, function(view) {
         view.hide();
         this.body.append(view);
       }, this);
+
 
 //      this.populateOrganizations();
 

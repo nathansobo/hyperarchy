@@ -1,8 +1,6 @@
 _.constructor("Views.EditOrganization", View.Template, {
   content: function() { with(this.builder) {
     div({id: "editOrganization"}, function() {
-
-
       div({id: "organizationHeader", 'class': "grid12"}, function() {
         a({'class': "glossyBlack roundedButton", id: "overviewLink"}, "Back To Questions")
           .ref('overviewLink')
@@ -104,6 +102,7 @@ _.constructor("Views.EditOrganization", View.Template, {
           }).ref("members");
         }).ref("content");
       });
+      div({'class': "clear"});
     });
   }},
 

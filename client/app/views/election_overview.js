@@ -96,10 +96,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
       });
 
       this.defer(function() {
-        this.fillVerticalSpace();
+        this.adjustHeight();
       });
       $(window).resize(this.bind(function() {
-        this.fillVerticalSpace();
+        this.adjustHeight();
       }));
     },
 
@@ -108,8 +108,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.hideCreateCandidateForm(true); 
       this.candidatesList.hide();
       this.rankedCandidatesList.hide();
-      this.candidatesList.adjustHeight();
-      this.rankedCandidatesList.adjustHeight();
+      this.adjustHeight();
 
       var election = Election.find(state.electionId);
       if (!election) {
@@ -173,7 +172,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.expandLink.hide();
       }
       this.contract(true);
-      this.votesList.adjustHeight();
+      this.adjustHeight();
     },
 
     subscribeToElectionChanges: function(election) {
@@ -324,7 +323,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         }));
       }
 
-      this.votesList.adjustHeight();
+      this.adjustHeight();
     },
 
     enableOrDisableSaveButton: function() {
@@ -358,6 +357,12 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     stopLoading: function() {
       
+    },
+
+    adjustHeight: function() {
+      this.fillVerticalSpace(30);
+      this.candidatesList.adjustHeight();
+      this.rankedCandidatesList.adjustHeight();
     }
   }
 });

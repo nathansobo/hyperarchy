@@ -189,7 +189,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     adjustHeight: function() {
-      this.rankedCandidatesList.fillVerticalSpace(20);
+      this.rankedCandidatesList.fillVerticalSpace(50);
       this.adjustDragTargetExplanationHeights();
       this.loading.position({
         my: 'center center',

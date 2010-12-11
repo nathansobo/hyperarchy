@@ -10,9 +10,8 @@ _.constructor("Views.Account", View.Template, {
           }
         });
       });
+      div({'class': "clear"});
     });
-
-
   }},
 
   viewProperties: {

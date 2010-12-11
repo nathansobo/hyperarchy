@@ -10,8 +10,8 @@ _.constructor("Views.AddOrganization", View.Template, {
           .ref('createOrganizationButton')
           .click('createOrganization');
       })
-
       div({'class': "grid6 prefix1 largeFont"}, template.descriptionText());
+      div({'class': "clear"});
     });
   }},
 
