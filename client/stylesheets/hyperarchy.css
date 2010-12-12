@@ -688,7 +688,7 @@ button {
 
 .bigLoading {
   background-repeat: no-repeat;
-  background-image: url(/images/loading_arrows_large_white_bg.gif);
+  background-image: url(/images/loading_arrows_large_e6e6e6_bg.gif);
   width: 80px;
   height: 80px; }
   .bigLoading.grayBackground {
