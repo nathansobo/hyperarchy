@@ -88,7 +88,7 @@ _.constructor("Views.Layout", View.Template, {
         this.body.append(view);
       }, this);
 
-//      this.populateOrganizations();
+      this.populateOrganizations();
 
       var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
       organizationsPermitted.onRemoteInsert(this.hitch('showOrHideInviteLink'));
@@ -113,13 +113,12 @@ _.constructor("Views.Layout", View.Template, {
 
       if (Application.currentUser().admin()) {
         Organization.onEach(function(organization) {
-          this.populateOrganization(organization, true);
+          this.populateOrganization(organization);
         }, this);
       } else {
-        this.adminMenuLink.hide(); // will be shown if needed
         memberships.onEach(function(membership) {
           var organization = membership.organization();
-          this.populateOrganization(organization, membership.role() == "owner");
+          this.populateOrganization(organization);
         }, this);
       }
 
@@ -128,7 +127,6 @@ _.constructor("Views.Layout", View.Template, {
         var name = organization.name();
         var selector = 'a[organizationId=' + organization.id() + ']';
         this.organizationsMenu.find(selector).html(name);
-        this.adminMenu.find(selector).html(name + " Admin");
       }, this);
     },
 
@@ -141,18 +139,6 @@ _.constructor("Views.Layout", View.Template, {
           });
         });
       }));
-
-      if (addToAdminMenu) {
-        this.adminMenuLink.show();
-        this.adminMenu.append(View.build(function(b) {
-          b.li(function() {
-            b.a({href: "#", organizationId: organization.id()}, organization.name() + " Admin").click(function(view, e) {
-              $.bbq.pushState({view: "editOrganization", organizationId: organization.id()});
-              e.preventDefault();
-            });
-          });
-        }))
-      }
     },
 
     showOrHideInviteLink: function() {
