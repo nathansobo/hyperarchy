@@ -109,18 +109,12 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     populateOrganizations: function() {
-      var memberships = Application.currentUser().confirmedMemberships();
+      var organizations =
+        Application.currentUser().admin() ?
+          Organization.orderBy('name')
+          : Application.currentUser().confirmedMemberships().joinThrough(Organization).sortBy('name');
 
-      if (Application.currentUser().admin()) {
-        Organization.onEach(function(organization) {
-          this.populateOrganization(organization);
-        }, this);
-      } else {
-        memberships.onEach(function(membership) {
-          var organization = membership.organization();
-          this.populateOrganization(organization);
-        }, this);
-      }
+      organizations.onEach(this.hitch('populateOrganization'));
 
       Organization.onRemoteUpdate(function(organization, changes) {
         if (!changes.name) return;
