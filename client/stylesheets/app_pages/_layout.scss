@@ -1,4 +1,35 @@
 #app {
+  .dropdownMenu {
+    z-index: 100;
+    position: absolute;
+    background-color: #efefef;
+    border: 1px solid #cccccc;
+    border-top: none;
+    display: none;
+    width: auto;
+    -moz-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
+    -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 4px 4px;
+    white-space: nowrap;
+    padding: 2px;
+
+
+
+    a {
+      opacity: 1;
+      background-color: white;
+      position: relative;
+      z-index: 20;
+      padding: 2px 4px;
+      display: block;
+      margin-bottom: 2px;
+      &:hover { background: #fff3c7; }
+    }
+
+    li:last-child a {
+      margin-bottom: 0;
+    }
+  }
+
   #header {
     width: 1000px;
     margin: 0 auto;
@@ -21,6 +52,16 @@
         padding-right: 20px;
         background-position: 95% 50%;
       }
+    }
+
+    .dropdownLink {
+      display: inline-block;
+      color: $blue;
+      cursor: pointer;
+      padding-right: 15px;
+      background-image: url(/images/expand_arrow_blue.png);
+      background-repeat: no-repeat;
+      background-position: right;
     }
 
     #logoWrapper {
@@ -50,7 +91,7 @@
       -moz-box-shadow: rgba(0, 0, 0, .5) 0px 1px 1px;
       -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 1px 1px;
 
-      width: 1000 - 60;
+      width: 1000 - (30 + 30);
       height: 46 - 10;
       margin: 0 auto;
       padding: 5px 30px;
@@ -70,7 +111,7 @@
       #organizationSettings {
         display: inline-block;
         float: right;
-        margin-top: 16px;
+        margin-top: 11px;
         padding-left: 14px;
         background-repeat: no-repeat;
         background-image: url(/images/cog_alt_12x12_light.png);
