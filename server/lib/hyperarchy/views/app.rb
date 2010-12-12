@@ -21,7 +21,7 @@ module Views
     def body_content
       div :id => "loadingPage" do
         div :id => "mediumLogo"
-        div :class => "bigLoading"
+        div :class => "bigLoading matchesBodyBackground"
       end
     end
 
