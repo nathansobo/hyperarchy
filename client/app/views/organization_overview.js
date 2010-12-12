@@ -7,8 +7,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
             a({href: "#", id: 'createElectionLink', 'class': "glossyBlack roundedButton"}, "Raise A New Question")
               .ref('showCreateElectionFormButton')
               .click('showCreateElectionForm');
-            h1().ref("organizationName");
-            h2("| Questions Under Discussion");
+            h2("Questions Under Discussion");
           });
           div({style: "clear: both"});
 
@@ -63,8 +62,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         if (membership) membership.update({lastVisited: new Date()});
 
         this.subscriptions.destroy();
-
-        this.organizationName.bindHtml(this.organization(), 'name');
         this.displayElections();
       }
     },
@@ -74,7 +71,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     displayElections: function() {
-
       if (this.electionLisById) {
         _.each(this.electionLisById, function(li) {
           li.remove();

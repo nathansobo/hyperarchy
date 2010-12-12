@@ -8,7 +8,6 @@ _.constructor("Views.EditOrganization", View.Template, {
             $.bbq.pushState({view: "organization", organizationId: view.model().id()});
             e.preventDefault();
           });
-        h1("").ref('organizationName');
       });
 
       div({'class': "grid12"}, function() {
@@ -141,9 +140,6 @@ _.constructor("Views.EditOrganization", View.Template, {
 
     modelAssigned: function(organization) {
       Application.currentOrganizationId(organization.id());
-
-      this.organizationName.bindHtml(organization, 'name');
-
       organization.memberships().fetch().onSuccess(function() {
         this.saveChangesButton.attr('disabled', true);
         this.membersTbody.relation(organization.memberships());

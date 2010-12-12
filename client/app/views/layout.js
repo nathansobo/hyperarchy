@@ -19,50 +19,52 @@ _.constructor("Views.Layout", View.Template, {
         input({type: "submit", 'class': "largeFont", value: "Send Feedback"}).click('sendFeedback');
       }).ref("feedbackForm");
 
+      ol({'class': "dropdownMenu"}, function() {
+        li(function() {
+          a({href: "#view=account"}, "Preferences");
+        });
+        li(function() {
+          a({href: "#"}, "Log Out").click(function() {
+            $("<form action='/logout' method='post'>").appendTo($("body")).submit();
+            return false;
+          });
+        });
+      }).ref('accountMenu');
+
+      ol({'class': "dropdownMenu"}, function() {
+        li(function() {
+          a({href: "#view=addOrganization"}, "Add Organization...")
+        }).ref('addOrganizationLi')
+      }).ref('organizationsMenu');
+
       div({id: "header"}, function() {
         div({id: "logoWrapper", 'class': "headerItemX"}, function() {
           div({id: "logo"}).click('goToLastOrganization');
         });
 
+        a({'class': "headerItem dropdownLink", href: "#"}, "Account")
+          .ref('accountMenuLink')
+          .click("toggleAccountMenu");
 
-        a({'class': "headerItem dropdownLink", href: "#view=account"}, "Account");
+        a({id: "switchOrganizations", 'class': "headerItem dropdownLink"}, "Organizations")
+          .ref("organizationsMenuLink")
+          .click("toggleOrganizationsMenu");
+
         a({id: "inviteLink", 'class': "headerItem", href: "#"}, "Invite")
           .ref('inviteLink')
           .click('showInviteForm');
         a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
         div({'class': "clear"});
-
-
-
-//        a({'class': "logout headerItem", href: "#"}, "Log Out").click(function() {
-//          $("<form action='/logout' method='post'>").appendTo($("body")).submit();
-//        });
-//        a({'class': "headerItem dropdownLink", href: "#"}, "Admin")
-//          .ref('adminMenuLink')
-//          .click('toggleAdminMenu');
-//
-//        ol({'class': "dropdownMenu"}, function() {
-//        }).ref('adminMenu');
-//
-//        a({'class': "headerItem dropdownLink", href: "#"}, "Organizations")
-//          .ref('organizationsMenuLink')
-//          .click('toggleOrganizationsMenu');
-//
-//        ol({'class': "dropdownMenu"}, function() {
-//          li(function() {
-//            a({href: "#view=addOrganization"}, "Add Organization...")
-//          }).ref('addOrganizationLi')
-//        }).ref('organizationsMenu');
-//        div({'class': "clear"});
-        div({'class': "clear"});
       });
 
       div({id: "mainContent"}, function() {
-        div({id: "orgHeader", 'class': "glossyDarkGray"}, function() {
+        div({id: "contentHeader", 'class': "glossyDarkGray"}, function() {
           h2({id: "organizationName"})
             .click('goToOrganization')
             .ref('organizationName');
-//          a("Settings");
+          a({id: "organizationSettings"}, "Settings")
+            .ref("editOrganizationLink")
+            .click("goToEditOrganization");
         });
 
         div({'class': "container12"}, function() {
@@ -86,12 +88,11 @@ _.constructor("Views.Layout", View.Template, {
         this.body.append(view);
       }, this);
 
-
 //      this.populateOrganizations();
 
-//      var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
-//      organizationsPermitted.onRemoteInsert(this.hitch('showOrHideInviteLink'));
-//      organizationsPermitted.onRemoteRemove(this.hitch('showOrHideInviteLink'));
+      var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
+      organizationsPermitted.onRemoteInsert(this.hitch('showOrHideInviteLink'));
+      organizationsPermitted.onRemoteRemove(this.hitch('showOrHideInviteLink'));
       this.showOrHideInviteLink();
     },
 
@@ -99,6 +100,11 @@ _.constructor("Views.Layout", View.Template, {
     organization: {
       afterChange: function(organization) {
         this.organizationName.bindHtml(organization, 'name');
+        if (organization.currentUserCanEdit()) {
+          this.editOrganizationLink.show();
+        } else {
+          this.editOrganizationLink.hide();
+        }
       }
     },
 
@@ -181,19 +187,21 @@ _.constructor("Views.Layout", View.Template, {
       this.toggleMenu(this.organizationsMenuLink, this.organizationsMenu);
     },
 
-    toggleAdminMenu: function(elt, e) {
+    toggleAccountMenu: function(elt, e) {
       e.preventDefault();
-      this.toggleMenu(this.adminMenuLink, this.adminMenu);
+      this.toggleMenu(this.accountMenuLink, this.accountMenu);
     },
 
     toggleMenu: function(link, menu) {
       if (menu.is(":visible")) return;
 
-      menu.show().position({
+      menu.show();
+      menu.position({
         my: "left top",
         at: "left bottom",
         of: link
       });
+
 
       _.defer(function() {
         $(window).one('click', function() {
@@ -244,6 +252,11 @@ _.constructor("Views.Layout", View.Template, {
 
     goToOrganization: function() {
       $.bbq.pushState({view: "organization", organizationId: this.organization().id() }, 2);
+      return false;
+    },
+
+    goToEditOrganization: function() {
+      $.bbq.pushState({view: "editOrganization", organizationId: this.organization().id() }, 2);
       return false;
     },
 

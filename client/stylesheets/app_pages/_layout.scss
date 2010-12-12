@@ -7,6 +7,7 @@
     height: auto;
 
     .headerItem {
+      position: relative;
       float: right;
       margin-left: 6px;
       display: inline-block;
@@ -17,7 +18,8 @@
       text-decoration:none;
 
       &.dropdownLink {
-        padding-right: 15px;
+        padding-right: 20px;
+        background-position: 95% 50%;
       }
     }
 
@@ -40,7 +42,7 @@
     -moz-border-radius-topleft: 6px;
     -moz-border-radius-topright: 6px;
 
-    #orgHeader {
+    #contentHeader {
       -webkit-border-top-left-radius: 6px;
       -webkit-border-top-right-radius: 6px;
       -moz-border-radius-topleft: 6px;
@@ -64,8 +66,18 @@
         letter-spacing: 1.1;
         cursor: pointer;
       }
-    }
 
+      #organizationSettings {
+        display: inline-block;
+        float: right;
+        margin-top: 16px;
+        padding-left: 14px;
+        background-repeat: no-repeat;
+        background-image: url(/images/cog_alt_12x12_light.png);
+        background-position: 0 1px;
+        color: white;
+      }
+    }
   }
 
   #feedback {
