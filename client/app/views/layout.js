@@ -59,12 +59,21 @@ _.constructor("Views.Layout", View.Template, {
 
       div({id: "mainContent"}, function() {
         div({id: "contentHeader", 'class': "glossyDarkGray"}, function() {
-          h2({id: "organizationName"})
-            .click('goToOrganization')
-            .ref('organizationName');
-          a({id: "organizationSettings"}, "Settings")
-            .ref("editOrganizationLink")
-            .click("goToEditOrganization");
+          div(function() {
+            h2({id: "organizationName"})
+              .click('goToOrganization')
+              .ref('organizationName');
+            a({id: "organizationSettings"}, "Settings")
+              .ref("editOrganizationLink")
+              .click("goToEditOrganization");
+          }).ref("organizationHeader");
+
+          div(function() {
+            h2().ref("alternateHeaderText");
+            a({id: "backToLastOrganization"})
+              .ref("backToLastOrganizationLink")
+              .click("goToLastOrganization");
+          }).ref("alternateHeader")
         });
 
         div({'class': "container12"}, function() {
@@ -106,6 +115,19 @@ _.constructor("Views.Layout", View.Template, {
           this.editOrganizationLink.hide();
         }
       }
+    },
+
+    showOrganizationHeader: function() {
+      this.alternateHeader.hide();
+      this.organizationHeader.show();
+    },
+
+    showAlternateHeader: function(text) {
+      var lastOrgName = Application.currentUser().lastVisitedOrganization().name();
+      this.backToLastOrganizationLink.html("Back to " + lastOrgName);
+      this.alternateHeaderText.html(text);
+      this.organizationHeader.hide();
+      this.alternateHeader.show();
     },
 
     populateOrganizations: function() {

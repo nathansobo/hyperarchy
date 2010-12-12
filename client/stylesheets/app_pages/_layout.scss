@@ -99,7 +99,7 @@
       margin-bottom: 30px;
 
 
-      #organizationName {
+      h2 {
         padding: 0;
         margin: 0;
         font-size: 28px;
@@ -108,15 +108,25 @@
         cursor: pointer;
       }
 
-      #organizationSettings {
+      a {
         display: inline-block;
         float: right;
         margin-top: 11px;
-        padding-left: 14px;
-        background-repeat: no-repeat;
-        background-image: url(/images/cog_alt_12x12_light.png);
-        background-position: 0 1px;
         color: white;
+
+        &#organizationSettings {
+          padding-left: 14px;
+          background-repeat: no-repeat;
+          background-image: url(/images/cog_alt_12x12_light.png);
+          background-position: 0 1px;
+        }
+
+        &#backToLastOrganization {
+          padding-left: 16px;
+          background-repeat: no-repeat;
+          background-image: url(/images/undo_12x12_light.png);
+          background-position: 0 1px;
+        }
       }
     }
   }

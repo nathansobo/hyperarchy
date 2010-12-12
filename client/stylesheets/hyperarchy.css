@@ -1094,22 +1094,28 @@ button {
     padding: 5px 30px;
     margin: 0;
     margin-bottom: 30px; }
-    #app #mainContent #contentHeader #organizationName {
+    #app #mainContent #contentHeader h2 {
       padding: 0;
       margin: 0;
       font-size: 28px;
       display: inline-block;
       letter-spacing: 1.1;
       cursor: pointer; }
-    #app #mainContent #contentHeader #organizationSettings {
+    #app #mainContent #contentHeader a {
       display: inline-block;
       float: right;
       margin-top: 11px;
-      padding-left: 14px;
-      background-repeat: no-repeat;
-      background-image: url(/images/cog_alt_12x12_light.png);
-      background-position: 0 1px;
       color: white; }
+      #app #mainContent #contentHeader a#organizationSettings {
+        padding-left: 14px;
+        background-repeat: no-repeat;
+        background-image: url(/images/cog_alt_12x12_light.png);
+        background-position: 0 1px; }
+      #app #mainContent #contentHeader a#backToLastOrganization {
+        padding-left: 16px;
+        background-repeat: no-repeat;
+        background-image: url(/images/undo_12x12_light.png);
+        background-position: 0 1px; }
 #app #feedback {
   background: white;
   height: 300px;

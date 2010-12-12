@@ -115,6 +115,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.retryNavigateAfterFetchingNeededData(state);
         return;
       }
+      Application.currentOrganizationId(election.organizationId());
       this.election(election);
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
       if (election.candidates().empty()) {
@@ -153,7 +154,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     election: {
       afterChange: function(election) {
-        Application.currentOrganizationId(election.organizationId());
         this.populateElectionDetails(election);
         this.subscribeToElectionChanges(election);
         this.candidatesList.election(election);

@@ -50,6 +50,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         $.bbq.pushState({view: 'organization', organizationId: Application.currentUser().lastVisitedOrganization().id()});
         return;
       }
+      Application.currentOrganizationId(state.organizationId);
       this.organizationId(state.organizationId);
       this.createElectionForm.hide();
       this.showCreateElectionFormButton.show();
@@ -57,7 +58,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     organizationId: {
       afterChange: function(organizationId) {
-        Application.currentOrganizationId(organizationId);
         var membership = this.organization().membershipForCurrentUser();
         if (membership) membership.update({lastVisited: new Date()});
 

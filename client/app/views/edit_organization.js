@@ -125,6 +125,7 @@ _.constructor("Views.EditOrganization", View.Template, {
     },
 
     navigate: function(state) {
+      Application.currentOrganizationId(state.organizationId);
       this.model(Organization.find(state.organizationId));
       this.tabs.find("span").removeClass("selected");
       this.content.children().hide();
@@ -139,7 +140,6 @@ _.constructor("Views.EditOrganization", View.Template, {
     },
 
     modelAssigned: function(organization) {
-      Application.currentOrganizationId(organization.id());
       organization.memberships().fetch().onSuccess(function() {
         this.saveChangesButton.attr('disabled', true);
         this.membersTbody.relation(organization.memberships());

@@ -22,6 +22,10 @@ _.constructor("Views.AddOrganization", View.Template, {
   viewProperties: {
     viewName: 'addOrganization',
 
+    navigate: function() {
+      Application.layout.showAlternateHeader("Add A New Organization");
+    },
+
     createOrganization: function() {
       Organization.create(this.fieldValues())
         .onSuccess(function(organization) {
