@@ -1,6 +1,6 @@
 _.constructor("Views.WelcomeGuide", View.Template, {
   content: function() { with(this.builder) {
-    div({'class': "grid12", style: "display: none;"}, function() {
+    div({style: "display: none;"}, function() {
       table({id: "welcomeGuide", 'class': "dropShadow"}, function() {
         thead(function() {
           tr(function() {

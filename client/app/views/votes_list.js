@@ -83,7 +83,8 @@ _.constructor("Views.VotesList", View.Template, {
     },
 
     adjustHeight: function() {
-      this.votes.fillVerticalSpace(50);
+      this.votes.fillVerticalSpace(50, 200);
     }
+    
   }
 });

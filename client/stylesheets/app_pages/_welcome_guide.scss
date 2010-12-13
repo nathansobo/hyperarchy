@@ -1,13 +1,13 @@
 #welcomeGuide {
-  width: 100%;
-  margin-bottom: 30px;
+  width: 1000px;
+  margin: 10px auto 20px;
   position: relative;
 
   thead tr {
     height: 42px;
 
     th {
-      width: 256px;
+      width: 271px;
       height: 42 - (9 * 2);
       background-image: url(/images/welcome_wizard_sprites.png);
       position: absolute;
@@ -27,12 +27,12 @@
       }
 
       &#gloss {
-        width: 940 - (2 * 2);
+        width: 1000 - (2 * 2);
         height: 42 - (9 * 2) - (2 * 2);
         top: 2px;
         left: 2px;
         z-index: 5;
-        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .5)), color-stop(0.5, rgba(255, 255, 255, .2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, .1)));
+        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .44)), color-stop(0.5, rgba(255, 255, 255, .16)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, .05)));
         background: -moz-linear-gradient(top, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, .1) 100%);
       }
 
@@ -40,23 +40,22 @@
         left: 0px;
         z-index: 4;
         padding-right: 12px;
-        width: 256 - 12;
+        width: 271 - 12;
       }
 
       &#step2 {
-        left: 235px;
+        left: 271 - 21;
         z-index: 3;
       }
 
       &#step3 {
-        left: 235 * 2;
+        left: (271 - 21) * 2;
         z-index: 2;
       }
 
       &#step4 {
-        padding-left: 5px;
-        left: 235 * 3;
-
+        padding-left: 10px;
+        left: (271 - 21) * 3;
         background-position: -300px 0;
 
         &.pending {
@@ -68,7 +67,7 @@
         }
 
         z-index: 1;
-        width: 235 - 5;
+        width: 271 - 21 - 10;
       }
     }
   }
@@ -78,7 +77,7 @@
     padding: 0 2px 2px 2px;
 
     > div {
-      padding: 25px;
+      padding: 30px;
       background: white;
 
       h2 {

@@ -1154,13 +1154,13 @@ button {
   left: 0px; }
 
 #welcomeGuide {
-  width: 100%;
-  margin-bottom: 30px;
+  width: 1000px;
+  margin: 10px auto 20px;
   position: relative; }
   #welcomeGuide thead tr {
     height: 42px; }
     #welcomeGuide thead tr th {
-      width: 256px;
+      width: 271px;
       height: 24;
       background-image: url(/images/welcome_wizard_sprites.png);
       position: absolute;
@@ -1175,30 +1175,30 @@ button {
         background-position: 0px -100px;
         color: #343434; }
       #welcomeGuide thead tr th#gloss {
-        width: 936;
+        width: 996;
         height: 20;
         top: 2px;
         left: 2px;
         z-index: 5;
-        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1)));
+        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.44)), color-stop(0.5, rgba(255, 255, 255, 0.16)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.05)));
         background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%); }
       #welcomeGuide thead tr th#step1 {
         left: 0px;
         z-index: 4;
         padding-right: 12px;
-        width: 244; }
+        width: 259; }
       #welcomeGuide thead tr th#step2 {
-        left: 235px;
+        left: 250;
         z-index: 3; }
       #welcomeGuide thead tr th#step3 {
-        left: 470;
+        left: 500;
         z-index: 2; }
       #welcomeGuide thead tr th#step4 {
-        padding-left: 5px;
-        left: 705;
+        padding-left: 10px;
+        left: 750;
         background-position: -300px 0;
         z-index: 1;
-        width: 230; }
+        width: 240; }
         #welcomeGuide thead tr th#step4.pending {
           background-position: -300px -50px; }
         #welcomeGuide thead tr th#step4.done {
@@ -1207,7 +1207,7 @@ button {
     background: #343434;
     padding: 0 2px 2px 2px; }
     #welcomeGuide td#currentStep > div {
-      padding: 25px;
+      padding: 30px;
       background: white; }
       #welcomeGuide td#currentStep > div h2 {
         margin-bottom: 10px; }
@@ -1292,7 +1292,7 @@ button {
   clear: both;
   overflow-y: hidden; }
   #app #electionOverview #electionOverviewHeader {
-    margin-bottom: 40px; }
+    margin-bottom: 30px; }
     #app #electionOverview #electionOverviewHeader h1 {
       margin-bottom: 0; }
     #app #electionOverview #electionOverviewHeader #electionBodyContainer {

@@ -25,8 +25,12 @@ jQuery.fn.extend({
     this.attr('htmlIsBound', true);
   },
 
-  fillVerticalSpace: function(spaceAtBottom, property) {
+  fillVerticalSpace: function(spaceAtBottom, minHeight, property) {
+    if (!minHeight) minHeight = 0;
     var height = $(window).height() - this.offset().top - (spaceAtBottom || 0);
+    if (height < minHeight) {
+      height = minHeight;
+    }
     this.css(property || 'height', height);
   }
 });

@@ -370,7 +370,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     adjustHeight: function() {
-      this.fillVerticalSpace(30);
+      this.fillVerticalSpace(30, 300);
       this.candidatesList.adjustHeight();
       this.rankedCandidatesList.adjustHeight();
     }

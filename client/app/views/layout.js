@@ -57,6 +57,8 @@ _.constructor("Views.Layout", View.Template, {
         div({'class': "clear"});
       });
 
+      subview("welcomeGuide", Views.WelcomeGuide);
+
       div({id: "mainContent"}, function() {
         div({id: "contentHeader", 'class': "glossyDarkGray"}, function() {
           div(function() {
@@ -77,7 +79,6 @@ _.constructor("Views.Layout", View.Template, {
         });
 
         div({'class': "container12"}, function() {
-          subview("welcomeGuide", Views.WelcomeGuide);
         }).ref('body');
       }).ref('mainContentArea');
     })
@@ -87,9 +88,9 @@ _.constructor("Views.Layout", View.Template, {
     initialize: function() {
       window.notify = this.hitch('notify');
 
-      this.mainContentArea.fillVerticalSpace(30, 'min-height');
+      this.mainContentArea.fillVerticalSpace(30, 380, 'min-height');
       $(window).resize(this.bind(function() {
-        this.mainContentArea.fillVerticalSpace(30, 'min-height');
+        this.mainContentArea.fillVerticalSpace(30, 380, 'min-height');
       }));
       
       _.each(this.views, function(view) {
