@@ -69,6 +69,11 @@
     div#createCandidateForm {
       margin-bottom: 30px;
 
+      .cancelX {
+        float: right;
+        margin-top: 6px;
+      }
+
       textarea {
         font-size: 15px;
         width: 100%;

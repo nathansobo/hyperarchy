@@ -171,6 +171,16 @@ button {
   &.white {
     background-image: url(/images/x_21x21_white.png);
   }
+
+  &.small {
+    height: 11px;
+    width: 11px;
+    background-image: url(/images/x_11x11_light.png);
+
+    &:hover {
+      background-image: url(/images/x_11x11_dark.png);
+    }
+  }
 }
 
 .rightCancelX {

@@ -57,7 +57,12 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       div({'class': "grid4"}, function() {
         div({id: "createCandidateForm", style: "display: none;"}, function() {
-          div({'class': "columnHeader"}, "Enter Your Answer");
+          div({'class': "columnHeader"}, function() {
+            div({'class': "small cancelX"}).click(function(view) {
+              view.hideCreateCandidateForm();
+            });
+            text("Enter Your Answer");
+          });
           
           textarea({id: "shortAnswer"})
             .ref('createCandidateBodyTextarea')
@@ -207,7 +212,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     showOrHideCreateCandidateForm: function() {
       if (this.createCandidateForm.is(":visible")) {
-        this.hideCreateCandidateForm();
+        this.hideCreateCandidateForm(false, false, "preserveText");
       } else {
         this.showCreateCandidateForm();
       }
@@ -235,11 +240,13 @@ _.constructor("Views.ElectionOverview", View.Template, {
       }
     },
 
-    hideCreateCandidateForm: function(instantly, whenDone) {
+    hideCreateCandidateForm: function(instantly, whenDone, preserveText) {
       this.showCreateCandidateFormButton.removeClass('pressed');
 
-      this.createCandidateBodyTextarea.val("");
-      this.createCandidateDetailsTextarea.val("");
+      if (!preserveText) {
+        this.createCandidateBodyTextarea.val("");
+        this.createCandidateDetailsTextarea.val("");
+      }
 
       if (instantly) {
         this.createCandidateForm.hide();

@@ -717,6 +717,12 @@ button {
   display: block; }
   .cancelX.white, .white.rightCancelX {
     background-image: url(/images/x_21x21_white.png); }
+  .cancelX.small, .small.rightCancelX {
+    height: 11px;
+    width: 11px;
+    background-image: url(/images/x_11x11_light.png); }
+    .cancelX.small:hover, .small.rightCancelX:hover {
+      background-image: url(/images/x_11x11_dark.png); }
 
 .rightCancelX {
   float: right;
@@ -1325,6 +1331,9 @@ button {
       -moz-box-shadow: 0px 0px 4px black inset; }
   #app #electionOverview div#createCandidateForm {
     margin-bottom: 30px; }
+    #app #electionOverview div#createCandidateForm .cancelX, #app #electionOverview div#createCandidateForm .rightCancelX {
+      float: right;
+      margin-top: 6px; }
     #app #electionOverview div#createCandidateForm textarea {
       font-size: 15px;
       width: 100%;
