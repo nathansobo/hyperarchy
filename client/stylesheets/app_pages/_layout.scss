@@ -68,6 +68,7 @@
       float: left;
       margin: 5px;
       margin-left: 6px;
+      cursor: pointer;
     }
   }
 
@@ -147,6 +148,10 @@
       padding: 10px;
       margin-bottom: 10px;
       resize: none;
+    }
+
+    a.roundedButton {
+      float: right;
     }
   }
 

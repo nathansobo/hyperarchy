@@ -74,8 +74,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
             .ref('createCandidateButton')
             .click('createCandidate');
 
+          div({'class': "loading", style: "display: none;"}).ref("createCandidateSpinner");
           div({'class': "clear"});
-          
         }).ref('createCandidateForm');
 
 
@@ -259,7 +259,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     createCandidate: function(elt, e) {
-      elt.blur();
+      this.createCandidateBodyTextarea.blur();
+      this.createCandidateDetailsTextarea.blur();
       e.preventDefault();
 
       if (this.candidateCreationDisabled) return;
@@ -272,8 +273,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.createCandidateDetailsTextarea.attr('disabled', true);
       this.candidateCreationDisabled = true;
 
+      this.createCandidateSpinner.show();
       this.election().candidates().create({body: body, details: details})
         .onSuccess(function() {
+          this.createCandidateSpinner.hide();
           this.hideCreateCandidateForm(false, this.bind(function() {
             this.createCandidateBodyTextarea.attr('disabled', false);
             this.createCandidateDetailsTextarea.attr('disabled', false);

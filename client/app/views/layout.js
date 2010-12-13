@@ -16,7 +16,7 @@ _.constructor("Views.Layout", View.Template, {
           text(".")
         });
         textarea().ref("feedbackTextarea");
-        input({type: "submit", 'class': "largeFont", value: "Send Feedback"}).click('sendFeedback');
+        a({'class': "glossyBlack roundedButton", href: "#"}, "Send Feedback").click('sendFeedback');
       }).ref("feedbackForm");
 
       ol({'class': "dropdownMenu"}, function() {
@@ -250,6 +250,7 @@ _.constructor("Views.Layout", View.Template, {
         this.hideFeedbackForm();
         this.notify("Thanks for the feedback!")
       }, this);
+      return false;
     },
 
     goToOrganization: function() {

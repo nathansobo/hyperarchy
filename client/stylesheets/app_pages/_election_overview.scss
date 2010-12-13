@@ -93,6 +93,13 @@
         padding: 5px 10px;
         font-size: 18px;
       }
+
+      .loading {
+        display: inline-block;
+        position: relative;
+        top: 3px;
+        left: 4px;
+      }
     }
 
     #votes {

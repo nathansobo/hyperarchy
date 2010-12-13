@@ -132,7 +132,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     showCreateElectionForm: function(elt, e) {
       Application.welcomeGuide.raiseQuestionClicked();
-      this.createElectionForm.show();
+      this.createElectionForm.slideDown('fast');
       this.showCreateElectionFormButton.hide();
       this.createElectionInput.focus();
       e.preventDefault();

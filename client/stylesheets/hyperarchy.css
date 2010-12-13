@@ -633,33 +633,34 @@ button {
 
 .glossyBlack, .glossyBlack:visited {
   color: white;
-  background-color: black;
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), black;
-  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), black; }
+  background-color: #0d0d10;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.44)), color-stop(0.5, rgba(255, 255, 255, 0.16)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.05))), #0d0d10;
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #0d0d10; }
 
 .glossyGray, .glossyGray:visited {
   color: white;
   background-color: #6b6b6b;
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), #6b6b6b;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.44)), color-stop(0.5, rgba(255, 255, 255, 0.16)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.05))), #6b6b6b;
   background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #6b6b6b; }
 
 .glossyDarkGray, .glossyDarkGray:visited {
   color: white;
   background-color: #44464a;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.33)), color-stop(0.5, rgba(255, 255, 255, 0.1)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), #44464a;
-  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #44464a; }
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.33) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #44464a; }
 
 .glossyLightGray, .glossyLightGray:visited {
   color: black;
   background-color: #f2f2f2;
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.5)), color-stop(0.5, rgba(255, 255, 255, 0.2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.1))), #f2f2f2;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.44)), color-stop(0.5, rgba(255, 255, 255, 0.16)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.05))), #f2f2f2;
   background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%), #f2f2f2; }
 
 .roundedButton {
   font-size: 20px;
   text-align: center;
   border: 0;
-  padding: 3px 7px;
+  display: inline-block;
+  padding: 6px 20px;
   text-decoration: none;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -1071,7 +1072,8 @@ button {
   #app #header #logoWrapper {
     float: left;
     margin: 5px;
-    margin-left: 6px; }
+    margin-left: 6px;
+    cursor: pointer; }
 #app #mainContent {
   background: white;
   width: 1000;
@@ -1133,6 +1135,8 @@ button {
     padding: 10px;
     margin-bottom: 10px;
     resize: none; }
+  #app #feedback a.roundedButton {
+    float: right; }
 #app #darkenBackground {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 99;
@@ -1206,10 +1210,10 @@ button {
 
 #app #organizationOverview #organizationHeader {
   margin-bottom: 30px; }
-  #app #organizationOverview #organizationHeader h1, #app #organizationOverview #organizationHeader h2 {
-    display: inline; }
-  #app #organizationOverview #organizationHeader h1 {
-    margin-right: 10px; }
+  #app #organizationOverview #organizationHeader h2 {
+    display: inline-block;
+    position: relative;
+    top: 4px; }
 #app #organizationOverview #createElectionLink {
   padding: 6px 20px;
   display: inline-block;
@@ -1218,12 +1222,11 @@ button {
   margin: 5px auto 10px; }
   #app #organizationOverview #createElectionForm input {
     font-size: 18px;
-    width: 780px;
+    width: 755px;
     margin-bottom: 10px;
-    padding: 10px; }
+    padding: 6px; }
   #app #organizationOverview #createElectionForm a {
-    float: right;
-    margin-top: 5px; }
+    float: right; }
 #app #organizationOverview #welcomeBlurb {
   background: #ffffcc;
   margin-bottom: 30px;
@@ -1339,6 +1342,11 @@ button {
       display: inline-block;
       padding: 5px 10px;
       font-size: 18px; }
+    #app #electionOverview div#createCandidateForm .loading {
+      display: inline-block;
+      position: relative;
+      top: 3px;
+      left: 4px; }
   #app #electionOverview #votes #voteCount {
     border-bottom: 1px solid #e0e0e0; }
     #app #electionOverview #votes #voteCount.noVotes {
@@ -1619,8 +1627,7 @@ button {
     #app #invite ol input[type="checkbox"] {
       margin-right: 5px; }
   #app #invite a {
-    float: right;
-    padding: 5px; }
+    float: right; }
 
 #app h1 {
   margin-bottom: 10px; }

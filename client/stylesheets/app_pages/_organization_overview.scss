@@ -3,11 +3,11 @@
     #organizationHeader {
       margin-bottom: 30px;
 
-      h1, h2 {
-        display: inline;
+      h2 {
+        display: inline-block;
+        position: relative;
+        top: 4px;
       }
-
-      h1 { margin-right: 10px; }
     }
 
     #createElectionLink {
@@ -21,14 +21,13 @@
 
       input {
         font-size: 18px;
-        width: 780px;
+        width: 755px;
         margin-bottom: 10px;
-        padding: 10px;
+        padding: 6px;
       }
 
       a {
         float: right;
-        margin-top: 5px;
       }
     }
 

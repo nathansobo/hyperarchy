@@ -60,14 +60,14 @@ button {
 
 @mixin glossyColor($color) {
   background-color: $color;
-  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .5)), color-stop(0.5, rgba(255, 255, 255, .2)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, .1))), $color;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .44)), color-stop(0.5, rgba(255, 255, 255, .16)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, .05))), $color;
   background: -moz-linear-gradient(top, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, .1) 100%), $color;
 }
 
 @mixin semiGlossyColor($color) {
   background-color: $color;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .33)), color-stop(0.5, rgba(255, 255, 255, .1)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, .1))), $color;
-  background: -moz-linear-gradient(top, rgba(255, 255, 255, .5) 0%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, .1) 100%), $color;
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, .33) 0%, rgba(255, 255, 255, .1) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, .1) 100%), $color;
 }
 
 @mixin borderRadius($radius) {
@@ -77,7 +77,7 @@ button {
 
 .glossyBlack, .glossyBlack:visited {
   color: white;
-  @include glossyColor(black);
+  @include glossyColor(#0D0D10);
 }
 
 .glossyGray, .glossyGray:visited {
@@ -99,7 +99,8 @@ button {
   font-size: 20px;
   text-align: center;
   border: 0;
-  padding: 3px 7px;
+  display: inline-block;
+  padding: 6px 20px;
   text-decoration:none;
   @include borderRadius(3px);
   -webkit-box-shadow: 0px 0px 2px black inset;
