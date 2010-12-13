@@ -28,13 +28,15 @@ _.constructor("Views.WelcomeGuide", View.Template, {
                   })
                 }).ref("step1B");
                 div({'class': "step"}, function() {
-                  h2("Now suggest some potential answers to your question using the text box on this page.");
+                  h2("Now suggest an answer to your question...");
                 }).ref("step2A");
                 div({'class': "step"}, function() {
                   h2("Click on the question you just added to suggest some answers.");
                 }).ref("step2B");
                 div({'class': "step"}, function() {
-                  h2("Once you've created a few answers, vote by dragging them into the list on the right.");
+                  h2(function() {
+                    raw("Click <em>Suggest An Answer</em> to add more ideas. When you're done, vote by dragging your answers into the area marked <em>Your Ranking</em>, with your favorite ideas closer to the top.");
+                  });
                 }).ref("step3A");
                 div({'class': "step"}, function() {
                   h2("Click on the question you just created to vote.");
@@ -46,7 +48,7 @@ _.constructor("Views.WelcomeGuide", View.Template, {
                 }).ref("step4A");
                 div({'class': "step"}, function() {
                   h2(function() {
-                    raw("When you finish voting, select your organization from the <em>Admin</em> menu above to invite your teammates.");
+                    raw("When you finish voting, click on <em>Invite</em> at the top of the page to invite your team.");
                   });
                 }).ref("step4B");
                 div({'class': "step"}, function() {
