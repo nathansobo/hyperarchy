@@ -58,9 +58,11 @@ _.constructor("Views.ElectionOverview", View.Template, {
       div({'class': "grid4"}, function() {
         div({id: "createCandidateForm", style: "display: none;"}, function() {
           div({'class': "columnHeader"}, function() {
-            div({'class': "small cancelX"}).click(function(view) {
-              view.hideCreateCandidateForm();
-            });
+            div({'class': "small cancelX"})
+              .ref('hideCreateCandidateFormCancelX')
+              .click(function(view) {
+                view.hideCreateCandidateForm();
+              });
             text("Enter Your Answer");
           });
           
@@ -124,8 +126,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.election(election);
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
       if (election.candidates().empty()) {
+        this.hideCreateCandidateFormCancelX.hide();
         this.showCreateCandidateForm("instantly");
       } else {
+        this.hideCreateCandidateFormCancelX.show();
         this.showCreateCandidateFormButton.show();
         this.hideCreateCandidateForm(true);
         this.candidatesList.show();
@@ -193,6 +197,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.subscriptions.add(election.candidates().onRemoteInsert(function() {
         if (this.candidatesList.is(":hidden")) {
           this.showCreateCandidateFormButton.show();
+          this.hideCreateCandidateFormCancelX.show();
           this.hideCreateCandidateForm(true);
           this.candidatesList.fadeIn();
           this.rankedCandidatesList.fadeIn();
@@ -201,6 +206,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       this.subscriptions.add(election.candidates().onRemoteRemove(function() {
         if (election.candidates().empty()) {
+          this.hideCreateCandidateFormCancelX.hide();
           this.candidatesList.fadeOut();
           this.showCreateCandidateFormButton.hide();
           this.rankedCandidatesList.fadeOut(this.bind(function() {
