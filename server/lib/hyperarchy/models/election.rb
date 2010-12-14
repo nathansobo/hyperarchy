@@ -63,7 +63,7 @@ class Election < Monarch::Model::Record
   end
 
   def email_subject
-    "#{creator.full_name} added a new question on Hyperarchy"
+    "There's a new question on Hyperarchy"
   end
 
   def email_body
@@ -72,7 +72,13 @@ class Election < Monarch::Model::Record
 \"#{body}\"
 
 To view this question in Hyperarchy, visit this link:
-#{Mailer.base_url}/app#view=election&electionId=#{id}"
+#{Mailer.base_url}/app#view=election&electionId=#{id}
+
+To unsubscribe from these emails, adjust your email preferences at:
+#{Mailer.base_url}/app#view=account
+
+Or if you can't deal with that, just reply to this email.
+"
   end
 
   def before_destroy
