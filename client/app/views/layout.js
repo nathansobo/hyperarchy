@@ -202,7 +202,8 @@ _.constructor("Views.Layout", View.Template, {
       menu.position({
         my: "left top",
         at: "left bottom",
-        of: link
+        of: link,
+        collision: "none"
       });
 
 
