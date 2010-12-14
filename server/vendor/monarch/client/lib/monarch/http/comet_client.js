@@ -9,7 +9,7 @@ _.constructor("Monarch.Http.CometClient", {
   connect: function() {
     var self = this;
     var numReceivedCharacters = 0
-    var connectFuture = new Http.AjaxFuture();
+    var connectFuture = new Monarch.Http.AjaxFuture();
 
     _.delay(function() {
       var xhr = jQuery.ajax({
@@ -19,19 +19,23 @@ _.constructor("Monarch.Http.CometClient", {
       });
 
       xhr.onreadystatechange = function() {
-        if (xhr.readyState == 3) {
-          var data = _.trim(xhr.responseText.slice(numReceivedCharacters));
-          numReceivedCharacters = xhr.responseText.length;
-          if (data.length > 0) {
-            _.each(data.split("\n"), function(messageString) {
-              var message = JSON.parse(messageString);
-              if (message[0] == "connected") {
-                connectFuture.triggerSuccess();
-              } else {
-                self.onReceiveNode.publish(message);
-              }
-            });
-          }
+        if (xhr.readyState === 3) {
+          var unreadCharacters = xhr.responseText.slice(numReceivedCharacters);
+          var lastNewlineIndex = unreadCharacters.lastIndexOf("\n")
+          if (lastNewlineIndex < 0) return;
+          var unreadLines = unreadCharacters.slice(0, lastNewlineIndex + 1);
+          numReceivedCharacters += unreadLines.length;
+          unreadLines = _.trim(unreadLines);
+          if (unreadLines.length === 0) return;
+
+          _.each(unreadLines.split("\n"), function(messageString) {
+            var message = JSON.parse(messageString);
+            if (message[0] == "connected") {
+              connectFuture.triggerSuccess();
+            } else {
+              self.onReceiveNode.publish(message);
+            }
+          });
         } else if (xhr.readyState == 4) {
           self.connect();
         }
