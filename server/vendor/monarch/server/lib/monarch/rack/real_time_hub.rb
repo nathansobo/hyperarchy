@@ -64,7 +64,7 @@ module Monarch
           raise "No real_time_client_id param available with the request" unless client_id
           hub.client_connected(client_id, self)
           padding_for_safari = " " * 256
-          render(padding_for_safari + ["connected", client_id].to_json)
+          render(padding_for_safari + ["connected", client_id].to_json + "\n")
         end
 
         def register_disconnection

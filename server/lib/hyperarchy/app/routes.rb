@@ -183,5 +183,14 @@ module Hyperarchy
       end
       successful_json_response({:ranking_id => ranking.id}, ranking)
     end
+
+    post "/client_error" do
+      Mailer.send(
+        :to => ["admin@hyperarchy.com", "nathansobo+hyperarchy@gmail.com"],
+        :subject => "#{current_user.full_name} encountered a client error",
+        :body => "User id: #{current_user.id}\n\nError info: #{params[:error]}"
+      )
+      successful_json_response
+    end
   end
 end

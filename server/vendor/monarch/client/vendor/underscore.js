@@ -74,7 +74,9 @@
         }
       }
     } catch(e) {
-      if (e != breaker) throw e;
+      if (e != breaker) {
+        throw e;
+      }
     }
     return obj;
   };

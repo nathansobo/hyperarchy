@@ -27,9 +27,23 @@ _.constructor("Monarch.Http.CometClient", {
           numReceivedCharacters += unreadLines.length;
           unreadLines = _.trim(unreadLines);
           if (unreadLines.length === 0) return;
-
           _.each(unreadLines.split("\n"), function(messageString) {
-            var message = JSON.parse(messageString);
+
+            try {
+              var message = JSON.parse(messageString);
+            } catch(e) {
+              // Special error handling added 12/14/10 -- Remove if we haven't seen any issues in a while
+              var errorReport = "In comet client, while attempting to parse the following JSON string:\n" +
+                messageString + "\n\n" +
+                e.stack;
+
+              if (window.console) {
+                console.debug("ERROR: " + errorReport);
+              }
+
+              Server.post("/client_error", {error: errorReport });
+            }
+
             if (message[0] == "connected") {
               connectFuture.triggerSuccess();
             } else {
