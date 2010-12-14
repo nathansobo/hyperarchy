@@ -127,7 +127,7 @@ class Candidate < Monarch::Model::Record
 \"#{body}\"
 
 If you would like to vote on it, visit the following link:
-http://hyperarchy.com/app#view=election&electionId=#{election_id}
+#{Mailer.base_url}/app#view=election&electionId=#{election_id}
 "
   end
 end

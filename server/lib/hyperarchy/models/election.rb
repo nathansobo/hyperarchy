@@ -72,7 +72,7 @@ class Election < Monarch::Model::Record
 \"#{body}\"
 
 To view this question in Hyperarchy, visit this link:
-http://hyperarchy.com/app#view=election&electionId=#{id}"
+#{Mailer.base_url}/app#view=election&electionId=#{id}"
   end
 
   def before_destroy
