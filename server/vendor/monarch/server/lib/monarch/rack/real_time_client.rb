@@ -53,7 +53,7 @@ module Monarch
 
       def unsubscribe(subscription_id)
         subscribe_mutex.synchronize do
-          node_subscriptions.remove(subscription_id) if node_subscriptions.has_key?(subscription_id)
+          node_subscriptions.delete(subscription_id) if node_subscriptions.has_key?(subscription_id)
           subscription_bundle = current_subscriptions.delete(subscription_id)
           subscription_bundle.destroy
         end

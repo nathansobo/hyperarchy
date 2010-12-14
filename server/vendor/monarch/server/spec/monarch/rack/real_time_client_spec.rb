@@ -30,6 +30,18 @@ module Monarch
           end
 
           it "does not allow redundant subscriptions to the same node" do
+            subscription_id = client.subscribe(node)
+            client.subscribe(node)
+            message = ["foo", {"bar" => "baz"}]
+            mock(client).send(message)
+            node.publish(message)
+
+            client.unsubscribe(subscription_id)
+            dont_allow(client).send(message)
+            node.publish(message)
+
+            # can subscribe again after unsubscribe
+            RR::reset
             client.subscribe(node)
             client.subscribe(node)
             message = ["foo", {"bar" => "baz"}]
