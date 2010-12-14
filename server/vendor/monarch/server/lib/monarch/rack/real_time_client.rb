@@ -8,6 +8,7 @@ module Monarch
       def initialize(id, hub)
         @id, @hub = id, hub
         @current_subscriptions = {}
+        @node_subscriptions = {}
         @queued_messages = []
         @send_mutex = Mutex.new
         @subscribe_mutex = Mutex.new
@@ -39,17 +40,20 @@ module Monarch
       end
 
       def subscribe(node_or_relation)
+        subscription_id = nil
         subscribe_mutex.synchronize do
-          subscription = node_or_relation.is_a?(Model::Relations::Relation) ?
-            subscribe_to_relation(node_or_relation) : subscribe_to_node(node_or_relation)
-          subscription_id = Guid.new.to_s
-          current_subscriptions[subscription_id] = subscription
-          subscription_id
+          if node_or_relation.is_a?(Monarch::Util::SubscriptionNode)
+            subscription_id = subscribe_to_node(node_or_relation)
+          else
+            subscription_id = subscribe_to_relation(node_or_relation)
+          end
         end
+        subscription_id
       end
 
       def unsubscribe(subscription_id)
         subscribe_mutex.synchronize do
+          node_subscriptions.remove(subscription_id) if node_subscriptions.has_key?(subscription_id)
           subscription_bundle = current_subscriptions.delete(subscription_id)
           subscription_bundle.destroy
         end
@@ -64,15 +68,21 @@ module Monarch
       end
 
       private
-      attr_reader :reconnect_timer, :queued_messages, :current_subscriptions, :send_mutex, :subscribe_mutex
+      attr_reader :reconnect_timer, :queued_messages, :current_subscriptions, :send_mutex, :subscribe_mutex, :node_subscriptions
 
       def subscribe_to_node(node)
-        node.subscribe do |message|
+        return nil if node_subscriptions.values.include?(node)
+        subscription_id = Guid.new.to_s
+        subscription = node.subscribe do |message|
           send(message)
         end
+        current_subscriptions[subscription_id] = subscription
+        node_subscriptions[subscription_id] = node
+        subscription_id
       end
 
       def subscribe_to_relation(relation)
+        subscription_id = Guid.new.to_s
         bundle = Util::SubscriptionBundle.new
 
         bundle.add(relation.on_insert do |record|
@@ -87,7 +97,8 @@ module Monarch
           send(["destroy", relation.exposed_name.to_s, record.id])
         end)
 
-        bundle
+        current_subscriptions[subscription_id] = bundle
+        subscription_id
       end
 
       def flush_queued_messages

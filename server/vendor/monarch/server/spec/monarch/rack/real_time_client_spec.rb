@@ -17,8 +17,20 @@ module Monarch
 
       describe "#subscribe and #unsubscribe" do
         context "when #subscribe is called with a subscription node" do
+          attr_reader :node
+          before do
+            @node = Monarch::Util::SubscriptionNode.new
+          end
+
           it "sends anything published on the node to the client" do
-            node = Monarch::Util::SubscriptionNode.new
+            client.subscribe(node)
+            message = ["foo", {"bar" => "baz"}]
+            mock(client).send(message)
+            node.publish(message)
+          end
+
+          it "does not allow redundant subscriptions to the same node" do
+            client.subscribe(node)
             client.subscribe(node)
             message = ["foo", {"bar" => "baz"}]
             mock(client).send(message)

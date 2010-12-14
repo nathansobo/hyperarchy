@@ -165,7 +165,13 @@ module Hyperarchy
 
     post "/subscribe_to_organization/:id" do |organization_id|
       organization = Organization.find(organization_id)
-      SubscriptionManager.subscribe_to_organization(current_real_time_client, organization)
+      subscription_id = SubscriptionManager.subscribe_to_organization(current_real_time_client, organization)
+
+      if subscription_id
+        successful_json_response(subscription_id)
+      else
+        unsuccessful_json_response
+      end
     end
 
     post "/rankings" do
