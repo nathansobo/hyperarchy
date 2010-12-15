@@ -132,7 +132,7 @@ If you would like to vote on it, visit the following link:
 To unsubscribe from these emails, adjust your email preferences at:
 #{Mailer.base_url}/app#view=account
 
-Or if you can't deal with that, just reply to this email.
+Or just reply with 'unsubscribe' to this email.
 "
   end
 end
