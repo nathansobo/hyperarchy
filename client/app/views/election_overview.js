@@ -128,6 +128,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.hideCreateCandidateForm(true); 
       this.candidatesList.hide();
       this.rankedCandidatesList.hide();
+      this.creatorDiv.hide();
       this.adjustHeight();
 
       var election = Election.find(state.electionId);
