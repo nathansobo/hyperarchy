@@ -61,6 +61,7 @@ _.constructor("Monarch.Model.Record", {
       var keyName = name + "Id";
       var tableName = options.constructorName ?
         _.underscoreAndPluralize(options.constructorName) : _.underscoreAndPluralize(name);
+
       this.prototype[name] = function(model) {
         if (arguments.length == 0) {
           var id = this[keyName]();

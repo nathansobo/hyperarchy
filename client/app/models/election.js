@@ -5,7 +5,8 @@ _.constructor("Election", Model.Record, {
       creatorId: 'key',
       body: 'string',
       voteCount: 'integer',
-      updatedAt: 'datetime'
+      updatedAt: 'datetime',
+      createdAt: 'datetime'
     });
 
     this.hasMany('candidates', {orderBy: 'position asc'});
@@ -58,5 +59,9 @@ _.constructor("Election", Model.Record, {
 
   fetchVotes: function() {
     return Server.fetch([this.votes(), this.voters()]);
+  },
+
+  formattedCreatedAt: function() {
+    return $.PHPDate("M j, Y @ g:ia", this.createdAt());
   }
 });

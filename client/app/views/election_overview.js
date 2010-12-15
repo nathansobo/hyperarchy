@@ -85,6 +85,19 @@ _.constructor("Views.ElectionOverview", View.Template, {
           div({'class': "clear"});
         }).ref('createCandidateForm');
 
+        div({id: 'createdBy', style: "display: none;"}, function() {
+          div({'class': "columnHeader"}, function() {
+            text("Question Raised By");
+          });
+          div({'class': "relatedUser"}, function() {
+            subview('creatorAvatar', Views.Avatar, { size: 40 });
+            div({'class': "details"}, function() {
+              div({'class': "name"}, "").ref('creatorName');
+              div({'class': "date"}, "").ref('createdAt');
+            });
+            div({'class': "clear"});
+          });
+        }).ref('creatorDiv');
 
         subview('votesList', Views.VotesList);
       });
@@ -164,6 +177,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     election: {
       afterChange: function(election) {
         this.populateElectionDetails(election);
+        this.populateCreator(election);
         this.subscribeToElectionChanges(election);
         this.candidatesList.election(election);
         this.rankedCandidatesList.election(election);
@@ -182,6 +196,20 @@ _.constructor("Views.ElectionOverview", View.Template, {
       }
       this.contract(true);
       this.adjustHeight();
+    },
+
+    populateCreator: function(election) {
+      var creator = election.creator();
+      if (!creator) {
+        User.fetch(election.creatorId()).onSuccess(function() {
+          this.populateCreator(election);
+        }, this)
+        return;
+      }
+      this.creatorName.html(creator.fullName());
+      this.createdAt.html(election.formattedCreatedAt());
+      this.creatorAvatar.user(creator);
+      this.creatorDiv.show();
     },
 
     subscribeToElectionChanges: function(election) {

@@ -1356,35 +1356,41 @@ button {
       position: relative;
       top: 3px;
       left: 4px; }
+  #app #electionOverview .relatedUser {
+    margin-top: 5px;
+    cursor: pointer; }
+    #app #electionOverview .relatedUser:hover {
+      background-color: #ffffcc; }
+    #app #electionOverview .relatedUser .avatar {
+      float: left;
+      margin-right: 5px;
+      width: 40px;
+      height: 40px;
+      background: #999999 url(/images/mystery_man.jpeg) no-repeat top left; }
+    #app #electionOverview .relatedUser .details {
+      padding-top: 2px; }
+      #app #electionOverview .relatedUser .details .name {
+        font-size: 15px;
+        margin-bottom: 2px; }
+      #app #electionOverview .relatedUser .details .date {
+        color: #999999;
+        font-size: 12px; }
+  #app #electionOverview #createdBy {
+    margin-bottom: 20px; }
+    #app #electionOverview #createdBy .columnHeader {
+      border-bottom: 1px solid #e0e0e0; }
   #app #electionOverview #votes #voteCount {
     border-bottom: 1px solid #e0e0e0; }
     #app #electionOverview #votes #voteCount.noVotes {
       border-bottom: none; }
   #app #electionOverview #votes ol {
     overflow-y: auto; }
-    #app #electionOverview #votes ol .vote {
-      margin-top: 5px;
-      cursor: pointer; }
-      #app #electionOverview #votes ol .vote:hover {
-        background-color: #ffffcc; }
-      #app #electionOverview #votes ol .vote .avatar {
-        float: left;
-        margin-right: 5px;
-        width: 40px;
-        height: 40px;
-        background: #999999 url(/images/mystery_man.jpeg) no-repeat top left; }
-      #app #electionOverview #votes ol .vote .details {
-        padding-top: 2px; }
-        #app #electionOverview #votes ol .vote .details .name {
-          font-size: 15px;
-          margin-bottom: 2px; }
-        #app #electionOverview #votes ol .vote .details .votedAt {
-          color: #999999;
-          font-size: 12px; }
+    #app #electionOverview #votes ol .relatedUser:hover {
+      background-color: #ffffcc; }
   #app #electionOverview .columnHeader {
     font-size: 18px;
     color: #999999;
-    padding-bottom: 5px; }
+    padding-bottom: 3px; }
   #app #electionOverview .bigLoading {
     position: absolute; }
   #app #electionOverview ol.candidates {

@@ -107,6 +107,46 @@
       }
     }
 
+    .relatedUser {
+      margin-top: 5px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #ffffcc;
+      }
+
+      .avatar {
+        float: left;
+        margin-right: 5px;
+        width: 40px;
+        height: 40px;
+        background: #999999 url(/images/mystery_man.jpeg) no-repeat top left;
+      }
+
+      .details {
+        padding-top: 2px;
+
+        .name {
+          font-size: 15px;
+          margin-bottom: 2px;
+        }
+
+        .date {
+          color: #999999;
+          font-size: 12px;
+        }
+      }
+    }
+
+    #createdBy {
+      margin-bottom: 20px;
+
+      .columnHeader {
+        border-bottom: 1px solid #e0e0e0;
+      }
+    }
+
+
     #votes {
       #voteCount {
         border-bottom: 1px solid #e0e0e0;
@@ -119,34 +159,9 @@
       ol {
         overflow-y: auto;
 
-        .vote {
-          margin-top: 5px;
-          cursor: pointer;
-
+        .relatedUser {
           &:hover {
             background-color: #ffffcc;
-          }
-
-          .avatar {
-            float: left;
-            margin-right: 5px;
-            width: 40px;
-            height: 40px;
-            background: #999999 url(/images/mystery_man.jpeg) no-repeat top left;
-          }
-
-          .details {
-            padding-top: 2px;
-
-            .name {
-              font-size: 15px;
-              margin-bottom: 2px;
-            }
-
-            .votedAt {
-              color: #999999;
-              font-size: 12px;
-            }
           }
         }
       }
@@ -155,7 +170,7 @@
     .columnHeader {
       font-size: 18px;
       color: #999999;
-      padding-bottom: 5px;
+      padding-bottom: 3px;
     }
 
     .bigLoading {
