@@ -1357,10 +1357,7 @@ button {
       top: 3px;
       left: 4px; }
   #app #electionOverview .relatedUser {
-    margin-top: 5px;
-    cursor: pointer; }
-    #app #electionOverview .relatedUser:hover {
-      background-color: #ffffcc; }
+    margin-top: 5px; }
     #app #electionOverview .relatedUser .avatar {
       float: left;
       margin-right: 5px;
@@ -1385,8 +1382,10 @@ button {
       border-bottom: none; }
   #app #electionOverview #votes ol {
     overflow-y: auto; }
-    #app #electionOverview #votes ol .relatedUser:hover {
-      background-color: #ffffcc; }
+    #app #electionOverview #votes ol .relatedUser {
+      cursor: pointer; }
+      #app #electionOverview #votes ol .relatedUser:hover {
+        background-color: #ffffcc; }
   #app #electionOverview .columnHeader {
     font-size: 18px;
     color: #999999;
