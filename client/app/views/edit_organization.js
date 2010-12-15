@@ -50,6 +50,11 @@ _.constructor("Views.EditOrganization", View.Template, {
                 .ref("membersCanInvite")
                 .change('enableOrDisableSaveButton');
               label({'for': "membersCanInvite"}, "Allow members to invite other people to join the organization.")
+
+              input({id: "useSssl", type: "checkbox", name: "useSsl"})
+                .ref("useSsl")
+                .change('enableOrDisableSaveButton');
+              label({'for': "useSsl"}, "Use SSL for this organization.");
             });
 
 

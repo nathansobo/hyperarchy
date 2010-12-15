@@ -5,7 +5,8 @@ _.constructor("Organization", Model.Record, {
         name: "string",
         description: "string",
         membersCanInvite: "boolean",
-        dismissedWelcomeGuide: 'boolean'
+        dismissedWelcomeGuide: 'boolean',
+        useSsl: 'boolean'
       });
 
       this.hasMany("elections", {orderBy: "updatedAt desc"});
