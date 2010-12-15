@@ -124,66 +124,71 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     navigate: function(state) {
-      this.showCreateCandidateFormButton.hide();
-      this.hideCreateCandidateForm(true); 
-      this.candidatesList.hide();
-      this.rankedCandidatesList.hide();
-      this.creatorDiv.hide();
       this.adjustHeight();
-
-      var election = Election.find(state.electionId);
-      if (!election) {
-        this.retryNavigateAfterFetchingNeededData(state);
-        return;
-      }
-      Application.currentOrganizationId(election.organizationId());
-      this.election(election);
+      this.electionId(parseInt(state.electionId));
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
-      if (election.creator()) this.creatorDiv.show();
-      if (election.candidates().empty()) {
-        this.hideCreateCandidateFormCancelX.hide();
-        this.showCreateCandidateForm("instantly");
-      } else {
-        this.hideCreateCandidateFormCancelX.show();
-        this.showCreateCandidateFormButton.show();
-        this.hideCreateCandidateForm(true);
-        this.candidatesList.show();
-        this.rankedCandidatesList.show();
-      }
     },
 
-    retryNavigateAfterFetchingNeededData: function(state) {
-      this.startLoading();
-      var electionId = state.electionId;
-      Server.fetch([
-        Election.where({id: electionId}).joinTo(Organization),
-        Candidate.where({electionId: electionId})
-      ]).onSuccess(function() {
-        this.stopLoading();
-        this.navigate(state);
-      }, this);
+    electionId: {
+      afterChange: function(electionId, previousElectionId) {
+        this.showCreateCandidateFormButton.hide();
+        this.hideCreateCandidateForm(true);
+        this.candidatesList.hide();
+        this.rankedCandidatesList.hide();
+        this.creatorDiv.hide();
+
+        var election = Election.find(electionId);
+        if (!election) {
+          this.startLoading();
+          Server.fetch([
+            Election.where({id: electionId}).joinTo(Organization),
+            Candidate.where({electionId: electionId})
+          ]).onSuccess(function() {
+            this.stopLoading();
+            this.election(Election.find(electionId));
+          }, this);
+        } else {
+          this.election(election);
+        }
+      }
     },
 
     rankingsUserId: {
-      afterWrite: function(rankingsUserId) {
+      afterChange: function(rankingsUserId) {
         var rankingsUser = User.find(rankingsUserId);
         if (!rankingsUser) {
           this.rankedCandidatesList.startLoading();
-          User.fetch(rankingsUserId).onSuccess(this.hitch('rankingsUserId', rankingsUserId));
-          return;
+          User.fetch(rankingsUserId).onSuccess(function() {
+            this.rankedCandidatesList.rankingsUser(User.find(rankingsUserId));
+          }, this);
+        } else {
+          this.rankedCandidatesList.rankingsUser(rankingsUser);
         }
-        this.rankedCandidatesList.rankingsUser(rankingsUser);
       }
     },
 
     election: {
       afterChange: function(election) {
+        Application.currentOrganizationId(election.organizationId());
+
         this.populateElectionDetails(election);
         this.populateCreator(election);
         this.subscribeToElectionChanges(election);
         this.candidatesList.election(election);
         this.rankedCandidatesList.election(election);
         this.votesList.election(election);
+
+        if (election.creator()) this.creatorDiv.show();
+        if (election.candidates().empty()) {
+          this.hideCreateCandidateFormCancelX.hide();
+          this.showCreateCandidateForm("instantly");
+        } else {
+          this.hideCreateCandidateFormCancelX.show();
+          this.showCreateCandidateFormButton.show();
+          this.hideCreateCandidateForm(true);
+          this.candidatesList.show();
+          this.rankedCandidatesList.show();
+        }
       }
     },
 
