@@ -139,6 +139,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       Application.currentOrganizationId(election.organizationId());
       this.election(election);
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
+      if (election.creator()) this.creatorDiv.show();
       if (election.candidates().empty()) {
         this.hideCreateCandidateFormCancelX.hide();
         this.showCreateCandidateForm("instantly");
