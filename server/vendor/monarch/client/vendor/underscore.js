@@ -75,6 +75,7 @@
       }
     } catch(e) {
       if (e != breaker) {
+        if (window.console) console.debug(e.stack);
         throw e;
       }
     }
