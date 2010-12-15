@@ -11,6 +11,8 @@ _.constructor("Views.Avatar", View.Template, {
 
     user: {
       afterChange: function(user) {
+        this.removeClass("validGravatar");
+        this.empty();
         var img = new Image();
         $(img)
           .load(this.hitch('imageLoaded', img))
@@ -20,7 +22,7 @@ _.constructor("Views.Avatar", View.Template, {
     },
 
     imageLoaded: function(img) {
-      this.empty();
+      this.addClass("validGravatar")
       this.append(img);
     },
 

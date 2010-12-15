@@ -114,7 +114,11 @@
         margin-right: 5px;
         width: 40px;
         height: 40px;
-        background: #999999 url(/images/mystery_man.jpeg) no-repeat top left;
+        background: #999 url(/images/mystery_man.jpeg) no-repeat top left;
+
+        &.validGravatar {
+          background: #999;
+        }
       }
 
       .details {
