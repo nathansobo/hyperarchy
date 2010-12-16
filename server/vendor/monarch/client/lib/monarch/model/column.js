@@ -48,8 +48,12 @@ _.constructor("Monarch.Model.Column", {
   },
 
   convertValueForField: function(value) {
-    if (this.type == "datetime" && value && typeof value == "number") {
+    if (this.type == "datetime" && value && _.isNumber(value)) {
       return new Date(value);
+    } else if (this.type == "integer" && value && _.isString(value)) {
+      return parseInt(value);
+    } else if (this.type == "float" && value && _.isString(value)) {
+      return parseFloat(value)
     } else if (this.type == "key" && !Monarch.Model.allowStringKeys && typeof value == "string") {
       return parseInt(value);
     } else {

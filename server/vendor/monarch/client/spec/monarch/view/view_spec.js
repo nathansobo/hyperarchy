@@ -85,6 +85,16 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
+      describe("#fieldValuesDiffer()", function() {
+        it("returns true if any of the #fieldValues() don't match their corresponding field in model", function() {
+          view.model(model);
+          expect(view.fieldValuesMatchModel()).to(beTrue);
+
+          model.foo("foo prime");
+          expect(view.fieldValuesMatchModel()).to(beFalse);
+        });
+      });
+
       describe("#model(model)", function() {
         it("populates text fields by calling methods on the given model corresponding to their names and keeps them updated as model changes", function() {
           expect(view.foo.val()).to(eq, "Foo");

@@ -91,6 +91,18 @@ _.constructor("Monarch.View.Template", {
       return values;
     },
 
+    fieldValuesMatchModel: function() {
+      var model = this.model();
+      return _.every(this.fieldValues(), function(value, fieldName) {
+        var field = model.field(fieldName);
+        if (field) {
+          return field.valueIsEqual(value);
+        } else {
+          return true;
+        }
+      });
+    },
+
     show: function($super) {
       if (this.beforeShow) this.beforeShow();
       var result = $super();

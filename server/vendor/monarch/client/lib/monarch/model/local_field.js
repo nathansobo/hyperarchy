@@ -71,7 +71,7 @@ _.constructor("Monarch.Model.LocalField", Monarch.Model.ConcreteField, {
 
     this.version = this.record.nextLocalVersion();
 
-    if (this.valueEquals(this.remoteField().value())) {
+    if (this.valueIsEqual(this.remoteField().value())) {
       this.markClean();
     } else {
       this.markDirty();
