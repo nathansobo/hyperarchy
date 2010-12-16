@@ -137,19 +137,17 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.rankedCandidatesList.hide();
         this.creatorDiv.hide();
 
-        var election = Election.find(electionId);
-        if (!election) {
-          this.startLoading();
-          Server.fetch([
-            Election.where({id: electionId}).joinTo(Organization),
-            Candidate.where({electionId: electionId})
-          ]).onSuccess(function() {
+
+        var additionalRelations = [
+          Election.where({id: electionId}).joinTo(Organization),
+          Candidate.where({electionId: electionId})
+        ];
+        this.startLoading();
+        Election.findOrFetch(electionId, additionalRelations)
+          .onSuccess(function(election) {
             this.stopLoading();
-            this.election(Election.find(electionId));
+            this.election(election);
           }, this);
-        } else {
-          this.election(election);
-        }
       }
     },
 
@@ -178,7 +176,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.rankedCandidatesList.election(election);
         this.votesList.election(election);
 
-        if (election.creator()) this.creatorDiv.show();
         if (election.candidates().empty()) {
           this.hideCreateCandidateFormCancelX.hide();
           this.showCreateCandidateForm("instantly");
@@ -186,8 +183,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
           this.hideCreateCandidateFormCancelX.show();
           this.showCreateCandidateFormButton.show();
           this.hideCreateCandidateForm(true);
-          this.candidatesList.show();
-          this.rankedCandidatesList.show();
         }
       }
     },
@@ -206,17 +201,12 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     populateCreator: function(election) {
-      var creator = election.creator();
-      if (!creator) {
-        User.fetch(election.creatorId()).onSuccess(function() {
-          this.populateCreator(election);
-        }, this)
-        return;
-      }
-      this.creatorName.html(creator.fullName());
-      this.createdAt.html(election.formattedCreatedAt());
-      this.creatorAvatar.user(creator);
-      this.creatorDiv.show();
+      User.findOrFetch(election.creatorId()).onSuccess(function(creator) {
+        this.creatorName.html(creator.fullName());
+        this.createdAt.html(election.formattedCreatedAt());
+        this.creatorAvatar.user(creator);
+        this.creatorDiv.show();
+      }, this);
     },
 
     subscribeToElectionChanges: function(election) {

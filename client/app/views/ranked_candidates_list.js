@@ -54,7 +54,9 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     election: {
-      afterChange: function() {
+      afterChange: function(election) {
+        if (!election.candidates().empty()) this.show();
+
         if (this.rankingsUser()) {
           this.assignRankingsRelation();
         } else {
