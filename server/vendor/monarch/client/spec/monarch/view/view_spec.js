@@ -64,7 +64,7 @@ Screw.Unit(function(c) { with(c) {
             bar: "Bar",
             baz: false,
             textarea: "This too",
-            quux: 2
+            quux: '2'
           });
         });
 
@@ -78,7 +78,7 @@ Screw.Unit(function(c) { with(c) {
             foo: "Foo",
             bar: "Bar",
             baz: false,
-            quux: 2,
+            quux: '2',
             textarea: "This too",
             corge: "hi there"
           });
