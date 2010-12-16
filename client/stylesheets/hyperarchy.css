@@ -1563,13 +1563,14 @@ button {
 #app #editOrganization #details textarea {
   resize: none;
   width: 500px; }
-#app #editOrganization #details #membersCanInviteSection {
-  margin-top: 10px; }
-  #app #editOrganization #details #membersCanInviteSection #membersCanInvite {
+#app #editOrganization #details #flags {
+  margin-top: 10px;
+  margin-bottom: 20px; }
+  #app #editOrganization #details #flags input[type="checkbox"] {
     margin-right: 10px;
     display: inline;
     width: auto; }
-  #app #editOrganization #details #membersCanInviteSection label {
+  #app #editOrganization #details #flags label {
     position: relative;
     top: 2px; }
 #app #editOrganization #details button {

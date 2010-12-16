@@ -56,10 +56,11 @@
         width: 500px;
       }
 
-      #membersCanInviteSection {
+      #flags {
         margin-top: 10px;
+        margin-bottom: 20px;
 
-        #membersCanInvite {
+        input[type="checkbox"] {
           margin-right: 10px;
           display: inline;
           width: auto;
@@ -69,7 +70,6 @@
           position: relative;
           top: 2px;
         }
-
       }
 
       button {

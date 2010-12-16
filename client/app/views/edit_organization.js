@@ -45,16 +45,20 @@ _.constructor("Views.EditOrganization", View.Template, {
               .ref('descriptionField')
               .keyup('enableOrDisableSaveButton');
 
-            div({id: "membersCanInviteSection"}, function() {
-              input({id: "membersCanInvite", type: "checkbox", name: "membersCanInvite"})
-                .ref("membersCanInvite")
-                .change('enableOrDisableSaveButton');
-              label({'for': "membersCanInvite"}, "Allow members to invite other people to join the organization.")
+            div({id: "flags"}, function() {
+              div(function() {
+                input({id: "membersCanInvite", type: "checkbox", name: "membersCanInvite"})
+                  .ref("membersCanInvite")
+                  .change('enableOrDisableSaveButton');
+                label({'for': "membersCanInvite"}, "Allow members to invite other people to join the organization.")
+              });
 
-//              input({id: "useSssl", type: "checkbox", name: "useSsl"})
-//                .ref("useSsl")
-//                .change('enableOrDisableSaveButton');
-//              label({'for': "useSsl"}, "Use SSL for this organization.");
+              div(function() {
+                input({id: "useSsl", type: "checkbox", name: "useSsl"})
+                  .ref("useSsl")
+                  .change('enableOrDisableSaveButton');
+                label({'for': "useSsl"}, "Secure communication with SSL.");
+              });
             });
 
 
@@ -135,7 +139,8 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.model(Organization.find(organizationId));
       this.tabs.find("span").removeClass("selected");
       this.content.children().hide();
-
+      this.saveChangesButton.attr('disabled', true);
+      
       if (state.tab === "members") {
         this.membersTab.addClass("selected");
         this.members.show();
@@ -147,7 +152,6 @@ _.constructor("Views.EditOrganization", View.Template, {
 
     modelAssigned: function(organization) {
       organization.memberships().fetch().onSuccess(function() {
-        this.saveChangesButton.attr('disabled', true);
         this.membersTbody.relation(organization.memberships());
       }, this);
     },
@@ -187,15 +191,10 @@ _.constructor("Views.EditOrganization", View.Template, {
     },
 
     enableOrDisableSaveButton: function() {
-      var valuesDiffer =
-        this.nameField.val() !== this.model().name() ||
-          this.descriptionField.val() !== this.model().description() ||
-            this.membersCanInvite.is(":checked") !== this.model().membersCanInvite();
-
-      if (valuesDiffer) {
-        this.saveChangesButton.attr('disabled', false);
-      } else {
+      if (this.fieldValuesMatchModel()) {
         this.saveChangesButton.attr('disabled', true);
+      } else {
+        this.saveChangesButton.removeAttr('disabled');
       }
     }
   }
