@@ -335,5 +335,41 @@ Screw.Unit(function(c) { with(c) {
         });
       });
     });
+
+    describe("#findOrFetch(id, additionalRelations)", function() {
+      useFakeServer(false);
+
+      it("looks for a record in with the given id, and fetches it and any additional relations if it is not found, invoking the callback with the record", function() {
+        // case where a record with given id is in the repo
+        var extantRecord = Blog.find("recipes");
+
+        var onSuccessCallback = mockFunction("onSuccessCallback");
+        Blog.findOrFetch("recipes").onSuccess(onSuccessCallback);
+
+        expect(onSuccessCallback).to(haveBeenCalled, once);
+        expect(onSuccessCallback).to(haveBeenCalled, withArgs(extantRecord));
+        expect(Server.fetches).to(beEmpty);
+
+        // case where a record with that id is not in the local repo
+        onSuccessCallback.clear();
+
+        var additionalRelation = BlogPost.where({blogId: "on-server"});
+        Blog.findOrFetch("on-server", [additionalRelation]).onSuccess(onSuccessCallback);
+
+        expect(onSuccessCallback).toNot(haveBeenCalled);
+        expect(Server.fetches.length).to(eq, 1);
+        expect(Server.lastFetch.relations).to(equal, [Blog.where({id: "on-server"}), additionalRelation]);
+
+        Server.lastFetch.simulateSuccess({
+          blogs: {
+            'on-server': { id: "on-server", name: "Fetched From The Server"}
+          }
+        });
+
+        expect(onSuccessCallback).to(haveBeenCalled, once);
+        expect(onSuccessCallback).to(haveBeenCalled, withArgs(Blog.find('on-server')));
+      });
+    });
+
   });
 }});

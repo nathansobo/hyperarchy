@@ -3,9 +3,10 @@
 _.constructor("Monarch.Model.Record", {
   constructorProperties: {
     initialize: function() {
-      this.delegateConstructorMethods('find', 'fetch', 'tuples', 'first', 'each', 'onEach', 'map', 'any', 'onLocalUpdate',
-                                      'onRemoteInsert', 'onRemoteUpdate', 'onRemoteRemove', 'where', 'orderBy', 'project',
-                                      'union', 'difference', 'empty', 'createFromRemote', 'fixture', 'clear', 'table');
+      this.delegateConstructorMethods('find', 'fetch', 'findOrFetch', 'tuples', 'first', 'each', 'onEach', 'map', 'any',
+                                      'onLocalUpdate', 'onRemoteInsert', 'onRemoteUpdate', 'onRemoteRemove', 'where',
+                                      'orderBy', 'project', 'union', 'difference', 'empty', 'createFromRemote', 'fixture',
+                                      'clear', 'table');
     },
 
     inherited: function(subconstructor) {

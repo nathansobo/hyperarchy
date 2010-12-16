@@ -54,32 +54,42 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     election: {
-      afterChange: function() {
-        // if the election changes, the rankings relation will change when the
-        // rankings user is assigned so we show loading until then
-        this.startLoading(); 
+      afterChange: function(election) {
+        if (!election.candidates().empty()) this.show();
+
+        if (this.rankingsUser()) {
+          this.assignRankingsRelation();
+        } else {
+          this.startLoading();
+        }
       }
     },
 
     rankingsUser: {
-      afterWrite: function(rankingsUser) {
-        this.rankingsRelation(this.election().rankingsForUser(rankingsUser));
-      },
-
       afterChange: function(rankingsUser) {
-        if (rankingsUser.isCurrent() && this.election().organization().currentUserIsMember()) {
-          this.rankingsUserName.html("Your Ranking");
-          this.backLink.hide();
-          this.rankedCandidatesList.sortable('enable');
-          this.removeClass('otherUser');
+        if (this.election()) {
+          this.assignRankingsRelation();
         } else {
-          this.rankingsUserName.html(rankingsUser.fullName() + "'s Ranking");
-          this.backLink.show();
-          this.adjustHeight(); // in case the header changed height from assigning the ranker
-          this.rankedCandidatesList.sortable('disable');
-          this.addClass('otherUser');
+          this.startLoading();
         }
       }
+    },
+
+    assignRankingsRelation: function() {
+      if (this.rankingsUser().isCurrent() && this.election().organization().currentUserIsMember()) {
+        this.rankingsUserName.html("Your Ranking");
+        this.backLink.hide();
+        this.rankedCandidatesList.sortable('enable');
+        this.removeClass('otherUser');
+      } else {
+        this.rankingsUserName.html(this.rankingsUser().fullName() + "'s Ranking");
+        this.backLink.show();
+        this.adjustHeight(); // in case the header changed height from assigning the ranker
+        this.rankedCandidatesList.sortable('disable');
+        this.addClass('otherUser');
+      }
+
+      this.rankingsRelation(this.election().rankingsForUser(this.rankingsUser()));
     },
 
     rankingsRelation: {
