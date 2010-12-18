@@ -179,6 +179,7 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.loading.show();
       this.save().onSuccess(function() {
         this.loading.hide();
+        Application.changeProtocolIfNeeded();
       }, this);
     },
 

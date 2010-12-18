@@ -13,6 +13,7 @@ module Views
           $("#loadingPage").remove();
           Server.realTimeClientId(#{Guid.new.to_s.inspect});
           window.Application = new Controllers.Application(#{(current_user ? current_user.id : nil).to_json});
+          Application.environment = #{RACK_ENV.to_json};
           #{ssl_bootstrap}
           window.Application.initializeNavigation();
         });

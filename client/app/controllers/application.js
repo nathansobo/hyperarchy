@@ -9,8 +9,6 @@ _.constructor("Controllers.Application", {
       elections: Views.ElectionOverview.toView(),
       account: Views.Account.toView()
     };
-    // don't render the view until initializeNavigation is called,
-    // so that the Application global is assigned.
   },
 
   initializeNavigation: function() {
@@ -49,11 +47,9 @@ _.constructor("Controllers.Application", {
 
   changeProtocolIfNeeded: function() {
     if (this.sslEnabled() && !this.sslNeededForCurrentUrl()) {
-      this.disableSsl();
-      return true;
+      return this.disableSsl();
     } else if (!this.sslEnabled() && this.sslNeededForCurrentUrl()) {
-      this.enableSsl();
-      return true;
+      return this.enableSsl();
     } else {
       return false;
     }
@@ -73,10 +69,16 @@ _.constructor("Controllers.Application", {
   },
 
   enableSsl: function() {
+    if (this.environment === "development" && window.location.hostname === "localhost") {
+      if (window.console) console.debug("Switch to https would have occurred but is disabled for 'localhost' in development environment");
+      return false;
+    };
     window.location = window.location.href.replace("http:", "https:");
+    return true;
   },
 
   disableSsl: function() {
     window.location = window.location.href.replace("https:", "http:");
+    return true;
   }
 });
