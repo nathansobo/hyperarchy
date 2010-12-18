@@ -177,8 +177,9 @@ _.constructor("Views.EditOrganization", View.Template, {
     saveOrganization: function() {
       this.saveChangesButton.attr('disabled', true);
       this.loading.show();
-      this.save().onSuccess(function() {
+      this.save().onSuccess(function(organization) {
         this.loading.hide();
+        if (organization.useSsl()) Application.mayNeedSsl = true;
         Application.changeProtocolIfNeeded();
       }, this);
     },
