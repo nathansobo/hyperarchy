@@ -35,7 +35,7 @@ _.constructor("User", Model.Record, {
 
   gravatarUrl: function(size) {
     if (!size) size = 40;
-    var baseUrl = window.location.protocol === "https:" ? "https://secure.gravatar.com" : "http://www.gravatar.com";
+    var baseUrl = Application.sslEnabled() ? "https://secure.gravatar.com" : "http://www.gravatar.com";
     return baseUrl + "/avatar/" + this.emailHash() + "?s=" + size.toString() + "&d=404"
   },
 

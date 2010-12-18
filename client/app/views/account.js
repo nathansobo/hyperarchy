@@ -18,6 +18,7 @@ _.constructor("Views.Account", View.Template, {
     viewName: 'account',
 
     navigate: function() {
+      if (Application.changeProtocolIfNeeded()) return;
       Application.layout.showAlternateHeader("Account Preferences");
       this.emailPreferences.relation(Application.currentUser().memberships().orderBy('id asc'));
     }

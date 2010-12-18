@@ -1,9 +1,7 @@
 _.constructor("Views.EmailPreferences", View.Template, {
   content: function(params) { with(this.builder) {
     var organization = params.membership.organization();
-
     div({'class': "emailPreferences dropShadow"}, function() {
-
       div({'class': "loading", style: "display: none;"}).ref('saving');
       div({'class': "organizationName"}, organization.name() + " Email Preferences");
       div({'class': "emailPreference"}, function() {

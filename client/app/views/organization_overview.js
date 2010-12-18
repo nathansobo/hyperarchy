@@ -51,6 +51,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         return;
       }
 
+      if (Application.changeProtocolIfNeeded()) return;
+
       var organizationId = parseInt(state.organizationId);
       Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);

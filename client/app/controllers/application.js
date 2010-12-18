@@ -14,6 +14,7 @@ _.constructor("Controllers.Application", {
   },
 
   initializeNavigation: function() {
+    if (this.changeProtocolIfNeeded()) return;
     this.layout = Views.Layout.toView({views: this.views});
     this.body.append(this.layout);
     $(window).trigger('hashchange');
@@ -44,5 +45,37 @@ _.constructor("Controllers.Application", {
       this.layout.organization(this.currentOrganization());
       this.welcomeGuide.organization(this.currentOrganization());
     }
+  },
+
+  changeProtocolIfNeeded: function() {
+    if (this.sslEnabled() && !this.sslNeededForCurrentUrl()) {
+      this.disableSsl();
+      return true;
+    } else if (!this.sslEnabled() && this.sslNeededForCurrentUrl()) {
+      this.enableSsl();
+      return true;
+    } else {
+      return false;
+    }
+  },
+
+  sslNeededForCurrentUrl: function() {
+    var state = $.bbq.getState();
+    if (state.view === "account") return true;
+    if (state.organizationId && Organization.find(state.organizationId).useSsl()) return true;
+    if (state.electionId && _.include(this.sslElectionIds, parseInt(state.electionId))) return true;
+    return false;
+  },
+
+  sslEnabled: function() {
+    return window.location.protocol === "https:";
+  },
+
+  enableSsl: function() {
+    window.location = window.location.href.replace("http:", "https:");
+  },
+
+  disableSsl: function() {
+    window.location = window.location.href.replace("https:", "http:");
   }
 });

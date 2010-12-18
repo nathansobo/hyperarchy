@@ -25,6 +25,41 @@ module Models
       end
     end
 
+    describe "SSL-related methods" do
+      attr_reader :ssl_org, :non_ssl_org, :ssl_user, :non_ssl_user
+      
+      before do
+        @ssl_org = Organization.make(:use_ssl => true)
+        @non_ssl_org = Organization.make
+        @ssl_user = User.make
+        @non_ssl_user = User.make
+        ssl_org.memberships.create!(:user => ssl_user, :suppress_invite_email => true)
+        non_ssl_org.memberships.create!(:user => non_ssl_user, :suppress_invite_email => true)
+        non_ssl_org.memberships.create!(:user => non_ssl_user, :suppress_invite_email => true)
+      end
+      
+      describe "#may_need_ssl?" do
+        it "returns true if the user is a member of any organizations that are secured with SSL" do
+          ssl_user.may_need_ssl?.should be_true
+          non_ssl_user.may_need_ssl?.should be_false
+        end
+      end
+
+      describe "#ssl_election_ids" do
+        it "returns a list of every election id in SSL organizations in which the user is a member" do
+          ssl_election_1 = ssl_org.elections.create!(:body => "SSL Election 1", :suppress_notification_email => true)
+          ssl_election_2 = ssl_org.elections.create!(:body => "SSL Election 2", :suppress_notification_email => true)
+          non_ssl_org.elections.create!(:body => "Non SSL Election", :suppress_notification_email => true)
+
+          election_ids = ssl_user.ssl_election_ids
+          election_ids.length.should == 2
+          election_ids.should include(ssl_election_1.id)
+          election_ids.should include(ssl_election_2.id)
+        end
+      end
+    end
+    
+
     describe "security" do
       describe "#can_update? and #can_destroy?" do
         it "only allows admins and the users themselves to update / destroy user records, and only allows admins to set the admin flag" do

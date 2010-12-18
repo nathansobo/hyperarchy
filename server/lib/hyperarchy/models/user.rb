@@ -16,6 +16,14 @@ class User < Monarch::Model::Record
     memberships.join_through(Organization)
   end
 
+  relates_to_many :ssl_organizations do
+    organizations.where(:use_ssl => true)
+  end
+
+  relates_to_many :ssl_elections do
+    ssl_organizations.join_through(Election)
+  end
+
   relates_to_many :elections do
     Election.table
   end
@@ -64,5 +72,13 @@ class User < Monarch::Model::Record
 
   def last_visited_organization
     memberships.order_by(Membership[:last_visited].desc).first.organization
+  end
+
+  def may_need_ssl?
+    !ssl_organizations.empty?
+  end
+
+  def ssl_election_ids
+    ssl_elections.project(:id).all.map(&:id)
   end
 end
