@@ -41,18 +41,19 @@ module Hyperarchy
     SubscriptionManager.start unless RACK_ENV == 'test'
 
     configure(:test) do
-      GiftWrapper.development_mode = true
+      ::HTTP_HOST = "test.hyperarchy.com"
       ::LOGGER = Logger.new($stdout)
+      GiftWrapper.development_mode = true
       Mailer.use_fake
-      Mailer.base_url = "hyperarchy.com"
       Monarch::Model::convert_strings_to_keys = true
     end
 
     configure(:development) do
       GiftWrapper.development_mode = true
       Sass::Plugin.options[:template_location] = { "#{CLIENT_ROOT}/stylesheets" => "#{CLIENT_ROOT}/stylesheets" }
+      ::HTTP_HOST = "local.hyperarchy.com"
       ::LOGGER = Logger.new(STDOUT)
-      Mailer.base_url = "localhost:9000"
+
       Mailer.default_options = {
         :from => '"Hyperarchy" <admin@hyperarchy.com>',
         :via => :smtp,
@@ -70,8 +71,7 @@ module Hyperarchy
     end
 
     configure(:demo) do
-      Mailer.base_url = "demo.hyperarchy.com"
-
+      ::HTTP_HOST = "demo.hyperarchy.com"
       ::LOGGER = Logger.new($stdout)
 
       Mailer.default_options = {
@@ -89,7 +89,7 @@ module Hyperarchy
     end
 
     configure(:production) do
-      Mailer.base_url = "hyperarchy.com"
+      ::HTTP_HOST = "hyperarchy.com"
 
       ::LOGGER = Logger.new($stdout)
 

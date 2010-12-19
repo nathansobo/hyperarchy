@@ -127,10 +127,10 @@ class Candidate < Monarch::Model::Record
 \"#{body}\"
 
 If you would like to vote on it, visit the following link:
-#{Mailer.base_url}/app#view=election&electionId=#{election_id}
+http://#{HTTP_HOST}/app#view=election&electionId=#{election_id}
 
 To unsubscribe from these emails, adjust your email preferences at:
-#{Mailer.base_url}/app#view=account
+http://#{HTTP_HOST}/app#view=account
 
 Or just reply with 'unsubscribe' to this email.
 "

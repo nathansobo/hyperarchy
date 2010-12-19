@@ -72,10 +72,10 @@ class Election < Monarch::Model::Record
 \"#{body}\"
 
 To view this question in Hyperarchy, visit this link:
-#{Mailer.base_url}/app#view=election&electionId=#{id}
+http://#{HTTP_HOST}/app#view=election&electionId=#{id}
 
 To unsubscribe from these emails, adjust your email preferences at:
-#{Mailer.base_url}/app#view=account
+http://#{HTTP_HOST}/app#view=account
 
 Or just reply with 'unsubscribe' to this email.
 "

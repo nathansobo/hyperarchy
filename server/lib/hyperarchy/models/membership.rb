@@ -100,9 +100,9 @@ class Membership < Monarch::Model::Record
     if invitation
       %[#{HYPERARCHY_BLURB}
 
-Visit #{Mailer.base_url}/signup?invitation_code=#{invitation.guid} to join our private alpha test and start voting on issues for #{organization.name}.]
+Visit #{invitation.signup_url} to join our private alpha test and start voting on issues for #{organization.name}.]
     else
-      %[Visit #{Mailer.base_url}/confirm_membership/#{id} to become a member of #{organization.name}.]
+      %[Visit http://#{HTTP_HOST}/confirm_membership/#{id} to become a member of #{organization.name}.]
     end
   end
 end

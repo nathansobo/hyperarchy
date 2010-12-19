@@ -53,7 +53,7 @@ class Invitation < Monarch::Model::Record
   end
 
   def signup_url
-    "#{Mailer.base_url}/signup?invitation_code=#{guid}"
+    "https://#{HTTP_HOST}/signup?invitation_code=#{guid}"
   end
 
   protected
