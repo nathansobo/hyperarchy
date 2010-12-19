@@ -179,7 +179,6 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.loading.show();
       this.save().onSuccess(function(organization) {
         this.loading.hide();
-        if (organization.useSsl()) Application.mayNeedSsl = true;
         Application.changeProtocolIfNeeded();
       }, this);
     },

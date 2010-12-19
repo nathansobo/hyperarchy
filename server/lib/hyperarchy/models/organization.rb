@@ -3,7 +3,7 @@ class Organization < Monarch::Model::Record
   column :description, :string, :default => ""
   column :members_can_invite, :boolean, :default => false
   column :dismissed_welcome_guide, :boolean, :default => false
-  column :use_ssl, :boolean, :default => false
+  column :use_ssl, :boolean, :default => true
 
   has_many :elections
   has_many :memberships

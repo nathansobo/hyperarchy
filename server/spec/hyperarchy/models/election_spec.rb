@@ -43,7 +43,7 @@ module Models
       it "sends an email to any members of the organization who have opted to receive one, except for the creator himself" do
         organization.elections.create!(:body => "What should we eat for dinner?")
         Mailer.emails.length.should == 1
-        Mailer.emails.first[:to].should == [opted_in.email_address]
+        Mailer.emails.first[:to].should == opted_in.email_address
       end
 
       it "does not try to send email if there are no people to notify" do

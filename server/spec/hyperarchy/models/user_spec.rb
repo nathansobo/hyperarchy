@@ -30,7 +30,7 @@ module Models
       
       before do
         @ssl_org = Organization.make(:use_ssl => true)
-        @non_ssl_org = Organization.make
+        @non_ssl_org = Organization.make(:use_ssl => false)
         @ssl_user = User.make
         @non_ssl_user = User.make
         ssl_org.memberships.create!(:user => ssl_user, :suppress_invite_email => true)
@@ -46,15 +46,31 @@ module Models
       end
 
       describe "#ssl_election_ids" do
-        it "returns a list of every election id in SSL organizations in which the user is a member" do
-          ssl_election_1 = ssl_org.elections.create!(:body => "SSL Election 1", :suppress_notification_email => true)
-          ssl_election_2 = ssl_org.elections.create!(:body => "SSL Election 2", :suppress_notification_email => true)
+        attr_reader :ssl_election_1, :ssl_election_2
+        before do
+          @ssl_election_1 = ssl_org.elections.create!(:body => "SSL Election 1", :suppress_notification_email => true)
+          @ssl_election_2 = ssl_org.elections.create!(:body => "SSL Election 2", :suppress_notification_email => true)
           non_ssl_org.elections.create!(:body => "Non SSL Election", :suppress_notification_email => true)
+        end
 
-          election_ids = ssl_user.ssl_election_ids
-          election_ids.length.should == 2
-          election_ids.should include(ssl_election_1.id)
-          election_ids.should include(ssl_election_2.id)
+        context "for non-admins" do
+          it "returns a list of every election id in SSL organizations in which the user is a member" do
+            election_ids = ssl_user.ssl_election_ids
+            election_ids.length.should == 2
+            election_ids.should include(ssl_election_1.id)
+            election_ids.should include(ssl_election_2.id)
+          end
+        end
+
+        context "for admins" do
+          it "returns a list of every election id in an SSL organization across the entire site, regardless of the admins membership" do
+            user.update!(:admin => true)
+            user.ssl_organizations.should be_empty
+            election_ids = user.ssl_election_ids
+            election_ids.length.should == 2
+            election_ids.should include(ssl_election_1.id)
+            election_ids.should include(ssl_election_2.id)
+          end
         end
       end
     end

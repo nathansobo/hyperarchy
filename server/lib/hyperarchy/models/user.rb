@@ -20,10 +20,6 @@ class User < Monarch::Model::Record
     organizations.where(:use_ssl => true)
   end
 
-  relates_to_many :ssl_elections do
-    ssl_organizations.join_through(Election)
-  end
-
   relates_to_many :elections do
     Election.table
   end
@@ -76,6 +72,14 @@ class User < Monarch::Model::Record
 
   def may_need_ssl?
     !ssl_organizations.empty?
+  end
+
+  def ssl_elections
+    if admin?
+      Organization.where(:use_ssl => true).join_through(Election)
+    else
+      ssl_organizations.join_through(Election)
+    end
   end
 
   def ssl_election_ids

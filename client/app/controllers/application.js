@@ -56,9 +56,8 @@ _.constructor("Controllers.Application", {
   },
 
   sslNeededForCurrentUrl: function() {
-    if (!this.mayNeedSsl) return false;
     var state = $.bbq.getState();
-    if (state.view === "account") return true;
+    if (state.view === "account" && Organization.find({useSsl: true})) return true;
     if (state.organizationId && Organization.find(state.organizationId).useSsl()) return true;
     if (state.electionId && _.include(this.sslElectionIds, parseInt(state.electionId))) return true;
     return false;
