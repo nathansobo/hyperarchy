@@ -40,24 +40,31 @@ module Views
           h2 "Key Features"
         end
 
-        div :class => "grid3" do
+        div :class => "grid3 feature" do
           h3 "Democratic dialog"
           div "In Hyperarchy, interaction is structured as a dialog. You raise questions, then your join your teammates in suggesting and ranking answers to those questions. Hyperarchy merges your rankings together into a single consensus, and you can change your vote at any time."
         end
 
-        div :class => "grid3" do
+        div :class => "grid3 feature" do
           h3 "Mathematically sound"
           div "There's actually an entire field of mathematics called social choice theory that studies the notion of fairness in elections, and Hyperarchy builds on this work. We use Tideman's Ranked Pairs algorithm, which is proven to be an extremely fair way of calculating election results."
         end
 
-        div :class => "grid3" do
+        div :class => "grid3 feature" do
           h3 "Collaborate in real-time"
           div "You never need to hit the refresh button while using Hyperarchy. When you collaborate with your teammates, new questions, suggestions, and election results are transmitted to your browser instantly, making Hyperarchy a natural fit for fast-paced, face-to-face meetings."
         end
 
-        div :class => "grid3" do
+        div :class => "grid3 feature" do
           h3 "Intuitive user interface"
           div "Hyperarchy feels more like a desktop application than a clunky traditional web-app. The interaction is smooth and responsive, and you perform ranking by dragging and dropping. It keeps you aware of the consensus without slowing you down or getting in the way."
+        end
+
+        div :class => "clear rowSeparator"
+
+        div :class => "grid6 feature" do
+          h3 "Your Data Is Yours"
+          div "Hyperarchy encrypts all requests with SSL, and we will never sell your team's data or share it with a third party without your consent. When we eventually begin charging a subscription fee for our service, we'll continue to grant you read-only access to your data if you decide not to become a subscriber."
         end
 
         div :class => "clear"
@@ -65,7 +72,7 @@ module Views
 
       div :id => "signUpArea", :class => "container12" do
         div :class => "grid5 prefix1" do
-          div "Hyperarchy is free. Sign up and create your first election in less than a minute.", :id => "signUpExplanation"
+          div "For now, Hyperarchy is free. Sign up and create your first election in less than a minute.", :id => "signUpExplanation"
         end
         div :class => "grid5 suffix1" do
           a "Sign Up Free", :href => "/signup", :class => "glossyBlack roundedButton"

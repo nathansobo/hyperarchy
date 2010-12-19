@@ -864,7 +864,7 @@ button {
     margin-bottom: 20px; }
   #learn_more #features {
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px; }
     #learn_more #features #featuresHeader {
@@ -874,6 +874,8 @@ button {
       font-size: 15px;
       font-weight: bold;
       margin-bottom: 5px; }
+    #learn_more #features .rowSeparator {
+      height: 20px; }
   #learn_more #signUpArea {
     margin-top: 30px;
     margin-bottom: 100px; }

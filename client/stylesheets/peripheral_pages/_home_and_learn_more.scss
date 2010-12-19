@@ -129,7 +129,7 @@
 
   #features {
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
 
@@ -142,6 +142,10 @@
       font-size: 15px;
       font-weight: bold;
       margin-bottom: 5px;
+    }
+
+    .rowSeparator {
+      height: 20px;
     }
   }
 
