@@ -14,9 +14,14 @@ module Hyperarchy
 
     def authentication_required
       return if current_user
-
-#      redirect "/login?redirected_from=#{request.fullpath}"
       halt render_page(Views::RedirectToLogin)
+    end
+
+    def use_ssl
+      if request.env["HTTP_X_FORWARDED_PROTO"] == "http"
+        redirect "https://" + request.host + request.fullpath
+        halt
+      end
     end
 
     def redirect_if_logged_in

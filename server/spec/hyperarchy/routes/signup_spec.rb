@@ -2,6 +2,14 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 
 describe "/signup", :type => :rack do
   describe "GET /signup" do
+    context "if accessed without HTTPS" do
+      it "redirects to the same url, but with HTTPS" do
+        get "/signup", {}, {"HTTP_X_FORWARDED_PROTO" => "http"}
+
+        last_response.should be_redirect
+        last_response.location.should == "https://example.org/signup"
+      end
+    end
 
     context "if a user is already logged in" do
       it "redirects them to their last-visited organization" do

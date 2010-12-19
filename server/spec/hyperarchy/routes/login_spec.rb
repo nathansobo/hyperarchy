@@ -7,6 +7,16 @@ describe "POST /login", :type => :rack do
     @user = User.make(:email_address => "billy@example.com", :password => "spectrum")
   end
 
+  context "if accessed without HTTPS" do
+    it "redirects to the same url, but with HTTPS" do
+      get "/login", {}, {"HTTP_X_FORWARDED_PROTO" => "http"}
+
+      last_response.should be_redirect
+      last_response.location.should == "https://example.org/login"
+
+    end
+  end
+
   context "if a User with the given email address exists" do
     context "if the given password matches that User" do
       it "sets the current_user and redirects to the application" do

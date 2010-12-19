@@ -22,6 +22,7 @@ module Hyperarchy
     end
 
     get "/login" do
+      use_ssl
       render_page Views::Login
     end
 
@@ -49,6 +50,7 @@ module Hyperarchy
 
     get "/signup" do
       redirect_if_logged_in
+      use_ssl
       if invitation_code = params[:invitation_code] || session[:invitation_code]
         invitation = validate_invitation_code(invitation_code)
         session[:invitation_code] = invitation_code
