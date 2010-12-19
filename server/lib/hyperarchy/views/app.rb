@@ -14,7 +14,6 @@ module Views
           Server.realTimeClientId(#{Guid.new.to_s.inspect});
           window.Application = new Controllers.Application(#{(current_user ? current_user.id : nil).to_json});
           Application.environment = #{RACK_ENV.to_json};
-          Application.sslElectionIds = #{current_user.ssl_election_ids.to_json};
           window.Application.initializeNavigation();
         });
       ]

@@ -12,7 +12,6 @@ _.constructor("Controllers.Application", {
   },
 
   initializeNavigation: function() {
-    if (this.changeProtocolIfNeeded()) return;
     this.layout = Views.Layout.toView({views: this.views});
     this.body.append(this.layout);
     $(window).trigger('hashchange');
@@ -45,39 +44,7 @@ _.constructor("Controllers.Application", {
     }
   },
 
-  changeProtocolIfNeeded: function() {
-    if (this.sslEnabled() && !this.sslNeededForCurrentUrl()) {
-      return this.disableSsl();
-    } else if (!this.sslEnabled() && this.sslNeededForCurrentUrl()) {
-      return this.enableSsl();
-    } else {
-      return false;
-    }
-  },
-
-  sslNeededForCurrentUrl: function() {
-    var state = $.bbq.getState();
-    if (state.view === "account" && Organization.find({useSsl: true})) return true;
-    if (state.organizationId && Organization.find(state.organizationId).useSsl()) return true;
-    if (state.electionId && _.include(this.sslElectionIds, parseInt(state.electionId))) return true;
-    return false;
-  },
-
   sslEnabled: function() {
     return window.location.protocol === "https:";
-  },
-
-  enableSsl: function() {
-    if (this.environment === "development" && window.location.hostname === "localhost") {
-      if (window.console) console.debug("Switch to https would have occurred but is disabled for 'localhost' in development environment");
-      return false;
-    };
-    window.location = window.location.href.replace("http:", "https:");
-    return true;
-  },
-
-  disableSsl: function() {
-    window.location = window.location.href.replace("https:", "http:");
-    return true;
   }
 });

@@ -124,8 +124,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     navigate: function(state) {
-      if (Application.changeProtocolIfNeeded()) return;
-
       this.adjustHeight();
       this.electionId(parseInt(state.electionId));
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);

@@ -17,6 +17,7 @@ module Hyperarchy
     end
 
     get "/app" do
+      use_ssl
       authentication_required
       render_page Views::App
     end
@@ -112,7 +113,6 @@ module Hyperarchy
     end
 
     post "/invite" do
-
       begin
         email_addresses = Mail::AddressList.new(params[:email_addresses]).addresses.map(&:address)
       rescue Mail::Field::ParseError => e

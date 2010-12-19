@@ -52,13 +52,6 @@ _.constructor("Views.EditOrganization", View.Template, {
                   .change('enableOrDisableSaveButton');
                 label({'for': "membersCanInvite"}, "Allow members to invite other people to join the organization.")
               });
-
-              div(function() {
-                input({id: "useSsl", type: "checkbox", name: "useSsl"})
-                  .ref("useSsl")
-                  .change('enableOrDisableSaveButton');
-                label({'for': "useSsl"}, "Secure communication with SSL.");
-              });
             });
 
 
@@ -179,7 +172,6 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.loading.show();
       this.save().onSuccess(function(organization) {
         this.loading.hide();
-        Application.changeProtocolIfNeeded();
       }, this);
     },
 

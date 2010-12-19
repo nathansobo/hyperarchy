@@ -50,9 +50,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         $.bbq.pushState({view: 'organization', organizationId: Application.currentUser().lastVisitedOrganization().id()});
         return;
       }
-
-      if (Application.changeProtocolIfNeeded()) return;
-
       var organizationId = parseInt(state.organizationId);
       Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);
