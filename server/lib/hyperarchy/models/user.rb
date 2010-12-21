@@ -41,7 +41,7 @@ class User < Monarch::Model::Record
     if RACK_ENV =~ /production|demo/
       Hyperarchy.defer do
         Mailer.send(
-          :to => "admin@hyperarchy.com",
+          :to => "nathan@hyperarchy.com",
           :subject => "New Hyperarchy User On #{RACK_ENV.capitalize}",
           :body => "Name: #{full_name}\nEmail Address: #{email_address}\n"
         )
