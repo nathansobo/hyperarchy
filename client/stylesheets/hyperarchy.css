@@ -934,7 +934,8 @@ button {
       color: gray;
       background-color: #EEEFEE;
       padding: 8px;
-      font-style: italic; }
+      font-style: italic;
+      margin: 15px 0 5px; }
     #signup #centeredWrapper #signupForm #logIn {
       font-size: 12px;
       color: gray;
