@@ -1017,6 +1017,22 @@ button {
     text-align: right;
     width: 180px; }
 
+body.legal {
+  width: 600px;
+  padding: 30px; }
+  body.legal p {
+    margin-bottom: 10px; }
+  body.legal h1 {
+    margin-bottom: 20px; }
+  body.legal h2 {
+    margin-bottom: 15px; }
+  body.legal ol {
+    margin-bottom: 10px; }
+    body.legal ol li {
+      list-style: outside decimal;
+      margin-bottom: 5px;
+      margin-left: 20px; }
+
 #app #loadingPage {
   position: fixed;
   left: 50%;
