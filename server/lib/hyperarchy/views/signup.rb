@@ -44,6 +44,11 @@ module Views
           input :class => "text", :name => "organization[name]"
         end
 
+        div(
+          raw("By clicking sign up, you are indicating that you agree to be bound by the Hyperarchy <a href='/static/terms.html'>Terms of Use</a>."),
+          :id => "agreeToTerms"
+        )
+        
         input :type => "submit", :value =>"Sign Up", :class => "glossyBlack roundedButton"
 
         div :id => "logIn" do
