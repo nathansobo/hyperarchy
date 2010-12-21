@@ -864,7 +864,6 @@ button {
     margin-bottom: 20px; }
   #learn_more #features {
     padding-top: 10px;
-    padding-bottom: 15px;
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px; }
     #learn_more #features #featuresHeader {
@@ -879,10 +878,26 @@ button {
   #learn_more #signUpArea {
     margin-top: 30px;
     margin-bottom: 100px; }
-    #learn_more #signUpArea #signUpExplanation {
-      font-size: 18px;
-      padding-top: 10px; }
+    #learn_more #signUpArea #yourData {
+      -webkit-border-radius: 4px;
+      -moz-border-radius: 4px;
+      padding: 10px;
+      background: #F4F2F2;
+      float: right; }
+      #learn_more #signUpArea #yourData #lock {
+        float: left;
+        text-align: center;
+        font-weight: bold;
+        margin-right: 10px; }
+        #learn_more #signUpArea #yourData #lock img {
+          margin-bottom: 5px; }
+      #learn_more #signUpArea #yourData ul li {
+        margin-left: 115px;
+        list-style: disc;
+        margin-bottom: 5px; }
     #learn_more #signUpArea a {
+      margin-top: 35px;
+      margin-left: 50px;
       letter-spacing: 2px;
       display: block;
       font-size: 34px;

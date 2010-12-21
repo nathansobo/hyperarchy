@@ -62,17 +62,25 @@ module Views
 
         div :class => "clear rowSeparator"
 
-        div :class => "grid6 feature" do
-          h3 "Your Data Is Yours"
-          div "Hyperarchy encrypts all requests with SSL, and we will never sell your team's data or share it with a third party without your consent. When we eventually begin charging a subscription fee for our service, we'll continue to grant you read-only access to your data if you decide not to become a subscriber."
-        end
-
         div :class => "clear"
       end
 
       div :id => "signUpArea", :class => "container12" do
-        div :class => "grid5 prefix1" do
-          div "For now, Hyperarchy is free. Sign up and create your first election in less than a minute.", :id => "signUpExplanation"
+        div :class => "grid6" do
+          div :id => "yourData" do
+            div :id => "lock" do
+              img :src => "/images/lock.png"
+              div "256-bit SSL"
+            end
+            
+            h2 "We Respect Your Privacy"
+
+            ul do
+              li "Hyperarchy encrypts all requests with SSL."
+              li "We will never share your data with third parties."
+              li "When we start charging for subscriptions, you will retain read-only access."
+            end
+          end
         end
         div :class => "grid5 suffix1" do
           a "Sign Up Free", :href => "/signup", :class => "glossyBlack roundedButton"

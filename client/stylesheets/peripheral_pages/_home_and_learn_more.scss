@@ -129,7 +129,6 @@
 
   #features {
     padding-top: 10px;
-    padding-bottom: 15px;
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
 
@@ -153,12 +152,36 @@
     margin-top: 30px;
     margin-bottom: 100px;
 
-    #signUpExplanation {
-      font-size: 18px;
-      padding-top: 10px;
+    #yourData {
+      @include borderRadius(4px);
+    
+      #lock {
+        float: left;
+        text-align: center;
+        font-weight: bold;
+        margin-right: 10px;
+
+        img {
+          margin-bottom: 5px;
+        }
+      }
+
+      ul {
+        li {
+          margin-left: 115px;
+          list-style: disc;
+          margin-bottom: 5px;
+        }
+      }
+
+      padding: 10px;
+      background: #F4F2F2;
+      float: right;
     }
 
     a {
+      margin-top: 35px;
+      margin-left: 50px;
       letter-spacing: 2px;
       display: block;
       font-size: 34px;
