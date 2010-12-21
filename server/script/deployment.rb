@@ -1,9 +1,9 @@
-$: << "#{HYPERARCHY_ROOT}/server/vendor/net-ssh-shell/lib"
-require "net/ssh/shell"
+require "#{File.dirname(__FILE__)}/ssh_client"
+
 require "git"
 
-class Deployment
-  attr_reader :shell, :local_repo
+class Deployment < SshClient
+  attr_reader :local_repo
 
   def deploy(env, ref)
     @local_repo = Git.open(HYPERARCHY_ROOT)
@@ -29,7 +29,7 @@ class Deployment
   end
 
   def deploy_global_config
-    system("rsync -ave ssh #{HYPERARCHY_ROOT}/global_config hyperarchy@hyperarchy.com:")
+    local("rsync -ave ssh #{HYPERARCHY_ROOT}/global_config hyperarchy@hyperarchy.com:")
     reload_monit_config
     reload_nginx_config
   end
@@ -51,11 +51,6 @@ class Deployment
   end
 
   protected
-
-  def shell
-    @shell ||= Net::SSH.start("hyperarchy.com", "hyperarchy").shell
-  end
-
   def god(*args)
     sudo "-i", :god, *args
   end
@@ -71,22 +66,4 @@ class Deployment
   def deploy_dir(env)
     "/home/hyperarchy/#{env}"
   end
-
-  def execute!(*args)
-    command = args.join(" ")
-    puts command
-    exit_status, output = shell.execute!(command)
-    raise "#{command} executed non-zero" unless exit_status == 0
-    output
-  end
-
-  def self.commands(*commands)
-    commands.each do |command|
-      define_method(command) do |*args|
-        execute!(command, *args)
-      end
-    end
-  end
-
-  commands :cd, :git, :bundle, :thor, :sudo, :touch, :rm, :source
 end

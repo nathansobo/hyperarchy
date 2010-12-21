@@ -51,6 +51,13 @@ class Db < Thor
     exec "/usr/bin/env mysql -uroot -ppassword hyperarchy_development"
   end
 
+
+  desc "download [source_env=production] [target_env=development]", "downloads the source_env database from production and loads it into the target_env database on localhost"
+  def download(source_env="production", target_env="development")
+    require "#{File.dirname(__FILE__)}/database_downloader"
+    DatabaseDownloader.new.download(source_env, target_env)
+  end
+
   private
 
   def db(env=nil)
