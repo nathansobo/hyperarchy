@@ -31,6 +31,15 @@ Spec::Runner.configure do |config|
 end
 
 module Spec::Example::Subject::ExampleMethods
+  def with_rack_env(temporary_env)
+    current_env = Object.send(:remove_const, :RACK_ENV)
+    Object.const_set(:RACK_ENV, temporary_env)
+    yield
+  ensure
+    Object.send(:remove_const, :RACK_ENV)
+    Object.const_set(:RACK_ENV, current_env)
+  end
+
   def make_member(organization, attributes = {})
     user = User.make(attributes)
     organization.memberships.create!(:user => user, :suppress_invite_email => true)

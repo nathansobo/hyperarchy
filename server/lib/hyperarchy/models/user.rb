@@ -16,10 +16,6 @@ class User < Monarch::Model::Record
     memberships.join_through(Organization)
   end
 
-  relates_to_many :ssl_organizations do
-    organizations.where(:use_ssl => true)
-  end
-
   relates_to_many :elections do
     Election.table
   end
@@ -39,6 +35,18 @@ class User < Monarch::Model::Record
     list = [:first_name, :last_name, :email_address]
     list.push(:admin) if current_user.admin?
     list
+  end
+
+  def after_create
+    if RACK_ENV =~ /production|demo/
+      Hyperarchy.defer do
+        Mailer.send(
+          :to => "admin@hyperarchy.com",
+          :subject => "New Hyperarchy User On #{RACK_ENV.capitalize}",
+          :body => "Name: #{full_name}\nEmail Address: #{email_address}\n"
+        )
+      end
+    end
   end
 
   def organization_ids
@@ -68,21 +76,5 @@ class User < Monarch::Model::Record
 
   def last_visited_organization
     memberships.order_by(Membership[:last_visited].desc).first.organization
-  end
-
-  def may_need_ssl?
-    !ssl_organizations.empty?
-  end
-
-  def ssl_elections
-    if admin?
-      Organization.where(:use_ssl => true).join_through(Election)
-    else
-      ssl_organizations.join_through(Election)
-    end
-  end
-
-  def ssl_election_ids
-    ssl_elections.project(:id).all.map(&:id)
   end
 end

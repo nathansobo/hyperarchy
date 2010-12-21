@@ -16,6 +16,17 @@ module Models
       end
     end
 
+    describe "#after_create" do
+      it "if on production, sends admin an email about the new user" do
+        with_rack_env("production") do
+          Mailer.emails.clear
+          User.create!(:first_name => "Steph", :last_name => "Wamby", :email_address => "wamby@example.com", :password => "password")
+          Mailer.emails.length.should == 1
+          Mailer.emails.first[:to].should == "admin@hyperarchy.com"
+        end
+      end
+    end
+
     describe "#password and #password=" do
       specify "#password= assigns #encrypted_password such that #password returns a BCrypt::Password object that will be == to the assigned unencrypted password" do
         user.password = "password"
@@ -24,57 +35,6 @@ module Models
         user.password.should_not == "foo"
       end
     end
-
-    describe "SSL-related methods" do
-      attr_reader :ssl_org, :non_ssl_org, :ssl_user, :non_ssl_user
-      
-      before do
-        @ssl_org = Organization.make(:use_ssl => true)
-        @non_ssl_org = Organization.make(:use_ssl => false)
-        @ssl_user = User.make
-        @non_ssl_user = User.make
-        ssl_org.memberships.create!(:user => ssl_user, :suppress_invite_email => true)
-        non_ssl_org.memberships.create!(:user => non_ssl_user, :suppress_invite_email => true)
-        non_ssl_org.memberships.create!(:user => non_ssl_user, :suppress_invite_email => true)
-      end
-      
-      describe "#may_need_ssl?" do
-        it "returns true if the user is a member of any organizations that are secured with SSL" do
-          ssl_user.may_need_ssl?.should be_true
-          non_ssl_user.may_need_ssl?.should be_false
-        end
-      end
-
-      describe "#ssl_election_ids" do
-        attr_reader :ssl_election_1, :ssl_election_2
-        before do
-          @ssl_election_1 = ssl_org.elections.create!(:body => "SSL Election 1", :suppress_notification_email => true)
-          @ssl_election_2 = ssl_org.elections.create!(:body => "SSL Election 2", :suppress_notification_email => true)
-          non_ssl_org.elections.create!(:body => "Non SSL Election", :suppress_notification_email => true)
-        end
-
-        context "for non-admins" do
-          it "returns a list of every election id in SSL organizations in which the user is a member" do
-            election_ids = ssl_user.ssl_election_ids
-            election_ids.length.should == 2
-            election_ids.should include(ssl_election_1.id)
-            election_ids.should include(ssl_election_2.id)
-          end
-        end
-
-        context "for admins" do
-          it "returns a list of every election id in an SSL organization across the entire site, regardless of the admins membership" do
-            user.update!(:admin => true)
-            user.ssl_organizations.should be_empty
-            election_ids = user.ssl_election_ids
-            election_ids.length.should == 2
-            election_ids.should include(ssl_election_1.id)
-            election_ids.should include(ssl_election_2.id)
-          end
-        end
-      end
-    end
-    
 
     describe "security" do
       describe "#can_update? and #can_destroy?" do
