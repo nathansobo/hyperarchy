@@ -4,6 +4,8 @@ class Ranking < Monarch::Model::Record
   column :candidate_id, :key
   column :vote_id, :key
   column :position, :float
+  column :created_at, :datetime
+  column :updated_at, :datetime
 
   belongs_to :user
   belongs_to :candidate

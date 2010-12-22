@@ -6,6 +6,8 @@ class Invitation < Monarch::Model::Record
   column :redeemed, :boolean
   column :inviter_id, :key
   column :invitee_id, :key
+  column :created_at, :datetime
+  column :updated_at, :datetime
 
   belongs_to :inviter, :class_name => "User"
   belongs_to :invitee, :class_name => "User"

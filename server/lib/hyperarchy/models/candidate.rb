@@ -4,6 +4,8 @@ class Candidate < Monarch::Model::Record
   column :election_id, :key
   column :creator_id, :key
   column :position, :integer
+  column :created_at, :datetime
+  column :updated_at, :datetime
 
   belongs_to :election
   belongs_to :creator, :class_name => "User"
