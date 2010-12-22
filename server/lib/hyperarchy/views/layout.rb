@@ -15,7 +15,7 @@ module Views
     }
 
     def content
-      html do
+      html :id => self.class.basename.underscore do
         head do
           title "Hyperarchy"
           link :rel => "stylesheet", :type => "text/css", :href => "/stylesheets/hyperarchy.css"

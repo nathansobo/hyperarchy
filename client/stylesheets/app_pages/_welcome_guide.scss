@@ -1,12 +1,12 @@
 #welcomeGuide {
   width: 1000px;
   margin: 10px auto 20px;
-  position: relative;
 
-  thead tr {
+  #steps {
+    position: relative;
     height: 42px;
 
-    th {
+    li {
       width: 271px;
       height: 42 - (9 * 2);
       background-image: url(/images/welcome_wizard_sprites.png);
@@ -72,11 +72,11 @@
     }
   }
 
-  td#currentStep {
+  #currentStep {
     background: #343434;
     padding: 0 2px 2px 2px;
 
-    > div {
+    .step {
       padding: 30px;
       background: white;
 

@@ -1,64 +1,57 @@
 _.constructor("Views.WelcomeGuide", View.Template, {
   content: function() { with(this.builder) {
-    div({style: "display: none;"}, function() {
-      table({id: "welcomeGuide", 'class': "dropShadow"}, function() {
-        thead(function() {
-          tr(function() {
-            th({id: "step1", 'class': "pending"}, "1. Raise A Question").ref('step1Header');
-            th({id: "step2", 'class': "pending"}, "2. Suggest Answers").ref('step2Header');
-            th({id: "step3", 'class': "pending"}, "3. Rank Answers").ref('step3Header');
-            th({id: "step4", 'class': "pending"}, "4. Invite Team").ref('step4Header');
-            th({id: "gloss"});
-          });
+    div({style: "display: none; position: relative;"}, function() {
+      div({id: "welcomeGuide", 'class': "dropShadow"}, function() {
+        ol({id: "steps"}, function() {
+          li({id: "step1", 'class': "pending"}, "1. Raise A Question").ref('step1Header');
+          li({id: "step2", 'class': "pending"}, "2. Suggest Answers").ref('step2Header');
+          li({id: "step3", 'class': "pending"}, "3. Rank Answers").ref('step3Header');
+          li({id: "step4", 'class': "pending"}, "4. Invite Team").ref('step4Header');
+          li({id: "gloss"});
         });
-        tbody(function() {
-          tr(function() {
-            td({id: "currentStep", colspan: 4}, function() {
-              div(function() {
-                div({'class': "step"}, function() {
-                  h2("Welcome to Hyperarchy!");
-                  div({'class': "stepDescription"}, function() {
-                    raw("This is a private discussion area for <em id='welcomeGuideOrganizationName'></em>. Let's get the conversation started by raising a question for your team to discuss. To do that, click on the black <strong>Raise Question</strong> button below.");
-                  })
-                }).ref("step1A");
-                div({'class': "step"}, function() {
-                  h2("Try to keep your question open-ended.");
-                  div({'class': "stepDescription"}, function() {
-                    raw("Instead of asking \"Should we get pizza for lunch?\", ask \"What should we get for lunch?\", then add \"Pizza\" as an answer in the next step.");
-                  })
-                }).ref("step1B");
-                div({'class': "step"}, function() {
-                  h2("Now suggest an answer to your question...");
-                }).ref("step2A");
-                div({'class': "step"}, function() {
-                  h2("Click on the question you just added to suggest some answers.");
-                }).ref("step2B");
-                div({'class': "step"}, function() {
-                  h2(function() {
-                    raw("Click <em>Suggest An Answer</em> to add more ideas. When you're done, vote by dragging your answers into the area marked <em>Your Ranking</em>, with your favorite ideas closer to the top.");
-                  });
-                }).ref("step3A");
-                div({'class': "step"}, function() {
-                  h2("Click on the question you just created to vote.");
-                }).ref("step3B");
-                div({'class': "step"}, function() {
-                  h2(function() {
-                    raw("Enter your teammates names and email addresses in the <em>Members</em> section below.");
-                  });
-                }).ref("step4A");
-                div({'class': "step"}, function() {
-                  h2(function() {
-                    raw("When you finish voting, click on <em>Invite</em> at the top of the page to invite your team.");
-                  });
-                }).ref("step4B");
-                div({'class': "step"}, function() {
-                  h2(function() {
-                    raw("When you're done inviting your team, click <em>Back To Questions</em> to continue the conversation.");
-                  });
-                }).ref("step4C");
-              });
+
+        div({id: "currentStep"}, function() {
+          div({'class': "step"}, function() {
+            h2("Welcome to Hyperarchy!");
+            div({'class': "stepDescription"}, function() {
+              raw("This is a private discussion area for <em id='welcomeGuideOrganizationName'></em>. Let's get the conversation started by raising a question for your team to discuss. To do that, click on the black <strong>Raise Question</strong> button below.");
+            })
+          }).ref("step1A");
+          div({'class': "step"}, function() {
+            h2("Try to keep your question open-ended.");
+            div({'class': "stepDescription"}, function() {
+              raw("Instead of asking \"Should we get pizza for lunch?\", ask \"What should we get for lunch?\", then add \"Pizza\" as an answer in the next step.");
+            })
+          }).ref("step1B");
+          div({'class': "step"}, function() {
+            h2("Now suggest an answer to your question...");
+          }).ref("step2A");
+          div({'class': "step"}, function() {
+            h2("Click on the question you just added to suggest some answers.");
+          }).ref("step2B");
+          div({'class': "step"}, function() {
+            h2(function() {
+              raw("Click <em>Suggest An Answer</em> to add more ideas. When you're done, vote by dragging your answers into the area marked <em>Your Ranking</em>, with your favorite ideas closer to the top.");
             });
-          });
+          }).ref("step3A");
+          div({'class': "step"}, function() {
+            h2("Click on the question you just created to vote.");
+          }).ref("step3B");
+          div({'class': "step"}, function() {
+            h2(function() {
+              raw("Enter your teammates names and email addresses in the <em>Members</em> section below.");
+            });
+          }).ref("step4A");
+          div({'class': "step"}, function() {
+            h2(function() {
+              raw("When you finish voting, click on <em>Invite</em> at the top of the page to invite your team.");
+            });
+          }).ref("step4B");
+          div({'class': "step"}, function() {
+            h2(function() {
+              raw("When you're done inviting your team, click <em>Back To Questions</em> to continue the conversation.");
+            });
+          }).ref("step4C");
         });
       });
     });

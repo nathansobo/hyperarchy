@@ -590,10 +590,12 @@ select {
 *:first-child + html .clearfix {
   zoom: 1; }
 
+html#app, body#app {
+  background: #e6e6e6; }
+
 body {
   font: 13px/1.3 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif; }
   body#app {
-    background: #e6e6e6;
     padding-bottom: 20px; }
 
 textarea {
@@ -1195,11 +1197,11 @@ body.legal {
 
 #welcomeGuide {
   width: 1000px;
-  margin: 10px auto 20px;
-  position: relative; }
-  #welcomeGuide thead tr {
+  margin: 10px auto 20px; }
+  #welcomeGuide #steps {
+    position: relative;
     height: 42px; }
-    #welcomeGuide thead tr th {
+    #welcomeGuide #steps li {
       width: 271px;
       height: 24;
       background-image: url(/images/welcome_wizard_sprites.png);
@@ -1209,12 +1211,12 @@ body.legal {
       text-align: center;
       color: white;
       letter-spacing: 1px; }
-      #welcomeGuide thead tr th.pending {
+      #welcomeGuide #steps li.pending {
         background-position: 0px -50px; }
-      #welcomeGuide thead tr th.done {
+      #welcomeGuide #steps li.done {
         background-position: 0px -100px;
         color: #343434; }
-      #welcomeGuide thead tr th#gloss {
+      #welcomeGuide #steps li#gloss {
         width: 996;
         height: 20;
         top: 2px;
@@ -1222,36 +1224,36 @@ body.legal {
         z-index: 5;
         background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.44)), color-stop(0.5, rgba(255, 255, 255, 0.16)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.05)));
         background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%); }
-      #welcomeGuide thead tr th#step1 {
+      #welcomeGuide #steps li#step1 {
         left: 0px;
         z-index: 4;
         padding-right: 12px;
         width: 259; }
-      #welcomeGuide thead tr th#step2 {
+      #welcomeGuide #steps li#step2 {
         left: 250;
         z-index: 3; }
-      #welcomeGuide thead tr th#step3 {
+      #welcomeGuide #steps li#step3 {
         left: 500;
         z-index: 2; }
-      #welcomeGuide thead tr th#step4 {
+      #welcomeGuide #steps li#step4 {
         padding-left: 10px;
         left: 750;
         background-position: -300px 0;
         z-index: 1;
         width: 240; }
-        #welcomeGuide thead tr th#step4.pending {
+        #welcomeGuide #steps li#step4.pending {
           background-position: -300px -50px; }
-        #welcomeGuide thead tr th#step4.done {
+        #welcomeGuide #steps li#step4.done {
           background-position: -300px -100px; }
-  #welcomeGuide td#currentStep {
+  #welcomeGuide #currentStep {
     background: #343434;
     padding: 0 2px 2px 2px; }
-    #welcomeGuide td#currentStep > div {
+    #welcomeGuide #currentStep .step {
       padding: 30px;
       background: white; }
-      #welcomeGuide td#currentStep > div h2 {
+      #welcomeGuide #currentStep .step h2 {
         margin-bottom: 10px; }
-      #welcomeGuide td#currentStep > div div.stepDescription {
+      #welcomeGuide #currentStep .step div.stepDescription {
         font-size: 20px; }
 
 #app #organizationOverview #organizationHeader {
