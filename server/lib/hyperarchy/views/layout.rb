@@ -15,9 +15,9 @@ module Views
     }
 
     def content
-      meta "http-equiv" => "X-UA-Compatible", :content => "chrome=1"
-      html :id => self.class.basename.underscore do
+      html :id => self.class.basename.underscore, :xmlns => "http://www.w3.org/1999/xhtml", "xml:lang" => "en" do
         head do
+          meta "http-equiv" => "X-UA-Compatible", :content => "chrome=1"
           title "Hyperarchy"
           link :rel => "stylesheet", :type => "text/css", :href => "/stylesheets/hyperarchy.css"
           link :rel => "shortcut icon", :href => "/images/icon.png"

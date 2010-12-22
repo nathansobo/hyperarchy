@@ -18,7 +18,7 @@ module Hyperarchy
     end
 
     def no_internet_explorer
-      if user_agent =~ /MSIE|Chrome/ && user_agent !~ /chromeframe/
+      if user_agent =~ /MSIE/ && user_agent !~ /chromeframe/
         halt render_page(Views::NoInternetExplorer)
       end
     end
