@@ -92,7 +92,7 @@ Or just reply with 'unsubscribe' to this email.
     already_processed = []
     graph = RGL::DirectedAdjacencyGraph.new
 
-    majorities.order_by(Majority[:pro_count].desc, Majority[:con_count].asc).each do |majority|
+    majorities.order_by(Majority[:pro_count].desc, Majority[:con_count].asc, Majority[:winner_created_at].asc).each do |majority|
       winner_id = majority.winner_id
       loser_id = majority.loser_id
       next if already_processed.include?([loser_id, winner_id])
