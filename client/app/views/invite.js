@@ -19,7 +19,6 @@ _.constructor("Views.Invite", View.Template, {
 
       div({id: "whichOrganizations"}, "Which organizations should we invite them to join?");
 
-
       subview('organizations', Views.SortedList, {
         buildElement: function(organization) {
           return Monarch.View.build(function(b) {
@@ -33,6 +32,7 @@ _.constructor("Views.Invite", View.Template, {
       });
 
       a({'class': "glossyBlack roundedButton", href: "#"}, 'Send Invitations').ref('sendInvitationsButton').click('sendInvitations');
+      div({'class': "loading", style: "display: none;"}).ref('loadingSpinner');
     });
   }},
 
@@ -68,6 +68,7 @@ _.constructor("Views.Invite", View.Template, {
 
     sendInvitations: function(elt, e) {
       this.sendInvitationsButton.attr('disabled', true);
+      this.loadingSpinner.show();
       Server.post("/invite", { email_addresses: this.emailAddresses.val(), organization_ids: this.organizationIds() })
         .onSuccess(function() {
           this.sendInvitationsButton.attr('disabled', false);
@@ -77,6 +78,9 @@ _.constructor("Views.Invite", View.Template, {
           this.instructions.hide();
           this.errorMessage.show();
           this.emailAddresses.addClass('error');
+        }, this)
+        .onComplete(function() {
+          this.loadingSpinner.hide();
         }, this);
 
       e.preventDefault();

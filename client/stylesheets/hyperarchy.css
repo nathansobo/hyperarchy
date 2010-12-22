@@ -1687,6 +1687,10 @@ body.legal {
       margin-right: 5px; }
   #app #invite a {
     float: right; }
+  #app #invite .loading {
+    float: right;
+    margin-right: 8px;
+    margin-top: 8px; }
 
 #app h1 {
   margin-bottom: 10px; }
