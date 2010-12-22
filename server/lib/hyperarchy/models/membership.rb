@@ -86,11 +86,13 @@ class Membership < Monarch::Model::Record
   def after_create
     return unless pending?
     return if suppress_invite_email
-    Mailer.send(
-      :to => email_address,
-      :subject => invite_email_subject,
-      :body => invite_email_body
-    )
+
+    to = email_address
+    subject = invite_email_subject
+    body = invite_email_body
+    Hyperarchy.defer do
+      Mailer.send(:to => to, :subject => subject, :body => body)
+    end
   end
 
   protected

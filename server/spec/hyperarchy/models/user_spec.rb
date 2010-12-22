@@ -22,7 +22,7 @@ module Models
           Mailer.emails.clear
           User.create!(:first_name => "Steph", :last_name => "Wamby", :email_address => "wamby@example.com", :password => "password")
           Mailer.emails.length.should == 1
-          Mailer.emails.first[:to].should == "admin@hyperarchy.com"
+          Mailer.emails.first[:to].should == "nathan@hyperarchy.com"
         end
       end
     end
