@@ -15,6 +15,7 @@ module Views
     }
 
     def content
+      meta "http-equiv" => "X-UA-Compatible", :content => "chrome=1"
       html :id => self.class.basename.underscore do
         head do
           title "Hyperarchy"

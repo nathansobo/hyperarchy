@@ -17,6 +17,7 @@ module Hyperarchy
     end
 
     get "/app" do
+      no_internet_explorer
       use_ssl
       authentication_required
       render_page Views::App

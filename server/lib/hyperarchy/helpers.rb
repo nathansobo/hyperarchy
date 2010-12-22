@@ -17,6 +17,16 @@ module Hyperarchy
       halt render_page(Views::RedirectToLogin)
     end
 
+    def no_internet_explorer
+      if user_agent =~ /MSIE|Chrome/ && user_agent !~ /chromeframe/
+        halt render_page(Views::NoInternetExplorer)
+      end
+    end
+
+    def user_agent
+      request.env["HTTP_USER_AGENT"]
+    end
+
     def use_ssl
       if request.env["HTTP_X_FORWARDED_PROTO"] == "http"
         redirect "https://" + request.host + request.fullpath
