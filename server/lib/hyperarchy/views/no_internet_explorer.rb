@@ -8,7 +8,8 @@ module Views
     end
 
     def body_content
-      script :type => "text/javascript", :src => "http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"
+      proto = request.env['HTTP_X_FORWARDED_PROTO'] || "http"
+      script :type => "text/javascript", :src => "#{proto}://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"
       javascript %[
         window.onload = function() { CFInstall.check({mode: "overlay"}); }
       ]
