@@ -18,21 +18,27 @@ module Models
     end
 
     describe "after create" do
+      def verify_majority(winner, loser, election)
+        majority = Majority.find(:winner => winner, :loser => loser, :election => election)
+        majority.should_not be_nil
+        majority.winner_created_at.to_i.should == winner.created_at.to_i
+      end
+
       it "creates a winning and losing majority every pairing of the created candidate with other candidates" do
         election.candidates.should be_empty
 
-        falafel = election.candidates.create(:body => "Falafel")
-        tacos = election.candidates.create(:body => "Tacos")
+        falafel = election.candidates.create!(:body => "Falafel")
+        tacos = election.candidates.create!(:body => "Tacos")
 
-        Majority.find(:winner => falafel, :loser => tacos, :election => election).should_not be_nil
-        Majority.find(:winner => tacos, :loser => falafel, :election => election).should_not be_nil
+        verify_majority(falafel, tacos, election)
+        verify_majority(tacos, falafel, election)
 
         fish = election.candidates.create(:body => "Fish")
-        
-        Majority.find(:winner => falafel, :loser => fish, :election => election).should_not be_nil
-        Majority.find(:winner => tacos, :loser => fish, :election => election).should_not be_nil
-        Majority.find(:winner => fish, :loser => falafel, :election => election).should_not be_nil
-        Majority.find(:winner => fish, :loser => tacos, :election => election).should_not be_nil
+
+        verify_majority(falafel, fish, election)
+        verify_majority(tacos, fish, election)
+        verify_majority(fish, falafel, election)
+        verify_majority(fish, tacos, election)
       end
 
       it "makes the new candidate lose to every positively ranked candidate and win over every negatively ranked one, then recomputes the election results" do
