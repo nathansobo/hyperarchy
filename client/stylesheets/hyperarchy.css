@@ -590,7 +590,7 @@ select {
 *:first-child + html .clearfix {
   zoom: 1; }
 
-html#app, body#app {
+html#app {
   background: #e6e6e6; }
 
 body {

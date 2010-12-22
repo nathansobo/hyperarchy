@@ -13,6 +13,7 @@ _.constructor("Controllers.Application", {
 
   initializeNavigation: function() {
     this.layout = Views.Layout.toView({views: this.views});
+    $("#loadingPage").remove();
     this.body.append(this.layout);
     $(window).trigger('hashchange');
   },

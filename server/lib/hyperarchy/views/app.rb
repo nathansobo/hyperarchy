@@ -10,7 +10,6 @@ module Views
         $(function() {
           #{store_organizations_in_repository}
           #{store_current_user_in_repository}
-          $("#loadingPage").remove();
           Server.realTimeClientId(#{Guid.new.to_s.inspect});
           window.Application = new Controllers.Application(#{(current_user ? current_user.id : nil).to_json});
           Application.environment = #{RACK_ENV.to_json};
