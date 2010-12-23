@@ -12,8 +12,9 @@ _.constructor("Monarch.Queue", {
     this.started = false;
   },
 
-  add: function(fn) {
-    this.fns.push(fn)
+  add: function(fn, context) {
+    if (context) fn = _.bind(fn, context);
+    this.fns.push(fn);
   },
 
   addTimeCritical: function(fn) {

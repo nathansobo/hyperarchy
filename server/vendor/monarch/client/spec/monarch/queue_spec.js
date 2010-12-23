@@ -2,12 +2,16 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Queue", function() {
-    var queue, fn1, fn2, fn3;
+    var queue, fn1, fn2, fn3, context1, context2;
 
     before(function() {
       Monarch.Queue.synchronous = false;
       mock(window, 'setTimeout');
       queue = new Monarch.Queue(2, 2);
+
+      context1 = { context: 1 };
+      context2 = { context: 2 };
+
 
       fn1 = mockFunction('fn 1');
       fn2 = mockFunction('fn 2');
@@ -16,18 +20,20 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#start", function() {
       before(function() {
-        queue.add(fn1);
-        queue.add(fn2);
-        queue.add(fn3);
+        queue.add(fn1, context1);
+        queue.add(fn2, context2);
+        queue.add(fn3, context1);
       });
 
       context("when the Monarch.Queue has not yet started", function() {
-        it("processes each enqueued function, separating segments (based on #segmentSize) with a setTimeout delay (based on #delay)", function() {
+        it("processes each enqueued function in its appropriate context, separating segments (based on #segmentSize) with a setTimeout delay (based on #delay)", function() {
           queue.start();
           expect(queue.started).to(beTrue);
-          
           expect(fn1).to(haveBeenCalled, once);
+          expect(fn1.mostRecentThisValue).to(eq, context1);
+
           expect(fn2).to(haveBeenCalled, once);
+          expect(fn2.mostRecentThisValue).to(eq, context2);
 
           expect(fn3).toNot(haveBeenCalled);
 
@@ -37,6 +43,8 @@ Screw.Unit(function(c) { with(c) {
           window.setTimeout.mostRecentArgs[0]();
 
           expect(fn3).to(haveBeenCalled);
+          expect(fn3.mostRecentThisValue).to(eq, context1);
+
           expect(queue.started).to(beFalse);
         });
       });
