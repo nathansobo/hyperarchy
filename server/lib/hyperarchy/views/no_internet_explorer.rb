@@ -8,8 +8,12 @@ module Views
       style %[
         html { background: #ccc; }
         body { font-size: 24px; } 
-        #sorry { margin: 20px auto; width: 550px; background: white; padding: 30px;}
-        h1 { margin-bottom: 10px; }
+        #sorryWrapper { text-align: center; }
+        #sorry { margin: 20px auto; width: 600px; background: white; padding: 30px;}
+        img { margin-bottom: 30px; } 
+        h1 { text-align: left; margin-bottom: 20px; color: #790001;}
+        p { margin-bottom: 20px; text-align: left; }
+
       ], :type => "text/css"
     end
 
@@ -23,12 +27,18 @@ module Views
         }
       ]
 
-      div :id => :sorry do
-        h1 "Sorry! We don't support Internet Explorer yet."
-        p do
-          text "You can still use Hyperarchy by installing the "
-          a "Google Chrome Frame", :id => "chromeFrame", :onClick => "return installCF();", :href => "#"
-          text " plugin."
+      div :id => :sorryWrapper do
+        div :id => :sorry do
+          img :src => "/images/logo_medium.png"
+
+          h1 "To view this site in Internet Explorer, you need to install a plugin from Google that enables advanced browser technologies."
+          p do
+            a "Click here to install the Google Chrome Frame plugin", :onClick => "return installCF();", :href => "#"
+          end
+
+          p do
+            text "It's free and will install in less than a minute."
+          end
         end
       end
     end

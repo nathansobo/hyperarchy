@@ -1,5 +1,9 @@
 module Hyperarchy
   class App < Sinatra::Base
+    before do
+      no_internet_explorer
+    end
+
     error Monarch::Unauthorized do
       status 401
       warden.custom_failure!
@@ -17,7 +21,6 @@ module Hyperarchy
     end
 
     get "/app" do
-      no_internet_explorer
       use_ssl
       authentication_required
       render_page Views::App
