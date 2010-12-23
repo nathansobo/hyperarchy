@@ -59,25 +59,45 @@ _.constructor("Monarch.Http.CometClient", {
       };
     }, delay);
 
+    window.setInterval(this.hitch('recordConnectionStatus'), 1000);
+
     return connectFuture;
   },
 
   connected: function() {
-    console.debug("connected!");
+    this.isConnected = true;
+    this.recordConnectionStatus();
     this.connectionRetryAttempts = 0;
   },
 
   disconnected: function() {
+    this.isConnected = false;
+    if (this.connectionRetryAttempts > 1 || this.tooLongSinceLastConnected()) {
+      this.onDisconnectNode.publish();
+      return;
+    }
+
     if (this.connectionRetryAttempts === 0) {
       this.connectionRetryAttempts += 1;
-      console.debug("retrying once");
       this.connect();
     } else if (this.connectionRetryAttempts === 1) {
-      console.debug("retrying twice in 2.5 seconds");
       this.connectionRetryAttempts += 1;
       this.connect(2500);
+    }
+  },
+
+  tooLongSinceLastConnected: function() {
+    if (this.lastKnownConnectedAt) {
+      return (this.nowMilliseconds() - this.lastKnownConnectedAt) > 4000;
     } else {
-      this.onDisconnectNode.publish();
+      return false;
+    }
+  },
+
+  recordConnectionStatus: function() {
+    if (this.isConnected) {
+      console.debug("recording as connected");
+      this.lastKnownConnectedAt = this.nowMilliseconds();
     }
   },
 
