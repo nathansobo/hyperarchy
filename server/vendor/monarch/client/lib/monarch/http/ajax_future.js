@@ -20,7 +20,7 @@ _.constructor("Monarch.Http.AjaxFuture", {
   },
 
   handleResponse: function(response) {
-    if (!response) throw new Error("respones is null");
+    if (!response) throw new Error("response is null");
     if (response.successful) {
       if (response.dataset) {
         this.updateRepositoryAndTriggerCallbacks(response.data, function() {
