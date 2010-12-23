@@ -19,7 +19,7 @@ _.constructor("Views.DisconnectDialog", View.Template, {
     beforeShow: function() {
       var background = $("#darkenBackground");
       background.one('click', this.hitch('refresh'));
-      background.fadeIn('fast');
+      background.fadeIn();
       this.position({
         my: 'center center',
         at: 'center center',
