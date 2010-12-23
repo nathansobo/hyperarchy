@@ -43,6 +43,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
+      this.renderQueue = new Monarch.Queue(2);
     },
 
     navigate: function(state) {
@@ -85,10 +86,13 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         .onSuccess(function() {
           this.stopLoading();
           var elections = this.organization().elections();
-
+          this.renderQueue.clear();
           elections.each(function(election) {
-            this.electionsList.append(this.electionLi(election));
+            this.renderQueue.add(function() {
+              this.electionsList.append(this.electionLi(election));
+            }, this);
           }, this);
+          this.renderQueue.start();
 
           elections.onRemoteInsert(function(election) {
             this.electionsList.prepend(this.electionLi(election));
