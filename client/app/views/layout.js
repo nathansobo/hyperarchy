@@ -3,9 +3,9 @@ _.constructor("Views.Layout", View.Template, {
     div({id: "application"}, function() {
       div({id: "notification", style: "display: none"}).ref("notification");
       div({id: "darkenBackground", style: "display: none"})
-        .click('hideFeedbackForm')
         .ref('darkenBackground');
 
+      subview('disconnectDialog', Views.DisconnectDialog);
       subview('inviteForm', Views.Invite);
 
       div({id: "feedback", style: "display: none", 'class': "dropShadow"}, function() {
@@ -216,6 +216,7 @@ _.constructor("Views.Layout", View.Template, {
 
     showFeedbackForm: function(elt, e) {
       this.darkenBackground.fadeIn();
+      this.darkenBackground.one('click', this.hitch('hideFeedbackForm'));
 
       this.feedbackForm
         .show()

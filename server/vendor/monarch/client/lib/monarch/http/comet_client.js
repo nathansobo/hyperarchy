@@ -4,12 +4,15 @@ _.constructor("Monarch.Http.CometClient", {
   initialize: function(realTimeClientId) {
     this.realTimeClientId = realTimeClientId;
     this.onReceiveNode = new Monarch.SubscriptionNode();
+    this.onDisconnectNode = new Monarch.SubscriptionNode();
+    this.connectionRetryAttempts = 0;
   },
 
-  connect: function() {
+  connect: function(delay) {
     var self = this;
     var numReceivedCharacters = 0
     var connectFuture = new Monarch.Http.AjaxFuture();
+    if (!delay) delay = 20;
 
     _.delay(function() {
       var xhr = jQuery.ajax({
@@ -28,7 +31,6 @@ _.constructor("Monarch.Http.CometClient", {
           unreadLines = _.trim(unreadLines);
           if (unreadLines.length === 0) return;
           _.each(unreadLines.split("\n"), function(messageString) {
-
             try {
               var message = JSON.parse(messageString);
             } catch(e) {
@@ -45,22 +47,50 @@ _.constructor("Monarch.Http.CometClient", {
             }
 
             if (message[0] == "connected") {
+              self.connected();
               connectFuture.triggerSuccess();
             } else {
               self.onReceiveNode.publish(message);
             }
           });
         } else if (xhr.readyState == 4) {
-          self.connect();
+          self.disconnected();
         }
       };
-    }, 20);
+    }, delay);
 
     return connectFuture;
   },
 
+  connected: function() {
+    console.debug("connected!");
+    this.connectionRetryAttempts = 0;
+  },
+
+  disconnected: function() {
+    if (this.connectionRetryAttempts === 0) {
+      this.connectionRetryAttempts += 1;
+      console.debug("retrying once");
+      this.connect();
+    } else if (this.connectionRetryAttempts === 1) {
+      console.debug("retrying twice in 2.5 seconds");
+      this.connectionRetryAttempts += 1;
+      this.connect(2500);
+    } else {
+      this.onDisconnectNode.publish();
+    }
+  },
+
   onReceive: function(callback, context) {
     return this.onReceiveNode.subscribe(callback, context);
+  },
+
+  onDisconnect: function(callback, context) {
+    return this.onDisconnectNode.subscribe(callback, context);
+  },
+
+  nowMilliseconds: function() {
+    return new Date().getTime();
   }
 });
 

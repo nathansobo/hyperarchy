@@ -57,6 +57,71 @@ Screw.Unit(function(c) { with(c) {
         expect(receiveCallback).to(haveBeenCalled, once);
         expect(receiveCallback).to(haveBeenCalled, withArgs({'zoo': 5})); 
       });
+
+      it("upon disconnection, will attempt to connect again immediately, retry after 1 second if the reconnect fails, and invoke onDisconnect handlers if the retry fails", function() {
+        var mockXhr = {};
+        var mockedNowMilliseconds = new Date().getTime();
+
+        mock(client, 'nowMilliseconds', function() {
+          return mockedNowMilliseconds;
+        });
+
+         // don't actually delay, just move mock time forward and call
+        mock(_, 'delay', function(f, delay) {
+          mockedNowMilliseconds += delay;
+          f();
+        });
+        mock(jQuery, 'ajax', function() {
+          return mockXhr;
+        });
+
+        var disconnectCallback = mockFunction('receiveCallback');
+
+        client.onDisconnect(disconnectCallback);
+        client.connect();
+
+        expect(jQuery.ajax).to(haveBeenCalled, once);
+
+        _.delay.clear();
+        jQuery.ajax.clear();
+
+        // simulate disconnection
+        mockXhr.readyState = 4;
+        mockXhr.onreadystatechange();
+
+        // should retry immediately
+        expect(_.delay.mostRecentArgs[1]).to(eq, 20);
+        expect(jQuery.ajax).to(haveBeenCalled, once);
+
+        _.delay.clear();
+        jQuery.ajax.clear();
+
+        // simulate immediate failure
+        mockXhr.readyState = 4;
+
+        console.debug("Second failure");
+
+        mockXhr.onreadystatechange();
+
+        // should now retry in 1 second
+        expect(_.delay.mostRecentArgs[1]).to(eq, 2500);
+        expect(jQuery.ajax).to(haveBeenCalled, once);
+
+        _.delay.clear();
+        jQuery.ajax.clear();
+
+        
+        expect(disconnectCallback).toNot(haveBeenCalled);
+
+        // simulate another immediate failure
+        mockXhr.readyState = 4;
+        mockXhr.onreadystatechange();
+
+        // should not retry. should invoke disconnect handler
+        expect(jQuery.ajax).toNot(haveBeenCalled);
+        expect(disconnectCallback).to(haveBeenCalled, once);
+      });
+
     });
   });
 }});

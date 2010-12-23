@@ -4,6 +4,7 @@
 //= require "views/email_preferences"
 //= require "views/membership_tr"
 //= require "views/invite"
+//= require "views/disconnect_dialog"
 //= require "views/layout"
 //= require "views/welcome_guide"
 //= require "views/organization_overview"
