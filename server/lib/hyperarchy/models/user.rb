@@ -7,10 +7,6 @@ class User < Monarch::Model::Record
   column :dismissed_welcome_blurb, :boolean, :default => false
   column :dismissed_welcome_guide, :boolean, :default => false
 
-  def self.encrypt_password(unencrypted_password)
-    BCrypt::Password.create(unencrypted_password).to_s
-  end
-
   has_many :memberships
   relates_to_many :organizations do
     memberships.join_through(Organization)
@@ -24,6 +20,11 @@ class User < Monarch::Model::Record
     Candidate.table
   end
 
+  validates_uniqueness_of :email_address, :message => "There is already an account with that email address." 
+
+  def self.encrypt_password(unencrypted_password)
+    BCrypt::Password.create(unencrypted_password).to_s
+  end
 
   def can_update_or_destroy?
     current_user.admin? || current_user == self

@@ -14,6 +14,11 @@ module Models
         User.make_unsaved(:email_address => "").should_not be_valid
         User.make_unsaved(:password => "").should_not be_valid
       end
+
+      it "ensures the email address is unique" do
+        user.should be_valid
+        User.make_unsaved(:email_address => user.email_address).should_not be_valid
+      end
     end
 
     describe "#after_create" do
