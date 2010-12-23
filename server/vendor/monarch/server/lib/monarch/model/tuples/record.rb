@@ -69,6 +69,19 @@ module Monarch
             end
           end
 
+          def validates_uniqueness_of(column_name, options={})
+            column = table.column(column_name)
+            raise "No column #{column_name.inspect} to validate the uniqueness of" unless column
+            validate do
+              field_value = field(column).value
+              relation = table.where(column => field_value)
+              relation = relation.where(column(:id).neq(id)) if persisted?
+              unless relation.empty?
+                validation_error(column_name, options[:message] || "#{column_name.to_s.humanize} must be unique")
+              end
+            end
+          end
+
           def unsafe_new(field_values = {})
             record = allocate
             record.unsafe_initialize(field_values)
@@ -77,6 +90,14 @@ module Monarch
 
           def relation_definitions
             @relation_definitions ||= ActiveSupport::OrderedHash.new
+          end
+
+          def validate(&block)
+            self.validations.push(block)
+          end
+
+          def validations
+            @validations ||= []
           end
 
           delegate :create, :create!, :unsafe_create, :where, :project, :join, :join_to, :join_through, :aggregate, :find,
@@ -92,7 +113,7 @@ module Monarch
         end
 
         attr_reader :relations_by_name
-        delegate :table, :to => "self.class"
+        delegate :table, :validations, :to => "self.class"
         delegate :current_user, :to => "::Monarch::Model::Repository"
 
         def initialize(field_values = {})
@@ -225,6 +246,7 @@ module Monarch
           return if validated?
           before_validate
           validate_wire_representation
+          execute_validation_hooks
           validate
           mark_validated
         end
@@ -246,6 +268,12 @@ module Monarch
             rescue => e
               validation_error(field.name, "unexpected error: #{e}")
             end
+          end
+        end
+
+        def execute_validation_hooks
+          validations.each do |validation|
+            instance_eval(&validation)
           end
         end
 

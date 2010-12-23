@@ -26,27 +26,32 @@ FIXTURES = {
 
   :blog_posts => {
     :grain_quinoa => {
-      :body => "Quinoa",
+      :title => "Quinoa",
+      :body => "Quinoa is so good. I mean really.",
       :blog_id => "grain",
       :created_at => 1253740028201
     },
     :grain_barley => {
-      :body => "Barley",
+      :title => "Barley",
+      :body => "Barley aint bad either but takes forever to cook!",
       :blog_id => "grain",
       :created_at => 1253740021201
     },
     :grain_millet => {
-      :body => "Millet",
+      :title => "Millet",
+      :body => "WTF is millet?",
       :blog_id => "grain",
       :created_at => 1253740008201
     },
     :vegetable_daikon => {
-      :body => "Daikon",
+      :title => "Daikon",
+      :body => "It's hard to believe they're radishes.",
       :blog_id => "vegetable",
       :created_at => 1253740028001
     },
     :vegetable_kale => {
-      :body => "Kale",
+      :title => "Kale",
+      :body => "Dark leafy pleasure",
       :blog_id => "vegetable",
       :created_at => 1253740022201
     }

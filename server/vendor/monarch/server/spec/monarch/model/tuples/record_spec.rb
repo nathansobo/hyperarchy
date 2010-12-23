@@ -113,6 +113,25 @@ module Monarch
             end
           end
 
+          describe "validations" do
+            describe "#validates_uniqueness_of(column_name)" do
+              it "checks to ensure that no record has the same value for the indicated field" do
+                BlogPost.validates_uniqueness_of(:title)
+
+                post = BlogPost.find("grain_quinoa")
+                post.should be_valid
+
+                new_post = BlogPost.new(:title => post.title)
+                new_post.should_not be_valid
+
+                other_post = BlogPost.find("grain_barley")
+                other_post.should be_valid
+                other_post.title = post.title
+                other_post.should_not be_valid
+              end
+            end
+          end
+
           describe ".[]" do
             context "when the given value is the name of a ConcreteColumn defined on .table" do
               it "returns the ConcreteColumn with the given name" do

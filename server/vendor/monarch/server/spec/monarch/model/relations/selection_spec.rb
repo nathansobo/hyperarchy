@@ -44,7 +44,7 @@ module Monarch
           @operand = BlogPost.table
           @predicate = Expressions::Eq.new(BlogPost[:blog_id], "grain")
           @selection = Selection.new(operand, predicate)
-          @predicate_2 = Expressions::Eq.new(BlogPost[:body], "Barley")
+          @predicate_2 = Expressions::Eq.new(BlogPost[:body], FIXTURES[:blog_posts][:grain_barley][:body])
           @composite_selection = Selection.new(selection, predicate_2)
         end
 
@@ -65,21 +65,21 @@ module Monarch
               record = composite_selection.all.first
               record.should_not be_nil
               record.blog_id.should == "grain".hash
-              record.body.should == "Barley"
+              record.body.should == FIXTURES[:blog_posts][:grain_barley][:body]
             end
           end
         end
 
         describe "#build(field_values)" do
           it "introduces an additional field value to match its predicate if needed" do
-            mock(operand).build(:blog_id => "grain".hash, :body => "Barley", :title => "Barely Barley")
+            mock(operand).build(:blog_id => "grain".hash, :body => FIXTURES[:blog_posts][:grain_barley][:body], :title => "Barely Barley")
             composite_selection.build(:title => "Barely Barley")
           end
         end
 
         describe "#create(field_values)" do
           it "introduces an additional field value to match its predicate if needed" do
-            mock(operand).create!(:blog_id => "grain".hash, :body => "Barley", :title => "Barely Barley")
+            mock(operand).create!(:blog_id => "grain".hash, :body => FIXTURES[:blog_posts][:grain_barley][:body], :title => "Barely Barley")
             composite_selection.create!(:title => "Barely Barley")
           end
         end
