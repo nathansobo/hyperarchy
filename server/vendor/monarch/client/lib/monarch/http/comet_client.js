@@ -95,10 +95,7 @@ _.constructor("Monarch.Http.CometClient", {
   },
 
   recordConnectionStatus: function() {
-    if (this.isConnected) {
-      console.debug("recording as connected");
-      this.lastKnownConnectedAt = this.nowMilliseconds();
-    }
+    if (this.isConnected) this.lastKnownConnectedAt = this.nowMilliseconds();
   },
 
   onReceive: function(callback, context) {
