@@ -83,9 +83,8 @@ Or just reply with 'unsubscribe' to this email.
   end
 
   def before_destroy
-    candidates.each do |candidate|
-      candidate.destroy
-    end
+    candidates.each(&:destroy)
+    election_visits.each(&:destroy)
   end
 
   def compute_global_ranking

@@ -54,7 +54,7 @@ module Models
     end
 
     describe "before destroy" do
-      it "destroys any candidates and votes that belong to the election" do
+      it "destroys any candidates, votes and visits that belong to the election" do
         election = Election.make
         user_1 = make_member(election.organization)
         user_2 = make_member(election.organization)
@@ -63,12 +63,17 @@ module Models
         Ranking.create!(:user => user_1, :candidate => candidate_1, :position => 64)
         Ranking.create!(:user => user_1, :candidate => candidate_2, :position => 32)
         Ranking.create!(:user => user_2, :candidate => candidate_1, :position => 64)
+        election.election_visits.create!(:user => user_1)
 
+        election.election_visits.size.should == 1
         election.candidates.size.should == 2
         election.votes.size.should == 2
         election.destroy
         election.candidates.should be_empty
         election.votes.should be_empty
+        election.election_visits.should be_empty
+
+
       end
     end
 
