@@ -35,8 +35,13 @@ _.constructor("Monarch.Model.Relations.Relation", {
       var table;
       if (_.isFunction(arguments[0])) {
         table = arguments[0].table;
-      } else if (arguments[0] instanceof Monarch.Model.Relations.Table) {
-        table = arguments[0];
+      } else if (arguments[0].surfaceTables) {
+        var surfaceTables = arguments[0].surfaceTables();
+        if (surfaceTables.length === 1) {
+          table = surfaceTables[0];
+        } else {
+          throw new Error("Can only project with relations that have a single surface table");
+        }
       }
 
       if (table) return new Monarch.Model.Relations.TableProjection(this, table);

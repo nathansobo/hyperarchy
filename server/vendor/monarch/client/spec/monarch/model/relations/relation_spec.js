@@ -235,6 +235,15 @@ Screw.Unit(function(c) { with(c) {
           expect(projection.projectedTable).to(eq, BlogPost.table);
         });
       });
+
+      context("when passed a selection", function() {
+        it("returns a table projection based on the given selection's table", function() {
+          var projection = relation.project(BlogPost.where({blogId: "grain"}));
+          expect(projection).to(beAnInstanceOf, Monarch.Model.Relations.TableProjection);
+          expect(projection.operand).to(eq, relation);
+          expect(projection.projectedTable).to(eq, BlogPost.table);
+        });
+      });
     });
 
     describe("#difference(rightOperand)", function() {
