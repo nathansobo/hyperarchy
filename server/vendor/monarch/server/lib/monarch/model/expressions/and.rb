@@ -21,6 +21,13 @@ module Monarch
           state[self][:sql_expression] ||=
             Sql::Expressions::And.new(operands.map {|op| op.sql_expression(state)})
         end
+
+        def force_matching_field_values(field_values={})
+          operands.each do |operand|
+            field_values = field_values.merge(operand.force_matching_field_values)
+          end
+          field_values
+        end
       end
     end
   end

@@ -45,6 +45,14 @@ module Monarch
             end
           end
         end
+
+
+        describe "#force_matching_field_values" do
+          it "constructs a hash by merging the results of #force_matching_field_values on its operands" do
+            pred = And.new([BlogPost[:body].eq("Settlers of catan is fun"), BlogPost[:title].eq("Settlers")])
+            pred.force_matching_field_values(:bar => "baz", :body => "No!!").should == { :body => "Settlers of catan is fun", :title => "Settlers", :bar => "baz"}
+          end
+        end
       end
     end
   end
