@@ -92,45 +92,51 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         .onSuccess(function() {
           this.stopLoading();
           var elections = this.organization().elections();
-          this.renderQueue.clear();
-          elections.each(function(election) {
-            this.renderQueue.add(function() {
-              this.electionsList.append(this.electionLi(election));
-            }, this);
-          }, this);
-          this.renderQueue.start();
-
-          elections.onRemoteInsert(function(election) {
-            this.electionsList.prepend(this.electionLi(election));
-          }, this);
-
-          elections.onRemoteRemove(function(election) {
-            this.electionLi(election).remove();
-          }, this);
-
-          elections.onRemoteUpdate(function(election, changes) {
-            if (changes.updatedAt) {
-              var electionLi = this.electionLi(election);
-              this.electionsList.prepend(electionLi);
-              electionLi.find("> div").effect('highlight', {color:"#ffffcc"}, 2000);
-            }
-
-            if (changes.body) {
-              var electionLi = this.electionLi(election);
-              electionLi.body.html(changes.body.newValue);
-            }
-
-            if (changes.voteCount) {
-              var electionLi = this.electionLi(election);
-              electionLi.updateVoteCount(changes.voteCount.newValue);
-            }
-          }, this);
-
-          elections.joinTo(Application.currentUser().electionVisits()).project(ElectionVisit).onRemoteInsert(function(visit) {
-            this.electionLi(visit.election()).visited();
-          }, this);
-
+          this.renderElections(elections);
+          this.subscribeToElections(elections);
         }, this);
+    },
+
+    renderElections: function(elections) {
+      this.renderQueue.clear();
+      elections.each(function(election) {
+        this.renderQueue.add(function() {
+          this.electionsList.append(this.electionLi(election));
+        }, this);
+      }, this);
+      this.renderQueue.start();
+    },
+
+    subscribeToElections: function(elections) {
+      this.subscriptions.add(elections.onRemoteInsert(function(election) {
+        this.electionsList.prepend(this.electionLi(election));
+      }, this));
+
+      this.subscriptions.add(elections.onRemoteRemove(function(election) {
+        this.electionLi(election).remove();
+      }, this));
+
+      this.subscriptions.add(elections.onRemoteUpdate(function(election, changes) {
+        if (changes.updatedAt) {
+          var electionLi = this.electionLi(election);
+          this.electionsList.prepend(electionLi);
+          electionLi.find("> div").effect('highlight', {color:"#ffffcc"}, 2000);
+        }
+
+        if (changes.body) {
+          var electionLi = this.electionLi(election);
+          electionLi.body.html(changes.body.newValue);
+        }
+
+        if (changes.voteCount) {
+          var electionLi = this.electionLi(election);
+          electionLi.updateVoteCount(changes.voteCount.newValue);
+        }
+      }, this));
+
+      this.subscriptions.add(elections.joinTo(Application.currentUser().electionVisits()).project(ElectionVisit).onRemoteInsert(function(visit) {
+        this.electionLi(visit.election()).visited();
+      }, this));
     },
 
     electionLi: function(election) {
