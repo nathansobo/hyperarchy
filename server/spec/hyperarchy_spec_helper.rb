@@ -89,10 +89,11 @@ class RackExampleGroup < Spec::Example::ExampleGroup
   end
 
   def current_user
-    warden.user
+    @last_request ? warden.user : @current_user
   end
 
   def login_as(user, opts={})
+    @current_user = user
     super
     user
   end

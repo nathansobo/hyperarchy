@@ -8,6 +8,8 @@ class User < Monarch::Model::Record
   column :dismissed_welcome_guide, :boolean, :default => false
 
   has_many :memberships
+  has_many :election_visits
+  
   relates_to_many :organizations do
     memberships.join_through(Organization)
   end

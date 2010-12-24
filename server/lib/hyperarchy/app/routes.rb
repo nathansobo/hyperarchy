@@ -180,7 +180,16 @@ module Hyperarchy
       end
     end
 
+    post "/visited" do
+      authentication_required
+      visit = ElectionVisit.find_or_create(:user_id => current_user.id, :election_id => params[:election_id])
+      visit.update!(:updated_at => Time.now)
+      successful_json_response(nil, visit)
+    end
+
     post "/rankings" do
+      authentication_required
+
       organization = Candidate.find(params[:candidate_id]).election.organization
       unless current_user && organization.has_member?(current_user)
         raise Monarch::Unauthorized

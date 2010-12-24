@@ -10,6 +10,7 @@ class Election < Monarch::Model::Record
   has_many :votes
   has_many :rankings
   has_many :majorities
+  has_many :election_visits
 
   belongs_to :creator, :class_name => "User"
   belongs_to :organization
