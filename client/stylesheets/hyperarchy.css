@@ -1305,6 +1305,7 @@ body.legal {
 #app #organizationOverview #organizationHeader {
   margin-bottom: 30px; }
   #app #organizationOverview #organizationHeader h2 {
+    font-weight: bold;
     display: inline-block;
     position: relative;
     top: 4px; }
@@ -1330,25 +1331,32 @@ body.legal {
   padding: 8px;
   margin-bottom: 20px;
   cursor: pointer;
-  height: 220px;
+  height: 160px;
   overflow-y: hidden;
   position: relative; }
+  #app #organizationOverview .election.voted {
+    background: #F3F3F4; }
+    #app #organizationOverview .election.voted .body {
+      font-weight: normal; }
+    #app #organizationOverview .election.voted .fadeOut {
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgba(243, 243, 244, 0)), color-stop(0.8, #f3f3f4));
+      background: -moz-linear-gradient(top, rgba(243, 243, 244, 0), #f3f3f4); }
   #app #organizationOverview .election .voteCount {
     padding: 5px;
     margin: 0 0 10px 10px;
     float: right;
-    background: #eeebe8;
+    background: #F3F3F4;
     min-width: 37px;
     line-height: 1;
     text-align: center;
-    -moz-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 2px; }
+    -moz-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.3) 1px 1px 3px; }
     #app #organizationOverview .election .voteCount .number {
       font-weight: bold;
-      font-size: 24px; }
+      font-size: 22px; }
   #app #organizationOverview .election .body {
-    font-size: 20px;
-    line-height: 26px;
+    font-weight: bold;
+    font-size: 19px;
     margin-bottom: 10px; }
   #app #organizationOverview .election .fadeOut {
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgba(255, 255, 255, 0)), color-stop(0.8, white));

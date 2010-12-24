@@ -2,8 +2,14 @@ _.constructor("Views.ElectionLi", View.Template, {
   content: function(params) { with(this.builder) {
     var election = params.election;
 
+
+    var additionClass = "";
+    if (Math.random() > 0.6) {
+      additionClass = " voted"
+    }
+
     li({'class': "grid6"}, function() {
-      div({'class': "election dropShadow"}, function() {
+      div({'class': "election dropShadow" + additionClass}, function() {
         div({'class': "voteCount"}, function() {
           div({'class': "number"}, election.voteCount().toString()).ref('voteCountNumber');
           div("votes").ref('voteCountWord');
