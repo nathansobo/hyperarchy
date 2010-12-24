@@ -11,6 +11,7 @@ _.constructor("User", Model.Record, {
 
     this.hasMany('rankings');
     this.hasMany('memberships');
+    this.hasMany('electionVisits');
 
     this.relatesToMany('confirmedMemberships', function() {
       return this.memberships().where({pending: false});

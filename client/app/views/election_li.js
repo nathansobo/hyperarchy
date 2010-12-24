@@ -1,15 +1,10 @@
 _.constructor("Views.ElectionLi", View.Template, {
   content: function(params) { with(this.builder) {
     var election = params.election;
-
-
-    var additionClass = "";
-    if (Math.random() > 0.6) {
-      additionClass = " voted"
-    }
-
+    var classes = "election dropShadow";
+    if (election.currentUsersVisit()) classes += " voted";
     li({'class': "grid6"}, function() {
-      div({'class': "election dropShadow" + additionClass}, function() {
+      div({'class': classes}, function() {
         div({'class': "voteCount"}, function() {
           div({'class': "number"}, election.voteCount().toString()).ref('voteCountNumber');
           div("votes").ref('voteCountWord');
@@ -39,7 +34,9 @@ _.constructor("Views.ElectionLi", View.Template, {
         });
 
         div({'class': "fadeOut"});
-      }).click('displayElection');
+      })
+        .ref('contentDiv')
+        .click('displayElection');
     });
   }},
 
@@ -66,6 +63,10 @@ _.constructor("Views.ElectionLi", View.Template, {
       }
 
       if (!suppressFlash) this.voteCountBox.effect('highlight', {color:"#ffd5cc"}, 2000);
+    },
+
+    visited: function() {
+      this.contentDiv.addClass('voted');
     }
   }
 });

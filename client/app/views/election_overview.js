@@ -127,6 +127,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.adjustHeight();
       this.electionId(parseInt(state.electionId));
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
+      Server.post("/visited?election_id=" + state.electionId);
     },
 
     electionId: {

@@ -4,4 +4,5 @@
 //= require "models/election"
 //= require "models/candidate"
 //= require "models/vote"
+//= require "models/election_visit"
 //= require "models/ranking"

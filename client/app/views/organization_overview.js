@@ -82,7 +82,13 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
       this.startLoading();
 
-      Server.fetch([this.organization().elections(), this.organization().elections().joinTo(Candidate)])
+      var relationsToFetch = [
+        this.organization().elections(),
+        this.organization().elections().joinTo(Candidate),
+        Application.currentUser().electionVisits()
+      ];
+
+      Server.fetch(relationsToFetch)
         .onSuccess(function() {
           this.stopLoading();
           var elections = this.organization().elections();
@@ -119,6 +125,11 @@ _.constructor("Views.OrganizationOverview", View.Template, {
               electionLi.updateVoteCount(changes.voteCount.newValue);
             }
           }, this);
+
+          elections.joinTo(Application.currentUser().electionVisits()).project(ElectionVisit).onRemoteInsert(function(visit) {
+            this.electionLi(visit.election()).visited();
+          }, this);
+
         }, this);
     },
 

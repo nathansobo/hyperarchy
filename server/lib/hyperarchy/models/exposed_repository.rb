@@ -33,6 +33,10 @@ module Models
       elections.join_through(Vote)
     end
 
+    expose :election_visits do
+      user.election_visits
+    end
+
     expose :rankings do
       elections.join_through(Ranking)
     end

@@ -11,6 +11,7 @@ _.constructor("Election", Model.Record, {
 
     this.hasMany('candidates', {orderBy: 'position asc'});
     this.hasMany('votes', {orderBy: 'updatedAt desc'});
+    this.hasMany('electionVisits');
     this.relatesToMany('voters', function() {
       return this.votes().joinThrough(User);
     });
@@ -55,6 +56,10 @@ _.constructor("Election", Model.Record, {
     var userId = user.id();
     if (this.unrankedCandidatesByUserId[userId]) return this.unrankedCandidatesByUserId[userId];
     return this.unrankedCandidatesByUserId[userId] = this.candidates().difference(this.rankedCandidatesForUser(user));
+  },
+
+  currentUsersVisit: function() {
+    return this.electionVisits().find({userId: Application.currentUserId});
   },
 
   fetchVotes: function() {

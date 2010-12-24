@@ -6,4 +6,8 @@ class ElectionVisit < Monarch::Model::Record
 
   belongs_to :election
   belongs_to :user
+
+  def organization_ids
+    election ? election.organization_ids : []
+  end
 end
