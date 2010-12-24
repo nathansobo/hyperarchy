@@ -134,7 +134,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         }
       }, this));
 
-      this.subscriptions.add(elections.joinTo(Application.currentUser().electionVisits()).project(ElectionVisit).onRemoteInsert(function(visit) {
+      this.subscriptions.add(elections.joinThrough(Application.currentUser().electionVisits()).onRemoteInsert(function(visit) {
         this.electionLi(visit.election()).visited();
       }, this));
     },
