@@ -189,6 +189,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     showElementsAfterLoading: function() {
+      if (!this.election()) return;
       if (this.election().candidates().empty()) {
         this.hideCreateCandidateFormCancelX.hide();
         this.showCreateCandidateForm("instantly");
