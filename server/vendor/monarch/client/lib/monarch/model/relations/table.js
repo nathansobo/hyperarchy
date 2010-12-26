@@ -94,7 +94,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
 
 
   column: function(name) {
-    return this.columnsByName[name];
+    return this.columnsByName[name] || this.syntheticColumnsByName[name];
   },
 
   surfaceTables: function() {

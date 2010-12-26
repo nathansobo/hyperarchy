@@ -23,6 +23,17 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+    describe("#column(name)", function() {
+      it("returns the concrete or sythetic column with the given name or null if none exists", function() {
+        var concreteColumn = table.defineColumn("foo", "string");
+        var syntheticColumn = table.defineSyntheticColumn("bar", function() {});
+        expect(table.column("foo")).to(eq, concreteColumn);
+        expect(table.column("bar")).to(eq, syntheticColumn);
+        expect(table.column("baz")).to(beNull);
+      });
+    });
+
+
     describe("query methods", function() {
       var locallyCreated, locallyUpdated, locallyDestroyed, cleanRecord;
       before(function() {
