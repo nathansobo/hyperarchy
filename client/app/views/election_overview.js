@@ -132,12 +132,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     electionId: {
       afterChange: function(electionId, previousElectionId) {
-        this.showCreateCandidateFormButton.hide();
-        this.hideCreateCandidateForm(true);
-        this.candidatesList.hide();
-        this.rankedCandidatesList.hide();
-        this.creatorDiv.hide();
-
+        this.hideElementsWhileLoading();
 
         var additionalRelations = [
           Election.where({id: electionId}).joinTo(Organization),
@@ -146,8 +141,14 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.startLoading();
         Election.findOrFetch(electionId, additionalRelations)
           .onSuccess(function(election) {
+            if (election) {
+              this.election(election);
+            } else {
+              var lastVisitedOrgId = Application.currentUser().lastVisitedOrganization().id();
+              $.bbq.pushState({view: 'organization', organizationId: lastVisitedOrgId}, 2);
+            }
             this.stopLoading();
-            this.election(election);
+            this.showElementsAfterLoading();
           }, this);
       }
     },
@@ -176,15 +177,27 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.candidatesList.election(election);
         this.rankedCandidatesList.election(election);
         this.votesList.election(election);
+      }
+    },
 
-        if (election.candidates().empty()) {
-          this.hideCreateCandidateFormCancelX.hide();
-          this.showCreateCandidateForm("instantly");
-        } else {
-          this.hideCreateCandidateFormCancelX.show();
-          this.showCreateCandidateFormButton.show();
-          this.hideCreateCandidateForm(true);
-        }
+    hideElementsWhileLoading: function() {
+      this.showCreateCandidateFormButton.hide();
+      this.hideCreateCandidateForm(true);
+      this.candidatesList.hide();
+      this.rankedCandidatesList.hide();
+      this.creatorDiv.hide();
+    },
+
+    showElementsAfterLoading: function() {
+      if (this.election().candidates().empty()) {
+        this.hideCreateCandidateFormCancelX.hide();
+        this.showCreateCandidateForm("instantly");
+      } else {
+        this.candidatesList.show();
+        this.rankedCandidatesList.show();
+        this.hideCreateCandidateFormCancelX.show();
+        this.showCreateCandidateFormButton.show();
+        this.hideCreateCandidateForm(true);
       }
     },
 

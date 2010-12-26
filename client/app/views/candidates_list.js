@@ -24,7 +24,6 @@ _.constructor("Views.CandidatesList", View.Template, {
     election: {
       afterChange: function(election) {
         this.candidatesList.relation(election.candidates());
-        if (!election.candidates().empty()) this.show();
       }
     },
 
