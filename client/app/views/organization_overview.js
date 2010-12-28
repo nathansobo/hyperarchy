@@ -28,6 +28,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       }).ref('topDiv');
 
       subview('electionsList', Views.SortedList, {
+        useQueue: true,
         buildElement: function(election) {
           return Views.ElectionLi.toView({election: election});
         },

@@ -8,6 +8,7 @@ _.constructor("Views.SortedList", View.Template, {
   viewProperties: {
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
+      this.renderQueue = new Monarch.Queue(this.renderSegmentSize || 3, this.renderDelay || 30);
     },
 
     relation: {
@@ -15,10 +16,18 @@ _.constructor("Views.SortedList", View.Template, {
         if (this.subscriptions) this.subscriptions.destroy();
 
         this.empty();
-
-        relation.each(function(record, index) {
-          this.append(this.elementForRecord(record, index));
-        }, this);
+        if (this.useQueue) {
+          relation.each(function(record, index) {
+            this.renderQueue.add(function() {
+              this.append(this.elementForRecord(record, index));
+            }, this);
+          }, this);
+          this.renderQueue.start();
+        } else {
+          relation.each(function(record, index) {
+            this.append(this.elementForRecord(record, index));
+          }, this);
+        }
 
         this.subscriptions.add(relation.onRemoteInsert(function(record, index) {
           var element = this.elementForRecord(record, index);
@@ -72,6 +81,7 @@ _.constructor("Views.SortedList", View.Template, {
     },
 
     empty: function() {
+      this.renderQueue.clear();
       if (this.elementsById) {
         _.each(this.elementsById, function(element) {
           element.remove();
