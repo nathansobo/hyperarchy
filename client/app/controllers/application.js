@@ -16,6 +16,7 @@ _.constructor("Controllers.Application", {
     $("#loadingPage").remove();
     this.body.append(this.layout);
     $(window).trigger('hashchange');
+    Election.updateScoresPeriodically();
   },
 
   currentUserIdEstablished: function(currentUserId) {

@@ -191,35 +191,7 @@ function extractConstructorArguments(args) {
   return constructorArguments;
 }
 
-_.constructor("_.Object", {
-  constructorProperties: {
-    delegateConstructorMethods: function() {
-      var args = _.toArray(arguments);
-      var delegateName = args.pop();
-
-      var newConstructorMethods = {};
-      this.setupDelegateMethods(newConstructorMethods, args, delegateName);
-      if (!this.prototype.constructorProperties) this.prototype.constructorProperties = {};
-      _.extend(this.prototype.constructorProperties, newConstructorMethods);
-      _.extend(this, newConstructorMethods);
-    },
-
-    delegate: function(source) {
-      var args = _.toArray(arguments);
-      var delegateName = args.pop();
-      this.setupDelegateMethods(this.prototype, args, delegateName);
-    },
-
-    setupDelegateMethods: function(delegator, methodNames, delegateName) {
-      _.each(methodNames, function(methodName) {
-        delegator[methodName] = function() {
-          var delegate = this[delegateName];
-          return delegate[methodName].apply(delegate, arguments);
-        };
-      });
-    }
-  },
-  
+_.module("_.Kernel", {
   hitch: function() {
     var args = _.toArray(arguments);
     var methodName = _.first(args);
@@ -254,5 +226,35 @@ _.constructor("_.Object", {
     }
   }
 });
+
+_.constructor("_.Object", {
+  constructorProperties: _.extend({
+    delegateConstructorMethods: function() {
+      var args = _.toArray(arguments);
+      var delegateName = args.pop();
+
+      var newConstructorMethods = {};
+      this.setupDelegateMethods(newConstructorMethods, args, delegateName);
+      if (!this.prototype.constructorProperties) this.prototype.constructorProperties = {};
+      _.extend(this.prototype.constructorProperties, newConstructorMethods);
+      _.extend(this, newConstructorMethods);
+    },
+
+    delegate: function(source) {
+      var args = _.toArray(arguments);
+      var delegateName = args.pop();
+      this.setupDelegateMethods(this.prototype, args, delegateName);
+    },
+
+    setupDelegateMethods: function(delegator, methodNames, delegateName) {
+      _.each(methodNames, function(methodName) {
+        delegator[methodName] = function() {
+          var delegate = this[delegateName];
+          return delegate[methodName].apply(delegate, arguments);
+        };
+      });
+    },
+  }, _.Kernel),
+}, _.Kernel);
 
 })(_);

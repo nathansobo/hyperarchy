@@ -1,26 +1,44 @@
 _.constructor("Election", Model.Record, {
-  constructorInitialize: function() {
-    this.columns({
-      organizationId: 'key',
-      creatorId: 'key',
-      body: 'string',
-      voteCount: 'integer',
-      score: 'float',
-      updatedAt: 'datetime',
-      createdAt: 'datetime'
-    });
+  constructorProperties: {
+    initialize: function() {
+      this.columns({
+        organizationId: 'key',
+        creatorId: 'key',
+        body: 'string',
+        voteCount: 'integer',
+        score: 'float',
+        updatedAt: 'datetime',
+        createdAt: 'datetime'
+      });
 
-    this.hasMany('candidates', {orderBy: 'position asc'});
-    this.hasMany('votes', {orderBy: 'updatedAt desc'});
-    this.hasMany('electionVisits');
-    this.relatesToMany('voters', function() {
-      return this.votes().joinThrough(User);
-    });
+      this.hasMany('candidates', {orderBy: 'position asc'});
+      this.hasMany('votes', {orderBy: 'updatedAt desc'});
+      this.hasMany('electionVisits');
+      this.relatesToMany('voters', function() {
+        return this.votes().joinThrough(User);
+      });
 
-    this.hasMany('rankings', {orderBy: 'position desc'});
+      this.hasMany('rankings', {orderBy: 'position desc'});
 
-    this.belongsTo('organization');
-    this.belongsTo('creator', {constructorName: 'User'});
+      this.belongsTo('organization');
+      this.belongsTo('creator', {constructorName: 'User'});
+    },
+
+    scoreUpdateInterval: 60000,
+
+    updateScoresPeriodically: function() {
+      setInterval(this.hitch('updateScores'), this.scoreUpdateInterval);
+    },
+
+    updateScores: function() {
+      var queue = new Monarch.Queue(10);
+      this.each(function(election) {
+        queue.add(function() {
+          election.updateScore();
+        });
+      });
+      queue.start();
+    }
   },
 
   afterInitialize: function() {
@@ -69,5 +87,18 @@ _.constructor("Election", Model.Record, {
 
   formattedCreatedAt: function() {
     return $.PHPDate("M j, Y @ g:ia", this.createdAt());
+  },
+
+  updateScore: function() {
+    // simulate update received from server
+    this.remotelyUpdated({score: this.computeScore()});
+  },
+
+  computeScore: function() {
+    return (this.voteCount() + Election.SCORE_EXTRA_HOURS) / Math.pow(this.ageInHours() + Election.SCORE_EXTRA_HOURS, Election.SCORE_GRAVITY);
+  },
+
+  ageInHours: function() {
+    return (new Date().getTime() - this.createdAt().getTime()) / 3600000
   }
 });

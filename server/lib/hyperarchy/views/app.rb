@@ -8,6 +8,9 @@ module Views
       application_javascript_tags
       javascript %[
         $(function() {
+          Election.SCORE_EXTRA_VOTES = #{Election::SCORE_EXTRA_VOTES};
+          Election.SCORE_EXTRA_HOURS = #{Election::SCORE_EXTRA_HOURS};
+          Election.SCORE_GRAVITY = #{Election::SCORE_GRAVITY};
           #{store_organizations_in_repository}
           #{store_current_user_in_repository}
           Server.realTimeClientId(#{Guid.new.to_s.inspect});
