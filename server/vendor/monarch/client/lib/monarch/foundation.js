@@ -253,8 +253,8 @@ _.constructor("_.Object", {
           return delegate[methodName].apply(delegate, arguments);
         };
       });
-    },
-  }, _.Kernel),
+    }
+  }, _.Kernel)
 }, _.Kernel);
 
 })(_);
