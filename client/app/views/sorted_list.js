@@ -28,7 +28,7 @@ _.constructor("Views.SortedList", View.Template, {
 
         this.subscriptions.add(relation.onRemoteUpdate(function(record, changes, index) {
           var element = this.elementForRecord(record, index);
-          this.insertAtIndex(element, index);
+          this.insertAtIndex(element.detach(), index);
           if (this.onRemoteUpdate) this.onRemoteUpdate(element, record, changes, index);
         }, this));
 
@@ -53,7 +53,7 @@ _.constructor("Views.SortedList", View.Template, {
     elementForRecord: function(record, index) {
       var id = record.id();
       if (this.elementsById[id]) {
-        return this.elementsById[id].detach();
+        return this.elementsById[id];
       } else {
         return this.elementsById[id] = this.buildElement(record, index);
       }

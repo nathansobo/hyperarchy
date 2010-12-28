@@ -27,10 +27,19 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         });
       }).ref('topDiv');
 
-
-      ol(function() {
-        
-      }).ref('electionsList');
+      subview('electionsList', Views.SortedList, {
+        buildElement: function(election) {
+          return Views.ElectionLi.toView({election: election});
+        },
+        onRemoteInsert: function(election, li) {
+          li.effect('highlight');
+        },
+        onRemoteUpdate: function(li, election, changeset) {
+          if (changeset.updatedAt) li.contentDiv.effect('highlight', {color:"#ffffcc"}, 2000);
+          if (changeset.body) li.body.html(changeset.body.newValue);
+          if (changeset.voteCount) li.updateVoteCount(changeset.voteCount.newValue);
+        }
+      });
 
       div({'class': "clear"});
       div({'class': "bigLoading", 'style': "display: none;"}).ref('loading');
@@ -43,7 +52,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
-      this.renderQueue = new Monarch.Queue(2);
     },
 
     navigate: function(state) {
@@ -91,60 +99,16 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       Server.fetch(relationsToFetch)
         .onSuccess(function() {
           this.stopLoading();
-          var elections = this.organization().elections();
-          this.renderElections(elections);
-          this.subscribeToElections(elections);
-        }, this);
-    },
-
-    renderElections: function(elections) {
-      this.renderQueue.clear();
-      elections.each(function(election) {
-        this.renderQueue.add(function() {
-          this.electionsList.append(this.electionLi(election));
-        }, this);
+        var elections = this.organization().elections().orderBy('score desc');
+        this.electionsList.relation(elections);
+        this.subscribeToVisits(elections);
       }, this);
-      this.renderQueue.start();
     },
 
-    subscribeToElections: function(elections) {
-      this.subscriptions.add(elections.onRemoteInsert(function(election) {
-        this.electionsList.prepend(this.electionLi(election));
-      }, this));
-
-      this.subscriptions.add(elections.onRemoteRemove(function(election) {
-        this.electionLi(election).remove();
-      }, this));
-
-      this.subscriptions.add(elections.onRemoteUpdate(function(election, changes) {
-        if (changes.updatedAt) {
-          var electionLi = this.electionLi(election);
-          this.electionsList.prepend(electionLi);
-          electionLi.find("> div").effect('highlight', {color:"#ffffcc"}, 2000);
-        }
-
-        if (changes.body) {
-          var electionLi = this.electionLi(election);
-          electionLi.body.html(changes.body.newValue);
-        }
-
-        if (changes.voteCount) {
-          var electionLi = this.electionLi(election);
-          electionLi.updateVoteCount(changes.voteCount.newValue);
-        }
-      }, this));
-
+    subscribeToVisits: function(elections) {
       this.subscriptions.add(elections.joinThrough(Application.currentUser().electionVisits()).onRemoteInsert(function(visit) {
-        this.electionLi(visit.election()).visited();
+        this.electionsList.elementForRecord(visit.election()).visited();
       }, this));
-    },
-
-    electionLi: function(election) {
-      var id = election.id();
-      if (!this.electionLisById[id]) {
-        this.electionLisById[id] = Views.ElectionLi.toView({election: election});
-      }
-      return this.electionLisById[election.id()];
     },
 
     editOrganization: function(elt, e) {
