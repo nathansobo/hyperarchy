@@ -4,4 +4,5 @@ require "#{dir}/../lib/hyperarchy"
 trap("QUIT") { exit }
 trap("INT") { exit }
 
+Hyperarchy::Scheduler.start
 run Hyperarchy::App

@@ -19,6 +19,7 @@ GEM
     backports (1.18.2)
     bcrypt-ruby (2.1.1)
     builder (2.1.2)
+    clockwork (0.2.1)
     columnize (0.3.1)
     cramp (0.11)
       activemodel (~> 3.0.0.beta3)
@@ -107,6 +108,7 @@ PLATFORMS
 DEPENDENCIES
   activesupport (= 3.0.1)
   bcrypt-ruby (= 2.1.1)
+  clockwork (= 0.2.1)
   cramp (= 0.11)
   daemons (= 1.0.10)
   erector (= 0.6.7)

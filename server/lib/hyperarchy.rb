@@ -19,6 +19,7 @@ require "#{dir}/hyperarchy/helpers"
 require "#{dir}/hyperarchy/models"
 require "#{dir}/hyperarchy/views"
 require "#{dir}/hyperarchy/app"
+require "#{dir}/hyperarchy/scheduler"
 
 require "newrelic_rpm"
 
