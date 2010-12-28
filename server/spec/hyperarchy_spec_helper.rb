@@ -89,7 +89,7 @@ class RackExampleGroup < Spec::Example::ExampleGroup
   end
 
   def current_user
-    @last_request ? warden.user : @current_user
+    current_session.has_request?? warden.user : @current_user
   end
 
   def login_as(user, opts={})
@@ -102,6 +102,18 @@ end
 class Rack::MockResponse
   def body_from_json
     JSON.parse(body)
+  end
+end
+
+class Rack::Test::Session
+  def has_request?
+    @rack_mock_session.has_request?
+  end
+end
+
+class Rack::MockSession
+  def has_request?
+    !@last_request.nil?
   end
 end
 
