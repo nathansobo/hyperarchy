@@ -21,6 +21,10 @@ module Models
         election = Election.make
         election.creator.should == current_user
       end
+
+      it "assigns a score" do
+        election.score.should_not be_nil
+      end
     end
 
     describe "after create" do
@@ -53,6 +57,15 @@ module Models
       end
     end
 
+    describe "before update" do
+      it "updates the score if the vote count changed" do
+        score_before = election.score
+        election.vote_count += 1
+        election.save
+        election.score.should be > score_before
+      end
+    end
+
     describe "before destroy" do
       it "destroys any candidates, votes and visits that belong to the election" do
         election = Election.make
@@ -72,8 +85,6 @@ module Models
         election.candidates.should be_empty
         election.votes.should be_empty
         election.election_visits.should be_empty
-
-
       end
     end
 

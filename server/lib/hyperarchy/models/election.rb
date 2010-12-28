@@ -18,6 +18,23 @@ class Election < Monarch::Model::Record
 
   attr_accessor :suppress_notification_email
 
+  class << self
+    def update_scores
+      Origin.connection.execute(%{
+        update elections set score = ((vote_count + #{SCORE_EXTRA_HOURS}) / pow((extract(epoch from (now() - created_at)) / 3600) + 2, 1.8))
+      })
+    end
+
+    def compute_score(vote_count, age_in_hours)
+      (vote_count + SCORE_EXTRA_HOURS) / ((age_in_hours + SCORE_EXTRA_HOURS) ** SCORE_GRAVITY)
+    end
+  end
+
+  SCORE_EXTRA_VOTES = 1
+  SCORE_EXTRA_HOURS = 2
+  SCORE_GRAVITY = 1.8
+  INITIAL_SCORE = compute_score(0, 0)
+
   def can_create?
     current_user.admin? || organization.has_member?(current_user)
   end
@@ -42,6 +59,11 @@ class Election < Monarch::Model::Record
 
   def before_create
     self.creator ||= current_user
+    self.score = INITIAL_SCORE
+  end
+
+  def before_update(changeset)
+    self.score = compute_score if changeset[:vote_count]
   end
 
   def after_create
@@ -137,5 +159,13 @@ Or just reply with 'unsubscribe' to this email.
     candidates.
       join_to(rankings).
       project(Candidate)
+  end
+
+  def compute_score
+    self.class.compute_score(vote_count, age_in_hours)
+  end
+
+  def age_in_hours
+    (Time.now.to_i - created_at.to_i) / 3600
   end
 end
