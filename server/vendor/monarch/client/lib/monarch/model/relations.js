@@ -9,5 +9,7 @@
 //= require "relations/table_projection"
 //= require "relations/union"
 //= require "relations/difference"
+//= require "relations/offset"
+//= require "relations/limit"
 
 })(Monarch);

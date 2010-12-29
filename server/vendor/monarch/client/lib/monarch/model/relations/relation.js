@@ -113,6 +113,10 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return new Monarch.Model.Relations.Union(this, rightOperand);
   },
 
+  offset: function(n) {
+    return new Monarch.Model.Relations.Offset(this, n);
+  },
+
   tuples: function() {
     return this.localTuples();
   },
@@ -280,7 +284,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
   contains: function(record) {
     var tuples = this.tuples();
     for(var i = 0; i < tuples.length; i++) {
-      if (tuples[i] == record) return true;
+      if (tuples[i] === record) return true;
     }
     return false;
   },
