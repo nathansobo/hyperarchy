@@ -9,7 +9,7 @@ _.constructor("Organization", Model.Record, {
         useSsl: 'boolean'
       });
 
-      this.hasMany("elections", {orderBy: "updatedAt desc"});
+      this.hasMany("elections");
       this.relatesToMany("candidates", function() {
         return this.elections().joinThrough(Candidate);
       });
