@@ -280,10 +280,15 @@ _.constructor("Monarch.Model.Relations.Relation", {
     this.onLocalUpdateNode.publish(record, updateData);
   },
 
-  tupleRemovedRemotely: function(record) {
+  tupleRemovedRemotely: function(record, index) {
     var position = _.indexOf(this._tuples, record);
     this._tuples.splice(position, 1);
-    this.onRemoteRemoveNode.publish(record);
+
+    if (arguments.length === 2) {
+      this.onRemoteRemoveNode.publish(record, index);
+    } else {
+      this.onRemoteRemoveNode.publish(record);
+    }
   },
 
   contains: function(record) {

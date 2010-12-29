@@ -28,7 +28,25 @@ _.constructor("Monarch.Model.Relations.Offset", Monarch.Model.Relations.Relation
         this.tupleInsertedRemotely(record, index - this.n);
       }
     }, this));
+
+    this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(record, changeset, newIndex, oldIndex) {
+      if (oldIndex < this.n) {
+        if (newIndex >= this.n) {
+          this.tupleRemovedRemotely(this.operand.at(this.n - 1), 0);
+          this.tupleInsertedRemotely(record, newIndex - this.n);
+        }
+      } else {
+        if (newIndex < this.n) {
+          this.tupleRemovedRemotely(record, oldIndex - this.n);
+          this.tupleInsertedRemotely(this.operand.at(this.n), 0);
+        } else {
+          this.tupleUpdatedRemotely(record, changeset, newIndex - this.n, oldIndex - this.n);
+        }
+      }
+
+    }, this));
   }
+
 
 });
 

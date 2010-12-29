@@ -76,16 +76,16 @@ Screw.Unit(function(c) { with(c) {
 
 
       describe("when a record is inserted into operand remotely", function() {
-        describe("when the record's index is less than #n", function() {
-          describe("when the operand has #n or more records", function() {
-            it("fires an insert event with the record whose index is now #n", function() {
+        describe("when the record's index is less than n", function() {
+          describe("when the operand has n or more records", function() {
+            it("fires an insert event with the record whose index is now n", function() {
               BlogPost.createFromRemote({id: 0});
               expect(insertCallback).to(haveBeenCalled, withArgs(post2, 0));
             });
           });
 
-          describe("when the operand has less than #n records", function() {
-            it("does not fire any event handlers, because no records have an index >= #n", function() {
+          describe("when the operand has less than n records", function() {
+            it("does not fire any event handlers, because no records have an index >= n", function() {
               post2.remotelyDestroyed();
               post3.remotelyDestroyed();
               post4.remotelyDestroyed();
@@ -96,7 +96,7 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        describe("when the record's index is greater than #n", function() {
+        describe("when the record's index is greater than n", function() {
           it("fires an insert event with the inserted record", function() {
             var record = BlogPost.createFromRemote({id: 5});
             expect(insertCallback).to(haveBeenCalled, withArgs(record, 2));
@@ -105,7 +105,45 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("when a record is updated in the operand remotely", function() {
+        describe("when the updated record's index was < n before the update", function() {
+          describe("when the updated record's index is >= n after the update", function() {
+            it("fires an insert event for the updated record and a remove event for the record whose index was n and is now n - 1", function() {
+              post1.remotelyUpdated({id: 3.5});
+              expect(removeCallback).to(haveBeenCalled, withArgs(post3, 0));
+              expect(insertCallback).to(haveBeenCalled, withArgs(post1, 0));
+            });
+          });
+          
+          describe("when the updated record's index remains < n after the update", function() {
+            it("fires no events", function() {
+              post1.remotelyUpdated({id: 2.5});
+              expect(removeCallback).toNot(haveBeenCalled);
+              expect(updateCallback).toNot(haveBeenCalled);
+              expect(insertCallback).toNot(haveBeenCalled);
+            });
+          });
+        });
         
+        describe("when the record's index was >= n before the update", function() {
+          describe("when the record's index is < n after the update", function() {
+            it("fires a remove event for the updated record and an insert event for the record whose index was n - 1 and is now n", function() {
+              post4.remotelyUpdated({id: 1.5});
+              expect(insertCallback).to(haveBeenCalled, withArgs(post2, 0));
+              expect(removeCallback).to(haveBeenCalled, withArgs(post4, 1));
+            });
+          });
+          
+          describe("when the record's index remains >= n after the update", function() {
+            it("fires an update event for the updated record", function() {
+              post3.remotelyUpdated({id: 5});
+              expect(updateCallback).to(haveBeenCalled, 1);
+              expect(updateCallback.mostRecentArgs[0]).to(eq, post3);
+              expect(updateCallback.mostRecentArgs[1].id).toNot(beNull);
+              expect(updateCallback.mostRecentArgs[2]).to(eq, 1);
+              expect(updateCallback.mostRecentArgs[3]).to(eq, 0);
+            });
+          });
+        });
       });
 
       describe("", function() {
