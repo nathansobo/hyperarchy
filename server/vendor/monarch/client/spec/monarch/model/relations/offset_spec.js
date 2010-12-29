@@ -80,7 +80,7 @@ Screw.Unit(function(c) { with(c) {
           describe("when the operand has #n or more records", function() {
             it("fires an insert event with the record whose index is now #n", function() {
               BlogPost.createFromRemote({id: 0});
-              expect(insertCallback).to(haveBeenCalled, withArgs(post2));
+              expect(insertCallback).to(haveBeenCalled, withArgs(post2, 0));
             });
           });
 
@@ -99,11 +99,18 @@ Screw.Unit(function(c) { with(c) {
         describe("when the record's index is greater than #n", function() {
           it("fires an insert event with the inserted record", function() {
             var record = BlogPost.createFromRemote({id: 5});
-            expect(insertCallback).to(haveBeenCalled, withArgs(record));
+            expect(insertCallback).to(haveBeenCalled, withArgs(record, 2));
           });
         });
       });
 
+      describe("when a record is updated in the operand remotely", function() {
+        
+      });
+
+      describe("", function() {
+
+      });
     });
 
     describe("subscription propagation", function() {

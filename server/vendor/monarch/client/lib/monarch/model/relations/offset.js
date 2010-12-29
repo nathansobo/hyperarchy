@@ -23,9 +23,9 @@ _.constructor("Monarch.Model.Relations.Offset", Monarch.Model.Relations.Relation
     this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(record, index) {
       if (index < this.n) {
         var nthTuple = this.operand.at(this.n);
-        if (nthTuple) this.tupleInsertedRemotely(nthTuple);
+        if (nthTuple) this.tupleInsertedRemotely(nthTuple, 0);
       } else {
-        this.tupleInsertedRemotely(record);
+        this.tupleInsertedRemotely(record, index - this.n);
       }
     }, this));
   }

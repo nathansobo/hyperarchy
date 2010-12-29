@@ -60,9 +60,9 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
   // private
 
   tupleInsertedRemotely: function(tuple) {
-    var position = _.comparatorSortedIndex(this._tuples, tuple, this.comparator);
-    this._tuples.splice(position, 0, tuple);
-    this.onRemoteInsertNode.publish(tuple, position);
+    var index = _.comparatorSortedIndex(this._tuples, tuple, this.comparator);
+    this._tuples.splice(index, 0, tuple);
+    this.onRemoteInsertNode.publish(tuple, index);
   },
 
   tupleUpdatedRemotely: function($super, tuple, changedFields) {

@@ -256,11 +256,16 @@ _.constructor("Monarch.Model.Relations.Relation", {
     this._tuples = this.tuples();
   },
 
-  tupleInsertedRemotely: function(record) {
+  tupleInsertedRemotely: function(record, index) {
     if (!this.contains(record)) {
       this._tuples.push(record)
     }
-    this.onRemoteInsertNode.publish(record);
+
+    if (arguments.length === 2) {
+      this.onRemoteInsertNode.publish(record, index);
+    } else {
+      this.onRemoteInsertNode.publish(record);
+    }
   },
 
   tupleUpdatedRemotely: function(record, updateData, newIndex, oldIndex) {
