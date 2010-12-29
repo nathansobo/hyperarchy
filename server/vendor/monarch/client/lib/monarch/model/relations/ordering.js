@@ -70,7 +70,10 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
     var positionMayChange = _.any(changedFields, function(changedField) {
       return this.sortingOnColumn(changedField.column);
     }, this);
-    if (!positionMayChange) $super(tuple, changedFields, currentPosition, currentPosition);
+    if (!positionMayChange) {
+      $super(tuple, changedFields, currentPosition, currentPosition);
+      return;
+    }
 
     this._tuples.splice(currentPosition, 1);
     var newPosition = _.comparatorSortedIndex(this._tuples, tuple, this.comparator);
