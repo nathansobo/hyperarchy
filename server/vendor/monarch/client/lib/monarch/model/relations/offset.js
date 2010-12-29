@@ -43,7 +43,16 @@ _.constructor("Monarch.Model.Relations.Offset", Monarch.Model.Relations.Relation
           this.tupleUpdatedRemotely(record, changeset, newIndex - this.n, oldIndex - this.n);
         }
       }
+    }, this));
 
+
+    this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(record, index) {
+      if (index < this.n) {
+        var formerNthTuple = this.operand.at(this.n - 1);
+        if (formerNthTuple) this.tupleRemovedRemotely(formerNthTuple, 0);
+      } else {
+        this.tupleRemovedRemotely(record, index - this.n);
+      }
     }, this));
   }
 

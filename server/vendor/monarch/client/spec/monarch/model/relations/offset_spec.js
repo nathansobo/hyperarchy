@@ -146,8 +146,35 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
-      describe("", function() {
+      describe("when a record is removed from the operand", function() {
+        describe("when the removed record's index is < n>", function() {
+          describe("when there are more than n records in the operand", function() {
+            it("fires a remove event for the former first record in the offset", function() {
+              post2.remotelyDestroyed();
+              expect(removeCallback).to(haveBeenCalled, withArgs(post3, 0));
+            });
+          });
 
+          describe("when there are <= n records in the operand", function() {
+            it("doesn't fire any event handlers", function() {
+              post3.remotelyDestroyed();
+              post4.remotelyDestroyed();
+
+              removeCallback.clear();
+
+              post1.remotelyDestroyed();
+              expect(removeCallback).toNot(haveBeenCalled);
+            });
+          });
+
+        });
+
+        describe("when the removed record's index is >= n", function() {
+          it("fires a remove event for the removed record", function() {
+            post4.remotelyDestroyed();
+            expect(removeCallback).to(haveBeenCalled, withArgs(post4, 1));
+          });
+        });
       });
     });
 
