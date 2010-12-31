@@ -1,5 +1,7 @@
 _.mixin({
   remove: function(array, element) {
+    console.debug("remove called", _.clone(array), element);
+
     var recordIndex = _.indexOf(array, element);
     if (recordIndex == -1) return null;
     array.splice(recordIndex, 1);
