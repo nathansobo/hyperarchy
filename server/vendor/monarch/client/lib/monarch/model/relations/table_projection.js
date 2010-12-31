@@ -39,12 +39,12 @@ _.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations
   // private
 
   subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(compositeTuple) {
+    this.operandsSubscriptionBundle.add(this.operand.onInsert(function(compositeTuple) {
       var tuple = compositeTuple.record(this.projectedTable);
       if (!this.contains(tuple)) this.tupleInsertedRemotely(tuple);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(compositeTuple, changeset) {
+    this.operandsSubscriptionBundle.add(this.operand.onUpdate(function(compositeTuple, changeset) {
       var updatedColumnInProjectedTable = _.detect(changeset, function(change) {
         return change.column.table == this.projectedTable;
       }, this);
@@ -56,7 +56,7 @@ _.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations
       }
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(compositeTuple) {
+    this.operandsSubscriptionBundle.add(this.operand.onRemove(function(compositeTuple) {
       var tuple = compositeTuple.record(this.projectedTable);
       if (!this.operand.find(this.projectedTable.column('id').eq(tuple.id()))) {
         this.tupleRemovedRemotely(tuple);

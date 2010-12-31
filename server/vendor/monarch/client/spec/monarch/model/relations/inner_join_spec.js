@@ -79,45 +79,45 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#onRemoteInsert", function() {
-      it("returns a Monarch.Subscription with #onRemoteInsertNode as its #node", function() {
-        var subscription = join.onRemoteInsert(function() {});
-        expect(subscription.node).to(eq, join.onRemoteInsertNode);
+    describe("#onInsert", function() {
+      it("returns a Monarch.Subscription with #onInsertNode as its #node", function() {
+        var subscription = join.onInsert(function() {});
+        expect(subscription.node).to(eq, join.onInsertNode);
       });
     });
 
-    describe("#onRemoteUpdate", function() {
-      it("returns a Monarch.Subscription with #onRemoteUpdateNode as its #node", function() {
-        var subscription = join.onRemoteUpdate(function() {});
-        expect(subscription.node).to(eq, join.onRemoteUpdateNode);
+    describe("#onUpdate", function() {
+      it("returns a Monarch.Subscription with #onUpdateNode as its #node", function() {
+        var subscription = join.onUpdate(function() {});
+        expect(subscription.node).to(eq, join.onUpdateNode);
       });
     });
 
-    describe("#onRemoteRemove", function() {
-      it("returns a Monarch.Subscription with #onRemoteRemoveNode as its #node", function() {
-        var subscription = join.onRemoteRemove(function() {});
-        expect(subscription.node).to(eq, join.onRemoteRemoveNode);
+    describe("#onRemove", function() {
+      it("returns a Monarch.Subscription with #onRemoveNode as its #node", function() {
+        var subscription = join.onRemove(function() {});
+        expect(subscription.node).to(eq, join.onRemoveNode);
       });
     });
 
     describe("#hasSubscribers", function() {
-      context("if a callback has been registered with #onRemoteInsert", function() {
+      context("if a callback has been registered with #onInsert", function() {
         it("returns true", function() {
-          join.onRemoteInsert(function() {});
+          join.onInsert(function() {});
           expect(join.hasSubscribers()).to(beTrue);
         });
       });
 
-      context("if a callback has been registered with #onRemoteRemove", function() {
+      context("if a callback has been registered with #onRemove", function() {
         it("returns true", function() {
-          join.onRemoteRemove(function() {});
+          join.onRemove(function() {});
           expect(join.hasSubscribers()).to(beTrue);
         });
       });
 
-      context("if a callback has been registered with #onRemoteUpdate", function() {
+      context("if a callback has been registered with #onUpdate", function() {
         it("returns true", function() {
-          join.onRemoteUpdate(function() {});
+          join.onUpdate(function() {});
           expect(join.hasSubscribers()).to(beTrue);
         });
       });
@@ -133,17 +133,17 @@ Screw.Unit(function(c) { with(c) {
       var insertHandler, removeHandler, updateHandler;
       before(function() {
         insertHandler = mockFunction("insert handler");
-        join.onRemoteInsert(insertHandler, function(compositeTuple) {
+        join.onInsert(insertHandler, function(compositeTuple) {
           expect(join.contains(compositeTuple)).to(beTrue);
         });
 
         removeHandler = mockFunction("remove handler");
-        join.onRemoteRemove(removeHandler, function(compositeTuple) {
+        join.onRemove(removeHandler, function(compositeTuple) {
           expect(join.contains(compositeTuple)).to(beFalse);
         });
 
         updateHandler = mockFunction("update handler");
-        join.onRemoteUpdate(updateHandler, function(compositeTuple) {
+        join.onUpdate(updateHandler, function(compositeTuple) {
           expect(join.contains(compositeTuple)).to(beTrue);
         });
       });
@@ -151,7 +151,7 @@ Screw.Unit(function(c) { with(c) {
       describe("insertion events on operands", function() {
         context("when a tuple is inserted into the left operand", function() {
           context("when the insertion causes #carteseanProduct to contain a new CompositeTuple that matches the predicate", function() {
-            it("triggers #onRemoteInsert handlers with the new CompositeTuple", function() {
+            it("triggers #onInsert handlers with the new CompositeTuple", function() {
               var blogPost = BlogPost.createFromRemote({ id: 'fofo', blogId: 'blog3'});
 
               var blog = user.blogs().createFromRemote({id: "blog3"})
@@ -163,7 +163,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when the insertion does NOT cause #carteseanProduct to contain a new CompositeTuple that matches the predicate", function() {
-            it("does not trigger #onRemoteInsert handlers or modify the contents of join", function() {
+            it("does not trigger #onInsert handlers or modify the contents of join", function() {
               var sizeBeforeBlogCreate = join.size();
               user.blogs().create().afterEvents(function() {
                 expect(insertHandler).toNot(haveBeenCalled);
@@ -175,7 +175,7 @@ Screw.Unit(function(c) { with(c) {
 
         context("when a tuple is inserted into the right operand", function() {
           context("when the insertion causes #carteseanProduct to contain a new CompositeTuple that matches the predicate", function() {
-            it("triggers #onRemoteInsert handlers with the new CompositeTuple", function() {
+            it("triggers #onInsert handlers with the new CompositeTuple", function() {
               blog1.blogPosts().create().afterEvents(function(blogPost) {
                 expect(insertHandler).to(haveBeenCalled, once);
                 var compositeTuple = insertHandler.mostRecentArgs[0];
@@ -186,7 +186,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when the insertion does NOT cause #carteseanProduct to contain a new CompositeTuple that matches the predicate", function() {
-            it("does not trigger #onRemoteInsert handlers", function() {
+            it("does not trigger #onInsert handlers", function() {
               BlogPost.create();
               expect(insertHandler).toNot(haveBeenCalled);
             });
@@ -203,7 +203,7 @@ Screw.Unit(function(c) { with(c) {
       describe("removal events on operands", function() {
         context("when a tuple is removed from the left operand", function() {
           context("when the removal causes the removal of a CompositeTuple from #carteseanProduct that matched #predicate", function() {
-            it("triggers #onRemoteRemove handlers with the removed CompositeTuple", function() {
+            it("triggers #onRemove handlers with the removed CompositeTuple", function() {
               blog2.destroy();
 
               expect(removeHandler).to(haveBeenCalled, once);
@@ -214,7 +214,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when the removal does not cause the removal of any CompositeTuples from #carteseanProduct that match #predicate", function() {
-            it("does not trigger #onRemoteRemove handlers or modify the contents of the relation", function() {
+            it("does not trigger #onRemove handlers or modify the contents of the relation", function() {
               var sizeBefore = join.size();
               user.blogs().create().afterEvents(function(blog) {
                 blog.destroy();
@@ -227,7 +227,7 @@ Screw.Unit(function(c) { with(c) {
 
         context("when a tuple is removed from the right operand", function() {
           context("when the removal causes the removal of a CompositeTuple from #carteseanProduct that matched #predicate", function() {
-            it("triggers #onRemoteRemove handlers with the removed CompositeTuple", function() {
+            it("triggers #onRemove handlers with the removed CompositeTuple", function() {
               post3.destroy();
               expect(removeHandler).to(haveBeenCalled, once);
               var removedCompositeTuple = removeHandler.mostRecentArgs[0];
@@ -237,7 +237,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when the removal does not cause the removal of any CompositeTuples from #carteseanProduct that match #predicate", function() {
-            it("does not trigger #onRemoteRemove handlers or modify the contents of the relation", function() {
+            it("does not trigger #onRemove handlers or modify the contents of the relation", function() {
               var sizeBefore = join.size();
               BlogPost.create().afterEvents(function(post) {
                 post.destroy();
@@ -253,7 +253,7 @@ Screw.Unit(function(c) { with(c) {
         context("when a tuple is updated in the left operand", function() {
           context("when the updated tuple is the #left component of a CompositeTuple that is a member of #all before the update", function() {
             context("when the CompositeTuple continues to match #predicate after the update", function() {
-              it("triggers only #onRemoteUpdate handlers with the updated CompositeTuple and a changed attributes object and does not modify the contents of the relation", function() {
+              it("triggers only #onUpdate handlers with the updated CompositeTuple and a changed attributes object and does not modify the contents of the relation", function() {
                 var sizeBefore = join.size();
 
                 var oldValue = blog2.name();
@@ -279,7 +279,7 @@ Screw.Unit(function(c) { with(c) {
             });
 
             context("when the CompositeTuple no longer matches #predicate after the update", function() {
-              it("triggers only #onRemoteRemove handlers with the updated CompositeTuple", function() {
+              it("triggers only #onRemove handlers with the updated CompositeTuple", function() {
                 blog2.update({id: "booboo"});
                 expect(removeHandler).to(haveBeenCalled, once);
                 expect(removeHandler.mostRecentArgs[0].leftTuple).to(eq, blog2);
@@ -292,7 +292,7 @@ Screw.Unit(function(c) { with(c) {
 
           context("when the updated tuple is not a component of a CompositeTuple that is a member of the relation before the update", function() {
             context("when the update causes #carteseanProduct to contain a CompositeTuple that matches #predicate", function() {
-              it("triggers only the #onRemoteInsert handlers with the updated CompositeTuple", function() {
+              it("triggers only the #onInsert handlers with the updated CompositeTuple", function() {
                 var blog = user.blogs().createFromRemote({id: 'junky'});
                 var blogPost = BlogPost.createFromRemote({blogId: 'nice'});
 
@@ -324,7 +324,7 @@ Screw.Unit(function(c) { with(c) {
         context("when a tuple is updated in the right operand", function() {
           context("when the updated tuple is the #right component of a CompositeTuple that is a member of the relation before the update", function() {
             context("when the CompositeTuple continues to match #predicate after the update", function() {
-              it("triggers only #onRemoteUpdate handlers with the updated CompositeTuple and does not modify the contents of the relation", function() {
+              it("triggers only #onUpdate handlers with the updated CompositeTuple and does not modify the contents of the relation", function() {
                 var sizeBefore = join.size();
 
                 var oldValue = post3.body();
@@ -349,7 +349,7 @@ Screw.Unit(function(c) { with(c) {
             });
 
             context("when the CompositeTuple no longer matches #predicate after the update", function() {
-              it("triggers only #onRemoteRemove handlers with the updated CompositeTuple", function() {
+              it("triggers only #onRemove handlers with the updated CompositeTuple", function() {
                 post3.update({blogId: 'guns'});
 
                 expect(removeHandler).to(haveBeenCalled, once);
@@ -370,7 +370,7 @@ Screw.Unit(function(c) { with(c) {
             });
 
             context("when the update causes #carteseanProduct to contain a composite tuple that matches #predicate", function() {
-              it("triggers only #onRemoteInsert handlers with the new CompositeTuple", function() {
+              it("triggers only #onInsert handlers with the new CompositeTuple", function() {
                 post.update({blogId: "blog2"});
 
                 expect(insertHandler).to(haveBeenCalled, once);
@@ -395,7 +395,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         context("when a tuple is updated in a way that should insert one CompositeTuple and remove another", function() {
-          it("fires #onRemoteInsert handlers for the inserted tuple and #onRemoteRemove handlers for the removed one", function() {
+          it("fires #onInsert handlers for the inserted tuple and #onRemove handlers for the removed one", function() {
             post3.update({blogId: 'blog1'});
 
             expect(insertHandler).to(haveBeenCalled, once);
@@ -419,21 +419,21 @@ Screw.Unit(function(c) { with(c) {
       describe("when a Monarch.Subscription is registered for the Selection, destroyed, and another Monarch.Subscription is registered", function() {
         var eventType;
 
-        scenario("for onRemoteInsert callbacks", function() {
+        scenario("for onInsert callbacks", function() {
           init(function() {
-            eventType = "onRemoteInsert";
+            eventType = "onInsert";
           });
         });
 
-        scenario("for onRemoteUpdate callbacks", function() {
+        scenario("for onUpdate callbacks", function() {
           init(function() {
-            eventType = "onRemoteUpdate";
+            eventType = "onUpdate";
           });
         });
 
-        scenario("for onRemoteRemove callbacks", function() {
+        scenario("for onRemove callbacks", function() {
           init(function() {
-            eventType = "onRemoteRemove";
+            eventType = "onRemove";
           });
         });
 
@@ -456,7 +456,7 @@ Screw.Unit(function(c) { with(c) {
           expect(rightOperand.hasSubscribers()).to(beFalse);
           expect(join._tuples).to(beNull);
 
-          join.onRemoteUpdate(function() {});
+          join.onUpdate(function() {});
 
           expect(leftOperand.hasSubscribers()).to(beTrue);
           expect(rightOperand.hasSubscribers()).to(beTrue);

@@ -25,7 +25,7 @@ _.constructor("Views.ElectionLi", View.Template, {
               });
             }});
           },
-          onRemoteUpdate: function(li, record, changes, index) {
+          onUpdate: function(li, record, changes, index) {
             if (changes.body) li.find('.candidateBody').html(changes.body.newValue);
           },
           updateIndex: function(li, index) {

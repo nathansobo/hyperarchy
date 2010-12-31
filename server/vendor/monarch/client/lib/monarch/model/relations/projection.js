@@ -35,17 +35,17 @@ _.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relations.Rela
   // private
 
   subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(operandRecord) {
+    this.operandsSubscriptionBundle.add(this.operand.onInsert(function(operandRecord) {
       var record = new this.tupleConstructor(operandRecord);
       this.tuplesByOperandRecordId[operandRecord.id()] = record;
       this.tupleInsertedRemotely(record);
     }, this));
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(operandRecord, operandChanges) {
+    this.operandsSubscriptionBundle.add(this.operand.onUpdate(function(operandRecord, operandChanges) {
       var changes = this.translateUpdateChanges(operandChanges);
       if (_.isEmpty(changes)) return;
       this.tupleUpdatedRemotely(this.tuplesByOperandRecordId[operandRecord.id()], changes);
     }, this));
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(operandRecord) {
+    this.operandsSubscriptionBundle.add(this.operand.onRemove(function(operandRecord) {
       this.tupleRemovedRemotely(this.tuplesByOperandRecordId[operandRecord.id()]);
     }, this));
   },

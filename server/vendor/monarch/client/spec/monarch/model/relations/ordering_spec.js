@@ -47,19 +47,19 @@ Screw.Unit(function(c) { with(c) {
         insertCallback = mockFunction("insert callback", function(record) {
           expect(ordering.contains(record)).to(beTrue);
         });
-        ordering.onRemoteInsert(insertCallback);
+        ordering.onInsert(insertCallback);
 
         removeCallback = mockFunction("remove callback", function(record) {
           expect(ordering.contains(record)).to(beFalse);
         });
-        ordering.onRemoteRemove(removeCallback);
+        ordering.onRemove(removeCallback);
 
         updateCallback = mockFunction("update callback");
-        ordering.onRemoteUpdate(updateCallback);
+        ordering.onUpdate(updateCallback);
       });
 
       describe("when a tuple is remotely inserted into the operand", function() {
-        it("triggers #onRemoteInsert callbacks with the inserted tuple and its index", function() {
+        it("triggers #onInsert callbacks with the inserted tuple and its index", function() {
           var record = User.createFromRemote({id: 5, age: 2, fullName: "D"});
           expect(insertCallback).to(haveBeenCalled, withArgs(record, 3));
           expect(ordering._tuples[3]).to(eq, record);
@@ -67,7 +67,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("when a tuple is remotely updated in the operand", function() {
-        it("triggers #onRemoteUpdate callbacks with the updated tuple and its new and old index in the ordering", function() {
+        it("triggers #onUpdate callbacks with the updated tuple and its new and old index in the ordering", function() {
           var tuplesLengthBefore = ordering._tuples.length;
 
           user3.update({age: 20000});
@@ -98,7 +98,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("when a tuple is removed from the operand", function() {
-        it("triggers #onRemoteRemove callbacks with the removed tuple and its former index", function() {
+        it("triggers #onRemove callbacks with the removed tuple and its former index", function() {
           user2.remotelyDestroyed();
           expect(removeCallback).to(haveBeenCalled, withArgs(user2, 1));
         });

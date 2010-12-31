@@ -62,7 +62,7 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
   tupleInsertedRemotely: function(tuple) {
     var position = _.comparatorSortedIndex(this._tuples, tuple, this.comparator);
     this._tuples.splice(position, 0, tuple);
-    this.onRemoteInsertNode.publish(tuple, position);
+    this.onInsertNode.publish(tuple, position);
   },
 
   tupleUpdatedRemotely: function($super, tuple, changedFields) {
@@ -84,7 +84,7 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
   tupleRemovedRemotely: function(record) {
     var position = _.indexOf(this._tuples, record);
     this._tuples.splice(position, 1);
-    this.onRemoteRemoveNode.publish(record, position);
+    this.onRemoveNode.publish(record, position);
   },
 
   sortingOnColumn: function(column) {
@@ -94,15 +94,15 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
   },
 
   subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(record) {
+    this.operandsSubscriptionBundle.add(this.operand.onInsert(function(record) {
       this.tupleInsertedRemotely(record);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(record) {
+    this.operandsSubscriptionBundle.add(this.operand.onRemove(function(record) {
       this.tupleRemovedRemotely(record);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(record, changedFields) {
+    this.operandsSubscriptionBundle.add(this.operand.onUpdate(function(record, changedFields) {
       this.tupleUpdatedRemotely(record, changedFields);
     }, this));
 

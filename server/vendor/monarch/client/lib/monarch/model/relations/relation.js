@@ -6,9 +6,9 @@ _.constructor("Monarch.Model.Relations.Relation", {
 
   initializeEventsSystem: function() {
     this.onLocalUpdateNode = new Monarch.SubscriptionNode();
-    this.onRemoteInsertNode = new Monarch.SubscriptionNode();
-    this.onRemoteUpdateNode = new Monarch.SubscriptionNode();
-    this.onRemoteRemoveNode = new Monarch.SubscriptionNode();
+    this.onInsertNode = new Monarch.SubscriptionNode();
+    this.onUpdateNode = new Monarch.SubscriptionNode();
+    this.onRemoveNode = new Monarch.SubscriptionNode();
     this.onDirtyNode = new Monarch.SubscriptionNode();
     this.onCleanNode = new Monarch.SubscriptionNode();
     this.onInvalidNode = new Monarch.SubscriptionNode();
@@ -129,7 +129,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
 
   onEach: function(fn, context) {
     this.each(fn, context);
-    return this.onRemoteInsert(fn, context);
+    return this.onInsert(fn, context);
   },
 
   map: function(fn, context) {
@@ -174,19 +174,19 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return this.onLocalUpdateNode.subscribe(callback, context);
   },
 
-  onRemoteInsert: function(callback, context) {
+  onInsert: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onRemoteInsertNode.subscribe(callback, context);
+    return this.onInsertNode.subscribe(callback, context);
   },
 
-  onRemoteUpdate: function(callback, context) {
+  onUpdate: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onRemoteUpdateNode.subscribe(callback, context);
+    return this.onUpdateNode.subscribe(callback, context);
   },
 
-  onRemoteRemove: function(callback, context) {
+  onRemove: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onRemoteRemoveNode.subscribe(callback, context);
+    return this.onRemoveNode.subscribe(callback, context);
   },
 
   onDirty: function(callback, context) {
@@ -226,8 +226,8 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   hasSubscribers: function() {
-    return !(this.onRemoteInsertNode.empty() && this.onRemoteRemoveNode.empty()
-        && this.onRemoteUpdateNode.empty() && this.onDirtyNode.empty() && this.onCleanNode.empty());
+    return !(this.onInsertNode.empty() && this.onRemoveNode.empty()
+        && this.onUpdateNode.empty() && this.onDirtyNode.empty() && this.onCleanNode.empty());
   },
 
   fetch: function() {
@@ -246,14 +246,14 @@ _.constructor("Monarch.Model.Relations.Relation", {
     if (!this.contains(record)) {
       this._tuples.push(record)
     }
-    this.onRemoteInsertNode.publish(record);
+    this.onInsertNode.publish(record);
   },
 
   tupleUpdatedRemotely: function(record, updateData, newIndex, oldIndex) {
     if (newIndex === undefined) {
-      this.onRemoteUpdateNode.publish(record, updateData);
+      this.onUpdateNode.publish(record, updateData);
     } else {
-      this.onRemoteUpdateNode.publish(record, updateData, newIndex, oldIndex);
+      this.onUpdateNode.publish(record, updateData, newIndex, oldIndex);
     }
   },
 
@@ -264,7 +264,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
   tupleRemovedRemotely: function(record) {
     var position = _.indexOf(this._tuples, record);
     this._tuples.splice(position, 1);
-    this.onRemoteRemoveNode.publish(record);
+    this.onRemoveNode.publish(record);
   },
 
   contains: function(record) {
@@ -287,9 +287,9 @@ _.constructor("Monarch.Model.Relations.Relation", {
        if (!this.hasSubscribers()) this.unsubscribeFromOperands();
     }, this);
 
-    this.onRemoteInsertNode.onUnsubscribe(unsubscribeCallback);
-    this.onRemoteRemoveNode.onUnsubscribe(unsubscribeCallback);
-    this.onRemoteUpdateNode.onUnsubscribe(unsubscribeCallback);
+    this.onInsertNode.onUnsubscribe(unsubscribeCallback);
+    this.onRemoveNode.onUnsubscribe(unsubscribeCallback);
+    this.onUpdateNode.onUnsubscribe(unsubscribeCallback);
     this.onDirtyNode.onUnsubscribe(unsubscribeCallback);
     this.onCleanNode.onUnsubscribe(unsubscribeCallback);
   },

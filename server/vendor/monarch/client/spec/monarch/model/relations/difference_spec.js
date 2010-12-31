@@ -41,9 +41,9 @@ Screw.Unit(function(c) { with(c) {
         insertCallback = mockFunction("insertCallback");
         updateCallback = mockFunction("updateCallback");
         removeCallback = mockFunction("removeCallback");
-        difference.onRemoteInsert(insertCallback);
-        difference.onRemoteUpdate(updateCallback);
-        difference.onRemoteRemove(removeCallback);
+        difference.onInsert(insertCallback);
+        difference.onUpdate(updateCallback);
+        difference.onRemove(removeCallback);
       });
 
       function expectNoCallbacksToHaveBeenCalled() {
@@ -180,21 +180,21 @@ Screw.Unit(function(c) { with(c) {
       describe("when a subscription is registered for the selection, destroyed, and another subscription is registered", function() {
         var eventType;
 
-        scenario("for onRemoteInsert callbacks", function() {
+        scenario("for onInsert callbacks", function() {
           init(function() {
-            eventType = "onRemoteInsert";
+            eventType = "onInsert";
           });
         });
 
-        scenario("for onRemoteUpdate callbacks", function() {
+        scenario("for onUpdate callbacks", function() {
           init(function() {
-            eventType = "onRemoteUpdate";
+            eventType = "onUpdate";
           });
         });
 
-        scenario("for onRemoteRemove callbacks", function() {
+        scenario("for onRemove callbacks", function() {
           init(function() {
-            eventType = "onRemoteRemove";
+            eventType = "onRemove";
           });
         });
 
@@ -215,7 +215,7 @@ Screw.Unit(function(c) { with(c) {
           expect(rightOperand.hasSubscribers()).to(beFalse);
           expect(difference.tuplesById).to(beNull);
 
-          difference.onRemoteUpdate(function() {});
+          difference.onUpdate(function() {});
 
           expect(rightOperand.hasSubscribers()).to(beTrue);
           expect(difference.tuplesById).toNot(beNull);
@@ -241,9 +241,9 @@ Screw.Unit(function(c) { with(c) {
         updateCallback = mockFunction('updateCallback');
         removeCallback = mockFunction('removeCallback');
 
-        difference.onRemoteInsert(insertCallback);
-        difference.onRemoteUpdate(updateCallback);
-        difference.onRemoteRemove(removeCallback);
+        difference.onInsert(insertCallback);
+        difference.onUpdate(updateCallback);
+        difference.onRemove(removeCallback);
       });
 
       after(function() {

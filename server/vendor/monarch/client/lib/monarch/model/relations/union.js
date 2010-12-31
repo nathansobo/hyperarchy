@@ -27,27 +27,27 @@ _.constructor("Monarch.Model.Relations.Union", Monarch.Model.Relations.Relation,
   
   // private
   subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteInsert(function(record) {
+    this.operandsSubscriptionBundle.add(this.leftOperand.onInsert(function(record) {
       if (!this.rightOperand.contains(record)) this.tupleInsertedRemotely(record);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteInsert(function(record) {
+    this.operandsSubscriptionBundle.add(this.rightOperand.onInsert(function(record) {
       if (!this.leftOperand.contains(record)) this.tupleInsertedRemotely(record);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteUpdate(function(record, changes) {
+    this.operandsSubscriptionBundle.add(this.leftOperand.onUpdate(function(record, changes) {
       if (this.contains(record)) this.tupleUpdatedRemotely(record, changes);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteUpdate(function(record, changes) {
+    this.operandsSubscriptionBundle.add(this.rightOperand.onUpdate(function(record, changes) {
       if (this.contains(record)) this.tupleUpdatedRemotely(record, changes);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteRemove(function(record) {
+    this.operandsSubscriptionBundle.add(this.leftOperand.onRemove(function(record) {
       if (!this.rightOperand.contains(record)) this.tupleRemovedRemotely(record);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteRemove(function(record) {
+    this.operandsSubscriptionBundle.add(this.rightOperand.onRemove(function(record) {
       if (!this.leftOperand.contains(record)) this.tupleRemovedRemotely(record);
     }, this));
   },

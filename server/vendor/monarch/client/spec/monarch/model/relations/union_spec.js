@@ -41,9 +41,9 @@ Screw.Unit(function(c) { with(c) {
         insertCallback = mockFunction("insertCallback");
         updateCallback = mockFunction("updateCallback");
         removeCallback = mockFunction("removeCallback");
-        union.onRemoteInsert(insertCallback);
-        union.onRemoteUpdate(updateCallback);
-        union.onRemoteRemove(removeCallback);
+        union.onInsert(insertCallback);
+        union.onUpdate(updateCallback);
+        union.onRemove(removeCallback);
       });
 
       function expectNoCallbacksToHaveBeenCalled() {

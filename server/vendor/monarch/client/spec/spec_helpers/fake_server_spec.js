@@ -42,7 +42,7 @@ Screw.Unit(function(c) { with(c) {
           expect(insertCallback).to(haveBeenCalled, twice);
         });
 
-        User.onRemoteInsert(insertCallback);
+        User.onInsert(insertCallback);
 
         expect(fakeServer.fetches).to(beEmpty);
         expect(User.find('sharon')).to(beNull);

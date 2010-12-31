@@ -15,11 +15,11 @@ _.constructor("Views.UnrankedCandidateLi", Views.CandidateLi, {
         this.candidateRankedIcon.show();
       }
 
-      rankingRelation.onRemoteInsert(function() {
+      rankingRelation.onInsert(function() {
         this.candidateRankedIcon.show();
       }, this);
 
-      rankingRelation.onRemoteRemove(function() {
+      rankingRelation.onRemove(function() {
         this.candidateRankedIcon.hide();
       }, this);
 

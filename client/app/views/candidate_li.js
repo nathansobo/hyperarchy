@@ -57,7 +57,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.assignBody(this.candidate.body());
       this.assignDetails(this.candidate.details());
 
-      this.subscriptions.add(this.candidate.onRemoteUpdate(function(changes) {
+      this.subscriptions.add(this.candidate.onUpdate(function(changes) {
         if (changes.body) {
           this.assignBody(changes.body.newValue);
         }

@@ -44,47 +44,47 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("delta event callback registration methods", function() {
-      describe("#onRemoteInsert(callback)", function() {
-        it("returns a Monarch.Subscription for the #onRemoteInsertNode", function() {
-          var subscription = User.table.onRemoteInsert(mockFunction);
-          expect(subscription.node).to(eq, User.table.onRemoteInsertNode);
+      describe("#onInsert(callback)", function() {
+        it("returns a Monarch.Subscription for the #onInsertNode", function() {
+          var subscription = User.table.onInsert(mockFunction);
+          expect(subscription.node).to(eq, User.table.onInsertNode);
         });
       });
 
-      describe("#onRemoteRemove(callback)", function() {
-        it("returns a Monarch.Subscription for the #onRemoteRemoveNode", function() {
-          var subscription = User.table.onRemoteRemove(function() {
+      describe("#onRemove(callback)", function() {
+        it("returns a Monarch.Subscription for the #onRemoveNode", function() {
+          var subscription = User.table.onRemove(function() {
           });
-          expect(subscription.node).to(eq, User.table.onRemoteRemoveNode);
+          expect(subscription.node).to(eq, User.table.onRemoveNode);
         });
       });
 
-      describe("#onRemoteUpdate(callback)", function() {
-        it("returns a Monarch.Subscription for the #onRemoteUpdateNode", function() {
-          var subscription = User.table.onRemoteUpdate(function() {
+      describe("#onUpdate(callback)", function() {
+        it("returns a Monarch.Subscription for the #onUpdateNode", function() {
+          var subscription = User.table.onUpdate(function() {
           });
-          expect(subscription.node).to(eq, User.table.onRemoteUpdateNode);
+          expect(subscription.node).to(eq, User.table.onUpdateNode);
         });
       });
     });
 
     describe("#hasSubscribers()", function() {
       context("if a callback has been registered", function() {
-        scenario("with #onRemoteInsert", function() {
+        scenario("with #onInsert", function() {
           before(function() {
-            User.table.onRemoteInsert(mockFunction());
+            User.table.onInsert(mockFunction());
           });
         });
 
-        scenario("with #onRemoteUpdate", function() {
+        scenario("with #onUpdate", function() {
           before(function() {
-            User.table.onRemoteUpdate(mockFunction());
+            User.table.onUpdate(mockFunction());
           });
         });
 
-        scenario("with #onRemoteRemove", function() {
+        scenario("with #onRemove", function() {
           before(function() {
-            User.table.onRemoteRemove(mockFunction());
+            User.table.onRemove(mockFunction());
           });
         });
 
@@ -116,9 +116,9 @@ Screw.Unit(function(c) { with(c) {
       useLocalFixtures();
 
       describe("when a Record is inserted into the Table", function() {
-        it("triggers #onRemoteInsert callbacks with the inserted record", function() {
+        it("triggers #onInsert callbacks with the inserted record", function() {
           var insertCallback = mockFunction("insert callback");
-          User.table.onRemoteInsert(insertCallback);
+          User.table.onInsert(insertCallback);
 
           User.create({id: "emma", fullName: "Emma Cunningham"})
             .afterEvents(function(record) {
@@ -129,9 +129,9 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("when a record in the Table is removed", function() {
-        it("triggers #onRemoteRemove callbacks with the removed record", function() {
+        it("triggers #onRemove callbacks with the removed record", function() {
           var removeCallback = mockFunction("remove callback");
-          User.table.onRemoteRemove(removeCallback);
+          User.table.onRemove(removeCallback);
 
           var record = User.fixture("jan");
           User.table.remove(record);
@@ -142,9 +142,9 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("when a record in the Table is updated", function() {
-        it("triggers #onRemoteUpdate callbacks with the updated record and a changed attributes object", function() {
+        it("triggers #onUpdate callbacks with the updated record and a changed attributes object", function() {
           var updateCallback = mockFunction("update callback");
-          User.table.onRemoteUpdate(updateCallback);
+          User.table.onUpdate(updateCallback);
 
           var record = User.fixture("jan");
 
@@ -208,14 +208,14 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#pauseEvents and #resumeEvents", function() {
-      specify("#pauseEvents delays #onRemoteInsert, #onRemoteRemove, and #onRemoteUpdate triggers until #resumeEvents is called. Then delayed events are flushed and future events are no longer delayed", function() {
+      specify("#pauseEvents delays #onInsert, #onRemove, and #onUpdate triggers until #resumeEvents is called. Then delayed events are flushed and future events are no longer delayed", function() {
         var insertCallback = mockFunction("insert callback");
         var updateCallback = mockFunction("update callback");
         var removeCallback = mockFunction("remove callback");
 
-        User.table.onRemoteInsert(insertCallback);
-        User.table.onRemoteUpdate(updateCallback);
-        User.table.onRemoteRemove(removeCallback);
+        User.table.onInsert(insertCallback);
+        User.table.onUpdate(updateCallback);
+        User.table.onRemove(removeCallback);
 
         User.table.pauseEvents();
 

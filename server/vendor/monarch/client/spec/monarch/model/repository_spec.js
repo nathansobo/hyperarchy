@@ -180,9 +180,9 @@ Screw.Unit(function(c) { with(c) {
         var updateCallback = mockFunction('updateCallback');
         var removeCallback = mockFunction('removeCallback');
 
-        Blog.onRemoteInsert(insertCallback);
-        User.onRemoteUpdate(updateCallback);
-        User.onRemoteRemove(removeCallback);
+        Blog.onInsert(insertCallback);
+        User.onUpdate(updateCallback);
+        User.onRemove(removeCallback);
 
         repository.mutate([
           ['create', 'blogs', { id: "malathion", name: "Recipes From The Makers of Malathion"}],

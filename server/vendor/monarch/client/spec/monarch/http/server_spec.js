@@ -194,13 +194,13 @@ Screw.Unit(function(c) { with(c) {
             record = User.build({fullName: "Jesus Chang"});
 
             tableInsertCallback = mockFunction("table insert callback");
-            User.onRemoteInsert(tableInsertCallback);
+            User.onInsert(tableInsertCallback);
             tableUpdateCallback = mockFunction("table update callback");
-            User.onRemoteUpdate(tableUpdateCallback);
+            User.onUpdate(tableUpdateCallback);
             recordCreateCallback = mockFunction("record insert callback");
-            record.onRemoteCreate(recordCreateCallback);
+            record.onCreate(recordCreateCallback);
             recordUpdateCallback = mockFunction("record update callback");
-            record.onRemoteUpdate(recordUpdateCallback);
+            record.onUpdate(recordUpdateCallback);
             record.afterRemoteUpdate = mockFunction("optional after update hook");
             record.afterRemoteCreate = mockFunction("optional after create hook");
           });
@@ -293,8 +293,8 @@ Screw.Unit(function(c) { with(c) {
 
             tableRemoteUpdateCallback = mockFunction("table update callback");
             recordRemoteUpdateCallback = mockFunction("record update callback");
-            Blog.onRemoteUpdate(tableRemoteUpdateCallback);
-            record.onRemoteUpdate(recordRemoteUpdateCallback);
+            Blog.onUpdate(tableRemoteUpdateCallback);
+            record.onUpdate(recordRemoteUpdateCallback);
             record.afterRemoteUpdate = mockFunction("optional record on update method");
           });
 
@@ -427,7 +427,7 @@ Screw.Unit(function(c) { with(c) {
 
               expect(tableRemoteUpdateCallback).toNot(haveBeenCalled);
               expect(recordRemoteUpdateCallback).toNot(haveBeenCalled);
-              expect(record.onRemoteUpdate).toNot(haveBeenCalled);
+              expect(record.onUpdate).toNot(haveBeenCalled);
             });
 
             context("when the record is changed again while an update is being processed by the server", function() {
@@ -502,9 +502,9 @@ Screw.Unit(function(c) { with(c) {
           before(function() {
             record = Blog.fixture('recipes');
             tableRemoveCallback = mockFunction("table remove callback");
-            Blog.onRemoteRemove(tableRemoveCallback);
+            Blog.onRemove(tableRemoveCallback);
             recordDestroyCallback = mockFunction("record remove callback");
-            record.onRemoteDestroy(recordDestroyCallback)
+            record.onDestroy(recordDestroyCallback)
             record.afterRemoteDestroy = mockFunction("optional afterRemoteDestroy method");
           });
 
@@ -519,7 +519,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when the request is successful", function() {
-            it("finalizes the destruction of the record, firing onRemoteRemove callbacks in between the beforeEvents and afterEvents callbacks", function() {
+            it("finalizes the destruction of the record, firing onRemove callbacks in between the beforeEvents and afterEvents callbacks", function() {
               var destroyFuture = server.destroy(record);
 
               var beforeEventsCallback = mockFunction("before events", function() {

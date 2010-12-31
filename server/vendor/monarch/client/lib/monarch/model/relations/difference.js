@@ -51,23 +51,23 @@ _.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relations.Rela
   // private
 
   subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteInsert(function(record) {
+    this.operandsSubscriptionBundle.add(this.leftOperand.onInsert(function(record) {
       if (!this.rightOperand.find(record.id())) this.tupleInsertedRemotely(record);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteUpdate(function(record, changes) {
+    this.operandsSubscriptionBundle.add(this.leftOperand.onUpdate(function(record, changes) {
       if (this.contains(record)) this.tupleUpdatedRemotely(record, changes);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteRemove(function(record) {
+    this.operandsSubscriptionBundle.add(this.leftOperand.onRemove(function(record) {
       if (this.contains(record)) this.tupleRemovedRemotely(record);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteInsert(function(record) {
+    this.operandsSubscriptionBundle.add(this.rightOperand.onInsert(function(record) {
       if (this.contains(record)) this.tupleRemovedRemotely(record);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteRemove(function(record) {
+    this.operandsSubscriptionBundle.add(this.rightOperand.onRemove(function(record) {
       if (this.leftOperand.find(record.id())) this.tupleInsertedRemotely(record);
     }, this));
   },
@@ -87,16 +87,16 @@ _.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relations.Rela
 
   tupleInsertedRemotely: function(record, options) {
     this.tuplesById[record.id()] = record;
-    this.onRemoteInsertNode.publish(record);
+    this.onInsertNode.publish(record);
   },
 
   tupleUpdatedRemotely: function(record, updateData) {
-    this.onRemoteUpdateNode.publish(record, updateData);
+    this.onUpdateNode.publish(record, updateData);
   },
 
   tupleRemovedRemotely: function(record) {
     delete this.tuplesById[record.id()];
-    this.onRemoteRemoveNode.publish(record);
+    this.onRemoveNode.publish(record);
   }
 });
 

@@ -29,19 +29,19 @@ _.constructor("Views.SortedList", View.Template, {
           }, this);
         }
 
-        this.subscriptions.add(relation.onRemoteInsert(function(record, index) {
+        this.subscriptions.add(relation.onInsert(function(record, index) {
           var element = this.elementForRecord(record, index);
           this.insertAtIndex(element, index);
-          if (this.onRemoteInsert) this.onRemoteInsert(record, element);
+          if (this.onInsert) this.onInsert(record, element);
         }, this));
 
-        this.subscriptions.add(relation.onRemoteUpdate(function(record, changes, index) {
+        this.subscriptions.add(relation.onUpdate(function(record, changes, index) {
           var element = this.elementForRecord(record, index);
           this.insertAtIndex(element.detach(), index);
-          if (this.onRemoteUpdate) this.onRemoteUpdate(element, record, changes, index);
+          if (this.onUpdate) this.onUpdate(element, record, changes, index);
         }, this));
 
-        this.subscriptions.add(relation.onRemoteRemove(function(record, index) {
+        this.subscriptions.add(relation.onRemove(function(record, index) {
           this.elementForRecord(record, index).remove();
         }, this));
       }

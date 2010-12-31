@@ -230,11 +230,11 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.bodyTextarea.val(newBody);
       }, this));
 
-      this.subscriptions.add(election.onRemoteDestroy(function() {
+      this.subscriptions.add(election.onDestroy(function() {
         this.goToOrganization();
       }, this));
 
-      this.subscriptions.add(election.candidates().onRemoteInsert(function() {
+      this.subscriptions.add(election.candidates().onInsert(function() {
         if (this.candidatesList.is(":hidden")) {
           this.showCreateCandidateFormButton.show();
           this.hideCreateCandidateFormCancelX.show();
@@ -244,7 +244,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         }
       }, this));
 
-      this.subscriptions.add(election.candidates().onRemoteRemove(function() {
+      this.subscriptions.add(election.candidates().onRemove(function() {
         if (election.candidates().empty()) {
           this.hideCreateCandidateFormCancelX.hide();
           this.candidatesList.fadeOut();

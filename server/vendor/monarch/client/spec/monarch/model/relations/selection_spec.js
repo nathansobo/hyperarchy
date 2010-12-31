@@ -79,45 +79,45 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#onRemoteInsert", function() {
-      it("returns a Monarch.Subscription with #onRemoteInsertNode as its #node", function() {
-        var subscription = selection.onRemoteInsert(function() {});
-        expect(subscription.node).to(eq, selection.onRemoteInsertNode);
+    describe("#onInsert", function() {
+      it("returns a Monarch.Subscription with #onInsertNode as its #node", function() {
+        var subscription = selection.onInsert(function() {});
+        expect(subscription.node).to(eq, selection.onInsertNode);
       });
     });
 
-    describe("#onRemoteRemove", function() {
-      it("returns a Monarch.Subscription with #onRemoteRemoveNode as its #node", function() {
-        var subscription = selection.onRemoteRemove(function() {});
-        expect(subscription.node).to(eq, selection.onRemoteRemoveNode);
+    describe("#onRemove", function() {
+      it("returns a Monarch.Subscription with #onRemoveNode as its #node", function() {
+        var subscription = selection.onRemove(function() {});
+        expect(subscription.node).to(eq, selection.onRemoveNode);
       });
     });
 
-    describe("#onRemoteUpdate", function() {
-      it("returns a Monarch.Subscription with #onRemoteUpdateNode as its #node", function() {
-        var subscription = selection.onRemoteUpdate(function() {});
-        expect(subscription.node).to(eq, selection.onRemoteUpdateNode);
+    describe("#onUpdate", function() {
+      it("returns a Monarch.Subscription with #onUpdateNode as its #node", function() {
+        var subscription = selection.onUpdate(function() {});
+        expect(subscription.node).to(eq, selection.onUpdateNode);
       });
     });
 
     describe("#hasSubscribers", function() {
-      context("if a callback has been registered with #onRemoteInsert", function() {
+      context("if a callback has been registered with #onInsert", function() {
         it("returns true", function() {
-          selection.onRemoteInsert(function() {});
+          selection.onInsert(function() {});
           expect(selection.hasSubscribers()).to(beTrue);
         });
       });
 
-      context("if a callback has been registered with #onRemoteRemove", function() {
+      context("if a callback has been registered with #onRemove", function() {
         it("returns true", function() {
-          selection.onRemoteRemove(function() {});
+          selection.onRemove(function() {});
           expect(selection.hasSubscribers()).to(beTrue);
         });
       });
 
-      context("if a callback has been registered with #onRemoteUpdate", function() {
+      context("if a callback has been registered with #onUpdate", function() {
         it("returns true", function() {
-          selection.onRemoteUpdate(function() {});
+          selection.onUpdate(function() {});
           expect(selection.hasSubscribers()).to(beTrue);
         });
       });
@@ -135,20 +135,20 @@ Screw.Unit(function(c) { with(c) {
         insertCallback = mockFunction("insert callback", function(record) {
           expect(selection.contains(record)).to(beTrue);
         });
-        selection.onRemoteInsert(insertCallback);
+        selection.onInsert(insertCallback);
 
         removeCallback = mockFunction("remove callback", function(record) {
           expect(selection.contains(record)).to(beFalse);
         });
-        selection.onRemoteRemove(removeCallback);
+        selection.onRemove(removeCallback);
 
         updateCallback = mockFunction("update callback");
-        selection.onRemoteUpdate(updateCallback);
+        selection.onUpdate(updateCallback);
       });
 
       context("when a record is inserted in the Selection's #operand remotely", function() {
         context("when that record matches #predicate", function() {
-          it("triggers #onRemoteInsert callbacks with the inserted record", function() {
+          it("triggers #onInsert callbacks with the inserted record", function() {
             User.create({id: "joe", age: 31})
               .afterEvents(function(record) {
                 expect(predicate.evaluate(record)).to(beTrue);
@@ -158,7 +158,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         context("when that record does not match #predicate", function() {
-          it("does not trigger #onRemoteInsert callbacks", function() {
+          it("does not trigger #onInsert callbacks", function() {
             User.create({id: "mike", age: 22})
               .afterEvents(function(record) {
                 expect(predicate.evaluate(record)).to(beFalse);
@@ -170,7 +170,7 @@ Screw.Unit(function(c) { with(c) {
 
       context("when a record is removed from the Selection's #operand remotely", function() {
         context("when that record matches #predicate", function() {
-          it("triggers #onRemoteRemove callbacks with the removed record", function() {
+          it("triggers #onRemove callbacks with the removed record", function() {
             var record = operand.find("jan");
             expect(predicate.evaluate(record)).to(beTrue);
 
@@ -187,7 +187,7 @@ Screw.Unit(function(c) { with(c) {
             expect(predicate.evaluate(record)).to(beFalse);
           });
 
-          it("does not trigger #onRemoteRemove callbacks and continues to not #contain the removed record", function() {
+          it("does not trigger #onRemove callbacks and continues to not #contain the removed record", function() {
             expect(selection.contains(record)).to(beFalse);
             operand.remove(record);
             expect(selection.contains(record)).to(beFalse);
@@ -205,19 +205,19 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when that record matches #predicate after the update", function() {
-            it("does not trigger #onRemoteInsert callbacks", function() {
+            it("does not trigger #onInsert callbacks", function() {
               record.fullName("Janford Nelsan");
               expect(predicate.evaluate(record)).to(beTrue);
               expect(insertCallback).toNot(haveBeenCalled);
             });
 
-            it("does not trigger #onRemoteRemove callbacks", function() {
+            it("does not trigger #onRemove callbacks", function() {
               record.fullName("Janford Nelsan");
               expect(predicate.evaluate(record)).to(beTrue);
               expect(removeCallback).toNot(haveBeenCalled);
             });
 
-            it("triggers #onRemoteUpdate callbacks with the updated record and a change object and continues to #contain the record", function() {
+            it("triggers #onUpdate callbacks with the updated record and a change object and continues to #contain the record", function() {
               var oldValue = record.fullName();
               var newValue = "Janand Nelson";
 
@@ -240,33 +240,33 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when that record does not match #predicate after the update", function() {
-            it("does not trigger #onRemoteInsert callbacks", function() {
+            it("does not trigger #onInsert callbacks", function() {
               record.update({age: 34});
               expect(predicate.evaluate(record)).to(beFalse);
               expect(insertCallback).toNot(haveBeenCalled);
             });
 
-            it("triggers #onRemoteRemove callbacks to be invoked with the updated record", function() {
+            it("triggers #onRemove callbacks to be invoked with the updated record", function() {
               record.update({age: 34});
               expect(predicate.evaluate(record)).to(beFalse);
               expect(removeCallback).to(haveBeenCalled, withArgs(record));
             });
 
-            it("does not trigger #onRemoteUpdate callbacks", function() {
+            it("does not trigger #onUpdate callbacks", function() {
               record.update({age: 34});
               expect(predicate.evaluate(record)).to(beFalse);
               expect(updateCallback).toNot(haveBeenCalled);
             });
 
-            it("does not #contain the updated record before the #onRemoteRemove callbacks are triggered", function() {
-              var onRemoteRemoveCallback = mockFunction('onRemoteRemoveCallback', function() {
+            it("does not #contain the updated record before the #onRemove callbacks are triggered", function() {
+              var onRemoveCallback = mockFunction('onRemoveCallback', function() {
                 expect(selection.contains(record)).to(beFalse);
               });
-              selection.onRemoteRemove(onRemoteRemoveCallback);
+              selection.onRemove(onRemoveCallback);
 
               expect(selection.contains(record)).to(beTrue);
               record.update({age: 34});
-              expect(onRemoteRemoveCallback).to(haveBeenCalled);
+              expect(onRemoveCallback).to(haveBeenCalled);
             });
           });
         });
@@ -278,50 +278,50 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when that record matches #predicate after the update", function() {
-            it("triggers #onRemoteInsert callbacks with the updated record", function() {
+            it("triggers #onInsert callbacks with the updated record", function() {
               record.update({age: 31});
               expect(predicate.evaluate(record)).to(beTrue);
               expect(insertCallback).to(haveBeenCalled);
             });
 
-            it("does not trigger #onRemoteRemove callbacks", function() {
+            it("does not trigger #onRemove callbacks", function() {
               record.update({age: 31});
               expect(predicate.evaluate(record)).to(beTrue);
               expect(removeCallback).toNot(haveBeenCalled);
             });
 
-            it("does not trigger #onRemoteUpdate callbacks", function() {
+            it("does not trigger #onUpdate callbacks", function() {
               record.update({age: 31});
               expect(predicate.evaluate(record)).to(beTrue);
               expect(updateCallback).toNot(haveBeenCalled);
             });
 
-            it("#contains the record before #onRemoteInsert callbacks are fired", function() {
-              var onRemoteInsertCallback = mockFunction('onRemoteInsertCallback', function(record) {
+            it("#contains the record before #onInsert callbacks are fired", function() {
+              var onInsertCallback = mockFunction('onInsertCallback', function(record) {
                 expect(selection.contains(record)).to(beTrue);
               });
-              selection.onRemoteInsert(onRemoteInsertCallback);
+              selection.onInsert(onInsertCallback);
 
               expect(selection.contains(record)).to(beFalse);
               record.update({age: 31});
-              expect(onRemoteInsertCallback).to(haveBeenCalled);
+              expect(onInsertCallback).to(haveBeenCalled);
             });
           });
 
           context("when that record does not match #predicate after the update", function() {
-            it("does not cause #onRemoteInsert callbacks to be invoked with the updated record", function() {
+            it("does not cause #onInsert callbacks to be invoked with the updated record", function() {
               record.fullName("JarJar Nelson");
               expect(predicate.evaluate(record)).to(beFalse);
               expect(insertCallback).toNot(haveBeenCalled);
             });
 
-            it("does not cause #onRemoteRemove callbacks to be invoked with the updated record", function() {
+            it("does not cause #onRemove callbacks to be invoked with the updated record", function() {
               record.fullName("JarJar Nelson");
               expect(predicate.evaluate(record)).to(beFalse);
               expect(removeCallback).toNot(haveBeenCalled);
             });
             
-            it("does not trigger #onRemoteUpdate callbacks", function() {
+            it("does not trigger #onUpdate callbacks", function() {
               record.fullName("JarJar Nelson");
               expect(predicate.evaluate(record)).to(beFalse);
               expect(updateCallback).toNot(haveBeenCalled);
@@ -405,21 +405,21 @@ Screw.Unit(function(c) { with(c) {
       describe("when a subscription is registered for the selection, destroyed, and another subscription is registered", function() {
         var eventType;
 
-        scenario("for onRemoteInsert callbacks", function() {
+        scenario("for onInsert callbacks", function() {
           init(function() {
-            eventType = "onRemoteInsert";
+            eventType = "onInsert";
           });
         });
 
-        scenario("for onRemoteUpdate callbacks", function() {
+        scenario("for onUpdate callbacks", function() {
           init(function() {
-            eventType = "onRemoteUpdate";
+            eventType = "onUpdate";
           });
         });
 
-        scenario("for onRemoteRemove callbacks", function() {
+        scenario("for onRemove callbacks", function() {
           init(function() {
-            eventType = "onRemoteRemove";
+            eventType = "onRemove";
           });
         });
 
@@ -449,7 +449,7 @@ Screw.Unit(function(c) { with(c) {
           expect(operand.hasSubscribers()).to(beFalse);
           expect(selection._tuples).to(beNull);
 
-          selection.onRemoteUpdate(function() {});
+          selection.onUpdate(function() {});
 
           expect(operand.hasSubscribers()).to(beTrue);
           expect(selection._tuples).toNot(beNull);

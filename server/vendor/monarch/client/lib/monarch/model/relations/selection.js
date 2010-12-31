@@ -59,15 +59,15 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
   // private
 
   subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(record) {
+    this.operandsSubscriptionBundle.add(this.operand.onInsert(function(record) {
       if (this.predicate.evaluate(record)) this.tupleInsertedRemotely(record);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(record) {
+    this.operandsSubscriptionBundle.add(this.operand.onRemove(function(record) {
       if (this.predicate.evaluate(record)) this.tupleRemovedRemotely(record);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(record, changedFields) {
+    this.operandsSubscriptionBundle.add(this.operand.onUpdate(function(record, changedFields) {
       if (this.contains(record)) {
         if (this.predicate.evaluate(record)) {
           this.tupleUpdatedRemotely(record, changedFields);

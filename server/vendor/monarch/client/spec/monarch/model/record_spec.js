@@ -336,7 +336,7 @@ Screw.Unit(function(c) { with(c) {
       it("triggers update callbacks on the table of its record", function() {
         var record = Blog.fixture('recipes');
         var updateCallback = mockFunction('updateCallback');
-        record.table.onRemoteUpdate(updateCallback);
+        record.table.onUpdate(updateCallback);
 
         record.name("Farming");
         record.save();

@@ -47,7 +47,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   tupleInsertedRemotely: function(record) {
     this._tuples.push(record);
     this.tuplesById[record.id()] = record;
-    this.onRemoteInsertNode.publish(record);
+    this.onInsertNode.publish(record);
   },
 
   tuples: function() {
@@ -105,16 +105,16 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   },
 
   pauseEvents: function() {
-    this.onRemoteInsertNode.pauseEvents();
-    this.onRemoteRemoveNode.pauseEvents();
-    this.onRemoteUpdateNode.pauseEvents();
+    this.onInsertNode.pauseEvents();
+    this.onRemoveNode.pauseEvents();
+    this.onUpdateNode.pauseEvents();
     this.onPauseEventsNode.publish();
   },
 
   resumeEvents: function() {
-    this.onRemoteInsertNode.resumeEvents();
-    this.onRemoteRemoveNode.resumeEvents();
-    this.onRemoteUpdateNode.resumeEvents();
+    this.onInsertNode.resumeEvents();
+    this.onRemoveNode.resumeEvents();
+    this.onUpdateNode.resumeEvents();
     this.onResumeEventsNode.publish();
   },
 
@@ -156,9 +156,9 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   clear: function() {
     this._tuples = [];
     this.tuplesById = {}
-    this.onRemoteInsertNode = new Monarch.SubscriptionNode();
-    this.onRemoteRemoveNode = new Monarch.SubscriptionNode();
-    this.onRemoteUpdateNode = new Monarch.SubscriptionNode();
+    this.onInsertNode = new Monarch.SubscriptionNode();
+    this.onRemoveNode = new Monarch.SubscriptionNode();
+    this.onUpdateNode = new Monarch.SubscriptionNode();
     this.onPauseEventsNode = new Monarch.SubscriptionNode();
     this.onResumeEventsNode = new Monarch.SubscriptionNode();
   },

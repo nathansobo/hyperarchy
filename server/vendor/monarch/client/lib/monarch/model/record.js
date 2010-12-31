@@ -2,7 +2,7 @@
   constructorProperties: {
     initialize: function() {
       this.delegateConstructorMethods('find', 'fetch', 'findOrFetch', 'tuples', 'first', 'each', 'onEach', 'map', 'any',
-                                      'onLocalUpdate', 'onRemoteInsert', 'onRemoteUpdate', 'onRemoteRemove', 'where',
+                                      'onLocalUpdate', 'onInsert', 'onUpdate', 'onRemove', 'where',
                                       'orderBy', 'project', 'union', 'difference', 'empty', 'build', 'create', 'createFromRemote',
                                       'fixture', 'clear', 'table');
     },
@@ -162,7 +162,7 @@
     this.remote.updateEventsEnabled = true;
     this.initializeRelations();
     this.table.tupleInsertedRemotely(this);
-    this.onRemoteCreateNode.publish(this);
+    this.onCreateNode.publish(this);
   },
 
   remotelyUpdated: function(fieldValues, version) {
@@ -171,11 +171,11 @@
 
   remotelyDestroyed: function() {
     this.table.remove(this);
-    this.onRemoteDestroyNode.publish(this);
+    this.onDestroyNode.publish(this);
   },
 
-  onRemoteUpdate: function(callback, context) {
-    return this.onRemoteUpdateNode.subscribe(callback, context);
+  onUpdate: function(callback, context) {
+    return this.onUpdateNode.subscribe(callback, context);
   },
 
   onLocalUpdate: function(callback, context) {
@@ -183,12 +183,12 @@
     return this.onLocalUpdateNode.subscribe(callback, context);
   },
 
-  onRemoteDestroy: function(callback, context) {
-    return this.onRemoteDestroyNode.subscribe(callback, context);
+  onDestroy: function(callback, context) {
+    return this.onDestroyNode.subscribe(callback, context);
   },
 
-  onRemoteCreate: function(callback, context) {
-    return this.onRemoteCreateNode.subscribe(callback, context)
+  onCreate: function(callback, context) {
+    return this.onCreateNode.subscribe(callback, context)
   },
 
   onDirty: function(callback, context) {
@@ -276,15 +276,15 @@
   },
 
   pauseEvents: function() {
-    this.onRemoteCreateNode.pauseEvents();
-    this.onRemoteUpdateNode.pauseEvents();
-    this.onRemoteDestroyNode.pauseEvents();
+    this.onCreateNode.pauseEvents();
+    this.onUpdateNode.pauseEvents();
+    this.onDestroyNode.pauseEvents();
   },
 
   resumeEvents: function() {
-    this.onRemoteCreateNode.resumeEvents();
-    this.onRemoteUpdateNode.resumeEvents();
-    this.onRemoteDestroyNode.resumeEvents();
+    this.onCreateNode.resumeEvents();
+    this.onUpdateNode.resumeEvents();
+    this.onDestroyNode.resumeEvents();
   },
 
   madeDirty: function() {
@@ -311,9 +311,9 @@
 
   // private
   initializeSubscriptionNodes: function() {
-    this.onRemoteUpdateNode = new Monarch.SubscriptionNode();
-    this.onRemoteDestroyNode = new Monarch.SubscriptionNode();
-    this.onRemoteCreateNode = new Monarch.SubscriptionNode();
+    this.onUpdateNode = new Monarch.SubscriptionNode();
+    this.onDestroyNode = new Monarch.SubscriptionNode();
+    this.onCreateNode = new Monarch.SubscriptionNode();
 
     this.subscriptions.add(this.table.onPauseEvents(function() {
       this.pauseEvents();
@@ -325,15 +325,15 @@
   },
 
   subscribeToSelfMutations: function() {
-    this.onRemoteCreateNode.subscribe(function(changeset) {
+    this.onCreateNode.subscribe(function(changeset) {
       if (this.afterRemoteCreate) this.afterRemoteCreate();
     }, this);
 
-    this.onRemoteUpdateNode.subscribe(function(changeset) {
+    this.onUpdateNode.subscribe(function(changeset) {
       if (this.afterRemoteUpdate) this.afterRemoteUpdate(changeset);
     }, this);
 
-    this.onRemoteDestroyNode.subscribe(function() {
+    this.onDestroyNode.subscribe(function() {
       if (this.afterRemoteDestroy) this.afterRemoteDestroy();
       this.cleanup();
     }, this);
