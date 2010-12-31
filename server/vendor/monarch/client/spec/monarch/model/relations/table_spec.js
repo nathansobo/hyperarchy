@@ -34,54 +34,6 @@ Screw.Unit(function(c) { with(c) {
     });
 
 
-    describe("query methods", function() {
-      var locallyCreated, locallyUpdated, locallyDestroyed, cleanRecord;
-      before(function() {
-        cleanRecord = User.fixture('mike');
-        locallyCreated = User.localCreate({ id: 'barbara' });
-        locallyUpdated = User.fixture('wil');
-        locallyUpdated.localUpdate({fullName: "Kaiser Wilhelm"});
-        locallyDestroyed = User.fixture('jan');
-        locallyDestroyed.localDestroy();
-      });
-
-      describe("#allTuples", function() {
-        it("returns a copy of all records in the table, including those that are locally created and destroyed", function() {
-          var tuples = User.table.allTuples();
-
-          expect(_.include(tuples, cleanRecord)).to(beTrue);
-          expect(_.include(tuples, locallyUpdated)).to(beTrue);
-          expect(_.include(tuples, locallyCreated)).to(beTrue);
-          expect(_.include(tuples, locallyDestroyed)).to(beTrue);
-
-          tuples.push(1);
-          expect(User.table.allTuples()).toNot(equal, tuples);
-        });
-      });
-
-      describe("#localTuples", function() {
-        it("excludes records that are locally destroyed but includes all others", function() {
-          var tuples = User.table.localTuples();
-
-          expect(_.include(tuples, locallyDestroyed)).to(beFalse);
-          expect(_.include(tuples, cleanRecord)).to(beTrue);
-          expect(_.include(tuples, locallyUpdated)).to(beTrue);
-          expect(_.include(tuples, locallyCreated)).to(beTrue);
-        });
-      });
-
-      describe("#dirtyTuples", function() {
-        it("excludes clean records but includes all others", function() {
-          var tuples = User.table.dirtyTuples();
-
-          expect(_.include(tuples, cleanRecord)).to(beFalse);
-          expect(_.include(tuples, locallyCreated)).to(beTrue);
-          expect(_.include(tuples, locallyUpdated)).to(beTrue);
-          expect(_.include(tuples, locallyDestroyed)).to(beTrue);
-        });
-      });
-    });
-
     describe("#wireRepresentation", function() {
       it("contains the Table's #name and has the 'type' of 'table'", function() {
         expect(table.wireRepresentation()).to(equal, {
@@ -267,10 +219,8 @@ Screw.Unit(function(c) { with(c) {
 
         User.table.pauseEvents();
 
-        var record = User.localCreate({id: "jake", fullName: "Jake Frautschi"});
-        record.remotelyCreated({id: "jake", fullName: "Jake Frautschi"});
+        var record = User.createFromRemote({id: "jake", fullName: "Jake Frautschi"});
         record.remote.update({ fullName: "Jacob Frautschi" });
-        record.localDestroy();
         record.remotelyDestroyed();
 
         expect(insertCallback).toNot(haveBeenCalled);
@@ -294,8 +244,7 @@ Screw.Unit(function(c) { with(c) {
         updateCallback.clear();
         removeCallback.clear();
 
-        var record2 = User.localCreate({id: "nathan", fullName: "Nathan Sobo"});
-        record2.remotelyCreated({id: "nathan", fullName: "Nathan Sobo"});
+        var record2 = User.createFromRemote({id: "nathan", fullName: "Nathan Sobo"});
 
         expect(insertCallback).to(haveBeenCalled, once);
         expect(insertCallback).to(haveBeenCalled, withArgs(record2));

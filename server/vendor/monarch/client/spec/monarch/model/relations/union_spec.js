@@ -14,13 +14,11 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#allTuples", function() {
       it("returns the union tuples in the left operand and right operand", function() {
-        var user1 = User.localCreate({age: 22, fullName: "Mackrel"});
-        var user2 = User.localCreate({age: 32, fullName: "Jonie"});
-        var user3 = User.localCreate({age: 32, fullName: "John"});
-        var user4 = User.localCreate({fullName: "John"});
-        var user5 = User.localCreate({fullName: "Mark"});
-
-        Server.save(User.table);
+        var user1 = User.createFromRemote({id: 1, age: 22, fullName: "Mackrel"});
+        var user2 = User.createFromRemote({id: 2, age: 32, fullName: "Jonie"});
+        var user3 = User.createFromRemote({id: 3, age: 32, fullName: "John"});
+        var user4 = User.createFromRemote({id: 4, fullName: "John"});
+        var user5 = User.createFromRemote({id: 5, fullName: "Mark"});
 
         var tuples = union.allTuples();
         expect(tuples.length).to(eq, 3);

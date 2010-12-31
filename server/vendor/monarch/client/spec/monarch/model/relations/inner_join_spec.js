@@ -8,12 +8,12 @@ Screw.Unit(function(c) { with(c) {
     var join, leftOperand, rightOperand, predicate;
 
     before(function() {
-      user = User.localCreate({id: 'saltpeter', fullName: "Salt Peter"});
-      blog1 = user.blogs().localCreate({id: 'blog1'});
-      blog2 = user.blogs().localCreate({id: 'blog2'});
-      post1 = blog1.blogPosts().localCreate({id: 'post1', body: "this is post 1"});
-      post2 = blog1.blogPosts().localCreate({id: 'post2', body: "this is post 2"});
-      post3 = blog2.blogPosts().localCreate({id: 'post3', body: "this is post 3"});
+      user = User.createFromRemote({id: 'saltpeter', fullName: "Salt Peter"});
+      blog1 = user.blogs().createFromRemote({id: 'blog1'});
+      blog2 = user.blogs().createFromRemote({id: 'blog2'});
+      post1 = blog1.blogPosts().createFromRemote({id: 'post1', body: "this is post 1"});
+      post2 = blog1.blogPosts().createFromRemote({id: 'post2', body: "this is post 2"});
+      post3 = blog2.blogPosts().createFromRemote({id: 'post3', body: "this is post 3"});
       Server.save(user, blog1, blog2, post1, post2, post3);
       
       leftOperand = user.blogs();
@@ -299,8 +299,8 @@ Screw.Unit(function(c) { with(c) {
           context("when the updated tuple is not a component of a CompositeTuple that is a member of the relation before the update", function() {
             context("when the update causes #carteseanProduct to contain a CompositeTuple that matches #predicate", function() {
               it("triggers only the #onRemoteInsert handlers with the updated CompositeTuple", function() {
-                var blog = user.blogs().localCreate({id: 'junky'});
-                var blogPost = BlogPost.localCreate({blogId: 'nice'});
+                var blog = user.blogs().createFromRemote({id: 'junky'});
+                var blogPost = BlogPost.createFromRemote({blogId: 'nice'});
                 Server.save(blog, blogPost);
 
                 blog.update({id: "nice"});
@@ -316,7 +316,7 @@ Screw.Unit(function(c) { with(c) {
 
             context("when the update does not cause #carteseanProduct to contain a CompositeTuple that matches #predicate", function() {
               it("does not trigger any event handlers", function() {
-                var blog = user.blogs().localCreate({name: "Junkfood Diet"});
+                var blog = user.blogs().createFromRemote({name: "Junkfood Diet"});
                 blog.save();
                 blog.update({name: "Healthfood Diet"});
 
@@ -372,7 +372,7 @@ Screw.Unit(function(c) { with(c) {
             var post;
 
             before(function() {
-              post = BlogPost.localCreate({ blogId: "homer", body: "PAIN!" });
+              post = BlogPost.createFromRemote({ blogId: "homer", body: "PAIN!" });
               post.save();
             });
 

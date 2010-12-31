@@ -25,21 +25,12 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   },
 
   create: function(fieldValues) {
-    var record = this.localCreate(fieldValues);
-    return Server.save(record);
-  },
-
-  localCreate: function(fieldValues) {
     var record = new this.recordConstructor(fieldValues, this);
-    record.isRemotelyCreated = false;
-    this.insert(record);
-    if (record.afterLocalCreate) record.afterLocalCreate();
-    return record;
+    return Server.create(record);
   },
 
   createFromRemote: function(fieldValues) {
     var record = new this.recordConstructor(null, this);
-    this.insert(record);
     record.remotelyCreated(fieldValues);
     return record;
   },
@@ -50,6 +41,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   },
 
   tupleInsertedRemotely: function(record) {
+    this._tuples.push(record);
     this.tuplesById[record.id()] = record;
     this.onRemoteInsertNode.publish(record);
   },
@@ -183,14 +175,6 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
 
   isEqual: function(other) {
     return this === other;
-  },
-
-  // private
-
-  insert: function(record) {
-    this._tuples.push(record);
-    if (record.id()) this.tuplesById[record.id()] = record;
-    record.initializeRelations();
   }
 });
 

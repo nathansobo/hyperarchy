@@ -6,12 +6,12 @@ Screw.Unit(function(c) { with(c) {
     useExampleDomainModel();
 
     before(function() {
-      user = User.localCreate({id: 'saltpeter', fullName: "Salt Peter"});
-      blog1 = user.blogs().localCreate({id: 'blog1', name: "Blog 1"});
-      blog2 = user.blogs().localCreate({id: 'blog2', name: "Blog 2"});
-      post1 = blog1.blogPosts().localCreate({id: 'post1', body: "this is post 1"});
-      post2 = blog1.blogPosts().localCreate({id: 'post2', body: "this is post 2"});
-      post3 = blog2.blogPosts().localCreate({id: 'post3', body: "this is post 3"});
+      user = User.createFromRemote({id: 'saltpeter', fullName: "Salt Peter"});
+      blog1 = user.blogs().createFromRemote({id: 'blog1', name: "Blog 1"});
+      blog2 = user.blogs().createFromRemote({id: 'blog2', name: "Blog 2"});
+      post1 = blog1.blogPosts().createFromRemote({id: 'post1', body: "this is post 1"});
+      post2 = blog1.blogPosts().createFromRemote({id: 'post2', body: "this is post 2"});
+      post3 = blog2.blogPosts().createFromRemote({id: 'post3', body: "this is post 3"});
       Server.save(user, blog1, blog2, post1, post2, post3);
 
       operand = user.blogs().join(BlogPost).on(BlogPost.blogId.eq(Blog.id));
@@ -54,8 +54,8 @@ Screw.Unit(function(c) { with(c) {
       describe("when a tuple is inserted into the operand", function() {
         context("if the record corresponding to the projected table is NOT already present in the projection", function() {
           it("triggers onRemoteInsert callbacks with the record", function() {
-            var blog = user.blogs().localCreate({id: 'bloggo'});
-            var post = blog.blogPosts().localCreate();
+            var blog = user.blogs().createFromRemote({id: 'bloggo'});
+            var post = blog.blogPosts().createFromRemote();
             Server.save(blog, post);
             expect(insertCallback).to(haveBeenCalled, once);
             expect(insertCallback).to(haveBeenCalled, withArgs(blog));

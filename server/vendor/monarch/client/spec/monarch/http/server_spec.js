@@ -191,7 +191,7 @@ Screw.Unit(function(c) { with(c) {
               recordCreateCallback, recordUpdateCallback;
 
           before(function() {
-            record = User.localCreate({fullName: "Jesus Chang"});
+            record = User.createFromRemote({fullName: "Jesus Chang"});
 
             tableInsertCallback = mockFunction("table insert callback");
             User.onRemoteInsert(tableInsertCallback);
@@ -206,7 +206,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           it("sends a create command to {Repository.originUrl}/mutate", function() {
-            var record = User.localCreate({fullName: "Jesus Chang"});
+            var record = User.createFromRemote({fullName: "Jesus Chang"});
             server.save(record);
 
             expect(server.posts.length).to(eq, 1);
@@ -579,7 +579,7 @@ Screw.Unit(function(c) { with(c) {
           var locallyCreated, locallyUpdated, locallyDestroyed, insertCallback, updateCallback, removeCallback;
 
           before(function() {
-            locallyCreated = User.localCreate({fullName: "Jesus Chang"});
+            locallyCreated = User.createFromRemote({fullName: "Jesus Chang"});
             locallyUpdated = User.fixture('jan');
             locallyUpdated.fullName("Francisco Wu");
             locallyDestroyed = locallyUpdated.blogs().first();
@@ -689,8 +689,8 @@ Screw.Unit(function(c) { with(c) {
         });
 
         it("pauses mutations before sending the save to the server and resumes them once the server responds to all outstanding save requests", function() {
-          var record1 = User.localCreate({id: 'jesus', fullName: "Jesus Chang"});
-          var record2 = User.localCreate({id: 'joseph', fullName: "Joseph Smith"});
+          var record1 = User.createFromRemote({id: 'jesus', fullName: "Jesus Chang"});
+          var record2 = User.createFromRemote({id: 'joseph', fullName: "Joseph Smith"});
           server.save(record1);
 
           expect(Repository.mutationsPaused).to(beTrue);

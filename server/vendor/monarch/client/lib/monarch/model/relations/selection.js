@@ -19,8 +19,8 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
     return this.operand.create(this.predicate.forceMatchingFieldValues(fieldValues));
   },
 
-  localCreate: function(fieldValues) {
-    return this.operand.localCreate(this.predicate.forceMatchingFieldValues(fieldValues));
+  createFromRemote: function(fieldValues) {
+    return this.operand.createFromRemote(this.predicate.forceMatchingFieldValues(fieldValues));
   },
   
   createFromRemote: function(fieldValues) {

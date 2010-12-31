@@ -84,6 +84,28 @@ _.constructor("Monarch.Http.Server", {
     }
   },
 
+  create: function(record) {
+    return this.performCommand(new Monarch.Http.CreateCommand(record));
+  },
+
+  update: function(record) {
+    return this.performCommand(new Monarch.Http.UpdateCommand(record));
+  },
+
+  destroy: function(record) {
+    return this.performCommand(new Monarch.Http.DestroyCommand(record));
+  },
+
+  performCommand: function(command) {
+    var batch = new Monarch.Http.CommandBatch(this, [command]);
+    Repository.pauseMutations();
+    var saveFuture = batch.perform();
+    saveFuture.onComplete(function() {
+      Repository.resumeMutations();
+    });
+    return saveFuture;
+  },
+
   post: function(url, data) {
     return this.request('POST', url, data);
   },

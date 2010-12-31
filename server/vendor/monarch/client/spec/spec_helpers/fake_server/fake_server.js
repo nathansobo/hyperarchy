@@ -69,6 +69,16 @@ _.constructor("FakeServer", Monarch.Http.Server, {
     return batch.perform();
   },
 
+  performCommand: function(command) {
+    var batch = new FakeServer.FakeCommandBatch(Repository.originUrl, this, [command]);
+    Repository.pauseMutations();
+    var saveFuture = batch.perform();
+    saveFuture.onComplete(function() {
+      Repository.resumeMutations();
+    });
+    return saveFuture;
+  },
+
   post: function(url, data) {
     return this.request('post', url, data);
   },

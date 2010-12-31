@@ -10,7 +10,7 @@ Screw.Unit(function(c) { with(c) {
         relation = Blog.table;
         record = relation.first();
         insert = function(fieldValues) {
-          Blog.table.localCreate(fieldValues);
+          Blog.table.createFromRemote(fieldValues);
         }
         column1 = Blog.userId;
         column2 = Blog.name_;
@@ -22,7 +22,7 @@ Screw.Unit(function(c) { with(c) {
         relation = Blog.where(Blog.userId.eq("jan"));
         record = relation.first();
         insert = function(fieldValues) {
-          Blog.table.localCreate(fieldValues);
+          Blog.table.createFromRemote(fieldValues);
         }
         column1 = Blog.userId;
         column2 = Blog.name_;

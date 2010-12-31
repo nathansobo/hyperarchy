@@ -80,10 +80,6 @@ _.constructor("Monarch.Model.Record", {
       return this.table.create(fieldValues);
     },
 
-    localCreate: function(fieldValues) {
-      return this.table.localCreate(fieldValues);
-    },
-
     humanName: function() {
       return _.humanize(this.basename);
     },
@@ -144,7 +140,7 @@ _.constructor("Monarch.Model.Record", {
   },
 
   save: function() {
-    return Server.save(this);
+    return Server.update(this);
   },
 
   localUpdate: function(valuesByMethodName) {
@@ -157,18 +153,13 @@ _.constructor("Monarch.Model.Record", {
     this.local.finishBatchUpdate();
   },
 
-  localDestroy: function() {
-    this.locallyDestroyed = true;
-  },
-
   update: function(valuesByMethodName) {
     this.localUpdate(valuesByMethodName);
     return this.save();
   },
 
   destroy: function() {
-    this.localDestroy();
-    return Server.save(this);
+    return Server.destroy(this);
   },
 
   remotelyCreated: function(fieldValues) {
