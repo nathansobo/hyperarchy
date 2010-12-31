@@ -2,12 +2,9 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.SkipList", function() {
-    
-    
     describe("insertion, removal, and search", function() {
       it("correctly handles operations for a randomized dataset", function() {
         var skipList, unusedLetters, insertedLetters, removedLetters;
-
 
         function randomNumber(upTo) {
           return Math.floor(Math.random() * upTo);

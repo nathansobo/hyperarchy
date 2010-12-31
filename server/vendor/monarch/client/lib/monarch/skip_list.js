@@ -178,38 +178,7 @@ _.constructor("Monarch.SkipList", {
     var level = 0;
     while(Math.random() < this.p && level < maxLevels - 1) level++;
     return level;
-  },
-
-  // tests only
-  nodes: function() {
-    var nodes = [];
-    var cursor = this.head.pointer[0];
-    while(cursor !== this.nil) {
-      nodes.push(cursor);
-      cursor = cursor.pointer[0];
-    }
-    return nodes;
-  },
-
-  html: function() {
-    var nodes = this.nodes();
-    var head = this.head;
-    return Monarch.View.build(function(b) {
-      b.div(function() {
-
-        head.html(b);
-
-        _.each(nodes, function(node) {
-          node.html(b);
-        })
-
-
-        b.div({style: "clear:both"});
-      });
-
-    });
-  },
-
+  }
 });
 
 _.constructor("Monarch.SkipListNode", {
@@ -219,26 +188,6 @@ _.constructor("Monarch.SkipListNode", {
     this.level = level;
     this.pointer = new Array(level);
     this.distance = new Array(level);
-  },
-
-  // tests only
-  html: function(b) {
-    var level = this.level;
-    var value = this.value;
-    var distance = this.distance;
-
-    with(b) {
-      div({style: "text-align: center; float: left; margin-right: 10px;"}, function() {
-
-
-
-
-        for(var i = 7; i >= 0; i--) {
-          div({style: "border: 1px solid black; padding: 5px;"}, distance[i] || "-");
-        }
-        div({'class': "value"}, value);
-      });
-    }
   }
 });
 
