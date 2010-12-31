@@ -62,28 +62,6 @@ _.constructor("Monarch.Http.Server", {
     });
   },
 
-  save: function() {
-    var commands = _.map(this.extractDirtyRecords(arguments), function(dirtyRecord) {
-      return this.buildAppropriateCommand(dirtyRecord);
-    }, this);
-
-
-    if (_.isEmpty(commands)) {
-      var saveFuture = new Monarch.Http.AjaxFuture();
-      saveFuture.updateRepositoryAndTriggerCallbacks(this.firstRecord(arguments), _.identity);
-      return saveFuture;
-    } else {
-      var batch = new Monarch.Http.CommandBatch(this, commands);
-      Repository.pauseMutations();
-      var saveFuture = batch.perform();
-      saveFuture.onComplete(function() {
-        Repository.resumeMutations();
-      });
-
-      return saveFuture;
-    }
-  },
-
   create: function(record) {
     return this.performCommand(new Monarch.Http.CreateCommand(record));
   },

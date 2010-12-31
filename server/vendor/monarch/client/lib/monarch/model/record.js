@@ -1,12 +1,10 @@
-(function(Monarch) {
-
-_.constructor("Monarch.Model.Record", {
+(function(Monarch) {_.constructor("Monarch.Model.Record", {
   constructorProperties: {
     initialize: function() {
       this.delegateConstructorMethods('find', 'fetch', 'findOrFetch', 'tuples', 'first', 'each', 'onEach', 'map', 'any',
                                       'onLocalUpdate', 'onRemoteInsert', 'onRemoteUpdate', 'onRemoteRemove', 'where',
-                                      'orderBy', 'project', 'union', 'difference', 'empty', 'createFromRemote', 'fixture',
-                                      'clear', 'table');
+                                      'orderBy', 'project', 'union', 'difference', 'empty', 'build', 'create', 'createFromRemote',
+                                      'fixture', 'clear', 'table');
     },
 
     inherited: function(subconstructor) {
@@ -74,10 +72,6 @@ _.constructor("Monarch.Model.Record", {
           return model;
         }
       };
-    },
-
-    create: function(fieldValues) {
-      return this.table.create(fieldValues);
     },
 
     humanName: function() {

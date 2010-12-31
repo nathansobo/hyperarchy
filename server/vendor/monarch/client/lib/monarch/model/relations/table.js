@@ -24,9 +24,13 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     return this.syntheticColumnsByName[name] = new Monarch.Model.SyntheticColumn(this, name, definition);
   },
 
+
+  build: function(fieldValues) {
+    return new this.recordConstructor(fieldValues, this);
+  },
+
   create: function(fieldValues) {
-    var record = new this.recordConstructor(fieldValues, this);
-    return Server.create(record);
+    return Server.create(this.build(fieldValues));
   },
 
   createFromRemote: function(fieldValues) {
