@@ -97,6 +97,24 @@ _.constructor("Monarch.SkipList", {
     return _.sum(nextDistance);
   },
 
+  at: function(index) {
+    index += 1;
+    var cursor = this.head;
+
+    for (var i = this.currentLevel; i >= 0; i--) {
+      while (cursor.distance[i] <= index) {
+        index -= cursor.distance[i];
+        cursor = cursor.pointer[i];
+      }
+    }
+
+    if (cursor === this.nil) {
+      return undefined;
+    } else {
+      return cursor.value;
+    }
+  },
+
   values: function() {
     var values = [];
     var cursor = this.head.pointer[0];

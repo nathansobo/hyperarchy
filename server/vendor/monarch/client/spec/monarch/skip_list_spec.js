@@ -33,8 +33,11 @@ Screw.Unit(function(c) { with(c) {
         function find() {
           if (insertedLetters.length > 0) {
             var letter = randomElement(insertedLetters);
-            expect(skipList.find(letter)).to(eq, letter);
-            expect(skipList.indexOf(letter)).to(eq, _.sortedIndex(insertedLetters, letter));
+            var expectedIndex =  _.sortedIndex(insertedLetters, letter);
+            expect(skipList.find(letter)).to(eq, letter); // key -> value (key and value are both the letter in this case)
+            expect(skipList.indexOf(letter)).to(eq, expectedIndex);
+            expect(skipList.at(expectedIndex)).to(eq, letter);
+            expect(skipList.at(insertedLetters.length)).to(beUndefined);
           }
           if (removedLetters.length > 0) {
             var letter = randomElement(removedLetters);
