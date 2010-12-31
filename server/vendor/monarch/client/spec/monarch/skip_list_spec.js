@@ -38,15 +38,15 @@ Screw.Unit(function(c) { with(c) {
           if (removedLetters.length > 0) {
             var letter = randomElement(removedLetters);
             expect(skipList.find(letter)).to(beUndefined);
+            expect(skipList.remove(letter)).to(eq, -1);
           }
         }
 
         function remove() {
-          return;
           if (insertedLetters.length === 0) return;
           var letter = randomElement(insertedLetters, 'remove');
-          skipList.remove(letter);
-
+          var index = skipList.remove(letter);
+          expect(index).to(eq, _.sortedIndex(insertedLetters, letter));
           removedLetters.push(letter);
 
           expect(skipList.values()).to(equal, insertedLetters.sort());
@@ -59,7 +59,6 @@ Screw.Unit(function(c) { with(c) {
             case 2: find(); break;
           }
         }
-
 
         function runTrial() {
           unusedLetters = [];

@@ -48,8 +48,6 @@ _.constructor("Monarch.SkipList", {
       // create a new node and insert it by updating pointers at every level
       var newNode = new Monarch.SkipListNode(level, key, value);
       var steps = 0;
-      var highestIndex = 0;
-
       for (var i = 0; i <= level; i++) {
         var prevNode = next[i];
         newNode.pointer[i] = prevNode.pointer[i];
@@ -64,22 +62,22 @@ _.constructor("Monarch.SkipList", {
         next[i].distance[i] += 1;
       }
 
-      var index = 0;
-      for (var i = 0; i < maxLevels; i++) {
-        index += nextDistance[i];
-      }
-      return index;
+      return _.sum(nextDistance);
     }
   },
 
   remove: function(key) {
-    var next = new Array(this.maxLevels);
-    var cursor = this.findClosestNode(key, next);
+    var next = this.buildNextArray();
+    var nextDistance = this.buildNextDistanceArray();
+    var cursor = this.findClosestNode(key, next, nextDistance);
 
     if (this.compare(cursor.key, key) === 0) {
-      for (i = 0; i <= this.currentLevel; i++) {
+      for (var i = 0; i <= this.currentLevel; i++) {
         if (next[i].pointer[i] === cursor) {
           next[i].pointer[i] = cursor.pointer[i];
+          next[i].distance[i] += cursor.distance[i] - 1;
+        } else {
+          next[i].distance[i] -= 1;
         }
       }
 
@@ -87,6 +85,10 @@ _.constructor("Monarch.SkipList", {
       while (this.currentLevel > 0 && this.head.pointer[this.currentLevel] === this.nil) {
         this.currentLevel--;
       }
+
+      return _.sum(nextDistance);
+    } else {
+      return -1;
     }
   },
 
