@@ -4,273 +4,34 @@ Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Relations.Table", function() {
     useLocalFixtures();
 
-    var table;
-    before(function() {
-      table = new Monarch.Model.Relations.Table("programmingLanguages");
-    });
-
-    describe("#defineColumn", function() {
-      var column;
+    describe("column definition", function() {
+      var table;
       before(function() {
-        column = table.defineColumn("familyId", "string");
+        table = new Monarch.Model.Relations.Table("programmingLanguages");
       });
 
-      it("adds a Column with the given name and type to #columnsByName and returns it", function() {
-        expect(column).to(eq, table.columnsByName.familyId);
-        expect(column.constructor).to(eq, Monarch.Model.Column);
-        expect(column.name).to(eq, 'familyId');
-        expect(column.type).to(eq, 'string');
-      });
-    });
-
-    describe("#column(name)", function() {
-      it("returns the concrete or sythetic column with the given name or null if none exists", function() {
-        var concreteColumn = table.defineColumn("foo", "string");
-        var syntheticColumn = table.defineSyntheticColumn("bar", function() {});
-        expect(table.column("foo")).to(eq, concreteColumn);
-        expect(table.column("bar")).to(eq, syntheticColumn);
-        expect(table.column("baz")).to(beNull);
-      });
-    });
-
-
-    describe("#wireRepresentation", function() {
-      it("contains the Table's #name and has the 'type' of 'table'", function() {
-        expect(table.wireRepresentation()).to(equal, {
-          type: "table",
-          name: "programmingLanguages"
+      describe("#defineColumn", function() {
+        var column;
+        before(function() {
+          column = table.defineColumn("familyId", "string");
         });
-      });
-    });
 
-    describe("delta event callback registration methods", function() {
-      describe("#onInsert(callback)", function() {
-        it("returns a Monarch.Subscription for the #onInsertNode", function() {
-          var subscription = User.table.onInsert(mockFunction);
-          expect(subscription.node).to(eq, User.table.onInsertNode);
+        it("adds a Column with the given name and type to #columnsByName and returns it", function() {
+          expect(column).to(eq, table.columnsByName.familyId);
+          expect(column.constructor).to(eq, Monarch.Model.Column);
+          expect(column.name).to(eq, 'familyId');
+          expect(column.type).to(eq, 'string');
         });
       });
 
-      describe("#onRemove(callback)", function() {
-        it("returns a Monarch.Subscription for the #onRemoveNode", function() {
-          var subscription = User.table.onRemove(function() {
-          });
-          expect(subscription.node).to(eq, User.table.onRemoveNode);
+      describe("#column(name)", function() {
+        it("returns the concrete or sythetic column with the given name or null if none exists", function() {
+          var concreteColumn = table.defineColumn("foo", "string");
+          var syntheticColumn = table.defineSyntheticColumn("bar", function() {});
+          expect(table.column("foo")).to(eq, concreteColumn);
+          expect(table.column("bar")).to(eq, syntheticColumn);
+          expect(table.column("baz")).to(beNull);
         });
-      });
-
-      describe("#onUpdate(callback)", function() {
-        it("returns a Monarch.Subscription for the #onUpdateNode", function() {
-          var subscription = User.table.onUpdate(function() {
-          });
-          expect(subscription.node).to(eq, User.table.onUpdateNode);
-        });
-      });
-    });
-
-    describe("#hasSubscribers()", function() {
-      context("if a callback has been registered", function() {
-        scenario("with #onInsert", function() {
-          before(function() {
-            User.table.onInsert(mockFunction());
-          });
-        });
-
-        scenario("with #onUpdate", function() {
-          before(function() {
-            User.table.onUpdate(mockFunction());
-          });
-        });
-
-        scenario("with #onRemove", function() {
-          before(function() {
-            User.table.onRemove(mockFunction());
-          });
-        });
-
-        scenario("with #onDirty", function() {
-          before(function() {
-            User.table.onDirty(mockFunction());
-          });
-        });
-
-        scenario("with #onClean", function() {
-          before(function() {
-            User.table.onClean(mockFunction());
-          });
-        });
-
-        it("returns true", function() {
-          expect(User.table.hasSubscribers()).to(beTrue);
-        });
-      });
-
-      context("if no callbacks have been registered", function() {
-        it("returns false", function() {
-          expect(User.table.hasSubscribers()).to(beFalse);
-        });
-      });
-    });
-
-    describe("delta callback triggering", function() {
-      useLocalFixtures();
-
-      describe("when a Record is inserted into the Table", function() {
-        it("triggers #onInsert callbacks with the inserted record", function() {
-          var insertCallback = mockFunction("insert callback");
-          User.table.onInsert(insertCallback);
-
-          User.create({id: "emma", fullName: "Emma Cunningham"})
-            .afterEvents(function(record) {
-              expect(insertCallback).to(haveBeenCalled, once);
-              expect(insertCallback).to(haveBeenCalled, withArgs(record));
-            });
-        });
-      });
-
-      describe("when a record in the Table is removed", function() {
-        it("triggers #onRemove callbacks with the removed record", function() {
-          var removeCallback = mockFunction("remove callback");
-          User.table.onRemove(removeCallback);
-
-          var record = User.fixture("jan");
-          User.table.remove(record);
-
-          expect(removeCallback).to(haveBeenCalled, once);
-          expect(removeCallback).to(haveBeenCalled, withArgs(record));
-        });
-      });
-
-      describe("when a record in the Table is updated", function() {
-        it("triggers #onUpdate callbacks with the updated record and a changed attributes object", function() {
-          var updateCallback = mockFunction("update callback");
-          User.table.onUpdate(updateCallback);
-
-          var record = User.fixture("jan");
-
-          var oldValue = record.fullName();
-          var newValue = oldValue + " The Third";
-
-          record.fullName(newValue);
-          record.save();
-
-          expect(updateCallback).to(haveBeenCalled, once);
-          expect(updateCallback).to(haveBeenCalled, withArgs(record, {
-            fullName: {
-              column: User.fullName,
-              oldValue: oldValue,
-              newValue: oldValue + " The Third"
-            }
-          }));
-        });
-      });
-    });
-
-    describe("onDirty / onClean callback triggering", function() {
-      useLocalFixtures();
-
-      it("fires onDirty / onClean callbacks when a record in the table becomes dirty or clean", function() {
-        var dirtyCallback = mockFunction('dirtyCallback');
-        var cleanCallback = mockFunction('cleanCallback');
-
-        User.table.onDirty(dirtyCallback);
-        User.table.onClean(cleanCallback);
-
-        var user = User.fixture('jan');
-        var fullNameBefore = user.fullName();
-
-        user.fullName("Mahatma Ghandi");
-        expect(dirtyCallback).to(haveBeenCalled, withArgs(user));
-
-        user.fullName(fullNameBefore);
-        expect(cleanCallback).to(haveBeenCalled, withArgs(user));
-      });
-    });
-
-    describe("onInvalid / onValid callback triggering", function() {
-      useLocalFixtures();
-
-      it("fires onInvalid / onValid callbacks when a record in the table becomes invalid or valid again", function() {
-        var invalidCallback = mockFunction('invalidCallback');
-        var validCallback = mockFunction('validCallback');
-
-        User.table.onInvalid(invalidCallback);
-        User.table.onValid(validCallback);
-
-        var user = User.fixture('jan');
-        user.assignValidationErrors({fullName: ["some error"]});
-
-        expect(invalidCallback).to(haveBeenCalled, withArgs(user));
-
-        user.clearValidationErrors();
-        expect(validCallback).to(haveBeenCalled, withArgs(user));
-      });
-    });
-
-    describe("#pauseEvents and #resumeEvents", function() {
-      specify("#pauseEvents delays #onInsert, #onRemove, and #onUpdate triggers until #resumeEvents is called. Then delayed events are flushed and future events are no longer delayed", function() {
-        var insertCallback = mockFunction("insert callback");
-        var updateCallback = mockFunction("update callback");
-        var removeCallback = mockFunction("remove callback");
-
-        User.table.onInsert(insertCallback);
-        User.table.onUpdate(updateCallback);
-        User.table.onRemove(removeCallback);
-
-        User.table.pauseEvents();
-
-        var record = User.createFromRemote({id: "jake", fullName: "Jake Frautschi"});
-        record.remote.update({ fullName: "Jacob Frautschi" });
-        record.remotelyDestroyed();
-
-        expect(insertCallback).toNot(haveBeenCalled);
-        expect(updateCallback).toNot(haveBeenCalled);
-        expect(removeCallback).toNot(haveBeenCalled);
-
-        User.table.resumeEvents();
-
-        expect(insertCallback).to(haveBeenCalled, withArgs(record));
-        expect(updateCallback).to(haveBeenCalled, once);
-        expect(updateCallback).to(haveBeenCalled, withArgs(record, {
-          fullName: {
-            column: User.fullName,
-            oldValue: "Jake Frautschi",
-            newValue: "Jacob Frautschi"
-          }
-        }));
-        expect(removeCallback).to(haveBeenCalled, withArgs(record));
-
-        insertCallback.clear();
-        updateCallback.clear();
-        removeCallback.clear();
-
-        var record2 = User.createFromRemote({id: "nathan", fullName: "Nathan Sobo"});
-
-        expect(insertCallback).to(haveBeenCalled, once);
-        expect(insertCallback).to(haveBeenCalled, withArgs(record2));
-
-        record2.remote.update({fullName: "Nate Sobo"});
-        expect(updateCallback).to(haveBeenCalled, once);
-
-        record2.remotelyDestroyed();
-        expect(removeCallback).to(haveBeenCalled, once);
-      });
-    });
-
-    describe("#evaluateInRepository(repository)", function() {
-      it("returns the equivalent Table from the given repository", function() {
-        var otherRepo = Repository.cloneSchema();
-        var tableInOtherRepo = User.table.evaluateInRepository(otherRepo);
-        expect(tableInOtherRepo).to(eq, otherRepo.tables.users);
-      });
-    });
-
-    describe("#clear", function() {
-      it("removes tuples data from the table and its index", function() {
-        expect(User.find('jan')).toNot(beNull);
-        User.table.clear();
-        expect(User.table.empty()).to(beTrue);
-        expect(User.find('jan')).to(beNull);
       });
     });
 
@@ -331,5 +92,147 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+    describe("#clear", function() {
+      it("removes tuples data from the table and its index", function() {
+        expect(User.find('jan')).toNot(beNull);
+        User.table.clear();
+        expect(User.table.empty()).to(beTrue);
+        expect(User.find('jan')).to(beNull);
+      });
+    });
+
+    describe("#wireRepresentation", function() {
+      it("contains the Table's #name and has the 'type' of 'table'", function() {
+        expect(BlogPost.table.wireRepresentation()).to(equal, {
+          type: "table",
+          name: "blog_posts"
+        });
+      });
+    });
+
+    describe("events", function() {
+      var insertCallback, removeCallback, updateCallback, dirtyCallback, cleanCallback, invalidCallback, validCallback;
+      before(function() {
+        insertCallback = mockFunction("insert callback", function(record) {
+          expect(User.contains(record)).to(beTrue);
+        });
+        User.onInsert(insertCallback);
+
+        removeCallback = mockFunction("remove callback", function(record) {
+          expect(User.contains(record)).to(beFalse);
+        });
+        User.onRemove(removeCallback);
+
+        updateCallback = mockFunction("update callback");
+        User.onUpdate(updateCallback);
+
+        dirtyCallback = mockFunction('dirtyCallback');
+        User.onDirty(dirtyCallback);
+
+        cleanCallback = mockFunction('cleanCallback');
+        User.onClean(cleanCallback);
+        
+        invalidCallback = mockFunction('invalidCallback');
+        User.onInvalid(invalidCallback);
+
+        validCallback = mockFunction('validCallback');
+        User.onValid(validCallback);
+      });
+
+      it("triggers insert, update, and remove events on the table at the appropriate times", function() {
+        var record = User.createFromRemote({id: "emma", fullName: "Emma Cunningham"})
+        expect(insertCallback).to(haveBeenCalled, withArgs(record));
+
+        record.remotelyUpdated({fullName: "Emma T. Scheme"});
+        expect(updateCallback).to(haveBeenCalled, withArgs(record, {
+          fullName: {
+            column: User.fullName,
+            oldValue: "Emma Cunningham",
+            newValue: "Emma T. Scheme"
+          }
+        }));
+
+        record.remotelyDestroyed();
+        expect(removeCallback).to(haveBeenCalled, withArgs(record));
+      });
+
+      it("triggers dirty and clean events at the appropriate times", function() {
+        var record = User.createFromRemote({id: 1, fullName: "Nathan Sobo"})
+
+        record.fullName("Mahatma Ghandi");
+        expect(dirtyCallback).to(haveBeenCalled, withArgs(record));
+
+        record.fullName("Nathan Sobo");
+        expect(cleanCallback).to(haveBeenCalled, withArgs(record));
+      });
+      
+      it("triggers invalid and valid events at the appropriate times", function() {
+        var record = User.createFromRemote({id: 1, fullName: "Nathan Sobo"})
+        record.assignValidationErrors({fullName: ["some error"]});
+
+        expect(invalidCallback).to(haveBeenCalled, withArgs(record));
+
+        record.clearValidationErrors();
+        expect(validCallback).to(haveBeenCalled, withArgs(record));
+      });
+    });
+
+    describe("#pauseEvents and #resumeEvents", function() {
+      specify("#pauseEvents delays #onInsert, #onRemove, and #onUpdate triggers until #resumeEvents is called. Then delayed events are flushed and future events are no longer delayed", function() {
+        var insertCallback = mockFunction("insert callback");
+        var updateCallback = mockFunction("update callback");
+        var removeCallback = mockFunction("remove callback");
+
+        User.table.onInsert(insertCallback);
+        User.table.onUpdate(updateCallback);
+        User.table.onRemove(removeCallback);
+
+        User.table.pauseEvents();
+
+        var record = User.createFromRemote({id: "jake", fullName: "Jake Frautschi"});
+        record.remotelyUpdated({ fullName: "Jacob Frautschi" });
+        record.remotelyDestroyed();
+
+        expect(insertCallback).toNot(haveBeenCalled);
+        expect(updateCallback).toNot(haveBeenCalled);
+        expect(removeCallback).toNot(haveBeenCalled);
+
+        User.table.resumeEvents();
+
+        expect(insertCallback).to(haveBeenCalled, withArgs(record));
+        expect(updateCallback).to(haveBeenCalled, once);
+        expect(updateCallback).to(haveBeenCalled, withArgs(record, {
+          fullName: {
+            column: User.fullName,
+            oldValue: "Jake Frautschi",
+            newValue: "Jacob Frautschi"
+          }
+        }));
+        expect(removeCallback).to(haveBeenCalled, withArgs(record));
+
+        insertCallback.clear();
+        updateCallback.clear();
+        removeCallback.clear();
+
+        var record2 = User.createFromRemote({id: "nathan", fullName: "Nathan Sobo"});
+
+        expect(insertCallback).to(haveBeenCalled, once);
+        expect(insertCallback).to(haveBeenCalled, withArgs(record2));
+
+        record2.remote.update({fullName: "Nate Sobo"});
+        expect(updateCallback).to(haveBeenCalled, once);
+
+        record2.remotelyDestroyed();
+        expect(removeCallback).to(haveBeenCalled, once);
+      });
+    });
+
+    describe("#evaluateInRepository(repository)", function() {
+      it("returns the equivalent Table from the given repository", function() {
+        var otherRepo = Repository.cloneSchema();
+        var tableInOtherRepo = User.table.evaluateInRepository(otherRepo);
+        expect(tableInOtherRepo).to(eq, otherRepo.tables.users);
+      });
+    });
   });
 }});
