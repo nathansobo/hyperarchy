@@ -1,6 +1,5 @@
 //= require "fake_server/fake_server"
 //= require "fake_server/fake_comet_client"
-//= require "fake_server/fake_command_batch"
 //= require "fake_server/fake_request"
 //= require "fake_server/fake_fetch"
 //= require "fake_server/fake_subscribe"

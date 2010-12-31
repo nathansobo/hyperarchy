@@ -12,7 +12,6 @@ Screw.Unit(function(c) { with(c) {
       post1 = blog1.blogPosts().createFromRemote({id: 'post1', body: "this is post 1"});
       post2 = blog1.blogPosts().createFromRemote({id: 'post2', body: "this is post 2"});
       post3 = blog2.blogPosts().createFromRemote({id: 'post3', body: "this is post 3"});
-      Server.save(user, blog1, blog2, post1, post2, post3);
 
       operand = user.blogs().join(BlogPost).on(BlogPost.blogId.eq(Blog.id));
       projection = new Monarch.Model.Relations.TableProjection(operand, Blog.table);
@@ -56,7 +55,6 @@ Screw.Unit(function(c) { with(c) {
           it("triggers onRemoteInsert callbacks with the record", function() {
             var blog = user.blogs().createFromRemote({id: 'bloggo'});
             var post = blog.blogPosts().createFromRemote();
-            Server.save(blog, post);
             expect(insertCallback).to(haveBeenCalled, once);
             expect(insertCallback).to(haveBeenCalled, withArgs(blog));
           });

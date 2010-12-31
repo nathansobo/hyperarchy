@@ -10,7 +10,6 @@ _.constructor("FakeServer", Monarch.Http.Server, {
     this.creates = [];
     this.updates = [];
     this.destroys = [];
-    this.batches = [];
 
     this.auto = (auto === undefined) ? true : auto;
 
@@ -60,23 +59,11 @@ _.constructor("FakeServer", Monarch.Http.Server, {
       return fakeUnsubscribe.future;
     }
   },
-  
-  save: function() {
-    var commands = _.map(this.extractDirtyRecords(arguments), function(dirtyRecord) {
-      return this.buildAppropriateCommand(dirtyRecord);
-    }, this);
-    var batch = new FakeServer.FakeCommandBatch(Repository.originUrl, this, commands);
-    return batch.perform();
-  },
 
   performCommand: function(command) {
-    var batch = new FakeServer.FakeCommandBatch(Repository.originUrl, this, [command]);
     Repository.pauseMutations();
-    var saveFuture = batch.perform();
-    saveFuture.onComplete(function() {
-      Repository.resumeMutations();
-    });
-    return saveFuture;
+    var fakeMutation = new FakeServer.FakeMutation(Repository.originUrl, command, this);
+    return fakeMutation.perform().onComplete(Repository.hitch('resumeMutations'));
   },
 
   post: function(url, data) {
@@ -95,14 +82,6 @@ _.constructor("FakeServer", Monarch.Http.Server, {
     return this.request('delete', url, data);
   },
 
-  removeRequest: function(request) {
-    var requestsArray = this[_.pluralize(request.type)];
-    _.remove(requestsArray, request);
-    this["last" + _.capitalize(request.type)] = requestsArray[requestsArray.length - 1];
-  },
-
-  // private
-
   request: function(type, url, data) {
     var fakeRequest = new FakeServer.FakeRequest(type, url, data, this);
     this.addRequest(fakeRequest);
@@ -113,5 +92,11 @@ _.constructor("FakeServer", Monarch.Http.Server, {
     var requestsArray = this[_.pluralize(request.type)];
     requestsArray.push(request);
     this["last" + _.capitalize(request.type)] = request;
-  }
+  },
+
+  removeRequest: function(request) {
+    var requestsArray = this[_.pluralize(request.type)];
+    _.remove(requestsArray, request);
+    this["last" + _.capitalize(request.type)] = requestsArray[requestsArray.length - 1];
+  },
 });

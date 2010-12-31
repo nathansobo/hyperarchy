@@ -1,8 +1,8 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Http.DestroyCommand", Monarch.Http.Command, {
-  initialize: function(record) {
-    this.record = record;
+  initialize: function($super, record, server) {
+    $super(record, server);
     this.tableName = record.table.globalName;
     this.id = record.id();
   },

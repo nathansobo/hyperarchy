@@ -14,8 +14,7 @@ Screw.Unit(function(c) { with(c) {
       post1 = blog1.blogPosts().createFromRemote({id: 'post1', body: "this is post 1"});
       post2 = blog1.blogPosts().createFromRemote({id: 'post2', body: "this is post 2"});
       post3 = blog2.blogPosts().createFromRemote({id: 'post3', body: "this is post 3"});
-      Server.save(user, blog1, blog2, post1, post2, post3);
-      
+
       leftOperand = user.blogs();
       rightOperand = BlogPost.table;
       predicate = BlogPost.blogId.eq(Blog.id);
@@ -153,18 +152,13 @@ Screw.Unit(function(c) { with(c) {
         context("when a tuple is inserted into the left operand", function() {
           context("when the insertion causes #carteseanProduct to contain a new CompositeTuple that matches the predicate", function() {
             it("triggers #onRemoteInsert handlers with the new CompositeTuple", function() {
-              var blogPost;
+              var blogPost = BlogPost.createFromRemote({ id: 'fofo', blogId: 'blog3'});
 
-              BlogPost.create({ id: 'fofo', blogId: 'blog3'}).afterEvents(function(record) {
-                blogPost = record;
-              });
-
-              user.blogs().create({id: "blog3"}).afterEvents(function(blog) {
-                expect(insertHandler).to(haveBeenCalled, once);
-                var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(eq, blog);
-                expect(compositeTuple.rightTuple).to(eq, blogPost);
-              });
+              var blog = user.blogs().createFromRemote({id: "blog3"})
+              expect(insertHandler).to(haveBeenCalled, once);
+              var compositeTuple = insertHandler.mostRecentArgs[0];
+              expect(compositeTuple.leftTuple).to(eq, blog);
+              expect(compositeTuple.rightTuple).to(eq, blogPost);
             });
           });
 
@@ -264,8 +258,8 @@ Screw.Unit(function(c) { with(c) {
 
                 var oldValue = blog2.name();
                 var newValue = "Railsnuts Racoon's daily beat";
-                blog2.name(newValue);
-                Server.save(blog2);
+                blog2.remotelyUpdated({name: newValue});
+                
                 expect(updateHandler).to(haveBeenCalled, once);
                 expect(removeHandler).toNot(haveBeenCalled);
                 expect(insertHandler).toNot(haveBeenCalled);
@@ -301,7 +295,6 @@ Screw.Unit(function(c) { with(c) {
               it("triggers only the #onRemoteInsert handlers with the updated CompositeTuple", function() {
                 var blog = user.blogs().createFromRemote({id: 'junky'});
                 var blogPost = BlogPost.createFromRemote({blogId: 'nice'});
-                Server.save(blog, blogPost);
 
                 blog.update({id: "nice"});
                 expect(insertHandler).to(haveBeenCalled, once);
