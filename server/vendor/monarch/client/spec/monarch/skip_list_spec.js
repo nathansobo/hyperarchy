@@ -6,11 +6,7 @@ Screw.Unit(function(c) { with(c) {
     
     describe("insertion, removal, and search", function() {
       it("correctly handles operations for a randomized dataset", function() {
-        var unusedLetters = [];
-        var insertedLetters = [];
-        var removedLetters = [];
-
-        for (var i = 97; i <= 122; i++) { unusedLetters.push(String.fromCharCode(i)) }
+        var skipList, unusedLetters, insertedLetters, removedLetters;
 
 
         function randomNumber(upTo) {
@@ -27,12 +23,11 @@ Screw.Unit(function(c) { with(c) {
         function insert() {
           if (unusedLetters.length === 0) return;
           var letter = randomElement(unusedLetters, 'remove');
-          console.debug("inserting", letter);
-          skipList.insert(letter, letter);
+          var index = skipList.insert(letter, letter);
           insertedLetters.push(letter);
-          console.debug("insertedLetters", _.clone(insertedLetters));
-
-          expect(skipList.values()).to(equal, insertedLetters.sort());
+          insertedLetters = insertedLetters.sort();
+          expect(index).to(eq, _.sortedIndex(insertedLetters, letter));
+          expect(skipList.values()).to(equal, insertedLetters);
         }
 
         function find() {
@@ -47,14 +42,12 @@ Screw.Unit(function(c) { with(c) {
         }
 
         function remove() {
+          return;
           if (insertedLetters.length === 0) return;
           var letter = randomElement(insertedLetters, 'remove');
-          console.debug("removing", letter);
           skipList.remove(letter);
-          console.debug("insertedLetters:", _.clone(insertedLetters));
 
           removedLetters.push(letter);
-          console.debug("removedLetters:", _.clone(removedLetters));
 
           expect(skipList.values()).to(equal, insertedLetters.sort());
         }
@@ -67,8 +60,17 @@ Screw.Unit(function(c) { with(c) {
           }
         }
 
-        var skipList = new Monarch.SkipList();
-        _(100).times(randomAction);
+
+        function runTrial() {
+          unusedLetters = [];
+          insertedLetters = [];
+          removedLetters = [];
+          for (var i = 97; i <= 122; i++) { unusedLetters.push(String.fromCharCode(i)) }
+          skipList = new Monarch.SkipList();
+          _(100).times(randomAction);
+        }
+
+        _(100).times(runTrial);
       });
     });
   });
