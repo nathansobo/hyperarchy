@@ -17,16 +17,6 @@ _.constructor("Monarch.SkipList", {
     }
   },
 
-  compare: function(a, b) {
-    if (a === this.minusInfinity) return (b === this.minusInfinity) ? 0 : -1;
-    if (b === this.minusInfinity) return (a === this.minusInfinity) ? 0 : 1;
-    if (a === this.plusInfinity) return (b === this.plusInfinity) ? 0 : 1;
-    if (b === this.plusInfinity) return (a === this.plusInfinity) ? 0 : -1;
-    if (a < b) return - 1;
-    if (a > b) return 1;
-    return 0;
-  },
-
   insert: function(key, value) {
     if (!value) value = key;
     var next = this.buildNextArray();
@@ -93,12 +83,18 @@ _.constructor("Monarch.SkipList", {
   },
 
   find: function(key) {
-    var cursor = this.findClosestNode(key, false);
+    var cursor = this.findClosestNode(key);
     if (this.compare(cursor.key, key) === 0) {
       return cursor.value;
     } else {
       return undefined;
     }
+  },
+
+  indexOf: function(key) {
+    var nextDistance = this.buildNextDistanceArray();
+    var cursor = this.findClosestNode(key, null, nextDistance);
+    return _.sum(nextDistance);
   },
 
   values: function() {
@@ -111,15 +107,14 @@ _.constructor("Monarch.SkipList", {
     return values;
   },
 
-
-  nodes: function() {
-    var nodes = [];
-    var cursor = this.head.pointer[0];
-    while(cursor !== this.nil) {
-      nodes.push(cursor);
-      cursor = cursor.pointer[0];
-    }
-    return nodes;
+  compare: function(a, b) {
+    if (a === this.minusInfinity) return (b === this.minusInfinity) ? 0 : -1;
+    if (b === this.minusInfinity) return (a === this.minusInfinity) ? 0 : 1;
+    if (a === this.plusInfinity) return (b === this.plusInfinity) ? 0 : 1;
+    if (b === this.plusInfinity) return (a === this.plusInfinity) ? 0 : -1;
+    if (a < b) return - 1;
+    if (a > b) return 1;
+    return 0;
   },
 
   // private
@@ -168,6 +163,16 @@ _.constructor("Monarch.SkipList", {
   },
 
   // tests only
+  nodes: function() {
+    var nodes = [];
+    var cursor = this.head.pointer[0];
+    while(cursor !== this.nil) {
+      nodes.push(cursor);
+      cursor = cursor.pointer[0];
+    }
+    return nodes;
+  },
+
   html: function() {
     var nodes = this.nodes();
     var head = this.head;

@@ -34,6 +34,7 @@ Screw.Unit(function(c) { with(c) {
           if (insertedLetters.length > 0) {
             var letter = randomElement(insertedLetters);
             expect(skipList.find(letter)).to(eq, letter);
+            expect(skipList.indexOf(letter)).to(eq, _.sortedIndex(insertedLetters, letter));
           }
           if (removedLetters.length > 0) {
             var letter = randomElement(removedLetters);
