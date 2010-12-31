@@ -50,7 +50,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     this.onRemoteInsertNode.publish(record);
   },
 
-  allTuples: function() {
+  tuples: function() {
     return this._tuples.concat();
   },
 

@@ -7,15 +7,15 @@ _.constructor("Monarch.Model.Relations.Union", Monarch.Model.Relations.Relation,
     this.initializeEventsSystem();
   },
 
-  allTuples: function() {
+  tuples: function() {
     if (this._tuples) return this._tuples;
 
     var tuplesByHashCode = {};
 
-    _.each(this.leftOperand.allTuples(), function(tuple) {
+    _.each(this.leftOperand.tuples(), function(tuple) {
       tuplesByHashCode[tuple.hashCode()] = tuple;
     });
-    _.each(this.rightOperand.allTuples(), function(tuple) {
+    _.each(this.rightOperand.tuples(), function(tuple) {
       tuplesByHashCode[tuple.hashCode()] = tuple;
     });
     return _.values(tuplesByHashCode);

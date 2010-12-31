@@ -11,17 +11,17 @@ _.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relations.Rela
     return record.id() in this.tuplesById;
   },
 
-  allTuples: function() {
+  tuples: function() {
     if (this.tuplesById) return _.values(this.tuplesById);
     var tuples = [];
 
-    var leftTuples = this.leftOperand.allTuples().sort(function(a, b) {
+    var leftTuples = this.leftOperand.tuples().sort(function(a, b) {
       if (a.id() < b.id()) return -1;
       if (a.id() > b.id()) return 1;
       return 0;
     });
 
-    var rightTuples = this.rightOperand.allTuples().sort(function(a, b) {
+    var rightTuples = this.rightOperand.tuples().sort(function(a, b) {
       if (a.id() < b.id()) return -1;
       if (a.id() > b.id()) return 1;
       return 0;

@@ -12,7 +12,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
 
-    describe("#allTuples", function() {
+    describe("#tuples", function() {
       it("returns the union tuples in the left operand and right operand", function() {
         var user1 = User.createFromRemote({id: 1, age: 22, fullName: "Mackrel"});
         var user2 = User.createFromRemote({id: 2, age: 32, fullName: "Jonie"});
@@ -20,7 +20,7 @@ Screw.Unit(function(c) { with(c) {
         var user4 = User.createFromRemote({id: 4, fullName: "John"});
         var user5 = User.createFromRemote({id: 5, fullName: "Mark"});
 
-        var tuples = union.allTuples();
+        var tuples = union.tuples();
         expect(tuples.length).to(eq, 3);
         expect(_.include(tuples, user2)).to(beTrue);
         expect(_.include(tuples, user3)).to(beTrue);

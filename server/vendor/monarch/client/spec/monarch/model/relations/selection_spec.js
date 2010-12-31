@@ -12,17 +12,17 @@ Screw.Unit(function(c) { with(c) {
       selection = new Monarch.Model.Relations.Selection(operand, predicate);
     });
 
-    describe("#allTuples", function() {
+    describe("#tuples", function() {
       it("returns only the #tuples of #operand that match #predicate", function() {
         var expectedTuples = [];
         var operandTuples = operand.tuples();
 
-        var expectedTuples = _.filter(operand.allTuples(), function(tuple) {
+        var expectedTuples = _.filter(operand.tuples(), function(tuple) {
           return predicate.evaluate(tuple);
         });
 
         expect(expectedTuples).toNot(beEmpty);
-        expect(selection.allTuples()).to(equal, expectedTuples);
+        expect(selection.tuples()).to(equal, expectedTuples);
       });
     });
 

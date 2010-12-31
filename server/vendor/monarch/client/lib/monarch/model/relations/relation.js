@@ -113,18 +113,8 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return new Monarch.Model.Relations.Union(this, rightOperand);
   },
 
-  tuples: function() {
-    return this.localTuples();
-  },
-
-  localTuples: function() {
-    return _.filter(this.allTuples(), function(record) {
-      return !record.locallyDestroyed;
-    });
-  },
-
   dirtyTuples: function() {
-    return _.filter(this.allTuples(), function(record) {
+    return _.filter(this.tuples(), function(record) {
       return record.dirty();
     });
   },

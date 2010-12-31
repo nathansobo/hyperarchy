@@ -33,8 +33,8 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
     this.initializeEventsSystem();
   },
 
-  allTuples: function() {
-    return this.operand.allTuples().sort(this.comparator);
+  tuples: function() {
+    return this.operand.tuples().sort(this.comparator);
   },
 
   evaluateInRepository: function(repository) {

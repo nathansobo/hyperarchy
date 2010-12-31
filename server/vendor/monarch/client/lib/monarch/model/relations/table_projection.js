@@ -13,15 +13,15 @@ _.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations
 
   hasOperands: true,
 
-  allTuples: function() {
+  tuples: function() {
     if (this._tuples) return this._tuples;
 
-    var allTuples = [];
-    _.each(this.operand.allTuples(), function(compositeTuple) {
+    var tuples = [];
+    _.each(this.operand.tuples(), function(compositeTuple) {
       var record = compositeTuple.record(this.projectedTable);
-      if (!_.include(allTuples, record)) allTuples.push(record);
+      if (!_.include(tuples, record)) tuples.push(record);
     }, this);
-    return allTuples;
+    return tuples;
   },
 
   surfaceTables: function() {

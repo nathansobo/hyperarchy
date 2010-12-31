@@ -15,11 +15,11 @@ _.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relations.Rela
     this.initializeEventsSystem();
   },
 
-  allTuples: function() {
+  tuples: function() {
     if (this._tuples) return this._tuples;
 
     this.tuplesByOperandRecordId = {};
-    return _.map(this.operand.allTuples(), function(operandTuple) {
+    return _.map(this.operand.tuples(), function(operandTuple) {
       return this.tuplesByOperandRecordId[operandTuple.id()] = new this.tupleConstructor(operandTuple);
     }, this);
   },

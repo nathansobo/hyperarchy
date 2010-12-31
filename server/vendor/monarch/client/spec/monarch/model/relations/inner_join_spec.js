@@ -21,21 +21,21 @@ Screw.Unit(function(c) { with(c) {
       join = new Monarch.Model.Relations.InnerJoin(leftOperand, rightOperand, predicate);
     });
 
-    describe("#allTuples", function() {
+    describe("#tuples", function() {
       it("returns all composite tuples from the cartesian product of the operands that match the predicate", function() {
-        var allTuples = join.allTuples();
+        var tuples = join.tuples();
 
-        expect(allTuples.length).to(eq, 3);
+        expect(tuples.length).to(eq, 3);
 
-        expect(_.any(allTuples, function(tuple) {
+        expect(_.any(tuples, function(tuple) {
           return tuple.record(Blog.table) === blog1 && tuple.record(BlogPost.table) === post1;
         })).to(beTrue);
 
-        expect(_.any(allTuples, function(tuple) {
+        expect(_.any(tuples, function(tuple) {
           return tuple.record(Blog.table) === blog1 && tuple.record(BlogPost.table) === post2;
         })).to(beTrue);
 
-        expect(_.any(allTuples, function(tuple) {
+        expect(_.any(tuples, function(tuple) {
           return tuple.record(Blog.table) === blog2 && tuple.record(BlogPost.table) === post3;
         })).to(beTrue);
       });
@@ -191,10 +191,10 @@ Screw.Unit(function(c) { with(c) {
               expect(insertHandler).toNot(haveBeenCalled);
             });
 
-            it("does not modify the contents of #allTuples", function() {
-              var numTuplesBeforeInsertion = join.allTuples().length;
+            it("does not modify the contents of #tuples", function() {
+              var numTuplesBeforeInsertion = join.tuples().length;
               BlogPost.create();
-              expect(join.allTuples().length).to(eq, numTuplesBeforeInsertion);
+              expect(join.tuples().length).to(eq, numTuplesBeforeInsertion);
             });
           });
         });
