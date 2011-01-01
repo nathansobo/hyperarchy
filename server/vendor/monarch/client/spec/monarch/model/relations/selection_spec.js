@@ -79,58 +79,17 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#onInsert", function() {
-      it("returns a Monarch.Subscription with #onInsertNode as its #node", function() {
-        var subscription = selection.onInsert(function() {});
-        expect(subscription.node).to(eq, selection.onInsertNode);
-      });
-    });
-
-    describe("#onRemove", function() {
-      it("returns a Monarch.Subscription with #onRemoveNode as its #node", function() {
-        var subscription = selection.onRemove(function() {});
-        expect(subscription.node).to(eq, selection.onRemoveNode);
-      });
-    });
-
-    describe("#onUpdate", function() {
-      it("returns a Monarch.Subscription with #onUpdateNode as its #node", function() {
-        var subscription = selection.onUpdate(function() {});
-        expect(subscription.node).to(eq, selection.onUpdateNode);
-      });
-    });
-
-    describe("#hasSubscribers", function() {
-      context("if a callback has been registered with #onInsert", function() {
-        it("returns true", function() {
-          selection.onInsert(function() {});
-          expect(selection.hasSubscribers()).to(beTrue);
-        });
-      });
-
-      context("if a callback has been registered with #onRemove", function() {
-        it("returns true", function() {
-          selection.onRemove(function() {});
-          expect(selection.hasSubscribers()).to(beTrue);
-        });
-      });
-
-      context("if a callback has been registered with #onUpdate", function() {
-        it("returns true", function() {
-          selection.onUpdate(function() {});
-          expect(selection.hasSubscribers()).to(beTrue);
-        });
-      });
-
-      context("if no callbacks have been registered", function() {
-        it("returns false", function() {
-          expect(selection.hasSubscribers()).to(beFalse);
-        });
+    describe("#isEqual", function() {
+      it("structurally compares the selection with other relations", function() {
+        expect(User.where({fullName: "Joe"}).isEqual(User.where({fullName: "Joe"}))).to(beTrue);
+        expect(User.where({fullName: "Joe"}).isEqual(User.where({fullName: "Bob"}))).to(beFalse);
+        expect(User.where({fullName: "Joe"}).isEqual(User.table)).to(beFalse);
       });
     });
 
     describe("event handling", function() {
-      var insertCallback, removeCallback, updateCallback, tuple;
+      var insertCallback, removeCallback, updateCallback, dirtyCallback, cleanCallback, invalidCallback, validCallback;;
+
       before(function() {
         insertCallback = mockFunction("insert callback", function(record) {
           expect(selection.contains(record)).to(beTrue);
@@ -144,209 +103,127 @@ Screw.Unit(function(c) { with(c) {
 
         updateCallback = mockFunction("update callback");
         selection.onUpdate(updateCallback);
+
+        dirtyCallback = mockFunction('dirtyCallback');
+        selection.onDirty(dirtyCallback);
+
+        cleanCallback = mockFunction('cleanCallback');
+        selection.onClean(cleanCallback);
+
+        invalidCallback = mockFunction('invalidCallback');
+        selection.onInvalid(invalidCallback);
+
+        validCallback = mockFunction('validCallback');
+        selection.onValid(validCallback);
       });
 
-      context("when a record is inserted in the Selection's #operand remotely", function() {
-        context("when that record matches #predicate", function() {
-          it("triggers #onInsert callbacks with the inserted record", function() {
-            User.create({id: "joe", age: 31})
-              .afterEvents(function(record) {
-                expect(predicate.evaluate(record)).to(beTrue);
-                expect(insertCallback).to(haveBeenCalled, withArgs(record));
-              });
-          });
-        });
-
-        context("when that record does not match #predicate", function() {
-          it("does not trigger #onInsert callbacks", function() {
-            User.create({id: "mike", age: 22})
-              .afterEvents(function(record) {
-                expect(predicate.evaluate(record)).to(beFalse);
-                expect(insertCallback).toNot(haveBeenCalled);
-              });
-          });
-        });
-      });
-
-      context("when a record is removed from the Selection's #operand remotely", function() {
-        context("when that record matches #predicate", function() {
-          it("triggers #onRemove callbacks with the removed record", function() {
-            var record = operand.find("jan");
+      context("when a record is inserted into the selection's operand", function() {
+        context("when that record matches the predicate", function() {
+          it("triggers insert events with the record", function() {
+            var record = User.createFromRemote({id: "joe", age: 31});
             expect(predicate.evaluate(record)).to(beTrue);
+            expect(insertCallback).to(haveBeenCalled, withArgs(record));
+          });
+        });
 
-            operand.remove(record)
+        context("when that record does not match the predicate", function() {
+          it("does not trigger insert events", function() {
+            var record = User.createFromRemote({id: "mike", age: 22});
+            expect(predicate.evaluate(record)).to(beFalse);
+            expect(insertCallback).toNot(haveBeenCalled);
+          });
+        });
+      });
 
+      context("when a record is removed from the selection's operand", function() {
+        context("when that record matches the predicate", function() {
+          it("triggers remove events with the record", function() {
+            var record = selection.first();
+            record.remotelyDestroyed();
             expect(removeCallback).to(haveBeenCalled, withArgs(record));
           });
         });
 
-        context("when that record does not match #predicate", function() {
-          var record;
-          before(function() {
-            record = operand.find("mike");
-            expect(predicate.evaluate(record)).to(beFalse);
-          });
-
+        context("when that record does not match the predicate", function() {
           it("does not trigger #onRemove callbacks and continues to not #contain the removed record", function() {
-            expect(selection.contains(record)).to(beFalse);
-            operand.remove(record);
-            expect(selection.contains(record)).to(beFalse);
+            var record = operand.find("mike");
+            expect(predicate.evaluate(record)).to(beFalse);
+            record.remotelyDestroyed();
             expect(removeCallback).toNot(haveBeenCalled);
           });
         });
       });
 
-      context("when a record in the selection's #operand is updated remotely", function() {
-        context("when that record matched #predicate before the update", function() {
-          var record;
+      context("when a record in the selection's operand is updated", function() {
+        var record;
+
+        context("when the record matched the predicate before the update", function() {
           before(function() {
-            record = operand.find("jan");
-            expect(predicate.evaluate(record)).to(beTrue);
+            record = selection.first();
           });
 
-          context("when that record matches #predicate after the update", function() {
-            it("does not trigger #onInsert callbacks", function() {
-              record.fullName("Janford Nelsan");
-              expect(predicate.evaluate(record)).to(beTrue);
-              expect(insertCallback).toNot(haveBeenCalled);
-            });
-
-            it("does not trigger #onRemove callbacks", function() {
-              record.fullName("Janford Nelsan");
-              expect(predicate.evaluate(record)).to(beTrue);
-              expect(removeCallback).toNot(haveBeenCalled);
-            });
-
-            it("triggers #onUpdate callbacks with the updated record and a change object and continues to #contain the record", function() {
-              var oldValue = record.fullName();
-              var newValue = "Janand Nelson";
+          context("when the record matches the predicate after the update", function() {
+            it("triggers insert events with the updated record", function() {
+              var oldName = record.fullName();
+              var newName = "Bing Crosby";
 
               expect(selection.contains(record)).to(beTrue);
-              record.fullName(newValue);
-              record.save();
+              record.remotelyUpdated({fullName: newName});
               expect(selection.contains(record)).to(beTrue);
               
-              expect(predicate.evaluate(record)).to(beTrue);
+              expect(updateCallback).to(haveBeenCalled, withArgs(record, {
+                fullName: {
+                  column: User.fullName,
+                  oldValue: oldName,
+                  newValue: newName
+                }
+              }));
 
-              expect(updateCallback).to(haveBeenCalled, once);
-
-              var updatedRecord = updateCallback.mostRecentArgs[0];
-              var updatedAttributes = updateCallback.mostRecentArgs[1];
-              expect(updatedRecord).to(eq, record);
-              expect(updatedAttributes.fullName.column).to(eq, User.fullName);
-              expect(updatedAttributes.fullName.oldValue).to(eq, oldValue);
-              expect(updatedAttributes.fullName.newValue).to(eq, newValue);
+              expect(insertCallback).toNot(haveBeenCalled);
+              expect(removeCallback).toNot(haveBeenCalled);
             });
           });
 
-          context("when that record does not match #predicate after the update", function() {
-            it("does not trigger #onInsert callbacks", function() {
-              record.update({age: 34});
+          context("when the record no longer matches the predicate after the update", function() {
+            it("triggers remove events with the updated record", function() {
+              record.remotelyUpdated({age: 34});
               expect(predicate.evaluate(record)).to(beFalse);
-              expect(insertCallback).toNot(haveBeenCalled);
-            });
-
-            it("triggers #onRemove callbacks to be invoked with the updated record", function() {
-              record.update({age: 34});
-              expect(predicate.evaluate(record)).to(beFalse);
+              expect(selection.contains(record)).to(beFalse);
               expect(removeCallback).to(haveBeenCalled, withArgs(record));
-            });
-
-            it("does not trigger #onUpdate callbacks", function() {
-              record.update({age: 34});
-              expect(predicate.evaluate(record)).to(beFalse);
-              expect(updateCallback).toNot(haveBeenCalled);
-            });
-
-            it("does not #contain the updated record before the #onRemove callbacks are triggered", function() {
-              var onRemoveCallback = mockFunction('onRemoveCallback', function() {
-                expect(selection.contains(record)).to(beFalse);
-              });
-              selection.onRemove(onRemoveCallback);
-
-              expect(selection.contains(record)).to(beTrue);
-              record.update({age: 34});
-              expect(onRemoveCallback).to(haveBeenCalled);
             });
           });
         });
 
-        context("when that record did not match #predicate before the update", function() {
+        context("when the record did not match the predicate before the update", function() {
           before(function() {
             record = operand.find("mike");
             expect(predicate.evaluate(record)).to(beFalse);
           });
 
-          context("when that record matches #predicate after the update", function() {
-            it("triggers #onInsert callbacks with the updated record", function() {
+          context("when the record matches the predicate after the update", function() {
+            it("triggers insert events with the updated record", function() {
               record.update({age: 31});
               expect(predicate.evaluate(record)).to(beTrue);
-              expect(insertCallback).to(haveBeenCalled);
-            });
-
-            it("does not trigger #onRemove callbacks", function() {
-              record.update({age: 31});
-              expect(predicate.evaluate(record)).to(beTrue);
-              expect(removeCallback).toNot(haveBeenCalled);
-            });
-
-            it("does not trigger #onUpdate callbacks", function() {
-              record.update({age: 31});
-              expect(predicate.evaluate(record)).to(beTrue);
-              expect(updateCallback).toNot(haveBeenCalled);
-            });
-
-            it("#contains the record before #onInsert callbacks are fired", function() {
-              var onInsertCallback = mockFunction('onInsertCallback', function(record) {
-                expect(selection.contains(record)).to(beTrue);
-              });
-              selection.onInsert(onInsertCallback);
-
-              expect(selection.contains(record)).to(beFalse);
-              record.update({age: 31});
-              expect(onInsertCallback).to(haveBeenCalled);
+              expect(selection.contains(record)).to(beTrue);
+              expect(insertCallback).to(haveBeenCalled, withArgs(record));
             });
           });
 
-          context("when that record does not match #predicate after the update", function() {
-            it("does not cause #onInsert callbacks to be invoked with the updated record", function() {
-              record.fullName("JarJar Nelson");
+          context("when the record still does not match the predicate after the update", function() {
+            it("does not trigger any events", function() {
+              record.fullName("JarJar Bin Ladel");
               expect(predicate.evaluate(record)).to(beFalse);
               expect(insertCallback).toNot(haveBeenCalled);
-            });
-
-            it("does not cause #onRemove callbacks to be invoked with the updated record", function() {
-              record.fullName("JarJar Nelson");
-              expect(predicate.evaluate(record)).to(beFalse);
               expect(removeCallback).toNot(haveBeenCalled);
-            });
-            
-            it("does not trigger #onUpdate callbacks", function() {
-              record.fullName("JarJar Nelson");
-              expect(predicate.evaluate(record)).to(beFalse);
               expect(updateCallback).toNot(haveBeenCalled);
-            });
-
-            it("continues to not #contain the record", function() {
-              expect(selection.contains(record)).to(beFalse);
-              record.fullName("JarJar Nelson");
-              expect(selection.contains(record)).to(beFalse);
             });
           });
         });
       });
       
       context("when a record is made dirty or clean in the selection's operand", function() {
-        var dirtyCallback, cleanCallback;
-        before(function() {
-          dirtyCallback = mockFunction('dirtyCallback');
-          cleanCallback = mockFunction('cleanCallback');
-          selection.onDirty(dirtyCallback);
-          selection.onDirty(cleanCallback);
-        });
-
         context("when the record matches the selection's predicate", function() {
-          it("triggers onDirty / onClean callbacks on the selection", function() {
+          it("triggers dirty and clean events", function() {
             var record = selection.first();
             var ageBefore = record.age();
             record.age(555);
@@ -357,7 +234,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         context("when the record does not match the selection's predicate", function() {
-          it("does not trigger onDirty / onClean callbacks on the selection", function() {
+          it("does not trigger dirty or clean events", function() {
             var record = User.fixture('mike');
             expect(selection.contains(record)).to(beFalse);
             var fullNameBefore = record.fullName();
@@ -370,16 +247,8 @@ Screw.Unit(function(c) { with(c) {
       });
 
       context("when a record is made invalid or valid in the selection's operand", function() {
-        var invalidCallback, validCallback;
-        before(function() {
-          invalidCallback = mockFunction('invalidCallback');
-          validCallback = mockFunction('validCallback');
-          selection.onInvalid(invalidCallback);
-          selection.onValid(validCallback);
-        });
-
         context("when the record matches the selection's predicate", function() {
-          it("triggers onValid / onInvalid callbacks on the selection", function() {
+          it("triggers valid and invalid events", function() {
             var record = selection.first();
             record.assignValidationErrors({age: ["too young!"]});
             expect(invalidCallback).to(haveBeenCalled, withArgs(record));
@@ -389,7 +258,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         context("when the record does not match the selection's predicate", function() {
-          it("does not trigger onDirty / onClean callbacks on the selection", function() {
+          it("does not trigger valid or invalid events", function() {
             var record = User.fixture('mike');
             expect(selection.contains(record)).to(beFalse);
             record.assignValidationErrors({age: ["too young!"]});
@@ -397,62 +266,6 @@ Screw.Unit(function(c) { with(c) {
             record.clearValidationErrors();
             expect(validCallback).toNot(haveBeenCalled);
           });
-        });
-      });
-    });
-
-    describe("subscription propagation", function() {
-      describe("when a subscription is registered for the selection, destroyed, and another subscription is registered", function() {
-        var eventType;
-
-        scenario("for onInsert callbacks", function() {
-          init(function() {
-            eventType = "onInsert";
-          });
-        });
-
-        scenario("for onUpdate callbacks", function() {
-          init(function() {
-            eventType = "onUpdate";
-          });
-        });
-
-        scenario("for onRemove callbacks", function() {
-          init(function() {
-            eventType = "onRemove";
-          });
-        });
-
-        scenario("for onClean callbacks", function() {
-          init(function() {
-            eventType = "onClean";
-          });
-        });
-
-        scenario("for onDirty callbacks", function() {
-          init(function() {
-            eventType = "onDirty";
-          });
-        });
-
-        it("subscribes to its #operand and memoizes tuples, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
-          expect(operand.hasSubscribers()).to(beFalse);
-          expect(selection._tuples).to(beNull);
-
-          var subscription = selection[eventType].call(selection, function() {});
-
-          expect(operand.hasSubscribers()).to(beTrue);
-          expect(selection._tuples).toNot(beNull);
-
-          subscription.destroy();
-
-          expect(operand.hasSubscribers()).to(beFalse);
-          expect(selection._tuples).to(beNull);
-
-          selection.onUpdate(function() {});
-
-          expect(operand.hasSubscribers()).to(beTrue);
-          expect(selection._tuples).toNot(beNull);
         });
       });
     });
@@ -467,14 +280,6 @@ Screw.Unit(function(c) { with(c) {
 
         var tableInOtherRepo = User.table.evaluateInRepository(otherRepo);
         expect(tableInOtherRepo).to(eq, otherRepo.tables.users);
-      });
-    });
-
-    describe("#isEqual", function() {
-      it("structurally compares the selection with other relations", function() {
-        expect(User.where({fullName: "Joe"}).isEqual(User.where({fullName: "Joe"}))).to(beTrue);
-        expect(User.where({fullName: "Joe"}).isEqual(User.where({fullName: "Bob"}))).to(beFalse);
-        expect(User.where({fullName: "Joe"}).isEqual(User.table)).to(beFalse);
       });
     });
   });

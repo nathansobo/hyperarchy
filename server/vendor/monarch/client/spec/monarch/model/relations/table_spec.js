@@ -110,7 +110,7 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("events", function() {
+    describe("event handling", function() {
       var insertCallback, removeCallback, updateCallback, dirtyCallback, cleanCallback, invalidCallback, validCallback;
       before(function() {
         insertCallback = mockFunction("insert callback", function(record) {
