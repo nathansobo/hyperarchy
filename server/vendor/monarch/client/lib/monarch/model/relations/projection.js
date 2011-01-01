@@ -8,16 +8,28 @@ _.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relations.Rela
       this.projectedColumnsByName[projectedColumn.name()] = projectedColumn;
     }, this);
 
-
-    this.sortSpecifications = _.filter(operand.sortSpecifications, function(sortSpec) {
-      return this.column(sortSpec.column.name)
-    }, this);
-
+    this.sortSpecifications = this.projectSortSpecifications(projectedColumns, operand.sortSpecifications);
     this.tupleConstructor = _.constructor(Monarch.Model.Tuple);
     this.tupleConstructor.projectedColumnsByName = this.projectedColumnsByName;
     this.tupleConstructor.initializeFieldReaders();
 
     this.initializeEventsSystem();
+  },
+
+  projectSortSpecifications: function(projectedColumns, sortSpecifications) {
+    var projectedSortSpecifications = [];
+
+    _.each(sortSpecifications, function(sortSpec) {
+      var projectedColumn = _.detect(projectedColumns, function(projectedColumn) {
+        return projectedColumn.column === sortSpec.column;
+      });
+
+      if (projectedColumn) {
+        projectedSortSpecifications.push(new Monarch.Model.SortSpecification(projectedColumn, sortSpec.direction));
+      }
+    });
+
+    return projectedSortSpecifications;
   },
 
   tuples: function() {
