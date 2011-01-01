@@ -60,13 +60,11 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
   // private
 
   tupleInsertedRemotely: function(tuple) {
-    var position = _.comparatorSortedIndex(this._tuples, tuple, this.comparator);
-    this._tuples.splice(position, 0, tuple);
+    var position = this._tuples.insert(tuple)
     this.onInsertNode.publish(tuple, position);
   },
 
   tupleUpdatedRemotely: function($super, tuple, changedFields) {
-    var currentPosition = _.indexOf(this._tuples, tuple);
     var positionMayChange = _.any(changedFields, function(changedField) {
       return this.sortingOnColumn(changedField.column);
     }, this);
@@ -75,15 +73,13 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
       return;
     }
 
-    this._tuples.splice(currentPosition, 1);
-    var newPosition = _.comparatorSortedIndex(this._tuples, tuple, this.comparator);
-    this._tuples.splice(newPosition, 0, tuple);
-    $super(tuple, changedFields, newPosition, currentPosition);
+    var oldPosition = this._tuples.remove(tuple);
+    var newPosition = this._tuples.insert(tuple);
+    $super(tuple, changedFields, newPosition, oldPosition);
   },
 
   tupleRemovedRemotely: function(record) {
-    var position = _.indexOf(this._tuples, record);
-    this._tuples.splice(position, 1);
+    var position = this._tuples.remove(record);
     this.onRemoveNode.publish(record, position);
   },
 

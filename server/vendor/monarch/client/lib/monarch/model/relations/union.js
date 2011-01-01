@@ -8,7 +8,7 @@ _.constructor("Monarch.Model.Relations.Union", Monarch.Model.Relations.Relation,
   },
 
   tuples: function() {
-    if (this._tuples) return this._tuples;
+    if (this._tuples) return this._tuples.values();
 
     var tuplesByHashCode = {};
 

@@ -234,13 +234,17 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   memoizeTuples: function() {
-    this._tuples = this.tuples();
+    var tuples = this.buildSkipList();
+    tuples.insertAll(this.tuples());
+    this._tuples = tuples;
+  },
+
+  buildSkipList: function() {
+    return new Monarch.SkipList(this.comparator);
   },
 
   tupleInsertedRemotely: function(record) {
-    if (!this.contains(record)) {
-      this._tuples.push(record)
-    }
+    this._tuples.insert(record)
     this.onInsertNode.publish(record);
   },
 
@@ -257,17 +261,16 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   tupleRemovedRemotely: function(record) {
-    var position = _.indexOf(this._tuples, record);
-    this._tuples.splice(position, 1);
+    this._tuples.remove(record);
     this.onRemoveNode.publish(record);
   },
 
   contains: function(record) {
-    var tuples = this.tuples();
-    for(var i = 0; i < tuples.length; i++) {
-      if (tuples[i] == record) return true;
+    if (this._tuples) {
+      return this._tuples.find(record) !== undefined;
+    } else {
+      return _.indexOf(this.tuples(), record) !== -1;
     }
-    return false;
   },
 
   subscribeToOperandsIfNeeded: function() {
@@ -308,7 +311,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
     var predicates = [];
     _.each(hash, function(value, key) {
       var column = this.column(key);
-      if (!column) { debugger; throw new Error("No column named " + key + " found."); }
+      if (!column) { throw new Error("No column named " + key + " found."); }
       predicates.push(column.eq(value))
     }, this);
 

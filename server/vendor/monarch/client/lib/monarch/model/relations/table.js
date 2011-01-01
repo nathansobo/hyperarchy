@@ -8,12 +8,18 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     this.recordConstructor = recordConstructor;
     this.columnsByName = {};
     this.syntheticColumnsByName = {};
-    this._tuples = [];
+    this._tuples = this.buildSkipList();
     this.tuplesById = {};
 
     this.initializeEventsSystem();
     this.onPauseEventsNode = new Monarch.SubscriptionNode();
     this.onResumeEventsNode = new Monarch.SubscriptionNode();
+  },
+
+  comparator: function(a, b) {
+    if (a.id() < b.id()) return -1;
+    if (a.id() > b.id()) return 1;
+    return 0;
   },
 
   defineColumn: function(name, type) {
@@ -44,14 +50,13 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     this.tupleRemovedRemotely(record);
   },
 
-  tupleInsertedRemotely: function(record) {
-    this._tuples.push(record);
+  tupleInsertedRemotely: function($super, record) {
     this.tuplesById[record.id()] = record;
-    this.onInsertNode.publish(record);
+    $super(record);
   },
 
   tuples: function() {
-    return this._tuples.concat();
+    return this._tuples.values();
   },
 
   find: function(predicateOrId) {
@@ -87,7 +92,6 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     }
     return future;
   },
-
 
   column: function(name) {
     return this.columnsByName[name] || this.syntheticColumnsByName[name];
@@ -154,7 +158,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   },
 
   clear: function() {
-    this._tuples = [];
+    this._tuples = this.buildSkipList();
     this.tuplesById = {}
     this.onInsertNode = new Monarch.SubscriptionNode();
     this.onRemoveNode = new Monarch.SubscriptionNode();

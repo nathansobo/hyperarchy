@@ -56,6 +56,12 @@ _.constructor("Monarch.SkipList", {
     }
   },
 
+  insertAll: function(array) {
+    _.each(array, function(elt) {
+      this.insert(elt);
+    }, this);
+  },
+
   remove: function(key) {
     var next = this.buildNextArray();
     var nextDistance = this.buildNextDistanceArray();

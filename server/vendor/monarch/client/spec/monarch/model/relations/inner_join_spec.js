@@ -1,7 +1,7 @@
 //= require "../../../monarch_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("Relations.Selection", function() {
+  describe("Relations.InnerJoin", function() {
     useLocalFixtures();
 
     var user, blog1, blog2, post1, post2, post3;
@@ -79,56 +79,6 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#onInsert", function() {
-      it("returns a Monarch.Subscription with #onInsertNode as its #node", function() {
-        var subscription = join.onInsert(function() {});
-        expect(subscription.node).to(eq, join.onInsertNode);
-      });
-    });
-
-    describe("#onUpdate", function() {
-      it("returns a Monarch.Subscription with #onUpdateNode as its #node", function() {
-        var subscription = join.onUpdate(function() {});
-        expect(subscription.node).to(eq, join.onUpdateNode);
-      });
-    });
-
-    describe("#onRemove", function() {
-      it("returns a Monarch.Subscription with #onRemoveNode as its #node", function() {
-        var subscription = join.onRemove(function() {});
-        expect(subscription.node).to(eq, join.onRemoveNode);
-      });
-    });
-
-    describe("#hasSubscribers", function() {
-      context("if a callback has been registered with #onInsert", function() {
-        it("returns true", function() {
-          join.onInsert(function() {});
-          expect(join.hasSubscribers()).to(beTrue);
-        });
-      });
-
-      context("if a callback has been registered with #onRemove", function() {
-        it("returns true", function() {
-          join.onRemove(function() {});
-          expect(join.hasSubscribers()).to(beTrue);
-        });
-      });
-
-      context("if a callback has been registered with #onUpdate", function() {
-        it("returns true", function() {
-          join.onUpdate(function() {});
-          expect(join.hasSubscribers()).to(beTrue);
-        });
-      });
-
-      context("if no callbacks have been registered", function() {
-        it("returns false", function() {
-          expect(join.hasSubscribers()).to(beFalse);
-        });
-      });
-    });
-
     describe("event handling", function() {
       var insertHandler, removeHandler, updateHandler;
       before(function() {
@@ -176,12 +126,16 @@ Screw.Unit(function(c) { with(c) {
         context("when a tuple is inserted into the right operand", function() {
           context("when the insertion causes #carteseanProduct to contain a new CompositeTuple that matches the predicate", function() {
             it("triggers #onInsert handlers with the new CompositeTuple", function() {
-              blog1.blogPosts().create().afterEvents(function(blogPost) {
-                expect(insertHandler).to(haveBeenCalled, once);
-                var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(eq, blog1);
-                expect(compositeTuple.rightTuple).to(eq, blogPost);
-              });
+
+              console.debug(leftOperand.tuples());
+
+              var blogPost = blog1.blogPosts().createFromRemote()
+
+
+              expect(insertHandler).to(haveBeenCalled, once);
+              var compositeTuple = insertHandler.mostRecentArgs[0];
+              expect(compositeTuple.leftTuple).to(eq, blog1);
+              expect(compositeTuple.rightTuple).to(eq, blogPost);
             });
           });
 
