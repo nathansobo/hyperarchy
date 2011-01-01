@@ -9,7 +9,7 @@
 
     inherited: function(subconstructor) {
       subconstructor.table = new Monarch.Model.Relations.Table(this.determineGlobalName(subconstructor), subconstructor);
-      subconstructor.column("id", "key");
+      subconstructor.generateColumnAccessors(subconstructor.table.column('id'));
       subconstructor.relationDefinitions = [];
       Repository.registerTable(subconstructor.table);
     },

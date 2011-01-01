@@ -5,6 +5,7 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
   initialize: function(operand, predicate) {
     this.operand = operand;
     this.predicate = predicate;
+    this.sortSpecifications = operand.sortSpecifications;
     this.initializeEventsSystem();
   },
 

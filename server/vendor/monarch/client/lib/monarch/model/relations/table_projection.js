@@ -8,6 +8,7 @@ _.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations
   initialize: function(operand, projectedTable) {
     this.operand = operand;
     this.projectedTable = projectedTable;
+    this.sortSpecifications = projectedTable.sortSpecifications; // this should actually be based on the operand, but we have to remove columns projected away
     this.initializeEventsSystem();
   },
 

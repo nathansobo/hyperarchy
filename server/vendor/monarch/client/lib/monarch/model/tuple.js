@@ -23,6 +23,9 @@ _.constructor("Monarch.Model.Tuple", {
       projectedColumn = projectedColumnOrName;
     }
 
+
+    if (!projectedColumn.column) throw new Error("NULL POINTER EXCEPTION WILL HAPPEN LATeER");
+
     return this.operandRecord.field(projectedColumn.column);
   },
 

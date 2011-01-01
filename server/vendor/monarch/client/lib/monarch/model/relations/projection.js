@@ -8,6 +8,11 @@ _.constructor("Monarch.Model.Relations.Projection", Monarch.Model.Relations.Rela
       this.projectedColumnsByName[projectedColumn.name()] = projectedColumn;
     }, this);
 
+
+    this.sortSpecifications = _.filter(operand.sortSpecifications, function(sortSpec) {
+      return this.column(sortSpec.column.name)
+    }, this);
+
     this.tupleConstructor = _.constructor(Monarch.Model.Tuple);
     this.tupleConstructor.projectedColumnsByName = this.projectedColumnsByName;
     this.tupleConstructor.initializeFieldReaders();

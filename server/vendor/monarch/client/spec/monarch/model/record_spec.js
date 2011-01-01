@@ -112,7 +112,7 @@ Screw.Unit(function(c) { with(c) {
           var user = User.createFromRemote({id: "jerry"});
           var ordering = user.blogs();
           expect(ordering.constructor).to(eq, Monarch.Model.Relations.Ordering);
-          expect(ordering.sortSpecifications.length).to(eq, 2);
+          expect(ordering.sortSpecifications.length).to(eq, 3); // because sorting by id last is implicit
           expect(ordering.sortSpecifications[0].column).to(eq, Blog.name_);
           expect(ordering.sortSpecifications[0].direction).to(eq, "desc");
           expect(ordering.sortSpecifications[1].column).to(eq, Blog.userId);

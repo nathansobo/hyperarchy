@@ -4,6 +4,7 @@ _.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relations.Rela
   initialize: function(leftOperand, rightOperand) {
     this.leftOperand = leftOperand;
     this.rightOperand = rightOperand;
+    this.sortSpecifications = leftOperand.sortSpecifications;
     this.initializeEventsSystem();
   },
 

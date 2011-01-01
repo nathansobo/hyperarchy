@@ -6,6 +6,7 @@ _.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations.Relat
     this.leftOperand = leftOperand;
     this.rightOperand = rightOperand;
     this.predicate = predicate;
+    this.sortSpecifications = leftOperand.sortSpecifications.concat(rightOperand.sortSpecifications);
     this.initializeEventsSystem();
   },
 

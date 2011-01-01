@@ -240,7 +240,29 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   buildSkipList: function() {
+    if (!this.comparator) this.comparator = this.buildComparator();
     return new Monarch.SkipList(this.comparator);
+  },
+
+  buildComparator: function() {
+    var sortSpecs = this.sortSpecifications;
+    var length = sortSpecs.length;
+    var lessThan = _.nullSafeLessThan;
+
+    return function(a, b) {
+      for(var i = 0; i < length; i++) {
+        var sortSpecification = sortSpecs[i]
+        var column = sortSpecification.column;
+        var directionCoefficient = sortSpecification.directionCoefficient;
+
+        var aValue = a.field(column).value();
+        var bValue = b.field(column).value();
+
+        if (lessThan(aValue, bValue)) return -1 * directionCoefficient;
+        else if (lessThan(bValue, aValue)) return 1 * directionCoefficient;
+      }
+      return 0;
+    };
   },
 
   tupleInsertedRemotely: function(record) {

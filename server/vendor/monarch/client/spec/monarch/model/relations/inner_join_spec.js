@@ -126,12 +126,7 @@ Screw.Unit(function(c) { with(c) {
         context("when a tuple is inserted into the right operand", function() {
           context("when the insertion causes #carteseanProduct to contain a new CompositeTuple that matches the predicate", function() {
             it("triggers #onInsert handlers with the new CompositeTuple", function() {
-
-              console.debug(leftOperand.tuples());
-
               var blogPost = blog1.blogPosts().createFromRemote()
-
-
               expect(insertHandler).to(haveBeenCalled, once);
               var compositeTuple = insertHandler.mostRecentArgs[0];
               expect(compositeTuple.leftTuple).to(eq, blog1);

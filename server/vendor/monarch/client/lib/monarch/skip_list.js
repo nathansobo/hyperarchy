@@ -1,7 +1,8 @@
 (function(Monarch) {
 
 _.constructor("Monarch.SkipList", {
-  initialize: function() {
+  initialize: function(comparator) {
+    this.comparator = comparator || this.defaultComparator;
     this.maxLevels = 8;
     this.p = 0.25;
     this.currentLevel = 0;
@@ -136,6 +137,10 @@ _.constructor("Monarch.SkipList", {
     if (b === this.minusInfinity) return (a === this.minusInfinity) ? 0 : 1;
     if (a === this.plusInfinity) return (b === this.plusInfinity) ? 0 : 1;
     if (b === this.plusInfinity) return (a === this.plusInfinity) ? 0 : -1;
+    return this.comparator(a, b);
+  },
+
+  defaultComparator: function(a, b) {
     if (a < b) return - 1;
     if (a > b) return 1;
     return 0;

@@ -48,6 +48,12 @@ _.mixin({
       sum += array[i];
     }
     return sum;
-  }
+  },
 
+  // null and undefined are treated like infinity to sort null values toward the end
+  nullSafeLessThan: function(a, b) {
+    if ((a === null || a === undefined) && b !== null && b !== undefined) return false;
+    if ((b === null || b === undefined) && a !== null && a !== undefined) return true;
+    return a < b;
+  }
 });

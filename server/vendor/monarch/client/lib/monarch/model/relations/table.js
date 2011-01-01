@@ -8,18 +8,14 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     this.recordConstructor = recordConstructor;
     this.columnsByName = {};
     this.syntheticColumnsByName = {};
+    this.defineColumn('id', 'key');
+    this.sortSpecifications = [this.column("id").asc()];
     this._tuples = this.buildSkipList();
     this.tuplesById = {};
 
     this.initializeEventsSystem();
     this.onPauseEventsNode = new Monarch.SubscriptionNode();
     this.onResumeEventsNode = new Monarch.SubscriptionNode();
-  },
-
-  comparator: function(a, b) {
-    if (a.id() < b.id()) return -1;
-    if (a.id() > b.id()) return 1;
-    return 0;
   },
 
   defineColumn: function(name, type) {

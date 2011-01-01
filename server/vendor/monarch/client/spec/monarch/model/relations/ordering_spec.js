@@ -62,7 +62,7 @@ Screw.Unit(function(c) { with(c) {
         it("triggers #onInsert callbacks with the inserted tuple and its index", function() {
           var record = User.createFromRemote({id: 5, age: 2, fullName: "D"});
           expect(insertCallback).to(haveBeenCalled, withArgs(record, 3));
-          expect(ordering._tuples[3]).to(eq, record);
+          expect(ordering._tuples.at(3)).to(eq, record);
         });
       });
 
