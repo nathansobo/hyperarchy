@@ -176,53 +176,6 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("subscription propagation", function() {
-      describe("when a subscription is registered for the selection, destroyed, and another subscription is registered", function() {
-        var eventType;
-
-        scenario("for onInsert callbacks", function() {
-          init(function() {
-            eventType = "onInsert";
-          });
-        });
-
-        scenario("for onUpdate callbacks", function() {
-          init(function() {
-            eventType = "onUpdate";
-          });
-        });
-
-        scenario("for onRemove callbacks", function() {
-          init(function() {
-            eventType = "onRemove";
-          });
-        });
-
-        it("subscribes to its #operand and memoizes tuples, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
-          var rightOperand = User.where({age: 28});
-          var difference = User.difference(rightOperand);
-
-          expect(rightOperand.hasSubscribers()).to(beFalse);
-          expect(difference.tuplesById).to(beNull);
-
-          var subscription = difference[eventType].call(difference, function() {});
-
-          expect(rightOperand.hasSubscribers()).to(beTrue);
-          expect(difference.tuplesById).toNot(beNull);
-
-          subscription.destroy();
-
-          expect(rightOperand.hasSubscribers()).to(beFalse);
-          expect(difference.tuplesById).to(beNull);
-
-          difference.onUpdate(function() {});
-
-          expect(rightOperand.hasSubscribers()).to(beTrue);
-          expect(difference.tuplesById).toNot(beNull);
-        });
-      });
-    });
-
     describe("when the difference is between two distinct but compatible relations", function() {
       var difference, leftOperand, rightOperand, insertCallback, updateCallback, removeCallback;
 

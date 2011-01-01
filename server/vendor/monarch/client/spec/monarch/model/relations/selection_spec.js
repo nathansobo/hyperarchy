@@ -119,7 +119,7 @@ Screw.Unit(function(c) { with(c) {
 
       context("when a record is inserted into the selection's operand", function() {
         context("when that record matches the predicate", function() {
-          it("triggers insert events with the record", function() {
+          it("triggers an insert event with the record", function() {
             var record = User.createFromRemote({id: "joe", age: 31});
             expect(predicate.evaluate(record)).to(beTrue);
             expect(insertCallback).to(haveBeenCalled, withArgs(record));
@@ -127,7 +127,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         context("when that record does not match the predicate", function() {
-          it("does not trigger insert events", function() {
+          it("does not an trigger insert event", function() {
             var record = User.createFromRemote({id: "mike", age: 22});
             expect(predicate.evaluate(record)).to(beFalse);
             expect(insertCallback).toNot(haveBeenCalled);
@@ -137,7 +137,7 @@ Screw.Unit(function(c) { with(c) {
 
       context("when a record is removed from the selection's operand", function() {
         context("when that record matches the predicate", function() {
-          it("triggers remove events with the record", function() {
+          it("triggers a remove event with the record", function() {
             var record = selection.first();
             record.remotelyDestroyed();
             expect(removeCallback).to(haveBeenCalled, withArgs(record));
@@ -163,7 +163,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when the record matches the predicate after the update", function() {
-            it("triggers insert events with the updated record", function() {
+            it("triggers an insert event with the updated record", function() {
               var oldName = record.fullName();
               var newName = "Bing Crosby";
 
@@ -185,7 +185,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when the record no longer matches the predicate after the update", function() {
-            it("triggers remove events with the updated record", function() {
+            it("triggers a remove event with the updated record", function() {
               record.remotelyUpdated({age: 34});
               expect(predicate.evaluate(record)).to(beFalse);
               expect(selection.contains(record)).to(beFalse);
@@ -201,7 +201,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when the record matches the predicate after the update", function() {
-            it("triggers insert events with the updated record", function() {
+            it("triggers an insert event with the updated record", function() {
               record.update({age: 31});
               expect(predicate.evaluate(record)).to(beTrue);
               expect(selection.contains(record)).to(beTrue);
