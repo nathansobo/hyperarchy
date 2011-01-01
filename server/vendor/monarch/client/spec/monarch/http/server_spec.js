@@ -187,7 +187,7 @@ Screw.Unit(function(c) { with(c) {
         useLocalFixtures();
 
         describe("#create(newRecord)", function() {
-          var record, tableInsertCallback, tableUpdateCallback, tableRemoveCallback,
+          var record, tableInsertCallback, tableRemoveCallback,
               recordCreateCallback, recordUpdateCallback;
 
           before(function() {
@@ -321,9 +321,7 @@ Screw.Unit(function(c) { with(c) {
                 userId: 'wil'
               });
 
-              var tableLocalUpdateCallback = mockFunction('tableLocalUpdateCallback');
               var recordLocalUpdateCallback = mockFunction('recordLocalUpdateCallback');
-              Blog.onLocalUpdate(tableLocalUpdateCallback);
               record.onLocalUpdate(recordLocalUpdateCallback);
               record.afterLocalUpdate = mockFunction('optional afterLocalUpdate hook');
 
@@ -365,7 +363,6 @@ Screw.Unit(function(c) { with(c) {
 
                 // remote update may change local field values but they should not fire local update callbacks because
                 // the change was initiated remotely
-                expect(tableLocalUpdateCallback).toNot(haveBeenCalled);
                 expect(recordLocalUpdateCallback).toNot(haveBeenCalled);
                 expect(record.afterLocalUpdate).toNot(haveBeenCalled);
               });

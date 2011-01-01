@@ -184,10 +184,8 @@ Screw.Unit(function(c) { with(c) {
       it("calls setter methods for each key in the given hash and fires update callbacks with all changes", function() {
         var record = Blog.fixture('recipes');
 
-        var tableUpdateCallback = mockFunction('tableUpdateCallback');
         var recordUpdateCallback = mockFunction('recordUpdateCallback');
 
-        Blog.onLocalUpdate(tableUpdateCallback);
         record.onLocalUpdate(recordUpdateCallback);
         record.afterLocalUpdate = mockFunction('optional afterLocalUpdate hook');
         record.otherMethod = mockFunction('other method');
@@ -227,8 +225,6 @@ Screw.Unit(function(c) { with(c) {
           }
         };
 
-        expect(tableUpdateCallback).to(haveBeenCalled, once);
-        expect(tableUpdateCallback).to(haveBeenCalled, withArgs(record, expectedChangeset));
         expect(recordUpdateCallback).to(haveBeenCalled, withArgs(expectedChangeset));
         expect(record.afterLocalUpdate).to(haveBeenCalled, withArgs(expectedChangeset));
       });
@@ -240,10 +236,8 @@ Screw.Unit(function(c) { with(c) {
         record = Blog.fixture('recipes');
       });
 
-      they("trigger optional onLocalUpdate hooks on the record and onLocalUpdate callbacks the record and its table when a new value is assigned", function() {
-        var tableUpdateCallback = mockFunction('table update callback')
+      they("trigger optional onLocalUpdate hooks and callbacks on the record when a new value is assigned", function() {
         var recordUpdateCallback = mockFunction('record update callback')
-        Blog.onLocalUpdate(tableUpdateCallback);
         record.onLocalUpdate(recordUpdateCallback);
         record.afterLocalUpdate = mockFunction("optional afterLocalUpdate hook");
 
@@ -262,17 +256,13 @@ Screw.Unit(function(c) { with(c) {
           }
         };
 
-        expect(tableUpdateCallback).to(haveBeenCalled, once);
-        expect(tableUpdateCallback).to(haveBeenCalled, withArgs(record, expectedChangeset));
         expect(recordUpdateCallback).to(haveBeenCalled, withArgs(expectedChangeset));
         expect(record.afterLocalUpdate).to(haveBeenCalled, withArgs(expectedChangeset));
 
-        tableUpdateCallback.clear();
         recordUpdateCallback.clear();
         record.afterLocalUpdate.clear();
         record.name('Pesticides');
 
-        expect(tableUpdateCallback).toNot(haveBeenCalled);
         expect(recordUpdateCallback).toNot(haveBeenCalled);
         expect(record.afterLocalUpdate).toNot(haveBeenCalled);
       });

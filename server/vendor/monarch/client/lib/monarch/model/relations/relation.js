@@ -169,11 +169,6 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return this.tuples()[i];
   },
 
-  onLocalUpdate: function(callback, context) {
-    this.subscribeToOperandsIfNeeded();
-    return this.onLocalUpdateNode.subscribe(callback, context);
-  },
-
   onInsert: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
     return this.onInsertNode.subscribe(callback, context);
