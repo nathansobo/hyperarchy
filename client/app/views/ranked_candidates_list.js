@@ -10,7 +10,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       ol({id: "rankedCandidates", 'class': "candidates ranked"}, function() {
         li({'class': "dragTargetExplanation"}, function() {
           span(function() {
-            raw("Drag answers you <em>like</em> here, with the best at the top.")
+            raw("Drag answers you <em>like</em> here, <br /> with the best at the top.")
           });
         }).ref('goodCandidatesExplanation');
 
@@ -21,7 +21,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
 
         li({'class': "dragTargetExplanation"}, function() {
           span(function() {
-            raw("Drag answers you <em>dislike</em> here, with the worst at the bottom.")
+            raw("Drag answers you <em>dislike</em> here, <br /> with the worst at the bottom.")
           });
         }).ref('badCandidatesExplanation');
 
