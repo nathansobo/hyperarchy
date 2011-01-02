@@ -13,7 +13,7 @@ class Deployment < SshClient
     new_ref = local_repo.revparse(ref)
 
     git :fetch
-    git :reset, "--hard", ref
+    git :reset, "--hard", new_ref
     source ".rvmrc" if rvmrc_changed?(old_ref, new_ref)
     bundle :install if gemfile_changed?(old_ref, new_ref)
     sudo :monit, :unmonitor, "hyperarchy_#{env}"
