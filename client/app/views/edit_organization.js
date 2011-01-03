@@ -1,14 +1,7 @@
 _.constructor("Views.EditOrganization", View.Template, {
   content: function() { with(this.builder) {
     div({id: "editOrganization"}, function() {
-      div({id: "organizationHeader", 'class': "grid12"}, function() {
-        a({'class': "glossyBlack roundedButton", id: "overviewLink"}, "Back To Questions")
-          .ref('overviewLink')
-          .click(function(view, e) {
-            $.bbq.pushState({view: "organization", organizationId: view.model().id()});
-            e.preventDefault();
-          });
-      });
+      div({id: "organizationHeader", 'class': "grid12"});
 
       div({'class': "grid12"}, function() {
         ol({id: "tabs"}, function() {
