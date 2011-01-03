@@ -6,7 +6,6 @@ _.constructor("Views.Layout", View.Template, {
         .ref('darkenBackground');
 
       subview('disconnectDialog', Views.DisconnectDialog);
-      subview('inviteForm', Views.Invite);
 
       div({id: "feedback", style: "display: none", 'class': "dropShadow"}, function() {
         div({'class': "rightCancelX"}).click('hideFeedbackForm');
@@ -37,6 +36,10 @@ _.constructor("Views.Layout", View.Template, {
         }).ref('addOrganizationLi')
       }).ref('organizationsMenu');
 
+
+
+
+
       div({id: "header"}, function() {
         div({id: "logoWrapper", 'class': "headerItemX"}, function() {
           div({id: "logo"}).click('goToLastOrganization');
@@ -50,7 +53,7 @@ _.constructor("Views.Layout", View.Template, {
           .ref("organizationsMenuLink")
           .click("toggleOrganizationsMenu");
 
-//        a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
+        a({'class': "headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
         div({'class': "clear"});
       });
 
@@ -67,9 +70,7 @@ _.constructor("Views.Layout", View.Template, {
               .click('goToOrganization');
             a({id: "membersLink"}, "Members")
               .ref('membersLink')
-            a({id: "inviteLink"}, "Invite")
-              .ref('inviteLink')
-              .click('showInviteForm');
+              .click("goToEditOrganization");
             a({id: "organizationSettings"}, "Settings")
               .ref("editOrganizationLink")
               .click("goToEditOrganization");
@@ -81,6 +82,10 @@ _.constructor("Views.Layout", View.Template, {
               .ref("backToLastOrganizationLink")
               .click("goToLastOrganization");
           }).ref("alternateHeader")
+        });
+
+        div({id: "secondaryHeader", style: "display: none"}, function() {
+          
         });
 
         div({'class': "container12"}, function() {
@@ -104,11 +109,6 @@ _.constructor("Views.Layout", View.Template, {
       }, this);
 
       this.populateOrganizations();
-
-      var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
-      organizationsPermitted.onRemoteInsert(this.hitch('showOrHideInviteLink'));
-      organizationsPermitted.onRemoteRemove(this.hitch('showOrHideInviteLink'));
-      this.showOrHideInviteLink();
     },
 
 
@@ -161,14 +161,6 @@ _.constructor("Views.Layout", View.Template, {
           });
         });
       }));
-    },
-
-    showOrHideInviteLink: function() {
-      if (Application.currentUser().organizationsPermittedToInvite().empty()) {
-        this.inviteLink.hide();
-      } else {
-        this.inviteLink.show();
-      }
     },
 
     notify: function(message) {
@@ -231,18 +223,6 @@ _.constructor("Views.Layout", View.Template, {
           of: this.darkenBackground
         });
 
-      e.preventDefault();
-    },
-
-    showInviteForm: function(elt, e) {
-      this.darkenBackground.fadeIn();
-      this.inviteForm
-        .show()
-        .position({
-          my: "center",
-          at: "center",
-          of: this.darkenBackground
-        });
       e.preventDefault();
     },
 
