@@ -50,10 +50,7 @@ _.constructor("Views.Layout", View.Template, {
           .ref("organizationsMenuLink")
           .click("toggleOrganizationsMenu");
 
-        a({id: "inviteLink", 'class': "headerItem", href: "#"}, "Invite")
-          .ref('inviteLink')
-          .click('showInviteForm');
-        a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
+//        a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
         div({'class': "clear"});
       });
 
@@ -65,10 +62,18 @@ _.constructor("Views.Layout", View.Template, {
             h2({id: "organizationName"})
               .click('goToOrganization')
               .ref('organizationName');
+            a({id: "questionsLink"}, "Questions")
+              .ref('questionsLink')
+              .click('goToOrganization');
+            a({id: "tagsLink"}, "Tags")
+              .ref('tagsLink')
+            a({id: "inviteLink"}, "Invite")
+              .ref('inviteLink')
+              .click('showInviteForm');
             a({id: "organizationSettings"}, "Settings")
               .ref("editOrganizationLink")
               .click("goToEditOrganization");
-          }).ref("organizationHeader");
+            }).ref("organizationHeader");
 
           div(function() {
             h2().ref("alternateHeaderText");

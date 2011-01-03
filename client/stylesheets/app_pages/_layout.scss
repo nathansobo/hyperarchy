@@ -101,6 +101,7 @@
       h2 {
         padding: 0;
         margin: 0;
+        margin-right: 40px;
         font-size: 28px;
         display: inline-block;
         letter-spacing: 1.1;
@@ -109,12 +110,12 @@
 
       a {
         display: inline-block;
-        float: right;
-        margin-top: 11px;
+        font-size: 18px;
+        margin: 11px;
         color: white;
+        padding-left: 14px;
 
         &#organizationSettings {
-          padding-left: 14px;
           background-repeat: no-repeat;
           background-image: url(/images/cog_alt_12x12_light.png);
           background-position: 0 1px;
