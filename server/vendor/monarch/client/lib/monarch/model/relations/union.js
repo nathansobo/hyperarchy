@@ -9,7 +9,7 @@ _.constructor("Monarch.Model.Relations.Union", Monarch.Model.Relations.Relation,
   },
 
   tuples: function() {
-    if (this._tuples) return this._tuples.values();
+    if (this.storedTuples) return this.storedTuples.values();
 
     var tuplesByHashCode = {};
 
@@ -29,11 +29,11 @@ _.constructor("Monarch.Model.Relations.Union", Monarch.Model.Relations.Relation,
   // private
   subscribeToOperands: function() {
     this.operandsSubscriptionBundle.add(this.leftOperand.onInsert(function(record) {
-      if (!this.rightOperand.contains(record)) this.tupleInsertedRemotely(record);
+      if (!this.contains(record)) this.tupleInsertedRemotely(record);
     }, this));
 
     this.operandsSubscriptionBundle.add(this.rightOperand.onInsert(function(record) {
-      if (!this.leftOperand.contains(record)) this.tupleInsertedRemotely(record);
+      if (!this.contains(record)) this.tupleInsertedRemotely(record);
     }, this));
 
     this.operandsSubscriptionBundle.add(this.leftOperand.onUpdate(function(record, changes) {
@@ -58,7 +58,6 @@ _.constructor("Monarch.Model.Relations.Union", Monarch.Model.Relations.Relation,
     this.lastChanges = changes;
     $super(record, changes);
   }
-
 });
 
 })(Monarch);

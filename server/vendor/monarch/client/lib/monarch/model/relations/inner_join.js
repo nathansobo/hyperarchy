@@ -11,7 +11,7 @@ _.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations.Relat
   },
 
   tuples: function() {
-    if (this._tuples) return this._tuples.values();
+    if (this.storedTuples) return this.storedTuples.values();
     return _.filter(this.cartesianProduct(), function(compositeTuple) {
       return this.predicate.evaluate(compositeTuple);
     }, this);
@@ -86,7 +86,8 @@ _.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations.Relat
     this.operandsSubscriptionBundle.add(this.leftOperand.onUpdate(function(leftTuple, changeset) {
       _.each(self.rightOperand.tuples(), function(rightTuple) {
         var newCompositeTuple = new Monarch.Model.CompositeTuple(leftTuple, rightTuple);
-        var extantCompositeTuple = self.findCompositeTupleThatMatches(newCompositeTuple);
+        var extantCompositeTuple = self.storedTuples.find(self.buildSortKey(newCompositeTuple, changeset));
+
         if (self.predicate.evaluate(newCompositeTuple)) {
           if (extantCompositeTuple) {
             self.tupleUpdatedRemotely(extantCompositeTuple, changeset);
@@ -94,16 +95,18 @@ _.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations.Relat
             self.tupleInsertedRemotely(newCompositeTuple);
           }
         } else {
-          if (extantCompositeTuple) self.tupleRemovedRemotely(extantCompositeTuple);
+          if (extantCompositeTuple) {
+            self.tupleRemovedRemotely(extantCompositeTuple, changeset);
+          }
         }
       });
     }));
 
     this.operandsSubscriptionBundle.add(this.rightOperand.onUpdate(function(rightTuple, changeset) {
-
       _.each(self.leftOperand.tuples(), function(leftTuple) {
         var newCompositeTuple = new Monarch.Model.CompositeTuple(leftTuple, rightTuple);
-        var extantCompositeTuple = self.findCompositeTupleThatMatches(newCompositeTuple);
+        var extantCompositeTuple = self.storedTuples.find(self.buildSortKey(newCompositeTuple, changeset));
+
         if (self.predicate.evaluate(newCompositeTuple)) {
           if (extantCompositeTuple) {
             self.tupleUpdatedRemotely(extantCompositeTuple, changeset);
@@ -111,7 +114,7 @@ _.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations.Relat
             self.tupleInsertedRemotely(newCompositeTuple);
           }
         } else {
-          if (extantCompositeTuple) self.tupleRemovedRemotely(extantCompositeTuple);
+          if (extantCompositeTuple) self.tupleRemovedRemotely(extantCompositeTuple, changeset);
         }
       })
     }));

@@ -234,9 +234,11 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   memoizeTuples: function() {
-    var tuples = this.buildSkipList();
-    tuples.insertAll(this.tuples());
-    this._tuples = tuples;
+    var storedTuples = this.buildSkipList();
+    this.each(function(tuple) {
+      storedTuples.insert(this.buildSortKey(tuple), tuple);
+    }, this);
+    this.storedTuples = storedTuples;
   },
 
   buildSkipList: function() {
@@ -252,11 +254,11 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return function(a, b) {
       for(var i = 0; i < length; i++) {
         var sortSpecification = sortSpecs[i]
-        var column = sortSpecification.column;
+        var columnName = sortSpecification.qualifiedColumnName;
         var directionCoefficient = sortSpecification.directionCoefficient;
 
-        var aValue = a.field(column).value();
-        var bValue = b.field(column).value();
+        var aValue = a[columnName];
+        var bValue = b[columnName];
 
         if (lessThan(aValue, bValue)) return -1 * directionCoefficient;
         else if (lessThan(bValue, aValue)) return 1 * directionCoefficient;
@@ -265,31 +267,53 @@ _.constructor("Monarch.Model.Relations.Relation", {
     };
   },
 
-  tupleInsertedRemotely: function(record) {
-    this._tuples.insert(record)
-    this.onInsertNode.publish(record);
+  buildSortKey: function(tuple, changeset) {
+    var sortKey = {};
+    _.each(this.sortSpecifications, function(sortSpec) {
+      var column = sortSpec.column;
+      var columnName = sortSpec.columnName;
+      var qualifiedColumnName = sortSpec.qualifiedColumnName;
+
+      if (changeset && changeset[columnName] && changeset[columnName].column === column) {
+        sortKey[qualifiedColumnName] =  changeset[columnName].oldValue;
+      } else {
+        sortKey[qualifiedColumnName] =  tuple.field(column).value();
+      }
+    });
+    return sortKey;
   },
 
-  tupleUpdatedRemotely: function(record, updateData, newIndex, oldIndex) {
-    if (newIndex === undefined) {
-      this.onUpdateNode.publish(record, updateData);
-    } else {
-      this.onUpdateNode.publish(record, updateData, newIndex, oldIndex);
+  tupleInsertedRemotely: function(tuple, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(tuple);
+    var index = this.storedTuples.insert(newKey, tuple)
+    this.onInsertNode.publish(tuple, index, newKey, oldKey);
+  },
+
+  tupleUpdatedRemotely: function(tuple, changeset, newKey, oldKey) {
+    if (!newKey) {
+      newKey = this.buildSortKey(tuple);
+      oldKey = this.buildSortKey(tuple, changeset);
     }
+
+    var oldIndex = this.storedTuples.remove(oldKey)
+    var newIndex = this.storedTuples.insert(newKey, tuple);
+    this.onUpdateNode.publish(tuple, changeset, newIndex, oldIndex, newKey, oldKey);
   },
 
-  tupleUpdatedLocally: function(record, updateData) {
-    this.onLocalUpdateNode.publish(record, updateData);
+  tupleRemovedRemotely: function(tuple, changeset, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(tuple);
+
+    var index = this.storedTuples.remove(oldKey);
+    this.onRemoveNode.publish(tuple, index, newKey, oldKey);
   },
 
-  tupleRemovedRemotely: function(record) {
-    this._tuples.remove(record);
-    this.onRemoveNode.publish(record);
+  tupleUpdatedLocally: function(tuple, updateData) {
+    this.onLocalUpdateNode.publish(tuple, updateData);
   },
 
-  contains: function(record) {
-    if (this._tuples) {
-      return this._tuples.find(record) !== undefined;
+  contains: function(record, changeset) {
+    if (this.storedTuples) {
+      return this.storedTuples.find(this.buildSortKey(record, changeset)) !== undefined;
     } else {
       return _.indexOf(this.tuples(), record) !== -1;
     }
@@ -316,7 +340,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
 
   unsubscribeFromOperands: function() {
     this.operandsSubscriptionBundle.destroy();
-    this._tuples = null;
+    this.storedTuples = null;
   },
 
   remoteSubscribe: function() {

@@ -62,13 +62,13 @@ Screw.Unit(function(c) { with(c) {
         it("triggers #onInsert callbacks with the inserted tuple and its index", function() {
           var record = User.createFromRemote({id: 5, age: 2, fullName: "D"});
           expect(insertCallback).to(haveBeenCalled, withArgs(record, 3));
-          expect(ordering._tuples.at(3)).to(eq, record);
+          expect(ordering.storedTuples.at(3)).to(eq, record);
         });
       });
 
       describe("when a tuple is remotely updated in the operand", function() {
         it("triggers #onUpdate callbacks with the updated tuple and its new and old index in the ordering", function() {
-          var tuplesLengthBefore = ordering._tuples.length;
+          var tuplesLengthBefore = ordering.storedTuples.length;
 
           user3.update({age: 20000});
           expect(updateCallback).to(haveBeenCalled);
@@ -86,8 +86,8 @@ Screw.Unit(function(c) { with(c) {
           expect(args[2]).to(eq, 0); // new index
           expect(args[3]).to(eq, 3); // old index
 
-          expect(ordering._tuples.length).to(eq, tuplesLengthBefore);
-          expect(ordering._tuples[0]).to(eq, user3);
+          expect(ordering.storedTuples.length).to(eq, tuplesLengthBefore);
+          expect(ordering.storedTuples.at(0)).to(eq, user3);
 
           updateCallback.clear();
           user3.update({signedUpAt: new Date()});

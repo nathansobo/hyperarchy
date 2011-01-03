@@ -10,7 +10,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     this.syntheticColumnsByName = {};
     this.defineColumn('id', 'key');
     this.sortSpecifications = [this.column("id").asc()];
-    this._tuples = this.buildSkipList();
+    this.storedTuples = this.buildSkipList();
     this.tuplesById = {};
 
     this.initializeEventsSystem();
@@ -52,7 +52,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   },
 
   tuples: function() {
-    return this._tuples.values();
+    return this.storedTuples.values();
   },
 
   find: function(predicateOrId) {
@@ -154,7 +154,7 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   },
 
   clear: function() {
-    this._tuples = this.buildSkipList();
+    this.storedTuples = this.buildSkipList();
     this.tuplesById = {}
     this.onInsertNode = new Monarch.SubscriptionNode();
     this.onRemoveNode = new Monarch.SubscriptionNode();

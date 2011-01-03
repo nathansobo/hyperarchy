@@ -4,6 +4,7 @@ _.constructor("Monarch.Model.Column", {
   initialize: function(table, name, type) {
     this.table = table;
     this.name = name;
+    this.qualifiedName = table.globalName + "." + name;
     this.type = type;
   },
 

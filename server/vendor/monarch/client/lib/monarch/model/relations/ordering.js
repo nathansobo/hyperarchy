@@ -39,27 +39,29 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
   // private
 
   tupleInsertedRemotely: function(tuple) {
-    var position = this._tuples.insert(tuple)
+    var position = this.storedTuples.insert(this.buildSortKey(tuple), tuple);
     this.onInsertNode.publish(tuple, position);
   },
 
-  tupleUpdatedRemotely: function($super, tuple, changedFields) {
-    var positionMayChange = _.any(changedFields, function(changedField) {
+  tupleUpdatedRemotely: function($super, tuple, changeset) {
+    var positionMayChange = _.any(changeset, function(changedField) {
       return this.sortingOnColumn(changedField.column);
     }, this);
+
     if (!positionMayChange) {
-      $super(tuple, changedFields, currentPosition, currentPosition);
+      var currentPosition = this.storedTuples.indexOf(tuple);
+      $super(tuple, changeset, currentPosition, currentPosition);
       return;
     }
 
-    var oldPosition = this._tuples.remove(tuple);
-    var newPosition = this._tuples.insert(tuple);
-    $super(tuple, changedFields, newPosition, oldPosition);
+    var oldPosition = this.storedTuples.remove(this.buildSortKey(tuple, changeset));
+    var newPosition = this.storedTuples.insert(this.buildSortKey(tuple), tuple);
+    $super(tuple, changeset, newPosition, oldPosition);
   },
 
-  tupleRemovedRemotely: function(record) {
-    var position = this._tuples.remove(record);
-    this.onRemoveNode.publish(record, position);
+  tupleRemovedRemotely: function(tuple) {
+    var position = this.storedTuples.remove(this.buildSortKey(tuple));
+    this.onRemoveNode.publish(tuple, position);
   },
 
   sortingOnColumn: function(column) {

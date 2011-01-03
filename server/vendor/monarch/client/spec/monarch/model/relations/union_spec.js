@@ -132,6 +132,7 @@ Screw.Unit(function(c) { with(c) {
         context("if the record is not present in the right operand", function() {
           it("triggers remove callbacks with the record", function() {
             var post = user.blogPosts().first();
+            expect(union.contains(post)).to(beTrue);
             post.remotelyDestroyed();
             expect(removeCallback).to(haveBeenCalled, once);
           });

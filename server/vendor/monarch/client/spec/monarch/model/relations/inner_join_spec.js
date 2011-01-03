@@ -215,7 +215,6 @@ Screw.Unit(function(c) { with(c) {
 
                 var updatedTuple = updateHandler.mostRecentArgs[0];
                 var changedAttributes = updateHandler.mostRecentArgs[1];
-
                 expect(updatedTuple.leftTuple).to(eq, blog2);
                 expect(updatedTuple.rightTuple).to(eq, post3);
 
@@ -229,7 +228,7 @@ Screw.Unit(function(c) { with(c) {
 
             context("when the CompositeTuple no longer matches #predicate after the update", function() {
               it("triggers only #onRemove handlers with the updated CompositeTuple", function() {
-                blog2.update({id: "booboo"});
+                blog2.remotelyUpdated({id: "booboo"});
                 expect(removeHandler).to(haveBeenCalled, once);
                 expect(removeHandler.mostRecentArgs[0].leftTuple).to(eq, blog2);
                 expect(removeHandler.mostRecentArgs[0].rightTuple).to(eq, post3);
@@ -390,26 +389,26 @@ Screw.Unit(function(c) { with(c) {
           expect(leftOperand.hasSubscribers()).to(beFalse);
           expect(rightOperand.hasSubscribers()).to(beFalse);
 
-          expect(join._tuples).to(beNull);
+          expect(join.storedTuples).to(beNull);
 
           var subscription = join[eventType].call(join, function() {});
 
           expect(leftOperand.hasSubscribers()).to(beTrue);
           expect(rightOperand.hasSubscribers()).to(beTrue);
 
-          expect(join._tuples).toNot(beNull);
+          expect(join.storedTuples).toNot(beNull);
 
           subscription.destroy();
 
           expect(leftOperand.hasSubscribers()).to(beFalse);
           expect(rightOperand.hasSubscribers()).to(beFalse);
-          expect(join._tuples).to(beNull);
+          expect(join.storedTuples).to(beNull);
 
           join.onUpdate(function() {});
 
           expect(leftOperand.hasSubscribers()).to(beTrue);
           expect(rightOperand.hasSubscribers()).to(beTrue);
-          expect(join._tuples).toNot(beNull);
+          expect(join.storedTuples).toNot(beNull);
         });
       });
     });

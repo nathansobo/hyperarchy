@@ -113,6 +113,8 @@ Screw.Unit(function(c) { with(c) {
     describe("event handling", function() {
       var insertCallback, removeCallback, updateCallback, dirtyCallback, cleanCallback, invalidCallback, validCallback;
       before(function() {
+        User.clear();
+        
         insertCallback = mockFunction("insert callback", function(record) {
           expect(User.contains(record)).to(beTrue);
         });
@@ -140,20 +142,29 @@ Screw.Unit(function(c) { with(c) {
       });
 
       it("triggers insert, update, and remove events on the table at the appropriate times", function() {
-        var record = User.createFromRemote({id: "emma", fullName: "Emma Cunningham"})
-        expect(insertCallback).to(haveBeenCalled, withArgs(record));
+        var record = User.createFromRemote({id: 1, fullName: "Emma Cunningham"});
+        expect(insertCallback).to(haveBeenCalled, withArgs(record, 0, {'users.id': 1}, {'users.id': 1})); // record, index, new key, old key
 
-        record.remotelyUpdated({fullName: "Emma T. Scheme"});
-        expect(updateCallback).to(haveBeenCalled, withArgs(record, {
+        // higher index
+        var record2 = User.createFromRemote({id: 2, fullName: "Caitlin Brickman"});
+        expect(insertCallback).to(haveBeenCalled, withArgs(record2, 1, {'users.id': 2}, {'users.id': 2}));
+
+        record.remotelyUpdated({id: 3, fullName: "Emma T. Scheme"});
+        expect(updateCallback).to(haveBeenCalled, withArgs(record, { // record, changeset, new index, old index, new key, old key
           fullName: {
             column: User.fullName,
             oldValue: "Emma Cunningham",
             newValue: "Emma T. Scheme"
+          },
+          id: {
+            column: User.id,
+            oldValue: 1,
+            newValue: 3
           }
-        }));
+        }, 1, 0 ,{'users.id': 3}, {'users.id': 1}));
 
         record.remotelyDestroyed();
-        expect(removeCallback).to(haveBeenCalled, withArgs(record));
+        expect(removeCallback).to(haveBeenCalled, withArgs(record, 1, {'users.id': 3}, {'users.id': 3})); // record, index, new key, old key
       });
 
       it("triggers dirty and clean events at the appropriate times", function() {
@@ -179,6 +190,7 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#pauseEvents and #resumeEvents", function() {
       specify("#pauseEvents delays #onInsert, #onRemove, and #onUpdate triggers until #resumeEvents is called. Then delayed events are flushed and future events are no longer delayed", function() {
+        User.clear();
         var insertCallback = mockFunction("insert callback");
         var updateCallback = mockFunction("update callback");
         var removeCallback = mockFunction("remove callback");
@@ -189,7 +201,8 @@ Screw.Unit(function(c) { with(c) {
 
         User.table.pauseEvents();
 
-        var record = User.createFromRemote({id: "jake", fullName: "Jake Frautschi"});
+        var record = User.createFromRemote({id: 1, fullName: "Jake Frautschi"});
+
         record.remotelyUpdated({ fullName: "Jacob Frautschi" });
         record.remotelyDestroyed();
 
@@ -199,25 +212,23 @@ Screw.Unit(function(c) { with(c) {
 
         User.table.resumeEvents();
 
-        expect(insertCallback).to(haveBeenCalled, withArgs(record));
-        expect(updateCallback).to(haveBeenCalled, once);
+        var sortKey = User.table.buildSortKey(record);
+        expect(insertCallback).to(haveBeenCalled, withArgs(record, 0, sortKey, sortKey));
         expect(updateCallback).to(haveBeenCalled, withArgs(record, {
           fullName: {
             column: User.fullName,
             oldValue: "Jake Frautschi",
             newValue: "Jacob Frautschi"
           }
-        }));
-        expect(removeCallback).to(haveBeenCalled, withArgs(record));
+        }, 0, 0, sortKey, sortKey));
+        expect(removeCallback).to(haveBeenCalled, withArgs(record, 0, sortKey, sortKey));
 
         insertCallback.clear();
         updateCallback.clear();
         removeCallback.clear();
 
-        var record2 = User.createFromRemote({id: "nathan", fullName: "Nathan Sobo"});
-
+        var record2 = User.createFromRemote({id: 2, fullName: "Nathan Sobo"});
         expect(insertCallback).to(haveBeenCalled, once);
-        expect(insertCallback).to(haveBeenCalled, withArgs(record2));
 
         record2.remote.update({fullName: "Nate Sobo"});
         expect(updateCallback).to(haveBeenCalled, once);

@@ -49,64 +49,64 @@ module Monarch
 
         def subscribe_to_operands
           operand_subscriptions.add(left_operand.on_insert do |left_tuple|
-            predicate.find_matching_tuples(left_tuple, right_operand).each do |right_tuple|
+            predicate.find_matchingstoredTuples(left_tuple, right_operand).each do |right_tuple|
               composite_tuple = tuple_class.new([left_tuple, right_tuple])
               on_insert_node.publish(composite_tuple)
             end
           end)
 
           operand_subscriptions.add(right_operand.on_insert do |right_tuple|
-            predicate.find_matching_tuples(right_tuple, left_operand).each do |left_tuple|
+            predicate.find_matchingstoredTuples(right_tuple, left_operand).each do |left_tuple|
               composite_tuple = tuple_class.new([left_tuple, right_tuple])
               on_insert_node.publish(composite_tuple)
             end
           end)
 
           operand_subscriptions.add(left_operand.on_update do |left_tuple, changeset|
-            new_tuples = predicate.find_matching_tuples(changeset.new_state, right_operand).map do |right_tuple|
+            newstoredTuples = predicate.find_matchingstoredTuples(changeset.new_state, right_operand).map do |right_tuple|
               tuple_class.new([left_tuple, right_tuple])
             end
 
-            previous_tuples = predicate.find_matching_tuples(changeset.old_state, right_operand).map do |right_tuple|
+            previousstoredTuples = predicate.find_matchingstoredTuples(changeset.old_state, right_operand).map do |right_tuple|
               tuple_class.new([left_tuple, right_tuple])
             end
 
-            inserted_tuples = new_tuples - previous_tuples
-            updated_tuples  = previous_tuples & new_tuples
-            removed_tuples  = previous_tuples - new_tuples
+            insertedstoredTuples = newstoredTuples - previousstoredTuples
+            updatedstoredTuples  = previousstoredTuples & newstoredTuples
+            removedstoredTuples  = previousstoredTuples - newstoredTuples
 
-            inserted_tuples.each {|tuple| on_insert_node.publish(tuple)}
-            updated_tuples.each  {|tuple| on_update_node.publish(tuple, composite_changeset(tuple, changeset))}
-            removed_tuples.each  {|tuple| on_remove_node.publish(tuple)}
+            insertedstoredTuples.each {|tuple| on_insert_node.publish(tuple)}
+            updatedstoredTuples.each  {|tuple| on_update_node.publish(tuple, composite_changeset(tuple, changeset))}
+            removedstoredTuples.each  {|tuple| on_remove_node.publish(tuple)}
           end)
 
           operand_subscriptions.add(right_operand.on_update do |right_tuple, changeset|
-            new_tuples = predicate.find_matching_tuples(changeset.new_state, left_operand).map do |left_tuple|
+            newstoredTuples = predicate.find_matchingstoredTuples(changeset.new_state, left_operand).map do |left_tuple|
               tuple_class.new([left_tuple, right_tuple])
             end
 
-            previous_tuples = predicate.find_matching_tuples(changeset.old_state, left_operand).map do |left_tuple|
+            previousstoredTuples = predicate.find_matchingstoredTuples(changeset.old_state, left_operand).map do |left_tuple|
               tuple_class.new([left_tuple, right_tuple])
             end
 
-            inserted_tuples = new_tuples - previous_tuples
-            updated_tuples  = previous_tuples & new_tuples
-            removed_tuples  = previous_tuples - new_tuples
+            insertedstoredTuples = newstoredTuples - previousstoredTuples
+            updatedstoredTuples  = previousstoredTuples & newstoredTuples
+            removedstoredTuples  = previousstoredTuples - newstoredTuples
 
-            inserted_tuples.each {|tuple| on_insert_node.publish(tuple)}
-            updated_tuples.each  {|tuple| on_update_node.publish(tuple, composite_changeset(tuple, changeset))}
-            removed_tuples.each  {|tuple| on_remove_node.publish(tuple)}
+            insertedstoredTuples.each {|tuple| on_insert_node.publish(tuple)}
+            updatedstoredTuples.each  {|tuple| on_update_node.publish(tuple, composite_changeset(tuple, changeset))}
+            removedstoredTuples.each  {|tuple| on_remove_node.publish(tuple)}
           end)
 
           operand_subscriptions.add(left_operand.on_remove do |left_tuple|
-            predicate.find_matching_tuples(left_tuple, right_operand).each do |right_tuple|
+            predicate.find_matchingstoredTuples(left_tuple, right_operand).each do |right_tuple|
               composite_tuple = tuple_class.new([left_tuple, right_tuple])
               on_remove_node.publish(composite_tuple)
             end
           end)
 
           operand_subscriptions.add(right_operand.on_remove do |right_tuple|
-            predicate.find_matching_tuples(right_tuple, left_operand).each do |left_tuple|
+            predicate.find_matchingstoredTuples(right_tuple, left_operand).each do |left_tuple|
               composite_tuple = tuple_class.new([left_tuple, right_tuple])
               on_remove_node.publish(composite_tuple)
             end

@@ -10,8 +10,8 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
   },
 
   tuples: function() {
-    if (this._tuples) {
-      return this._tuples.values();
+    if (this.storedTuples) {
+      return this.storedTuples.values();
     }
     return _.filter(this.operand.tuples(), function(tuple) {
       return this.predicate.evaluate(tuple);
@@ -70,10 +70,10 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
       if (this.predicate.evaluate(record)) this.tupleRemovedRemotely(record);
     }, this));
 
-    this.operandsSubscriptionBundle.add(this.operand.onUpdate(function(record, changedFields) {
-      if (this.contains(record)) {
+    this.operandsSubscriptionBundle.add(this.operand.onUpdate(function(record, changeset) {
+      if (this.contains(record, changeset)) {
         if (this.predicate.evaluate(record)) {
-          this.tupleUpdatedRemotely(record, changedFields);
+          this.tupleUpdatedRemotely(record, changeset);
         } else {
           this.tupleRemovedRemotely(record);
         }
