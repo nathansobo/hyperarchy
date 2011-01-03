@@ -79,6 +79,13 @@ button {
   -moz-border-radius: $radius;
 }
 
+@mixin borderRadiusTop($radius) {
+  -webkit-border-top-left-radius: $radius;
+  -webkit-border-top-right-radius: $radius;
+  -moz-border-radius-topleft: $radius;
+  -moz-border-radius-topright: $radius;
+}
+
 .glossyBlack, .glossyBlack:visited {
   color: white;
   @include glossyColor(#0D0D10);

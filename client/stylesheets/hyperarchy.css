@@ -1123,16 +1123,16 @@ body.legal {
     margin-left: 6px;
     cursor: pointer; }
 #app #mainContent {
+  -webkit-border-top-left-radius: 6px;
+  -webkit-border-top-right-radius: 6px;
+  -moz-border-radius-topleft: 6px;
+  -moz-border-radius-topright: 6px;
   background: white;
   width: 1000px;
   padding-bottom: 10px;
   margin: 0 auto;
   -moz-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
-  -webkit-border-top-left-radius: 6px;
-  -webkit-border-top-right-radius: 6px;
-  -moz-border-radius-topleft: 6px;
-  -moz-border-radius-topright: 6px; }
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px; }
   #app #mainContent #contentHeader {
     -webkit-border-top-left-radius: 6px;
     -webkit-border-top-right-radius: 6px;
@@ -1142,7 +1142,6 @@ body.legal {
     -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 1px;
     width: 940;
     height: 36;
-    margin: 0 auto;
     padding: 5px 30px;
     margin: 0;
     margin-bottom: 30px; }
@@ -1155,20 +1154,29 @@ body.legal {
       letter-spacing: 1.1;
       cursor: pointer; }
     #app #mainContent #contentHeader a {
+      float: right;
       display: inline-block;
       font-size: 18px;
-      margin: 11px;
-      color: white;
-      padding-left: 14px; }
-      #app #mainContent #contentHeader a#organizationSettings {
-        background-repeat: no-repeat;
-        background-image: url(/images/cog_alt_12x12_light.png);
-        background-position: 0 1px; }
+      margin-top: 8px;
+      margin-right: 50px;
+      color: white; }
       #app #mainContent #contentHeader a#backToLastOrganization {
         padding-left: 16px;
         background-repeat: no-repeat;
         background-image: url(/images/undo_12x12_light.png);
         background-position: 0 2px; }
+  #app #mainContent #secondaryHeader {
+    width: 940;
+    height: 20;
+    padding: 5px 30px;
+    margin: 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0; }
+    #app #mainContent #secondaryHeader a {
+      display: inline-block;
+      font-size: 18px;
+      margin-left: 40px;
+      color: white; }
 #app #feedback {
   background: white;
   height: 300px;
