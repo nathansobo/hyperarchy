@@ -12,8 +12,6 @@ _.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations
     this.initializeEventsSystem();
   },
 
-  hasOperands: true,
-
   tuples: function() {
     if (this.storedTuples) return this.storedTuples.values();
 

@@ -1,7 +1,7 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Model.Relations.Relation", {
-  hasOperands: true,
+  numOperands: 1,
   _relation_: true,
 
   initializeEventsSystem: function() {
@@ -13,7 +13,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
     this.onCleanNode = new Monarch.SubscriptionNode();
     this.onInvalidNode = new Monarch.SubscriptionNode();
     this.onValidNode = new Monarch.SubscriptionNode();
-    if (this.hasOperands) {
+    if (this.numOperands > 0) {
       this.operandsSubscriptionBundle = new Monarch.SubscriptionBundle();
       this.unsubscribeFromOperandsWhenThisNoLongerHasSubscribers();
     }
@@ -204,22 +204,6 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return this.onValidNode.subscribe(callback, context);
   },
 
-  recordMadeDirty: function(record) {
-    this.onDirtyNode.publish(record);
-  },
-
-  recordMadeClean: function(record) {
-    this.onCleanNode.publish(record);
-  },
-
-  recordMadeInvalid: function(record) {
-    this.onInvalidNode.publish(record)
-  },
-  
-  recordMadeValid: function(record) {
-    this.onValidNode.publish(record);
-  },
-
   hasSubscribers: function() {
     return !(this.onInsertNode.empty() && this.onRemoveNode.empty()
         && this.onUpdateNode.empty() && this.onDirtyNode.empty() && this.onCleanNode.empty());
@@ -300,11 +284,31 @@ _.constructor("Monarch.Model.Relations.Relation", {
     this.onUpdateNode.publish(tuple, changeset, newIndex, oldIndex, newKey, oldKey);
   },
 
-  tupleRemovedRemotely: function(tuple, changeset, newKey, oldKey) {
+  tupleRemovedRemotely: function(tuple, newKey, oldKey) {
     if (!newKey) newKey = oldKey = this.buildSortKey(tuple);
 
     var index = this.storedTuples.remove(oldKey);
     this.onRemoveNode.publish(tuple, index, newKey, oldKey);
+  },
+
+  recordMadeDirty: function(record, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(record);
+    this.onDirtyNode.publish(record, this.indexByKey(oldKey), newKey, oldKey);
+  },
+
+  recordMadeClean: function(record, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(record);
+    this.onCleanNode.publish(record, this.indexByKey(oldKey), newKey, oldKey);
+  },
+
+  recordMadeInvalid: function(record, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(record);
+    this.onInvalidNode.publish(record, this.indexByKey(oldKey), newKey, oldKey)
+  },
+
+  recordMadeValid: function(record, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(record);
+    this.onValidNode.publish(record, this.indexByKey(oldKey), newKey, oldKey);
   },
 
   tupleUpdatedLocally: function(tuple, updateData) {
@@ -319,11 +323,66 @@ _.constructor("Monarch.Model.Relations.Relation", {
     }
   },
 
+  findByKey: function(sortKey) {
+    return this.storedTuples.find(sortKey);
+  },
+
+  indexByKey: function(sortKey) {
+    return this.storedTuples.indexOf(sortKey);
+  },
+
+  remoteSubscribe: function() {
+    var subscribeFuture = new Monarch.Http.AjaxFuture();
+    Server.subscribe([this]).onSuccess(function(remoteSubscriptions) {
+      subscribeFuture.triggerSuccess(remoteSubscriptions[0]);
+    });
+    return subscribeFuture;
+  },
+
+  // private
+
   subscribeToOperandsIfNeeded: function() {
-    if (this.hasOperands && !this.hasSubscribers()) {
+    if (this.numOperands > 0 && !this.hasSubscribers()) {
       this.subscribeToOperands();
       this.memoizeTuples();
     }
+  },
+
+  subscribeToOperands: function() {
+    if (this.numOperands === 1) {
+      this.operandsSubscriptionBundle.add(this.operand.onInsert(this.hitch('onOperandInsert')));
+      this.operandsSubscriptionBundle.add(this.operand.onUpdate(this.hitch('onOperandUpdate')));
+      this.operandsSubscriptionBundle.add(this.operand.onRemove(this.hitch('onOperandRemove')));
+      this.operandsSubscriptionBundle.add(this.operand.onDirty(this.hitch('onOperandDirty')));
+      this.operandsSubscriptionBundle.add(this.operand.onClean(this.hitch('onOperandClean')));
+      this.operandsSubscriptionBundle.add(this.operand.onInvalid(this.hitch('onOperandInvalid')));
+      this.operandsSubscriptionBundle.add(this.operand.onValid(this.hitch('onOperandValid')));
+    } else {
+      throw new Error("Not implemented")
+    }
+  },
+
+  onOperandInsert: function() {},
+  onOperandUpdate: function() {},
+
+  onOperandRemove: function(tuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.tupleRemovedRemotely(tuple, newKey, oldKey);
+  },
+
+  onOperandDirty: function(tuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.recordMadeDirty(tuple, newKey, oldKey);
+  },
+
+  onOperandClean: function(tuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.recordMadeClean(tuple, newKey, oldKey);
+  },
+
+  onOperandInvalid: function(tuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.recordMadeInvalid(tuple, newKey, oldKey);
+  },
+
+  onOperandValid: function(tuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.recordMadeValid(tuple, newKey, oldKey);
   },
 
   unsubscribeFromOperandsWhenThisNoLongerHasSubscribers: function() {
@@ -342,16 +401,6 @@ _.constructor("Monarch.Model.Relations.Relation", {
     this.operandsSubscriptionBundle.destroy();
     this.storedTuples = null;
   },
-
-  remoteSubscribe: function() {
-    var subscribeFuture = new Monarch.Http.AjaxFuture();
-    Server.subscribe([this]).onSuccess(function(remoteSubscriptions) {
-      subscribeFuture.triggerSuccess(remoteSubscriptions[0]);
-    });
-    return subscribeFuture;
-  },
-
-  // private
 
   predicateFromHash: function(hash) {
     var predicates = [];

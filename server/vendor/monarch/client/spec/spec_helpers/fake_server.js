@@ -22,7 +22,7 @@ Screw.Unit(function(c) {
 
   Monarch.Model.Relations.Table.prototype.fixture = function(id) {
     var fixture = this.find(id);
-    if (!fixture && Server.autoFetch) {
+    if (!fixture && Server.autoFetch && Server.Repository.tables[this.globalName]) {
       Server.autoFetch([this.where({id: id})]);
       fixture = this.find(id);
     }

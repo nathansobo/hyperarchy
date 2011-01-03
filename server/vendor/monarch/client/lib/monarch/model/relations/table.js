@@ -1,7 +1,7 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation, {
-  hasOperands: false,
+  numOperands: 0,
 
   initialize: function(globalName, recordConstructor) {
     this.globalName = globalName;

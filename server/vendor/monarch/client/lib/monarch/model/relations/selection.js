@@ -39,6 +39,9 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
   },
 
   evaluateInRepository: function(repository) {
+
+    if (!this.operand.evaluateInRepository(repository)) debugger;
+
     return new Monarch.Model.Relations.Selection(this.operand.evaluateInRepository(repository), this.predicate);
   },
 
@@ -61,42 +64,21 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
 
   // private
 
-  subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.operand.onInsert(function(record) {
-      if (this.predicate.evaluate(record)) this.tupleInsertedRemotely(record);
-    }, this));
 
-    this.operandsSubscriptionBundle.add(this.operand.onRemove(function(record) {
-      if (this.predicate.evaluate(record)) this.tupleRemovedRemotely(record);
-    }, this));
+  onOperandInsert: function(tuple, index, newKey, oldKey) {
+    if (this.predicate.evaluate(tuple)) this.tupleInsertedRemotely(tuple, newKey, oldKey);
+  },
 
-    this.operandsSubscriptionBundle.add(this.operand.onUpdate(function(record, changeset) {
-      if (this.contains(record, changeset)) {
-        if (this.predicate.evaluate(record)) {
-          this.tupleUpdatedRemotely(record, changeset);
-        } else {
-          this.tupleRemovedRemotely(record);
-        }
+  onOperandUpdate: function(tuple, changeset, newIndex, oldIndex, newKey, oldKey) {
+    if (this.findByKey(oldKey)) {
+      if (this.predicate.evaluate(tuple)) {
+        this.tupleUpdatedRemotely(tuple, changeset, newKey, oldKey);
       } else {
-        if (this.predicate.evaluate(record)) this.tupleInsertedRemotely(record);
+        this.tupleRemovedRemotely(tuple, newKey, oldKey);
       }
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onDirty(function(record) {
-      if (this.contains(record)) this.recordMadeDirty(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onClean(function(record) {
-      if (this.contains(record)) this.recordMadeClean(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onInvalid(function(record) {
-      if (this.contains(record)) this.recordMadeInvalid(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onValid(function(record) {
-      if (this.contains(record)) this.recordMadeValid(record);
-    }, this));
+    } else {
+      if (this.predicate.evaluate(tuple)) this.tupleInsertedRemotely(tuple, newKey, oldKey);
+    }
   }
 });
 

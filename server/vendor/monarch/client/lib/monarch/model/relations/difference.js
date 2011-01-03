@@ -1,6 +1,8 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relations.Relation, {
+  numOperands: 2,
+
   initialize: function(leftOperand, rightOperand) {
     this.leftOperand = leftOperand;
     this.rightOperand = rightOperand;
