@@ -39,6 +39,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
         });
 
         div({'class': 'grid4'}, function() {
+
+          a({'class': "columnHeader"}, "Previous");
+          a({'class': "columnHeader"}, "Next");
+
           a({id: "showCreateCandidateFormButton", 'class': "glossyLightGray roundedButton"}, "Suggest An Answer")
             .click('showOrHideCreateCandidateForm')
             .ref('showCreateCandidateFormButton');

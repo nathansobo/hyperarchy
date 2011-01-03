@@ -65,15 +65,15 @@ _.constructor("Views.Layout", View.Template, {
             a({id: "questionsLink"}, "Questions")
               .ref('questionsLink')
               .click('goToOrganization');
-            a({id: "tagsLink"}, "Tags")
-              .ref('tagsLink')
+            a({id: "membersLink"}, "Members")
+              .ref('membersLink')
             a({id: "inviteLink"}, "Invite")
               .ref('inviteLink')
               .click('showInviteForm');
             a({id: "organizationSettings"}, "Settings")
               .ref("editOrganizationLink")
               .click("goToEditOrganization");
-            }).ref("organizationHeader");
+          }).ref("organizationHeader");
 
           div(function() {
             h2().ref("alternateHeaderText");
