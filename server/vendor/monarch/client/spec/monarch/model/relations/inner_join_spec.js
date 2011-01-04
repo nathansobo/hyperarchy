@@ -247,30 +247,34 @@ Screw.Unit(function(c) { with(c) {
 
             context("when the CompositeTuple no longer matches #predicate after the update", function() {
               it("triggers only #onRemove handlers with the updated CompositeTuple", function() {
-                blog2.remotelyUpdated({id: "booboo"});
-                expect(removeHandler).to(haveBeenCalled, once);
-                expect(removeHandler.mostRecentArgs[0].leftTuple).to(eq, blog2);
-                expect(removeHandler.mostRecentArgs[0].rightTuple).to(eq, post3);
+                blog2.remotelyUpdated({id: 100});
+
+                var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog2, post3);
+                expect(removeHandler).to(haveBeenCalled, withArgs(expectedCompositeTuple, 2, {'blogs.id': 100, 'blog_posts.id': 3}, {'blogs.id': 2, 'blog_posts.id': 3}));
                 expect(insertHandler).toNot(haveBeenCalled);
                 expect(updateHandler).toNot(haveBeenCalled);
               });
             });
           });
 
-          context("when the updated tuple is not a component of a CompositeTuple that is a member of the relation before the update", function() {
-            context("when the update causes #carteseanProduct to contain a CompositeTuple that matches #predicate", function() {
-              it("triggers only the #onInsert handlers with the updated CompositeTuple", function() {
+          context("when the updated tuple is not part of a composite tuple that was a in the join before the update", function() {
+            context("when the update causes join to to contain a new composite tuple", function() {
+              it("triggers an insert event with the new composite tuple", function() {
                 var blog = user.blogs().createFromRemote({id: 100});
-                var blogPost = BlogPost.createFromRemote({blogId: 101});
+                var blogPost = BlogPost.createFromRemote({id: 100, blogId: 101});
 
                 blog.update({id: 101});
                 expect(insertHandler).to(haveBeenCalled, once);
                 expect(updateHandler).toNot(haveBeenCalled);
                 expect(removeHandler).toNot(haveBeenCalled);
 
-                var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(eq, blog);
-                expect(compositeTuple.rightTuple).to(eq, blogPost);
+                var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog, blogPost);
+
+                expect(insertHandler).to(haveBeenCalled, withArgs(
+                  expectedCompositeTuple, 3,
+                  {'blogs.id': 101, 'blog_posts.id': 100},
+                  {'blogs.id': 100, 'blog_posts.id': 100}
+                ));
               });
             });
 
@@ -290,67 +294,62 @@ Screw.Unit(function(c) { with(c) {
 
         context("when a tuple is updated in the right operand", function() {
           context("when the updated tuple is part of a composite tuple that was in the join before the update", function() {
-            context("when the updated tuple is part of a composite tuple that was in the join before the update", function() {
-              it("triggers only #onUpdate handlers with the updated CompositeTuple and does not modify the contents of the relation", function() {
+            context("when that composite tuple is still a part of the join after the update", function() {
+              it("triggers an update event with the updated CompositeTuple and does not modify the contents of the relation", function() {
                 var sizeBefore = join.size();
 
-                var oldValue = post3.body();
-                var newValue = "Today sucked mum.";
-                post3.update({ body: newValue });
+                post1.remotelyUpdated({ id: 100 });
 
-                expect(updateHandler).to(haveBeenCalled, once);
-                expect(insertHandler).toNot(haveBeenCalled);
-                expect(removeHandler).toNot(haveBeenCalled);
-
-                var updatedTuple = updateHandler.mostRecentArgs[0];
-                var changedAttributes = updateHandler.mostRecentArgs[1];
-
-                expect(updatedTuple.leftTuple).to(eq, blog2);
-                expect(updatedTuple.rightTuple).to(eq, post3);
-                expect(changedAttributes.body.column).to(eq, BlogPost.body);
-                expect(changedAttributes.body.oldValue).to(eq, oldValue);
-                expect(changedAttributes.body.newValue).to(eq, newValue);
+                var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog1, post1);
+                expect(updateHandler).to(haveBeenCalled, withArgs(
+                  expectedCompositeTuple,
+                  { id: { column: BlogPost.id, oldValue: 1, newValue: 100 } }, // changeset
+                  1, 0, // new index, old index
+                  { 'blogs.id': 1, 'blog_posts.id': 100 }, // new key
+                  { 'blogs.id': 1, 'blog_posts.id': 1 } // old key
+                ));
 
                 expect(join.size()).to(eq, sizeBefore);
+                expect(insertHandler).toNot(haveBeenCalled);
+                expect(removeHandler).toNot(haveBeenCalled);
               });
             });
 
-            context("when the CompositeTuple no longer matches #predicate after the update", function() {
+            context("when that is no longer in the join after the update", function() {
               it("triggers only #onRemove handlers with the updated CompositeTuple", function() {
-                post3.update({blogId: 'guns'});
+                post3.update({blogId: 100});
 
-                expect(removeHandler).to(haveBeenCalled, once);
+                var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog2, post3);
+                var sortKey = join.buildSortKey(expectedCompositeTuple);
+
+                expect(removeHandler).to(haveBeenCalled, withArgs(expectedCompositeTuple, 2, sortKey, sortKey));
                 expect(insertHandler).toNot(haveBeenCalled);
                 expect(updateHandler).toNot(haveBeenCalled);
-                expect(removeHandler.mostRecentArgs[0].leftTuple).to(eq, blog2);
-                expect(removeHandler.mostRecentArgs[0].rightTuple).to(eq, post3);
               });
             });
           });
 
-          context("when the updated tuple is not a part of a composite tuple in the relation before the update", function() {
+          context("when the updated tuple is not a part of a composite tuple in the join before the update", function() {
             var post;
 
             before(function() {
-              post = BlogPost.createFromRemote({ blogId: "homer", body: "PAIN!" });
-              post.save();
+              post = BlogPost.createFromRemote({ id: 100, blogId: 100 });
             });
 
-            context("when the update causes #carteseanProduct to contain a composite tuple that matches #predicate", function() {
-              it("triggers only #onInsert handlers with the new CompositeTuple", function() {
-                post.update({blogId: blog2.id()});
+            context("when the update causes the join to contain a new composite tuple", function() {
+              it("triggers an insert event with that tuple", function() {
+                post.remotelyUpdated({blogId: blog2.id()});
 
-                expect(insertHandler).to(haveBeenCalled, once);
+                var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog2, post);
+                var sortKey = join.buildSortKey(expectedCompositeTuple);
+                expect(insertHandler).to(haveBeenCalled, withArgs(expectedCompositeTuple, 3, sortKey, sortKey));
+
                 expect(updateHandler).toNot(haveBeenCalled);
                 expect(removeHandler).toNot(haveBeenCalled);
-
-                var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(eq, blog2);
-                expect(compositeTuple.rightTuple).to(eq, post);
               });
             });
 
-            context("when the update does not cause the #carteseanProduct to contain a composite tuple that matches #predicate", function() {
+            context("when the update does not cause a new composite tuple to become part of the join", function() {
               it("does not trigger any event handlers", function() {
                 post.update({ body: "Flabby flabby flabby why are you this way?"});
                 expect(insertHandler).toNot(haveBeenCalled);
@@ -361,21 +360,21 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        context("when a tuple is updated in a way that should insert one CompositeTuple and remove another", function() {
-          it("fires #onInsert handlers for the inserted tuple and #onRemove handlers for the removed one", function() {
-            post3.update({blogId: blog1.id()});
-
-            expect(insertHandler).to(haveBeenCalled, once);
-
-            var insertedTuple = insertHandler.mostRecentArgs[0];
-            expect(insertedTuple.leftTuple).to(eq, blog1);
-            expect(insertedTuple.rightTuple).to(eq, post3);
+        context("when a tuple is updated in a way that causes one composite tuple to be removed and another to be inserted", function() {
+          it("triggers a remove event and an insert event with the appropriate composite tuples", function() {
+            post1.update({blogId: blog2.id()});
 
 
-            expect(removeHandler).to(haveBeenCalled, once);
-            var removedTuple = removeHandler.mostRecentArgs[0];
-            expect(removedTuple.leftTuple).to(eq, blog2);
-            expect(removedTuple.rightTuple).to(eq, post3);
+            var expectedRemovedTuple = new Monarch.Model.CompositeTuple(blog1, post1);
+            var removedSortKey = join.buildSortKey(expectedRemovedTuple);
+
+            var expectedInsertedTuple = new Monarch.Model.CompositeTuple(blog2, post1);
+            var insertedSortKey = join.buildSortKey(expectedInsertedTuple);
+
+            expect(removeHandler).to(haveBeenCalled, withArgs(expectedRemovedTuple, 0, removedSortKey, removedSortKey));
+            expect(insertHandler).to(haveBeenCalled, withArgs(expectedInsertedTuple, 1, insertedSortKey, insertedSortKey));
+
+            expect(updateHandler).toNot(haveBeenCalled);
           });
         });
       });
