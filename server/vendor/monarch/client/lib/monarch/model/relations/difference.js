@@ -51,56 +51,53 @@ _.constructor("Monarch.Model.Relations.Difference", Monarch.Model.Relations.Rela
     return this.leftOperand.surfaceTables();
   },
 
+
+
   // private
 
+  // overridden so we subscribe to right first, which causes it to get its events before the left (hopefully) so we
+  // don't insert and then immediately remove as the left and the right both get the same tuple
   subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.leftOperand.onInsert(function(record) {
-      if (!this.rightOperand.find(record.id())) this.tupleInsertedRemotely(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.leftOperand.onUpdate(function(record, changes) {
-      if (this.contains(record)) this.tupleUpdatedRemotely(record, changes);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.leftOperand.onRemove(function(record) {
-      if (this.contains(record)) this.tupleRemovedRemotely(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.rightOperand.onInsert(function(record) {
-      if (this.contains(record)) this.tupleRemovedRemotely(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.rightOperand.onRemove(function(record) {
-      if (this.leftOperand.find(record.id())) this.tupleInsertedRemotely(record);
-    }, this));
+    this.subscribeToOperand(this.rightOperand, 'right');
+    this.subscribeToOperand(this.leftOperand, 'left');
   },
 
-  unsubscribeFromOperands: function($super) {
-    $super();
-    this.tuplesById = null;
+  onLeftOperandInsert: function(tuple, index, newKey, oldKey) {
+    if (!this.rightOperand.find(tuple.id())) this.tupleInsertedRemotely(tuple, newKey, oldKey);
   },
 
-  memoizeTuples: function() {
-    var tuplesById = {};
-    this.each(function(record) {
-      tuplesById[record.id()] = record;
-    }, this);
-    this.tuplesById = tuplesById;
+  onRightOperandInsert: function(tuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.tupleRemovedRemotely(tuple);
   },
 
-  tupleInsertedRemotely: function(record, options) {
-    this.tuplesById[record.id()] = record;
-    this.onInsertNode.publish(record);
+  onLeftOperandUpdate: function(tuple, changeset, newIndex, oldIndex, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.tupleUpdatedRemotely(tuple, changeset, newKey, oldKey);
   },
 
-  tupleUpdatedRemotely: function(record, updateData) {
-    this.onUpdateNode.publish(record, updateData);
+  onRightOperandUpdate: function() {
+    // no op for now
   },
 
-  tupleRemovedRemotely: function(record) {
-    delete this.tuplesById[record.id()];
-    this.onRemoveNode.publish(record);
-  }
+  onLeftOperandRemove: function(tuple, index, newKey, oldKey) {
+    this.onOperandRemove(tuple, index, newKey, oldKey);
+  },
+
+  onRightOperandRemove: function(tuple, index, newKey, oldKey) {
+    if (this.leftOperand.find(tuple.id())) this.tupleInsertedRemotely(tuple, newKey, oldKey);
+  },
+
+  // not implemented yet
+  onLeftOperandDirty: function() {},
+  onRightOperandDirty: function() {},
+
+  onLeftOperandClean: function() {},
+  onRightOperandClean: function() {},
+
+  onLeftOperandInvalid: function() {},
+  onRightOperandInvalid: function() {},
+
+  onLeftOperandValid: function() {},
+  onRightOperandValid: function() {}
 });
 
 })(Monarch);

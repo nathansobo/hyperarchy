@@ -374,6 +374,8 @@ _.constructor("Monarch.Model.Relations.Relation", {
     }, this);
   },
 
+  
+
   onOperandRemove: function(tuple, index, newKey, oldKey) {
     if (this.findByKey(oldKey)) this.tupleRemovedRemotely(tuple, newKey, oldKey);
   },

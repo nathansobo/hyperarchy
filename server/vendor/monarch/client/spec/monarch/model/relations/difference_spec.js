@@ -2,33 +2,25 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Relations.Difference", function() {
-    useLocalFixtures();
+    useExampleDomainModel();
 
-    describe("#tuples", function() {
-      var leftOperand, rightOperand, difference;
+    describe("#tuples()", function() {
+      var difference, user3, user4;
       before(function() {
-        leftOperand = User.table;
-        rightOperand = User.where(User.age.eq(28));
-        expect(leftOperand.tuples()).toNot(beEmpty);
-        expect(rightOperand.tuples()).toNot(beEmpty);
-
-        difference = new Monarch.Model.Relations.Difference(leftOperand, rightOperand);
+        User.createFromRemote({id: 1, age: 28});
+        User.createFromRemote({id: 2, age: 28});
+        user3 = User.createFromRemote({id: 3, age: 29});
+        user4 = User.createFromRemote({id: 4, age: 30});
+        difference = User.difference(User.where({age: 28}));
       });
 
       it("returns the tuples in the left operand which do not correspond to tuples with the same id in the right operand", function() {
-        var differenceTuples = difference.tuples();
-
-        expect(differenceTuples).toNot(beEmpty);
-        expect(differenceTuples.length).to(eq, leftOperand.size() - rightOperand.size());
-
-        _.each(differenceTuples, function(record) {
-          expect(rightOperand.find(record.id())).to(beNull);
-        });
+        expect(difference.tuples()).to(equal, [user3, user4]);
       });
     });
 
     describe("event handling", function() {
-      var table1, table2, difference, record, insertCallback, updateCallback, removeCallback;
+      var leftOperand, rightOperand, difference, record, insertCallback, updateCallback, removeCallback;
       init(function() {
         // operands are selectively overridden below
         leftOperand = Blog.table;
@@ -53,22 +45,21 @@ Screw.Unit(function(c) { with(c) {
       }
 
       describe("when a record is inserted in the left operand", function() {
-        context("if the record is not present in the right operand", function() {
-          init(function() {
-            rightOperand = Blog.where({userId: "jim"});
-          });
+        init(function() {
+          rightOperand = Blog.where({userId: 1});
+        });
 
+        context("if the record is not present in the right operand", function() {
           it("triggers insert callbacks with the record", function() {
-            leftOperand.create({userId: "johan"})
-              .afterEvents(function(record) {
-                expect(insertCallback).to(haveBeenCalled, withArgs(record));
-              });
+            var record = Blog.createFromRemote({id: 1, userId: 2});
+            var sortKey = difference.buildSortKey(record);
+            expect(insertCallback).to(haveBeenCalled, withArgs(record, 0, sortKey, sortKey));
           });
         });
 
         context("if the record is present in the right operand", function() {
           it("does not trigger any callbacks", function() {
-            leftOperand.create({});
+            Blog.createFromRemote({id: 1, userId: 1});
             expectNoCallbacksToHaveBeenCalled();
           });
         });
@@ -77,51 +68,62 @@ Screw.Unit(function(c) { with(c) {
       describe("when a record is inserted in the right operand", function() {
         context("if the record is not present in the left operand", function() {
           init(function() {
-            leftOperand = Blog.where({userId: "jim"});
+            leftOperand = Blog.where({userId: 1});
           });
 
           it("does not trigger any callbacks", function() {
-            rightOperand.create({userId: "johan"});
+            rightOperand.createFromRemote({id: 1, userId: 2});
             expectNoCallbacksToHaveBeenCalled();
           });
         });
 
         context("if the record is present in the left operand", function() {
           init(function() {
-            rightOperand = Blog.where({userId: "jim"});
+            rightOperand = Blog.where({userId: 1});
           });
 
           it("triggers remove callbacks with the record", function() {
-            leftOperand.create({userId: "willy"})
-              .afterEvents(function(record) {
-                record.update({userId: "jim"})
-                  .afterEvents(function() {
-                    expect(removeCallback).to(haveBeenCalled, withArgs(record));
-                  });
-              });
+            var record = Blog.createFromRemote({id: 1, userId: 2})
+            expect(leftOperand.contains(record)).to(beTrue);
+            expect(rightOperand.contains(record)).to(beFalse);
+
+            record.remotelyUpdated({userId: 1});
+            expect(leftOperand.contains(record)).to(beTrue);
+            expect(rightOperand.contains(record)).to(beTrue);
+
+            var sortKey = difference.buildSortKey(record);
+
+            expect(removeCallback).to(haveBeenCalled, withArgs(record, 0, sortKey, sortKey));
           });
         });
       });
 
       describe("when a record is updated in the left operand", function() {
-        context("if the record is not present in the right operand", function() {
-          init(function() {
-            rightOperand = Blog.where({userId: 'jim'});
-          });
+        init(function() {
+          rightOperand = Blog.where({userId: 1});
+        });
 
+        context("if the record is not present in the right operand", function() {
           it("triggers update callbacks with the record", function() {
-            var record = leftOperand.find('recipes');
-            var userIdBeforeUpdate = record.userId();
-            record.update({userId: "bingcrosby"});
-            expect(updateCallback).to(haveBeenCalled, once);
-            expect(updateCallback).to(haveBeenCalled, withArgs(record, {userId: {column: Blog.userId, oldValue: userIdBeforeUpdate, newValue: "bingcrosby" }}));
+            var record = Blog.createFromRemote({id: 1, userId: 2});
+            expect(rightOperand.contains(record)).to(beFalse);
+
+
+            record.remotelyUpdated({userId: 100});
+            var sortKey = difference.buildSortKey(record);
+
+            expect(updateCallback).to(haveBeenCalled, withArgs(
+              record,
+              {userId: {column: Blog.userId, oldValue: 2, newValue: 100 }},
+              0, 0, sortKey, sortKey // new index, old index, new sort key, old sort key
+            ));
           });
         });
 
         context("if the record is present in the right operand", function() {
           it("does not trigger any callbacks", function() {
-            var record = Blog.fixture('recipes');
-            record.update({userId: "mojo"});
+            var record = Blog.createFromRemote({id: 1, userId: 1});
+            record.update({name: "Tarot Route"});
             expectNoCallbacksToHaveBeenCalled();
           });
         });
@@ -130,19 +132,20 @@ Screw.Unit(function(c) { with(c) {
       describe("when a record is removed from the left operand", function() {
         context("if the record is not present in the right operand", function() {
           init(function() {
-            rightOperand = Blog.where({userId: 'jim'});
+            rightOperand = Blog.where({userId: 1});
           });
 
           it("triggers remove callbacks with the record", function() {
-            var record = Blog.fixture('recipes');
+            var record = Blog.createFromRemote({id: 1, userId: 2});
+            var sortKey = difference.buildSortKey(record);
             record.destroy();
-            expect(removeCallback).to(haveBeenCalled, withArgs(record));
+            expect(removeCallback).to(haveBeenCalled, withArgs(record, 0, sortKey, sortKey));
           });
         });
 
         context("if the record is present in the right operand", function() {
           it("does not trigger any callbacks", function() {
-            var record = Blog.fixture('recipes');
+            var record = Blog.createFromRemote({id: 1, userId: 1});
             record.destroy();
             expectNoCallbacksToHaveBeenCalled();
           });
@@ -152,11 +155,11 @@ Screw.Unit(function(c) { with(c) {
       describe("when a record is removed from the right operand", function() {
         context("if the record is not present in the left operand", function() {
           init(function() {
-            leftOperand = Blog.where({userId: 'jim'});
+            leftOperand = Blog.where({userId: 1});
           });
 
           it("does not trigger any callbacks", function() {
-            var record = Blog.fixture('recipes');
+            var record = Blog.createFromRemote({id: 1, userId: 2});
             record.destroy();
             expectNoCallbacksToHaveBeenCalled();
           });
@@ -164,13 +167,14 @@ Screw.Unit(function(c) { with(c) {
 
         context("if the record is present in the left operand", function() {
           init(function() {
-            rightOperand = Blog.where({userId: 'jan'});
+            rightOperand = Blog.where({userId: 1});
           });
 
           it("triggers insert callbacks with the record", function() {
-            var record = Blog.fixture({userId: 'jan'});
-            record.update({userId: 'jonah'})
-            expect(insertCallback).to(haveBeenCalled, withArgs(record));
+            var record = Blog.createFromRemote({id: 1, userId: 1});
+            var sortKey = difference.buildSortKey(record);
+            record.remotelyUpdated({userId: 2})
+            expect(insertCallback).to(haveBeenCalled, withArgs(record, 0, sortKey, sortKey));
           });
         });
       });

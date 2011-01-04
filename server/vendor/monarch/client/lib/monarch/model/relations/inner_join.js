@@ -125,7 +125,7 @@ _.constructor("Monarch.Model.Relations.InnerJoin", Monarch.Model.Relations.Relat
     this.tupleRemovedRemotely(compositeTuple, newCompositeKey, oldCompositeKey);
   },
 
-
+  // not implemented yet
   onLeftOperandDirty: function() {},
   onRightOperandDirty: function() {},
 
