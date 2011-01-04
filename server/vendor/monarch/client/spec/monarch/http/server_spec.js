@@ -228,7 +228,9 @@ Screw.Unit(function(c) { with(c) {
               });
 
               var afterEventsCallback = mockFunction("after events", function() {
-                expect(tableInsertCallback).to(haveBeenCalled, withArgs(record));
+                var sortKey = User.table.buildSortKey(record);
+
+                expect(tableInsertCallback).to(haveBeenCalled, withArgs(record, 1, sortKey, sortKey));
                 expect(recordCreateCallback).to(haveBeenCalled, withArgs(record));
                 expect(record.afterRemoteCreate).to(haveBeenCalled, once);
 
@@ -357,7 +359,8 @@ Screw.Unit(function(c) { with(c) {
 
                 expect(record.valid()).to(beTrue);
 
-                expect(tableRemoteUpdateCallback).to(haveBeenCalled, withArgs(record, expectedChangset));
+                var sortKey = Blog.table.buildSortKey(record);
+                expect(tableRemoteUpdateCallback).to(haveBeenCalled, withArgs(record, expectedChangset, 1, 1, sortKey, sortKey));
                 expect(recordRemoteUpdateCallback).to(haveBeenCalled, withArgs(expectedChangset));
                 expect(record.afterRemoteUpdate).to(haveBeenCalled, withArgs(expectedChangset));
 
