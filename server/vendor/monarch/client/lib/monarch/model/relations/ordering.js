@@ -13,7 +13,11 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
 
   tuples: function() {
     if (!this.comparator) this.comparator = this.buildComparator();
-    return this.operand.tuples().sort(this.comparator);
+    return this.operand.tuples().sort(this.hitch('compareTuples'));
+  },
+
+  compareTuples: function(a, b) {
+    return this.comparator(this.buildSortKey(a), this.buildSortKey(b));
   },
 
   evaluateInRepository: function(repository) {
@@ -38,55 +42,16 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
 
   // private
 
-  tupleInsertedRemotely: function(tuple) {
-    var position = this.storedTuples.insert(this.buildSortKey(tuple), tuple);
-    this.onInsertNode.publish(tuple, position);
+  onOperandInsert: function(tuple) {
+    this.tupleInsertedRemotely(tuple);
   },
 
-  tupleUpdatedRemotely: function($super, tuple, changeset) {
-    var positionMayChange = _.any(changeset, function(changedField) {
-      return this.sortingOnColumn(changedField.column);
-    }, this);
-
-    if (!positionMayChange) {
-      var currentPosition = this.storedTuples.indexOf(tuple);
-      $super(tuple, changeset, currentPosition, currentPosition);
-      return;
-    }
-
-    var oldPosition = this.storedTuples.remove(this.buildSortKey(tuple, changeset));
-    var newPosition = this.storedTuples.insert(this.buildSortKey(tuple), tuple);
-    $super(tuple, changeset, newPosition, oldPosition);
+  onOperandUpdate: function(tuple, changset) {
+    this.tupleUpdatedRemotely(tuple, changset);
   },
 
-  tupleRemovedRemotely: function(tuple) {
-    var position = this.storedTuples.remove(this.buildSortKey(tuple));
-    this.onRemoveNode.publish(tuple, position);
-  },
-
-  sortingOnColumn: function(column) {
-    return _.detect(this.sortSpecifications, function(sortSpecification) {
-      return sortSpecification.column === column;
-    });
-  },
-
-  subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.operand.onInsert(function(record) {
-      this.tupleInsertedRemotely(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onRemove(function(record) {
-      this.tupleRemovedRemotely(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onUpdate(function(record, changedFields) {
-      this.tupleUpdatedRemotely(record, changedFields);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onDirty(this.hitch('recordMadeDirty')));
-    this.operandsSubscriptionBundle.add(this.operand.onClean(this.hitch('recordMadeClean')));
-    this.operandsSubscriptionBundle.add(this.operand.onInvalid(this.hitch('recordMadeInvalid')));
-    this.operandsSubscriptionBundle.add(this.operand.onValid(this.hitch('recordMadeValid')));
+  onOperandRemove: function(tuple) {
+    this.tupleRemovedRemotely(tuple);
   }
 })
 
