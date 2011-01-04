@@ -100,6 +100,10 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return new Monarch.Model.Relations.Union(this, rightOperand);
   },
 
+  offset: function(n) {
+    return new Monarch.Model.Relations.Offset(this, n);
+  },
+
   dirtyTuples: function() {
     return _.filter(this.tuples(), function(record) {
       return record.dirty();
@@ -153,7 +157,11 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   at: function(i) {
-    return this.tuples()[i];
+    if (this.storedTuples) {
+      return this.storedTuples.at(i);
+    } else {
+      return this.tuples()[i];
+    }
   },
 
   onInsert: function(callback, context) {

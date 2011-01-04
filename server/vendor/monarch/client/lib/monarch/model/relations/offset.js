@@ -4,11 +4,13 @@ _.constructor("Monarch.Model.Relations.Offset", Monarch.Model.Relations.Relation
   initialize: function(operand, n) {
     this.operand = operand;
     this.n = n;
+    this.sortSpecifications = operand.sortSpecifications;
     this.initializeEventsSystem();
   },
 
-  allTuples: function() {
-    return this.operand.allTuples().slice(this.n);
+  tuples: function() {
+    if (this.storedTuples) return this.storedTuples.values();
+    return this.operand.tuples().slice(this.n);
   },
 
   wireRepresentation: function() {
@@ -19,44 +21,48 @@ _.constructor("Monarch.Model.Relations.Offset", Monarch.Model.Relations.Relation
     };
   },
 
-  subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(record, index) {
-      if (index < this.n) {
-        var nthTuple = this.operand.at(this.n);
-        if (nthTuple) this.tupleInsertedRemotely(nthTuple, 0);
-      } else {
-        this.tupleInsertedRemotely(record, index - this.n);
-      }
-    }, this));
+  isEqual: function(other) {
+    if (!other || other.constructor !== this.constructor) return false;
+    return other.n === this.n && this.operand.isEqual(other.operand);
+  },
 
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(record, changeset, newIndex, oldIndex) {
-      if (oldIndex < this.n) {
-        if (newIndex >= this.n) {
-          this.tupleRemovedRemotely(this.operand.at(this.n - 1), 0);
-          this.tupleInsertedRemotely(record, newIndex - this.n);
-        }
-      } else {
-        if (newIndex < this.n) {
-          this.tupleRemovedRemotely(record, oldIndex - this.n);
-          this.tupleInsertedRemotely(this.operand.at(this.n), 0);
-        } else {
-          this.tupleUpdatedRemotely(record, changeset, newIndex - this.n, oldIndex - this.n);
-        }
-      }
-    }, this));
+  // private
+
+  onOperandInsert: function(tuple, index, newKey, oldKey) {
+    if (index < this.n) {
+      var nthTuple = this.operand.at(this.n);
+      if (nthTuple) this.tupleInsertedRemotely(nthTuple);
+    } else {
+      this.tupleInsertedRemotely(tuple, newKey, oldKey);
+    }
+  },
+
+  onOperandUpdate: function(tuple, changeset, newIndex, oldIndex, newKey, oldKey) {
 
 
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(record, index) {
-      if (index < this.n) {
-        var formerNthTuple = this.operand.at(this.n - 1);
-        if (formerNthTuple) this.tupleRemovedRemotely(formerNthTuple, 0);
-      } else {
-        this.tupleRemovedRemotely(record, index - this.n);
+    if (oldIndex < this.n) {
+      if (newIndex >= this.n) {
+        this.tupleRemovedRemotely(this.at(0));
+        this.tupleInsertedRemotely(tuple, newKey, oldKey);
       }
-    }, this));
+    } else {
+      if (newIndex < this.n) {
+        this.tupleRemovedRemotely(tuple, newKey, oldKey);
+        this.tupleInsertedRemotely(this.operand.at(this.n));
+      } else {
+        this.tupleUpdatedRemotely(tuple, changeset, newKey, oldKey)
+      }
+    }
+  },
+
+  onOperandRemove: function(tuple, index, newKey, oldKey) {
+    if (index < this.n) {
+      var formerNthTuple = this.at(0);
+      if (formerNthTuple) this.tupleRemovedRemotely(formerNthTuple);
+    } else {
+      this.tupleRemovedRemotely(tuple, newKey, oldKey);
+    }
   }
-
-
 });
 
 })(Monarch);

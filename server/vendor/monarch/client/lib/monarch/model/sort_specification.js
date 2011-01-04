@@ -7,6 +7,11 @@ _.constructor("Monarch.Model.SortSpecification", {
     this.qualifiedColumnName = column.qualifiedName;
     this.direction = direction;
     this.directionCoefficient = (direction == "desc") ? -1 : 1; 
+  },
+
+  isEqual: function(other) {
+    if (this.constructor !== other.constructor) return false;
+    return this.column.isEqual(other.column) && this.direction === other.direction;
   }
 });
 

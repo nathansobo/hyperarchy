@@ -40,6 +40,11 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
     return this.operand.column(name);
   },
 
+  isEqual: function(other) {
+    if (other.constructor !== this.constructor) return false;
+    return _.isEqual(this.sortSpecifications, other.sortSpecifications) && this.operand.isEqual(other.operand);
+  },
+
   // private
 
   onOperandInsert: function(tuple) {

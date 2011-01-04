@@ -12,14 +12,14 @@ Screw.Unit(function(c) { with(c) {
     });
 
 
-    describe("#allTuples()", function() {
-      it("returns all tuples from the #operand with an index beyond the #offset", function() {
+    describe("#tuples()", function() {
+      it("returns all tuples from the operand that have an index beyond n", function() {
         BlogPost.createFromRemote({id: 1});
         BlogPost.createFromRemote({id: 2});
         var post3 = BlogPost.createFromRemote({id: 3});
         var post4 = BlogPost.createFromRemote({id: 4});
 
-        expect(offset.allTuples()).to(equal, [post3, post4]);
+        expect(offset.tuples()).to(equal, [post3, post4]);
       });
     });
 
@@ -33,22 +33,13 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#hasSubscribers()", function() {
-      it("returns true if a callback has been registered", function() {
-        var subscription = offset.onRemoteInsert(function(){});
-        expect(offset.hasSubscribers()).to(beTrue);
-        subscription.destroy();
-        expect(offset.hasSubscribers()).to(beFalse);
-
-        subscription = offset.onRemoteUpdate(function(){});
-        expect(offset.hasSubscribers()).to(beTrue);
-        subscription.destroy();
-        expect(offset.hasSubscribers()).to(beFalse);
-
-        subscription = offset.onRemoteRemove(function(){});
-        expect(offset.hasSubscribers()).to(beTrue);
-        subscription.destroy();
-        expect(offset.hasSubscribers()).to(beFalse);
+    describe("#isEqual", function() {
+      it("returns true for only for semantically equivalent relations", function() {
+        expect(offset.isEqual(operand.offset(2))).to(beTrue);
+        expect(offset.isEqual(operand.offset(3))).to(beFalse);
+        expect(offset.isEqual(operand)).to(beFalse);
+        expect(offset.isEqual(1)).to(beFalse);
+        expect(offset.isEqual(null)).to(beFalse);
       });
     });
 
@@ -63,24 +54,32 @@ Screw.Unit(function(c) { with(c) {
         insertCallback = mockFunction("insert callback", function(record) {
           expect(offset.contains(record)).to(beTrue);
         });
-        offset.onRemoteInsert(insertCallback);
+        offset.onInsert(insertCallback);
 
         removeCallback = mockFunction("remove callback", function(record) {
           expect(offset.contains(record)).to(beFalse);
         });
-        offset.onRemoteRemove(removeCallback);
+        offset.onRemove(removeCallback);
 
         updateCallback = mockFunction("update callback");
-        offset.onRemoteUpdate(updateCallback);
+        offset.onUpdate(updateCallback);
       });
+
+      function clearCallbackMocks() {
+        insertCallback.clear();
+        updateCallback.clear();
+        removeCallback.clear();
+      }
 
 
       describe("when a record is inserted into operand remotely", function() {
-        describe("when the record's index is less than n", function() {
+        describe("when the inserted record's index is less than n", function() {
           describe("when the operand has n or more records", function() {
             it("fires an insert event with the record whose index is now n", function() {
               BlogPost.createFromRemote({id: 0});
-              expect(insertCallback).to(haveBeenCalled, withArgs(post2, 0));
+
+              var sortKey = BlogPost.table.buildSortKey(post2);
+              expect(insertCallback).to(haveBeenCalled, withArgs(post2, 0, sortKey, sortKey));
             });
           });
 
@@ -90,16 +89,19 @@ Screw.Unit(function(c) { with(c) {
               post3.remotelyDestroyed();
               post4.remotelyDestroyed();
 
+              clearCallbackMocks();
+
               BlogPost.createFromRemote({id: 2});
               expect(insertCallback).toNot(haveBeenCalled);
             });
           });
         });
 
-        describe("when the record's index is greater than n", function() {
+        describe("when the inserted record's index is greater than n", function() {
           it("fires an insert event with the inserted record", function() {
             var record = BlogPost.createFromRemote({id: 5});
-            expect(insertCallback).to(haveBeenCalled, withArgs(record, 2));
+            var sortKey = BlogPost.table.buildSortKey(record);
+            expect(insertCallback).to(haveBeenCalled, withArgs(record, 2, sortKey, sortKey));
           });
         });
       });
@@ -109,8 +111,8 @@ Screw.Unit(function(c) { with(c) {
           describe("when the updated record's index is >= n after the update", function() {
             it("fires an insert event for the updated record and a remove event for the record whose index was n and is now n - 1", function() {
               post1.remotelyUpdated({id: 3.5});
-              expect(removeCallback).to(haveBeenCalled, withArgs(post3, 0));
-              expect(insertCallback).to(haveBeenCalled, withArgs(post1, 0));
+              expect(removeCallback).to(haveBeenCalled, withArgs(post3, 0, {'blog_posts.id': 3}, {'blog_posts.id': 3}));
+              expect(insertCallback).to(haveBeenCalled, withArgs(post1, 0, {'blog_posts.id': 3.5}, {'blog_posts.id': 1}));
             });
           });
           
@@ -128,8 +130,8 @@ Screw.Unit(function(c) { with(c) {
           describe("when the record's index is < n after the update", function() {
             it("fires a remove event for the updated record and an insert event for the record whose index was n - 1 and is now n", function() {
               post4.remotelyUpdated({id: 1.5});
-              expect(insertCallback).to(haveBeenCalled, withArgs(post2, 0));
-              expect(removeCallback).to(haveBeenCalled, withArgs(post4, 1));
+              expect(removeCallback).to(haveBeenCalled, withArgs(post4, 1, {'blog_posts.id': 1.5}, {'blog_posts.id': 4}));
+              expect(insertCallback).to(haveBeenCalled, withArgs(post2, 0, {'blog_posts.id': 2}, {'blog_posts.id': 2}));
             });
           });
           
@@ -147,11 +149,12 @@ Screw.Unit(function(c) { with(c) {
       });
 
       describe("when a record is removed from the operand", function() {
-        describe("when the removed record's index is < n>", function() {
+        describe("when the removed record's index is < n", function() {
           describe("when there are more than n records in the operand", function() {
-            it("fires a remove event for the former first record in the offset", function() {
+            it("fires a remove event for the former first record in the offset that now has an index of n - 1", function() {
               post2.remotelyDestroyed();
-              expect(removeCallback).to(haveBeenCalled, withArgs(post3, 0));
+              var sortKey = offset.buildSortKey(post3);
+              expect(removeCallback).to(haveBeenCalled, withArgs(post3, 0, sortKey, sortKey));
             });
           });
 
@@ -160,7 +163,7 @@ Screw.Unit(function(c) { with(c) {
               post3.remotelyDestroyed();
               post4.remotelyDestroyed();
 
-              removeCallback.clear();
+              clearCallbackMocks();
 
               post1.remotelyDestroyed();
               expect(removeCallback).toNot(haveBeenCalled);
@@ -171,19 +174,12 @@ Screw.Unit(function(c) { with(c) {
 
         describe("when the removed record's index is >= n", function() {
           it("fires a remove event for the removed record", function() {
+            var sortKey = offset.buildSortKey(post4);
             post4.remotelyDestroyed();
-            expect(removeCallback).to(haveBeenCalled, withArgs(post4, 1));
+            expect(removeCallback).to(haveBeenCalled, withArgs(post4, 1, sortKey, sortKey));
           });
         });
       });
-    });
-
-    describe("subscription propagation", function() {
-
-    });
-
-    describe("#isEqual", function() {
-
     });
   });
 }});
