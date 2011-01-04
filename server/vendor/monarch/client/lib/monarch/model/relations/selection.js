@@ -5,12 +5,15 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
   initialize: function(operand, predicate) {
     this.operand = operand;
     this.predicate = predicate;
+    this.sortSpecifications = operand.sortSpecifications;
     this.initializeEventsSystem();
   },
 
-  allTuples: function() {
-    if (this._tuples) return this._tuples;
-    return _.filter(this.operand.allTuples(), function(tuple) {
+  tuples: function() {
+    if (this.storedTuples) {
+      return this.storedTuples.values();
+    }
+    return _.filter(this.operand.tuples(), function(tuple) {
       return this.predicate.evaluate(tuple);
     }, this);
   },
@@ -19,8 +22,8 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
     return this.operand.create(this.predicate.forceMatchingFieldValues(fieldValues));
   },
 
-  localCreate: function(fieldValues) {
-    return this.operand.localCreate(this.predicate.forceMatchingFieldValues(fieldValues));
+  createFromRemote: function(fieldValues) {
+    return this.operand.createFromRemote(this.predicate.forceMatchingFieldValues(fieldValues));
   },
   
   createFromRemote: function(fieldValues) {
@@ -58,42 +61,20 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
 
   // private
 
-  subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(record) {
-      if (this.predicate.evaluate(record)) this.tupleInsertedRemotely(record);
-    }, this));
+  onOperandInsert: function(tuple, index, newKey, oldKey) {
+    if (this.predicate.evaluate(tuple)) this.tupleInsertedRemotely(tuple, newKey, oldKey);
+  },
 
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(record) {
-      if (this.predicate.evaluate(record)) this.tupleRemovedRemotely(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(record, changedFields) {
-      if (this.contains(record)) {
-        if (this.predicate.evaluate(record)) {
-          this.tupleUpdatedRemotely(record, changedFields);
-        } else {
-          this.tupleRemovedRemotely(record);
-        }
+  onOperandUpdate: function(tuple, changeset, newIndex, oldIndex, newKey, oldKey) {
+    if (this.findByKey(oldKey)) {
+      if (this.predicate.evaluate(tuple)) {
+        this.tupleUpdatedRemotely(tuple, changeset, newKey, oldKey);
       } else {
-        if (this.predicate.evaluate(record)) this.tupleInsertedRemotely(record);
+        this.tupleRemovedRemotely(tuple, newKey, oldKey);
       }
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onDirty(function(record) {
-      if (this.contains(record)) this.recordMadeDirty(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onClean(function(record) {
-      if (this.contains(record)) this.recordMadeClean(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onInvalid(function(record) {
-      if (this.contains(record)) this.recordMadeInvalid(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onValid(function(record) {
-      if (this.contains(record)) this.recordMadeValid(record);
-    }, this));
+    } else {
+      if (this.predicate.evaluate(tuple)) this.tupleInsertedRemotely(tuple, newKey, oldKey);
+    }
   }
 });
 

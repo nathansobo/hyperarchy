@@ -1,14 +1,16 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation, {
-  hasOperands: false,
+  numOperands: 0,
 
   initialize: function(globalName, recordConstructor) {
     this.globalName = globalName;
     this.recordConstructor = recordConstructor;
     this.columnsByName = {};
     this.syntheticColumnsByName = {};
-    this._tuples = [];
+    this.defineColumn('id', 'key');
+    this.sortSpecifications = [this.column("id").asc()];
+    this.storedTuples = this.buildSkipList();
     this.tuplesById = {};
 
     this.initializeEventsSystem();
@@ -24,22 +26,17 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     return this.syntheticColumnsByName[name] = new Monarch.Model.SyntheticColumn(this, name, definition);
   },
 
-  create: function(fieldValues) {
-    var record = this.localCreate(fieldValues);
-    return Server.save(record);
+
+  build: function(fieldValues) {
+    return new this.recordConstructor(fieldValues, this);
   },
 
-  localCreate: function(fieldValues) {
-    var record = new this.recordConstructor(fieldValues, this);
-    record.isRemotelyCreated = false;
-    this.insert(record);
-    if (record.afterLocalCreate) record.afterLocalCreate();
-    return record;
+  create: function(fieldValues) {
+    return Server.create(this.build(fieldValues));
   },
 
   createFromRemote: function(fieldValues) {
     var record = new this.recordConstructor(null, this);
-    this.insert(record);
     record.remotelyCreated(fieldValues);
     return record;
   },
@@ -49,13 +46,13 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     this.tupleRemovedRemotely(record);
   },
 
-  tupleInsertedRemotely: function(record) {
+  tupleInsertedRemotely: function($super, record) {
     this.tuplesById[record.id()] = record;
-    this.onRemoteInsertNode.publish(record);
+    $super(record);
   },
 
-  allTuples: function() {
-    return this._tuples.concat();
+  tuples: function() {
+    return this.storedTuples.values();
   },
 
   find: function(predicateOrId) {
@@ -92,7 +89,6 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     return future;
   },
 
-
   column: function(name) {
     return this.columnsByName[name] || this.syntheticColumnsByName[name];
   },
@@ -109,16 +105,16 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   },
 
   pauseEvents: function() {
-    this.onRemoteInsertNode.pauseEvents();
-    this.onRemoteRemoveNode.pauseEvents();
-    this.onRemoteUpdateNode.pauseEvents();
+    this.onInsertNode.pauseEvents();
+    this.onRemoveNode.pauseEvents();
+    this.onUpdateNode.pauseEvents();
     this.onPauseEventsNode.publish();
   },
 
   resumeEvents: function() {
-    this.onRemoteInsertNode.resumeEvents();
-    this.onRemoteRemoveNode.resumeEvents();
-    this.onRemoteUpdateNode.resumeEvents();
+    this.onInsertNode.resumeEvents();
+    this.onRemoveNode.resumeEvents();
+    this.onUpdateNode.resumeEvents();
     this.onResumeEventsNode.publish();
   },
 
@@ -158,11 +154,11 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
   },
 
   clear: function() {
-    this._tuples = [];
+    this.storedTuples = this.buildSkipList();
     this.tuplesById = {}
-    this.onRemoteInsertNode = new Monarch.SubscriptionNode();
-    this.onRemoteRemoveNode = new Monarch.SubscriptionNode();
-    this.onRemoteUpdateNode = new Monarch.SubscriptionNode();
+    this.onInsertNode = new Monarch.SubscriptionNode();
+    this.onRemoveNode = new Monarch.SubscriptionNode();
+    this.onUpdateNode = new Monarch.SubscriptionNode();
     this.onPauseEventsNode = new Monarch.SubscriptionNode();
     this.onResumeEventsNode = new Monarch.SubscriptionNode();
   },
@@ -183,14 +179,6 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
 
   isEqual: function(other) {
     return this === other;
-  },
-
-  // private
-
-  insert: function(record) {
-    this._tuples.push(record);
-    if (record.id()) this.tuplesById[record.id()] = record;
-    record.initializeRelations();
   }
 });
 

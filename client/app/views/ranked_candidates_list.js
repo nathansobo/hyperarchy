@@ -10,7 +10,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       ol({id: "rankedCandidates", 'class': "candidates ranked"}, function() {
         li({'class': "dragTargetExplanation"}, function() {
           span(function() {
-            raw("Drag answers you <em>like</em> here, in order of preference.")
+            raw("Drag answers you <em>like</em> here, <br /> with the best at the top.")
           });
         }).ref('goodCandidatesExplanation');
 
@@ -21,7 +21,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
 
         li({'class': "dragTargetExplanation"}, function() {
           span(function() {
-            raw("Drag answers you <em>dislike</em> here, in order of preference.")
+            raw("Drag answers you <em>dislike</em> here, <br /> with the worst at the bottom.")
           });
         }).ref('badCandidatesExplanation');
 
@@ -117,7 +117,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
           this.rankedCandidatesList.append(li);
         }
       }, this);
-      this.subscriptions.add(this.rankingsRelation().onRemoteRemove(function(ranking) {
+      this.subscriptions.add(this.rankingsRelation().onRemove(function(ranking) {
         this.findLi(ranking.candidate()).remove();
       }, this));
     },
@@ -125,11 +125,11 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     subscribeToRankingsChanges: function() {
       var rankings = this.rankingsRelation();
 
-      this.subscriptions.add(rankings.onRemoteInsert(function(ranking, index) {
+      this.subscriptions.add(rankings.onInsert(function(ranking, index) {
         this.insertRankedCandidateLi(ranking, index);
       }, this));
 
-      this.subscriptions.add(rankings.onRemoteUpdate(function(ranking, changes, index) {
+      this.subscriptions.add(rankings.onUpdate(function(ranking, changes, index) {
         this.insertRankedCandidateLi(ranking, index);
       }, this));
     },

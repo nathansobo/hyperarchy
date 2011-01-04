@@ -1,8 +1,8 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Http.CreateCommand", Monarch.Http.Command, {
-  initialize: function(record) {
-    this.record = record;
+  initialize: function($super, record, server) {
+    $super(record, server);
     this.table = this.record.table;
     this.tableName = this.table.globalName;
     this.fieldValues = record.dirtyWireRepresentation();

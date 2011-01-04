@@ -2,39 +2,22 @@
 
 _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relation, {
   constructorInitialize: function() {
-    this.delegate('create', 'localCreate', 'createFromRemote', 'operand');
+    this.delegate('create', 'createFromRemote', 'operand');
   },
 
   initialize: function(operand, sortSpecifications) {
     this.operand = operand;
-    this.sortSpecifications = sortSpecifications;
-
-    this.comparator = _.bind(function(a, b) {
-      // null and undefined are treated as infinity
-      function lessThan(a, b) {
-        if ((a === null || a === undefined) && b !== null && b !== undefined) return false;
-        if ((b === null || b === undefined) && a !== null && a !== undefined) return true;
-        return a < b;
-      }
-
-      for(var i = 0; i < this.sortSpecifications.length; i++) {
-        var sortSpecification = this.sortSpecifications[i]
-        var column = sortSpecification.column;
-        var directionCoefficient = sortSpecification.directionCoefficient;
-
-        var aValue = a.field(column).value();
-        var bValue = b.field(column).value();
-
-        if (lessThan(aValue, bValue)) return -1 * directionCoefficient;
-        else if (lessThan(bValue, aValue)) return 1 * directionCoefficient;
-      }
-      return 0;
-    }, this);
+    this.sortSpecifications = sortSpecifications.concat(operand.sortSpecifications);
     this.initializeEventsSystem();
   },
 
-  allTuples: function() {
-    return this.operand.allTuples().sort(this.comparator);
+  tuples: function() {
+    if (!this.comparator) this.comparator = this.buildComparator();
+    return this.operand.tuples().sort(this.hitch('compareTuples'));
+  },
+
+  compareTuples: function(a, b) {
+    return this.comparator(this.buildSortKey(a), this.buildSortKey(b));
   },
 
   evaluateInRepository: function(repository) {
@@ -59,57 +42,16 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
 
   // private
 
-  tupleInsertedRemotely: function(tuple) {
-    var index = _.comparatorSortedIndex(this._tuples, tuple, this.comparator);
-    this._tuples.splice(index, 0, tuple);
-    this.onRemoteInsertNode.publish(tuple, index);
+  onOperandInsert: function(tuple) {
+    this.tupleInsertedRemotely(tuple);
   },
 
-  tupleUpdatedRemotely: function($super, tuple, changedFields) {
-    var currentPosition = _.indexOf(this._tuples, tuple);
-    var positionMayChange = _.any(changedFields, function(changedField) {
-      return this.sortingOnColumn(changedField.column);
-    }, this);
-    if (!positionMayChange) {
-      $super(tuple, changedFields, currentPosition, currentPosition);
-      return;
-    }
-
-    this._tuples.splice(currentPosition, 1);
-    var newPosition = _.comparatorSortedIndex(this._tuples, tuple, this.comparator);
-    this._tuples.splice(newPosition, 0, tuple);
-    $super(tuple, changedFields, newPosition, currentPosition);
+  onOperandUpdate: function(tuple, changset) {
+    this.tupleUpdatedRemotely(tuple, changset);
   },
 
-  tupleRemovedRemotely: function(record) {
-    var position = _.indexOf(this._tuples, record);
-    this._tuples.splice(position, 1);
-    this.onRemoteRemoveNode.publish(record, position);
-  },
-
-  sortingOnColumn: function(column) {
-    return _.detect(this.sortSpecifications, function(sortSpecification) {
-      return sortSpecification.column === column;
-    });
-  },
-
-  subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteInsert(function(record) {
-      this.tupleInsertedRemotely(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteRemove(function(record) {
-      this.tupleRemovedRemotely(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onRemoteUpdate(function(record, changedFields) {
-      this.tupleUpdatedRemotely(record, changedFields);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onDirty(this.hitch('recordMadeDirty')));
-    this.operandsSubscriptionBundle.add(this.operand.onClean(this.hitch('recordMadeClean')));
-    this.operandsSubscriptionBundle.add(this.operand.onInvalid(this.hitch('recordMadeInvalid')));
-    this.operandsSubscriptionBundle.add(this.operand.onValid(this.hitch('recordMadeValid')));
+  onOperandRemove: function(tuple) {
+    this.tupleRemovedRemotely(tuple);
   }
 })
 

@@ -183,31 +183,30 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
-      describe("#save(recordsOrRelations...)", function() {
+      describe("#create #update and #destroy", function() {
         useLocalFixtures();
 
-        context("when given a locally-created record", function() {
-          var record, tableInsertCallback, tableUpdateCallback, tableRemoveCallback,
+        describe("#create(newRecord)", function() {
+          var record, tableInsertCallback, tableRemoveCallback,
               recordCreateCallback, recordUpdateCallback;
 
           before(function() {
-            record = User.localCreate({fullName: "Jesus Chang"});
+            record = User.build({fullName: "Jesus Chang"});
 
             tableInsertCallback = mockFunction("table insert callback");
-            User.onRemoteInsert(tableInsertCallback);
+            User.onInsert(tableInsertCallback);
             tableUpdateCallback = mockFunction("table update callback");
-            User.onRemoteUpdate(tableUpdateCallback);
+            User.onUpdate(tableUpdateCallback);
             recordCreateCallback = mockFunction("record insert callback");
-            record.onRemoteCreate(recordCreateCallback);
+            record.onCreate(recordCreateCallback);
             recordUpdateCallback = mockFunction("record update callback");
-            record.onRemoteUpdate(recordUpdateCallback);
+            record.onUpdate(recordUpdateCallback);
             record.afterRemoteUpdate = mockFunction("optional after update hook");
             record.afterRemoteCreate = mockFunction("optional after create hook");
           });
 
           it("sends a create command to {Repository.originUrl}/mutate", function() {
-            var record = User.localCreate({fullName: "Jesus Chang"});
-            server.save(record);
+            server.create(record);
 
             expect(server.posts.length).to(eq, 1);
             expect(server.lastPost.url).to(eq, "/repository/mutate");
@@ -218,7 +217,7 @@ Screw.Unit(function(c) { with(c) {
 
           context("when the request is successful", function() {
             it("finalizes the creation of the record and fires insert handlers between the beforeEvents and afterEvents callbacks", function() {
-              var saveFuture = server.save(record);
+              var saveFuture = server.create(record);
 
               var beforeEventsCallback = mockFunction("before events", function() {
                 expect(tableInsertCallback).toNot(haveBeenCalled);
@@ -229,7 +228,9 @@ Screw.Unit(function(c) { with(c) {
               });
 
               var afterEventsCallback = mockFunction("after events", function() {
-                expect(tableInsertCallback).to(haveBeenCalled, withArgs(record));
+                var sortKey = User.table.buildSortKey(record);
+
+                expect(tableInsertCallback).to(haveBeenCalled, withArgs(record, 1, sortKey, sortKey));
                 expect(recordCreateCallback).to(haveBeenCalled, withArgs(record));
                 expect(record.afterRemoteCreate).to(haveBeenCalled, once);
 
@@ -237,6 +238,7 @@ Screw.Unit(function(c) { with(c) {
                 expect(recordUpdateCallback).toNot(haveBeenCalled);
                 expect(record.afterRemoteUpdate).toNot(haveBeenCalled);
               });
+
               saveFuture.beforeEvents(beforeEventsCallback);
               saveFuture.afterEvents(afterEventsCallback);
 
@@ -255,7 +257,7 @@ Screw.Unit(function(c) { with(c) {
 
           context("when the request is unsuccessful", function() {
             it("adds validation errors to the local fields without changing remote fields and calls the on failure callback with the invalid record", function() {
-              var saveFuture = server.save(record);
+              var saveFuture = server.create(record);
 
               var failureCallback = mockFunction('failureCallback');
               saveFuture.onFailure(failureCallback);
@@ -280,7 +282,7 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        context("when given a locally-updated record", function() {
+        describe("#update(record)", function() {
           var record, nameBeforeUpdate, funProfitNameBeforeUpdate, userIdBeforeUpdate,
               tableRemoteUpdateCallback, recordRemoteUpdateCallback;
 
@@ -293,14 +295,14 @@ Screw.Unit(function(c) { with(c) {
 
             tableRemoteUpdateCallback = mockFunction("table update callback");
             recordRemoteUpdateCallback = mockFunction("record update callback");
-            Blog.onRemoteUpdate(tableRemoteUpdateCallback);
-            record.onRemoteUpdate(recordRemoteUpdateCallback);
+            Blog.onUpdate(tableRemoteUpdateCallback);
+            record.onUpdate(recordRemoteUpdateCallback);
             record.afterRemoteUpdate = mockFunction("optional record on update method");
           });
 
           it("sends an update command to {Repository.originUrl}/mutate", function() {
             record.name("Bad Bad Children");
-            server.save(record);
+            server.update(record);
 
             expect(server.posts.length).to(eq, 1);
             expect(server.lastPost.url).to(eq, "/repository/mutate");
@@ -321,13 +323,11 @@ Screw.Unit(function(c) { with(c) {
                 userId: 'wil'
               });
 
-              var tableLocalUpdateCallback = mockFunction('tableLocalUpdateCallback');
               var recordLocalUpdateCallback = mockFunction('recordLocalUpdateCallback');
-              Blog.onLocalUpdate(tableLocalUpdateCallback);
               record.onLocalUpdate(recordLocalUpdateCallback);
               record.afterLocalUpdate = mockFunction('optional afterLocalUpdate hook');
 
-              var saveFuture = server.save(record);
+              var saveFuture = server.update(record);
 
               expect(record.remote.name()).to(eq, nameBeforeUpdate);
               expect(record.remote.funProfitName()).to(eq, funProfitNameBeforeUpdate);
@@ -359,13 +359,13 @@ Screw.Unit(function(c) { with(c) {
 
                 expect(record.valid()).to(beTrue);
 
-                expect(tableRemoteUpdateCallback).to(haveBeenCalled, withArgs(record, expectedChangset));
+                var sortKey = Blog.table.buildSortKey(record);
+                expect(tableRemoteUpdateCallback).to(haveBeenCalled, withArgs(record, expectedChangset, 1, 1, sortKey, sortKey));
                 expect(recordRemoteUpdateCallback).to(haveBeenCalled, withArgs(expectedChangset));
                 expect(record.afterRemoteUpdate).to(haveBeenCalled, withArgs(expectedChangset));
 
                 // remote update may change local field values but they should not fire local update callbacks because
                 // the change was initiated remotely
-                expect(tableLocalUpdateCallback).toNot(haveBeenCalled);
                 expect(recordLocalUpdateCallback).toNot(haveBeenCalled);
                 expect(record.afterLocalUpdate).toNot(haveBeenCalled);
               });
@@ -401,7 +401,7 @@ Screw.Unit(function(c) { with(c) {
               });
 
               var onFailureCallback = mockFunction("onFailureCallback");
-              server.save(record).onFailure(onFailureCallback);
+              server.update(record).onFailure(onFailureCallback);
 
               var nameErrors = ["This name is already taken"];
               var userIdErrors = ["This name is already taken"];
@@ -427,10 +427,10 @@ Screw.Unit(function(c) { with(c) {
 
               expect(tableRemoteUpdateCallback).toNot(haveBeenCalled);
               expect(recordRemoteUpdateCallback).toNot(haveBeenCalled);
-              expect(record.onRemoteUpdate).toNot(haveBeenCalled);
+              expect(record.onUpdate).toNot(haveBeenCalled);
             });
 
-            context("when the record is changed again while a save is being processed by the server", function() {
+            context("when the record is changed again while an update is being processed by the server", function() {
               it("does not mark the record clean again or stomp over the new changes", function() {
                 expect(record.remoteVersion).to(eq, 0);
                 expect(record.pendingVersion).to(eq, 0);
@@ -443,7 +443,7 @@ Screw.Unit(function(c) { with(c) {
                 expect(record.pendingVersion).to(eq, 0);
                 expect(record.localVersion).to(eq, 1);
 
-                server.save(record);
+                server.update(record);
 
                 expect(record.remoteVersion).to(eq, 0);
                 expect(record.pendingVersion).to(eq, 1);
@@ -480,7 +480,7 @@ Screw.Unit(function(c) { with(c) {
                 expect(record.pendingVersion).to(eq, 1);
                 expect(record.localVersion).to(eq, 2);
 
-                server.save(record);
+                server.update(record);
 
                 expect(record.remoteVersion).to(eq, 1);
                 expect(record.pendingVersion).to(eq, 2);
@@ -496,21 +496,20 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        context("when given a locally-destroyed record", function() {
+        context("#destroy", function() {
           var record, tableRemoveCallback, recordDestroyCallback;
 
           before(function() {
             record = Blog.fixture('recipes');
             tableRemoveCallback = mockFunction("table remove callback");
-            Blog.onRemoteRemove(tableRemoveCallback);
+            Blog.onRemove(tableRemoveCallback);
             recordDestroyCallback = mockFunction("record remove callback");
-            record.onRemoteDestroy(recordDestroyCallback)
+            record.onDestroy(recordDestroyCallback)
             record.afterRemoteDestroy = mockFunction("optional afterRemoteDestroy method");
           });
 
           it("sends a destroy command to {Repository.originUrl}/mutate", function() {
-            record.localDestroy();
-            server.save(record);
+            server.destroy(record);
 
             expect(server.posts.length).to(eq, 1);
             expect(server.lastPost.url).to(eq, "/repository/mutate");
@@ -520,9 +519,8 @@ Screw.Unit(function(c) { with(c) {
           });
 
           context("when the request is successful", function() {
-            it("finalizes the destruction of the record, firing onRemoteRemove callbacks in between the beforeEvents and afterEvents callbacks", function() {
-              record.localDestroy();
-              var saveFuture = server.save(record);
+            it("finalizes the destruction of the record, firing onRemove callbacks in between the beforeEvents and afterEvents callbacks", function() {
+              var destroyFuture = server.destroy(record);
 
               var beforeEventsCallback = mockFunction("before events", function() {
                 expect(tableRemoveCallback).toNot(haveBeenCalled);
@@ -535,14 +533,14 @@ Screw.Unit(function(c) { with(c) {
                 expect(record.afterRemoteDestroy).to(haveBeenCalled, once);
               });
               var onFailureCallback = mockFunction("onFailureCallback");
-              saveFuture.beforeEvents(beforeEventsCallback);
-              saveFuture.afterEvents(afterEventsCallback);
-              saveFuture.onFailure(onFailureCallback);
+              destroyFuture.beforeEvents(beforeEventsCallback);
+              destroyFuture.afterEvents(afterEventsCallback);
+              destroyFuture.onFailure(onFailureCallback);
 
               server.lastPost.simulateSuccess({primary: [null], secondary: []});
 
               expect(Blog.find('recipes')).to(beNull);
-              expect(_.any(Blog.table._tuples, function(r) { r === record})).to(beFalse);
+              expect(_.any(Blog.tuples(), function(r) { r === record})).to(beFalse);
               expect('recipes' in Blog.table.tuplesById).to(beFalse);
 
               expect(beforeEventsCallback).to(haveBeenCalled);
@@ -552,15 +550,14 @@ Screw.Unit(function(c) { with(c) {
 
           context("when the request is unsuccessful", function() {
             it("triggers onFailure callbacks and does not trigger removal events", function() {
-              record.localDestroy();
-              var saveFuture = server.save(record);
+              var destroyFuture = server.destroy(record);
 
               var beforeEventsCallback = mockFunction('beforeEventsCallback');
               var afterEventsCallback = mockFunction('afterEventsCallback');
               var onFailureCallback = mockFunction('onFailureCallback');
-              saveFuture.beforeEvents(beforeEventsCallback);
-              saveFuture.afterEvents(afterEventsCallback);
-              saveFuture.onFailure(onFailureCallback);
+              destroyFuture.beforeEvents(beforeEventsCallback);
+              destroyFuture.afterEvents(afterEventsCallback);
+              destroyFuture.onFailure(onFailureCallback);
 
               server.lastPost.simulateFailure({index: 0, errors: {}});
 
@@ -575,123 +572,10 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        context("when given a mix of dirty and clean records and relations containing some dirty records", function() {
-          var locallyCreated, locallyUpdated, locallyDestroyed, insertCallback, updateCallback, removeCallback;
-
-          before(function() {
-            locallyCreated = User.localCreate({fullName: "Jesus Chang"});
-            locallyUpdated = User.fixture('jan');
-            locallyUpdated.fullName("Francisco Wu");
-            locallyDestroyed = locallyUpdated.blogs().first();
-            locallyDestroyed.localDestroy();
-
-            insertCallback = mockFunction('insertCallback');
-            updateCallback = mockFunction('updateCallback');
-            removeCallback = mockFunction('removeCallback');
-
-            User.onRemoteInsert(insertCallback);
-            User.onRemoteUpdate(updateCallback);
-            Blog.onRemoteRemove(removeCallback);
-          });
-
-          it("performs a batch mutation representing the state of all the dirty records", function() {
-            server.save(locallyCreated, locallyUpdated, locallyUpdated.blogs());
-
-            expect(server.posts.length).to(eq, 1);
-
-            expect(server.lastPost.url).to(eq, "/repository/mutate");
-            expect(server.lastPost.data).to(equal, {
-              operations: [
-                ['create', 'users', locallyCreated.dirtyWireRepresentation()],
-                ['update', 'users', locallyUpdated.id(), locallyUpdated.dirtyWireRepresentation()],
-                ['destroy', 'blogs', locallyDestroyed.id()]
-              ]
-            });
-          });
-
-          context("when the request is successful", function() {
-            it("finalizes all the local mutations and fires remote event callbacks", function() {
-              var saveFuture = server.save(locallyCreated, locallyUpdated, locallyUpdated.blogs());
-
-              var beforeEventsCallback = mockFunction('beforeEventsCallback', function() {
-                expect(insertCallback).toNot(haveBeenCalled);
-                expect(updateCallback).toNot(haveBeenCalled);
-                expect(removeCallback).toNot(haveBeenCalled);
-              });
-
-              var afterEventsCallback = mockFunction('afterEventsCallback', function() {
-                expect(insertCallback).to(haveBeenCalled, withArgs(locallyCreated));
-                expect(updateCallback).to(haveBeenCalled, withArgs(locallyUpdated, {
-                  fullName: {
-                    column: User.fullName,
-                    oldValue: "Jan Nelson",
-                    newValue: "Francisco Wu"
-                  }
-                }));
-                expect(removeCallback).to(haveBeenCalled, withArgs(locallyDestroyed));
-              });
-
-              saveFuture.beforeEvents(beforeEventsCallback);
-              saveFuture.afterEvents(afterEventsCallback);
-
-              server.lastPost.simulateSuccess({
-                primary: [{ id: 'jesus', full_name: "Jesus Chang" }, { full_name: "Francisco Wu" }, null],
-                secondary: []
-              });
-
-              expect(beforeEventsCallback).to(haveBeenCalled, once);
-              expect(afterEventsCallback).to(haveBeenCalled, once);
-
-              expect(locallyCreated.remotelyCreated).to(beTrue);
-              expect(locallyUpdated.remote.fullName()).to(eq, "Francisco Wu");
-              expect(_.include(Blog.table.allTuples(), locallyDestroyed)).to(beFalse);
-            });
-          });
-
-          context("when the request is unsuccessful", function() {
-            it("does not finalize any of the mutations, does not fire events, and calls the onFailure callback with the offending record", function() {
-              var saveFuture = server.save(locallyCreated, locallyUpdated, locallyUpdated.blogs());
-
-              var beforeEventsCallback = mockFunction('beforeEventsCallback');
-              var afterEventsCallback = mockFunction('afterEventsCallback');
-              var onFailureCallback = mockFunction('onFailureCallback');
-              saveFuture.beforeEvents(beforeEventsCallback);
-              saveFuture.afterEvents(afterEventsCallback);
-              saveFuture.onFailure(onFailureCallback);
-
-              server.lastPost.simulateFailure({ index: 1, errors: { full_name: ["That name is taken"]}});
-
-              expect(onFailureCallback).to(haveBeenCalled, withArgs(locallyUpdated));
-
-              expect(locallyCreated.isRemotelyCreated).to(beFalse);
-              expect(locallyUpdated.field('fullName').validationErrors).to(equal, ["That name is taken"]);
-              expect(locallyUpdated.remote.fullName()).to(eq, "Jan Nelson");
-              expect(_.include(Blog.table.allTuples(), locallyDestroyed)).to(beTrue);
-            });
-          });
-        });
-
-        context("when given only clean records", function() {
-          it("does not post to the server, but still triggers before and after events callbacks with the first record", function() {
-            var beforeEventsCallback = mockFunction('beforeEventsCallback');
-            var afterEventsCallback = mockFunction('afterEventsCallback');
-            var cleanRecord = User.fixture('jan')
-            var future = server.save(cleanRecord, cleanRecord.blogs());
-
-            future.beforeEvents(beforeEventsCallback);
-            future.afterEvents(afterEventsCallback);
-
-            expect(server.posts).to(beEmpty);
-
-            expect(beforeEventsCallback).to(haveBeenCalled, withArgs(cleanRecord));
-            expect(afterEventsCallback).to(haveBeenCalled, withArgs(cleanRecord));
-          });
-        });
-
-        it("pauses mutations before sending the save to the server and resumes them once the server responds to all outstanding save requests", function() {
-          var record1 = User.localCreate({id: 'jesus', fullName: "Jesus Chang"});
-          var record2 = User.localCreate({id: 'joseph', fullName: "Joseph Smith"});
-          server.save(record1);
+        it("pauses mutations before sending the command to the server and resumes them once the server responds to all outstanding save requests", function() {
+          var record1 = User.build({id: 'jesus', fullName: "Jesus Chang"});
+          var record2 = User.build({id: 'joseph', fullName: "Joseph Smith"});
+          server.create(record1);
 
           expect(Repository.mutationsPaused).to(beTrue);
           server.lastPost.simulateFailure({
@@ -700,10 +584,13 @@ Screw.Unit(function(c) { with(c) {
           });
           expect(Repository.mutationsPaused).to(beFalse);
 
-          server.save(record1);
+          server.create(record2);
+
           expect(Repository.mutationsPaused).to(beTrue);
 
-          server.save(record2);
+          server.create(record2);
+
+          expect(Repository.mutationsPaused).to(beTrue);
 
           server.posts[0].simulateSuccess({
             primary: [{

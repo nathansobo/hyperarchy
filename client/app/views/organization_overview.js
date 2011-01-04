@@ -32,10 +32,10 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         buildElement: function(election) {
           return Views.ElectionLi.toView({election: election});
         },
-        onRemoteInsert: function(election, li) {
+        onInsert: function(election, li) {
           li.effect('highlight');
         },
-        onRemoteUpdate: function(li, election, changeset) {
+        onUpdate: function(li, election, changeset) {
           if (changeset.updatedAt) li.contentDiv.effect('highlight', {color:"#ffffcc"}, 2000);
           if (changeset.body) li.body.html(changeset.body.newValue);
           if (changeset.voteCount) li.updateVoteCount(changeset.voteCount.newValue);
@@ -107,7 +107,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     subscribeToVisits: function(elections) {
-      this.subscriptions.add(elections.joinThrough(Application.currentUser().electionVisits()).onRemoteInsert(function(visit) {
+      this.subscriptions.add(elections.joinThrough(Application.currentUser().electionVisits()).onInsert(function(visit) {
         this.electionsList.elementForRecord(visit.election()).visited();
       }, this));
     },

@@ -15,7 +15,7 @@ Screw.Unit(function(c) { with(c) {
         context("when the response also includes records", function() {
           it("invokes success callbacks with the response's 'data' hash after updating the repository with the dataset and does not invoke failure callbacks", function() {
             var insertCallback = mockFunction("create callback");
-            User.onRemoteInsert(insertCallback);
+            User.onInsert(insertCallback);
 
             var beforeEventsCallback = mockFunction("before events callback", function() {
               expect(User.fixture('stephanie').fullName()).to(eq, "Stephanie Wambach");

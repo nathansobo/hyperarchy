@@ -41,7 +41,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       it("generates a method on .prototype that accesses the field corresponding to the prototype", function() {
-        var record = Blog.localCreate();
+        var record = Blog.createFromRemote({id: 1});
 
         var field = record.field('userId');
         expect(field.value()).to(beUndefined);
@@ -89,7 +89,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       it("is updated correctly if the id of the record changes after the relation is instantiated", function() {
-        var user = User.localCreate({name: "Burt Smith"});
+        var user = User.createFromRemote({name: "Burt Smith"});
         expect(user.blogs().predicate.rightOperand).to(beNull);
         user.save();
         expect(user.blogs().predicate.rightOperand).to(eq, user.id());
@@ -98,7 +98,7 @@ Screw.Unit(function(c) { with(c) {
       context("if a single 'orderBy' column is supplied in the options", function() {
         it("constructs an ordered hasMany relation ordered by that one column", function() {
           User.hasMany('blogs', { orderBy: "name desc" });
-          var user = User.localCreate({id: "jerry"});
+          var user = User.createFromRemote({id: "jerry"});
           var ordering = user.blogs();
           expect(ordering.constructor).to(eq, Monarch.Model.Relations.Ordering);
           expect(ordering.sortSpecifications[0].column).to(eq, Blog.name_);
@@ -109,10 +109,10 @@ Screw.Unit(function(c) { with(c) {
       context("if multiple 'orderBy' columns are supplied in the options", function() {
         it("constructs an ordered hasMany relation ordered by those columns", function() {
           User.hasMany('blogs', { orderBy: ["name desc", "userId"]});
-          var user = User.localCreate({id: "jerry"});
+          var user = User.createFromRemote({id: "jerry"});
           var ordering = user.blogs();
           expect(ordering.constructor).to(eq, Monarch.Model.Relations.Ordering);
-          expect(ordering.sortSpecifications.length).to(eq, 2);
+          expect(ordering.sortSpecifications.length).to(eq, 3); // because sorting by id last is implicit
           expect(ordering.sortSpecifications[0].column).to(eq, Blog.name_);
           expect(ordering.sortSpecifications[0].direction).to(eq, "desc");
           expect(ordering.sortSpecifications[1].column).to(eq, Blog.userId);
@@ -123,9 +123,9 @@ Screw.Unit(function(c) { with(c) {
       context("if a conditions hash is supplied in the options", function() {
         it("constrains the generated relation by the conditions", function() {
           User.hasMany('blogs', { conditions: { name: "My Blog" }});
-          var user = User.localCreate({id: 'jake'});
+          var user = User.createFromRemote({id: 'jake'});
           expect(user.blogs().empty()).to(beTrue);
-          user.blogs().localCreate();
+          user.blogs().createFromRemote();
           expect(user.blogs().size()).to(eq, 1);
           expect(user.blogs().first().name()).to(eq, "My Blog");
         });
@@ -134,8 +134,8 @@ Screw.Unit(function(c) { with(c) {
       context("if a 'table' option is provided", function() {
         it("uses the named table instead of trying to infer it from the name of the relation", function() {
           User.hasMany('blogsORama', { table: 'blogs' });
-          var user = User.localCreate({id: 'jake'});
-          user.blogsORama().localCreate();
+          var user = User.createFromRemote({id: 'jake'});
+          user.blogsORama().createFromRemote();
           expect(user.blogsORama().empty()).to(beFalse);
         });
       });
@@ -143,8 +143,8 @@ Screw.Unit(function(c) { with(c) {
       context("if a 'key' option is provided", function() {
         it("uses the named foreign key instead of trying to infer it from the name of the model on which the relation is being defined", function() {
           User.hasMany('blogs', { key: 'ownerId' });
-          var user = User.localCreate({id: 'jake'});
-          var blog = user.blogs().localCreate();
+          var user = User.createFromRemote({id: 'jake'});
+          var blog = user.blogs().createFromRemote();
           expect(blog.ownerId()).to(eq, 'jake');
         });
       });
@@ -156,7 +156,7 @@ Screw.Unit(function(c) { with(c) {
               return "foo";
             }
           });
-          var user = User.localCreate({id: 'jake'});
+          var user = User.createFromRemote({id: 'jake'});
           expect(user.blogs().foo()).to(equal, "foo");
         });
       });
@@ -180,66 +180,12 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe(".localCreate(fieldValues)", function() {
-      it("builds an instance of the Record with the given fieldValues and inserts it in .table before returning it", function() {
-        mock(Blog.table, 'insert');
-        var record = Blog.localCreate({
-          id: 'index',
-          name: 'Index Cards'
-        });
-        expect(Blog.table.insert).to(haveBeenCalled, withArgs(record));
-        expect(record.id()).to(eq, 'index');
-        expect(record.name()).to(eq, 'Index Cards');
-      });
-
-      it("calls #afterLocalCreate if it is defined on the record's prototype", function() {
-        Blog.prototype.afterLocalCreate = mockFunction('optional afterLocalCreate hook');
-        var record = Blog.localCreate();
-        expect(record.afterLocalCreate).to(haveBeenCalled);
-        delete Blog.prototype.afterLocalCreate;
-      });
-
-      it("does not trigger update events on the record or its table", function() {
-        var updateCallback = mockFunction("update callback");
-        Blog.table.onRemoteUpdate(updateCallback);
-        Blog.table.onLocalUpdate(updateCallback);
-        Blog.prototype.afterRemoteUpdate = updateCallback;
-        Blog.prototype.afterLocalUpdate = updateCallback;
-
-        var record = Blog.localCreate({
-          id: 'index',
-          name: 'Index Cards'
-        });
-
-        expect(updateCallback).toNot(haveBeenCalled);
-      });
-
-      it("makes the record findable by id if one is provided, but waits for the remote save if the the id is initially undefined", function() {
-        var record = Blog.localCreate({
-          id: 'tina',
-          name: 'What Ever Happened To Tina Turner?'
-        });
-
-        var record2 = Blog.localCreate({
-          name: 'Ike For President'
-        });
-
-        expect(Blog.find('tina')).to(eq, record);
-        expect(undefined in Blog.table.tuplesById).to(beFalse);
-
-        record2.save();
-        expect(Blog.find(record2.id())).to(eq, record2)
-      });
-    });
-
     describe("#localUpdate(valuesByMethod)", function() {
       it("calls setter methods for each key in the given hash and fires update callbacks with all changes", function() {
         var record = Blog.fixture('recipes');
 
-        var tableUpdateCallback = mockFunction('tableUpdateCallback');
         var recordUpdateCallback = mockFunction('recordUpdateCallback');
 
-        Blog.onLocalUpdate(tableUpdateCallback);
         record.onLocalUpdate(recordUpdateCallback);
         record.afterLocalUpdate = mockFunction('optional afterLocalUpdate hook');
         record.otherMethod = mockFunction('other method');
@@ -279,8 +225,6 @@ Screw.Unit(function(c) { with(c) {
           }
         };
 
-        expect(tableUpdateCallback).to(haveBeenCalled, once);
-        expect(tableUpdateCallback).to(haveBeenCalled, withArgs(record, expectedChangeset));
         expect(recordUpdateCallback).to(haveBeenCalled, withArgs(expectedChangeset));
         expect(record.afterLocalUpdate).to(haveBeenCalled, withArgs(expectedChangeset));
       });
@@ -292,10 +236,8 @@ Screw.Unit(function(c) { with(c) {
         record = Blog.fixture('recipes');
       });
 
-      they("trigger optional onLocalUpdate hooks on the record and onLocalUpdate callbacks the record and its table when a new value is assigned", function() {
-        var tableUpdateCallback = mockFunction('table update callback')
+      they("trigger optional onLocalUpdate hooks and callbacks on the record when a new value is assigned", function() {
         var recordUpdateCallback = mockFunction('record update callback')
-        Blog.onLocalUpdate(tableUpdateCallback);
         record.onLocalUpdate(recordUpdateCallback);
         record.afterLocalUpdate = mockFunction("optional afterLocalUpdate hook");
 
@@ -314,17 +256,13 @@ Screw.Unit(function(c) { with(c) {
           }
         };
 
-        expect(tableUpdateCallback).to(haveBeenCalled, once);
-        expect(tableUpdateCallback).to(haveBeenCalled, withArgs(record, expectedChangeset));
         expect(recordUpdateCallback).to(haveBeenCalled, withArgs(expectedChangeset));
         expect(record.afterLocalUpdate).to(haveBeenCalled, withArgs(expectedChangeset));
 
-        tableUpdateCallback.clear();
         recordUpdateCallback.clear();
         record.afterLocalUpdate.clear();
         record.name('Pesticides');
 
-        expect(tableUpdateCallback).toNot(haveBeenCalled);
         expect(recordUpdateCallback).toNot(haveBeenCalled);
         expect(record.afterLocalUpdate).toNot(haveBeenCalled);
       });
@@ -341,16 +279,6 @@ Screw.Unit(function(c) { with(c) {
       they("can write synthetic fields if a setter method is defined for the column", function() {
         record.funProfitName("Eating Fortune Cookies");
         expect(record.funProfitName()).to(eq, "Eating Fortune Cookies in Bed for Fun and Profit");
-      });
-    });
-
-    describe("#localDestroy", function() {
-      it("causes the record to be dirty and no longer appear in queries or finds", function() {
-        var record = User.fixture('jan');
-        record.localDestroy();
-        expect(record.dirty()).to(beTrue);
-        expect(User.any(function(user) { return user === record; })).to(beFalse);
-        expect(User.find('jan')).to(beNull);
       });
     });
 
@@ -398,7 +326,7 @@ Screw.Unit(function(c) { with(c) {
       it("triggers update callbacks on the table of its record", function() {
         var record = Blog.fixture('recipes');
         var updateCallback = mockFunction('updateCallback');
-        record.table.onRemoteUpdate(updateCallback);
+        record.table.onUpdate(updateCallback);
 
         record.name("Farming");
         record.save();

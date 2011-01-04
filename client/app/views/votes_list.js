@@ -9,10 +9,10 @@ _.constructor("Views.VotesList", View.Template, {
         buildElement: function(vote) {
           return Views.VoteLi.toView({vote: vote});
         },
-        onRemoteInsert: function(vote, li) {
+        onInsert: function(vote, li) {
           li.effect('highlight');
         },
-        onRemoteUpdate: function(li, vote, changes) {
+        onUpdate: function(li, vote, changes) {
           if (changes.updatedAt) {
             li.updateVotedAt();
             li.effect('highlight');
@@ -38,8 +38,8 @@ _.constructor("Views.VotesList", View.Template, {
             this.updateVoteCount();
             this.adjustHeight();
             this.subscriptions.destroy();
-            this.subscriptions.add(election.votes().onRemoteInsert(this.hitch('updateVoteCount')));
-            this.subscriptions.add(election.votes().onRemoteRemove(this.hitch('updateVoteCount')));
+            this.subscriptions.add(election.votes().onInsert(this.hitch('updateVoteCount')));
+            this.subscriptions.add(election.votes().onRemove(this.hitch('updateVoteCount')));
             this.votes.relation(election.votes());
           }, this);
       }

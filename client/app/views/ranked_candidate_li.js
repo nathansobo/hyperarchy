@@ -18,7 +18,7 @@ _.constructor("Views.RankedCandidateLi", Views.CandidateLi, {
       if (!this.candidate) this.candidate = this.ranking.candidate();
       if (!this.ranking) this.ranking = this.candidate.rankingByCurrentUser().first();
       if (this.ranking) this.rankingPosition = this.ranking.position();
-      this.subscriptions.add(this.candidate.onRemoteDestroy(function() {
+      this.subscriptions.add(this.candidate.onDestroy(function() {
         this.remove();
       }, this));
     },

@@ -65,6 +65,6 @@ _.constructor("Monarch.Queue", {
     this.fns.length = 0;
     this.started = false;
   }
-})
+});
 
 })(Monarch);

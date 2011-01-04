@@ -101,8 +101,8 @@ _.constructor("Views.Layout", View.Template, {
       this.populateOrganizations();
 
       var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
-      organizationsPermitted.onRemoteInsert(this.hitch('showOrHideInviteLink'));
-      organizationsPermitted.onRemoteRemove(this.hitch('showOrHideInviteLink'));
+      organizationsPermitted.onInsert(this.hitch('showOrHideInviteLink'));
+      organizationsPermitted.onRemove(this.hitch('showOrHideInviteLink'));
       this.showOrHideInviteLink();
     },
 
@@ -139,7 +139,7 @@ _.constructor("Views.Layout", View.Template, {
 
       organizations.onEach(this.hitch('populateOrganization'));
 
-      Organization.onRemoteUpdate(function(organization, changes) {
+      Organization.onUpdate(function(organization, changes) {
         if (!changes.name) return;
         var name = organization.name();
         var selector = 'a[organizationId=' + organization.id() + ']';
