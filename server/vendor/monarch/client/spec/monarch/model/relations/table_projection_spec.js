@@ -5,16 +5,16 @@ Screw.Unit(function(c) { with(c) {
     var projection, operand, user, blog1, blog2, post1, post2, post3;
     useExampleDomainModel();
 
-    before(function() {
+    init(function() {
       user = User.createFromRemote({id: 'saltpeter', fullName: "Salt Peter"});
-      blog1 = user.blogs().createFromRemote({id: 'blog1', name: "Blog 1"});
-      blog2 = user.blogs().createFromRemote({id: 'blog2', name: "Blog 2"});
-      post1 = blog1.blogPosts().createFromRemote({id: 'post1', body: "this is post 1"});
-      post2 = blog1.blogPosts().createFromRemote({id: 'post2', body: "this is post 2"});
-      post3 = blog2.blogPosts().createFromRemote({id: 'post3', body: "this is post 3"});
+      blog1 = user.blogs().createFromRemote({id: 1, name: "Blog 1", ownerId: 1});
+      blog2 = user.blogs().createFromRemote({id: 2, name: "Blog 2", ownerId: 2});
+      post1 = blog1.blogPosts().createFromRemote({id: 1, body: "this is post 1"});
+      post2 = blog1.blogPosts().createFromRemote({id: 2, body: "this is post 2"});
+      post3 = blog2.blogPosts().createFromRemote({id: 3, body: "this is post 3"});
 
       operand = user.blogs().join(BlogPost).on(BlogPost.blogId.eq(Blog.id));
-      projection = new Monarch.Model.Relations.TableProjection(operand, Blog.table);
+      projection = operand.project(Blog);
     });
 
 
@@ -52,16 +52,18 @@ Screw.Unit(function(c) { with(c) {
 
       describe("when a tuple is inserted into the operand", function() {
         context("if the record corresponding to the projected table is NOT already present in the projection", function() {
-          it("triggers onInsert callbacks with the record", function() {
-            var blog = user.blogs().createFromRemote({id: 'bloggo'});
-            var post = blog.blogPosts().createFromRemote();
+          it("triggers an insert event with the record", function() {
+            var blog = user.blogs().createFromRemote({id: 100});
+            var post = blog.blogPosts().createFromRemote({id: 1, blogId: 100});
+            var sortKey = projection.buildSortKey(blog);
+
             expect(insertCallback).to(haveBeenCalled, once);
-            expect(insertCallback).to(haveBeenCalled, withArgs(blog));
+            expect(insertCallback).to(haveBeenCalled, withArgs(blog, 2, sortKey, sortKey));
           });
         });
 
         context("if the record corresponding to the projected table is already present in the projection", function() {
-          it("does not trigger an on insert callback", function() {
+          it("does not trigger an insert evenrt", function() {
             blog1.blogPosts().create();
             expect(insertCallback).toNot(haveBeenCalled);
           });
@@ -70,25 +72,21 @@ Screw.Unit(function(c) { with(c) {
 
       describe("when a record is updated in the operand", function() {
         context("if one of the updated columns is in the #projectedTable", function() {
+
+          init(function() {
+            projection = Blog.orderBy('ownerId asc').joinTo(BlogPost).project(Blog);
+          });
+
           it("triggers onUpdate callbacks with the record's corresponding projected record and the changed columns", function() {
-            var oldValue = blog2.name();
-            var newValue = "I feeeel good!";
-
-            blog2.update({name: newValue});
-
+            blog1.update({ownerId: 100});
             expect(updateCallback).to(haveBeenCalled, once);
-            expect(updateCallback).to(haveBeenCalled, withArgs(blog2, {
-              name: {
-                column: Blog.name_,
-                oldValue: oldValue,
-                newValue: newValue
-              },
-              funProfitName: {
-                column: Blog.funProfitName,
-                oldValue: oldValue + " for Fun and Profit",
-                newValue: newValue + " for Fun and Profit"
-              }
-            }));
+            expect(updateCallback).to(haveBeenCalled, withArgs(
+              blog1,
+              { ownerId: { column: Blog.ownerId, oldValue: 1, newValue: 100 } },
+              1, 0, // new index, old index
+              { 'blogs.id': 1, 'blogs.owner_id': 100 },
+              { 'blogs.id': 1, 'blogs.owner_id': 1 }
+            ));
           });
         });
 
@@ -110,8 +108,9 @@ Screw.Unit(function(c) { with(c) {
       describe("when a record is removed from the operand", function() {
         context("if there are NO other tuples in the operand with the same record as their projected component", function() {
           it("triggers onRemove callbacks with the removed record's corresponding projected record", function() {
+            var sortKey = projection.buildSortKey(blog2);
             post3.destroy();
-            expect(removeCallback).to(haveBeenCalled, withArgs(blog2));
+            expect(removeCallback).to(haveBeenCalled, withArgs(blog2, 1, sortKey, sortKey));
           });
         });
 
@@ -122,10 +121,6 @@ Screw.Unit(function(c) { with(c) {
           });
         });
       });
-    });
-
-    describe("subscription propagation", function() {
-
     });
   });
 }});

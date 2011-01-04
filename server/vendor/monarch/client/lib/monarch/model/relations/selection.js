@@ -61,7 +61,6 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
 
   // private
 
-
   onOperandInsert: function(tuple, index, newKey, oldKey) {
     if (this.predicate.evaluate(tuple)) this.tupleInsertedRemotely(tuple, newKey, oldKey);
   },

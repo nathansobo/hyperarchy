@@ -8,7 +8,7 @@ _.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations
   initialize: function(operand, projectedTable) {
     this.operand = operand;
     this.projectedTable = projectedTable;
-    this.sortSpecifications = projectedTable.sortSpecifications; // this should actually be based on the operand, but we have to remove columns projected away
+    this.sortSpecifications = this.projectOperandSortSpecifications();
     this.initializeEventsSystem();
   },
 
@@ -37,39 +37,44 @@ _.constructor("Monarch.Model.Relations.TableProjection", Monarch.Model.Relations
 
   // private
 
-  subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.operand.onInsert(function(compositeTuple) {
-      var tuple = compositeTuple.record(this.projectedTable);
-      if (!this.contains(tuple)) this.tupleInsertedRemotely(tuple);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onUpdate(function(compositeTuple, changeset) {
-      var updatedColumnInProjectedTable = _.detect(changeset, function(change) {
-        return change.column.table == this.projectedTable;
-      }, this);
-      var record = compositeTuple.record(this.projectedTable);
-
-      if (updatedColumnInProjectedTable && !this.duplicatesLastUpdateEvent(record, changeset)) {
-        this.lastUpdateEvent = [record, changeset];
-        this.tupleUpdatedRemotely(record, changeset);
-      }
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.operand.onRemove(function(compositeTuple) {
-      var tuple = compositeTuple.record(this.projectedTable);
-      if (!this.operand.find(this.projectedTable.column('id').eq(tuple.id()))) {
-        this.tupleRemovedRemotely(tuple);
-      }
-    }, this));
+  onOperandInsert: function(compositeTuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) return;
+    this.tupleInsertedRemotely(compositeTuple.record(this.projectedTable), this.projectSortKey(newKey), this.projectSortKey(oldKey));
   },
 
-  duplicatesLastUpdateEvent: function(record, changeset) {
-    if (!this.lastUpdateEvent) return false;
-    var lastRecord = this.lastUpdateEvent[0];
-    var lastChangset = this.lastUpdateEvent[1];
-    if (lastRecord !== record) return false;
-    if (!_(lastChangset).isEqual(changeset)) return false;
-    return true;
+  onOperandUpdate: function(compositeTuple, changeset, newIndex, oldIndex, newKey, oldKey) {
+    if (this.lastChangeset === changeset) return;
+    if (!this.changesetPertainsToProjectedTable(changeset)) return;
+    this.lastChangeset = changeset;
+    this.tupleUpdatedRemotely(compositeTuple.record(this.projectedTable), changeset, this.projectSortKey(newKey), this.projectSortKey(oldKey));
+  },
+
+  onOperandRemove: function(compositeTuple, index, newKey, oldKey) {
+    var tuple = compositeTuple.record(this.projectedTable);
+    if (this.operand.find({id: tuple.id()})) return;
+    this.tupleRemovedRemotely(tuple, this.projectSortKey(newKey), this.projectSortKey(oldKey));
+  },
+
+  changesetPertainsToProjectedTable: function(changeset) {
+    return _.detect(changeset, function(change) {
+      return change.column.table === this.projectedTable;
+    }, this);
+  },
+
+  projectOperandSortSpecifications: function() {
+    return _.filter(this.operand.sortSpecifications, function(sortSpec) {
+      return sortSpec.column.table === this.projectedTable;
+    }, this);
+  },
+
+  projectSortKey: function(sortKey) {
+    var projectedSortKey = {};
+    _.each(sortKey, function(value, key) {
+      if (this.projectedTable.globalName === key.split(".")[0]) {
+        projectedSortKey[key] = value;
+      }
+    }, this);
+    return projectedSortKey;
   }
 });
 

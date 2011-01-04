@@ -261,6 +261,10 @@ _.constructor("Monarch.Model.Relations.Relation", {
       if (changeset && changeset[columnName] && changeset[columnName].column === column) {
         sortKey[qualifiedColumnName] =  changeset[columnName].oldValue;
       } else {
+
+        var field = tuple.field(column);
+        if (!field) console.debug(column);
+
         sortKey[qualifiedColumnName] =  tuple.field(column).value();
       }
     });
@@ -373,8 +377,6 @@ _.constructor("Monarch.Model.Relations.Relation", {
       this.operandsSubscriptionBundle.add(operand[onEvent](this.hitch(onOperandEvent)));
     }, this);
   },
-
-  
 
   onOperandRemove: function(tuple, index, newKey, oldKey) {
     if (this.findByKey(oldKey)) this.tupleRemovedRemotely(tuple, newKey, oldKey);
