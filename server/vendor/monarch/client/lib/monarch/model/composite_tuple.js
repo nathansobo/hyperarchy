@@ -22,9 +22,13 @@ _.constructor("Monarch.Model.CompositeTuple", {
     return this.leftTuple.record(table) || this.rightTuple.record(table);
   },
 
-  equals: function(other) {
+  isEqual: function(other) {
     if (!other.constructor === this.constructor) return false;
-    return this.leftTuple.equals(other.leftTuple) && this.rightTuple.equals(other.rightTuple);
+    return this.leftTuple.isEqual(other.leftTuple) && this.rightTuple.isEqual(other.rightTuple);
+  },
+
+  wireRepresentation: function() {
+    return [this.leftTuple.wireRepresentation(), this.rightTuple.wireRepresentation()]
   }
 });
 

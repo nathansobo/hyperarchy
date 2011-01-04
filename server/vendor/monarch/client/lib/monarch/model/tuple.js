@@ -39,6 +39,11 @@ _.constructor("Monarch.Model.Tuple", {
       digestInput.push(key, this.field(key).valueWireRepresentation());
     }, this);
     return b64_md5(digestInput.join(""));
+  },
+
+  isEqual: function(other) {
+    if (!other.constructor === this.constructor) return false;
+    return this.hashCode === other.hashCode();
   }
 });
 

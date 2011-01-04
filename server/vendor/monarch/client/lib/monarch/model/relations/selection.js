@@ -39,9 +39,6 @@ _.constructor("Monarch.Model.Relations.Selection", Monarch.Model.Relations.Relat
   },
 
   evaluateInRepository: function(repository) {
-
-    if (!this.operand.evaluateInRepository(repository)) debugger;
-
     return new Monarch.Model.Relations.Selection(this.operand.evaluateInRepository(repository), this.predicate);
   },
 

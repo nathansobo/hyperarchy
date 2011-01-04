@@ -301,7 +301,7 @@
     this.subscriptions.destroy();
   },
 
-  equals: function(other) {
+  isEqual: function(other) {
     return this === other;
   },
 

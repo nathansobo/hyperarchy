@@ -177,9 +177,6 @@ Screw.Unit(function(c) { with(c) {
               expect(selection.contains(record)).to(beTrue);
 
               // fired with record, changeset, new index, old index, new sort key, old sort key
-
-              console.debug(updateCallback.mostRecentArgs);
-
               expect(updateCallback).to(haveBeenCalled, withArgs(record, {
                 id: {
                   column: User.id,

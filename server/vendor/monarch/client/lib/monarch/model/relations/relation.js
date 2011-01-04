@@ -349,21 +349,30 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   subscribeToOperands: function() {
-    if (this.numOperands === 1) {
-      this.operandsSubscriptionBundle.add(this.operand.onInsert(this.hitch('onOperandInsert')));
-      this.operandsSubscriptionBundle.add(this.operand.onUpdate(this.hitch('onOperandUpdate')));
-      this.operandsSubscriptionBundle.add(this.operand.onRemove(this.hitch('onOperandRemove')));
-      this.operandsSubscriptionBundle.add(this.operand.onDirty(this.hitch('onOperandDirty')));
-      this.operandsSubscriptionBundle.add(this.operand.onClean(this.hitch('onOperandClean')));
-      this.operandsSubscriptionBundle.add(this.operand.onInvalid(this.hitch('onOperandInvalid')));
-      this.operandsSubscriptionBundle.add(this.operand.onValid(this.hitch('onOperandValid')));
-    } else {
-      throw new Error("Not implemented")
+    switch(this.numOperands) {
+      case 1:
+        this.subscribeToOperand(this.operand);
+        break;
+      case 2:
+        this.subscribeToOperand(this.leftOperand, 'left');
+        this.subscribeToOperand(this.rightOperand, 'right');
+        break;
+      default:
+        throw new Error("Don't understand that number of operands");
     }
   },
 
-  onOperandInsert: function() {},
-  onOperandUpdate: function() {},
+  // meta-programming to subscribe to all event types for a given operand. should expand to code like:
+  // this.operandsSubscriptionBundle.add(operand.onInsert(this.hitch('onLeftOperandInsert')));
+  subscribeToOperand: function(operand, leftOrRight) {
+    var events = ['insert', 'update', 'remove', 'dirty', 'clean', 'invalid', 'valid'];
+
+    _.each(events, function(event) {
+      var onEvent = 'on' + _.capitalize(event);
+      var onOperandEvent = _.camelize('on_' + (leftOrRight || "") + "_operand_" + event, true);
+      this.operandsSubscriptionBundle.add(operand[onEvent](this.hitch(onOperandEvent)));
+    }, this);
+  },
 
   onOperandRemove: function(tuple, index, newKey, oldKey) {
     if (this.findByKey(oldKey)) this.tupleRemovedRemotely(tuple, newKey, oldKey);
