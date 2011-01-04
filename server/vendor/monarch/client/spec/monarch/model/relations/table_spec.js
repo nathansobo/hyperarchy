@@ -169,12 +169,14 @@ Screw.Unit(function(c) { with(c) {
 
       it("triggers dirty and clean events at the appropriate times", function() {
         var record = User.createFromRemote({id: 1, fullName: "Nathan Sobo"})
+        var sortKey  User.table.buildSortKey(record);
+
 
         record.fullName("Mahatma Ghandi");
-        expect(dirtyCallback).to(haveBeenCalled, withArgs(record));
+        expect(dirtyCallback).to(haveBeenCalled, withArgs(record, 0, sortKey, sortKey));
 
         record.fullName("Nathan Sobo");
-        expect(cleanCallback).to(haveBeenCalled, withArgs(record));
+        expect(cleanCallback).to(haveBeenCalled, withArgs(record, 0, sortKey, sortKey));
       });
       
       it("triggers invalid and valid events at the appropriate times", function() {

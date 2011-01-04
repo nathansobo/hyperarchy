@@ -31,32 +31,19 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   project: function() {
-    if (arguments.length == 1) {
-      var table;
-      if (_.isFunction(arguments[0])) {
-        table = arguments[0].table;
-      } else if (arguments[0].surfaceTables) {
-        var surfaceTables = arguments[0].surfaceTables();
-        if (surfaceTables.length === 1) {
-          table = surfaceTables[0];
-        } else {
-          throw new Error("Can only project with relations that have a single surface table");
-        }
+    var table;
+    if (_.isFunction(arguments[0])) {
+      table = arguments[0].table;
+    } else {
+      var surfaceTables = arguments[0].surfaceTables();
+      if (surfaceTables.length === 1) {
+        table = surfaceTables[0];
+      } else {
+        throw new Error("Can only project with relations that have a single surface table");
       }
-
-      if (table) return new Monarch.Model.Relations.TableProjection(this, table);
     }
 
-    var projectedColumns = _.map(arguments, function(arg) {
-      if (arg instanceof Monarch.Model.ProjectedColumn) {
-        return arg;
-      } else if (arg instanceof Monarch.Model.Column) {
-        return new Monarch.Model.ProjectedColumn(arg);
-      } else {
-        throw new Error("#project takes Columns or ProjectedColumns only");
-      }
-    });
-    return new Monarch.Model.Relations.Projection(this, projectedColumns);
+    return new Monarch.Model.Relations.TableProjection(this, table);
   },
 
   join: function(rightOperand) {
@@ -287,6 +274,8 @@ _.constructor("Monarch.Model.Relations.Relation", {
     var newIndex = this.storedTuples.insert(newKey, tuple);
     this.onUpdateNode.publish(tuple, changeset, newIndex, oldIndex, newKey, oldKey);
   },
+
+  // default implementations. overridden by many subclasses
 
   tupleRemovedRemotely: function(tuple, newKey, oldKey) {
     if (!newKey) newKey = oldKey = this.buildSortKey(tuple);
