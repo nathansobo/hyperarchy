@@ -65,13 +65,13 @@ _.constructor("Views.Layout", View.Template, {
             h2({id: "organizationName"})
               .click('goToOrganization')
               .ref('organizationName');
-            a({id: "questionsLink"}, "Questions")
+            a({id: "questionsLink", 'class': "tab"}, "Questions")
               .ref('questionsLink')
               .click('goToOrganization');
-            a({id: "membersLink"}, "Members")
+            a({id: "membersLink", 'class': "tab"}, "Members")
               .ref('membersLink')
               .click("goToEditOrganization");
-            a({id: "organizationSettings"}, "Settings")
+            a({id: "organizationSettings", 'class': "tab"}, "Settings")
               .ref("editOrganizationLink")
               .click("goToEditOrganization");
           }).ref("organizationHeader");
