@@ -1,6 +1,7 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Model.Relations.Limit", Monarch.Model.Relations.Relation, {
+
   initialize: function(operand, n) {
     this.operand = operand;
     this.n = n;

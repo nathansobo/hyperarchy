@@ -178,10 +178,6 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     return repository.tables[this.globalName];
   },
 
-  primaryTable: function() {
-    return this;
-  },
-
   isEqual: function(other) {
     return this === other;
   }

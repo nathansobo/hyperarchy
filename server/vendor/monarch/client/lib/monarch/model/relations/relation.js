@@ -215,6 +215,14 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return this.storedTuples.indexOf(sortKey);
   },
 
+  surfaceTables: function() {
+    return this.operand.surfaceTables();
+  },
+
+  column: function(name) {
+    return this.operand.column(name);
+  },
+
   // private
 
   memoizeTuples: function() {

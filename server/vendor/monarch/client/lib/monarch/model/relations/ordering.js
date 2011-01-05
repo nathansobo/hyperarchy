@@ -24,20 +24,8 @@ _.constructor("Monarch.Model.Relations.Ordering", Monarch.Model.Relations.Relati
     return new Monarch.Model.Relations.Ordering(this.operand.evaluateInRepository(repository), this.sortSpecifications);
   },
 
-  primaryTable: function() {
-    return this.operand.primaryTable();
-  },
-
   wireRepresentation: function() {
     return this.operand.wireRepresentation();
-  },
-
-  surfaceTables: function() {
-    return this.operand.surfaceTables();
-  },
-
-  column: function(name) {
-    return this.operand.column(name);
   },
 
   isEqual: function(other) {
