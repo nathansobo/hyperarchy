@@ -3,8 +3,8 @@
     initialize: function() {
       this.delegateConstructorMethods('find', 'fetch', 'findOrFetch', 'tuples', 'first', 'each', 'onEach', 'map', 'any',
                                       'onInsert', 'onUpdate', 'onRemove', 'onDirty', 'onClean', 'onInvalid',
-                                      'onValid', 'where', 'contains', 'orderBy', 'project', 'union', 'difference', 'empty',
-                                      'build', 'create', 'createFromRemote', 'fixture', 'clear', 'table');
+                                      'onValid', 'where', 'offset', 'contains', 'orderBy', 'project', 'union', 'difference',
+                                      'empty', 'build', 'create', 'createFromRemote', 'fixture', 'clear', 'table');
     },
 
     inherited: function(subconstructor) {

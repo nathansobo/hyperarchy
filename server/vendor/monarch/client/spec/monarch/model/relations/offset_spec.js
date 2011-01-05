@@ -7,13 +7,13 @@ Screw.Unit(function(c) { with(c) {
     var offset, operand;
 
     before(function() {
-      operand = BlogPost.orderBy('id asc');
+      operand = BlogPost.table;
       offset = operand.offset(2);
     });
 
 
     describe("#tuples()", function() {
-      it("returns all tuples from the operand that have an index beyond n", function() {
+      it("returns all tuples from the operand that have an index >= n", function() {
         BlogPost.createFromRemote({id: 1});
         BlogPost.createFromRemote({id: 2});
         var post3 = BlogPost.createFromRemote({id: 3});
@@ -24,7 +24,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#wireRepresentation()", function() {
-      it("returns the JSON representation of the Selection", function() {
+      it("returns the JSON representation of the offset", function() {
         expect(offset.wireRepresentation()).to(equal, {
           type: "offset",
           operand: operand.wireRepresentation(),
@@ -72,10 +72,10 @@ Screw.Unit(function(c) { with(c) {
       }
 
 
-      describe("when a record is inserted into operand remotely", function() {
+      describe("when a record is inserted into operand", function() {
         describe("when the inserted record's index is less than n", function() {
           describe("when the operand has n or more records", function() {
-            it("fires an insert event with the record whose index is now n", function() {
+            it("triggers an insert event with the record whose index is now n", function() {
               BlogPost.createFromRemote({id: 0});
 
               var sortKey = BlogPost.table.buildSortKey(post2);
@@ -84,7 +84,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           describe("when the operand has less than n records", function() {
-            it("does not fire any event handlers, because no records have an index >= n", function() {
+            it("does not trigger any event handlers, because no records have an index >= n", function() {
               post2.remotelyDestroyed();
               post3.remotelyDestroyed();
               post4.remotelyDestroyed();
@@ -98,7 +98,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         describe("when the inserted record's index is greater than n", function() {
-          it("fires an insert event with the inserted record", function() {
+          it("triggers an insert event with the inserted record", function() {
             var record = BlogPost.createFromRemote({id: 5});
             var sortKey = BlogPost.table.buildSortKey(record);
             expect(insertCallback).to(haveBeenCalled, withArgs(record, 2, sortKey, sortKey));
@@ -106,10 +106,10 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
-      describe("when a record is updated in the operand remotely", function() {
+      describe("when a record is updated in the operand", function() {
         describe("when the updated record's index was < n before the update", function() {
           describe("when the updated record's index is >= n after the update", function() {
-            it("fires an insert event for the updated record and a remove event for the record whose index was n and is now n - 1", function() {
+            it("triggers an insert event for the updated record and a remove event for the record whose index was n and is now n - 1", function() {
               post1.remotelyUpdated({id: 3.5});
               expect(removeCallback).to(haveBeenCalled, withArgs(post3, 0, {'blog_posts.id': 3}, {'blog_posts.id': 3}));
               expect(insertCallback).to(haveBeenCalled, withArgs(post1, 0, {'blog_posts.id': 3.5}, {'blog_posts.id': 1}));
@@ -117,7 +117,7 @@ Screw.Unit(function(c) { with(c) {
           });
           
           describe("when the updated record's index remains < n after the update", function() {
-            it("fires no events", function() {
+            it("triggers no events", function() {
               post1.remotelyUpdated({id: 2.5});
               expect(removeCallback).toNot(haveBeenCalled);
               expect(updateCallback).toNot(haveBeenCalled);
@@ -128,7 +128,7 @@ Screw.Unit(function(c) { with(c) {
         
         describe("when the record's index was >= n before the update", function() {
           describe("when the record's index is < n after the update", function() {
-            it("fires a remove event for the updated record and an insert event for the record whose index was n - 1 and is now n", function() {
+            it("triggers a remove event for the updated record and an insert event for the record whose index was n - 1 and is now n", function() {
               post4.remotelyUpdated({id: 1.5});
               expect(removeCallback).to(haveBeenCalled, withArgs(post4, 1, {'blog_posts.id': 1.5}, {'blog_posts.id': 4}));
               expect(insertCallback).to(haveBeenCalled, withArgs(post2, 0, {'blog_posts.id': 2}, {'blog_posts.id': 2}));
@@ -136,7 +136,7 @@ Screw.Unit(function(c) { with(c) {
           });
           
           describe("when the record's index remains >= n after the update", function() {
-            it("fires an update event for the updated record", function() {
+            it("triggers an update event for the updated record", function() {
               post3.remotelyUpdated({id: 5});
               expect(updateCallback).to(haveBeenCalled, 1);
               expect(updateCallback.mostRecentArgs[0]).to(eq, post3);
@@ -151,7 +151,7 @@ Screw.Unit(function(c) { with(c) {
       describe("when a record is removed from the operand", function() {
         describe("when the removed record's index is < n", function() {
           describe("when there are more than n records in the operand", function() {
-            it("fires a remove event for the former first record in the offset that now has an index of n - 1", function() {
+            it("triggers a remove event for the former first record in the offset that now has an index of n - 1", function() {
               post2.remotelyDestroyed();
               var sortKey = offset.buildSortKey(post3);
               expect(removeCallback).to(haveBeenCalled, withArgs(post3, 0, sortKey, sortKey));
@@ -159,7 +159,7 @@ Screw.Unit(function(c) { with(c) {
           });
 
           describe("when there are <= n records in the operand", function() {
-            it("doesn't fire any event handlers", function() {
+            it("doesn't trigger any event handlers", function() {
               post3.remotelyDestroyed();
               post4.remotelyDestroyed();
 
@@ -173,7 +173,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         describe("when the removed record's index is >= n", function() {
-          it("fires a remove event for the removed record", function() {
+          it("triggers a remove event for the removed record", function() {
             var sortKey = offset.buildSortKey(post4);
             post4.remotelyDestroyed();
             expect(removeCallback).to(haveBeenCalled, withArgs(post4, 1, sortKey, sortKey));

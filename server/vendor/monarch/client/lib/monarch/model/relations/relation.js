@@ -104,6 +104,10 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return new Monarch.Model.Relations.Offset(this, n);
   },
 
+  limit: function(n) {
+    return new Monarch.Model.Relations.Limit(this, n);
+  },
+
   dirtyTuples: function() {
     return _.filter(this.tuples(), function(record) {
       return record.dirty();

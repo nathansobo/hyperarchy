@@ -38,8 +38,6 @@ _.constructor("Monarch.Model.Relations.Offset", Monarch.Model.Relations.Relation
   },
 
   onOperandUpdate: function(tuple, changeset, newIndex, oldIndex, newKey, oldKey) {
-
-
     if (oldIndex < this.n) {
       if (newIndex >= this.n) {
         this.tupleRemovedRemotely(this.at(0));
