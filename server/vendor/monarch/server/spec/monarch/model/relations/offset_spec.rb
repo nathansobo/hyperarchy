@@ -30,10 +30,6 @@ module Monarch
           end
         end
 
-        describe "#all" do
-          it "executes an appropriate SQL query against the database and returns Records corresponding to its results"
-        end
-
         describe "#==" do
           it "structurally compares the receiver with the operand" do
             offset.should == Blog.offset(2)

@@ -35,6 +35,12 @@ module Monarch
           ].compact.join(" ")
         end
 
+        def apply_offset(n)
+          clone.tap do |clone|
+            clone.offset = n
+          end
+        end
+
         protected
         def set_quantifier_sql
           nil

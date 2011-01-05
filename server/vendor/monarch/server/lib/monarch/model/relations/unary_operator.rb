@@ -3,7 +3,7 @@ module Monarch
     module Relations
       class UnaryOperator < Relation
         attr_reader :operand
-        delegate :column, :surface_tables, :build_record_from_database, :external_sql_offset, :to => :operand
+        delegate :column, :surface_tables, :build_record_from_database, :external_sql_offset, :concrete_columns, :to => :operand
 
         def internal_sql_select_list(state)
           operand.external_sql_select_list(state, self)

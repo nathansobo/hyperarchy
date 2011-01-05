@@ -263,6 +263,38 @@ module Monarch
           offset 10  
         })
       end
+
+      specify "offsets inside of joins generate as subqueries" do
+        Blog.join_to(BlogPost.offset(10)).project(Blog).to_sql.should be_like(%{
+          select blogs.*
+          from blogs, (
+            select blog_posts.*
+            from blog_posts
+            offset 10
+          ) as t1
+          where blogs.id = t1.blog_id
+        })
+
+        offset_blog_post_counts =
+          Blog.where(:user_id => "jan").left_join_to(BlogPost).
+            group_by(Blog[:id]).
+            project(Blog[:id].as(:blog_id), BlogPost[:id].count.as(:num_posts)).
+            offset(10)
+
+        Blog.join_to(offset_blog_post_counts).project(:title, :num_posts).to_sql.should be_like(%{
+          select blogs.title as title, t1.num_posts as num_posts
+          from blogs, (
+            select blogs.id as blog_id, count(blog_posts.id) as num_posts
+            from blogs left outer join blog_posts on blogs.id = blog_posts.blog_id
+            where blogs.user_id = #{"jan".to_key} group by blogs.id
+            offset 10
+          ) as t1
+          where blogs.id = t1.blog_id
+        })
+
+        # switching project and offset fails on 5/2011
+        #
+      end
     end
   end
 end

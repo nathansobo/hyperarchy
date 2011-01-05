@@ -19,6 +19,10 @@ module Monarch
         def inner_joined_table_refs
           [self]
         end
+
+        def apply_offset(n)
+          DerivedTable.new(subquery.apply_offset(n), name)
+        end
       end
     end
   end

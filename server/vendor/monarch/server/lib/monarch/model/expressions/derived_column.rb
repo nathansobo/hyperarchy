@@ -18,7 +18,7 @@ module Monarch
 
         def sql_expression(state)
           state[self][:sql_expression] ||= begin
-            if relation.aggregation?
+            if relation.has_derived_external_table_ref?
               Sql::ColumnRef.new(relation.external_sql_table_ref(state), name)
             else
               expression.sql_expression(state)

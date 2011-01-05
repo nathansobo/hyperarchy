@@ -14,6 +14,10 @@ module Monarch
           left_operand.column(name) || right_operand.column(name)
         end
 
+        def concrete_columns
+          left_operand.concrete_columns + right_operand.concrete_columns
+        end
+
         protected
 
         def internal_sql_select_list(state)

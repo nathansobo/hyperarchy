@@ -163,6 +163,10 @@ module Monarch
           internal_sql_select_list(state)
         end
 
+        def has_derived_external_table_ref?
+          false
+        end
+
         def external_sql_table_ref(state)
           internal_sql_table_ref(state)
         end

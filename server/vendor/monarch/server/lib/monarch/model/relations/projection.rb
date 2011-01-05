@@ -70,6 +70,10 @@ module Monarch
             end
         end
 
+        def has_derived_external_table_ref?
+          aggregation?
+        end
+
         def external_sql_table_ref(state)
           state[self][:external_sql_table_ref] ||=
             if aggregation?
