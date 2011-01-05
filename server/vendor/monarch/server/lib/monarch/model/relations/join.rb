@@ -33,6 +33,10 @@ module Monarch
           state[self][:internal_sql_sort_specifications] ||=
             left_operand.external_sql_sort_specifications(state) + right_operand.external_sql_sort_specifications(state)
         end
+
+        def internal_sql_offset
+          nil
+        end
       end
     end
   end

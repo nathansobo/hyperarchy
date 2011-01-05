@@ -254,6 +254,15 @@ module Monarch
           where blogs.id = t1.blog_id
         })
       end
+
+      specify "simple offsets" do
+        Blog.where(:user_id => 1).offset(10).to_sql.should be_like(%{
+          select blogs.*
+          from blogs
+          where blogs.user_id = 1
+          offset 10  
+        })
+      end
     end
   end
 end
