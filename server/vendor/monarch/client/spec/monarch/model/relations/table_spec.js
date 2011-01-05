@@ -2,7 +2,7 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Model.Relations.Table", function() {
-    useLocalFixtures();
+    useExampleDomainModel();
 
     describe("column definition", function() {
       var table;
@@ -35,6 +35,12 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+//    describe("#defaultOrderBy(sortSpecifications)", function() {
+//      it("causes the table to order its records by the given sort specifications instead of just id", function() {
+//
+//      });
+//    });
+
     describe("#fetch", function() {
       useFakeServer(false);
 
@@ -62,10 +68,10 @@ Screw.Unit(function(c) { with(c) {
 
       it("looks for a record in with the given id, and fetches it and any additional relations if it is not found, invoking the callback with the record", function() {
         // case where a record with given id is in the repo
-        var extantRecord = Blog.find("recipes");
+        var extantRecord = Blog.createFromRemote({id: 1});
 
         var onSuccessCallback = mockFunction("onSuccessCallback");
-        Blog.findOrFetch("recipes").onSuccess(onSuccessCallback);
+        Blog.findOrFetch(1).onSuccess(onSuccessCallback);
 
         expect(onSuccessCallback).to(haveBeenCalled, once);
         expect(onSuccessCallback).to(haveBeenCalled, withArgs(extantRecord));
@@ -94,10 +100,11 @@ Screw.Unit(function(c) { with(c) {
 
     describe("#clear", function() {
       it("removes tuples data from the table and its index", function() {
-        expect(User.find('jan')).toNot(beNull);
+        User.createFromRemote({id: 1});
+        expect(User.find(1)).toNot(beNull);
         User.table.clear();
         expect(User.table.empty()).to(beTrue);
-        expect(User.find('jan')).to(beNull);
+        expect(User.find(1)).to(beNull);
       });
     });
 
@@ -169,7 +176,7 @@ Screw.Unit(function(c) { with(c) {
 
       it("triggers dirty and clean events at the appropriate times", function() {
         var record = User.createFromRemote({id: 1, fullName: "Nathan Sobo"})
-        var sortKey  User.table.buildSortKey(record);
+        var sortKey = User.table.buildSortKey(record);
 
 
         record.fullName("Mahatma Ghandi");
@@ -183,10 +190,12 @@ Screw.Unit(function(c) { with(c) {
         var record = User.createFromRemote({id: 1, fullName: "Nathan Sobo"})
         record.assignValidationErrors({fullName: ["some error"]});
 
-        expect(invalidCallback).to(haveBeenCalled, withArgs(record));
+        var sortKey = User.table.buildSortKey(record)
+
+        expect(invalidCallback).to(haveBeenCalled, withArgs(record, 0, sortKey, sortKey));
 
         record.clearValidationErrors();
-        expect(validCallback).to(haveBeenCalled, withArgs(record));
+        expect(validCallback).to(haveBeenCalled, withArgs(record, 0, sortKey, sortKey));
       });
     });
 
