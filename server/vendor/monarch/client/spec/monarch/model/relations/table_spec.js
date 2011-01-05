@@ -35,11 +35,25 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-//    describe("#defaultOrderBy(sortSpecifications)", function() {
-//      it("causes the table to order its records by the given sort specifications instead of just id", function() {
-//
-//      });
-//    });
+    describe("#defaultOrderBy(sortSpecifications)", function() {
+
+      after(function() {
+        delete window.Foo;
+      });
+
+      it("causes the table to order its records by the given sort specifications instead of just id", function() {
+        var recordConstructor = _.constructor("Foo", Monarch.Model.Record, {
+          constructorInitialize: function() {
+            this.column("position", "key");
+            this.defaultOrderBy("position asc");
+          }
+        });
+        var record1 = recordConstructor.createFromRemote({id: 1, position: 2});
+        var record2 = recordConstructor.createFromRemote({id: 2, position: 1});
+
+        expect(recordConstructor.tuples()).to(equal, [record2, record1]);
+      });
+    });
 
     describe("#fetch", function() {
       useFakeServer(false);

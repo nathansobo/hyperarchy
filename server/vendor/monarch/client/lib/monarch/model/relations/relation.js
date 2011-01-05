@@ -70,24 +70,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   orderBy: function() {
-    var sortSpecifications = _.map(arguments, function(orderByColumn) {
-      if (orderByColumn instanceof Monarch.Model.SortSpecification) {
-        return orderByColumn;
-      } else if (orderByColumn instanceof Monarch.Model.Column) {
-        return orderByColumn.asc();
-      } else if (typeof orderByColumn == "string") {
-        var parts = orderByColumn.split(/ +/);
-        var columnName = parts[0];
-        var direction = parts[1] || 'asc';
-        if (direction == 'desc') {
-          return this.column(columnName).desc();
-        } else {
-          return this.column(columnName).asc();
-        }
-      } else {
-        throw new Error("You can only order by Columns, sortSpecifications, or 'columnName direction' strings");
-      }
-    }, this);
+    var sortSpecifications = this.extractSortSpecsFromArguments(arguments);
 
     return new Monarch.Model.Relations.Ordering(this, sortSpecifications);
   },
@@ -216,6 +199,24 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return Server.subscribe([this]);
   },
 
+  contains: function(record, changeset) {
+    if (this.storedTuples) {
+      return this.storedTuples.find(this.buildSortKey(record, changeset)) !== undefined;
+    } else {
+      return _.indexOf(this.tuples(), record) !== -1;
+    }
+  },
+
+  findByKey: function(sortKey) {
+    return this.storedTuples.find(sortKey);
+  },
+
+  indexByKey: function(sortKey) {
+    return this.storedTuples.indexOf(sortKey);
+  },
+
+  // private
+
   memoizeTuples: function() {
     var storedTuples = this.buildSkipList();
     this.each(function(tuple) {
@@ -320,31 +321,26 @@ _.constructor("Monarch.Model.Relations.Relation", {
     this.onLocalUpdateNode.publish(tuple, updateData);
   },
 
-  contains: function(record, changeset) {
-    if (this.storedTuples) {
-      return this.storedTuples.find(this.buildSortKey(record, changeset)) !== undefined;
-    } else {
-      return _.indexOf(this.tuples(), record) !== -1;
-    }
+  extractSortSpecsFromArguments: function(args) {
+    return _.map(args, function(orderByColumn) {
+      if (orderByColumn instanceof Monarch.Model.SortSpecification) {
+        return orderByColumn;
+      } else if (orderByColumn instanceof Monarch.Model.Column) {
+        return orderByColumn.asc();
+      } else if (typeof orderByColumn == "string") {
+        var parts = orderByColumn.split(/ +/);
+        var columnName = parts[0];
+        var direction = parts[1] || 'asc';
+        if (direction == 'desc') {
+          return this.column(columnName).desc();
+        } else {
+          return this.column(columnName).asc();
+        }
+      } else {
+        throw new Error("You can only order by Columns, sortSpecifications, or 'columnName direction' strings");
+      }
+    }, this);
   },
-
-  findByKey: function(sortKey) {
-    return this.storedTuples.find(sortKey);
-  },
-
-  indexByKey: function(sortKey) {
-    return this.storedTuples.indexOf(sortKey);
-  },
-
-  remoteSubscribe: function() {
-    var subscribeFuture = new Monarch.Http.AjaxFuture();
-    Server.subscribe([this]).onSuccess(function(remoteSubscriptions) {
-      subscribeFuture.triggerSuccess(remoteSubscriptions[0]);
-    });
-    return subscribeFuture;
-  },
-
-  // private
 
   subscribeToOperandsIfNeeded: function() {
     if (this.numOperands > 0 && !this.hasSubscribers()) {

@@ -26,6 +26,11 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     return this.syntheticColumnsByName[name] = new Monarch.Model.SyntheticColumn(this, name, definition);
   },
 
+  defaultOrderBy: function() {
+    this.sortSpecifications = this.extractSortSpecsFromArguments(arguments).concat([this.column("id").asc()]);
+    this.comparator = this.buildComparator();
+    this.storedTuples = this.buildSkipList();
+  },
 
   build: function(fieldValues) {
     return new this.recordConstructor(fieldValues, this);
