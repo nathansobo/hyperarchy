@@ -1,36 +1,36 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Model.Relations.Offset", Monarch.Model.Relations.Relation, {
-  initialize: function(operand, n) {
+  initialize: function(operand, count) {
     this.operand = operand;
-    this.n = n;
+    this.count = count;
     this.sortSpecifications = operand.sortSpecifications;
     this.initializeEventsSystem();
   },
 
   tuples: function() {
     if (this.storedTuples) return this.storedTuples.values();
-    return this.operand.tuples().slice(this.n);
+    return this.operand.tuples().slice(this.count);
   },
 
   wireRepresentation: function() {
     return {
       type: "offset",
       operand: this.operand.wireRepresentation(),
-      count: this.n
+      count: this.count
     };
   },
 
   isEqual: function(other) {
     if (!other || other.constructor !== this.constructor) return false;
-    return other.n === this.n && this.operand.isEqual(other.operand);
+    return other.count === this.count && this.operand.isEqual(other.operand);
   },
 
   // private
 
   onOperandInsert: function(tuple, index, newKey, oldKey) {
-    if (index < this.n) {
-      var nthTuple = this.operand.at(this.n);
+    if (index < this.count) {
+      var nthTuple = this.operand.at(this.count);
       if (nthTuple) this.tupleInsertedRemotely(nthTuple);
     } else {
       this.tupleInsertedRemotely(tuple, newKey, oldKey);
@@ -38,15 +38,15 @@ _.constructor("Monarch.Model.Relations.Offset", Monarch.Model.Relations.Relation
   },
 
   onOperandUpdate: function(tuple, changeset, newIndex, oldIndex, newKey, oldKey) {
-    if (oldIndex < this.n) {
-      if (newIndex >= this.n) {
+    if (oldIndex < this.count) {
+      if (newIndex >= this.count) {
         this.tupleRemovedRemotely(this.at(0));
         this.tupleInsertedRemotely(tuple, newKey, oldKey);
       }
     } else {
-      if (newIndex < this.n) {
+      if (newIndex < this.count) {
         this.tupleRemovedRemotely(tuple, newKey, oldKey);
-        this.tupleInsertedRemotely(this.operand.at(this.n));
+        this.tupleInsertedRemotely(this.operand.at(this.count));
       } else {
         this.tupleUpdatedRemotely(tuple, changeset, newKey, oldKey)
       }
@@ -54,7 +54,7 @@ _.constructor("Monarch.Model.Relations.Offset", Monarch.Model.Relations.Relation
   },
 
   onOperandRemove: function(tuple, index, newKey, oldKey) {
-    if (index < this.n) {
+    if (index < this.count) {
       var formerNthTuple = this.at(0);
       if (formerNthTuple) this.tupleRemovedRemotely(formerNthTuple);
     } else {
