@@ -3,7 +3,7 @@ module Monarch
     module Relations
       class Limit < RetrievalDirective
         def internal_sql_limit
-          n
+          count
         end
       end
     end

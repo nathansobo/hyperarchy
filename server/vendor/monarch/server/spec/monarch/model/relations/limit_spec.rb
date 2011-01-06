@@ -16,7 +16,7 @@ module Monarch
               repository = UserRepository.new(User.find('jan'))
               representation = {
                 "type" => "limit",
-                "n" => 2,
+                "count" => 2,
                 "operand" => {
                   "type" => "table",
                   "name" => "blogs"
@@ -24,7 +24,7 @@ module Monarch
               }
               
               limit = Limit.from_wire_representation(representation, repository)
-              limit.n.should == 2
+              limit.count.should == 2
               limit.operand.should == repository.resolve_table_name(:blogs)
             end
           end

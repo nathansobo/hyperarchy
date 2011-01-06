@@ -3,7 +3,7 @@ module Monarch
     module Relations
       class Offset < RetrievalDirective
         def internal_sql_offset
-          n
+          count
         end
       end
     end

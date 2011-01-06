@@ -2,19 +2,19 @@ module Monarch
   module Model
     module Relations
       class RetrievalDirective < UnaryOperator
-        attr_reader :n, :concrete_columns, :concrete_columns_by_name, :concrete_columns_by_underlying_expression
+        attr_reader :count, :concrete_columns, :concrete_columns_by_name, :concrete_columns_by_underlying_expression
 
         class << self
           def from_wire_representation(representation, repository)
             operand = Relation.from_wire_representation(representation["operand"], repository)
-            new(operand, representation["n"])
+            new(operand, representation["count"])
           end
         end
 
-        def initialize(operand, n, &block)
+        def initialize(operand, count, &block)
           super(&block)
           @operand = operand
-          @n = n
+          @count = count
           @concrete_columns = operand.concrete_columns.map {|column| column.derive(self)}
           @concrete_columns_by_name = {}
           @concrete_columns_by_underlying_expression = {}
@@ -47,7 +47,7 @@ module Monarch
 
         def ==(other)
           return false unless other.instance_of?(self.class)
-          operand == other.operand && n == other.n
+          operand == other.operand && count == other.count
         end
 
         def surface_tables

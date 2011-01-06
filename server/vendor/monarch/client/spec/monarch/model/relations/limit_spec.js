@@ -28,7 +28,7 @@ Screw.Unit(function(c) { with(c) {
         expect(limit.wireRepresentation()).to(equal, {
           type: "limit",
           operand: operand.wireRepresentation(),
-          n: 2
+          count: 2
         });
       });
     });

@@ -28,7 +28,7 @@ Screw.Unit(function(c) { with(c) {
         expect(offset.wireRepresentation()).to(equal, {
           type: "offset",
           operand: operand.wireRepresentation(),
-          n: 2
+          count: 2
         });
       });
     });

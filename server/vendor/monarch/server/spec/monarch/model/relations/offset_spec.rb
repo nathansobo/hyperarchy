@@ -16,7 +16,7 @@ module Monarch
               repository = UserRepository.new(User.find('jan'))
               representation = {
                 "type" => "offset",
-                "n" => 2,
+                "count" => 2,
                 "operand" => {
                   "type" => "table",
                   "name" => "blogs"
@@ -24,7 +24,7 @@ module Monarch
               }
               
               offset = Offset.from_wire_representation(representation, repository)
-              offset.n.should == 2
+              offset.count.should == 2
               offset.operand.should == repository.resolve_table_name(:blogs)
             end
           end

@@ -17,7 +17,7 @@ _.constructor("Monarch.Model.Relations.Offset", Monarch.Model.Relations.Relation
     return {
       type: "offset",
       operand: this.operand.wireRepresentation(),
-      n: this.n
+      count: this.n
     };
   },
 

@@ -12,7 +12,7 @@ _.constructor("Monarch.Model.Relations.Limit", Monarch.Model.Relations.Relation,
   wireRepresentation: function() {
     return {
       type: "limit",
-      n: this.n,
+      count: this.n,
       operand: this.operand.wireRepresentation()
     };
   },
