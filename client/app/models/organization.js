@@ -6,6 +6,7 @@ _.constructor("Organization", Model.Record, {
         description: "string",
         membersCanInvite: "boolean",
         dismissedWelcomeGuide: 'boolean',
+        electionCount: 'integer',
         useSsl: 'boolean'
       });
 

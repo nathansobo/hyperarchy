@@ -4,6 +4,7 @@ class Organization < Monarch::Model::Record
   column :members_can_invite, :boolean, :default => false
   column :dismissed_welcome_guide, :boolean, :default => false
   column :use_ssl, :boolean, :default => true
+  column :election_count, :integer, :default => 0
   column :created_at, :datetime
   column :updated_at, :datetime
 

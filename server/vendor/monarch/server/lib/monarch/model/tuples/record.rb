@@ -199,11 +199,7 @@ module Monarch
         end
 
         def decrement(column, count=1)
-          old_state = snapshot
-          table.where(:id => id).decrement(column, count)
-          reload(column)
-          new_state = snapshot
-          table.record_updated(self, Changeset.new(new_state, old_state))
+          increment(column, -count)
         end
 
         def dirty?
