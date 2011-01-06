@@ -24,10 +24,6 @@ module Monarch
         def internal_sql_sort_specifications(state)
           operand.external_sql_sort_specifications(state)
         end
-
-        def internal_sql_offset
-          operand.external_sql_offset
-        end
       end
     end
   end

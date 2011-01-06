@@ -96,6 +96,10 @@ module Monarch
           end
         end
 
+        def limit(n)
+          Limit.new(self, n)
+        end
+
         def offset(n)
           Offset.new(self, n)
         end
@@ -184,7 +188,19 @@ module Monarch
         end
 
         def external_sql_offset
-          internal_sql_offset
+          nil
+        end
+
+        def external_sql_limit
+          nil
+        end
+
+        def internal_sql_offset
+          nil
+        end
+
+        def internal_sql_limit
+          nil
         end
 
         protected
@@ -321,7 +337,7 @@ module Monarch
 
         def sql_query_specification(state)
           state[self][:sql_query_specification] ||=
-            Sql::QuerySpecification.new(:all, internal_sql_select_list(state), internal_sql_table_ref(state), internal_sql_where_predicates(state), internal_sql_sort_specifications(state), internal_sql_grouping_column_refs(state), internal_sql_offset)
+            Sql::QuerySpecification.new(:all, internal_sql_select_list(state), internal_sql_table_ref(state), internal_sql_where_predicates(state), internal_sql_sort_specifications(state), internal_sql_grouping_column_refs(state), internal_sql_limit, internal_sql_offset)
         end
 
         def sql_update_statement(state, field_values)

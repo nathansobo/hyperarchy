@@ -255,21 +255,37 @@ module Monarch
         })
       end
 
-      specify "simple offsets" do
+      specify "simple limits and offsets" do
         Blog.where(:user_id => 1).offset(10).to_sql.should be_like(%{
           select blogs.*
           from blogs
           where blogs.user_id = 1
           offset 10  
         })
+
+        Blog.where(:user_id => 1).limit(10).to_sql.should be_like(%{
+          select blogs.*
+          from blogs
+          where blogs.user_id = 1
+          limit 10
+        })
+
+        Blog.where(:user_id => 1).limit(10).offset(3).to_sql.should be_like(%{
+          select blogs.*
+          from blogs
+          where blogs.user_id = 1
+          limit 10
+          offset 3  
+        })
       end
 
-      specify "offsets inside of joins generate as subqueries" do
-        Blog.join_to(BlogPost.offset(10)).project(Blog).to_sql.should be_like(%{
+      specify "limits and offsets inside of joins generate as subqueries" do
+        Blog.join_to(BlogPost.limit(10).offset(10)).project(Blog).to_sql.should be_like(%{
           select blogs.*
           from blogs, (
             select blog_posts.*
             from blog_posts
+            limit 10
             offset 10
           ) as t1
           where blogs.id = t1.blog_id
