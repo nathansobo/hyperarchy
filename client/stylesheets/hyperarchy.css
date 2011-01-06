@@ -1062,153 +1062,175 @@ body.legal {
     position: relative;
     top: -12px; }
 
-#application {
-  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
-  background-color: #f4f4f4;
+#application .dropdownMenu {
+  z-index: 100;
+  position: absolute;
+  background-color: #efefef;
+  border: 1px solid #cccccc;
+  border-top: none;
+  display: none;
+  width: auto;
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
+  white-space: nowrap;
+  padding: 2px; }
+  #application .dropdownMenu a {
+    opacity: 1;
+    background-color: white;
+    position: relative;
+    z-index: 20;
+    padding: 2px 4px;
+    display: block;
+    margin-bottom: 2px; }
+    #application .dropdownMenu a:hover {
+      background: #fff3c7; }
+  #application .dropdownMenu li:last-child a {
+    margin-bottom: 0; }
+#application #header {
   width: 1000px;
   margin: 0 auto;
-  padding: 0 20px;
-  padding-bottom: 25px; }
-  #application .dropdownMenu {
-    z-index: 100;
-    position: absolute;
+  padding-top: 5px;
+  margin-bottom: 5px;
+  height: auto; }
+  #application #header .headerItem {
+    position: relative;
+    float: right;
+    margin-left: 6px;
+    display: inline-block;
     background-color: #efefef;
-    border: 1px solid #cccccc;
-    border-top: none;
-    display: none;
-    width: auto;
-    -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
-    white-space: nowrap;
-    padding: 2px; }
-    #application .dropdownMenu a {
-      opacity: 1;
-      background-color: white;
-      position: relative;
-      z-index: 20;
-      padding: 2px 4px;
-      display: block;
-      margin-bottom: 2px; }
-      #application .dropdownMenu a:hover {
-        background: #fff3c7; }
-    #application .dropdownMenu li:last-child a {
-      margin-bottom: 0; }
-  #application #header {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    padding: 5px 10px;
+    overflow: hidden;
+    text-decoration: none; }
+  #application #header .dropdownLink {
+    display: inline-block;
+    color: #0e40ac;
+    cursor: pointer;
+    padding-right: 15px;
+    padding-right: 20px;
+    background-position: 95% 50%;
+    background-image: url(/images/expand_arrow_blue.png);
+    background-repeat: no-repeat;
+    background-position: right; }
+  #application #header #logoWrapper {
+    float: left;
+    margin: 5px;
+    margin-left: 6px;
+    cursor: pointer; }
+#application #mainContent {
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+  background: white;
+  width: 1000px;
+  padding-bottom: 10px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden; }
+  #application #mainContent #contentHeader {
+    -webkit-border-top-left-radius: 6px;
+    -webkit-border-top-right-radius: 6px;
+    -moz-border-radius-topleft: 6px;
+    -moz-border-radius-topright: 6px;
+    background-color: #44464a;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5c5f65), to(#44464a));
+    background: -moz-linear-gradient(top, #5c5f65, 10%);
+    color: white;
     width: 1000px;
-    margin: 0 auto;
-    padding-top: 5px;
-    margin-bottom: 5px;
-    height: auto; }
-    #application #header .headerItem {
-      position: relative;
-      float: right;
-      margin-left: 6px;
+    height: 40px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden; }
+    #application #mainContent #contentHeader h2 {
+      padding: 5 30px;
+      padding-right: 24px;
+      margin: 0;
+      font-size: 24px;
       display: inline-block;
-      -webkit-border-radius: 3px;
-      -moz-border-radius: 3px;
-      padding: 5px 10px;
-      overflow: hidden;
-      text-decoration: none; }
-    #application #header .dropdownLink {
-      display: inline-block;
-      color: #0e40ac;
-      cursor: pointer;
-      padding-right: 15px;
-      padding-right: 20px;
-      background-position: 95% 50%;
-      background-image: url(/images/expand_arrow_blue.png);
-      background-repeat: no-repeat;
-      background-position: right; }
-    #application #header #logoWrapper {
-      float: left;
-      margin: 5px;
-      margin-left: 6px;
+      letter-spacing: 1.1;
       cursor: pointer; }
-  #application #mainContent {
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
-    background: white;
-    width: 1000px;
-    padding-bottom: 10px;
-    margin: 0 auto; }
-    #application #mainContent #contentHeader {
-      -webkit-border-top-left-radius: 6px;
-      -webkit-border-top-right-radius: 6px;
-      -moz-border-radius-topleft: 6px;
-      -moz-border-radius-topright: 6px;
-      width: 1000px;
-      height: 46px;
-      padding: 0;
+    #application #mainContent #contentHeader a {
+      display: inline-block;
+      font-size: 18px;
       margin: 0;
-      margin-bottom: 30px; }
-      #application #mainContent #contentHeader h2 {
-        padding: 0 30px;
-        margin: 0;
-        font-size: 28px;
-        display: inline-block;
-        letter-spacing: 1.1;
-        cursor: pointer; }
-      #application #mainContent #contentHeader a {
-        display: inline-block;
-        font-size: 18px;
-        margin-top: 12px;
-        margin-bottom: 0;
-        margin-right: 20px;
-        padding: 5px 20px; }
-        #application #mainContent #contentHeader a.tab {
-          -webkit-border-top-left-radius: 5px;
-          -webkit-border-top-right-radius: 5px;
-          -moz-border-radius-topleft: 5px;
-          -moz-border-radius-topright: 5px;
-          background-color: #f2f2f2;
-          color: black; }
-        #application #mainContent #contentHeader a#backToLastOrganization {
-          color: white;
-          padding-left: 16px;
-          background-repeat: no-repeat;
-          background-image: url(/images/undo_12x12_light.png);
-          background-position: 3px; }
-    #application #mainContent #secondaryHeader {
-      width: 940;
-      height: 20;
-      padding: 5px 30px;
-      margin: 0;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #e0e0e0; }
-      #application #mainContent #secondaryHeader a {
-        display: inline-block;
-        font-size: 18px;
-        margin-left: 40px;
-        color: white; }
-  #application #feedback {
-    background: white;
-    height: 300px;
-    width: 600px;
-    position: absolute;
-    z-index: 100;
-    padding: 10px; }
-    #application #feedback #thanks {
-      margin-bottom: 10px; }
-    #application #feedback textarea {
-      width: 100%;
-      height: 185px;
-      padding: 10px;
-      margin-bottom: 10px;
-      resize: none; }
-    #application #feedback a.roundedButton {
-      float: right; }
-  #application #darkenBackground {
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 99;
-    height: 100%;
+      padding: 5px 12px;
+      color: white;
+      position: relative;
+      z-index: 30; }
+      #application #mainContent #contentHeader a.active {
+        -webkit-border-top-left-radius: 4px;
+        -webkit-border-top-right-radius: 4px;
+        -moz-border-radius-topleft: 4px;
+        -moz-border-radius-topright: 4px;
+        -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
+        -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
+        padding-bottom: 10px;
+        background-color: #5a5d62; }
+      #application #mainContent #contentHeader a.right {
+        float: right;
+        padding: 10px 40px;
+        padding-left: 20px;
+        background-repeat: no-repeat;
+        background-position: 3px; }
+      #application #mainContent #contentHeader a#backToLastOrganization {
+        background-image: url(/images/undo_12x12_light.png); }
+      #application #mainContent #contentHeader a#raise {
+        background-image: url(/images/plus_12x12.png); }
+  #application #mainContent #subContentHeader {
+    width: 1000;
+    height: 28px;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 20;
+    overflow: hidden;
+    background-color: #4b4e52;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5a5d62), to(#4b4e52));
+    background: -moz-linear-gradient(top, #5a5d62, 6%);
+    border-bottom: solid 1px #38393d;
+    color: white;
+    font-size: 16px; }
+    #application #mainContent #subContentHeader #actionControls {
+      float: right;
+      padding: 2px 30px; }
+    #application #mainContent #subContentHeader span {
+      font-size: 18px;
+      color: black; }
+    #application #mainContent #subContentHeader a {
+      color: white;
+      padding: 0 10px; }
+  #application #mainContent #contentBody {
+    position: relative;
+    z-index: 30; }
+#application #feedback {
+  background: white;
+  height: 300px;
+  width: 600px;
+  position: absolute;
+  z-index: 100;
+  padding: 10px; }
+  #application #feedback #thanks {
+    margin-bottom: 10px; }
+  #application #feedback textarea {
     width: 100%;
-    background-repeat: repeat;
-    position: fixed;
-    top: 0px;
-    left: 0px; }
+    height: 185px;
+    padding: 10px;
+    margin-bottom: 10px;
+    resize: none; }
+  #application #feedback a.roundedButton {
+    float: right; }
+#application #darkenBackground {
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  height: 100%;
+  width: 100%;
+  background-repeat: repeat;
+  position: fixed;
+  top: 0px;
+  left: 0px; }
 
 #app #invite {
   background: white;

@@ -1,10 +1,4 @@
 #application {
-  @include dropShadow(6px);
-  background-color: $lighterGray;
-  width: 1000px;
-  margin: 0 auto;
-  padding: 0 20px;
-  padding-bottom: 25px;
 
   .dropdownMenu {
     z-index: 100;
@@ -47,7 +41,7 @@
       float: right;
       margin-left: 6px;
       display: inline-block;
-//      background-color: #efefef;
+      background-color: #efefef;
       @include borderRadius(3px);
       padding: 5px 10px;
       overflow: hidden;
@@ -76,26 +70,30 @@
 
   #mainContent {
     @include borderRadius(6px);
-    @include dropShadow(4px);
+    @include dropShadow(6px);
     background: white;
     width: 1000px;
     padding-bottom: 10px;
     margin: 0 auto;
+    position: relative;
+    overflow: hidden;
 
     #contentHeader {
       @include borderRadiusTop(6px);
-//      -moz-box-shadow: rgba(0, 0, 0, .5) 0px 1px 1px;
-//      -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 1px 1px;
+      @include gradient($darkGray, 10%);
+      color: white;
+
       width: 1000px;
-      height: 46px;
+      height: 40px;
       padding: 0;
       margin: 0;
-      margin-bottom: 30px;
-
+      overflow: hidden;
+      
       h2 {
-        padding: 0 30px;
+        padding: 5 30px;
+        padding-right: 24px;
         margin: 0;
-        font-size: 28px;
+        font-size: 24px;
         display: inline-block;
         letter-spacing: 1.1;
         cursor: pointer;
@@ -104,43 +102,75 @@
       a {
         display: inline-block;
         font-size: 18px;
-        margin-top: 12px;
-        margin-bottom: 0;
-        margin-right: 20px;
-        padding: 5px 20px;
+        margin: 0;
+        padding: 5px 12px;
+        color: white;
+        position: relative;
+        z-index: 30;
 
-        &.tab {
-          @include borderRadiusTop(5px);
-          background-color: $lightGray;
-          color: black;
+        &.active {
+          @include borderRadiusTop(4px);
+          @include dropShadow(4px);
+          padding-bottom: 10px;
+          background-color: lighten(lighten($darkGray, 3%), 6%);
+        }
+
+        &.rightSide {
+          float: right;
+          padding: 10px 40px;
+          padding-left: 20px;
+          background-repeat: no-repeat;
+          background-position: 3px;
         }
 
         &#backToLastOrganization {
-//          float: right;
-          color: white;
-          padding-left: 16px;
-          background-repeat: no-repeat;
           background-image: url(/images/undo_12x12_light.png);
-          background-position: 3px;
+        }
+
+        &#raise {
+          background-image: url(/images/plus_12x12.png);
         }
       }
     }
 
-    #secondaryHeader {
-      width: 1000 - (30 + 30);
-      height: 20;
-      padding: 5px 30px;
+    #subContentHeader {
+      width: 1000;
+      height: 28px;
+      padding: 0;
       margin: 0;
       margin-bottom: 20px;
-      border-bottom: 2px solid #e0e0e0;
+      position: relative;
+      z-index: 20;
+      overflow: hidden;
+
+      @include gradient(lighten($darkGray, 3%), 6%);
+      border-bottom: solid 1px darken($darkGray, 5%);
+      color: white;
+      font-size: 16px;
+
+      #actionControls {
+        float: right;
+        padding: 2px 30px;
+      }
+
+      span {
+        font-size: 18px;
+        color: black;
+      }
 
       a {
-        display: inline-block;
-        font-size: 18px;
-        margin-left: 40px;
         color: white;
+//        display: inline-block;
+        padding: 0 10px;
       }
     }
+
+    #contentBody {
+      position: relative;
+      z-index: 30;
+    }
+
+
   }
 
   #feedback {

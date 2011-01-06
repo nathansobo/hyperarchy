@@ -10,6 +10,12 @@ $darkGray: #44464A;
 $black: #0D0D10;
 $backgroundGray: #e6e6e6;
 
+@mixin gradient($color, $percent) {
+  background-color: $color;
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(lighten($color, $percent)), to($color));
+  background: -moz-linear-gradient(top, lighten($color, $percent), $percent);
+}
+
 @mixin glossyColor($color) {
   background-color: $color;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, .44)), color-stop(0.5, rgba(255, 255, 255, .16)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, .05))), $color;
@@ -34,9 +40,9 @@ $backgroundGray: #e6e6e6;
   -moz-border-radius-topright: $radius;
 }
 
-@mixin dropShadow($size) {
-  -moz-box-shadow: rgba(0,0,0,.4) 0px 0px $size;
-  -webkit-box-shadow: rgba(0,0,0,.4) 0px 0px $size;
+@mixin dropShadow($size, $opacity: 0.4) {
+  -moz-box-shadow: rgba(0,0,0, $opacity) 0px 0px $size;
+  -webkit-box-shadow: rgba(0,0,0, $opacity) 0px 0px $size;
 }
 
 .dropShadow {

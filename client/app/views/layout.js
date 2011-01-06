@@ -60,32 +60,44 @@ _.constructor("Views.Layout", View.Template, {
       subview("welcomeGuide", Views.WelcomeGuide);
 
       div({id: "mainContent"}, function() {
-        div({id: "contentHeader", 'class': "glossyDarkGray"}, function() {
+
+        div({id: "contentHeader"}, function() {
           div(function() {
             h2({id: "organizationName"})
-              .click('goToOrganization')
-              .ref('organizationName');
-            a({id: "questionsLink", 'class': "tab"}, "Questions")
-              .ref('questionsLink')
+              .ref('organizationName')
               .click('goToOrganization');
-            a({id: "membersLink", 'class': "tab"}, "Members")
+            a({id: "questionsLink"}, "Questions")
+              .ref('questionsLink')
+              .click('goToQuestions');
+            a({id: "membersLink"}, "Members")
               .ref('membersLink')
-              .click("goToEditOrganization");
-            a({id: "organizationSettings", 'class': "tab"}, "Settings")
+              .click("goToMembers");
+            a({id: "organizationSettings"}, "Settings")
               .ref("editOrganizationLink")
               .click("goToEditOrganization");
+
+            a({id: "raise", 'class': "rightSide"}, "Raise Question");
           }).ref("organizationHeader");
 
           div(function() {
             h2().ref("alternateHeaderText");
-            a({id: "backToLastOrganization"})
+
+            a({id: "backToLastOrganization", 'class': "rightSide"})
               .ref("backToLastOrganizationLink")
               .click("goToLastOrganization");
-          }).ref("alternateHeader")
+          }).ref("alternateHeader");
         });
 
-        div({id: "secondaryHeader", style: "display: none"}, function() {
-          
+        div({id: "subContentHeader"}, function() {
+
+          div(function() {
+            div({id: "actionControls"}, function() {
+              a("<<");
+              span("1 - 30 of 89");
+              a(">>");
+            });
+          }).ref("orgOverviewSubHeader");
+
         });
 
         div({'class': "container12"}, function() {
@@ -243,17 +255,45 @@ _.constructor("Views.Layout", View.Template, {
 
     goToOrganization: function() {
       $.bbq.pushState({view: "organization", organizationId: this.organization().id() }, 2);
+      this.deactivateAllTabs();
+      $(this.questionsLink).addClass('active');
+      return false;
+    },
+
+    goToQuestions: function() {
+      $.bbq.pushState({view: "organization", organizationId: this.organization().id() }, 2);
+      this.deactivateAllTabs();
+      $(this.questionsLink).addClass('active');
       return false;
     },
 
     goToEditOrganization: function() {
       $.bbq.pushState({view: "editOrganization", organizationId: this.organization().id() }, 2);
+      this.deactivateAllTabs();
+      $(this.editOrganizationLink).addClass('active');
+      return false;
+    },
+
+    goToMembers: function() {
+      $.bbq.pushState({view: "editOrganization", organizationId: this.organization().id() }, 2);
+      this.deactivateAllTabs();
+      $(this.membersLink).addClass('active');
       return false;
     },
 
     goToLastOrganization: function() {
       var organizationId = Application.currentUser().lastVisitedOrganization().id();
       $.bbq.pushState({view: "organization", organizationId: organizationId }, 2);
+    },
+
+    deactivateAllTabs: function() {
+      $(this.questionsLink).removeClass('active');
+      $(this.membersLink).removeClass('active');
+      $(this.editOrganizationLink).removeClass('active');
+    },
+
+    secondaryHeaderContent: function(view) {
+      this.secondaryHeader()
     }
   }
 });
