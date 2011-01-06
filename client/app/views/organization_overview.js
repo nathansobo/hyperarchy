@@ -43,6 +43,22 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       });
 
       div({'class': "clear"});
+
+      div(function() {
+        div({id: "navigation"}, function() {
+          a("<<");
+          span("1-10 of 89");
+          a(">>");
+        });
+
+        div({id: "subpages"}, function() {
+          a("Newest");
+          a("Most Popular");
+          a("Favorites");
+        });
+
+      }).ref("subheaderContent");
+
       div({'class': "bigLoading", 'style': "display: none;"}).ref('loading');
     });
   }},
@@ -65,6 +81,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.organizationId(organizationId);
       this.createElectionForm.hide();
       this.showCreateElectionFormButton.show();
+
+      Application.layout.subheaderContent(this.subheaderContent);
     },
 
     organizationId: {

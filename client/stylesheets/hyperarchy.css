@@ -1145,7 +1145,6 @@ body.legal {
     overflow: hidden; }
     #application #mainContent #contentHeader h2 {
       padding: 5 30px;
-      padding-right: 24px;
       margin: 0;
       font-size: 24px;
       display: inline-block;
@@ -1168,7 +1167,7 @@ body.legal {
         -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
         padding-bottom: 10px;
         background-color: #5a5d62; }
-      #application #mainContent #contentHeader a.right {
+      #application #mainContent #contentHeader a.rightSide {
         float: right;
         padding: 10px 40px;
         padding-left: 20px;
@@ -1178,7 +1177,7 @@ body.legal {
         background-image: url(/images/undo_12x12_light.png); }
       #application #mainContent #contentHeader a#raise {
         background-image: url(/images/plus_12x12.png); }
-  #application #mainContent #subContentHeader {
+  #application #mainContent #subheader {
     width: 1000;
     height: 28px;
     padding: 0;
@@ -1191,16 +1190,19 @@ body.legal {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5a5d62), to(#4b4e52));
     background: -moz-linear-gradient(top, #5a5d62, 6%);
     border-bottom: solid 1px #38393d;
-    color: white;
-    font-size: 16px; }
-    #application #mainContent #subContentHeader #actionControls {
-      float: right;
-      padding: 2px 30px; }
-    #application #mainContent #subContentHeader span {
-      font-size: 18px;
-      color: black; }
-    #application #mainContent #subContentHeader a {
-      color: white;
+    color: #f4f4f4;
+    font-size: 14px; }
+    #application #mainContent #subheader #navigation {
+      display: inline-block;
+      padding: 3px 20px;
+      margin-right: 40px; }
+    #application #mainContent #subheader #subpages {
+      display: inline-block;
+      padding: 3px 20px; }
+    #application #mainContent #subheader span {
+      font-size: 16px; }
+    #application #mainContent #subheader a {
+      color: #ababab;
       padding: 0 10px; }
   #application #mainContent #contentBody {
     position: relative;

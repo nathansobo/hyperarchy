@@ -103,7 +103,23 @@ _.constructor("Views.ElectionOverview", View.Template, {
       });
 
       div({'class': "clear"});
+
+      div(function() {
+        div({id: "navigation"}, function() {
+          a("<<");
+          span("9 of 89");
+          a(">>");
+        });
+
+        div({id: "subpages"}, function() {
+          a("Answers");
+          a("Comments");
+          a("Questions");
+        });
+
+      }).ref("subheaderContent");
     });
+
   }},
 
   viewProperties: {
@@ -128,6 +144,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.electionId(parseInt(state.electionId));
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
       Server.post("/visited?election_id=" + state.electionId);
+
+      Application.layout.subheaderContent(this.subheaderContent);
     },
 
     electionId: {

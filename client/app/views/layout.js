@@ -88,17 +88,7 @@ _.constructor("Views.Layout", View.Template, {
           }).ref("alternateHeader");
         });
 
-        div({id: "subContentHeader"}, function() {
-
-          div(function() {
-            div({id: "actionControls"}, function() {
-              a("<<");
-              span("1 - 30 of 89");
-              a(">>");
-            });
-          }).ref("orgOverviewSubHeader");
-
-        });
+        div({id: "subheader"}).ref("subheader");
 
         div({'class': "container12"}, function() {
         }).ref('body');
@@ -122,7 +112,6 @@ _.constructor("Views.Layout", View.Template, {
 
       this.populateOrganizations();
     },
-
 
     organization: {
       afterChange: function(organization) {
@@ -292,8 +281,8 @@ _.constructor("Views.Layout", View.Template, {
       $(this.editOrganizationLink).removeClass('active');
     },
 
-    secondaryHeaderContent: function(view) {
-      this.secondaryHeader()
+    subheaderContent: function(element) {
+      this.subheader.html(element);
     }
   }
 });

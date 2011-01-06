@@ -91,7 +91,7 @@
       
       h2 {
         padding: 5 30px;
-        padding-right: 24px;
+//        padding-right: 24px;
         margin: 0;
         font-size: 24px;
         display: inline-block;
@@ -133,7 +133,7 @@
       }
     }
 
-    #subContentHeader {
+    #subheader {
       width: 1000;
       height: 28px;
       padding: 0;
@@ -145,22 +145,29 @@
 
       @include gradient(lighten($darkGray, 3%), 6%);
       border-bottom: solid 1px darken($darkGray, 5%);
-      color: white;
-      font-size: 16px;
+      color: $lighterGray;
+      font-size: 14px;
 
-      #actionControls {
-        float: right;
-        padding: 2px 30px;
+      #navigation {
+        display: inline-block;
+        padding: 3px 20px;
+        margin-right: 40px;
+//        float: right;
+      }
+
+      #subpages {
+        display: inline-block;
+        padding: 3px 20px;
+//        float: left;
       }
 
       span {
-        font-size: 18px;
-        color: black;
+        font-size: 16px;
       }
 
       a {
-        color: white;
-//        display: inline-block;
+        color: lighten($gray, 25%);
+//        color: darken(yellow, 15%);
         padding: 0 10px;
       }
     }
