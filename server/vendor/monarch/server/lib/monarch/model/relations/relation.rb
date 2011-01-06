@@ -121,9 +121,9 @@ module Monarch
           update(column => column + count)
         end
 
-        def decrement(column)
+        def decrement(column, count = 1)
           column = column(column)
-          update(column => column - 1)
+          update(column => column - count)
         end
 
         def to_update_sql(field_values)

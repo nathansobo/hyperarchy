@@ -266,6 +266,28 @@ module Monarch
             end
           end
 
+          describe "#increment(column, count=1)" do
+            it "decrements the specified field by the given count in the database atomically, then reloads the field and fires an update event" do
+              record = User.create!
+              record.update!(:age => 20)
+
+              on_update_calls = []
+              User.on_update do |record, changeset|
+                on_update_calls.push([record, changeset])
+              end
+
+              record.decrement(:age, 2)
+              record.age.should == 18
+              record.reload.age.should == 18
+
+              on_update_calls.length.should == 1
+              on_update_calls[0][0].should == record
+              changeset = on_update_calls[0][1]
+              changeset.old_state.age.should == 20
+              changeset.new_state.age.should == 18
+            end
+          end
+
           describe "#destroy" do
             it "removes the record in the database and removes it from the thread-local and global identity maps and calls after_destroy hook" do
               mock(record).after_destroy
