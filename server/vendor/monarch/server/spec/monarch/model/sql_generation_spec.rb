@@ -3,6 +3,10 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 module Monarch
   module Model
     describe "SQL generation" do
+      before do
+        stub(Origin).database_type { :mysql }
+      end
+
       specify "tables" do
         User.table.to_sql.should be_like(%{
           select users.* from users

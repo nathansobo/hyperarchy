@@ -131,8 +131,8 @@ module Monarch
           table.global_identity_map[id] = self
         end
 
-        def reload
-          Origin.reload(self)
+        def reload(*columns)
+          Origin.reload(self, *columns)
           self
         end
 
@@ -188,6 +188,14 @@ module Monarch
           after_update(changeset)
 
           self
+        end
+
+        def increment(column, count = 1)
+          old_state = snapshot
+          table.where(:id => id).increment(column, count)
+          reload(column)
+          new_state = snapshot
+          table.record_updated(self, Changeset.new(new_state, old_state))
         end
 
         def dirty?
@@ -329,10 +337,11 @@ module Monarch
           self
         end
 
-        def soft_update_fields(values_by_field_name, include_dirty=true)
+        def soft_update_fields(values_by_field_name, include_dirty=true, mark_clean=false)
           values_by_field_name.each do |field_name, value|
             if the_field = field(field_name)
               the_field.value = value if !the_field.dirty? || include_dirty
+              the_field.mark_clean if mark_clean
             end
           end
           self
@@ -340,6 +349,10 @@ module Monarch
 
         def soft_update_clean_fields(values_by_field_name)
           soft_update_fields(values_by_field_name, false)
+        end
+
+        def update_fields_from_remote(values_by_field_name)
+          soft_update_fields(values_by_field_name, true, true)
         end
 
         def lock

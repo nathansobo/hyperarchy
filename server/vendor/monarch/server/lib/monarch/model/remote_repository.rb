@@ -32,12 +32,13 @@ module Monarch
         connection.execute_dui(sql)
       end
 
-      def reload(record)
+      def reload(record, columns=[])
         table = record.table
-        query = table.where(table.column(:id).eq(record.id)).to_sql
-        field_values = connection[query].first
+        relation = table.where(table.column(:id).eq(record.id))
+        relation = relation.project(*columns) unless columns.empty?
+        field_values = connection[relation.to_sql].first
         raise "Record '#{record.id}' not found during reload" unless field_values
-        record.soft_update_fields(field_values)
+        record.update_fields_from_remote(field_values)
       end
 
       def create_table(name, &definition)

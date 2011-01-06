@@ -116,9 +116,9 @@ module Monarch
           Origin.execute_dui(to_update_sql(column_assignments))
         end
 
-        def increment(column)
+        def increment(column, count = 1)
           column = column(column)
-          update(column => column + 1)
+          update(column => column + count)
         end
 
         def decrement(column)
@@ -345,10 +345,13 @@ module Monarch
         end
 
         def sql_update_statement(state, field_values)
-          if Origin.database_type == :postgres
-            Sql::PostgresUpdateStatement.new(sql_set_clause_assignments(state, field_values), internal_sql_table_ref(state), internal_sql_where_predicates(state))
-          else
-            Sql::MysqlUpdateStatement.new(sql_set_clause_assignments(state, field_values), internal_sql_table_ref(state), internal_sql_where_predicates(state))
+          case Origin.database_type
+            when :postgres
+              Sql::PostgresUpdateStatement.new(sql_set_clause_assignments(state, field_values), internal_sql_table_ref(state), internal_sql_where_predicates(state))
+            when :mysql
+              Sql::MysqlUpdateStatement.new(sql_set_clause_assignments(state, field_values), internal_sql_table_ref(state), internal_sql_where_predicates(state))
+            when :sqlite
+              Sql::SqliteUpdateStatement.new(sql_set_clause_assignments(state, field_values), internal_sql_table_ref(state), internal_sql_where_predicates(state))
           end
         end
 
