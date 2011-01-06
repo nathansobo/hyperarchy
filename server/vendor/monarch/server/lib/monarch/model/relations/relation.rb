@@ -13,6 +13,10 @@ module Monarch
               InnerJoin.from_wire_representation(representation, repository)
             when "table_projection"
               TableProjection.from_wire_representation(representation, repository)
+            when "limit"
+              Limit.from_wire_representation(representation, repository)
+            when "offset"
+              Offset.from_wire_representation(representation, repository)
             end
           end
         end

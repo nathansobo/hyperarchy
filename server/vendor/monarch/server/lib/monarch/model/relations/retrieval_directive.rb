@@ -2,7 +2,14 @@ module Monarch
   module Model
     module Relations
       class RetrievalDirective < UnaryOperator
-        attr_reader :concrete_columns, :concrete_columns_by_name, :concrete_columns_by_underlying_expression
+        attr_reader :n, :concrete_columns, :concrete_columns_by_name, :concrete_columns_by_underlying_expression
+
+        class << self
+          def from_wire_representation(representation, repository)
+            operand = Relation.from_wire_representation(representation["operand"], repository)
+            new(operand, representation["n"])
+          end
+        end
 
         def initialize(operand, n, &block)
           super(&block)
