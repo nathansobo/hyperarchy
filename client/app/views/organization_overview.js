@@ -7,7 +7,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
             a({href: "#", id: 'createElectionLink', 'class': "glossyBlack roundedButton"}, "Raise A New Question")
               .ref('showCreateElectionFormButton')
               .click('showCreateElectionForm');
-            h2("Questions Under Discussion");
+            h1("Questions Under Discussion");
           });
           div({style: "clear: both"});
 
@@ -51,11 +51,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
           a(">>");
         });
 
-        div({id: "subpages"}, function() {
-          a("Newest");
-          a("Most Popular");
-          a("Favorites");
-        });
+//        div({id: "subpages"}, function() {
+//        });
 
       }).ref("subheaderContent");
 

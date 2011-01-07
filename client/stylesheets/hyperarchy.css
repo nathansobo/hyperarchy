@@ -1194,7 +1194,8 @@ body.legal {
     font-size: 14px; }
     #application #mainContent #subheader #navigation {
       display: inline-block;
-      padding: 3px 30px; }
+      padding: 3px 30px;
+      float: right; }
     #application #mainContent #subheader #subpages {
       display: inline-block;
       padding: 3px 20px;
@@ -1653,103 +1654,88 @@ body.legal {
       height: 22px;
       display: inline-block; }
 
-#app #addOrganization, #app #editOrganization {
+#app #addOrganization, #app #editOrganization, #app #members {
   font-size: 21px;
   margin-bottom: 20px; }
-  #app #addOrganization input, #app #editOrganization input, #app #addOrganization textarea, #app #editOrganization textarea {
+  #app #addOrganization input, #app #editOrganization input, #app #members input, #app #addOrganization textarea, #app #editOrganization textarea, #app #members textarea {
     display: block;
     width: 100%;
     margin-bottom: 10px; }
-  #app #addOrganization a.roundedButton, #app #editOrganization a.roundedButton {
+  #app #addOrganization a.roundedButton, #app #editOrganization a.roundedButton, #app #members a.roundedButton {
     margin-top: 10px; }
 
-#app #editOrganization #organizationHeader {
-  margin-bottom: 10px; }
-#app #editOrganization #tabs {
-  position: relative;
-  left: -5px; }
-  #app #editOrganization #tabs .tab {
-    display: inline-block;
-    height: 37px;
-    padding: 5px 5px 0 5px;
-    overflow: hidden; }
-    #app #editOrganization #tabs .tab span {
-      cursor: pointer;
+#app #editOrganization {
+  margin-top: 30px; }
+  #app #editOrganization #content {
+    position: relative;
+    z-index: 4;
+    padding: 30px; }
+  #app #editOrganization #details label {
+    margin-bottom: 5px; }
+  #app #editOrganization #details input[name="name"] {
+    width: 300px; }
+  #app #editOrganization #details textarea {
+    resize: none;
+    width: 500px; }
+  #app #editOrganization #details #flags {
+    margin-top: 10px;
+    margin-bottom: 20px; }
+    #app #editOrganization #details #flags input[type="checkbox"] {
+      margin-right: 10px;
+      display: inline;
+      width: auto; }
+    #app #editOrganization #details #flags label {
       position: relative;
-      display: inline-block;
-      padding: 5px 10px;
-      background: white;
-      -webkit-border-top-left-radius: 3px;
-      -webkit-border-top-right-radius: 3px;
-      -moz-border-radius-topleft: 3px;
-      -moz-border-radius-topright: 3px;
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px; }
-      #app #editOrganization #tabs .tab span.selected {
-        z-index: 10; }
-#app #editOrganization #content {
-  position: relative;
-  z-index: 4;
-  padding: 30px; }
-#app #editOrganization #details label {
-  margin-bottom: 5px; }
-#app #editOrganization #details input[name="name"] {
-  width: 300px; }
-#app #editOrganization #details textarea {
-  resize: none;
-  width: 500px; }
-#app #editOrganization #details #flags {
-  margin-top: 10px;
-  margin-bottom: 20px; }
-  #app #editOrganization #details #flags input[type="checkbox"] {
-    margin-right: 10px;
-    display: inline;
-    width: auto; }
-  #app #editOrganization #details #flags label {
-    position: relative;
-    top: 2px; }
-#app #editOrganization #details button {
-  display: inline-block; }
-#app #editOrganization #details .loading {
-  display: inline-block;
-  position: relative;
-  top: 3px;
-  left: 5px; }
-#app #editOrganization #overviewLink {
-  float: right; }
-#app #editOrganization div.addMember {
-  font-size: medium;
-  border-bottom: 1px solid #999999;
-  margin-bottom: 10px;
-  padding-bottom: 5px; }
-  #app #editOrganization div.addMember input, #app #editOrganization div.addMember select {
-    display: inline;
-    margin-right: 10px; }
-  #app #editOrganization div.addMember input.name {
-    width: 150px; }
-  #app #editOrganization div.addMember input.emailAddress {
-    width: 250px; }
-  #app #editOrganization div.addMember div.loading {
+      top: 2px; }
+  #app #editOrganization #details button {
+    display: inline-block; }
+  #app #editOrganization #details .loading {
     display: inline-block;
     position: relative;
-    top: 5px;
+    top: 3px;
     left: 5px; }
-#app #editOrganization table.members {
-  width: 100%; }
-  #app #editOrganization table.members th {
-    font-weight: bold; }
-  #app #editOrganization table.members td, #app #editOrganization table.members th {
-    border-bottom: 1px #999999 dashed;
-    padding: 5px 0 5px 0;
-    height: 40px; }
-  #app #editOrganization table.members .role {
-    width: 115px; }
-  #app #editOrganization table.members .remove {
-    width: 80px; }
-  #app #editOrganization table.members .loading {
-    display: inline-block;
+  #app #editOrganization #overviewLink {
+    float: right; }
+
+#app #members {
+  margin-top: 40px; }
+  #app #members #content {
     position: relative;
-    top: 5px; }
+    z-index: 4;
+    padding: 30px; }
+  #app #members div.addMember {
+    font-size: medium;
+    border-bottom: 1px solid #999999;
+    margin-bottom: 10px;
+    padding-bottom: 5px; }
+    #app #members div.addMember input, #app #members div.addMember select {
+      display: inline;
+      margin-right: 10px; }
+    #app #members div.addMember input.name {
+      width: 150px; }
+    #app #members div.addMember input.emailAddress {
+      width: 250px; }
+    #app #members div.addMember div.loading {
+      display: inline-block;
+      position: relative;
+      top: 5px;
+      left: 5px; }
+  #app #members table.members {
+    width: 100%; }
+    #app #members table.members th {
+      font-weight: bold; }
+    #app #members table.members td, #app #members table.members th {
+      border-bottom: 1px #999999 dashed;
+      padding: 5px 0 5px 0;
+      height: 40px; }
+    #app #members table.members .role {
+      width: 115px; }
+    #app #members table.members .remove {
+      width: 80px; }
+    #app #members table.members .loading {
+      display: inline-block;
+      position: relative;
+      top: 5px; }
 
 #app h1 {
   margin-bottom: 10px; }

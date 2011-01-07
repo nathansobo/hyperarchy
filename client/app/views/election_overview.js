@@ -113,9 +113,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         });
 
         div({id: "subpages"}, function() {
-//          a("Answers").click("showOrHideCreateCandidateForm");
-//          a("Comments");
-//          a("Questions");
+//          span("Questions   >  KWhat are the best sites ...   >   StackOverflow");
         });
 
       }).ref("subheaderContent");

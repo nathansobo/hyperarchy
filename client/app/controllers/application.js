@@ -7,6 +7,7 @@ _.constructor("Controllers.Application", {
       editOrganization: Views.EditOrganization.toView(),
       organizations: Views.OrganizationOverview.toView(),
       elections: Views.ElectionOverview.toView(),
+      members: Views.Members.toView(),
       account: Views.Account.toView()
     };
   },
