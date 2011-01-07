@@ -106,15 +106,16 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       div(function() {
         div({id: "navigation"}, function() {
+          a("Back to Questions")
           a("<<");
           span("9 of 89");
           a(">>");
         });
 
         div({id: "subpages"}, function() {
-          a("Answers");
-          a("Comments");
-          a("Questions");
+//          a("Answers").click("showOrHideCreateCandidateForm");
+//          a("Comments");
+//          a("Questions");
         });
 
       }).ref("subheaderContent");
@@ -145,6 +146,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
       Server.post("/visited?election_id=" + state.electionId);
 
+      Application.layout.activateHeaderTab("questionsLink");
       Application.layout.subheaderContent(this.subheaderContent);
     },
 

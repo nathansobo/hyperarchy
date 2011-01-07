@@ -69,7 +69,7 @@ _.constructor("Views.Layout", View.Template, {
             a({id: "questionsLink"}, "Questions")
               .ref('questionsLink')
               .click('goToQuestions');
-            a({id: "membersLink"}, "Members")
+            a({id: "membersLink", style: "display: none"}, "Members")
               .ref('membersLink')
               .click("goToMembers");
             a({id: "organizationSettings"}, "Settings")
@@ -244,29 +244,21 @@ _.constructor("Views.Layout", View.Template, {
 
     goToOrganization: function() {
       $.bbq.pushState({view: "organization", organizationId: this.organization().id() }, 2);
-      this.deactivateAllTabs();
-      $(this.questionsLink).addClass('active');
       return false;
     },
 
     goToQuestions: function() {
       $.bbq.pushState({view: "organization", organizationId: this.organization().id() }, 2);
-      this.deactivateAllTabs();
-      $(this.questionsLink).addClass('active');
-      return false;
+     return false;
     },
 
     goToEditOrganization: function() {
       $.bbq.pushState({view: "editOrganization", organizationId: this.organization().id() }, 2);
-      this.deactivateAllTabs();
-      $(this.editOrganizationLink).addClass('active');
       return false;
     },
 
     goToMembers: function() {
       $.bbq.pushState({view: "editOrganization", organizationId: this.organization().id() }, 2);
-      this.deactivateAllTabs();
-      $(this.membersLink).addClass('active');
       return false;
     },
 
@@ -283,6 +275,11 @@ _.constructor("Views.Layout", View.Template, {
 
     subheaderContent: function(element) {
       this.subheader.html(element);
+    },
+
+    activateHeaderTab: function(link) {
+      this.deactivateAllTabs();
+      $(this[link]).addClass('active');
     }
   }
 });

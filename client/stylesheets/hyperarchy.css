@@ -1194,11 +1194,11 @@ body.legal {
     font-size: 14px; }
     #application #mainContent #subheader #navigation {
       display: inline-block;
-      padding: 3px 20px;
-      margin-right: 40px; }
+      padding: 3px 30px; }
     #application #mainContent #subheader #subpages {
       display: inline-block;
-      padding: 3px 20px; }
+      padding: 3px 20px;
+      margin-left: 20px; }
     #application #mainContent #subheader span {
       font-size: 16px; }
     #application #mainContent #subheader a {

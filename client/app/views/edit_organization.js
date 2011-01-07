@@ -134,6 +134,9 @@ _.constructor("Views.EditOrganization", View.Template, {
         this.detailsTab.addClass("selected");
         this.details.show();
       }
+
+      Application.layout.activateHeaderTab("editOrganizationLink");
+      Application.layout.subheaderContent('');
     },
 
     modelAssigned: function(organization) {

@@ -82,6 +82,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.createElectionForm.hide();
       this.showCreateElectionFormButton.show();
 
+      Application.layout.activateHeaderTab("questionsLink");
       Application.layout.subheaderContent(this.subheaderContent);
     },
 
