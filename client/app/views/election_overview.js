@@ -113,9 +113,15 @@ _.constructor("Views.ElectionOverview", View.Template, {
         });
 
         div({id: "rightContent"}, function() {
-          a("< Previous");
-          span("9 of 89");
-          a("Next >");
+          a("< Previous")
+            .ref("previousElectionLink")
+            .click("goToNextElection");
+          span("9").ref("electionPosition");
+          span("of");
+          span("89").ref("numElections");
+          a("Next >")
+            .ref("nextElectionLink")
+            .click("goToPreviousElection");
         });
 
       }).ref("subheaderContent");
@@ -197,7 +203,17 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.candidatesList.election(election);
         this.rankedCandidatesList.election(election);
         this.votesList.election(election);
+
+        this.populateSubheader();
       }
+    },
+
+    populateSubheader: function() {
+      this.electionPosition.bindHtml(this.election(), "id");
+      this.numElections.html(this.election().organization().elections().size());
+      // bind 'numElections' to the actual number of elections in the organization
+      // if at first election, don't show 'previous' link
+      // if at last election, don't show 'next' link
     },
 
     hideElementsWhileLoading: function() {
@@ -360,6 +376,14 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     goToOrganization: function() {
       $.bbq.pushState({view: "organization", organizationId: this.election().organizationId() }, 2);
+    },
+
+    goToNextElection: function() {
+      $.bbq.pushState({view: "election", electionId: this.election().id() + 1}, 2);
+    },
+
+    goToPreviousElection: function() {
+      $.bbq.pushState({view: "election", electionId: this.election().id() - 1}, 2);
     },
 
     expandOrContract: function() {

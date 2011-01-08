@@ -1201,10 +1201,10 @@ body.legal {
           float: left; }
       #application #mainContent #subheader div span {
         color: #ababab;
-        padding: 0 10px; }
+        padding: 0 2px; }
       #application #mainContent #subheader div a {
         color: #ababab;
-        padding: 0 10px; }
+        padding: 0 12px; }
   #application #mainContent #contentBody {
     position: relative;
     z-index: 30; }
