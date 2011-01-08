@@ -1172,7 +1172,9 @@ body.legal {
           background-color: #5a5d62; }
         #application #mainContent #contentHeader div a.rightSide {
           float: right;
-          padding-left: 20px; }
+          padding-left: 20px;
+          background-repeat: no-repeat;
+          background-position: 3px; }
         #application #mainContent #contentHeader div a#backToLastOrganization {
           background-image: url(/images/undo_12x12_light.png); }
   #application #mainContent #subheader {
@@ -1342,26 +1344,13 @@ body.legal {
       #welcomeGuide #currentStep .step div.stepDescription {
         font-size: 20px; }
 
-#app #organizationOverview #organizationHeader {
-  margin-bottom: 30px; }
-  #app #organizationOverview #organizationHeader h2 {
-    font-weight: bold;
+#app #organizationOverview #organizationOverviewHeader {
+  margin-bottom: 30px;
+  padding-left: 15px; }
+  #app #organizationOverview #organizationOverviewHeader h2 {
     display: inline-block;
     position: relative;
     top: 4px; }
-#app #organizationOverview #createElectionLink {
-  padding: 6px 20px;
-  display: inline-block;
-  float: right; }
-#app #organizationOverview #createElectionForm {
-  margin: 5px auto 10px; }
-  #app #organizationOverview #createElectionForm input {
-    font-size: 18px;
-    width: 755px;
-    margin-bottom: 10px;
-    padding: 6px; }
-  #app #organizationOverview #createElectionForm a {
-    float: right; }
 #app #organizationOverview #welcomeBlurb {
   background: #ffffcc;
   margin-bottom: 30px;

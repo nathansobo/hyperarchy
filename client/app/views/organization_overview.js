@@ -2,6 +2,10 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizationOverview"}, function() {
 
+      div({id: "organizationOverviewHeader"}, function() {
+        h2('General Discussion');
+      });
+
       subview('electionsList', Views.SortedList, {
         useQueue: true,
         buildElement: function(election) {
@@ -25,10 +29,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
           span("1-10 of 89");
           a("Next >");
         });
-
-//        div({id: "leftContent"}, function() {
-//        });
-
+        div({id: "leftContent"}, function() {});
       }).ref("subheaderContent");
 
       div({'class': "bigLoading", 'style': "display: none;"}).ref('loading');

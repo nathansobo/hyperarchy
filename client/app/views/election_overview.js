@@ -211,7 +211,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     populateSubheader: function() {
       this.electionPosition.bindHtml(this.election(), "id");
       this.numElections.html(this.election().organization().elections().size());
-      // bind 'numElections' to the actual number of elections in the organization
+      // set 'numElections' to the actual number of elections in the organization
       // if at first election, don't show 'previous' link
       // if at last election, don't show 'next' link
     },
