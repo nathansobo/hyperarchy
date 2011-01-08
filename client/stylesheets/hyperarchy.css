@@ -1687,16 +1687,16 @@ body.legal {
     float: right; }
 
 #app #members {
-  margin-top: 40px; }
+  margin-top: 10px; }
   #app #members #content {
     position: relative;
     z-index: 4;
     padding: 30px; }
   #app #members div.addMember {
     font-size: medium;
-    border-bottom: 1px solid #999999;
-    margin-bottom: 10px;
-    padding-bottom: 5px; }
+    margin-bottom: 20px; }
+    #app #members div.addMember h2 {
+      margin-bottom: 15px; }
     #app #members div.addMember input, #app #members div.addMember select {
       display: inline;
       margin-right: 10px; }
@@ -1741,19 +1741,20 @@ body.legal {
     #app #account .emailPreferences .emailPreference input {
       margin-right: 5px; }
 
+#app #newElection h2 {
+  margin-bottom: 20px; }
 #app #newElection #createElectionLink {
   padding: 6px 20px;
-  display: inline-block;
-  float: right; }
+  display: inline-block; }
 #app #newElection #createElectionForm {
   margin: 5px auto 10px; }
   #app #newElection #createElectionForm input {
     font-size: 18px;
-    width: 755px;
+    width: 700px;
+    height: 100px;
     margin-bottom: 10px;
-    padding: 6px; }
-  #app #newElection #createElectionForm a {
-    float: right; }
+    margin-right: 300px;
+    padding: 5px; }
 #app #newElection .bigLoading {
   position: fixed;
   top: 50%;

@@ -2,9 +2,7 @@ _.constructor("Views.NewElection", View.Template, {
   content: function() { with(this.builder) {
     div({id: "newElection"}, function() {
       div({id: 'createElectionForm'}, function() {
-        a({'class': "glossyBlack roundedButton"}, "Raise Question")
-          .ref('createElectionButton')
-          .click('createElection');
+        h2("Raise a New Question")
         input({placeholder: "Type your question here"})
           .keypress(function(view, e) {
             if (e.keyCode === 13) {
@@ -13,6 +11,9 @@ _.constructor("Views.NewElection", View.Template, {
             }
           })
           .ref('createElectionInput');
+        a({'class': "glossyLightGray roundedButton"}, "Raise Question")
+                  .ref('createElectionButton')
+                  .click('createElection');
       }).ref('createElectionForm');
 
       div({'class': "clear"});

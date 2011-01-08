@@ -1,7 +1,7 @@
 #app {
   #members {
     @extend #addOrganization;
-    margin-top: 40px;
+    margin-top: 10px;
 
     #content {
       position: relative;
@@ -11,10 +11,12 @@
 
     div.addMember {
       font-size: medium;
-      border-bottom: 1px solid #999999;
-      margin-bottom: 10px;
-      padding-bottom: 5px;
+      margin-bottom: 20px;
 
+      h2 {
+        margin-bottom: 15px;
+      }
+      
       input, select {
         display: inline;
         margin-right: 10px;

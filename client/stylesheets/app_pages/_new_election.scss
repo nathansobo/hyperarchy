@@ -1,10 +1,14 @@
 #app {
   #newElection {
 
+    h2 {
+      margin-bottom: 20px;
+    }
+    
     #createElectionLink {
       padding: 6px 20px;
       display: inline-block;
-      float: right;
+//      float: right;
     }
 
     #createElectionForm {
@@ -12,13 +16,15 @@
 
       input {
         font-size: 18px;
-        width: 755px;
+        width: 700px;
+        height: 100px;
         margin-bottom: 10px;
-        padding: 6px;
+        margin-right: 300px;
+        padding: 5px;
       }
 
       a {
-        float: right;
+//        float: right;
       }
     }
 
