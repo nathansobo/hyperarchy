@@ -8,7 +8,8 @@ _.constructor("Controllers.Application", {
       organizations: Views.OrganizationOverview.toView(),
       elections: Views.ElectionOverview.toView(),
       members: Views.Members.toView(),
-      account: Views.Account.toView()
+      account: Views.Account.toView(),
+      newElection: Views.NewElection.toView()
     };
   },
 

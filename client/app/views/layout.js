@@ -76,7 +76,9 @@ _.constructor("Views.Layout", View.Template, {
               .ref("editOrganizationLink")
               .click("goToEditOrganization");
 
-            a({id: "raise", 'class': "rightSide"}, "Raise Question");
+            a({id: "raise", 'class': "rightSide"}, "Raise Question")
+              .click("goToNewElection");
+
           }).ref("organizationHeader");
 
           div(function() {
@@ -268,6 +270,11 @@ _.constructor("Views.Layout", View.Template, {
 
     goToMembers: function() {
       $.bbq.pushState({view: "members", organizationId: this.organization().id() }, 2);
+      return false;
+    },
+
+    goToNewElection: function() {
+      $.bbq.pushState({view: "newElection", organizationId: this.organization().id() }, 2);
       return false;
     },
 

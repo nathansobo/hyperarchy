@@ -1,0 +1,33 @@
+#app {
+  #newElection {
+
+    #createElectionLink {
+      padding: 6px 20px;
+      display: inline-block;
+      float: right;
+    }
+
+    #createElectionForm {
+      margin: 5px auto 10px;
+
+      input {
+        font-size: 18px;
+        width: 755px;
+        margin-bottom: 10px;
+        padding: 6px;
+      }
+
+      a {
+        float: right;
+      }
+    }
+
+    .bigLoading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      margin-left: -40px;
+      margin-top: -40px;
+    }
+  }
+}

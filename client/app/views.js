@@ -8,7 +8,6 @@
 //= require "views/layout"
 //= require "views/welcome_guide"
 //= require "views/organization_overview"
-//= require "views/members"
 //= require "views/election_overview"
 //= require "views/votes_list"
 //= require "views/vote_li"
@@ -20,4 +19,5 @@
 //= require "views/sorted_list"
 //= require "views/candidates_list"
 //= require "views/avatar"
-
+//= require "views/members"
+//= require "views/new_election"
