@@ -110,6 +110,9 @@ _.constructor("Views.Layout", View.Template, {
       this.scrollingArea.fillVerticalSpace(60, 380);
     },
 
+    zeroScroll: function() {
+      this.scrollingArea.scrollTop(0);
+    },
 
     organization: {
       afterChange: function(organization) {
