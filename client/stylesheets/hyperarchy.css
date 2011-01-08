@@ -1167,7 +1167,8 @@ body.legal {
         background-image: url(/images/undo_12x12_light.png);
         background-position: 0 2px; }
   #app #mainContent #scrollingArea {
-    overflow-y: scroll;
+    background: white;
+    overflow-y: auto;
     height: 100%;
     padding-top: 30px;
     padding-bottom: 10px; }

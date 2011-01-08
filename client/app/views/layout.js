@@ -90,10 +90,8 @@ _.constructor("Views.Layout", View.Template, {
     initialize: function() {
       window.notify = this.hitch('notify');
 
-      this.scrollingArea.fillVerticalSpace(60, 380);
-      $(window).resize(this.bind(function() {
-        this.scrollingArea.fillVerticalSpace(60, 380);
-      }));
+      this.defer(this.hitch('adjustHeight'));
+      $(window).resize(this.hitch('adjustHeight'));
       
       _.each(this.views, function(view) {
         view.hide();
@@ -106,6 +104,10 @@ _.constructor("Views.Layout", View.Template, {
       organizationsPermitted.onInsert(this.hitch('showOrHideInviteLink'));
       organizationsPermitted.onRemove(this.hitch('showOrHideInviteLink'));
       this.showOrHideInviteLink();
+    },
+
+    adjustHeight: function() {
+      this.scrollingArea.fillVerticalSpace(60, 380);
     },
 
 
