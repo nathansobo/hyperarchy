@@ -70,7 +70,7 @@ _.constructor("Views.Members", View.Template, {
       this.model(Organization.find(organizationId));
 
       Application.layout.activateHeaderTab("membersLink");
-      Application.layout.subheaderContent('');
+      Application.layout.showSubheaderContent("");
     },
 
     modelAssigned: function(organization) {

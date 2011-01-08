@@ -1119,17 +1119,22 @@ body.legal {
     margin-left: 6px;
     cursor: pointer; }
 #application #mainContent {
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
-  background: white;
   width: 1000px;
   padding-bottom: 10px;
   margin: 0 auto;
   position: relative;
-  overflow: hidden; }
+  overflow: hidden;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+  background: white; }
   #application #mainContent #contentHeader {
+    width: 1000px;
+    height: 40px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
     -webkit-border-top-left-radius: 6px;
     -webkit-border-top-right-radius: 6px;
     -moz-border-radius-topleft: 6px;
@@ -1137,46 +1142,41 @@ body.legal {
     background-color: #44464a;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5c5f65), to(#44464a));
     background: -moz-linear-gradient(top, #5c5f65, 10%);
-    color: white;
-    width: 1000px;
-    height: 40px;
-    padding: 0;
-    margin: 0;
-    overflow: hidden; }
-    #application #mainContent #contentHeader h2 {
-      padding: 5 30px;
-      margin: 0;
-      font-size: 24px;
-      display: inline-block;
-      letter-spacing: 1.1;
-      cursor: pointer; }
-    #application #mainContent #contentHeader a {
-      display: inline-block;
-      font-size: 18px;
-      margin: 0;
-      padding: 5px 12px;
-      color: white;
-      position: relative;
-      z-index: 30; }
-      #application #mainContent #contentHeader a.active {
-        -webkit-border-top-left-radius: 4px;
-        -webkit-border-top-right-radius: 4px;
-        -moz-border-radius-topleft: 4px;
-        -moz-border-radius-topright: 4px;
-        -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
-        -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
-        padding-bottom: 10px;
-        background-color: #5a5d62; }
-      #application #mainContent #contentHeader a.rightSide {
-        float: right;
-        padding: 10px 40px;
-        padding-left: 20px;
-        background-repeat: no-repeat;
-        background-position: 3px; }
-      #application #mainContent #contentHeader a#backToLastOrganization {
-        background-image: url(/images/undo_12x12_light.png); }
-      #application #mainContent #contentHeader a#raise {
-        background-image: url(/images/plus_12x12.png); }
+    color: white; }
+    #application #mainContent #contentHeader div {
+      height: 40px;
+      padding: 0 30px; }
+      #application #mainContent #contentHeader div h2 {
+        display: inline-block;
+        margin-top: 5px;
+        margin-right: 24px;
+        font-size: 24px;
+        letter-spacing: 1.1;
+        cursor: pointer; }
+      #application #mainContent #contentHeader div a {
+        display: inline-block;
+        z-index: 30;
+        margin: 0;
+        margin-top: 5px;
+        padding: 5px 12px;
+        color: white;
+        font-size: 18px; }
+        #application #mainContent #contentHeader div a.active {
+          padding-bottom: 10px;
+          -webkit-border-top-left-radius: 4px;
+          -webkit-border-top-right-radius: 4px;
+          -moz-border-radius-topleft: 4px;
+          -moz-border-radius-topright: 4px;
+          -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
+          -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
+          background-color: #5a5d62; }
+        #application #mainContent #contentHeader div a.rightSide {
+          float: right;
+          padding-left: 20px;
+          background-repeat: no-repeat;
+          background-position: 3px; }
+        #application #mainContent #contentHeader div a#backToLastOrganization {
+          background-image: url(/images/undo_12x12_light.png); }
   #application #mainContent #subheader {
     width: 1000;
     height: 28px;
@@ -1192,19 +1192,21 @@ body.legal {
     border-bottom: solid 1px #38393d;
     color: #f4f4f4;
     font-size: 14px; }
-    #application #mainContent #subheader #navigation {
-      display: inline-block;
-      padding: 3px 30px;
-      float: right; }
-    #application #mainContent #subheader #subpages {
-      display: inline-block;
-      padding: 3px 20px;
-      margin-left: 20px; }
-    #application #mainContent #subheader span {
-      font-size: 16px; }
-    #application #mainContent #subheader a {
-      color: #ababab;
-      padding: 0 10px; }
+    #application #mainContent #subheader div {
+      padding: 5px 20px;
+      overflow: hidden; }
+      #application #mainContent #subheader div div {
+        padding: 0; }
+        #application #mainContent #subheader div div#rightContent {
+          float: right; }
+        #application #mainContent #subheader div div#leftContent {
+          float: left; }
+      #application #mainContent #subheader div span {
+        color: #ababab;
+        padding: 0 10px; }
+      #application #mainContent #subheader div a {
+        color: #ababab;
+        padding: 0 10px; }
   #application #mainContent #contentBody {
     position: relative;
     z-index: 30; }

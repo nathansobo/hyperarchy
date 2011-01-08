@@ -69,66 +69,70 @@
   }
 
   #mainContent {
-    @include borderRadius(6px);
-    @include dropShadow(6px);
-    background: white;
     width: 1000px;
     padding-bottom: 10px;
     margin: 0 auto;
     position: relative;
     overflow: hidden;
 
-    #contentHeader {
-      @include borderRadiusTop(6px);
-      @include gradient($darkGray, 10%);
-      color: white;
+    @include borderRadius(6px);
+    @include dropShadow(6px);
+    background: white;
 
+    #contentHeader {
       width: 1000px;
       height: 40px;
       padding: 0;
       margin: 0;
       overflow: hidden;
       
-      h2 {
-        padding: 5 30px;
-//        padding-right: 24px;
-        margin: 0;
-        font-size: 24px;
-        display: inline-block;
-        letter-spacing: 1.1;
-        cursor: pointer;
-      }
+      @include borderRadiusTop(6px);
+      @include gradient($darkGray, 10%);
+      color: white;
 
-      a {
-        display: inline-block;
-        font-size: 18px;
-        margin: 0;
-        padding: 5px 12px;
-        color: white;
-        position: relative;
-        z-index: 30;
+      div {
+        height: 40px;
+        padding: 0 30px;
 
-        &.active {
-          @include borderRadiusTop(4px);
-          @include dropShadow(4px);
-          padding-bottom: 10px;
-          background-color: lighten(lighten($darkGray, 3%), 6%);
+        h2 {
+          display: inline-block;
+          margin-top: 5px;
+          margin-right: 24px;
+          font-size: 24px;
+          letter-spacing: 1.1;
+          cursor: pointer;
         }
 
-        &.rightSide {
-          float: right;
-          padding: 10px 40px;
-          padding-left: 20px;
-          background-repeat: no-repeat;
-          background-position: 3px;
-        }
+        a {
+          display: inline-block;
+          z-index: 30;
+          margin: 0;
+          margin-top: 5px;
+          padding: 5px 12px;
+          color: white;
+          font-size: 18px;
 
-        &#backToLastOrganization {
-          background-image: url(/images/undo_12x12_light.png);
-        }
+          &.active {
+            padding-bottom: 10px;
+            @include borderRadiusTop(4px);
+            @include dropShadow(4px);
+            background-color: lighten(lighten($darkGray, 3%), 6%);
+          }
 
-        &#raise {
-          background-image: url(/images/plus_12x12.png);
+          &.rightSide {
+            float: right;
+            padding-left: 20px;
+            background-repeat: no-repeat;
+            background-position: 3px;
+          }
+
+          &#backToLastOrganization {
+            background-image: url(/images/undo_12x12_light.png);
+          }
+
+          &#raise {
+  //          background-image: url(/images/plus_12x12.png);
+          }
         }
       }
     }
@@ -148,27 +152,27 @@
       color: $lighterGray;
       font-size: 14px;
 
-      #navigation {
-        display: inline-block;
-        padding: 3px 30px;
-        float: right;
-      }
+      div {
+        padding: 5px 20px;
+        overflow: hidden;
 
-      #subpages {
-        display: inline-block;
-        padding: 3px 20px;
-        margin-left: 20px;
-//        float: left;
-      }
+        div {
+          padding: 0;
+          &#rightContent {float: right;}
+          &#leftContent {float: left;}
+        }
 
-      span {
-        font-size: 16px;
-      }
+        span {
+//          font-size: 16px;
+          color: lighten($gray, 25%);
+          padding: 0 10px;
+        }
 
-      a {
-        color: lighten($gray, 25%);
-//        color: darken(yellow, 15%);
-        padding: 0 10px;
+        a {
+          color: lighten($gray, 25%);
+//          text-decoration: underline;
+          padding: 0 10px;
+        }
       }
     }
 

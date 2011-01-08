@@ -56,7 +56,7 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.saveChangesButton.attr('disabled', true);
       
       Application.layout.activateHeaderTab("editOrganizationLink");
-      Application.layout.subheaderContent('');
+      Application.layout.showSubheaderContent("");
     },
 
     saveOrganization: function() {

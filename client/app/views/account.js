@@ -21,7 +21,7 @@ _.constructor("Views.Account", View.Template, {
       Application.layout.showAlternateHeader("Account Preferences");
       this.emailPreferences.relation(Application.currentUser().memberships().orderBy('id asc'));
 
-      Application.layout.subheaderContent('');
+      Application.layout.showSubheaderContent('');
     }
   }
 });

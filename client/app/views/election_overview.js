@@ -105,15 +105,17 @@ _.constructor("Views.ElectionOverview", View.Template, {
       div({'class': "clear"});
 
       div(function() {
-        div({id: "navigation"}, function() {
+        div({id: "leftContent"}, function() {
           a("Back to Questions")
-          a("<<");
-          span("9 of 89");
-          a(">>");
+            .click(function() {
+              Application.layout.goToOrganization();
+            });
         });
 
-        div({id: "subpages"}, function() {
-//          span("Questions   >  KWhat are the best sites ...   >   StackOverflow");
+        div({id: "rightContent"}, function() {
+          a("< Previous");
+          span("9 of 89");
+          a("Next >");
         });
 
       }).ref("subheaderContent");
@@ -145,7 +147,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       Server.post("/visited?election_id=" + state.electionId);
 
       Application.layout.activateHeaderTab("questionsLink");
-      Application.layout.subheaderContent(this.subheaderContent);
+      Application.layout.showSubheaderContent("elections");
     },
 
     electionId: {

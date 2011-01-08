@@ -104,8 +104,17 @@ _.constructor("Views.Layout", View.Template, {
       $(window).resize(this.bind(function() {
         this.mainContentArea.fillVerticalSpace(30, 380, 'min-height');
       }));
-      
-      _.each(this.views, function(view) {
+
+      this.subheaders = {};
+      _.each(this.views, function(view, viewName) {
+        var subheaderContent = view.subheaderContent;
+        if (subheaderContent) {
+          subheaderContent.detach();
+          subheaderContent.hide();
+          this.subheaders[viewName] = subheaderContent;
+          this.subheader.append(subheaderContent);
+        }
+
         view.hide();
         this.body.append(view);
       }, this);
@@ -273,8 +282,15 @@ _.constructor("Views.Layout", View.Template, {
       $(this.editOrganizationLink).removeClass('active');
     },
 
-    subheaderContent: function(element) {
-      this.subheader.html(element);
+    showSubheaderContent: function(viewName) {
+      _.each(this.subheaders, function(element) {element.hide();});
+      if (viewName in this.subheaders) {
+        this.subheader.css('height', "28px")
+        this.subheaders[viewName].show();
+      } else {
+//        this.subheader.hide();
+        this.subheader.css('height', "8px");
+      }
     },
 
     activateHeaderTab: function(link) {

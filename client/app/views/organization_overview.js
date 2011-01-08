@@ -45,13 +45,13 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       div({'class': "clear"});
 
       div(function() {
-        div({id: "navigation"}, function() {
-          a("<<");
+        div({id: "rightContent"}, function() {
+          a("< Previous");
           span("1-10 of 89");
-          a(">>");
+          a("Next >");
         });
 
-//        div({id: "subpages"}, function() {
+//        div({id: "leftContent"}, function() {
 //        });
 
       }).ref("subheaderContent");
@@ -80,7 +80,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.showCreateElectionFormButton.show();
 
       Application.layout.activateHeaderTab("questionsLink");
-      Application.layout.subheaderContent(this.subheaderContent);
+      Application.layout.showSubheaderContent("organizations");
     },
 
     organizationId: {
