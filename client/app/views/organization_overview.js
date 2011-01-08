@@ -50,7 +50,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   viewProperties: {
     defaultView: true,
     viewName: 'organization',
-    itemsPerPage: 16,
 
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
@@ -62,10 +61,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         return;
       }
       var organizationId = parseInt(state.organizationId);
-      var pageNumber = state.page ? parseInt(state.page) : 1;
       Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);
-      this.pageNumber(pageNumber);
       this.createElectionForm.hide();
       this.showCreateElectionFormButton.show();
     },
@@ -74,7 +71,9 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       afterChange: function(organizationId) {
         var membership = this.organization().membershipForCurrentUser();
         if (membership) membership.update({lastVisited: new Date()});
-        if (this.pageNumber()) this.assignElectionsRelation();
+
+        this.subscriptions.destroy();
+        this.displayElections();
       }
     },
 
@@ -82,28 +81,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       return Organization.find(this.organizationId());
     },
 
-    pageNumber: {
-      afterChange: function(pageNumber) {
-        if (this.organizationId()) this.assignElectionsRelation();
-      }
-    },
-
-    assignElectionsRelation: function() {
-      var offset = (this.pageNumber() - 1) * this.itemsPerPage;
-      var limit = this.itemsPerPage;
-      var elections = this.organization().elections().offset(offset).limit(limit);
-      this.electionsRelation(elections);
-    },
-
-    electionsRelation: {
-      afterChange: function(relation) {
-        this.displayElections(relation);
-      }
-    },
-
-    displayElections: function(elections) {
-      this.subscriptions.destroy();
-
+    displayElections: function() {
       if (this.electionLisById) {
         _.each(this.electionLisById, function(li) {
           li.remove();
@@ -113,7 +91,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
       this.startLoading();
 
-      // still fetching all elections for now... this needs to be worked out
       var relationsToFetch = [
         this.organization().elections(),
         this.organization().elections().joinTo(Candidate),
@@ -123,6 +100,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       Server.fetch(relationsToFetch)
         .onSuccess(function() {
           this.stopLoading();
+        var elections = this.organization().elections().orderBy('score desc');
         this.electionsList.relation(elections);
         this.subscribeToVisits(elections);
       }, this);
