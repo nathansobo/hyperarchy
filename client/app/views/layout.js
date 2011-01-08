@@ -78,8 +78,10 @@ _.constructor("Views.Layout", View.Template, {
           }).ref("alternateHeader")
         });
 
-        div({'class': "container12"}, function() {
-        }).ref('body');
+        div({'id': "scrollingArea"}, function() {
+          div({'class': "container12"}, function() {
+          }).ref('body');
+        }).ref('scrollingArea');
       }).ref('mainContentArea');
     })
   }},
@@ -88,9 +90,9 @@ _.constructor("Views.Layout", View.Template, {
     initialize: function() {
       window.notify = this.hitch('notify');
 
-      this.mainContentArea.fillVerticalSpace(30, 380, 'min-height');
+      this.scrollingArea.fillVerticalSpace(60, 380);
       $(window).resize(this.bind(function() {
-        this.mainContentArea.fillVerticalSpace(30, 380, 'min-height');
+        this.scrollingArea.fillVerticalSpace(60, 380);
       }));
       
       _.each(this.views, function(view) {

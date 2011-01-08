@@ -1125,7 +1125,6 @@ body.legal {
 #app #mainContent {
   background: white;
   width: 1000px;
-  padding-bottom: 10px;
   margin: 0 auto;
   -moz-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
@@ -1144,8 +1143,7 @@ body.legal {
     height: 36;
     margin: 0 auto;
     padding: 5px 30px;
-    margin: 0;
-    margin-bottom: 30px; }
+    margin: 0; }
     #app #mainContent #contentHeader h2 {
       padding: 0;
       margin: 0;
@@ -1168,6 +1166,11 @@ body.legal {
         background-repeat: no-repeat;
         background-image: url(/images/undo_12x12_light.png);
         background-position: 0 2px; }
+  #app #mainContent #scrollingArea {
+    overflow-y: scroll;
+    height: 100%;
+    padding-top: 30px;
+    padding-bottom: 10px; }
 #app #feedback {
   background: white;
   height: 300px;
