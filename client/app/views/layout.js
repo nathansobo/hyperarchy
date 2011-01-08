@@ -77,6 +77,7 @@ _.constructor("Views.Layout", View.Template, {
               .click("goToEditOrganization");
 
             a({id: "raise", 'class': "rightSide"}, "Raise Question")
+              .ref("newElectionLink")
               .click("goToNewElection");
 
           }).ref("organizationHeader");
@@ -283,25 +284,18 @@ _.constructor("Views.Layout", View.Template, {
       $.bbq.pushState({view: "organization", organizationId: organizationId }, 2);
     },
 
-    deactivateAllTabs: function() {
-      $(this.questionsLink).removeClass('active');
-      $(this.membersLink).removeClass('active');
-      $(this.editOrganizationLink).removeClass('active');
-    },
-
     showSubheaderContent: function(viewName) {
       _.each(this.subheaders, function(element) {element.hide();});
       if (viewName in this.subheaders) {
         this.subheader.css('height', "28px")
         this.subheaders[viewName].show();
       } else {
-//        this.subheader.hide();
         this.subheader.css('height', "8px");
       }
     },
 
     activateHeaderTab: function(link) {
-      this.deactivateAllTabs();
+      this.organizationHeader.find("a").removeClass('active');
       $(this[link]).addClass('active');
     }
   }

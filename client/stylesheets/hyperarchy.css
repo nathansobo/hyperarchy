@@ -1172,9 +1172,7 @@ body.legal {
           background-color: #5a5d62; }
         #application #mainContent #contentHeader div a.rightSide {
           float: right;
-          padding-left: 20px;
-          background-repeat: no-repeat;
-          background-position: 3px; }
+          padding-left: 20px; }
         #application #mainContent #contentHeader div a#backToLastOrganization {
           background-image: url(/images/undo_12x12_light.png); }
   #application #mainContent #subheader {

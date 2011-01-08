@@ -38,7 +38,7 @@ _.constructor("Views.NewElection", View.Template, {
       Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);
 
-      Application.layout.activateHeaderTab("questionsLink");
+      Application.layout.activateHeaderTab("newElectionLink");
       Application.layout.showSubheaderContent("");
     },
 
