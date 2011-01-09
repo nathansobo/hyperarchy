@@ -61,37 +61,34 @@ _.constructor("Views.Layout", View.Template, {
 
       div({id: "mainContent"}, function() {
 
-        div({id: "contentHeader"}, function() {
+        div({id: "navigationBar"}, function() {
           div(function() {
             h2({id: "organizationName"})
               .ref('organizationName')
               .click('goToOrganization');
-            a({id: "questionsLink"}, "Questions")
+            a({id: "questionsLink"}, "View Questions")
               .ref('questionsLink')
               .click('goToQuestions');
+            a({id: "raise"}, "Raise a Question")
+              .ref("newElectionLink")
+              .click("goToNewElection");
             a({id: "membersLink"}, "Members")
               .ref('membersLink')
               .click("goToMembers");
             a({id: "organizationSettings"}, "Settings")
               .ref("editOrganizationLink")
               .click("goToEditOrganization");
-
-            a({id: "raise", 'class': "rightSide"}, "Raise Question")
-              .ref("newElectionLink")
-              .click("goToNewElection");
-
-          }).ref("organizationHeader");
+          }).ref("organizationNavigationBar");
 
           div(function() {
-            h2().ref("alternateHeaderText");
-
+            h2().ref("alternateNavigationBarText");
             a({id: "backToLastOrganization", 'class': "rightSide"})
               .ref("backToLastOrganizationLink")
               .click("goToLastOrganization");
-          }).ref("alternateHeader");
+          }).ref("alternateNavigationBar");
         });
 
-        div({id: "subheader"}).ref("subheader");
+        div({id: "subNavigationBar"}).ref("subNavigationBar");
 
         div({'class': "container12"}, function() {
         }).ref('body');
@@ -108,16 +105,13 @@ _.constructor("Views.Layout", View.Template, {
         this.mainContentArea.fillVerticalSpace(30, 380, 'min-height');
       }));
 
-      this.subheaders = {};
+      this.subNavigationContents = {};
       _.each(this.views, function(view, viewName) {
-        var subheaderContent = view.subheaderContent;
-        if (subheaderContent) {
-          subheaderContent.detach();
-          subheaderContent.hide();
-          this.subheaders[viewName] = subheaderContent;
-          this.subheader.append(subheaderContent);
+        if (view.subNavigationContent) {
+          view.subNavigationContent.hide();
+          this.subNavigationContents[viewName] = view.subNavigationContent.detach();
+          this.subNavigationBar.append(this.subNavigationContents[viewName]);
         }
-
         view.hide();
         this.body.append(view);
       }, this);
@@ -136,17 +130,17 @@ _.constructor("Views.Layout", View.Template, {
       }
     },
 
-    showOrganizationHeader: function() {
-      this.alternateHeader.hide();
-      this.organizationHeader.show();
+    showOrganizationNavigationBar: function() {
+      this.alternateNavigationBar.hide();
+      this.organizationNavigationBar.show();
     },
 
-    showAlternateHeader: function(text) {
+    showAlternateNavigationBar: function(text) {
       var lastOrgName = Application.currentUser().lastVisitedOrganization().name();
       this.backToLastOrganizationLink.html("Back to " + lastOrgName);
-      this.alternateHeaderText.html(text);
-      this.organizationHeader.hide();
-      this.alternateHeader.show();
+      this.alternateNavigationBarText.html(text);
+      this.organizationNavigationBar.hide();
+      this.alternateNavigationBar.show();
     },
 
     populateOrganizations: function() {
@@ -284,18 +278,18 @@ _.constructor("Views.Layout", View.Template, {
       $.bbq.pushState({view: "organization", organizationId: organizationId }, 2);
     },
 
-    showSubheaderContent: function(viewName) {
-      _.each(this.subheaders, function(element) {element.hide();});
-      if (viewName in this.subheaders) {
-        this.subheader.css('height', "28px")
-        this.subheaders[viewName].show();
+    showSubNavigationContent: function(viewName) {
+      _.each(this.subNavigationContents, function(element) {element.hide();});
+      if (viewName in this.subNavigationContents) {
+        this.subNavigationBar.css('height', "28px")
+        this.subNavigationContents[viewName].show();
       } else {
-        this.subheader.css('height', "8px");
+        this.subNavigationBar.css('height', "8px");
       }
     },
 
-    activateHeaderTab: function(link) {
-      this.organizationHeader.find("a").removeClass('active');
+    activateNavigationTab: function(link) {
+      this.organizationNavigationBar.find("a").removeClass('active');
       $(this[link]).addClass('active');
     }
   }

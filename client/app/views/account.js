@@ -18,10 +18,10 @@ _.constructor("Views.Account", View.Template, {
     viewName: 'account',
 
     navigate: function() {
-      Application.layout.showAlternateHeader("Account Preferences");
+      Application.layout.showAlternateNavigationBar("Account Preferences");
       this.emailPreferences.relation(Application.currentUser().memberships().orderBy('id asc'));
 
-      Application.layout.showSubheaderContent('');
+      Application.layout.showSubNavigationContent('');
     }
   }
 });

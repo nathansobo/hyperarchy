@@ -11,7 +11,8 @@
 
     #details {
       label {
-        margin-bottom: 5px;
+        @extend h2;
+        margin-bottom: 15px;
       }
 
       input[name="name"] {

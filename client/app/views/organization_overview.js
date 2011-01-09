@@ -3,7 +3,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     div({id: "organizationOverview"}, function() {
 
       div({id: "organizationOverviewHeader"}, function() {
-        h2('General Discussion');
+        h2('Questions Under Discussion');
       });
 
       subview('electionsList', Views.SortedList, {
@@ -30,7 +30,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
           a("Next >");
         });
         div({id: "leftContent"}, function() {});
-      }).ref("subheaderContent");
+      }).ref("subNavigationContent");
 
       div({'class': "bigLoading", 'style': "display: none;"}).ref('loading');
     });
@@ -53,9 +53,9 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);
 
-      Application.layout.activateHeaderTab("questionsLink");
-//      Application.layout.showSubheaderContent("organizations");
-      Application.layout.showSubheaderContent("");
+      Application.layout.activateNavigationTab("questionsLink");
+//      Application.layout.showSubNavigationContent("organizations");
+      Application.layout.showSubNavigationContent("");
     },
 
     organizationId: {

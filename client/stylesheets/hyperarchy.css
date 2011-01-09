@@ -24,6 +24,8 @@ ol,
 li,
 h1,
 h2,
+#app #editOrganization #details label, #app #editOrganization #details
+label,
 h3,
 h4,
 h5,
@@ -77,6 +79,8 @@ th {
 
 h1,
 h2,
+#app #editOrganization #details label, #app #editOrganization #details
+label,
 h3,
 h4,
 h5,
@@ -617,7 +621,7 @@ h1 {
   font-size: 25px;
   font-weight: bold; }
 
-h2 {
+h2, #app #editOrganization #details label {
   font-size: 23px; }
 
 button {
@@ -667,7 +671,9 @@ button {
   -moz-border-radius: 3px;
   -webkit-box-shadow: 0px 0px 2px black inset;
   -moz-box-shadow: 0px 0px 2px black inset;
-  cursor: pointer; }
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none; }
 
 .placeheld {
   color: #999999; }
@@ -856,7 +862,7 @@ button {
   #learn_more #summary {
     font-size: 18px;
     margin-bottom: 30px; }
-  #learn_more h2 {
+  #learn_more h2, #learn_more #app #editOrganization #details label, #app #editOrganization #details #learn_more label {
     font-weight: bold;
     margin-bottom: 5px; }
   #learn_more .description {
@@ -976,7 +982,7 @@ button {
     margin-top: 20px; }
     #signup #centeredWrapper #invitationInfo h1 {
       font-size: 28px; }
-    #signup #centeredWrapper #invitationInfo h2 {
+    #signup #centeredWrapper #invitationInfo h2, #signup #centeredWrapper #invitationInfo #app #editOrganization #details label, #app #editOrganization #details #signup #centeredWrapper #invitationInfo label {
       font-size: 22px;
       margin-bottom: 30px; }
     #signup #centeredWrapper #invitationInfo #description {
@@ -1038,7 +1044,7 @@ body.legal {
     margin-bottom: 10px; }
   body.legal h1 {
     margin-bottom: 20px; }
-  body.legal h2 {
+  body.legal h2, body.legal #app #editOrganization #details label, #app #editOrganization #details body.legal label {
     margin-bottom: 15px; }
   body.legal ol {
     margin-bottom: 10px; }
@@ -1091,7 +1097,9 @@ body.legal {
   margin: 0 auto;
   padding-top: 5px;
   margin-bottom: 5px;
-  height: auto; }
+  height: auto;
+  -webkit-user-select: none;
+  -moz-user-select: none; }
   #application #header .headerItem {
     position: relative;
     float: right;
@@ -1129,12 +1137,14 @@ body.legal {
   -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
   background: white; }
-  #application #mainContent #contentHeader {
+  #application #mainContent #navigationBar {
     width: 1000px;
     height: 40px;
     padding: 0;
     margin: 0;
     overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
     -webkit-border-top-left-radius: 6px;
     -webkit-border-top-right-radius: 6px;
     -moz-border-radius-topleft: 6px;
@@ -1143,17 +1153,17 @@ body.legal {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5c5f65), to(#44464a));
     background: -moz-linear-gradient(top, #5c5f65, 10%);
     color: white; }
-    #application #mainContent #contentHeader div {
+    #application #mainContent #navigationBar div {
       height: 40px;
       padding: 0 30px; }
-      #application #mainContent #contentHeader div h2 {
+      #application #mainContent #navigationBar div h2, #application #mainContent #navigationBar div #app #editOrganization #details label, #app #editOrganization #details #application #mainContent #navigationBar div label {
         display: inline-block;
         margin-top: 5px;
         margin-right: 24px;
         font-size: 24px;
         letter-spacing: 1.1;
         cursor: pointer; }
-      #application #mainContent #contentHeader div a {
+      #application #mainContent #navigationBar div a {
         display: inline-block;
         z-index: 30;
         margin: 0;
@@ -1161,7 +1171,7 @@ body.legal {
         padding: 5px 12px;
         color: white;
         font-size: 18px; }
-        #application #mainContent #contentHeader div a.active {
+        #application #mainContent #navigationBar div a.active {
           padding-bottom: 10px;
           -webkit-border-top-left-radius: 4px;
           -webkit-border-top-right-radius: 4px;
@@ -1170,14 +1180,14 @@ body.legal {
           -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
           -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
           background-color: #5a5d62; }
-        #application #mainContent #contentHeader div a.rightSide {
+        #application #mainContent #navigationBar div a.rightSide {
           float: right;
           padding-left: 20px;
           background-repeat: no-repeat;
           background-position: 3px; }
-        #application #mainContent #contentHeader div a#backToLastOrganization {
+        #application #mainContent #navigationBar div a#backToLastOrganization {
           background-image: url(/images/undo_12x12_light.png); }
-  #application #mainContent #subheader {
+  #application #mainContent #subnavigationBar {
     width: 1000;
     height: 28px;
     padding: 0;
@@ -1186,25 +1196,27 @@ body.legal {
     position: relative;
     z-index: 20;
     overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
     background-color: #4b4e52;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5a5d62), to(#4b4e52));
     background: -moz-linear-gradient(top, #5a5d62, 6%);
     border-bottom: solid 1px #38393d;
     color: #f4f4f4;
     font-size: 14px; }
-    #application #mainContent #subheader div {
+    #application #mainContent #subnavigationBar div {
       padding: 5px 20px;
       overflow: hidden; }
-      #application #mainContent #subheader div div {
+      #application #mainContent #subnavigationBar div div {
         padding: 0; }
-        #application #mainContent #subheader div div#rightContent {
+        #application #mainContent #subnavigationBar div div#rightContent {
           float: right; }
-        #application #mainContent #subheader div div#leftContent {
+        #application #mainContent #subnavigationBar div div#leftContent {
           float: left; }
-      #application #mainContent #subheader div span {
+      #application #mainContent #subnavigationBar div span {
         color: #ababab;
         padding: 0 2px; }
-      #application #mainContent #subheader div a {
+      #application #mainContent #subnavigationBar div a {
         color: #ababab;
         padding: 0 12px; }
   #application #mainContent #contentBody {
@@ -1339,7 +1351,7 @@ body.legal {
     #welcomeGuide #currentStep .step {
       padding: 30px;
       background: white; }
-      #welcomeGuide #currentStep .step h2 {
+      #welcomeGuide #currentStep .step h2, #welcomeGuide #currentStep .step #app #editOrganization #details label, #app #editOrganization #details #welcomeGuide #currentStep .step label {
         margin-bottom: 10px; }
       #welcomeGuide #currentStep .step div.stepDescription {
         font-size: 20px; }
@@ -1347,7 +1359,7 @@ body.legal {
 #app #organizationOverview #organizationOverviewHeader {
   margin-bottom: 30px;
   padding-left: 15px; }
-  #app #organizationOverview #organizationOverviewHeader h2 {
+  #app #organizationOverview #organizationOverviewHeader h2, #app #organizationOverview #organizationOverviewHeader #editOrganization #details label, #app #editOrganization #details #organizationOverview #organizationOverviewHeader label {
     display: inline-block;
     position: relative;
     top: 4px; }
@@ -1429,7 +1441,7 @@ body.legal {
       #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight {
         width: 595px;
         display: inline-block; }
-        #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight h2 {
+        #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight h2, #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight #editOrganization #details label, #app #editOrganization #details #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight label {
           display: inline;
           margin-right: 5px; }
         #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight textarea.electionBody {
@@ -1660,7 +1672,7 @@ body.legal {
     z-index: 4;
     padding: 30px; }
   #app #editOrganization #details label {
-    margin-bottom: 5px; }
+    margin-bottom: 15px; }
   #app #editOrganization #details input[name="name"] {
     width: 300px; }
   #app #editOrganization #details textarea {
@@ -1695,7 +1707,7 @@ body.legal {
   #app #members div.addMember {
     font-size: medium;
     margin-bottom: 20px; }
-    #app #members div.addMember h2 {
+    #app #members div.addMember h2, #app #members div.addMember #editOrganization #details label, #app #editOrganization #details #members div.addMember label {
       margin-bottom: 15px; }
     #app #members div.addMember input, #app #members div.addMember select {
       display: inline;
@@ -1741,7 +1753,7 @@ body.legal {
     #app #account .emailPreferences .emailPreference input {
       margin-right: 5px; }
 
-#app #newElection h2 {
+#app #newElection h2, #app #newElection #editOrganization #details label, #app #editOrganization #details #newElection label {
   margin-bottom: 20px; }
 #app #newElection #createElectionLink {
   padding: 6px 20px;

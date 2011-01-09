@@ -111,7 +111,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
               Application.layout.goToOrganization();
             });
         });
-
         div({id: "rightContent"}, function() {
           a("< Previous")
             .ref("previousElectionLink")
@@ -123,8 +122,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
             .ref("nextElectionLink")
             .click("goToPreviousElection");
         });
-
-      }).ref("subheaderContent");
+      }).ref("subNavigationContent");
     });
 
   }},
@@ -152,8 +150,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
       Server.post("/visited?election_id=" + state.electionId);
 
-      Application.layout.activateHeaderTab("questionsLink");
-      Application.layout.showSubheaderContent("elections");
+      Application.layout.activateNavigationTab("questionsLink");
+      Application.layout.showSubNavigationContent("elections");
     },
 
     electionId: {
@@ -204,13 +202,14 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.rankedCandidatesList.election(election);
         this.votesList.election(election);
 
-        this.populateSubheader();
+        this.populateSubNavigationBar();
       }
     },
 
-    populateSubheader: function() {
+    populateSubNavigationBar: function() {
       this.electionPosition.bindHtml(this.election(), "id");
       this.numElections.html(this.election().organization().elections().size());
+
       // set 'numElections' to the actual number of elections in the organization
       // if at first election, don't show 'previous' link
       // if at last election, don't show 'next' link

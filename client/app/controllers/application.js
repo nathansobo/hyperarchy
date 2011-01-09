@@ -35,7 +35,7 @@ _.constructor("Controllers.Application", {
 
   currentOrganizationId: {
     afterWrite: function() {
-      this.layout.showOrganizationHeader();
+      this.layout.showOrganizationNavigationBar();
     },
 
     afterChange: function(organizationId, old) {

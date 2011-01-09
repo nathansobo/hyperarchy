@@ -27,7 +27,7 @@ _.constructor("Views.AddOrganization", View.Template, {
     },
 
     navigate: function() {
-      Application.layout.showAlternateHeader("Add A New Organization");
+      Application.layout.showAlternateNavigationBar("Add A New Organization");
     },
 
     createOrganization: function() {

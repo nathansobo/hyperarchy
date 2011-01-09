@@ -71,8 +71,8 @@ _.constructor("Views.Members", View.Template, {
       Application.currentOrganizationId(organizationId);
       this.model(Organization.find(organizationId));
 
-      Application.layout.activateHeaderTab("membersLink");
-      Application.layout.showSubheaderContent("");
+      Application.layout.activateNavigationTab("membersLink");
+      Application.layout.showSubNavigationContent("");
     },
 
     modelAssigned: function(organization) {

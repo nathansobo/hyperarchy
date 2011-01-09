@@ -55,8 +55,8 @@ _.constructor("Views.EditOrganization", View.Template, {
       this.model(Organization.find(organizationId));
       this.saveChangesButton.attr('disabled', true);
       
-      Application.layout.activateHeaderTab("editOrganizationLink");
-      Application.layout.showSubheaderContent("");
+      Application.layout.activateNavigationTab("editOrganizationLink");
+      Application.layout.showSubNavigationContent("");
     },
 
     saveOrganization: function() {
