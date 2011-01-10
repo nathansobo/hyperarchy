@@ -29,6 +29,36 @@ _.constructor("Organization", Model.Record, {
     }
   },
 
+  fetchMoreElections: function() {
+    if (this.fetchInProgressFuture) return this.fetchInProgressFuture;
+    if (!this.numElectionsFetched) this.numElectionsFetched = 0;
+    if (this.elections().size() === this.electionCount()) return false;
+
+    var offset, limit;
+    // if we already fetched some, fetch 8 positions back to account for unseen swapping at the fringe
+    if (this.numElectionsFetched > 0) {
+      offset = this.numElectionsFetched - 8;
+      limit = 24;
+    } else {
+      offset = 0;
+      limit = 16;
+    }
+
+    var future = Server.get("/fetch_election_data", {
+      organization_id: this.id(),
+      offset: offset,
+      limit: limit
+    });
+
+    this.fetchInProgressFuture = future;
+    future.onSuccess(function() {
+      delete this.fetchInProgressFuture;
+      this.numElectionsFetched += 16;
+    }, this);
+
+    return future;
+  },
+
   membershipForUser: function(user) {
     return this.memberships().find({userId: user.id()});
   },

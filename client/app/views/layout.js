@@ -114,6 +114,22 @@ _.constructor("Views.Layout", View.Template, {
       this.scrollingArea.scrollTop(0);
     },
 
+    onContentScroll: function(fn, context) {
+      if (context) fn = _.bind(fn, context);
+      var scrollingArea = this.scrollingArea;
+      var subscription = {
+        destroy: function() {
+          scrollingArea.unbind('scroll', fn);
+        }
+      };
+      scrollingArea.scroll(fn);
+      return subscription;
+    },
+
+    contentScrollBottom: function() {
+      return this.scrollingArea.scrollTop() + this.scrollingArea.height();
+    },
+
     organization: {
       afterChange: function(organization) {
         this.organizationName.bindHtml(organization, 'name');

@@ -11,6 +11,8 @@ _.constructor("Election", Model.Record, {
         createdAt: 'datetime'
       });
 
+      this.defaultOrderBy('score desc');
+
       this.hasMany('candidates', {orderBy: 'position asc'});
       this.hasMany('votes', {orderBy: 'updatedAt desc'});
       this.hasMany('electionVisits');

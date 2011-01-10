@@ -90,20 +90,22 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.electionLisById = {};
 
       this.startLoading();
-
-      var relationsToFetch = [
-        this.organization().elections(),
-        this.organization().elections().joinTo(Candidate),
-        Application.currentUser().electionVisits()
-      ];
-
-      Server.fetch(relationsToFetch)
-        .onSuccess(function() {
-          this.stopLoading();
-        var elections = this.organization().elections().orderBy('score desc');
+      this.organization().fetchMoreElections().onSuccess(function() {
+        this.stopLoading();
+        var elections = this.organization().elections();
         this.electionsList.relation(elections);
         this.subscribeToVisits(elections);
+
+        this.subscriptions.add(Application.layout.onContentScroll(function() {
+          if (this.remainingScrollDistance() < 600) {
+            this.organization().fetchMoreElections();
+          }
+        }, this));
       }, this);
+    },
+
+    remainingScrollDistance: function() {
+      return this.height() - Application.layout.contentScrollBottom();
     },
 
     subscribeToVisits: function(elections) {
