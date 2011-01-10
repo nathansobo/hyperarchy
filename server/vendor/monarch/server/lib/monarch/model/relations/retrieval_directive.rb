@@ -55,10 +55,7 @@ module Monarch
         end
 
         def external_sql_select_list(state, external_relation)
-          state[self][:external_sql_select_list] ||=
-            concrete_columns.map do |column|
-              column.derive(external_relation).sql_derived_column(state)
-            end
+          state[self][:external_sql_select_list] ||= [Sql::Asterisk.new(external_sql_table_ref(state))]
         end
 
         def has_derived_external_table_ref?
@@ -69,7 +66,7 @@ module Monarch
         # will be produced because we delegate all internal_ methods to the operand (thereby avoiding ever calling its external_ methods,
         # which might produce another derived table) we always produce a derived table here, so it will be okay.
         def external_sql_table_ref(state)
-          state[self][:external_sql_table_ref] ||= Sql::DerivedTable.new(sql_query_specification(state), state.next_derived_table_name)
+          state[self][:external_sql_table_ref] ||= Sql::DerivedTable.new(sql_query_specification(state), state.next_derived_table_name, self)
         end
 
         def external_sql_where_predicates(state)

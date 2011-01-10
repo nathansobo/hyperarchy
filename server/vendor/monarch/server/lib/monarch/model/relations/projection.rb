@@ -77,7 +77,7 @@ module Monarch
         def external_sql_table_ref(state)
           state[self][:external_sql_table_ref] ||=
             if aggregation?
-              Sql::DerivedTable.new(sql_query_specification(state), state.next_derived_table_name)
+              Sql::DerivedTable.new(sql_query_specification(state), state.next_derived_table_name, self)
             else
               internal_sql_table_ref(state)
             end

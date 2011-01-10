@@ -284,6 +284,21 @@ module Monarch
       end
 
       specify "limits and offsets inside of joins generate as subqueries" do
+        # naming everything like t1__created_at will not work with the composite tuple instantiation logic. columns actually need
+        # to be named for the name of the underlying table so their fields can be sent to the correct constructor. another day.
+        Blog.join_to(BlogPost.limit(10).offset(10)).to_sql.should be_like(%{
+          select blogs.id as blogs__id, blogs.title as blogs__title, blogs.user_id as blogs__user_id,
+                 t1.id as t1__id, t1.title as t1__title, t1.body as t1__body, t1.blog_id as t1__blog_id,
+                 t1.created_at as t1__created_at, t1.updated_at as t1__updated_at, t1.featured as t1__featured
+          from blogs, (
+            select blog_posts.*
+            from blog_posts
+            limit 10
+            offset 10
+          ) as t1
+          where blogs.id = t1.blog_id
+        })
+
         Blog.join_to(BlogPost.limit(10).offset(10)).project(Blog).to_sql.should be_like(%{
           select blogs.*
           from blogs, (
