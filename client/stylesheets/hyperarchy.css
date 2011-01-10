@@ -1763,11 +1763,11 @@ body.legal {
 #app #newElection #createElectionForm {
   margin: 5px auto 10px; }
   #app #newElection #createElectionForm input {
+    display: block;
     font-size: 18px;
     width: 700px;
     height: 100px;
     margin-bottom: 10px;
-    margin-right: 300px;
     padding: 5px; }
 #app #newElection .bigLoading {
   position: fixed;
