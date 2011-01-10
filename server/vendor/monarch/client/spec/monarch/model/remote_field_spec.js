@@ -46,7 +46,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       context("if update events are enabled on the Field's record", function() {
-        it("triggers #onRemoteUpdate callbacks with the new and old value", function() {
+        it("triggers #onUpdate callbacks with the new and old value", function() {
           expect(updateCallback).to(haveBeenCalled, withArgs("Barbie", oldValue));
         });
       });

@@ -19,9 +19,7 @@ module Monarch
         end
 
         def update_table_sql
-          table = from_clause_table_refs.first.to_sql
-
-          table
+          from_clause_table_refs.first.to_sql
         end
 
         def from_tables_sql

@@ -11,10 +11,10 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         buildElement: function(election) {
           return Views.ElectionLi.toView({election: election});
         },
-        onRemoteInsert: function(election, li) {
+        onInsert: function(election, li) {
           li.effect('highlight');
         },
-        onRemoteUpdate: function(li, election, changeset) {
+        onUpdate: function(li, election, changeset) {
           if (changeset.updatedAt) li.contentDiv.effect('highlight', {color:"#ffffcc"}, 2000);
           if (changeset.body) li.body.html(changeset.body.newValue);
           if (changeset.voteCount) li.updateVoteCount(changeset.voteCount.newValue);
@@ -81,24 +81,26 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.electionLisById = {};
 
       this.startLoading();
-
-      var relationsToFetch = [
-        this.organization().elections(),
-        this.organization().elections().joinTo(Candidate),
-        Application.currentUser().electionVisits()
-      ];
-
-      Server.fetch(relationsToFetch)
-        .onSuccess(function() {
-          this.stopLoading();
-        var elections = this.organization().elections().orderBy('score desc');
+      this.organization().fetchMoreElections().onSuccess(function() {
+        this.stopLoading();
+        var elections = this.organization().elections();
         this.electionsList.relation(elections);
         this.subscribeToVisits(elections);
+
+        this.subscriptions.add(Application.layout.onContentScroll(function() {
+          if (this.remainingScrollDistance() < 600) {
+            this.organization().fetchMoreElections();
+          }
+        }, this));
       }, this);
     },
 
+    remainingScrollDistance: function() {
+      return this.height() - Application.layout.contentScrollBottom();
+    },
+
     subscribeToVisits: function(elections) {
-      this.subscriptions.add(elections.joinThrough(Application.currentUser().electionVisits()).onRemoteInsert(function(visit) {
+      this.subscriptions.add(elections.joinThrough(Application.currentUser().electionVisits()).onInsert(function(visit) {
         this.electionsList.elementForRecord(visit.election()).visited();
       }, this));
     },

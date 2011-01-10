@@ -1,42 +1,41 @@
 //= require "../../../monarch_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
-  describe("Relations.Selection", function() {
-    useLocalFixtures();
+  describe("Relations.InnerJoin", function() {
+    useExampleDomainModel();
 
     var user, blog1, blog2, post1, post2, post3;
     var join, leftOperand, rightOperand, predicate;
 
-    before(function() {
-      user = User.localCreate({id: 'saltpeter', fullName: "Salt Peter"});
-      blog1 = user.blogs().localCreate({id: 'blog1'});
-      blog2 = user.blogs().localCreate({id: 'blog2'});
-      post1 = blog1.blogPosts().localCreate({id: 'post1', body: "this is post 1"});
-      post2 = blog1.blogPosts().localCreate({id: 'post2', body: "this is post 2"});
-      post3 = blog2.blogPosts().localCreate({id: 'post3', body: "this is post 3"});
-      Server.save(user, blog1, blog2, post1, post2, post3);
-      
+    init(function() {
+      user = User.createFromRemote({id: 1, fullName: "Salt Peter"});
+      blog1 = user.blogs().createFromRemote({id: 1, name: "A"});
+      blog2 = user.blogs().createFromRemote({id: 2, name: "B"});
+      post1 = blog1.blogPosts().createFromRemote({id: 1, body: "this is post 1"});
+      post2 = blog1.blogPosts().createFromRemote({id: 2, body: "this is post 2"});
+      post3 = blog2.blogPosts().createFromRemote({id: 3, body: "this is post 3"});
+
       leftOperand = user.blogs();
       rightOperand = BlogPost.table;
       predicate = BlogPost.blogId.eq(Blog.id);
       join = new Monarch.Model.Relations.InnerJoin(leftOperand, rightOperand, predicate);
     });
 
-    describe("#allTuples", function() {
+    describe("#tuples", function() {
       it("returns all composite tuples from the cartesian product of the operands that match the predicate", function() {
-        var allTuples = join.allTuples();
+        var tuples = join.tuples();
 
-        expect(allTuples.length).to(eq, 3);
+        expect(tuples.length).to(eq, 3);
 
-        expect(_.any(allTuples, function(tuple) {
+        expect(_.any(tuples, function(tuple) {
           return tuple.record(Blog.table) === blog1 && tuple.record(BlogPost.table) === post1;
         })).to(beTrue);
 
-        expect(_.any(allTuples, function(tuple) {
+        expect(_.any(tuples, function(tuple) {
           return tuple.record(Blog.table) === blog1 && tuple.record(BlogPost.table) === post2;
         })).to(beTrue);
 
-        expect(_.any(allTuples, function(tuple) {
+        expect(_.any(tuples, function(tuple) {
           return tuple.record(Blog.table) === blog2 && tuple.record(BlogPost.table) === post3;
         })).to(beTrue);
       });
@@ -80,127 +79,68 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
-    describe("#onRemoteInsert", function() {
-      it("returns a Monarch.Subscription with #onRemoteInsertNode as its #node", function() {
-        var subscription = join.onRemoteInsert(function() {});
-        expect(subscription.node).to(eq, join.onRemoteInsertNode);
-      });
-    });
-
-    describe("#onRemoteUpdate", function() {
-      it("returns a Monarch.Subscription with #onRemoteUpdateNode as its #node", function() {
-        var subscription = join.onRemoteUpdate(function() {});
-        expect(subscription.node).to(eq, join.onRemoteUpdateNode);
-      });
-    });
-
-    describe("#onRemoteRemove", function() {
-      it("returns a Monarch.Subscription with #onRemoteRemoveNode as its #node", function() {
-        var subscription = join.onRemoteRemove(function() {});
-        expect(subscription.node).to(eq, join.onRemoteRemoveNode);
-      });
-    });
-
-    describe("#hasSubscribers", function() {
-      context("if a callback has been registered with #onRemoteInsert", function() {
-        it("returns true", function() {
-          join.onRemoteInsert(function() {});
-          expect(join.hasSubscribers()).to(beTrue);
-        });
-      });
-
-      context("if a callback has been registered with #onRemoteRemove", function() {
-        it("returns true", function() {
-          join.onRemoteRemove(function() {});
-          expect(join.hasSubscribers()).to(beTrue);
-        });
-      });
-
-      context("if a callback has been registered with #onRemoteUpdate", function() {
-        it("returns true", function() {
-          join.onRemoteUpdate(function() {});
-          expect(join.hasSubscribers()).to(beTrue);
-        });
-      });
-
-      context("if no callbacks have been registered", function() {
-        it("returns false", function() {
-          expect(join.hasSubscribers()).to(beFalse);
-        });
-      });
-    });
-
     describe("event handling", function() {
       var insertHandler, removeHandler, updateHandler;
       before(function() {
         insertHandler = mockFunction("insert handler");
-        join.onRemoteInsert(insertHandler, function(compositeTuple) {
+        join.onInsert(insertHandler, function(compositeTuple) {
           expect(join.contains(compositeTuple)).to(beTrue);
         });
 
         removeHandler = mockFunction("remove handler");
-        join.onRemoteRemove(removeHandler, function(compositeTuple) {
+        join.onRemove(removeHandler, function(compositeTuple) {
           expect(join.contains(compositeTuple)).to(beFalse);
         });
 
         updateHandler = mockFunction("update handler");
-        join.onRemoteUpdate(updateHandler, function(compositeTuple) {
+        join.onUpdate(updateHandler, function(compositeTuple) {
           expect(join.contains(compositeTuple)).to(beTrue);
         });
       });
 
       describe("insertion events on operands", function() {
         context("when a tuple is inserted into the left operand", function() {
-          context("when the insertion causes #carteseanProduct to contain a new CompositeTuple that matches the predicate", function() {
-            it("triggers #onRemoteInsert handlers with the new CompositeTuple", function() {
-              var blogPost;
+          context("when the insertion causes the cartesian product to contain a new composite tuple that matches the predicate", function() {
+            it("triggers an insert event with the composite tuple", function() {
+              var blogPost = BlogPost.createFromRemote({ id: 100, blogId: 100});
 
-              BlogPost.create({ id: 'fofo', blogId: 'blog3'}).afterEvents(function(record) {
-                blogPost = record;
-              });
+              var blog = user.blogs().createFromRemote({id: 100})
+              expect(insertHandler).to(haveBeenCalled, once);
 
-              user.blogs().create({id: "blog3"}).afterEvents(function(blog) {
-                expect(insertHandler).to(haveBeenCalled, once);
-                var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(eq, blog);
-                expect(compositeTuple.rightTuple).to(eq, blogPost);
-              });
+              var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog, blogPost);
+              var sortKey = join.buildSortKey(expectedCompositeTuple);
+              expect(insertHandler).to(haveBeenCalled, withArgs(expectedCompositeTuple, 3, sortKey, sortKey));
             });
           });
 
-          context("when the insertion does NOT cause #carteseanProduct to contain a new CompositeTuple that matches the predicate", function() {
-            it("does not trigger #onRemoteInsert handlers or modify the contents of join", function() {
+          context("when the insertion does NOT cause the cartesean product to contain a new composite tuple that matches the predicate", function() {
+            it("does not trigger insert events handlers or modify the stored contents of the join", function() {
               var sizeBeforeBlogCreate = join.size();
-              user.blogs().create().afterEvents(function() {
-                expect(insertHandler).toNot(haveBeenCalled);
-                expect(join.size()).to(eq, sizeBeforeBlogCreate);
-              });
+              user.blogs().createFromRemote();
+              expect(insertHandler).toNot(haveBeenCalled);
+              expect(join.size()).to(eq, sizeBeforeBlogCreate);
             });
           });
         });
 
         context("when a tuple is inserted into the right operand", function() {
-          context("when the insertion causes #carteseanProduct to contain a new CompositeTuple that matches the predicate", function() {
-            it("triggers #onRemoteInsert handlers with the new CompositeTuple", function() {
-              blog1.blogPosts().create().afterEvents(function(blogPost) {
-                expect(insertHandler).to(haveBeenCalled, once);
-                var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(eq, blog1);
-                expect(compositeTuple.rightTuple).to(eq, blogPost);
-              });
+          context("when the insertion causes the cartesean product to contain a new composite tuple that matches the predicate", function() {
+            it("triggers insert events with the new composite tuple", function() {
+              var blogPost = blog1.blogPosts().createFromRemote({id: 100});
+              expect(insertHandler).to(haveBeenCalled, once);
+
+              var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog1, blogPost);
+              var sortKey = join.buildSortKey(expectedCompositeTuple);
+              expect(insertHandler).to(haveBeenCalled, withArgs(expectedCompositeTuple, 2, sortKey, sortKey));
             });
           });
 
-          context("when the insertion does NOT cause #carteseanProduct to contain a new CompositeTuple that matches the predicate", function() {
-            it("does not trigger #onRemoteInsert handlers", function() {
+          context("when the insertion does nOT cause the cartesean product to contain a new composite tuple that matches the predicate", function() {
+            it("does not trigger insert events or modify the stored contents of tuples", function() {
+              var numTuplesBeforeInsertion = join.tuples().length;
               BlogPost.create();
               expect(insertHandler).toNot(haveBeenCalled);
-            });
-
-            it("does not modify the contents of #allTuples", function() {
-              var numTuplesBeforeInsertion = join.allTuples().length;
-              BlogPost.create();
-              expect(join.allTuples().length).to(eq, numTuplesBeforeInsertion);
+              expect(join.tuples().length).to(eq, numTuplesBeforeInsertion);
             });
           });
         });
@@ -208,23 +148,22 @@ Screw.Unit(function(c) { with(c) {
 
       describe("removal events on operands", function() {
         context("when a tuple is removed from the left operand", function() {
-          context("when the removal causes the removal of a CompositeTuple from #carteseanProduct that matched #predicate", function() {
-            it("triggers #onRemoteRemove handlers with the removed CompositeTuple", function() {
+          context("when the removal causes the removal of a composite tuple that was previously in the join", function() {
+            it("triggers a remove event with the removed composite tuple", function() {
+              var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog2, blog2.blogPosts().first());
+              var sortKey = join.buildSortKey(expectedCompositeTuple);
+
               blog2.destroy();
 
-              expect(removeHandler).to(haveBeenCalled, once);
-              var removedCompositeTuple = removeHandler.mostRecentArgs[0];
-              expect(removedCompositeTuple.leftTuple).to(eq, blog2);
-              expect(removedCompositeTuple.rightTuple).to(eq, post3);
+              expect(removeHandler).to(haveBeenCalled, withArgs(expectedCompositeTuple, 2, sortKey, sortKey));
             });
           });
 
-          context("when the removal does not cause the removal of any CompositeTuples from #carteseanProduct that match #predicate", function() {
-            it("does not trigger #onRemoteRemove handlers or modify the contents of the relation", function() {
+          context("when the removal does not cause the removal of any composite tuples that were previously in the join", function() {
+            it("does not trigger remove events or modify the contents of the relation", function() {
               var sizeBefore = join.size();
-              user.blogs().create().afterEvents(function(blog) {
-                blog.destroy();
-              })
+              var emptyBlog = user.blogs().createFromRemote();
+              emptyBlog.destroy();
               expect(removeHandler).toNot(haveBeenCalled);
               expect(join.size()).to(eq, sizeBefore);
             });
@@ -232,22 +171,22 @@ Screw.Unit(function(c) { with(c) {
         });
 
         context("when a tuple is removed from the right operand", function() {
-          context("when the removal causes the removal of a CompositeTuple from #carteseanProduct that matched #predicate", function() {
-            it("triggers #onRemoteRemove handlers with the removed CompositeTuple", function() {
+          context("when the removal causes the removal of a composite tuple that was previously in the join", function() {
+            it("triggers a remove event with the removed composite tuple", function() {
+              var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog2, post3);
+              var sortKey = join.buildSortKey(expectedCompositeTuple);
+
               post3.destroy();
-              expect(removeHandler).to(haveBeenCalled, once);
-              var removedCompositeTuple = removeHandler.mostRecentArgs[0];
-              expect(removedCompositeTuple.leftTuple).to(eq, blog2);
-              expect(removedCompositeTuple.rightTuple).to(eq, post3);
+
+              expect(removeHandler).to(haveBeenCalled, withArgs(expectedCompositeTuple, 2, sortKey, sortKey));
             });
           });
 
-          context("when the removal does not cause the removal of any CompositeTuples from #carteseanProduct that match #predicate", function() {
-            it("does not trigger #onRemoteRemove handlers or modify the contents of the relation", function() {
+          context("when the removal does not cause the removal of any composite tuples that were previously in the join", function() {
+            it("does not trigger remove events or modify the contents of the relation", function() {
               var sizeBefore = join.size();
-              BlogPost.create().afterEvents(function(post) {
-                post.destroy();
-              });
+              var orphanPost = BlogPost.createFromRemote({id: 100});
+              orphanPost.destroy();
               expect(removeHandler).toNot(haveBeenCalled);
               expect(join.size()).to(eq, sizeBefore);
             });
@@ -257,66 +196,91 @@ Screw.Unit(function(c) { with(c) {
 
       describe("update events on operands", function() {
         context("when a tuple is updated in the left operand", function() {
-          context("when the updated tuple is the #left component of a CompositeTuple that is a member of #all before the update", function() {
-            context("when the CompositeTuple continues to match #predicate after the update", function() {
-              it("triggers only #onRemoteUpdate handlers with the updated CompositeTuple and a changed attributes object and does not modify the contents of the relation", function() {
+          context("when the updated tuple is part of a composite tuple that was in the join before the update", function() {
+            context("when that composite tuple remains in the join after the update", function() {
+
+              init(function() {
+                leftOperand = user.blogs().orderBy('name asc');
+                rightOperand = BlogPost.table;
+                predicate = BlogPost.blogId.eq(Blog.id);
+                join = new Monarch.Model.Relations.InnerJoin(leftOperand, rightOperand, predicate);
+              });
+
+              it("triggers only update events with the updated containing composite tuple", function() {
                 var sizeBefore = join.size();
 
-                var oldValue = blog2.name();
-                var newValue = "Railsnuts Racoon's daily beat";
-                blog2.name(newValue);
-                Server.save(blog2);
-                expect(updateHandler).to(haveBeenCalled, once);
+                blog1.remotelyUpdated({name: 'C'});
+                
+                expect(updateHandler).to(haveBeenCalled, twice);
+
+                // update of first composite tuple
+                var expectedCompositeTuple1 = new Monarch.Model.CompositeTuple(blog1, post1);
+                expect(updateHandler.callArgs[0]).to(equal, [
+                  expectedCompositeTuple1,
+                  {
+                    name: { column: Blog.name_, oldValue: "A", newValue: "C" },
+                    funProfitName: { column: Blog.funProfitName, oldValue: "A for Fun and Profit", newValue: "C for Fun and Profit" }
+                  },
+                  2, 0, // new index, old index
+                  { 'blogs.id': 1, 'blog_posts.id': 1, 'blogs.name': "C" }, // new sort key
+                  { 'blogs.id': 1, 'blog_posts.id': 1, 'blogs.name': "A"} // old sort key
+                ]);
+                
+                // update of second composite tuple
+                var expectedCompositeTuple2 = new Monarch.Model.CompositeTuple(blog1, post2);
+                expect(updateHandler.callArgs[1]).to(equal, [
+                  expectedCompositeTuple2,
+                  {
+                    name: { column: Blog.name_, oldValue: "A", newValue: "C" },
+                    funProfitName: { column: Blog.funProfitName, oldValue: "A for Fun and Profit", newValue: "C for Fun and Profit" }
+                  },
+                  2, 0, // new index, old index
+                  { 'blogs.id': 1, 'blog_posts.id': 2, 'blogs.name': "C" }, // new sort key
+                  { 'blogs.id': 1, 'blog_posts.id': 2, 'blogs.name': "A"} // old sort key
+                ]);
+
                 expect(removeHandler).toNot(haveBeenCalled);
                 expect(insertHandler).toNot(haveBeenCalled);
-
-                var updatedTuple = updateHandler.mostRecentArgs[0];
-                var changedAttributes = updateHandler.mostRecentArgs[1];
-
-                expect(updatedTuple.leftTuple).to(eq, blog2);
-                expect(updatedTuple.rightTuple).to(eq, post3);
-
-                expect(changedAttributes.name.column).to(eq, Blog.name_);
-                expect(changedAttributes.name.oldValue).to(eq, oldValue);
-                expect(changedAttributes.name.newValue).to(eq, newValue);
-
                 expect(join.size()).to(eq, sizeBefore);
               });
             });
 
             context("when the CompositeTuple no longer matches #predicate after the update", function() {
-              it("triggers only #onRemoteRemove handlers with the updated CompositeTuple", function() {
-                blog2.update({id: "booboo"});
-                expect(removeHandler).to(haveBeenCalled, once);
-                expect(removeHandler.mostRecentArgs[0].leftTuple).to(eq, blog2);
-                expect(removeHandler.mostRecentArgs[0].rightTuple).to(eq, post3);
+              it("triggers only #onRemove handlers with the updated CompositeTuple", function() {
+                blog2.remotelyUpdated({id: 100});
+
+                var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog2, post3);
+                expect(removeHandler).to(haveBeenCalled, withArgs(expectedCompositeTuple, 2, {'blogs.id': 100, 'blog_posts.id': 3}, {'blogs.id': 2, 'blog_posts.id': 3}));
                 expect(insertHandler).toNot(haveBeenCalled);
                 expect(updateHandler).toNot(haveBeenCalled);
               });
             });
           });
 
-          context("when the updated tuple is not a component of a CompositeTuple that is a member of the relation before the update", function() {
-            context("when the update causes #carteseanProduct to contain a CompositeTuple that matches #predicate", function() {
-              it("triggers only the #onRemoteInsert handlers with the updated CompositeTuple", function() {
-                var blog = user.blogs().localCreate({id: 'junky'});
-                var blogPost = BlogPost.localCreate({blogId: 'nice'});
-                Server.save(blog, blogPost);
+          context("when the updated tuple is not part of a composite tuple that was a in the join before the update", function() {
+            context("when the update causes join to to contain a new composite tuple", function() {
+              it("triggers an insert event with the new composite tuple", function() {
+                var blog = user.blogs().createFromRemote({id: 100});
+                var blogPost = BlogPost.createFromRemote({id: 100, blogId: 101});
 
-                blog.update({id: "nice"});
+                blog.update({id: 101});
                 expect(insertHandler).to(haveBeenCalled, once);
                 expect(updateHandler).toNot(haveBeenCalled);
                 expect(removeHandler).toNot(haveBeenCalled);
 
-                var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(eq, blog);
-                expect(compositeTuple.rightTuple).to(eq, blogPost);
+                var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog, blogPost);
+
+                expect(insertHandler).to(haveBeenCalled, withArgs(
+                  expectedCompositeTuple, 3,
+                  {'blogs.id': 101, 'blog_posts.id': 100},
+                  {'blogs.id': 100, 'blog_posts.id': 100}
+                ));
               });
             });
 
             context("when the update does not cause #carteseanProduct to contain a CompositeTuple that matches #predicate", function() {
               it("does not trigger any event handlers", function() {
-                var blog = user.blogs().localCreate({name: "Junkfood Diet"});
+                var blog = user.blogs().createFromRemote({name: "Junkfood Diet"});
                 blog.save();
                 blog.update({name: "Healthfood Diet"});
 
@@ -329,68 +293,63 @@ Screw.Unit(function(c) { with(c) {
         });
 
         context("when a tuple is updated in the right operand", function() {
-          context("when the updated tuple is the #right component of a CompositeTuple that is a member of the relation before the update", function() {
-            context("when the CompositeTuple continues to match #predicate after the update", function() {
-              it("triggers only #onRemoteUpdate handlers with the updated CompositeTuple and does not modify the contents of the relation", function() {
+          context("when the updated tuple is part of a composite tuple that was in the join before the update", function() {
+            context("when that composite tuple is still a part of the join after the update", function() {
+              it("triggers an update event with the updated CompositeTuple and does not modify the contents of the relation", function() {
                 var sizeBefore = join.size();
 
-                var oldValue = post3.body();
-                var newValue = "Today sucked mum.";
-                post3.update({ body: newValue });
+                post1.remotelyUpdated({ id: 100 });
 
-                expect(updateHandler).to(haveBeenCalled, once);
-                expect(insertHandler).toNot(haveBeenCalled);
-                expect(removeHandler).toNot(haveBeenCalled);
-
-                var updatedTuple = updateHandler.mostRecentArgs[0];
-                var changedAttributes = updateHandler.mostRecentArgs[1];
-
-                expect(updatedTuple.leftTuple).to(eq, blog2);
-                expect(updatedTuple.rightTuple).to(eq, post3);
-                expect(changedAttributes.body.column).to(eq, BlogPost.body);
-                expect(changedAttributes.body.oldValue).to(eq, oldValue);
-                expect(changedAttributes.body.newValue).to(eq, newValue);
+                var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog1, post1);
+                expect(updateHandler).to(haveBeenCalled, withArgs(
+                  expectedCompositeTuple,
+                  { id: { column: BlogPost.id, oldValue: 1, newValue: 100 } }, // changeset
+                  1, 0, // new index, old index
+                  { 'blogs.id': 1, 'blog_posts.id': 100 }, // new key
+                  { 'blogs.id': 1, 'blog_posts.id': 1 } // old key
+                ));
 
                 expect(join.size()).to(eq, sizeBefore);
+                expect(insertHandler).toNot(haveBeenCalled);
+                expect(removeHandler).toNot(haveBeenCalled);
               });
             });
 
-            context("when the CompositeTuple no longer matches #predicate after the update", function() {
-              it("triggers only #onRemoteRemove handlers with the updated CompositeTuple", function() {
-                post3.update({blogId: 'guns'});
+            context("when that is no longer in the join after the update", function() {
+              it("triggers only #onRemove handlers with the updated CompositeTuple", function() {
+                post3.update({blogId: 100});
 
-                expect(removeHandler).to(haveBeenCalled, once);
+                var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog2, post3);
+                var sortKey = join.buildSortKey(expectedCompositeTuple);
+
+                expect(removeHandler).to(haveBeenCalled, withArgs(expectedCompositeTuple, 2, sortKey, sortKey));
                 expect(insertHandler).toNot(haveBeenCalled);
                 expect(updateHandler).toNot(haveBeenCalled);
-                expect(removeHandler.mostRecentArgs[0].leftTuple).to(eq, blog2);
-                expect(removeHandler.mostRecentArgs[0].rightTuple).to(eq, post3);
               });
             });
           });
 
-          context("when the updated tuple is not a part of a composite tuple in the relation before the update", function() {
+          context("when the updated tuple is not a part of a composite tuple in the join before the update", function() {
             var post;
 
             before(function() {
-              post = BlogPost.localCreate({ blogId: "homer", body: "PAIN!" });
-              post.save();
+              post = BlogPost.createFromRemote({ id: 100, blogId: 100 });
             });
 
-            context("when the update causes #carteseanProduct to contain a composite tuple that matches #predicate", function() {
-              it("triggers only #onRemoteInsert handlers with the new CompositeTuple", function() {
-                post.update({blogId: "blog2"});
+            context("when the update causes the join to contain a new composite tuple", function() {
+              it("triggers an insert event with that tuple", function() {
+                post.remotelyUpdated({blogId: blog2.id()});
 
-                expect(insertHandler).to(haveBeenCalled, once);
+                var expectedCompositeTuple = new Monarch.Model.CompositeTuple(blog2, post);
+                var sortKey = join.buildSortKey(expectedCompositeTuple);
+                expect(insertHandler).to(haveBeenCalled, withArgs(expectedCompositeTuple, 3, sortKey, sortKey));
+
                 expect(updateHandler).toNot(haveBeenCalled);
                 expect(removeHandler).toNot(haveBeenCalled);
-
-                var compositeTuple = insertHandler.mostRecentArgs[0];
-                expect(compositeTuple.leftTuple).to(eq, blog2);
-                expect(compositeTuple.rightTuple).to(eq, post);
               });
             });
 
-            context("when the update does not cause the #carteseanProduct to contain a composite tuple that matches #predicate", function() {
+            context("when the update does not cause a new composite tuple to become part of the join", function() {
               it("does not trigger any event handlers", function() {
                 post.update({ body: "Flabby flabby flabby why are you this way?"});
                 expect(insertHandler).toNot(haveBeenCalled);
@@ -401,73 +360,22 @@ Screw.Unit(function(c) { with(c) {
           });
         });
 
-        context("when a tuple is updated in a way that should insert one CompositeTuple and remove another", function() {
-          it("fires #onRemoteInsert handlers for the inserted tuple and #onRemoteRemove handlers for the removed one", function() {
-            post3.update({blogId: 'blog1'});
-
-            expect(insertHandler).to(haveBeenCalled, once);
-
-            var insertedTuple = insertHandler.mostRecentArgs[0];
-            expect(insertedTuple.leftTuple).to(eq, blog1);
-            expect(insertedTuple.rightTuple).to(eq, post3);
+        context("when a tuple is updated in a way that causes one composite tuple to be removed and another to be inserted", function() {
+          it("triggers a remove event and an insert event with the appropriate composite tuples", function() {
+            post1.update({blogId: blog2.id()});
 
 
-            expect(removeHandler).to(haveBeenCalled, once);
-            var removedTuple = removeHandler.mostRecentArgs[0];
-            expect(removedTuple.leftTuple).to(eq, blog2);
-            expect(removedTuple.rightTuple).to(eq, post3);
+            var expectedRemovedTuple = new Monarch.Model.CompositeTuple(blog1, post1);
+            var removedSortKey = join.buildSortKey(expectedRemovedTuple);
+
+            var expectedInsertedTuple = new Monarch.Model.CompositeTuple(blog2, post1);
+            var insertedSortKey = join.buildSortKey(expectedInsertedTuple);
+
+            expect(removeHandler).to(haveBeenCalled, withArgs(expectedRemovedTuple, 0, removedSortKey, removedSortKey));
+            expect(insertHandler).to(haveBeenCalled, withArgs(expectedInsertedTuple, 1, insertedSortKey, insertedSortKey));
+
+            expect(updateHandler).toNot(haveBeenCalled);
           });
-        });
-      });
-    });
-
-
-    describe("subscription propagation", function() {
-      describe("when a Monarch.Subscription is registered for the Selection, destroyed, and another Monarch.Subscription is registered", function() {
-        var eventType;
-
-        scenario("for onRemoteInsert callbacks", function() {
-          init(function() {
-            eventType = "onRemoteInsert";
-          });
-        });
-
-        scenario("for onRemoteUpdate callbacks", function() {
-          init(function() {
-            eventType = "onRemoteUpdate";
-          });
-        });
-
-        scenario("for onRemoteRemove callbacks", function() {
-          init(function() {
-            eventType = "onRemoteRemove";
-          });
-        });
-
-        it("subscribes to its #operand and memoizes tuples, then unsubscribes and clears the memoization, then resubscribes and rememoizes", function() {
-          expect(leftOperand.hasSubscribers()).to(beFalse);
-          expect(rightOperand.hasSubscribers()).to(beFalse);
-
-          expect(join._tuples).to(beNull);
-
-          var subscription = join[eventType].call(join, function() {});
-
-          expect(leftOperand.hasSubscribers()).to(beTrue);
-          expect(rightOperand.hasSubscribers()).to(beTrue);
-
-          expect(join._tuples).toNot(beNull);
-
-          subscription.destroy();
-
-          expect(leftOperand.hasSubscribers()).to(beFalse);
-          expect(rightOperand.hasSubscribers()).to(beFalse);
-          expect(join._tuples).to(beNull);
-
-          join.onRemoteUpdate(function() {});
-
-          expect(leftOperand.hasSubscribers()).to(beTrue);
-          expect(rightOperand.hasSubscribers()).to(beTrue);
-          expect(join._tuples).toNot(beNull);
         });
       });
     });

@@ -3,6 +3,10 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../monarch_spec_helper")
 module Monarch
   module Model
     describe "SQL generation" do
+      before do
+        stub(Origin).database_type { :mysql }
+      end
+
       specify "tables" do
         User.table.to_sql.should be_like(%{
           select users.* from users
@@ -253,6 +257,78 @@ module Monarch
           ) as t1
           where blogs.id = t1.blog_id
         })
+      end
+
+      specify "simple limits and offsets" do
+        Blog.where(:user_id => 1).offset(10).to_sql.should be_like(%{
+          select blogs.*
+          from blogs
+          where blogs.user_id = 1
+          offset 10  
+        })
+
+        Blog.where(:user_id => 1).limit(10).to_sql.should be_like(%{
+          select blogs.*
+          from blogs
+          where blogs.user_id = 1
+          limit 10
+        })
+
+        Blog.where(:user_id => 1).limit(10).offset(3).to_sql.should be_like(%{
+          select blogs.*
+          from blogs
+          where blogs.user_id = 1
+          limit 10
+          offset 3  
+        })
+      end
+
+      specify "limits and offsets inside of joins generate as subqueries" do
+        # naming everything like t1__created_at will not work with the composite tuple instantiation logic. columns actually need
+        # to be named for the name of the underlying table so their fields can be sent to the correct constructor. another day.
+        Blog.join_to(BlogPost.limit(10).offset(10)).to_sql.should be_like(%{
+          select blogs.id as blogs__id, blogs.title as blogs__title, blogs.user_id as blogs__user_id,
+                 t1.id as t1__id, t1.title as t1__title, t1.body as t1__body, t1.blog_id as t1__blog_id,
+                 t1.created_at as t1__created_at, t1.updated_at as t1__updated_at, t1.featured as t1__featured
+          from blogs, (
+            select blog_posts.*
+            from blog_posts
+            limit 10
+            offset 10
+          ) as t1
+          where blogs.id = t1.blog_id
+        })
+
+        Blog.join_to(BlogPost.limit(10).offset(10)).project(Blog).to_sql.should be_like(%{
+          select blogs.*
+          from blogs, (
+            select blog_posts.*
+            from blog_posts
+            limit 10
+            offset 10
+          ) as t1
+          where blogs.id = t1.blog_id
+        })
+
+        offset_blog_post_counts =
+          Blog.where(:user_id => "jan").left_join_to(BlogPost).
+            group_by(Blog[:id]).
+            project(Blog[:id].as(:blog_id), BlogPost[:id].count.as(:num_posts)).
+            offset(10)
+
+        Blog.join_to(offset_blog_post_counts).project(:title, :num_posts).to_sql.should be_like(%{
+          select blogs.title as title, t1.num_posts as num_posts
+          from blogs, (
+            select blogs.id as blog_id, count(blog_posts.id) as num_posts
+            from blogs left outer join blog_posts on blogs.id = blog_posts.blog_id
+            where blogs.user_id = #{"jan".to_key} group by blogs.id
+            offset 10
+          ) as t1
+          where blogs.id = t1.blog_id
+        })
+
+        # switching project and offset fails on 5/2011
+        #
       end
     end
   end

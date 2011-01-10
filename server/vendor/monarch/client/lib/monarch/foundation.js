@@ -149,9 +149,11 @@ function buildPropertyAccessor(name, reader, writer, afterWriteHook, afterChange
     } else {
       var oldValue = this[fieldName];
       var newValue = writer.apply(this, arguments) || this[fieldName];
-      if (afterWriteHook) afterWriteHook.call(this, newValue, oldValue);
-      if (afterChangeHook && newValue !== oldValue) afterChangeHook.call(this, newValue, oldValue);
-      return newValue;
+
+      var writeHookReturnVal, changeHookReturnVal;
+      if (afterWriteHook) writeHookReturnVal = afterWriteHook.call(this, newValue, oldValue);
+      if (afterChangeHook && newValue !== oldValue) changeHookReturnVal = afterChangeHook.call(this, newValue, oldValue);
+      return changeHookReturnVal || writeHookReturnVal || newValue;
     }
   };
   accessor._accessor_ = true;

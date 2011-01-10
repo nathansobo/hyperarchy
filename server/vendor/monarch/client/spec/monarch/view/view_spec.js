@@ -43,7 +43,7 @@ Screw.Unit(function(c) { with(c) {
         })
 
 
-        model = SampleModel.localCreate({
+        model = SampleModel.createFromRemote({
           foo: "foo",
           bar: "bar",
           baz: true,
@@ -131,7 +131,7 @@ Screw.Unit(function(c) { with(c) {
 
         it("cancels previous update subscriptions when a new model is assigned", function() {
           view.model(model);
-          view.model(SampleModel.localCreate({foo: "new foo"}));
+          view.model(SampleModel.createFromRemote({foo: "new foo"}));
 
           expect(view.foo.val()).to(eq, 'new foo');
           model.localUpdate({foo: "old model foo new value"});

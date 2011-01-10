@@ -8,15 +8,17 @@ module Monarch
         # :where clause
         # :grouping_column_refs is populated by GroupingColumnRef objects
         attr_accessor :set_quantifier, :select_list, :from_clause_table_refs, :where_clause_predicates,
-                      :grouping_column_refs, :sort_specifications
+                      :grouping_column_refs, :sort_specifications, :limit, :offset
 
-        def initialize(set_quantifier, select_list, from_clause_table_ref, where_clause_predicates, sort_specifications, grouping_column_refs)
+        def initialize(set_quantifier, select_list, from_clause_table_ref, where_clause_predicates, sort_specifications, grouping_column_refs, limit, offset)
           @set_quantifier = set_quantifier
           @select_list = select_list
           @from_clause_table_refs = [from_clause_table_ref]
           @where_clause_predicates = where_clause_predicates
           @sort_specifications = sort_specifications
           @grouping_column_refs = grouping_column_refs
+          @limit = limit
+          @offset = offset
 
           flatten_and_uniq_inner_joins
         end
@@ -29,7 +31,9 @@ module Monarch
            from_tables_sql,
            where_clause_sql,
            group_by_clause_sql,
-           order_by_clause_sql
+           order_by_clause_sql,
+           limit_clause_sql,
+           offset_clause_sql
           ].compact.join(" ")
         end
 
@@ -56,6 +60,16 @@ module Monarch
           "order by " + sort_specifications.map do |sort_spec|
             sort_spec.to_sql
           end.join(", ")
+        end
+
+        def limit_clause_sql
+          return nil if limit.nil?
+          "limit #{limit}"
+        end
+
+        def offset_clause_sql
+          return nil if offset.nil?
+          "offset #{offset}"
         end
       end
     end

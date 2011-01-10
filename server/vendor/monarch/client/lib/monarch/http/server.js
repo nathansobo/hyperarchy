@@ -26,7 +26,6 @@ _.constructor("Monarch.Http.Server", {
   fetch: function(relations) {
     return this.get(Repository.originUrl + "/fetch", {
       relations: _.map(relations, function(relation) {
-        if (!relation.wireRepresentation) debugger;
         return relation.wireRepresentation();
       })
     });
@@ -62,26 +61,16 @@ _.constructor("Monarch.Http.Server", {
     });
   },
 
-  save: function() {
-    var commands = _.map(this.extractDirtyRecords(arguments), function(dirtyRecord) {
-      return this.buildAppropriateCommand(dirtyRecord);
-    }, this);
+  create: function(record) {
+    return this.performCommand(new Monarch.Http.CreateCommand(record, this));
+  },
 
+  update: function(record) {
+    return this.performCommand(new Monarch.Http.UpdateCommand(record, this));
+  },
 
-    if (_.isEmpty(commands)) {
-      var saveFuture = new Monarch.Http.AjaxFuture();
-      saveFuture.updateRepositoryAndTriggerCallbacks(this.firstRecord(arguments), _.identity);
-      return saveFuture;
-    } else {
-      var batch = new Monarch.Http.CommandBatch(this, commands);
-      Repository.pauseMutations();
-      var saveFuture = batch.perform();
-      saveFuture.onComplete(function() {
-        Repository.resumeMutations();
-      });
-
-      return saveFuture;
-    }
+  destroy: function(record) {
+    return this.performCommand(new Monarch.Http.DestroyCommand(record, this));
   },
 
   post: function(url, data) {
@@ -102,39 +91,14 @@ _.constructor("Monarch.Http.Server", {
   },
 
   // private
+  performCommand: function(command) {
+    Repository.pauseMutations();
+    return command.perform().onComplete(Repository.hitch('resumeMutations'));
+  },
+
+
   newRealTimeClient: function() {
     return new Monarch.Http.CometClient(this.realTimeClientId());
-  },
-
-  extractDirtyRecords: function(recordsOrRelations) {
-    var dirtyRecords = []
-    _.each(recordsOrRelations, function(arg) {
-      if (arg._relation_) {
-        dirtyRecords.push.apply(dirtyRecords, arg.dirtyTuples());
-      } else {
-        if (arg.dirty()) dirtyRecords.push(arg);
-      }
-    });
-    return dirtyRecords;
-  },
-
-  firstRecord: function(recordsOrRelations) {
-    var first = recordsOrRelations[0];
-    if (first._relation_) {
-      return first.first();
-    } else {
-      return first;
-    }
-  },
-
-  buildAppropriateCommand: function(record) {
-    if (record.locallyDestroyed) {
-      return new Monarch.Http.DestroyCommand(record);
-    } else if (!record.isRemotelyCreated) {
-      return new Monarch.Http.CreateCommand(record);
-    } else {
-      return new Monarch.Http.UpdateCommand(record);
-    }
   },
 
   request: function(type, url, data) {

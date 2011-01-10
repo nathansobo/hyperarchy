@@ -10,7 +10,7 @@ Screw.Unit(function(c) { with(c) {
         relation = Blog.table;
         record = relation.first();
         insert = function(fieldValues) {
-          Blog.table.localCreate(fieldValues);
+          Blog.table.createFromRemote(fieldValues);
         }
         column1 = Blog.userId;
         column2 = Blog.name_;
@@ -22,7 +22,7 @@ Screw.Unit(function(c) { with(c) {
         relation = Blog.where(Blog.userId.eq("jan"));
         record = relation.first();
         insert = function(fieldValues) {
-          Blog.table.localCreate(fieldValues);
+          Blog.table.createFromRemote(fieldValues);
         }
         column1 = Blog.userId;
         column2 = Blog.name_;
@@ -195,29 +195,6 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#project(projectedColumns...)", function() {
-      context("when passed ProjectedColumns", function() {
-        it("constructs a Projection with self as #operand and the given ProjectedColumns", function() {
-          projectedColumn1 = column1.as('a');
-          projectedColumn2 = column2.as('b');
-          var projection = relation.project(projectedColumn1, projectedColumn2);
-
-          expect(projection).to(beAnInstanceOf, Monarch.Model.Relations.Projection);
-          expect(projection.operand).to(eq, relation);
-          expect(projection.projectedColumnsByName['a']).to(eq, projectedColumn1);
-          expect(projection.projectedColumnsByName['b']).to(eq, projectedColumn2);
-        });
-      });
-
-      context("when passed Columns", function() {
-        it("constructs a Projection with self as #operand and the given Columns converted to ProjectedColumns", function() {
-          var projection = relation.project(column1, column2);
-          expect(projection).to(beAnInstanceOf, Monarch.Model.Relations.Projection);
-          expect(projection.operand).to(eq, relation);
-          expect(projection.projectedColumnsByName[column1.name].column).to(eq, column1);
-          expect(projection.projectedColumnsByName[column2.name].column).to(eq, column2);
-        });
-      });
-
       context("when passed a record constructor", function() {
         it("returns a table projection based on the given constructor's table", function() {
           var projection = relation.project(BlogPost);
@@ -255,6 +232,5 @@ Screw.Unit(function(c) { with(c) {
         expect(difference.rightOperand).to(eq, rightOperand);
       });
     });
-
   });
 }});

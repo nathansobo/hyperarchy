@@ -1,19 +1,19 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Model.Relations.Relation", {
-  hasOperands: true,
+  numOperands: 1,
   _relation_: true,
 
   initializeEventsSystem: function() {
     this.onLocalUpdateNode = new Monarch.SubscriptionNode();
-    this.onRemoteInsertNode = new Monarch.SubscriptionNode();
-    this.onRemoteUpdateNode = new Monarch.SubscriptionNode();
-    this.onRemoteRemoveNode = new Monarch.SubscriptionNode();
+    this.onInsertNode = new Monarch.SubscriptionNode();
+    this.onUpdateNode = new Monarch.SubscriptionNode();
+    this.onRemoveNode = new Monarch.SubscriptionNode();
     this.onDirtyNode = new Monarch.SubscriptionNode();
     this.onCleanNode = new Monarch.SubscriptionNode();
     this.onInvalidNode = new Monarch.SubscriptionNode();
     this.onValidNode = new Monarch.SubscriptionNode();
-    if (this.hasOperands) {
+    if (this.numOperands > 0) {
       this.operandsSubscriptionBundle = new Monarch.SubscriptionBundle();
       this.unsubscribeFromOperandsWhenThisNoLongerHasSubscribers();
     }
@@ -31,32 +31,19 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   project: function() {
-    if (arguments.length == 1) {
-      var table;
-      if (_.isFunction(arguments[0])) {
-        table = arguments[0].table;
-      } else if (arguments[0].surfaceTables) {
-        var surfaceTables = arguments[0].surfaceTables();
-        if (surfaceTables.length === 1) {
-          table = surfaceTables[0];
-        } else {
-          throw new Error("Can only project with relations that have a single surface table");
-        }
+    var table;
+    if (_.isFunction(arguments[0])) {
+      table = arguments[0].table;
+    } else {
+      var surfaceTables = arguments[0].surfaceTables();
+      if (surfaceTables.length === 1) {
+        table = surfaceTables[0];
+      } else {
+        throw new Error("Can only project with relations that have a single surface table");
       }
-
-      if (table) return new Monarch.Model.Relations.TableProjection(this, table);
     }
 
-    var projectedColumns = _.map(arguments, function(arg) {
-      if (arg instanceof Monarch.Model.ProjectedColumn) {
-        return arg;
-      } else if (arg instanceof Monarch.Model.Column) {
-        return new Monarch.Model.ProjectedColumn(arg);
-      } else {
-        throw new Error("#project takes Columns or ProjectedColumns only");
-      }
-    });
-    return new Monarch.Model.Relations.Projection(this, projectedColumns);
+    return new Monarch.Model.Relations.TableProjection(this, table);
   },
 
   join: function(rightOperand) {
@@ -83,24 +70,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   orderBy: function() {
-    var sortSpecifications = _.map(arguments, function(orderByColumn) {
-      if (orderByColumn instanceof Monarch.Model.SortSpecification) {
-        return orderByColumn;
-      } else if (orderByColumn instanceof Monarch.Model.Column) {
-        return orderByColumn.asc();
-      } else if (typeof orderByColumn == "string") {
-        var parts = orderByColumn.split(/ +/);
-        var columnName = parts[0];
-        var direction = parts[1] || 'asc';
-        if (direction == 'desc') {
-          return this.column(columnName).desc();
-        } else {
-          return this.column(columnName).asc();
-        }
-      } else {
-        throw new Error("You can only order by Columns, sortSpecifications, or 'columnName direction' strings");
-      }
-    }, this);
+    var sortSpecifications = this.extractSortSpecsFromArguments(arguments);
 
     return new Monarch.Model.Relations.Ordering(this, sortSpecifications);
   },
@@ -113,18 +83,16 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return new Monarch.Model.Relations.Union(this, rightOperand);
   },
 
-  tuples: function() {
-    return this.localTuples();
+  offset: function(n) {
+    return new Monarch.Model.Relations.Offset(this, n);
   },
 
-  localTuples: function() {
-    return _.filter(this.allTuples(), function(record) {
-      return !record.locallyDestroyed;
-    });
+  limit: function(n) {
+    return new Monarch.Model.Relations.Limit(this, n);
   },
 
   dirtyTuples: function() {
-    return _.filter(this.allTuples(), function(record) {
+    return _.filter(this.tuples(), function(record) {
       return record.dirty();
     });
   },
@@ -139,7 +107,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
 
   onEach: function(fn, context) {
     this.each(fn, context);
-    return this.onRemoteInsert(fn, context);
+    return this.onInsert(fn, context);
   },
 
   map: function(fn, context) {
@@ -176,27 +144,26 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   at: function(i) {
-    return this.tuples()[i];
+    if (this.storedTuples) {
+      return this.storedTuples.at(i);
+    } else {
+      return this.tuples()[i];
+    }
   },
 
-  onLocalUpdate: function(callback, context) {
+  onInsert: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onLocalUpdateNode.subscribe(callback, context);
+    return this.onInsertNode.subscribe(callback, context);
   },
 
-  onRemoteInsert: function(callback, context) {
+  onUpdate: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onRemoteInsertNode.subscribe(callback, context);
+    return this.onUpdateNode.subscribe(callback, context);
   },
 
-  onRemoteUpdate: function(callback, context) {
+  onRemove: function(callback, context) {
     this.subscribeToOperandsIfNeeded();
-    return this.onRemoteUpdateNode.subscribe(callback, context);
-  },
-
-  onRemoteRemove: function(callback, context) {
-    this.subscribeToOperandsIfNeeded();
-    return this.onRemoteRemoveNode.subscribe(callback, context);
+    return this.onRemoveNode.subscribe(callback, context);
   },
 
   onDirty: function(callback, context) {
@@ -219,25 +186,9 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return this.onValidNode.subscribe(callback, context);
   },
 
-  recordMadeDirty: function(record) {
-    this.onDirtyNode.publish(record);
-  },
-
-  recordMadeClean: function(record) {
-    this.onCleanNode.publish(record);
-  },
-
-  recordMadeInvalid: function(record) {
-    this.onInvalidNode.publish(record)
-  },
-  
-  recordMadeValid: function(record) {
-    this.onValidNode.publish(record);
-  },
-
   hasSubscribers: function() {
-    return !(this.onRemoteInsertNode.empty() && this.onRemoteRemoveNode.empty()
-        && this.onRemoteUpdateNode.empty() && this.onDirtyNode.empty() && this.onCleanNode.empty());
+    return !(this.onInsertNode.empty() && this.onRemoveNode.empty()
+        && this.onUpdateNode.empty() && this.onDirtyNode.empty() && this.onCleanNode.empty());
   },
 
   fetch: function() {
@@ -248,48 +199,208 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return Server.subscribe([this]);
   },
 
-  memoizeTuples: function() {
-    this._tuples = this.tuples();
-  },
-
-  tupleInsertedRemotely: function(record) {
-    if (!this.contains(record)) {
-      this._tuples.push(record)
-    }
-    this.onRemoteInsertNode.publish(record);
-  },
-
-  tupleUpdatedRemotely: function(record, updateData, newIndex, oldIndex) {
-    if (newIndex === undefined) {
-      this.onRemoteUpdateNode.publish(record, updateData);
+  contains: function(record, changeset) {
+    if (this.storedTuples) {
+      return this.storedTuples.find(this.buildSortKey(record, changeset)) !== undefined;
     } else {
-      this.onRemoteUpdateNode.publish(record, updateData, newIndex, oldIndex);
+      return _.indexOf(this.tuples(), record) !== -1;
     }
   },
 
-  tupleUpdatedLocally: function(record, updateData) {
-    this.onLocalUpdateNode.publish(record, updateData);
+  findByKey: function(sortKey) {
+    return this.storedTuples.find(sortKey);
   },
 
-  tupleRemovedRemotely: function(record) {
-    var position = _.indexOf(this._tuples, record);
-    this._tuples.splice(position, 1);
-    this.onRemoteRemoveNode.publish(record);
+  indexByKey: function(sortKey) {
+    return this.storedTuples.indexOf(sortKey);
   },
 
-  contains: function(record) {
-    var tuples = this.tuples();
-    for(var i = 0; i < tuples.length; i++) {
-      if (tuples[i] == record) return true;
+  surfaceTables: function() {
+    return this.operand.surfaceTables();
+  },
+
+  column: function(name) {
+    return this.operand.column(name);
+  },
+
+  // private
+
+  memoizeTuples: function() {
+    var storedTuples = this.buildSkipList();
+    this.each(function(tuple) {
+      storedTuples.insert(this.buildSortKey(tuple), tuple);
+    }, this);
+    this.storedTuples = storedTuples;
+  },
+
+  buildSkipList: function() {
+    if (!this.comparator) this.comparator = this.buildComparator();
+    return new Monarch.SkipList(this.comparator);
+  },
+
+  buildComparator: function() {
+    var sortSpecs = this.sortSpecifications;
+    var length = sortSpecs.length;
+    var lessThan = _.nullSafeLessThan;
+
+    return function(a, b) {
+      for(var i = 0; i < length; i++) {
+        var sortSpecification = sortSpecs[i]
+        var columnName = sortSpecification.qualifiedColumnName;
+        var directionCoefficient = sortSpecification.directionCoefficient;
+
+        var aValue = a[columnName];
+        var bValue = b[columnName];
+
+        if (lessThan(aValue, bValue)) return -1 * directionCoefficient;
+        else if (lessThan(bValue, aValue)) return 1 * directionCoefficient;
+      }
+      return 0;
+    };
+  },
+
+  buildSortKey: function(tuple, changeset) {
+    var sortKey = {};
+    _.each(this.sortSpecifications, function(sortSpec) {
+      var column = sortSpec.column;
+      var columnName = sortSpec.columnName;
+      var qualifiedColumnName = sortSpec.qualifiedColumnName;
+
+      if (changeset && changeset[columnName] && changeset[columnName].column === column) {
+        sortKey[qualifiedColumnName] =  changeset[columnName].oldValue;
+      } else {
+
+        var field = tuple.field(column);
+        if (!field) console.debug(column);
+
+        sortKey[qualifiedColumnName] =  tuple.field(column).value();
+      }
+    });
+    return sortKey;
+  },
+
+  tupleInsertedRemotely: function(tuple, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(tuple);
+    var index = this.storedTuples.insert(newKey, tuple)
+    this.onInsertNode.publish(tuple, index, newKey, oldKey);
+  },
+
+  tupleUpdatedRemotely: function(tuple, changeset, newKey, oldKey) {
+    if (!newKey) {
+      newKey = this.buildSortKey(tuple);
+      oldKey = this.buildSortKey(tuple, changeset);
     }
-    return false;
+
+    var oldIndex = this.storedTuples.remove(oldKey)
+    var newIndex = this.storedTuples.insert(newKey, tuple);
+    this.onUpdateNode.publish(tuple, changeset, newIndex, oldIndex, newKey, oldKey);
+  },
+
+  // default implementations. overridden by many subclasses
+
+  tupleRemovedRemotely: function(tuple, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(tuple);
+
+    var index = this.storedTuples.remove(oldKey);
+    this.onRemoveNode.publish(tuple, index, newKey, oldKey);
+  },
+
+  recordMadeDirty: function(record, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(record);
+    this.onDirtyNode.publish(record, this.indexByKey(oldKey), newKey, oldKey);
+  },
+
+  recordMadeClean: function(record, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(record);
+    this.onCleanNode.publish(record, this.indexByKey(oldKey), newKey, oldKey);
+  },
+
+  recordMadeInvalid: function(record, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(record);
+    this.onInvalidNode.publish(record, this.indexByKey(oldKey), newKey, oldKey)
+  },
+
+  recordMadeValid: function(record, newKey, oldKey) {
+    if (!newKey) newKey = oldKey = this.buildSortKey(record);
+    this.onValidNode.publish(record, this.indexByKey(oldKey), newKey, oldKey);
+  },
+
+  tupleUpdatedLocally: function(tuple, updateData) {
+    this.onLocalUpdateNode.publish(tuple, updateData);
+  },
+
+  extractSortSpecsFromArguments: function(args) {
+    return _.map(args, function(orderByColumn) {
+      if (orderByColumn instanceof Monarch.Model.SortSpecification) {
+        return orderByColumn;
+      } else if (orderByColumn instanceof Monarch.Model.Column) {
+        return orderByColumn.asc();
+      } else if (typeof orderByColumn == "string") {
+        var parts = orderByColumn.split(/ +/);
+        var columnName = parts[0];
+        var direction = parts[1] || 'asc';
+        if (direction == 'desc') {
+          return this.column(columnName).desc();
+        } else {
+          return this.column(columnName).asc();
+        }
+      } else {
+        throw new Error("You can only order by Columns, sortSpecifications, or 'columnName direction' strings");
+      }
+    }, this);
   },
 
   subscribeToOperandsIfNeeded: function() {
-    if (this.hasOperands && !this.hasSubscribers()) {
+    if (this.numOperands > 0 && !this.hasSubscribers()) {
       this.subscribeToOperands();
       this.memoizeTuples();
     }
+  },
+
+  subscribeToOperands: function() {
+    switch(this.numOperands) {
+      case 1:
+        this.subscribeToOperand(this.operand);
+        break;
+      case 2:
+        this.subscribeToOperand(this.leftOperand, 'left');
+        this.subscribeToOperand(this.rightOperand, 'right');
+        break;
+      default:
+        throw new Error("Don't understand that number of operands");
+    }
+  },
+
+  // meta-programming to subscribe to all event types for a given operand. should expand to code like:
+  // this.operandsSubscriptionBundle.add(operand.onInsert(this.hitch('onLeftOperandInsert')));
+  subscribeToOperand: function(operand, leftOrRight) {
+    var events = ['insert', 'update', 'remove', 'dirty', 'clean', 'invalid', 'valid'];
+
+    _.each(events, function(event) {
+      var onEvent = 'on' + _.capitalize(event);
+      var onOperandEvent = _.camelize('on_' + (leftOrRight || "") + "_operand_" + event, true);
+      this.operandsSubscriptionBundle.add(operand[onEvent](this.hitch(onOperandEvent)));
+    }, this);
+  },
+
+  onOperandRemove: function(tuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.tupleRemovedRemotely(tuple, newKey, oldKey);
+  },
+
+  onOperandDirty: function(tuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.recordMadeDirty(tuple, newKey, oldKey);
+  },
+
+  onOperandClean: function(tuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.recordMadeClean(tuple, newKey, oldKey);
+  },
+
+  onOperandInvalid: function(tuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.recordMadeInvalid(tuple, newKey, oldKey);
+  },
+
+  onOperandValid: function(tuple, index, newKey, oldKey) {
+    if (this.findByKey(oldKey)) this.recordMadeValid(tuple, newKey, oldKey);
   },
 
   unsubscribeFromOperandsWhenThisNoLongerHasSubscribers: function() {
@@ -297,33 +408,23 @@ _.constructor("Monarch.Model.Relations.Relation", {
        if (!this.hasSubscribers()) this.unsubscribeFromOperands();
     }, this);
 
-    this.onRemoteInsertNode.onUnsubscribe(unsubscribeCallback);
-    this.onRemoteRemoveNode.onUnsubscribe(unsubscribeCallback);
-    this.onRemoteUpdateNode.onUnsubscribe(unsubscribeCallback);
+    this.onInsertNode.onUnsubscribe(unsubscribeCallback);
+    this.onRemoveNode.onUnsubscribe(unsubscribeCallback);
+    this.onUpdateNode.onUnsubscribe(unsubscribeCallback);
     this.onDirtyNode.onUnsubscribe(unsubscribeCallback);
     this.onCleanNode.onUnsubscribe(unsubscribeCallback);
   },
 
   unsubscribeFromOperands: function() {
     this.operandsSubscriptionBundle.destroy();
-    this._tuples = null;
+    this.storedTuples = null;
   },
-
-  remoteSubscribe: function() {
-    var subscribeFuture = new Monarch.Http.AjaxFuture();
-    Server.subscribe([this]).onSuccess(function(remoteSubscriptions) {
-      subscribeFuture.triggerSuccess(remoteSubscriptions[0]);
-    });
-    return subscribeFuture;
-  },
-
-  // private
 
   predicateFromHash: function(hash) {
     var predicates = [];
     _.each(hash, function(value, key) {
       var column = this.column(key);
-      if (!column) { debugger; throw new Error("No column named " + key + " found."); }
+      if (!column) { throw new Error("No column named " + key + " found."); }
       predicates.push(column.eq(value))
     }, this);
 

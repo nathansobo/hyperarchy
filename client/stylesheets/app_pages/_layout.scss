@@ -1,5 +1,4 @@
-#application {
-
+#app {
   .dropdownMenu {
     z-index: 100;
     position: absolute;
@@ -70,8 +69,8 @@
   }
 
   #mainContent {
+    background: white;
     width: 1000px;
-    padding-bottom: 10px;
     margin: 0 auto;
     position: relative;
     overflow: hidden;
@@ -144,7 +143,6 @@
       height: 28px;
       padding: 0;
       margin: 0;
-      margin-bottom: 20px;
       position: relative;
       z-index: 20;
       overflow: hidden;
@@ -166,25 +164,24 @@
         }
 
         span {
-//          font-size: 16px;
           color: lighten($gray, 25%);
           padding: 0 2px;
         }
 
         a {
           color: lighten($gray, 25%);
-//          text-decoration: underline;
           padding: 0 12px;
         }
       }
     }
 
-    #contentBody {
-      position: relative;
-      z-index: 30;
+    #scrollingArea {
+      background: white;
+      overflow-y: auto;
+      height: 100%;
+      padding-top: 30px;
+      padding-bottom: 10px;
     }
-
-
   }
 
   #feedback {

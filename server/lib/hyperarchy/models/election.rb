@@ -84,6 +84,8 @@ class Election < Monarch::Model::Record
         end
       end
     end
+
+    organization.increment(:election_count)
   end
 
   def email_subject
@@ -108,6 +110,10 @@ Or just reply with 'unsubscribe' to this email.
   def before_destroy
     candidates.each(&:destroy)
     election_visits.each(&:destroy)
+  end
+
+  def after_destroy
+    organization.decrement(:election_count)
   end
 
   def compute_global_ranking

@@ -201,6 +201,10 @@ module Monarch
           []
         end
 
+        def internal_sql_offset
+          nil
+        end
+
         def has_operands?
           false
         end

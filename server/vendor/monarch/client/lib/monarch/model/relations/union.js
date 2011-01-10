@@ -1,21 +1,24 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Model.Relations.Union", Monarch.Model.Relations.Relation, {
+  numOperands: 2,
+  
   initialize: function(leftOperand, rightOperand) {
     this.leftOperand = leftOperand;
     this.rightOperand = rightOperand;
+    this.sortSpecifications = leftOperand.sortSpecifications;
     this.initializeEventsSystem();
   },
 
-  allTuples: function() {
-    if (this._tuples) return this._tuples;
+  tuples: function() {
+    if (this.storedTuples) return this.storedTuples.values();
 
     var tuplesByHashCode = {};
 
-    _.each(this.leftOperand.allTuples(), function(tuple) {
+    _.each(this.leftOperand.tuples(), function(tuple) {
       tuplesByHashCode[tuple.hashCode()] = tuple;
     });
-    _.each(this.rightOperand.allTuples(), function(tuple) {
+    _.each(this.rightOperand.tuples(), function(tuple) {
       tuplesByHashCode[tuple.hashCode()] = tuple;
     });
     return _.values(tuplesByHashCode);
@@ -24,40 +27,49 @@ _.constructor("Monarch.Model.Relations.Union", Monarch.Model.Relations.Relation,
   surfaceTables: function() {
     return this.leftOperand.surfaceTables();
   },
-  
+
   // private
-  subscribeToOperands: function() {
-    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteInsert(function(record) {
-      if (!this.rightOperand.contains(record)) this.tupleInsertedRemotely(record);
-    }, this));
 
-    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteInsert(function(record) {
-      if (!this.leftOperand.contains(record)) this.tupleInsertedRemotely(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteUpdate(function(record, changes) {
-      if (this.contains(record)) this.tupleUpdatedRemotely(record, changes);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteUpdate(function(record, changes) {
-      if (this.contains(record)) this.tupleUpdatedRemotely(record, changes);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.leftOperand.onRemoteRemove(function(record) {
-      if (!this.rightOperand.contains(record)) this.tupleRemovedRemotely(record);
-    }, this));
-
-    this.operandsSubscriptionBundle.add(this.rightOperand.onRemoteRemove(function(record) {
-      if (!this.leftOperand.contains(record)) this.tupleRemovedRemotely(record);
-    }, this));
+  onLeftOperandInsert: function(tuple, index, newKey, oldKey) {
+    if (!this.findByKey(oldKey)) this.tupleInsertedRemotely(tuple);
   },
 
-  tupleUpdatedRemotely: function($super, record, changes) {
-    if (this.lastChanges == changes) return;
-    this.lastChanges = changes;
-    $super(record, changes);
-  }
+  onRightOperandInsert: function(tuple, index, newKey, oldKey) {
+    if (!this.findByKey(oldKey)) this.tupleInsertedRemotely(tuple);
+  },
 
+  onLeftOperandUpdate: function(tuple, changeset, newIndex, oldIndex, newKey, oldKey) {
+    if (this.lastChangeset === changeset) return;
+    this.lastChangeset = changeset;
+    this.tupleUpdatedRemotely(tuple, changeset, newKey, oldKey);
+  },
+
+  onRightOperandUpdate: function(tuple, changeset, newIndex, oldIndex, newKey, oldKey) {
+    if (this.lastChangeset === changeset) return;
+    this.lastChangeset = changeset;
+    this.tupleUpdatedRemotely(tuple, changeset, newKey, oldKey);
+  },
+
+  onLeftOperandRemove: function(tuple, index, newKey, oldKey) {
+    if (!this.rightOperand.find(tuple.id())) this.tupleRemovedRemotely(tuple, newKey, oldKey);
+  },
+
+  onRightOperandRemove: function(tuple, index, newKey, oldKey) {
+    if (!this.leftOperand.find(tuple.id())) this.tupleRemovedRemotely(tuple, newKey, oldKey);
+  },
+
+  // not implemented yet
+  onLeftOperandDirty: function() {},
+  onRightOperandDirty: function() {},
+
+  onLeftOperandClean: function() {},
+  onRightOperandClean: function() {},
+
+  onLeftOperandInvalid: function() {},
+  onRightOperandInvalid: function() {},
+
+  onLeftOperandValid: function() {},
+  onRightOperandValid: function() {}
 });
 
 })(Monarch);

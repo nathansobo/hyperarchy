@@ -1068,7 +1068,7 @@ body.legal {
     position: relative;
     top: -12px; }
 
-#application .dropdownMenu {
+#app .dropdownMenu {
   z-index: 100;
   position: absolute;
   background-color: #efefef;
@@ -1080,7 +1080,7 @@ body.legal {
   -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 4px;
   white-space: nowrap;
   padding: 2px; }
-  #application .dropdownMenu a {
+  #app .dropdownMenu a {
     opacity: 1;
     background-color: white;
     position: relative;
@@ -1088,11 +1088,11 @@ body.legal {
     padding: 2px 4px;
     display: block;
     margin-bottom: 2px; }
-    #application .dropdownMenu a:hover {
+    #app .dropdownMenu a:hover {
       background: #fff3c7; }
-  #application .dropdownMenu li:last-child a {
+  #app .dropdownMenu li:last-child a {
     margin-bottom: 0; }
-#application #header {
+#app #header {
   width: 1000px;
   margin: 0 auto;
   padding-top: 5px;
@@ -1100,7 +1100,7 @@ body.legal {
   height: auto;
   -webkit-user-select: none;
   -moz-user-select: none; }
-  #application #header .headerItem {
+  #app #header .headerItem {
     position: relative;
     float: right;
     margin-left: 6px;
@@ -1111,7 +1111,7 @@ body.legal {
     padding: 5px 10px;
     overflow: hidden;
     text-decoration: none; }
-  #application #header .dropdownLink {
+  #app #header .dropdownLink {
     display: inline-block;
     color: #0e40ac;
     cursor: pointer;
@@ -1121,14 +1121,14 @@ body.legal {
     background-image: url(/images/expand_arrow_blue.png);
     background-repeat: no-repeat;
     background-position: right; }
-  #application #header #logoWrapper {
+  #app #header #logoWrapper {
     float: left;
     margin: 5px;
     margin-left: 6px;
     cursor: pointer; }
-#application #mainContent {
+#app #mainContent {
+  background: white;
   width: 1000px;
-  padding-bottom: 10px;
   margin: 0 auto;
   position: relative;
   overflow: hidden;
@@ -1137,7 +1137,7 @@ body.legal {
   -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
   background: white; }
-  #application #mainContent #navigationBar {
+  #app #mainContent #navigationBar {
     width: 1000px;
     height: 40px;
     padding: 0;
@@ -1153,17 +1153,17 @@ body.legal {
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5c5f65), to(#44464a));
     background: -moz-linear-gradient(top, #5c5f65, 10%);
     color: white; }
-    #application #mainContent #navigationBar div {
+    #app #mainContent #navigationBar div {
       height: 40px;
       padding: 0 30px; }
-      #application #mainContent #navigationBar div h2, #application #mainContent #navigationBar div #app #editOrganization #details label, #app #editOrganization #details #application #mainContent #navigationBar div label {
+      #app #mainContent #navigationBar div h2, #app #mainContent #navigationBar div #editOrganization #details label, #app #editOrganization #details #mainContent #navigationBar div label {
         display: inline-block;
         margin-top: 5px;
         margin-right: 24px;
         font-size: 24px;
         letter-spacing: 1.1;
         cursor: pointer; }
-      #application #mainContent #navigationBar div a {
+      #app #mainContent #navigationBar div a {
         display: inline-block;
         z-index: 30;
         margin: 0;
@@ -1171,7 +1171,7 @@ body.legal {
         padding: 5px 12px;
         color: white;
         font-size: 18px; }
-        #application #mainContent #navigationBar div a.active {
+        #app #mainContent #navigationBar div a.active {
           padding-bottom: 10px;
           -webkit-border-top-left-radius: 4px;
           -webkit-border-top-right-radius: 4px;
@@ -1180,19 +1180,18 @@ body.legal {
           -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
           -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
           background-color: #5a5d62; }
-        #application #mainContent #navigationBar div a.rightSide {
+        #app #mainContent #navigationBar div a.rightSide {
           float: right;
           padding-left: 20px;
           background-repeat: no-repeat;
           background-position: 3px; }
-        #application #mainContent #navigationBar div a#backToLastOrganization {
+        #app #mainContent #navigationBar div a#backToLastOrganization {
           background-image: url(/images/undo_12x12_light.png); }
-  #application #mainContent #subnavigationBar {
+  #app #mainContent #subnavigationBar {
     width: 1000;
     height: 28px;
     padding: 0;
     margin: 0;
-    margin-bottom: 20px;
     position: relative;
     z-index: 20;
     overflow: hidden;
@@ -1204,42 +1203,45 @@ body.legal {
     border-bottom: solid 1px #38393d;
     color: #f4f4f4;
     font-size: 14px; }
-    #application #mainContent #subnavigationBar div {
+    #app #mainContent #subnavigationBar div {
       padding: 5px 20px;
       overflow: hidden; }
-      #application #mainContent #subnavigationBar div div {
+      #app #mainContent #subnavigationBar div div {
         padding: 0; }
-        #application #mainContent #subnavigationBar div div#rightContent {
+        #app #mainContent #subnavigationBar div div#rightContent {
           float: right; }
-        #application #mainContent #subnavigationBar div div#leftContent {
+        #app #mainContent #subnavigationBar div div#leftContent {
           float: left; }
-      #application #mainContent #subnavigationBar div span {
+      #app #mainContent #subnavigationBar div span {
         color: #ababab;
         padding: 0 2px; }
-      #application #mainContent #subnavigationBar div a {
+      #app #mainContent #subnavigationBar div a {
         color: #ababab;
         padding: 0 12px; }
-  #application #mainContent #contentBody {
-    position: relative;
-    z-index: 30; }
-#application #feedback {
+  #app #mainContent #scrollingArea {
+    background: white;
+    overflow-y: auto;
+    height: 100%;
+    padding-top: 30px;
+    padding-bottom: 10px; }
+#app #feedback {
   background: white;
   height: 300px;
   width: 600px;
   position: absolute;
   z-index: 100;
   padding: 10px; }
-  #application #feedback #thanks {
+  #app #feedback #thanks {
     margin-bottom: 10px; }
-  #application #feedback textarea {
+  #app #feedback textarea {
     width: 100%;
     height: 185px;
     padding: 10px;
     margin-bottom: 10px;
     resize: none; }
-  #application #feedback a.roundedButton {
+  #app #feedback a.roundedButton {
     float: right; }
-#application #darkenBackground {
+#app #darkenBackground {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 99;
   height: 100%;

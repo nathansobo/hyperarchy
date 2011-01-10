@@ -220,7 +220,7 @@ module Monarch
             end
           end
 
-          describe "#reload" do
+          describe "#reload(columns=nil)" do
             it "reloads field values from the database, bypassing any custom setter methods" do
               def record.body=(body)
                 self.set_field_value(:body, "EVIL " + body)
@@ -230,7 +230,61 @@ module Monarch
               record.body = "Something else"
               record.body.should == "EVIL Something else"
               record.reload
+              record.should_not be_dirty
               record.body.should == original_body
+            end
+
+            it "if columns are specified, only those fields will be reloaded" do
+              original_title = record.title
+              record.body = "New body"
+              record.title = "New title"
+              record.reload(:title)
+              record.title.should == original_title
+              record.body.should == "New body"
+            end
+          end
+
+          describe "#increment(column, count=1)" do
+            it "incerements the specified field by the given count in the database atomically, then reloads the field and fires an update event" do
+              record = User.create!
+              record.update!(:age => 20)
+
+              on_update_calls = []
+              User.on_update do |record, changeset|
+                on_update_calls.push([record, changeset])
+              end
+
+              record.increment(:age, 2)
+              record.age.should == 22
+              record.reload.age.should == 22
+
+              on_update_calls.length.should == 1
+              on_update_calls[0][0].should == record
+              changeset = on_update_calls[0][1]
+              changeset.old_state.age.should == 20
+              changeset.new_state.age.should == 22
+            end
+          end
+
+          describe "#increment(column, count=1)" do
+            it "decrements the specified field by the given count in the database atomically, then reloads the field and fires an update event" do
+              record = User.create!
+              record.update!(:age => 20)
+
+              on_update_calls = []
+              User.on_update do |record, changeset|
+                on_update_calls.push([record, changeset])
+              end
+
+              record.decrement(:age, 2)
+              record.age.should == 18
+              record.reload.age.should == 18
+
+              on_update_calls.length.should == 1
+              on_update_calls[0][0].should == record
+              changeset = on_update_calls[0][1]
+              changeset.old_state.age.should == 20
+              changeset.new_state.age.should == 18
             end
           end
 

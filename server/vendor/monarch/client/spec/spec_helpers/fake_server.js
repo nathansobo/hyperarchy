@@ -1,6 +1,5 @@
 //= require "fake_server/fake_server"
 //= require "fake_server/fake_comet_client"
-//= require "fake_server/fake_command_batch"
 //= require "fake_server/fake_request"
 //= require "fake_server/fake_fetch"
 //= require "fake_server/fake_subscribe"
@@ -23,7 +22,7 @@ Screw.Unit(function(c) {
 
   Monarch.Model.Relations.Table.prototype.fixture = function(id) {
     var fixture = this.find(id);
-    if (!fixture && Server.autoFetch) {
+    if (!fixture && Server.autoFetch && Server.Repository.tables[this.globalName]) {
       Server.autoFetch([this.where({id: id})]);
       fixture = this.find(id);
     }

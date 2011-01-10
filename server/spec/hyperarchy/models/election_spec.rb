@@ -55,6 +55,12 @@ module Models
         organization.elections.create!(:body => "What should we eat for dinner?")
         Mailer.emails.should be_empty
       end
+
+      it "increments the election count on its organization" do
+        lambda do
+          organization.elections.create!(:body => "What should we eat for dinner?")
+        end.should change { organization.election_count }.by(1)
+      end
     end
 
     describe "before update" do
@@ -85,6 +91,15 @@ module Models
         election.candidates.should be_empty
         election.votes.should be_empty
         election.election_visits.should be_empty
+      end
+    end
+
+    describe "after destroy" do
+      it "decrements the election count on its organization" do
+        election = Election.make
+        lambda do
+          election.destroy
+        end.should change { election.organization.election_count }.by(-1)
       end
     end
 

@@ -4,6 +4,7 @@ class Organization < Monarch::Model::Record
   column :members_can_invite, :boolean, :default => false
   column :dismissed_welcome_guide, :boolean, :default => false
   column :use_ssl, :boolean, :default => true
+  column :election_count, :integer, :default => 0
   column :created_at, :datetime
   column :updated_at, :datetime
 
@@ -24,6 +25,10 @@ class Organization < Monarch::Model::Record
 
   def has_member?(user)
     !memberships.find(:user_id => user.id).nil?
+  end
+
+  def current_user_is_member?
+    has_member?(current_user)
   end
 
   def has_owner?(user)

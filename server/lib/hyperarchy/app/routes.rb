@@ -205,6 +205,21 @@ module Hyperarchy
       successful_json_response({:ranking_id => ranking.id}, ranking)
     end
 
+    get "/fetch_election_data" do
+      authentication_required
+      organization = Organization.find(params[:organization_id])
+      raise Monarch::Unauthorized unless organization.current_user_is_member? || current_user.admin?
+
+      offset = params[:offset]
+      limit = params[:limit]
+
+      elections = organization.elections.order_by(Election[:score].desc).offset(offset).limit(limit)
+      candidates = elections.join_through(Candidate)
+      visits = elections.join_through(current_user.election_visits)
+      
+      successful_json_response(nil, [elections, candidates, visits])
+    end
+
     post "/client_error" do
       Mailer.send(
         :to => ["admin@hyperarchy.com", "nathansobo+hyperarchy@gmail.com"],

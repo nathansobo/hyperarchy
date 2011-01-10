@@ -1,8 +1,8 @@
 (function(Monarch) {
 
 _.constructor("Monarch.Http.UpdateCommand", Monarch.Http.Command, {
-  initialize: function(record) {
-    this.record = record;
+  initialize: function($super, record, server) {
+    $super(record, server);
     this.version = this.record.nextPendingVersion();
     this.tableName = this.record.table.globalName;
     this.id = this.record.id();

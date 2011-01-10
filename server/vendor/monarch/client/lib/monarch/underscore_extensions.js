@@ -39,5 +39,21 @@ _.mixin({
     return function() {
       clearInterval(intervalId);
     };
+  },
+
+  sum: function(array) {
+    var len = array.length
+    var sum = 0;
+    for (var i = 0; i < len; i++) {
+      sum += array[i];
+    }
+    return sum;
+  },
+
+  // null and undefined are treated like infinity to sort null values toward the end
+  nullSafeLessThan: function(a, b) {
+    if ((a === null || a === undefined) && b !== null && b !== undefined) return false;
+    if ((b === null || b === undefined) && a !== null && a !== undefined) return true;
+    return a < b;
   }
 });

@@ -84,8 +84,8 @@ _.constructor("Views.WelcomeGuide", View.Template, {
         Server.fetch(keyRelations).onSuccess(function() {
           this.determineStep();
           _.each(keyRelations, function(relation) {
-            relation.onRemoteInsert(this.hitch('determineStep'));
-            relation.onRemoteRemove(this.hitch('determineStep'));
+            relation.onInsert(this.hitch('determineStep'));
+            relation.onRemove(this.hitch('determineStep'));
           }, this);
         }, this);
       }

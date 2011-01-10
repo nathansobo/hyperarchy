@@ -16,6 +16,7 @@
 //= require "monarch/subscription_bundle"
 //= require "monarch/future"
 //= require "monarch/queue"
+//= require "monarch/skip_list"
 //= require "monarch/inflection"
 //= require "monarch/view"
 //= require "monarch/http"

@@ -63,8 +63,7 @@ _.constructor("Monarch.Model.Repository", {
   performCreateCommand: function(tableName, fieldValues) {
     var table = this.tables[tableName];
     if (table && !table.find(fieldValues.id)) {
-      var record = table.localCreate(fieldValues);
-      record.remotelyCreated(fieldValues);
+      var record = table.createFromRemote(fieldValues);
     }
   },
 

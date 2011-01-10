@@ -1,17 +1,15 @@
-(function(Monarch) {
-
-_.constructor("Monarch.Model.Record", {
+(function(Monarch) {_.constructor("Monarch.Model.Record", {
   constructorProperties: {
     initialize: function() {
       this.delegateConstructorMethods('find', 'fetch', 'findOrFetch', 'tuples', 'first', 'each', 'onEach', 'map', 'any',
-                                      'onLocalUpdate', 'onRemoteInsert', 'onRemoteUpdate', 'onRemoteRemove', 'where',
-                                      'orderBy', 'project', 'union', 'difference', 'empty', 'createFromRemote', 'fixture',
-                                      'clear', 'table');
+                                      'onInsert', 'onUpdate', 'onRemove', 'onDirty', 'onClean', 'onInvalid', 'defaultOrderBy',
+                                      'onValid', 'where', 'offset', 'contains', 'orderBy', 'project', 'union', 'difference',
+                                      'empty', 'build', 'create', 'createFromRemote', 'fixture', 'clear', 'table');
     },
 
     inherited: function(subconstructor) {
       subconstructor.table = new Monarch.Model.Relations.Table(this.determineGlobalName(subconstructor), subconstructor);
-      subconstructor.column("id", "key");
+      subconstructor.generateColumnAccessors(subconstructor.table.column('id'));
       subconstructor.relationDefinitions = [];
       Repository.registerTable(subconstructor.table);
     },
@@ -76,14 +74,6 @@ _.constructor("Monarch.Model.Record", {
       };
     },
 
-    create: function(fieldValues) {
-      return this.table.create(fieldValues);
-    },
-
-    localCreate: function(fieldValues) {
-      return this.table.localCreate(fieldValues);
-    },
-
     humanName: function() {
       return _.humanize(this.basename);
     },
@@ -144,7 +134,7 @@ _.constructor("Monarch.Model.Record", {
   },
 
   save: function() {
-    return Server.save(this);
+    return Server.update(this);
   },
 
   localUpdate: function(valuesByMethodName) {
@@ -157,18 +147,13 @@ _.constructor("Monarch.Model.Record", {
     this.local.finishBatchUpdate();
   },
 
-  localDestroy: function() {
-    this.locallyDestroyed = true;
-  },
-
   update: function(valuesByMethodName) {
     this.localUpdate(valuesByMethodName);
     return this.save();
   },
 
   destroy: function() {
-    this.localDestroy();
-    return Server.save(this);
+    return Server.destroy(this);
   },
 
   remotelyCreated: function(fieldValues) {
@@ -177,7 +162,7 @@ _.constructor("Monarch.Model.Record", {
     this.remote.updateEventsEnabled = true;
     this.initializeRelations();
     this.table.tupleInsertedRemotely(this);
-    this.onRemoteCreateNode.publish(this);
+    this.onCreateNode.publish(this);
   },
 
   remotelyUpdated: function(fieldValues, version) {
@@ -186,11 +171,11 @@ _.constructor("Monarch.Model.Record", {
 
   remotelyDestroyed: function() {
     this.table.remove(this);
-    this.onRemoteDestroyNode.publish(this);
+    this.onDestroyNode.publish(this);
   },
 
-  onRemoteUpdate: function(callback, context) {
-    return this.onRemoteUpdateNode.subscribe(callback, context);
+  onUpdate: function(callback, context) {
+    return this.onUpdateNode.subscribe(callback, context);
   },
 
   onLocalUpdate: function(callback, context) {
@@ -198,12 +183,12 @@ _.constructor("Monarch.Model.Record", {
     return this.onLocalUpdateNode.subscribe(callback, context);
   },
 
-  onRemoteDestroy: function(callback, context) {
-    return this.onRemoteDestroyNode.subscribe(callback, context);
+  onDestroy: function(callback, context) {
+    return this.onDestroyNode.subscribe(callback, context);
   },
 
-  onRemoteCreate: function(callback, context) {
-    return this.onRemoteCreateNode.subscribe(callback, context)
+  onCreate: function(callback, context) {
+    return this.onCreateNode.subscribe(callback, context)
   },
 
   onDirty: function(callback, context) {
@@ -291,15 +276,15 @@ _.constructor("Monarch.Model.Record", {
   },
 
   pauseEvents: function() {
-    this.onRemoteCreateNode.pauseEvents();
-    this.onRemoteUpdateNode.pauseEvents();
-    this.onRemoteDestroyNode.pauseEvents();
+    this.onCreateNode.pauseEvents();
+    this.onUpdateNode.pauseEvents();
+    this.onDestroyNode.pauseEvents();
   },
 
   resumeEvents: function() {
-    this.onRemoteCreateNode.resumeEvents();
-    this.onRemoteUpdateNode.resumeEvents();
-    this.onRemoteDestroyNode.resumeEvents();
+    this.onCreateNode.resumeEvents();
+    this.onUpdateNode.resumeEvents();
+    this.onDestroyNode.resumeEvents();
   },
 
   madeDirty: function() {
@@ -316,7 +301,7 @@ _.constructor("Monarch.Model.Record", {
     this.subscriptions.destroy();
   },
 
-  equals: function(other) {
+  isEqual: function(other) {
     return this === other;
   },
 
@@ -326,9 +311,9 @@ _.constructor("Monarch.Model.Record", {
 
   // private
   initializeSubscriptionNodes: function() {
-    this.onRemoteUpdateNode = new Monarch.SubscriptionNode();
-    this.onRemoteDestroyNode = new Monarch.SubscriptionNode();
-    this.onRemoteCreateNode = new Monarch.SubscriptionNode();
+    this.onUpdateNode = new Monarch.SubscriptionNode();
+    this.onDestroyNode = new Monarch.SubscriptionNode();
+    this.onCreateNode = new Monarch.SubscriptionNode();
 
     this.subscriptions.add(this.table.onPauseEvents(function() {
       this.pauseEvents();
@@ -340,15 +325,15 @@ _.constructor("Monarch.Model.Record", {
   },
 
   subscribeToSelfMutations: function() {
-    this.onRemoteCreateNode.subscribe(function(changeset) {
+    this.onCreateNode.subscribe(function(changeset) {
       if (this.afterRemoteCreate) this.afterRemoteCreate();
     }, this);
 
-    this.onRemoteUpdateNode.subscribe(function(changeset) {
+    this.onUpdateNode.subscribe(function(changeset) {
       if (this.afterRemoteUpdate) this.afterRemoteUpdate(changeset);
     }, this);
 
-    this.onRemoteDestroyNode.subscribe(function() {
+    this.onDestroyNode.subscribe(function() {
       if (this.afterRemoteDestroy) this.afterRemoteDestroy();
       this.cleanup();
     }, this);

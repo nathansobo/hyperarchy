@@ -4,6 +4,8 @@ _.constructor("Monarch.Model.Column", {
   initialize: function(table, name, type) {
     this.table = table;
     this.name = name;
+    this.globalName = _.underscore(name);
+    this.qualifiedName = table.globalName + "." + this.globalName;
     this.type = type;
   },
 
@@ -43,7 +45,7 @@ _.constructor("Monarch.Model.Column", {
     return {
       type: "column",
       table: this.table.globalName,
-      name: _.underscore(this.name)
+      name: this.globalName
     };
   },
 

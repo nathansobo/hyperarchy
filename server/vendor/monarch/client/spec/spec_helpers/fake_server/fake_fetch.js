@@ -26,7 +26,7 @@ _.constructor("FakeServer.FakeFetch", {
 
   addRelationToDataset: function(relation, dataset) {
     var tuples = relation.evaluateInRepository(this.fakeServer.Repository).tuples();
-    var tableName = relation.primaryTable().globalName;
+    var tableName = relation.surfaceTables()[0].globalName;
 
     if (!dataset[tableName]) dataset[tableName] = {};
     _.each(tuples, function(record) {

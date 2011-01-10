@@ -180,9 +180,9 @@ Screw.Unit(function(c) { with(c) {
         var updateCallback = mockFunction('updateCallback');
         var removeCallback = mockFunction('removeCallback');
 
-        Blog.onRemoteInsert(insertCallback);
-        User.onRemoteUpdate(updateCallback);
-        User.onRemoteRemove(removeCallback);
+        Blog.onInsert(insertCallback);
+        User.onUpdate(updateCallback);
+        User.onRemove(removeCallback);
 
         repository.mutate([
           ['create', 'blogs', { id: "malathion", name: "Recipes From The Makers of Malathion"}],
@@ -246,7 +246,7 @@ Screw.Unit(function(c) { with(c) {
 
         // but different data stores
         var numUsersInOriginalRepository = repository.tables.users.tuples().length;
-        clone.tables.users.localCreate({fullName: "Wil Bierbaum"});
+        clone.tables.users.createFromRemote({fullName: "Wil Bierbaum"});
         expect(repository.tables.users.tuples().length).to(eq, numUsersInOriginalRepository);
       });
     });

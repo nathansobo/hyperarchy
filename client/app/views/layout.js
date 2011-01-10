@@ -6,6 +6,7 @@ _.constructor("Views.Layout", View.Template, {
         .ref('darkenBackground');
 
       subview('disconnectDialog', Views.DisconnectDialog);
+      subview('inviteForm', Views.Invite);
 
       div({id: "feedback", style: "display: none", 'class': "dropShadow"}, function() {
         div({'class': "rightCancelX"}).click('hideFeedbackForm');
@@ -53,7 +54,10 @@ _.constructor("Views.Layout", View.Template, {
           .ref("organizationsMenuLink")
           .click("toggleOrganizationsMenu");
 
-        a({'class': "headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
+        a({id: "inviteLink", 'class': "headerItem", href: "#"}, "Invite")
+          .ref('inviteLink')
+          .click('showInviteForm');
+        a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
         div({'class': "clear"});
       });
 
@@ -87,11 +91,12 @@ _.constructor("Views.Layout", View.Template, {
               .click("goToLastOrganization");
           }).ref("alternateNavigationBar");
         });
-
         div({id: "subNavigationBar"}).ref("subNavigationBar");
 
-        div({'class': "container12"}, function() {
-        }).ref('body');
+        div({'id': "scrollingArea"}, function() {
+          div({'class': "container12"}, function() {
+          }).ref('body');
+        }).ref('scrollingArea');
       }).ref('mainContentArea');
     })
   }},
@@ -100,23 +105,49 @@ _.constructor("Views.Layout", View.Template, {
     initialize: function() {
       window.notify = this.hitch('notify');
 
-      this.mainContentArea.fillVerticalSpace(30, 380, 'min-height');
-      $(window).resize(this.bind(function() {
-        this.mainContentArea.fillVerticalSpace(30, 380, 'min-height');
-      }));
-
+      this.defer(this.hitch('adjustHeight'));
+      $(window).resize(this.hitch('adjustHeight'));
+      
       this.subNavigationContents = {};
       _.each(this.views, function(view, viewName) {
         if (view.subNavigationContent) {
           view.subNavigationContent.hide();
           this.subNavigationContents[viewName] = view.subNavigationContent.detach();
           this.subNavigationBar.append(this.subNavigationContents[viewName]);
-        }
-        view.hide();
+        }        view.hide();
         this.body.append(view);
       }, this);
 
       this.populateOrganizations();
+
+      var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
+      organizationsPermitted.onInsert(this.hitch('showOrHideInviteLink'));
+      organizationsPermitted.onRemove(this.hitch('showOrHideInviteLink'));
+      this.showOrHideInviteLink();
+    },
+
+    adjustHeight: function() {
+      this.scrollingArea.fillVerticalSpace(60, 380);
+    },
+
+    zeroScroll: function() {
+      this.scrollingArea.scrollTop(0);
+    },
+
+    onContentScroll: function(fn, context) {
+      if (context) fn = _.bind(fn, context);
+      var scrollingArea = this.scrollingArea;
+      var subscription = {
+        destroy: function() {
+          scrollingArea.unbind('scroll', fn);
+        }
+      };
+      scrollingArea.scroll(fn);
+      return subscription;
+    },
+
+    contentScrollBottom: function() {
+      return this.scrollingArea.scrollTop() + this.scrollingArea.height();
     },
 
     organization: {
@@ -151,7 +182,7 @@ _.constructor("Views.Layout", View.Template, {
 
       organizations.onEach(this.hitch('populateOrganization'));
 
-      Organization.onRemoteUpdate(function(organization, changes) {
+      Organization.onUpdate(function(organization, changes) {
         if (!changes.name) return;
         var name = organization.name();
         var selector = 'a[organizationId=' + organization.id() + ']';
@@ -168,6 +199,14 @@ _.constructor("Views.Layout", View.Template, {
           });
         });
       }));
+    },
+
+    showOrHideInviteLink: function() {
+      if (Application.currentUser().organizationsPermittedToInvite().empty()) {
+        this.inviteLink.hide();
+      } else {
+        this.inviteLink.show();
+      }
     },
 
     notify: function(message) {
@@ -230,6 +269,18 @@ _.constructor("Views.Layout", View.Template, {
           of: this.darkenBackground
         });
 
+      e.preventDefault();
+    },
+
+    showInviteForm: function(elt, e) {
+      this.darkenBackground.fadeIn();
+      this.inviteForm
+        .show()
+        .position({
+          my: "center",
+          at: "center",
+          of: this.darkenBackground
+        });
       e.preventDefault();
     },
 
