@@ -2,9 +2,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizationOverview"}, function() {
 
-      div({id: "organizationOverviewHeader"}, function() {
-        h2('Questions Under Discussion');
-      });
+      h2('Questions Under Discussion');
 
       subview('electionsList', Views.SortedList, {
         useQueue: true,
@@ -54,8 +52,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.organizationId(organizationId);
 
       Application.layout.activateNavigationTab("questionsLink");
-//      Application.layout.showSubNavigationContent("organizations");
-      Application.layout.showSubNavigationContent("");
+      Application.layout.hideSubNavigationContent();
     },
 
     organizationId: {

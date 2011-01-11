@@ -3,10 +3,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
     div({'id': "electionOverview"}, function() {
       div({id: "electionOverviewHeader"}, function() {
         div({'class': "grid8"}, function() {
-          h1({'class': "clickable", style: "display: none"})
-            .click('goToOrganization')
-            .ref('organizationName');
-
           div({id: "electionBodyContainer"}, function() {
             div({'class': "expandArrow", style: "display: none;"})
               .ref('expandLink')
@@ -238,7 +234,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     populateElectionDetails: function(election) {
-      this.organizationName.bindHtml(election.organization(), 'name');
       this.bodyTextarea.val(election.body());
       this.bodyElement.bindHtml(election, 'body');
       if (election.editableByCurrentUser()) {

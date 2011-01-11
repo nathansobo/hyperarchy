@@ -1,44 +1,42 @@
 _.constructor("Views.Members", View.Template, {
   content: function() { with(this.builder) {
     div({id: "members"}, function() {
-      div({'class': "grid12"}, function() {
-        div({'class': "addMember"}, function() {
-          h2("Add a Member");
-          input({'class': "name", type: "text", placeholder: "First Name"}).ref('createMembershipFirstName');
-          input({'class': "name", type: "text", placeholder: "Last Name"}).ref('createMembershipLastName');
-          input({'class': "emailAddress", type: "text", placeholder: "Email Address"})
-            .keyup('enableOrDisableCreateMembership')
-            .ref('createMembershipEmail');
-          select(function() {
-            option({value: "member"}, "Member");
-            option({value: "owner"}, "Owner");
-          }).ref("createMembershipRole");
-          button({disabled: true}, "Add")
-            .ref('createMembershipButton')
-              .click('createMembership');
-          div({'class': "loading", style: "display: none"}).ref('creatingMembership');
-        }).ref('addMemberSection');
+      div({'class': "addMember"}, function() {
+        h2("Add a Member");
+        input({'class': "name", type: "text", placeholder: "First Name"}).ref('createMembershipFirstName');
+        input({'class': "name", type: "text", placeholder: "Last Name"}).ref('createMembershipLastName');
+        input({'class': "emailAddress", type: "text", placeholder: "Email Address"})
+          .keyup('enableOrDisableCreateMembership')
+          .ref('createMembershipEmail');
+        select(function() {
+          option({value: "member"}, "Member");
+          option({value: "owner"}, "Owner");
+        }).ref("createMembershipRole");
+        button({disabled: true}, "Add")
+          .ref('createMembershipButton')
+            .click('createMembership');
+        div({'class': "loading", style: "display: none"}).ref('creatingMembership');
+      }).ref('addMemberSection');
 
-        h2("Current Members");
-        table({'class': "members"}, function() {
-          thead(function() {
-            tr(function() {
+      h2("Current Members");
+      table({'class': "members"}, function() {
+        thead(function() {
+          tr(function() {
 //              th("");
-              th("Name");
-              th("Email Address");
-              th("Role");
-              th("Invitation");
-              th("");
-            })
-          });
+            th("Name");
+            th("Email Address");
+            th("Role");
+            th("Invitation");
+            th("");
+          })
+        });
 
-          subview('membersTbody', Views.SortedList, {
-            rootTag: 'tbody',
-            placeholderTag: 'tbody',
-            buildElement: function(membership) {
-              return Views.MembershipTr.toView({membership: membership});
-            }
-          });
+        subview('membersTbody', Views.SortedList, {
+          rootTag: 'tbody',
+          placeholderTag: 'tbody',
+          buildElement: function(membership) {
+            return Views.MembershipTr.toView({membership: membership});
+          }
         });
       });
 
@@ -72,7 +70,7 @@ _.constructor("Views.Members", View.Template, {
       this.model(Organization.find(organizationId));
 
       Application.layout.activateNavigationTab("membersLink");
-      Application.layout.showSubNavigationContent("");
+      Application.layout.hideSubNavigationContent();
     },
 
     modelAssigned: function(organization) {

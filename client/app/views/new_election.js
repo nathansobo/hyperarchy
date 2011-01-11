@@ -1,20 +1,20 @@
 _.constructor("Views.NewElection", View.Template, {
   content: function() { with(this.builder) {
     div({id: "newElection"}, function() {
-      div({id: 'createElectionForm'}, function() {
-        h2("Raise a New Question")
-        input({placeholder: "Type your question here"})
-          .keypress(function(view, e) {
-            if (e.keyCode === 13) {
-              view.createElectionButton.click();
-              return false;
-            }
-          })
-          .ref('createElectionInput');
-        a({'class': "glossyLightGray roundedButton"}, "Raise Question")
-                  .ref('createElectionButton')
-                  .click('createElection');
-      }).ref('createElectionForm');
+      div({'class': "headerContainer"}, function() {
+        h2("Raise a New Question");
+      });
+      textarea({placeholder: "Type your question here"})
+        .keypress(function(view, e) {
+          if (e.keyCode === 13) {
+            view.createElectionButton.click();
+            return false;
+          }
+        })
+        .ref('createElectionInput');
+      a({'class': "glossyLightGray roundedButton"}, "Raise Question")
+                .ref('createElectionButton')
+                .click('createElection');
 
       div({'class': "clear"});
 
@@ -40,7 +40,7 @@ _.constructor("Views.NewElection", View.Template, {
       this.organizationId(organizationId);
 
       Application.layout.activateNavigationTab("newElectionLink");
-      Application.layout.showSubNavigationContent("");
+      Application.layout.hideSubNavigationContent();
     },
 
     organizationId: {

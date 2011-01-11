@@ -91,6 +91,7 @@ _.constructor("Views.Layout", View.Template, {
               .click("goToLastOrganization");
           }).ref("alternateNavigationBar");
         });
+
         div({id: "subNavigationBar"}).ref("subNavigationBar");
 
         div({'id': "scrollingArea"}, function() {
@@ -114,12 +115,13 @@ _.constructor("Views.Layout", View.Template, {
           view.subNavigationContent.hide();
           this.subNavigationContents[viewName] = view.subNavigationContent.detach();
           this.subNavigationBar.append(this.subNavigationContents[viewName]);
-        }        view.hide();
+        }
+        view.hide();
         this.body.append(view);
       }, this);
+      this.hideSubNavigationContent();
 
       this.populateOrganizations();
-
       var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
       organizationsPermitted.onInsert(this.hitch('showOrHideInviteLink'));
       organizationsPermitted.onRemove(this.hitch('showOrHideInviteLink'));
@@ -218,15 +220,16 @@ _.constructor("Views.Layout", View.Template, {
       }, this), 3000);
     },
 
-    switchViews: function(selectedView) {
-      _.each(this.views, function(view) {
-        if (view === selectedView) {
-          view.show();
-        } else {
-          view.hide();
-        }
-      });
-    },
+//    switchViews: function(selectedView) {
+//      this.hideSubNavigationContent();
+//      _.each(this.views, function(view) {
+//        if (view === selectedView) {
+//          view.show();
+//        } else {
+//          view.hide();
+//        }
+//      });
+//    },
 
     toggleOrganizationsMenu: function(elt, e) {
       e.preventDefault();
@@ -240,7 +243,6 @@ _.constructor("Views.Layout", View.Template, {
 
     toggleMenu: function(link, menu) {
       if (menu.is(":visible")) return;
-
       menu.show();
       menu.position({
         my: "left top",
@@ -248,8 +250,6 @@ _.constructor("Views.Layout", View.Template, {
         of: link,
         collision: "none"
       });
-
-
       _.defer(function() {
         $(window).one('click', function() {
           menu.hide();
@@ -260,7 +260,6 @@ _.constructor("Views.Layout", View.Template, {
     showFeedbackForm: function(elt, e) {
       this.darkenBackground.fadeIn();
       this.darkenBackground.one('click', this.hitch('hideFeedbackForm'));
-
       this.feedbackForm
         .show()
         .position({
@@ -268,7 +267,6 @@ _.constructor("Views.Layout", View.Template, {
           at: "center",
           of: this.darkenBackground
         });
-
       e.preventDefault();
     },
 
@@ -329,19 +327,23 @@ _.constructor("Views.Layout", View.Template, {
       $.bbq.pushState({view: "organization", organizationId: organizationId }, 2);
     },
 
-    showSubNavigationContent: function(viewName) {
-      _.each(this.subNavigationContents, function(element) {element.hide();});
-      if (viewName in this.subNavigationContents) {
-        this.subNavigationBar.css('height', "28px")
-        this.subNavigationContents[viewName].show();
-      } else {
-        this.subNavigationBar.css('height', "8px");
-      }
-    },
-
     activateNavigationTab: function(link) {
       this.organizationNavigationBar.find("a").removeClass('active');
       $(this[link]).addClass('active');
+    },
+
+    showSubNavigationContent: function(viewName) {
+      this.hideSubNavigationContent();
+      console.debug("show");
+      if (viewName in this.subNavigationContents) {
+        this.subNavigationBar.css('height', "28px");
+        this.subNavigationContents[viewName].show();
+      }
+    },
+
+    hideSubNavigationContent: function() {
+      _.each(this.subNavigationContents, function(element) {element.hide();});
+      this.subNavigationBar.css('height', "8px");
     }
   }
 });

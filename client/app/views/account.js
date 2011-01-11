@@ -20,8 +20,7 @@ _.constructor("Views.Account", View.Template, {
     navigate: function() {
       Application.layout.showAlternateNavigationBar("Account Preferences");
       this.emailPreferences.relation(Application.currentUser().memberships().orderBy('id asc'));
-
-      Application.layout.showSubNavigationContent('');
+      Application.layout.hideSubNavigationContent();
     }
   }
 });
