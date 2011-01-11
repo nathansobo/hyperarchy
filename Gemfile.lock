@@ -8,6 +8,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    abstract (1.0.0)
     activemodel (3.0.1)
       activesupport (= 3.0.1)
       builder (~> 2.1.2)
@@ -31,6 +32,8 @@ GEM
     daemons (1.0.10)
     erector (0.6.7)
       treetop (>= 1.2.3)
+    erubis (2.6.6)
+      abstract (>= 1.0.0)
     faker (0.3.1)
     git (1.2.5)
     guid (0.1.1)
@@ -112,6 +115,7 @@ DEPENDENCIES
   cramp (= 0.11)
   daemons (= 1.0.10)
   erector (= 0.6.7)
+  erubis (= 2.6.6)
   eventmachine (= 0.12.11)!
   faker (= 0.3.1)
   git (= 1.2.5)

@@ -20,6 +20,7 @@ require "#{dir}/hyperarchy/models"
 require "#{dir}/hyperarchy/views"
 require "#{dir}/hyperarchy/app"
 require "#{dir}/hyperarchy/scheduler"
+require "#{dir}/hyperarchy/alerter"
 
 require "newrelic_rpm"
 

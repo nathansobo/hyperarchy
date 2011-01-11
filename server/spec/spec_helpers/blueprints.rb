@@ -20,6 +20,12 @@ Election.blueprint do
   suppress_notification_email { true }
 end
 
+Election.blueprint do
+  election { Election.make }
+  body { Sham.answer }
+  suppress_notification_email { true }
+end
+
 Organization.blueprint do
   suppress_membership_creation { true }
   name { Sham.organization_name }

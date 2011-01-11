@@ -7,6 +7,8 @@ class Membership < Monarch::Model::Record
   column :last_visited, :datetime
   column :notify_of_new_elections, :boolean, :default => true
   column :notify_of_new_candidates, :boolean, :default => true
+  column :election_alerts, :string, :default => "weekly"
+  column :candidate_alerts, :string, :default => "weekly"
   column :created_at, :datetime
   column :updated_at, :datetime
 
@@ -107,6 +109,38 @@ class Membership < Monarch::Model::Record
 Visit #{invitation.signup_url} to join our private alpha test and start voting on issues for #{organization.name}.]
     else
       %[Visit http://#{HTTP_HOST}/confirm_membership/#{id} to become a member of #{organization.name}.]
+    end
+  end
+
+  def wants_alerts?(period)
+    election_alerts == period || candidate_alerts == period
+  end
+
+  def new_candidates_in_period(period)
+    user.votes.
+      join_to(organization.elections).
+      join_through(Candidate).
+      where(Candidate[:created_at].gt(last_alerted_or_visited_at(period)))
+  end
+
+  def new_elections_in_period(period)
+    organization.elections.
+      where(Organization[:created_at].gt(last_alerted_or_visited_at(period)))
+  end
+
+  # returns the time of last visit or the 1 <period> ago, whichever is more recent
+  def last_alerted_or_visited_at(period)
+    [period_ago(period), last_visited].max
+  end
+
+  def period_ago(period)
+    case period
+      when "hourly"
+        1.hour.ago
+      when "daily"
+        1.day.ago
+      when "weekly"
+        1.week.ago
     end
   end
 end

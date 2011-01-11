@@ -7,6 +7,7 @@ class Organization < Monarch::Model::Record
   column :election_count, :integer, :default => 0
   column :created_at, :datetime
   column :updated_at, :datetime
+  column :social, :boolean, :default => false
 
   has_many :elections
   has_many :memberships

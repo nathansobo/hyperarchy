@@ -10,7 +10,8 @@ FIXTURES = {
 
   :organizations => {
     :global => {
-      :name => ALPHA_TEST_ORG_NAME
+      :name => "Hyperarchy Social",
+      :social => true
     }
   },
 

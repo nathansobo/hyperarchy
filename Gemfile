@@ -21,6 +21,7 @@ gem "pony", "1.0"
 gem "rgl", "0.4.0", :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
 gem "newrelic_rpm", "2.13.2"
 gem "clockwork", "0.2.1"
+gem "erubis", "2.6.6"
 
 group :development do
   gem "sinatra-reloader", "0.5.0", :require => "sinatra/reloader"
