@@ -22,7 +22,6 @@ _.constructor("Views.Members", View.Template, {
       table({'class': "members"}, function() {
         thead(function() {
           tr(function() {
-//              th("");
             th("Name");
             th("Email Address");
             th("Role");

@@ -30,11 +30,15 @@
     table.members {
       width: 100%;
 
-      th { font-weight: bold; }
-
-      tr, th {
+      th {
+        font-weight: bold;
         border-bottom: 1px #999999 dashed;
-        padding: 5px 0 5px 0;
+        padding-bottom: 5px;
+      }
+
+      td {
+        border-bottom: 1px #999999 dashed;
+        padding: 5px 0;
         height: 40px;
       }
 

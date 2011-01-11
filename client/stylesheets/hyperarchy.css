@@ -1705,10 +1705,12 @@ body.legal {
 #app #members table.members {
   width: 100%; }
   #app #members table.members th {
-    font-weight: bold; }
-  #app #members table.members tr, #app #members table.members th {
+    font-weight: bold;
     border-bottom: 1px #999999 dashed;
-    padding: 5px 0 5px 0;
+    padding-bottom: 5px; }
+  #app #members table.members td {
+    border-bottom: 1px #999999 dashed;
+    padding: 5px 0;
     height: 40px; }
   #app #members table.members .role {
     width: 115px; }
