@@ -1,13 +1,10 @@
 #app {
-
-  h1 {
-    margin-bottom: 10px;
-  }
-
   #account {
     .emailPreferences {
-      padding: 10px;
       margin-bottom: 10px;
+
+//      padding: 10px;
+//      @include dropShadow;
 
       .loading {
         float: right;
@@ -23,6 +20,10 @@
 
         input {
           margin-right: 5px;
+        }
+
+        label {
+          font-size: 16px;
         }
       }
     }

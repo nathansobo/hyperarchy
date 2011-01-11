@@ -1,36 +1,34 @@
 _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'id': "electionOverview"}, function() {
-      div({id: "electionOverviewHeader"}, function() {
-        div({'class': "grid8"}, function() {
-          div({id: "electionBodyContainer"}, function() {
-            div({'class': "expandArrow", style: "display: none;"})
-              .ref('expandLink')
-              .click('expandOrContract');
+      div({'class': "headerContainer"}, function() {
+        div({id: "electionBodyContainer", 'class': "grid8"}, function() {
+          div({'class': "expandArrow", style: "display: none;"})
+            .ref('expandLink')
+            .click('expandOrContract');
 
-            div({id: "electionBodyContainerRight"}, function() {
-              h2({'class': "electionBody"}).ref('bodyElement');
+          div({id: "electionBodyContainerRight"}, function() {
+            h2({'class': "electionBody"}).ref('bodyElement');
 
-              textarea({'class': "electionBody", style: "display: none;"})
-                .ref('bodyTextarea')
-                .bind('keyup paste', 'enableOrDisableSaveButton')
-                .keydown(function(view, event) {
-                  if (event.keyCode === 13) {
-                    view.updateElectionBody();
-                    event.preventDefault();
-                  }
-                });
+            textarea({'class': "electionBody", style: "display: none;"})
+              .ref('bodyTextarea')
+              .bind('keyup paste', 'enableOrDisableSaveButton')
+              .keydown(function(view, event) {
+                if (event.keyCode === 13) {
+                  view.updateElectionBody();
+                  event.preventDefault();
+                }
+              });
 
-              div({id: "expandedArea", style: "display: none;"}, function() {
-                button("Save")
-                  .ref('saveButton')
-                  .click('updateElectionBody');
-                button("Delete Question")
-                  .click('destroyElection');
-                div({'class': "loading", style: "display: none;"}).ref('electionSpinner');
-                div({'class': "clear"});
-              }).ref('expandedArea');
-            });
+            div({id: "expandedArea", style: "display: none;"}, function() {
+              button("Save")
+                .ref('saveButton')
+                .click('updateElectionBody');
+              button("Delete Question")
+                .click('destroyElection');
+              div({'class': "loading", style: "display: none;"}).ref('electionSpinner');
+              div({'class': "clear"});
+            }).ref('expandedArea');
           });
         });
 
@@ -147,7 +145,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
       Server.post("/visited?election_id=" + state.electionId);
 
       Application.layout.activateNavigationTab("questionsLink");
-      Application.layout.showSubNavigationContent("elections");
+//      Application.layout.showSubNavigationContent("elections");
+      Application.layout.hideSubNavigationContent();
     },
 
     electionId: {

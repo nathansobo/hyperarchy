@@ -1,9 +1,7 @@
 _.constructor("Views.NewElection", View.Template, {
   content: function() { with(this.builder) {
     div({id: "newElection"}, function() {
-      div({'class': "headerContainer"}, function() {
-        h2("Raise a New Question");
-      });
+      h2("Raise a New Question");
       textarea({placeholder: "Type your question here"})
         .keypress(function(view, e) {
           if (e.keyCode === 13) {

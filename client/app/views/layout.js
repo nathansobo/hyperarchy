@@ -1,13 +1,12 @@
 _.constructor("Views.Layout", View.Template, {
   content: function() { with(this.builder) {
     div({id: "application"}, function() {
+
       div({id: "notification", style: "display: none"}).ref("notification");
       div({id: "darkenBackground", style: "display: none"})
         .ref('darkenBackground');
-
       subview('disconnectDialog', Views.DisconnectDialog);
       subview('inviteForm', Views.Invite);
-
       div({id: "feedback", style: "display: none", 'class': "dropShadow"}, function() {
         div({'class': "rightCancelX"}).click('hideFeedbackForm');
         div({id: "thanks", 'class': "largeFont"}, function() {
@@ -18,6 +17,7 @@ _.constructor("Views.Layout", View.Template, {
         textarea().ref("feedbackTextarea");
         a({'class': "glossyBlack roundedButton", href: "#"}, "Send Feedback").click('sendFeedback');
       }).ref("feedbackForm");
+
 
       ol({'class': "dropdownMenu"}, function() {
         li(function() {
@@ -30,7 +30,6 @@ _.constructor("Views.Layout", View.Template, {
           });
         });
       }).ref('accountMenu');
-
       ol({'class': "dropdownMenu"}, function() {
         li(function() {
           a({href: "#view=addOrganization"}, "Add Organization...")
@@ -38,26 +37,22 @@ _.constructor("Views.Layout", View.Template, {
       }).ref('organizationsMenu');
 
 
-
-
-
-      div({id: "header"}, function() {
-        div({id: "logoWrapper", 'class': "headerItemX"}, function() {
+      div({id: "globalHeader"}, function() {
+        div({id: "logoWrapper"}, function() {
           div({id: "logo"}).click('goToLastOrganization');
         });
-
-        a({'class': "headerItem dropdownLink", href: "#"}, "Account")
+        a({'class': "globalHeaderItem dropdownLink", href: "#"}, "Account")
           .ref('accountMenuLink')
           .click("toggleAccountMenu");
-
-        a({id: "switchOrganizations", 'class': "headerItem dropdownLink"}, "Organizations")
+        a({'class': "globalHeaderItem dropdownLink"}, "Organizations")
           .ref("organizationsMenuLink")
           .click("toggleOrganizationsMenu");
-
-        a({id: "inviteLink", 'class': "headerItem", href: "#"}, "Invite")
+        a({'class': "globalHeaderItem", href: "#"}, "Invite")
           .ref('inviteLink')
           .click('showInviteForm');
-        a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
+        a({'class': "globalHeaderItem", href: "#"}, "Feedback")
+          .click('showFeedbackForm');
+
         div({'class': "clear"});
       });
 

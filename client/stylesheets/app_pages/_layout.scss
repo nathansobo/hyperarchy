@@ -28,7 +28,7 @@
     }
   }
 
-  #header {
+  #globalHeader {
     width: 1000px;
     margin: 0 auto;
     padding-top: 5px;
@@ -36,7 +36,7 @@
     height: auto;
     @include noSelect;
 
-    .headerItem {
+    .globalHeaderItem {
       position: relative;
       float: right;
       margin-left: 6px;
@@ -130,10 +130,6 @@
           &#backToLastOrganization {
             background-image: url(/images/undo_12x12_light.png);
           }
-
-          &#raise {
-  //          background-image: url(/images/plus_12x12.png);
-          }
         }
       }
     }
@@ -179,8 +175,12 @@
       background: white;
       overflow-y: auto;
       height: 100%;
-      padding-top: 30px;
+      padding-top: 20px;
       padding-bottom: 10px;
+
+      h2, .headerContainer {
+        margin-bottom: 20px;
+      }
     }
   }
 

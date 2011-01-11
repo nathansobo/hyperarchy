@@ -1,7 +1,6 @@
 #app {
   #members {
     @extend #addOrganization;
-    margin-top: 10px;
 
     #content {
       position: relative;
@@ -13,10 +12,6 @@
       font-size: medium;
       margin-bottom: 20px;
 
-      h2 {
-        margin-bottom: 15px;
-      }
-      
       input, select {
         display: inline;
         margin-right: 10px;
@@ -37,7 +32,7 @@
 
       th { font-weight: bold; }
 
-      td, th {
+      tr, th {
         border-bottom: 1px #999999 dashed;
         padding: 5px 0 5px 0;
         height: 40px;

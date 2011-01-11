@@ -1,18 +1,14 @@
 #app {
   #electionOverview {
+    padding: 0;
+    margin: 0;
     clear: both;
     overflow-y: hidden;
 
-    #electionOverviewHeader {
-      margin-bottom: 30px;
-
-      h1 {
-        margin-bottom: 0;
-      }
+    .headerContainer {
+      margin-bottom: 20px;
 
       #electionBodyContainer {
-        margin-top: 2px;
-
         .expandArrow {
           float: left;
           margin-right: 5px;

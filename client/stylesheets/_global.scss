@@ -40,7 +40,7 @@ $backgroundGray: #e6e6e6;
   -moz-border-radius-topright: $radius;
 }
 
-@mixin dropShadow($size, $opacity: 0.4) {
+@mixin dropShadow($size: 6px, $opacity: 0.4) {
   -moz-box-shadow: rgba(0,0,0, $opacity) 0px 0px $size;
   -webkit-box-shadow: rgba(0,0,0, $opacity) 0px 0px $size;
 }

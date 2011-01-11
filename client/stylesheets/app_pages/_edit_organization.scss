@@ -1,55 +1,41 @@
 #app {
   #editOrganization {
     @extend #addOrganization;
-    margin-top: 30px;
 
-    #content {
-      position: relative;
-      z-index: 4;
-      padding: 30px;
+    input[name="name"] {
+      width: 300px;
     }
 
-    #details {
+    textarea {
+      resize: none;
+      width: 500px;
+    }
+
+    #flags {
+      margin-top: 10px;
+      margin-bottom: 20px;
+
+      input[type="checkbox"] {
+        margin-right: 10px;
+        display: inline;
+        width: auto;
+      }
+
       label {
-        @extend h2;
-        margin-bottom: 15px;
-      }
-
-      input[name="name"] {
-        width: 300px;
-      }
-
-      textarea {
-        resize: none;
-        width: 500px;
-      }
-
-      #flags {
-        margin-top: 10px;
-        margin-bottom: 20px;
-
-        input[type="checkbox"] {
-          margin-right: 10px;
-          display: inline;
-          width: auto;
-        }
-
-        label {
-          position: relative;
-          top: 2px;
-        }
-      }
-
-      button {
-        display: inline-block;
-      }
-      
-      .loading {
-        display: inline-block;
         position: relative;
-        top: 3px;
-        left: 5px;
+        top: 2px;
       }
+    }
+
+    button {
+      display: inline-block;
+    }
+
+    .loading {
+      display: inline-block;
+      position: relative;
+      top: 3px;
+      left: 5px;
     }
 
     #overviewLink { float: right; }
