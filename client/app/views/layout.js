@@ -171,6 +171,24 @@ _.constructor("Views.Layout", View.Template, {
       this.alternateNavigationBar.show();
     },
 
+    activateNavigationTab: function(link) {
+      this.organizationNavigationBar.find("a").removeClass('active');
+      $(this[link]).addClass('active');
+    },
+
+    showSubNavigationContent: function(viewName) {
+      this.hideSubNavigationContent();
+      if (viewName in this.subNavigationContents) {
+        this.subNavigationBar.css('height', "28px");
+        this.subNavigationContents[viewName].show();
+      }
+    },
+
+    hideSubNavigationContent: function() {
+      _.each(this.subNavigationContents, function(element) {element.hide();});
+      this.subNavigationBar.css('height', "8px");
+    },
+
     populateOrganizations: function() {
       var organizations =
         Application.currentUser().admin() ?
@@ -214,17 +232,6 @@ _.constructor("Views.Layout", View.Template, {
         this.notification.empty();
       }, this), 3000);
     },
-
-//    switchViews: function(selectedView) {
-//      this.hideSubNavigationContent();
-//      _.each(this.views, function(view) {
-//        if (view === selectedView) {
-//          view.show();
-//        } else {
-//          view.hide();
-//        }
-//      });
-//    },
 
     toggleOrganizationsMenu: function(elt, e) {
       e.preventDefault();
@@ -325,24 +332,6 @@ _.constructor("Views.Layout", View.Template, {
     goToLastOrganization: function() {
       var organizationId = Application.currentUser().lastVisitedOrganization().id();
       $.bbq.pushState({view: "organization", organizationId: organizationId }, 2);
-    },
-
-    activateNavigationTab: function(link) {
-      this.organizationNavigationBar.find("a").removeClass('active');
-      $(this[link]).addClass('active');
-    },
-
-    showSubNavigationContent: function(viewName) {
-      this.hideSubNavigationContent();
-      if (viewName in this.subNavigationContents) {
-        this.subNavigationBar.css('height', "28px");
-        this.subNavigationContents[viewName].show();
-      }
-    },
-
-    hideSubNavigationContent: function() {
-      _.each(this.subNavigationContents, function(element) {element.hide();});
-      this.subNavigationBar.css('height', "8px");
     }
   }
 });

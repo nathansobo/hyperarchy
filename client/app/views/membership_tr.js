@@ -33,10 +33,4 @@ _.constructor("Views.MembershipTr", View.Template, {
       });
     });
   }},
-
-  viewProperties: {
-    initialize: function() {
-//      this.avatar.user(this.membership.user);
-    }
-  }
 });

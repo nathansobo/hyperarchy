@@ -395,10 +395,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
       $.bbq.pushState({view: "election", electionId: id}, 2);
     },
 
-    goToPreviousElection: function() {
-      $.bbq.pushState({view: "election", electionId: this.election().id() - 1}, 2);
-    },
-
     expandOrContract: function() {
       if (this.expanded) {
         this.contract();
