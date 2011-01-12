@@ -167,6 +167,13 @@
         a {
           color: lighten($gray, 25%);
           padding: 0 12px;
+
+          &#back {
+            padding-left: 20px;
+            background-repeat: no-repeat;
+            background-position: 3px;
+            background-image: url(/images/undo_12x12_light.png);
+          }
         }
       }
     }

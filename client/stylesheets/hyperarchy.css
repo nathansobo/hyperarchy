@@ -1214,6 +1214,11 @@ body.legal {
       #app #mainContent #subnavigationBar div a {
         color: #ababab;
         padding: 0 12px; }
+        #app #mainContent #subnavigationBar div a#back {
+          padding-left: 20px;
+          background-repeat: no-repeat;
+          background-position: 3px;
+          background-image: url(/images/undo_12x12_light.png); }
   #app #mainContent #scrollingArea {
     background: white;
     overflow-y: auto;

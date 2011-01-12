@@ -100,7 +100,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       div(function() {
         div({id: "leftContent"}, function() {
-          a("Back to Questions")
+          a({id: "back"}, "Back to Questions")
             .click(function() {
               Application.layout.goToOrganization();
             });
