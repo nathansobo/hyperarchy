@@ -3,6 +3,7 @@ Sham.define do
   last_name { Faker::Name.last_name }
   email_address { Faker::Internet.email }
   question { Faker::Lorem.sentence.chop + "?" }
+  answer { Faker::Lorem.sentence }
   organization_description { Faker::Company.bs.capitalize + "." }
   organization_name { Faker::Company.name }
 end
@@ -20,10 +21,9 @@ Election.blueprint do
   suppress_notification_email { true }
 end
 
-Election.blueprint do
+Candidate.blueprint do
   election { Election.make }
   body { Sham.answer }
-  suppress_notification_email { true }
 end
 
 Organization.blueprint do

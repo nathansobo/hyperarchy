@@ -9,7 +9,9 @@ class User < Monarch::Model::Record
 
   has_many :memberships
   has_many :election_visits
-  
+  has_many :votes
+  has_many :rankings
+
   relates_to_many :organizations do
     memberships.join_through(Organization)
   end

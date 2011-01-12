@@ -97,6 +97,30 @@ class Membership < Monarch::Model::Record
     end
   end
 
+  def wants_alerts?(period)
+     wants_election_alerts?(period) || wants_candidate_alerts?(period) 
+  end
+
+  def wants_candidate_alerts?(period)
+    candidate_alerts == period
+  end
+
+  def wants_election_alerts?(period)
+    election_alerts == period
+  end
+
+  def new_candidates_in_period(period)
+    user.votes.
+      join_to(organization.elections).
+      join_through(Candidate).
+      where(Candidate[:created_at] > (last_alerted_or_visited_at(period)))
+  end
+
+  def new_elections_in_period(period)
+    organization.elections.
+      where(Organization[:created_at].gt(last_alerted_or_visited_at(period)))
+  end
+
   protected
   def invite_email_subject
     "#{current_user.full_name} has invited you to join #{organization.name} on Hyperarchy"
@@ -110,22 +134,6 @@ Visit #{invitation.signup_url} to join our private alpha test and start voting o
     else
       %[Visit http://#{HTTP_HOST}/confirm_membership/#{id} to become a member of #{organization.name}.]
     end
-  end
-
-  def wants_alerts?(period)
-    election_alerts == period || candidate_alerts == period
-  end
-
-  def new_candidates_in_period(period)
-    user.votes.
-      join_to(organization.elections).
-      join_through(Candidate).
-      where(Candidate[:created_at].gt(last_alerted_or_visited_at(period)))
-  end
-
-  def new_elections_in_period(period)
-    organization.elections.
-      where(Organization[:created_at].gt(last_alerted_or_visited_at(period)))
   end
 
   # returns the time of last visit or the 1 <period> ago, whichever is more recent
