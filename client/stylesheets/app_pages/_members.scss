@@ -1,6 +1,7 @@
 #app {
   #members {
     @extend #addOrganization;
+    overflow: hidden;
 
     #content {
       position: relative;

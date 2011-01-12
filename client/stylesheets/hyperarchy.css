@@ -1429,7 +1429,7 @@ body.legal {
   padding: 0;
   margin: 0;
   clear: both;
-  overflow: hidden; }
+  overflow-y: hidden; }
   #app #electionOverview .headerContainer {
     margin-bottom: 20px; }
     #app #electionOverview .headerContainer #electionBodyContainer .expandArrow {
@@ -1688,43 +1688,45 @@ body.legal {
 #app #editOrganization #overviewLink {
   float: right; }
 
-#app #members #content {
-  position: relative;
-  z-index: 4;
-  padding: 30px; }
-#app #members div.addMember {
-  font-size: medium;
-  margin-bottom: 20px; }
-  #app #members div.addMember input, #app #members div.addMember select {
-    display: inline;
-    margin-right: 10px; }
-  #app #members div.addMember input.name {
-    width: 150px; }
-  #app #members div.addMember input.emailAddress {
-    width: 250px; }
-  #app #members div.addMember div.loading {
-    display: inline-block;
+#app #members {
+  overflow: hidden; }
+  #app #members #content {
     position: relative;
-    top: 5px;
-    left: 5px; }
-#app #members table.members {
-  width: 100%; }
-  #app #members table.members th {
-    font-weight: bold;
-    border-bottom: 1px #999999 dashed;
-    padding-bottom: 5px; }
-  #app #members table.members td {
-    border-bottom: 1px #999999 dashed;
-    padding: 5px 0;
-    height: 40px; }
-  #app #members table.members .role {
-    width: 115px; }
-  #app #members table.members .remove {
-    width: 80px; }
-  #app #members table.members .loading {
-    display: inline-block;
-    position: relative;
-    top: 5px; }
+    z-index: 4;
+    padding: 30px; }
+  #app #members div.addMember {
+    font-size: medium;
+    margin-bottom: 20px; }
+    #app #members div.addMember input, #app #members div.addMember select {
+      display: inline;
+      margin-right: 10px; }
+    #app #members div.addMember input.name {
+      width: 150px; }
+    #app #members div.addMember input.emailAddress {
+      width: 250px; }
+    #app #members div.addMember div.loading {
+      display: inline-block;
+      position: relative;
+      top: 5px;
+      left: 5px; }
+  #app #members table.members {
+    width: 100%; }
+    #app #members table.members th {
+      font-weight: bold;
+      border-bottom: 1px #999999 dashed;
+      padding-bottom: 5px; }
+    #app #members table.members td {
+      border-bottom: 1px #999999 dashed;
+      padding: 5px 0;
+      height: 40px; }
+    #app #members table.members .role {
+      width: 115px; }
+    #app #members table.members .remove {
+      width: 80px; }
+    #app #members table.members .loading {
+      display: inline-block;
+      position: relative;
+      top: 5px; }
 
 #app #account .emailPreferences {
   margin-bottom: 20px; }

@@ -1,6 +1,6 @@
 _.constructor("Views.Members", View.Template, {
   content: function() { with(this.builder) {
-    div({id: "members"}, function() {
+    div({id: "members", 'class': "grid12"}, function() {
       div({'class': "addMember"}, function() {
         h2("Add a Member");
         input({'class': "name", type: "text", placeholder: "First Name"}).ref('createMembershipFirstName');
