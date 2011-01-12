@@ -56,7 +56,7 @@ Screw.Unit(function(c) { with(c) {
         });
 
         context("when the response does not include a dataset", function() {
-          it("invokes only success callbacks with the response's 'data' hash and does not invoke failure, beforeEvents, or afterEvents callbacks", function() {
+          it("invokes beforeEvents, afterEvents, and success callbacks with the response's 'data' hash and does not invoke failure callbacks", function() {
             var beforeEventsCallback = mockFunction("before events callback");
             var afterEventsCallback = mockFunction("after events callback");
             var successCallback = mockFunction("success callback");
@@ -73,9 +73,9 @@ Screw.Unit(function(c) { with(c) {
               data: data
             });
 
+            expect(beforeEventsCallback).to(haveBeenCalled, withArgs(data));
+            expect(afterEventsCallback).to(haveBeenCalled, withArgs(data));
             expect(successCallback).to(haveBeenCalled, withArgs(data));
-            expect(beforeEventsCallback).toNot(haveBeenCalled);
-            expect(afterEventsCallback).toNot(haveBeenCalled);
             expect(failureCallback).toNot(haveBeenCalled);
           });
         });

@@ -38,6 +38,8 @@ _.constructor("Monarch.Http.AjaxFuture", {
     this.triggered = true;
     this.successful = true;
     this.data = data;
+    this.beforeEventsNode.publish(data);
+    this.afterEventsNode.publish(data);
     this.onSuccessNode.publish(data);
     this.onCompleteNode.publish(data);
   },
