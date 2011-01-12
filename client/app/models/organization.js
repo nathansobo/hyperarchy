@@ -29,10 +29,12 @@ _.constructor("Organization", Model.Record, {
     }
   },
 
-  fetchMoreElections: function() {
+  fetchMoreElections: function(fetchIfWeHaveLessThan) {
     if (this.fetchInProgressFuture) return this.fetchInProgressFuture;
     if (!this.numElectionsFetched) this.numElectionsFetched = 0;
-    if (this.elections().size() === this.electionCount()) {
+
+
+    if (this.elections().size() >= (fetchIfWeHaveLessThan || this.electionCount())) {
       var future = new Monarch.Http.AjaxFuture();
       future.triggerSuccess();
       return future;
