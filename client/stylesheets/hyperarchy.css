@@ -1429,7 +1429,7 @@ body.legal {
   padding: 0;
   margin: 0;
   clear: both;
-  overflow-y: hidden; }
+  overflow: hidden; }
   #app #electionOverview .headerContainer {
     margin-bottom: 20px; }
     #app #electionOverview .headerContainer #electionBodyContainer .expandArrow {
