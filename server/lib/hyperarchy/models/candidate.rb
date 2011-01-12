@@ -11,6 +11,8 @@ class Candidate < Monarch::Model::Record
   belongs_to :creator, :class_name => "User"
   has_many :rankings
 
+  attr_accessor :suppress_notification_email
+
   def organization_ids
     election ? election.organization_ids : []
   end
@@ -97,6 +99,8 @@ class Candidate < Monarch::Model::Record
   protected
 
   def send_notifications
+    return if suppress_notification_email
+
     notify_users = election.votes.
       join(Membership.where(:organization_id => election.organization_id)).
         on(Vote[:user_id].eq(Membership[:user_id])).

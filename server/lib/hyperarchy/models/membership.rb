@@ -118,7 +118,7 @@ class Membership < Monarch::Model::Record
 
   def new_elections_in_period(period)
     organization.elections.
-      where(Organization[:created_at].gt(last_alerted_or_visited_at(period)))
+      where(Election[:created_at] > last_alerted_or_visited_at(period))
   end
 
   protected

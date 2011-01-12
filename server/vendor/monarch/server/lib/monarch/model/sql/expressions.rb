@@ -85,6 +85,10 @@ module Monarch
             end.sort.join(" and ")
           end
 
+          def literals_hash
+            predicates.map(&:literals_hash).inject(:merge)
+          end
+
           def flatten
             predicates.map {|p| p.flatten}.flatten
           end

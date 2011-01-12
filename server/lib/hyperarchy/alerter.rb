@@ -12,8 +12,8 @@ module Hyperarchy
       alert_presenter = AlertPresenter.new(user, period)
       return if alert_presenter.sections.empty?
       Mailer.send(
-        :to => [user.email_address],
-        :subject => "#{current_user.full_name} submitted feedback",
+        :to => user.email_address,
+        :subject => alert_presenter.subject,
         :alert_presenter => alert_presenter
       )
     end
@@ -32,11 +32,28 @@ module Hyperarchy
       def memberships
         user.memberships.
           join_to(Organization).
-          order_by(Organization[:social].desc).
+          order_by(:social).
           project(Membership)
       end
 
+      def subject
+        items = []
+        items.push("questions") if new_elections?
+        items.push("answers") if new_candidates?
+        "New #{items.join(" and ")} on Hyperarchy"
+      end
+
+      def new_elections?
+        sections.any? {|section| !section.elections_section.nil? }
+      end
+
+      def new_candidates?
+        sections.any? {|section| !section.candidates_section.nil? }
+      end
+
       class MembershipSection
+        attr_reader :membership, :period, :candidates_section, :elections_section
+
         def initialize(membership, period)
           @membership = membership
           @period = period
@@ -46,7 +63,7 @@ module Hyperarchy
           end
 
           if membership.wants_election_alerts?(period)
-            @candidates_section = ElectionsSection.new(membership, period)
+            @elections_section = ElectionsSection.new(membership, period)
           end
         end
       end
@@ -58,7 +75,7 @@ module Hyperarchy
           @membership = membership
           @period = period
           @candidate_groups_by_election_id = Hash.new do |h,election_id|
-            h[election_id] = CandidateGroup.new(Election.find(id))
+            h[election_id] = CandidateGroup.new(Election.find(election_id))
           end
 
           new_candidates.each do |candidate|
@@ -94,7 +111,7 @@ module Hyperarchy
         def initialize(membership, period)
           @membership = membership
           @period = period
-          @elections = membership.new_elections_in_period(period)
+          @elections = membership.new_elections_in_period(period).all
         end
       end
     end
