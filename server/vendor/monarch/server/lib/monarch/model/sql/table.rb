@@ -12,6 +12,10 @@ module Monarch
           name
         end
 
+        def literals_hash
+          {}
+        end
+
         def name
           algebra_table.global_name
         end

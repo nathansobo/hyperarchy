@@ -18,7 +18,7 @@ module Monarch
         describe "class methods" do
           describe ".from_wire_representation" do
             it "builds a TableProjection with its #operand resolved in the given repository and the table associated with the record class of the relation named as 'projected_table' as its #projected_table" do
-              repository = UserRepository.new(User.find('jan'))
+              repository = UserRepository.new(User.find("jan"))
               representation = {
                 "type" => "table_projection",
                 "projected_table" => "blog_posts",
@@ -49,11 +49,11 @@ module Monarch
               }
 
               projection = TableProjection.from_wire_representation(representation, repository)
-              projection.to_sql.should == %{
-              select blog_posts.*
-              from blogs, blog_posts
-              where blogs.id = blog_posts.blog_id and blogs.user_id = #{"jan".hash}
-              }.gsub(/[ \n]+/, " ").strip
+              projection.to_sql.should be_like_query(%{
+                select blog_posts.*
+                from blogs, blog_posts
+                where blogs.id = blog_posts.blog_id and blogs.user_id = :v1
+              }, :v1 => "jan".to_key)
             end
           end
         end

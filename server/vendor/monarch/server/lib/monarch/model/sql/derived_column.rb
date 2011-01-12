@@ -28,6 +28,10 @@ module Monarch
           expression.to_sql + as_sql
         end
 
+        def literals_hash
+          expression.literals_hash
+        end
+
         protected
 
 

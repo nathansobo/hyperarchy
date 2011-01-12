@@ -45,7 +45,7 @@ module Monarch
             record_in_id_map = BlogPost.find('grain_quinoa')
             BlogPost.table.local_identity_map['grain_quinoa'] = record_in_id_map
 
-            Origin.execute_dui("update blog_posts set body = 'New Body' where id = #{record_in_id_map.id}")
+            Origin.execute_dui("update blog_posts set body = 'New Body' where id = :id", :id => record_in_id_map.id)
 
             all = Origin.read(BlogPost.where(BlogPost[:id].eq("grain_quinoa")))
             all.size.should == 1
@@ -54,7 +54,7 @@ module Monarch
             record.body.should == "New Body"
 
             record.body = "Dirty Body" # should not get passively updated
-            Origin.execute_dui("update blog_posts set body = 'Shiny Body' where id = #{record_in_id_map.id}")
+            Origin.execute_dui("update blog_posts set body = 'Shiny Body' where id = :id", :id => record_in_id_map.id)
             Origin.read(BlogPost.where(BlogPost[:id].eq("grain_quinoa")))
 
             record.body.should == "Dirty Body"

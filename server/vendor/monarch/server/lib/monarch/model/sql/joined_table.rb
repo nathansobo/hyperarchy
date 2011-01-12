@@ -17,6 +17,10 @@ module Monarch
           ].join(" ")
         end
 
+        def literals_hash
+          [left_table_ref, right_table_ref, conditions].flatten.map(&:literals_hash).inject(:merge)
+        end
+
         protected
 
         def join_conditions_sql

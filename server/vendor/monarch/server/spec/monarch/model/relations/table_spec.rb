@@ -163,7 +163,7 @@ module Monarch
 
         describe "#to_sql" do
           it "returns a select statement for only the concrete_columns declared as Columns on the Table" do
-            table.to_sql.should == "select blog_posts.* from blog_posts"
+            table.to_sql.should == ["select blog_posts.* from blog_posts", {}]
           end
         end
 

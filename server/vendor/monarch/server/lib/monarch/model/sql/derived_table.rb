@@ -12,6 +12,10 @@ module Monarch
           "(#{subquery.to_sql}) as #{name}"
         end
 
+        def literals_hash
+          subquery.literals_hash
+        end
+
         def inner_join_conditions
           []
         end

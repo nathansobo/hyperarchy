@@ -14,6 +14,10 @@ module Monarch
           "#{table_ref.name}.*"
         end
 
+        def literals_hash
+          {}
+        end
+
         def derive(state, deriving_table_ref, &block)
           table_ref.algebra_columns.map do |algebra_column|
             algebra_column.sql_expression(state).derive(deriving_table_ref, &block)

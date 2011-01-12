@@ -15,6 +15,10 @@ module Monarch
             @to_sql ||= "#{left_expression.to_sql} #{operator_sql} #{right_expression.to_sql}"
           end
 
+          def literals_hash
+            left_expression.literals_hash.merge(right_expression.literals_hash)
+          end
+
           def flatten
             [self]
           end
@@ -94,6 +98,10 @@ module Monarch
 
           def to_sql
             "#{type}(#{expression.to_sql})"
+          end
+
+          def literals_hash
+            expression.literals_hash
           end
         end
       end

@@ -10,6 +10,7 @@ ENV['BUNDLE_GEMFILE'] = File.expand_path("#{dir}/../../Gemfile")
 Bundler.setup(:default, :test)
 require "spec"
 require "set"
+require "differ"
 require "rack/test"
 require "timecop"
 require "#{dir}/../lib/monarch"

@@ -46,37 +46,25 @@ class Symbol
   end
 end
 
-class Fixnum
+module SqlLiteralExpression
   def sql_expression(state)
-    self
+    Monarch::Model::Sql::Literal.new(state.next_literal_placeholder_name, self)
   end
+end
 
-  def to_sql
-    inspect
-  end
+class Fixnum
+  include SqlLiteralExpression
 end
 
 class Float
-  def sql_expression(state)
-    self
-  end
-
-  def to_sql
-    inspect
-  end
+  include SqlLiteralExpression
 end
 
 class String
+  include SqlLiteralExpression
+
   def starts_with?(prefix)
     index(prefix) == 0
-  end
-
-  def sql_expression(state)
-    self
-  end
-
-  def to_sql
-    "'#{gsub("'", "\\\\'")}'"
   end
 
   def path_starts_with?(prefix)
@@ -121,44 +109,20 @@ class Hash
 end
 
 class TrueClass
-  def to_sql
-    if Origin.database_type == :postgres
-      "TRUE"
-    else
-      "1"
-    end
-  end
-
-  def sql_expression(state)
-    self
-  end
+  include SqlLiteralExpression
 end
 
 class FalseClass
-  def to_sql
-    if Origin.database_type == :postgres
-      "FALSE"
-    else
-      "0"
-    end
-  end
-
-  def sql_expression(state)
-    self
-  end
+  include SqlLiteralExpression
 end
 
 class NilClass
-  def to_sql
-    "null"
-  end
-
-  def sql_expression(state)
-    self
-  end
+  include SqlLiteralExpression
 end
 
 class Time
+  include SqlLiteralExpression
+
   def to_millis
     to_i * 1000
   end

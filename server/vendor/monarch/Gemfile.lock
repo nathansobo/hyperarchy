@@ -19,6 +19,7 @@ GEM
       mysqlplus (~> 0.1.1)
       rack (~> 1.1.0)
     daemons (1.1.0)
+    differ (0.1.1)
     erector (0.6.7)
       treetop (>= 1.2.3)
     eventmachine (0.12.10)
@@ -62,6 +63,7 @@ PLATFORMS
 DEPENDENCIES
   activesupport (= 3.0.1)
   cramp (= 0.11)
+  differ (= 0.1.1)
   erector (= 0.6.7)
   guid (= 0.1.1)
   json (= 1.2.0)

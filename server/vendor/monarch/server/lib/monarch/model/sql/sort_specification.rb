@@ -10,6 +10,10 @@ module Monarch
         def to_sql
           "#{column_ref.to_sql} #{direction}"
         end
+
+        def literals_hash
+          column_ref.literals_hash
+        end
       end
     end
   end
