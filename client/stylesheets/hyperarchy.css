@@ -1722,7 +1722,7 @@ body.legal {
     top: 5px; }
 
 #app #account .emailPreferences {
-  margin-bottom: 10px; }
+  margin-bottom: 20px; }
   #app #account .emailPreferences .loading {
     float: right; }
   #app #account .emailPreferences .organizationName {

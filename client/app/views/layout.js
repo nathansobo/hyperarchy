@@ -299,7 +299,12 @@ _.constructor("Views.Layout", View.Template, {
 
     goToQuestions: function() {
       $.bbq.pushState({view: "organization", organizationId: this.organization().id() }, 2);
-     return false;
+      return false;
+    },
+
+    goToQuestion: function(id) {
+      $.bbq.pushState({view: "election", electionId: id}, 2);
+      return false;
     },
 
     goToEditOrganization: function() {
@@ -329,7 +334,6 @@ _.constructor("Views.Layout", View.Template, {
 
     showSubNavigationContent: function(viewName) {
       this.hideSubNavigationContent();
-      console.debug("show");
       if (viewName in this.subNavigationContents) {
         this.subNavigationBar.css('height', "28px");
         this.subNavigationContents[viewName].show();

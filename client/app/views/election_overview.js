@@ -106,15 +106,13 @@ _.constructor("Views.ElectionOverview", View.Template, {
             });
         });
         div({id: "rightContent"}, function() {
-          a("< Previous")
-            .ref("previousElectionLink")
-            .click("goToNextElection");
-          span("9").ref("electionPosition");
+          a("Previous")
+            .ref("previousElectionLink");
+          span().ref("electionPosition");
           span("of");
-          span("89").ref("numElections");
-          a("Next >")
-            .ref("nextElectionLink")
-            .click("goToPreviousElection");
+          span().ref("numElections");
+          a("Next")
+            .ref("nextElectionLink");
         });
       }).ref("subNavigationContent");
     });
@@ -145,8 +143,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
       Server.post("/visited?election_id=" + state.electionId);
 
       Application.layout.activateNavigationTab("questionsLink");
-//      Application.layout.showSubNavigationContent("elections");
-      Application.layout.hideSubNavigationContent();
+      Application.layout.showSubNavigationContent("elections");
+//      Application.layout.hideSubNavigationContent();
     },
 
     electionId: {
@@ -202,12 +200,34 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     populateSubNavigationBar: function() {
-      this.electionPosition.bindHtml(this.election(), "id");
-      this.numElections.html(this.election().organization().elections().size());
+      var elections = this.election().organization().elections();
+      this.numElections.html(elections.size());
 
-      // set 'numElections' to the actual number of elections in the organization
-      // if at first election, don't show 'previous' link
-      // if at last election, don't show 'next' link
+      var score = this.election().score();
+      var position = elections.where(Election.score.gt(score)).size() + 1;
+      this.electionPosition.html(position);
+
+      // later, call  this.subscribeToElectionOrder or something like that
+      var nextElection = elections.where(Election.score.lt(score)).first();
+      if (nextElection) {
+        var nextElectionID = nextElection.id();
+        this.nextElectionLink.show();
+        this.nextElectionLink.click(function() {
+          Application.layout.goToQuestion(nextElectionID);
+        });
+      } else {
+        this.nextElectionLink.hide();
+      }
+      var previousElection = elections.where(Election.score.gt(score)).last();
+      if (previousElection) {
+        var previousElectionID = previousElection.id();
+        this.previousElectionLink.show();
+        this.previousElectionLink.click(function() {
+          Application.layout.goToQuestion(previousElectionID);
+        });
+      } else {
+        this.previousElectionLink.hide();
+      }
     },
 
     hideElementsWhileLoading: function() {
@@ -371,8 +391,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
       $.bbq.pushState({view: "organization", organizationId: this.election().organizationId() }, 2);
     },
 
-    goToNextElection: function() {
-      $.bbq.pushState({view: "election", electionId: this.election().id() + 1}, 2);
+    goToElection: function(id) {
+      $.bbq.pushState({view: "election", electionId: id}, 2);
     },
 
     goToPreviousElection: function() {
