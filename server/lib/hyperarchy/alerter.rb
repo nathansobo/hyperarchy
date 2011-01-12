@@ -14,7 +14,9 @@ module Hyperarchy
       Mailer.send(
         :to => user.email_address,
         :subject => alert_presenter.subject,
-        :alert_presenter => alert_presenter
+        :alert_presenter => alert_presenter,
+        :erector_class => Emails::Alert,
+        :template_name => "alert"
       )
     end
 
@@ -25,7 +27,10 @@ module Hyperarchy
         @user = user
         @period = period
         @sections = memberships.map do |membership|
-          MembershipSection.new(membership, period) if membership.wants_alerts?(period)
+          if membership.wants_alerts?(period)
+            section = MembershipSection.new(membership, period)
+            section if section.candidates_section || section.elections_section
+          end
         end.compact
       end
 
@@ -60,25 +65,33 @@ module Hyperarchy
 
           if membership.wants_candidate_alerts?(period)
             @candidates_section = CandidatesSection.new(membership, period)
+            @candidates_section = nil if candidates_section.num_candidates == 0
           end
 
           if membership.wants_election_alerts?(period)
             @elections_section = ElectionsSection.new(membership, period)
+            @elections_section = nil if elections_section.num_elections == 0
           end
+        end
+
+        def organization
+          membership.organization
         end
       end
 
       class CandidatesSection
-        attr_reader :membership, :period, :candidate_groups_by_election_id
+        attr_reader :membership, :period, :candidate_groups_by_election_id, :num_candidates
 
         def initialize(membership, period)
           @membership = membership
           @period = period
+          @num_candidates = 0
           @candidate_groups_by_election_id = Hash.new do |h,election_id|
             h[election_id] = CandidateGroup.new(Election.find(election_id))
           end
 
           new_candidates.each do |candidate|
+            @num_candidates += 1
             candidate_groups_by_election_id[candidate.election_id].add_candidate(candidate)
           end
         end
@@ -112,6 +125,10 @@ module Hyperarchy
           @membership = membership
           @period = period
           @elections = membership.new_elections_in_period(period).all
+        end
+
+        def num_elections
+          elections.size
         end
       end
     end

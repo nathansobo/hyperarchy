@@ -35,14 +35,14 @@ class Membership < Monarch::Model::Record
   end
 
   def create_whitelist
-    [:organization_id, :user_id, :role, :first_name, :last_name, :email_address, :notify_of_new_elections, :notify_of_new_candidates]
+    [:organization_id, :user_id, :role, :first_name, :last_name, :email_address, :notify_of_new_elections, :notify_of_new_candidates, :election_alerts, :candidate_alerts]
   end
 
   def update_whitelist
     if current_user_is_admin_or_organization_owner?
-      [:first_name, :last_name, :role, :last_visited, :notify_of_new_elections, :notify_of_new_candidates]
+      [:first_name, :last_name, :role, :last_visited, :notify_of_new_elections, :notify_of_new_candidates, :election_alerts, :candidate_alerts]
     else
-      [:last_visited, :notify_of_new_elections, :notify_of_new_candidates]
+      [:last_visited, :notify_of_new_elections, :notify_of_new_candidates, :election_alerts, :candidate_alerts]
     end
   end
 
@@ -138,7 +138,8 @@ Visit #{invitation.signup_url} to join our private alpha test and start voting o
 
   # returns the time of last visit or the 1 <period> ago, whichever is more recent
   def last_alerted_or_visited_at(period)
-    [period_ago(period), last_visited].max
+    return period_ago(period)
+#    [period_ago(period), last_visited].max
   end
 
   def period_ago(period)

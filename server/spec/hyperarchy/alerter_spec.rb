@@ -49,8 +49,12 @@ module Hyperarchy
 
         Mailer.emails.length.should == 2
 
+
         social_user_alert = Mailer.emails.detect {|email| email[:to] == social_user.email_address}
         pro_user_alert = Mailer.emails.detect {|email| email[:to] == pro_user.email_address}
+
+        puts pro_user_alert[:html_body]
+        
 
         # the social user should only receive hourly updates about new elections in the social org
         social_user_alert[:subject].should =~ /question/

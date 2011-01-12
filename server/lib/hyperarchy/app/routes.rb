@@ -228,5 +228,12 @@ module Hyperarchy
       )
       successful_json_response
     end
+
+    get "/alert" do
+      authentication_required
+      puts "alerting????"
+      presenter = Alerter::AlertPresenter.new(current_user, "hourly")
+      render_page Emails::Alert, :alert_presenter => presenter
+    end
   end
 end
