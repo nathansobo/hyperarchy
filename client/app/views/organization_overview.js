@@ -90,7 +90,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.electionLisById = {};
 
       this.startLoading();
-      this.organization().fetchMoreElections().onSuccess(function() {
+      this.organization().fetchMoreElections(16).onSuccess(function() {
         this.stopLoading();
         var elections = this.organization().elections();
         this.electionsList.relation(elections);

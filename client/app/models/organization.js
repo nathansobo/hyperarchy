@@ -30,10 +30,16 @@ _.constructor("Organization", Model.Record, {
     }
   },
 
-  fetchMoreElections: function() {
+  fetchMoreElections: function(fetchIfWeHaveLessThan) {
     if (this.fetchInProgressFuture) return this.fetchInProgressFuture;
     if (!this.numElectionsFetched) this.numElectionsFetched = 0;
-    if (this.elections().size() === this.electionCount()) return false;
+
+
+    if (this.elections().size() >= (fetchIfWeHaveLessThan || this.electionCount())) {
+      var future = new Monarch.Http.AjaxFuture();
+      future.triggerSuccess();
+      return future;
+    }
 
     var offset, limit;
     // if we already fetched some, fetch 8 positions back to account for unseen swapping at the fringe
