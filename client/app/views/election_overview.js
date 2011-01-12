@@ -416,6 +416,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     adjustHeight: function() {
+      if (!this.is(":visible")) return;
+
       Application.layout.zeroScroll();
       this.fillVerticalSpace(30, 300);
       this.candidatesList.adjustHeight();
