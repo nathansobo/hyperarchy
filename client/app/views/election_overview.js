@@ -110,7 +110,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
             .ref("previousElectionLink");
           span().ref("electionPosition");
           span("of");
-          span().ref("numElections");
+          span().ref("electionCount");
           a("Next")
             .ref("nextElectionLink");
         });
@@ -201,7 +201,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     populateSubNavigationBar: function() {
       var elections = this.election().organization().elections();
-      this.numElections.html(elections.size());
+      this.electionCount.bindHtml(this.election().organization(), 'electionCount');
 
       var score = this.election().score();
       var position = elections.where(Election.score.gt(score)).size() + 1;
