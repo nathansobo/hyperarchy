@@ -144,7 +144,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
       Application.layout.activateNavigationTab("questionsLink");
       Application.layout.showSubNavigationContent("elections");
-//      Application.layout.hideSubNavigationContent();
     },
 
     electionId: {
@@ -199,36 +198,35 @@ _.constructor("Views.ElectionOverview", View.Template, {
       }
     },
 
-    populateSubNavigationBar: function() {
-      var elections = this.election().organization().elections();
-      this.electionCount.bindHtml(this.election().organization(), 'electionCount');
-
-      var score = this.election().score();
-      var position = elections.where(Election.score.gt(score)).size() + 1;
-      this.electionPosition.html(position);
-
-      // later, call  this.subscribeToElectionOrder or something like that
-      var nextElection = elections.where(Election.score.lt(score)).first();
-      if (nextElection) {
-        var nextElectionID = nextElection.id();
-        this.nextElectionLink.show();
-        this.nextElectionLink.click(function() {
-          Application.layout.goToQuestion(nextElectionID);
-        });
-      } else {
-        this.nextElectionLink.hide();
-      }
-      var previousElection = elections.where(Election.score.gt(score)).last();
-      if (previousElection) {
-        var previousElectionID = previousElection.id();
-        this.previousElectionLink.show();
-        this.previousElectionLink.click(function() {
-          Application.layout.goToQuestion(previousElectionID);
-        });
-      } else {
-        this.previousElectionLink.hide();
-      }
-    },
+//    populateSubNavigationBar: function() {
+//      var elections = this.election().organization().elections();
+//      this.electionCount.bindHtml(this.election().organization(), 'electionCount');
+//
+//      var score = this.election().score();
+//      var position = elections.where(Election.score.gt(score)).size() + 1;
+//      this.electionPosition.html(position);
+//
+//      var nextElection = elections.where(Election.score.lt(score)).first();
+//      if (nextElection) {
+//        var nextElectionID = nextElection.id();
+//        this.nextElectionLink.show();
+//        this.nextElectionLink.click(function() {
+//          Application.layout.goToQuestion(nextElectionID);
+//        });
+//      } else {
+//        this.nextElectionLink.hide();
+//      }
+//      var previousElection = elections.where(Election.score.gt(score)).last();
+//      if (previousElection) {
+//        var previousElectionID = previousElection.id();
+//        this.previousElectionLink.show();
+//        this.previousElectionLink.click(function() {
+//          Application.layout.goToQuestion(previousElectionID);
+//        });
+//      } else {
+//        this.previousElectionLink.hide();
+//      }
+//    },
 
     hideElementsWhileLoading: function() {
       this.showCreateCandidateFormButton.hide();
