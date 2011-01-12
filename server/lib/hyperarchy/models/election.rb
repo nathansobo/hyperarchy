@@ -117,7 +117,6 @@ Or just reply with 'unsubscribe' to this email.
   end
 
   def compute_global_ranking
-    puts "compute_global_ranking"
     already_processed = []
     graph = RGL::DirectedAdjacencyGraph.new
 
@@ -132,7 +131,6 @@ Or just reply with 'unsubscribe' to this email.
 
     graph.topsort_iterator.each_with_index do |candidate_id, index|
       candidate = candidates.find(candidate_id)
-      puts "updating #{candidate.body.inspect} from #{candidate.position} to #{index}"
       candidate.update!(:position => index + 1)
     end
 
