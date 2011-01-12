@@ -13,7 +13,7 @@ $backgroundGray: #e6e6e6;
 @mixin gradient($color, $percent) {
   background-color: $color;
   background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(lighten($color, $percent)), to($color));
-  background: -moz-linear-gradient(top, lighten($color, $percent), $percent);
+  background: -moz-linear-gradient(top, lighten($color, $percent), $color);
 }
 
 @mixin glossyColor($color) {

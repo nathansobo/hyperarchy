@@ -1147,7 +1147,7 @@ body.legal {
     -moz-border-radius-topright: 6px;
     background-color: #44464a;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5c5f65), to(#44464a));
-    background: -moz-linear-gradient(top, #5c5f65, 10%);
+    background: -moz-linear-gradient(top, #5c5f65, #44464a);
     color: white; }
     #app #mainContent #navigationBar div {
       height: 40px;
@@ -1195,7 +1195,7 @@ body.legal {
     -moz-user-select: none;
     background-color: #4b4e52;
     background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5a5d62), to(#4b4e52));
-    background: -moz-linear-gradient(top, #5a5d62, 6%);
+    background: -moz-linear-gradient(top, #5a5d62, #4b4e52);
     border-bottom: solid 1px #38393d;
     color: #f4f4f4;
     font-size: 14px; }
