@@ -2,129 +2,42 @@
   #editOrganization {
     @extend #addOrganization;
 
-    #organizationHeader {
-      margin-bottom: 10px;
+    input[name="name"] {
+      width: 300px;
     }
 
-    #tabs {
-      position: relative;
-      left: -5px;
+    textarea {
+      resize: none;
+      width: 500px;
+    }
 
-      .tab {
-        display: inline-block;
-        height: 37px;
-        padding: 5px 5px 0 5px;
-        overflow: hidden;
+    #flags {
+      margin-top: 10px;
+      margin-bottom: 20px;
 
-        span {
-          cursor: pointer;
-          position: relative;
-          display: inline-block;
-          padding: 5px 10px;
-          background: white;
-          -webkit-border-top-left-radius: 3px;
-          -webkit-border-top-right-radius: 3px;
-          -moz-border-radius-topleft: 3px;
-          -moz-border-radius-topright: 3px;
-          border-top-left-radius: 3px;
-          border-top-right-radius: 3px;
-
-          &.selected {
-            z-index: 10;
-          }
-        }
+      input[type="checkbox"] {
+        margin-right: 10px;
+        display: inline;
+        width: auto;
       }
-    }
 
-    #content {
-      position: relative;
-      z-index: 4;
-      padding: 30px;
-    }
-
-    #details {
       label {
-        margin-bottom: 5px;
-      }
-
-      input[name="name"] {
-        width: 300px;
-      }
-
-      textarea {
-        resize: none;
-        width: 500px;
-      }
-
-      #flags {
-        margin-top: 10px;
-        margin-bottom: 20px;
-
-        input[type="checkbox"] {
-          margin-right: 10px;
-          display: inline;
-          width: auto;
-        }
-
-        label {
-          position: relative;
-          top: 2px;
-        }
-      }
-
-      button {
-        display: inline-block;
-      }
-      
-      .loading {
-        display: inline-block;
         position: relative;
-        top: 3px;
-        left: 5px;
+        top: 2px;
       }
+    }
+
+    button {
+      display: inline-block;
+    }
+
+    .loading {
+      display: inline-block;
+      position: relative;
+      top: 3px;
+      left: 5px;
     }
 
     #overviewLink { float: right; }
-
-    div.addMember {
-      font-size: medium;
-      border-bottom: 1px solid #999999;
-      margin-bottom: 10px;
-      padding-bottom: 5px;
-
-      input, select {
-        display: inline;
-        margin-right: 10px;
-      }
-
-      input.name { width: 150px; }
-      input.emailAddress { width: 250px; }
-      div.loading {
-        display: inline-block;
-        position: relative;
-        top: 5px;
-        left: 5px;
-      }
-    }
-
-    table.members {
-      width: 100%;
-
-      th { font-weight: bold; }
-
-      td, th {
-        border-bottom: 1px #999999 dashed;
-        padding: 5px 0 5px 0;
-        height: 40px;
-      }
-
-      .role { width: 115px; }
-      .remove { width: 80px; }
-      .loading {
-        display: inline-block;
-        position: relative;
-        top: 5px;
-      }
-    }
   }
 }

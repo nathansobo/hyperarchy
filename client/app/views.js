@@ -19,4 +19,5 @@
 //= require "views/sorted_list"
 //= require "views/candidates_list"
 //= require "views/avatar"
-
+//= require "views/members"
+//= require "views/new_election"

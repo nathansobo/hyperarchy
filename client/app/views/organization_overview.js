@@ -1,31 +1,8 @@
 _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizationOverview"}, function() {
-      div({'class': "top grid12"}, function() {
-        div({'id': "organizationHeader"}, function() {
-          div({'id': "title"}, function() {
-            a({href: "#", id: 'createElectionLink', 'class': "glossyBlack roundedButton"}, "Raise A New Question")
-              .ref('showCreateElectionFormButton')
-              .click('showCreateElectionForm');
-            h2("Questions Under Discussion");
-          });
-          div({style: "clear: both"});
 
-          div({id: 'createElectionForm'}, function() {
-            a({'class': "glossyBlack roundedButton"}, "Raise Question")
-              .ref('createElectionButton')
-              .click('createElection');
-            input({placeholder: "Type your question here"})
-              .keypress(function(view, e) {
-                if (e.keyCode === 13) {
-                  view.createElectionButton.click();
-                  return false;
-                }
-              })
-              .ref('createElectionInput');
-          }).ref('createElectionForm');
-        });
-      }).ref('topDiv');
+      h2('Questions Under Discussion');
 
       subview('electionsList', Views.SortedList, {
         useQueue: true,
@@ -43,6 +20,16 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       });
 
       div({'class': "clear"});
+
+      div(function() {
+        div({id: "rightContent"}, function() {
+          a("< Previous");
+          span("1-10 of 89");
+          a("Next >");
+        });
+        div({id: "leftContent"}, function() {});
+      }).ref("subNavigationContent");
+
       div({'class': "bigLoading", 'style': "display: none;"}).ref('loading');
     });
   }},
@@ -63,8 +50,9 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       var organizationId = parseInt(state.organizationId);
       Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);
-      this.createElectionForm.hide();
-      this.showCreateElectionFormButton.show();
+
+      Application.layout.activateNavigationTab("questionsLink");
+      Application.layout.hideSubNavigationContent();
     },
 
     organizationId: {
@@ -117,26 +105,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     editOrganization: function(elt, e) {
       e.preventDefault();
       $.bbq.pushState({view: "editOrganization", organizationId: this.organizationId()}, 2);
-    },
-
-    showCreateElectionForm: function(elt, e) {
-      Application.welcomeGuide.raiseQuestionClicked();
-      this.createElectionForm.slideDown('fast');
-      this.showCreateElectionFormButton.hide();
-      this.createElectionInput.focus();
-      e.preventDefault();
-    },
-
-    createElection: function() {
-      var body = this.createElectionInput.val();
-      if (this.creatingElection || body === "") return;
-      this.creatingElection = true;
-      this.organization().elections().create({body: body})
-        .onSuccess(function(election) {
-          this.creatingElection = false;
-          this.createElectionInput.val("");
-          $.bbq.pushState({view: "election", electionId: election.id()});
-        }, this);
     },
 
     startLoading: function() {

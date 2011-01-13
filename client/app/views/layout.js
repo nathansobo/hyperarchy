@@ -1,13 +1,12 @@
 _.constructor("Views.Layout", View.Template, {
   content: function() { with(this.builder) {
     div({id: "application"}, function() {
+
       div({id: "notification", style: "display: none"}).ref("notification");
       div({id: "darkenBackground", style: "display: none"})
         .ref('darkenBackground');
-
       subview('disconnectDialog', Views.DisconnectDialog);
       subview('inviteForm', Views.Invite);
-
       div({id: "feedback", style: "display: none", 'class': "dropShadow"}, function() {
         div({'class': "rightCancelX"}).click('hideFeedbackForm');
         div({id: "thanks", 'class': "largeFont"}, function() {
@@ -18,6 +17,7 @@ _.constructor("Views.Layout", View.Template, {
         textarea().ref("feedbackTextarea");
         a({'class': "glossyBlack roundedButton", href: "#"}, "Send Feedback").click('sendFeedback');
       }).ref("feedbackForm");
+
 
       ol({'class': "dropdownMenu"}, function() {
         li(function() {
@@ -30,53 +30,64 @@ _.constructor("Views.Layout", View.Template, {
           });
         });
       }).ref('accountMenu');
-
       ol({'class': "dropdownMenu"}, function() {
         li(function() {
           a({href: "#view=addOrganization"}, "Add Organization...")
         }).ref('addOrganizationLi')
       }).ref('organizationsMenu');
 
-      div({id: "header"}, function() {
-        div({id: "logoWrapper", 'class': "headerItemX"}, function() {
+
+      div({id: "globalHeader"}, function() {
+        div({id: "logoWrapper"}, function() {
           div({id: "logo"}).click('goToLastOrganization');
         });
-
-        a({'class': "headerItem dropdownLink", href: "#"}, "Account")
+        a({'class': "globalHeaderItem dropdownLink", href: "#"}, "Account")
           .ref('accountMenuLink')
           .click("toggleAccountMenu");
-
-        a({id: "switchOrganizations", 'class': "headerItem dropdownLink"}, "Organizations")
+        a({'class': "globalHeaderItem dropdownLink"}, "Organizations")
           .ref("organizationsMenuLink")
           .click("toggleOrganizationsMenu");
-
-        a({id: "inviteLink", 'class': "headerItem", href: "#"}, "Invite")
+        a({'class': "globalHeaderItem", href: "#"}, "Invite")
           .ref('inviteLink')
           .click('showInviteForm');
-        a({'class': "feedback headerItem", href: "#"}, "Feedback").click('showFeedbackForm');
+        a({'class': "globalHeaderItem", href: "#"}, "Feedback")
+          .click('showFeedbackForm');
+
         div({'class': "clear"});
       });
 
       subview("welcomeGuide", Views.WelcomeGuide);
 
       div({id: "mainContent"}, function() {
-        div({id: "contentHeader", 'class': "glossyDarkGray"}, function() {
+
+        div({id: "navigationBar"}, function() {
           div(function() {
             h2({id: "organizationName"})
-              .click('goToOrganization')
-              .ref('organizationName');
+              .ref('organizationName')
+              .click('goToOrganization');
+            a({id: "questionsLink"}, "View Questions")
+              .ref('questionsLink')
+              .click('goToQuestions');
+            a({id: "raise"}, "Raise a Question")
+              .ref("newElectionLink")
+              .click("goToNewElection");
+            a({id: "membersLink"}, "Members")
+              .ref('membersLink')
+              .click("goToMembers");
             a({id: "organizationSettings"}, "Settings")
               .ref("editOrganizationLink")
               .click("goToEditOrganization");
-          }).ref("organizationHeader");
+          }).ref("organizationNavigationBar");
 
           div(function() {
-            h2().ref("alternateHeaderText");
-            a({id: "backToLastOrganization"})
+            h2().ref("alternateNavigationBarText");
+            a({id: "backToLastOrganization", 'class': "rightSide"})
               .ref("backToLastOrganizationLink")
               .click("goToLastOrganization");
-          }).ref("alternateHeader")
+          }).ref("alternateNavigationBar");
         });
+
+        div({id: "subNavigationBar"}).ref("subNavigationBar");
 
         div({'id': "scrollingArea"}, function() {
           div({'class': "container12"}, function() {
@@ -93,13 +104,19 @@ _.constructor("Views.Layout", View.Template, {
       this.defer(this.hitch('adjustHeight'));
       $(window).resize(this.hitch('adjustHeight'));
       
-      _.each(this.views, function(view) {
+      this.subNavigationContents = {};
+      _.each(this.views, function(view, viewName) {
+        if (view.subNavigationContent) {
+          view.subNavigationContent.hide();
+          this.subNavigationContents[viewName] = view.subNavigationContent.detach();
+          this.subNavigationBar.append(this.subNavigationContents[viewName]);
+        }
         view.hide();
         this.body.append(view);
       }, this);
+      this.hideSubNavigationContent();
 
       this.populateOrganizations();
-
       var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
       organizationsPermitted.onInsert(this.hitch('showOrHideInviteLink'));
       organizationsPermitted.onRemove(this.hitch('showOrHideInviteLink'));
@@ -135,23 +152,43 @@ _.constructor("Views.Layout", View.Template, {
         this.organizationName.bindHtml(organization, 'name');
         if (organization.currentUserCanEdit()) {
           this.editOrganizationLink.show();
+          this.membersLink.show();
         } else {
           this.editOrganizationLink.hide();
+          this.membersLink.hide();
         }
       }
     },
 
-    showOrganizationHeader: function() {
-      this.alternateHeader.hide();
-      this.organizationHeader.show();
+    showOrganizationNavigationBar: function() {
+      this.alternateNavigationBar.hide();
+      this.organizationNavigationBar.show();
     },
 
-    showAlternateHeader: function(text) {
+    showAlternateNavigationBar: function(text) {
       var lastOrgName = Application.currentUser().lastVisitedOrganization().name();
       this.backToLastOrganizationLink.html("Back to " + lastOrgName);
-      this.alternateHeaderText.html(text);
-      this.organizationHeader.hide();
-      this.alternateHeader.show();
+      this.alternateNavigationBarText.html(text);
+      this.organizationNavigationBar.hide();
+      this.alternateNavigationBar.show();
+    },
+
+    activateNavigationTab: function(link) {
+      this.organizationNavigationBar.find("a").removeClass('active');
+      $(this[link]).addClass('active');
+    },
+
+    showSubNavigationContent: function(viewName) {
+      this.hideSubNavigationContent();
+      if (viewName in this.subNavigationContents) {
+        this.subNavigationBar.css('height', "28px");
+        this.subNavigationContents[viewName].show();
+      }
+    },
+
+    hideSubNavigationContent: function() {
+      _.each(this.subNavigationContents, function(element) {element.hide();});
+      this.subNavigationBar.css('height', "8px");
     },
 
     populateOrganizations: function() {
@@ -198,16 +235,6 @@ _.constructor("Views.Layout", View.Template, {
       }, this), 3000);
     },
 
-    switchViews: function(selectedView) {
-      _.each(this.views, function(view) {
-        if (view === selectedView) {
-          view.show();
-        } else {
-          view.hide();
-        }
-      });
-    },
-
     toggleOrganizationsMenu: function(elt, e) {
       e.preventDefault();
       this.toggleMenu(this.organizationsMenuLink, this.organizationsMenu);
@@ -220,7 +247,6 @@ _.constructor("Views.Layout", View.Template, {
 
     toggleMenu: function(link, menu) {
       if (menu.is(":visible")) return;
-
       menu.show();
       menu.position({
         my: "left top",
@@ -228,8 +254,6 @@ _.constructor("Views.Layout", View.Template, {
         of: link,
         collision: "none"
       });
-
-
       _.defer(function() {
         $(window).one('click', function() {
           menu.hide();
@@ -240,7 +264,6 @@ _.constructor("Views.Layout", View.Template, {
     showFeedbackForm: function(elt, e) {
       this.darkenBackground.fadeIn();
       this.darkenBackground.one('click', this.hitch('hideFeedbackForm'));
-
       this.feedbackForm
         .show()
         .position({
@@ -248,7 +271,6 @@ _.constructor("Views.Layout", View.Template, {
           at: "center",
           of: this.darkenBackground
         });
-
       e.preventDefault();
     },
 
@@ -284,8 +306,28 @@ _.constructor("Views.Layout", View.Template, {
       return false;
     },
 
+    goToQuestions: function() {
+      $.bbq.pushState({view: "organization", organizationId: this.organization().id() }, 2);
+      return false;
+    },
+
+    goToQuestion: function(id) {
+      $.bbq.pushState({view: "election", electionId: id}, 2);
+      return false;
+    },
+
     goToEditOrganization: function() {
       $.bbq.pushState({view: "editOrganization", organizationId: this.organization().id() }, 2);
+      return false;
+    },
+
+    goToMembers: function() {
+      $.bbq.pushState({view: "members", organizationId: this.organization().id() }, 2);
+      return false;
+    },
+
+    goToNewElection: function() {
+      $.bbq.pushState({view: "newElection", organizationId: this.organization().id() }, 2);
       return false;
     },
 

@@ -590,13 +590,15 @@ select {
 *:first-child + html .clearfix {
   zoom: 1; }
 
+.dropShadow {
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px; }
+
 html#app {
   background: #e6e6e6; }
 
 body {
   font: 13px/1.3 "Helvetica Neue", Arial, "Liberation Sans", FreeSans, sans-serif; }
-  body#app {
-    padding-bottom: 20px; }
 
 textarea {
   line-height: 1.3; }
@@ -623,9 +625,6 @@ button {
 
 .largeFont {
   font-size: 21px; }
-
-.grayText {
-  color: #999999; }
 
 .errors {
   margin-bottom: 20px;
@@ -668,11 +667,9 @@ button {
   -moz-border-radius: 3px;
   -webkit-box-shadow: 0px 0px 2px black inset;
   -moz-box-shadow: 0px 0px 2px black inset;
-  cursor: pointer; }
-
-.dropShadow, #simpleTooltip {
-  -moz-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 6px; }
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none; }
 
 .placeheld {
   color: #999999; }
@@ -772,6 +769,8 @@ button {
       background-position: -39px 0px; }
 
 #simpleTooltip {
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
   width: 200px;
   padding: 5px;
   background: white; }
@@ -1089,13 +1088,15 @@ body.legal {
       background: #fff3c7; }
   #app .dropdownMenu li:last-child a {
     margin-bottom: 0; }
-#app #header {
+#app #globalHeader {
   width: 1000px;
   margin: 0 auto;
   padding-top: 5px;
   margin-bottom: 5px;
-  height: auto; }
-  #app #header .headerItem {
+  height: auto;
+  -webkit-user-select: none;
+  -moz-user-select: none; }
+  #app #globalHeader .globalHeaderItem {
     position: relative;
     float: right;
     margin-left: 6px;
@@ -1106,18 +1107,17 @@ body.legal {
     padding: 5px 10px;
     overflow: hidden;
     text-decoration: none; }
-    #app #header .headerItem.dropdownLink {
-      padding-right: 20px;
-      background-position: 95% 50%; }
-  #app #header .dropdownLink {
+  #app #globalHeader .dropdownLink {
     display: inline-block;
     color: #0e40ac;
     cursor: pointer;
     padding-right: 15px;
+    padding-right: 20px;
+    background-position: 95% 50%;
     background-image: url(/images/expand_arrow_blue.png);
     background-repeat: no-repeat;
     background-position: right; }
-  #app #header #logoWrapper {
+  #app #globalHeader #logoWrapper {
     float: left;
     margin: 5px;
     margin-left: 6px;
@@ -1126,52 +1126,107 @@ body.legal {
   background: white;
   width: 1000px;
   margin: 0 auto;
-  -moz-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
-  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 1px 1px 6px;
-  -webkit-border-top-left-radius: 6px;
-  -webkit-border-top-right-radius: 6px;
-  -moz-border-radius-topleft: 6px;
-  -moz-border-radius-topright: 6px; }
-  #app #mainContent #contentHeader {
+  position: relative;
+  overflow: hidden;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+  background: white; }
+  #app #mainContent #navigationBar {
+    width: 1000px;
+    height: 40px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
     -webkit-border-top-left-radius: 6px;
     -webkit-border-top-right-radius: 6px;
     -moz-border-radius-topleft: 6px;
     -moz-border-radius-topright: 6px;
-    -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 1px;
-    -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 1px;
-    width: 940;
-    height: 36;
-    margin: 0 auto;
-    padding: 5px 30px;
-    margin: 0; }
-    #app #mainContent #contentHeader h2 {
-      padding: 0;
-      margin: 0;
-      font-size: 28px;
-      display: inline-block;
-      letter-spacing: 1.1;
-      cursor: pointer; }
-    #app #mainContent #contentHeader a {
-      display: inline-block;
-      float: right;
-      margin-top: 11px;
-      color: white; }
-      #app #mainContent #contentHeader a#organizationSettings {
-        padding-left: 14px;
-        background-repeat: no-repeat;
-        background-image: url(/images/cog_alt_12x12_light.png);
-        background-position: 0 1px; }
-      #app #mainContent #contentHeader a#backToLastOrganization {
-        padding-left: 16px;
-        background-repeat: no-repeat;
-        background-image: url(/images/undo_12x12_light.png);
-        background-position: 0 2px; }
+    background-color: #44464a;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5c5f65), to(#44464a));
+    background: -moz-linear-gradient(top, #5c5f65, #44464a);
+    color: white; }
+    #app #mainContent #navigationBar div {
+      height: 40px;
+      padding: 0 30px; }
+      #app #mainContent #navigationBar div h2 {
+        display: inline-block;
+        margin-top: 5px;
+        margin-right: 24px;
+        font-size: 24px;
+        letter-spacing: 1.1;
+        cursor: pointer; }
+      #app #mainContent #navigationBar div a {
+        display: inline-block;
+        z-index: 30;
+        margin: 0;
+        margin-top: 5px;
+        padding: 5px 12px;
+        color: white;
+        font-size: 18px; }
+        #app #mainContent #navigationBar div a.active {
+          padding-bottom: 10px;
+          -webkit-border-top-left-radius: 4px;
+          -webkit-border-top-right-radius: 4px;
+          -moz-border-radius-topleft: 4px;
+          -moz-border-radius-topright: 4px;
+          -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
+          -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 4px;
+          background-color: #5a5d62; }
+        #app #mainContent #navigationBar div a.rightSide {
+          float: right;
+          padding-left: 20px;
+          background-repeat: no-repeat;
+          background-position: 3px; }
+        #app #mainContent #navigationBar div a#backToLastOrganization {
+          background-image: url(/images/undo_12x12_light.png); }
+  #app #mainContent #subnavigationBar {
+    width: 1000;
+    height: 28px;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    z-index: 20;
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    background-color: #4b4e52;
+    background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#5a5d62), to(#4b4e52));
+    background: -moz-linear-gradient(top, #5a5d62, #4b4e52);
+    border-bottom: solid 1px #38393d;
+    color: #f4f4f4;
+    font-size: 14px; }
+    #app #mainContent #subnavigationBar div {
+      padding: 5px 20px;
+      overflow: hidden; }
+      #app #mainContent #subnavigationBar div div {
+        padding: 0; }
+        #app #mainContent #subnavigationBar div div#rightContent {
+          float: right; }
+        #app #mainContent #subnavigationBar div div#leftContent {
+          float: left; }
+      #app #mainContent #subnavigationBar div span {
+        color: #ababab;
+        padding: 0 2px; }
+      #app #mainContent #subnavigationBar div a {
+        color: #ababab;
+        padding: 0 12px; }
+        #app #mainContent #subnavigationBar div a#back {
+          padding-left: 20px;
+          background-repeat: no-repeat;
+          background-position: 3px;
+          background-image: url(/images/undo_12x12_light.png); }
   #app #mainContent #scrollingArea {
     background: white;
     overflow-y: auto;
     height: 100%;
-    padding-top: 30px;
+    padding-top: 20px;
     padding-bottom: 10px; }
+    #app #mainContent #scrollingArea h2, #app #mainContent #scrollingArea .headerContainer {
+      margin-bottom: 20px; }
 #app #feedback {
   background: white;
   height: 300px;
@@ -1306,26 +1361,8 @@ body.legal {
       #welcomeGuide #currentStep .step div.stepDescription {
         font-size: 20px; }
 
-#app #organizationOverview #organizationHeader {
-  margin-bottom: 30px; }
-  #app #organizationOverview #organizationHeader h2 {
-    font-weight: bold;
-    display: inline-block;
-    position: relative;
-    top: 4px; }
-#app #organizationOverview #createElectionLink {
-  padding: 6px 20px;
-  display: inline-block;
-  float: right; }
-#app #organizationOverview #createElectionForm {
-  margin: 5px auto 10px; }
-  #app #organizationOverview #createElectionForm input {
-    font-size: 18px;
-    width: 755px;
-    margin-bottom: 10px;
-    padding: 6px; }
-  #app #organizationOverview #createElectionForm a {
-    float: right; }
+#app #organizationOverview h2 {
+  padding-left: 8px; }
 #app #organizationOverview #welcomeBlurb {
   background: #ffffcc;
   margin-bottom: 30px;
@@ -1389,38 +1426,36 @@ body.legal {
   margin-top: -40px; }
 
 #app #electionOverview {
+  padding: 0;
+  margin: 0;
   clear: both;
   overflow-y: hidden; }
-  #app #electionOverview #electionOverviewHeader {
-    margin-bottom: 30px; }
-    #app #electionOverview #electionOverviewHeader h1 {
-      margin-bottom: 0; }
-    #app #electionOverview #electionOverviewHeader #electionBodyContainer {
-      margin-top: 2px; }
-      #app #electionOverview #electionOverviewHeader #electionBodyContainer .expandArrow {
-        float: left;
-        margin-right: 5px;
-        margin-top: 8px; }
-      #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight {
-        width: 595px;
-        display: inline-block; }
-        #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight h2 {
-          display: inline;
-          margin-right: 5px; }
-        #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight textarea.electionBody {
-          width: 100%;
-          resize: none;
-          font-size: 23px;
-          padding: 4px;
-          height: 50px;
-          margin-bottom: 10px; }
-        #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight #expandedArea button {
-          float: right;
-          margin-left: 5px; }
-        #app #electionOverview #electionOverviewHeader #electionBodyContainer #electionBodyContainerRight #expandedArea .loading {
-          float: right;
-          top: 2px;
-          position: relative; }
+  #app #electionOverview .headerContainer {
+    margin-bottom: 20px; }
+    #app #electionOverview .headerContainer #electionBodyContainer .expandArrow {
+      float: left;
+      margin-right: 5px;
+      margin-top: 8px; }
+    #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight {
+      width: 595px;
+      display: inline-block; }
+      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight h2 {
+        display: inline;
+        margin-right: 5px; }
+      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight textarea.electionBody {
+        width: 100%;
+        resize: none;
+        font-size: 23px;
+        padding: 4px;
+        height: 50px;
+        margin-bottom: 10px; }
+      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight #expandedArea button {
+        float: right;
+        margin-left: 5px; }
+      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight #expandedArea .loading {
+        float: right;
+        top: 2px;
+        position: relative; }
   #app #electionOverview #showCreateCandidateFormButton {
     padding: 6px 20px;
     float: right;
@@ -1618,109 +1653,83 @@ body.legal {
       height: 22px;
       display: inline-block; }
 
-#app #addOrganization, #app #editOrganization {
+#app #addOrganization, #app #editOrganization, #app #members {
   font-size: 21px;
   margin-bottom: 20px; }
-  #app #addOrganization input, #app #editOrganization input, #app #addOrganization textarea, #app #editOrganization textarea {
+  #app #addOrganization input, #app #editOrganization input, #app #members input, #app #addOrganization textarea, #app #editOrganization textarea, #app #members textarea {
     display: block;
     width: 100%;
     margin-bottom: 10px; }
-  #app #addOrganization a.roundedButton, #app #editOrganization a.roundedButton {
+  #app #addOrganization a.roundedButton, #app #editOrganization a.roundedButton, #app #members a.roundedButton {
     margin-top: 10px; }
 
-#app #editOrganization #organizationHeader {
-  margin-bottom: 10px; }
-#app #editOrganization #tabs {
-  position: relative;
-  left: -5px; }
-  #app #editOrganization #tabs .tab {
-    display: inline-block;
-    height: 37px;
-    padding: 5px 5px 0 5px;
-    overflow: hidden; }
-    #app #editOrganization #tabs .tab span {
-      cursor: pointer;
-      position: relative;
-      display: inline-block;
-      padding: 5px 10px;
-      background: white;
-      -webkit-border-top-left-radius: 3px;
-      -webkit-border-top-right-radius: 3px;
-      -moz-border-radius-topleft: 3px;
-      -moz-border-radius-topright: 3px;
-      border-top-left-radius: 3px;
-      border-top-right-radius: 3px; }
-      #app #editOrganization #tabs .tab span.selected {
-        z-index: 10; }
-#app #editOrganization #content {
-  position: relative;
-  z-index: 4;
-  padding: 30px; }
-#app #editOrganization #details label {
-  margin-bottom: 5px; }
-#app #editOrganization #details input[name="name"] {
+#app #editOrganization input[name="name"] {
   width: 300px; }
-#app #editOrganization #details textarea {
+#app #editOrganization textarea {
   resize: none;
   width: 500px; }
-#app #editOrganization #details #flags {
+#app #editOrganization #flags {
   margin-top: 10px;
   margin-bottom: 20px; }
-  #app #editOrganization #details #flags input[type="checkbox"] {
+  #app #editOrganization #flags input[type="checkbox"] {
     margin-right: 10px;
     display: inline;
     width: auto; }
-  #app #editOrganization #details #flags label {
+  #app #editOrganization #flags label {
     position: relative;
     top: 2px; }
-#app #editOrganization #details button {
+#app #editOrganization button {
   display: inline-block; }
-#app #editOrganization #details .loading {
+#app #editOrganization .loading {
   display: inline-block;
   position: relative;
   top: 3px;
   left: 5px; }
 #app #editOrganization #overviewLink {
   float: right; }
-#app #editOrganization div.addMember {
-  font-size: medium;
-  border-bottom: 1px solid #999999;
-  margin-bottom: 10px;
-  padding-bottom: 5px; }
-  #app #editOrganization div.addMember input, #app #editOrganization div.addMember select {
-    display: inline;
-    margin-right: 10px; }
-  #app #editOrganization div.addMember input.name {
-    width: 150px; }
-  #app #editOrganization div.addMember input.emailAddress {
-    width: 250px; }
-  #app #editOrganization div.addMember div.loading {
-    display: inline-block;
-    position: relative;
-    top: 5px;
-    left: 5px; }
-#app #editOrganization table.members {
-  width: 100%; }
-  #app #editOrganization table.members th {
-    font-weight: bold; }
-  #app #editOrganization table.members td, #app #editOrganization table.members th {
-    border-bottom: 1px #999999 dashed;
-    padding: 5px 0 5px 0;
-    height: 40px; }
-  #app #editOrganization table.members .role {
-    width: 115px; }
-  #app #editOrganization table.members .remove {
-    width: 80px; }
-  #app #editOrganization table.members .loading {
-    display: inline-block;
-    position: relative;
-    top: 5px; }
 
-#app h1 {
-  margin-bottom: 10px; }
+#app #members {
+  overflow: hidden; }
+  #app #members #content {
+    position: relative;
+    z-index: 4;
+    padding: 30px; }
+  #app #members div.addMember {
+    font-size: medium;
+    margin-bottom: 20px; }
+    #app #members div.addMember input, #app #members div.addMember select {
+      display: inline;
+      margin-right: 10px; }
+    #app #members div.addMember input.name {
+      width: 150px; }
+    #app #members div.addMember input.emailAddress {
+      width: 250px; }
+    #app #members div.addMember div.loading {
+      display: inline-block;
+      position: relative;
+      top: 5px;
+      left: 5px; }
+  #app #members table.members {
+    width: 100%; }
+    #app #members table.members th {
+      font-weight: bold;
+      border-bottom: 1px #999999 dashed;
+      padding-bottom: 5px; }
+    #app #members table.members td {
+      border-bottom: 1px #999999 dashed;
+      padding: 5px 0;
+      height: 40px; }
+    #app #members table.members .role {
+      width: 115px; }
+    #app #members table.members .remove {
+      width: 80px; }
+    #app #members table.members .loading {
+      display: inline-block;
+      position: relative;
+      top: 5px; }
+
 #app #account .emailPreferences {
-  padding: 10px;
-  margin-bottom: 10px; }
+  margin-bottom: 20px; }
   #app #account .emailPreferences .loading {
     float: right; }
   #app #account .emailPreferences .organizationName {
@@ -1730,3 +1739,25 @@ body.legal {
     margin-bottom: 3px; }
     #app #account .emailPreferences .emailPreference input {
       margin-right: 5px; }
+    #app #account .emailPreferences .emailPreference label {
+      font-size: 16px; }
+
+#app #newElection h2 {
+  margin-bottom: 20px; }
+#app #newElection #createElectionLink {
+  padding: 6px 20px;
+  display: inline-block; }
+#app #newElection textarea {
+  resize: none;
+  display: block;
+  font-size: 18px;
+  width: 700px;
+  height: 100px;
+  margin-bottom: 10px;
+  padding: 5px; }
+#app #newElection .bigLoading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -40px;
+  margin-top: -40px; }

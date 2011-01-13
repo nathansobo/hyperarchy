@@ -7,7 +7,9 @@ _.constructor("Controllers.Application", {
       editOrganization: Views.EditOrganization.toView(),
       organizations: Views.OrganizationOverview.toView(),
       elections: Views.ElectionOverview.toView(),
-      account: Views.Account.toView()
+      members: Views.Members.toView(),
+      account: Views.Account.toView(),
+      newElection: Views.NewElection.toView()
     };
   },
 
@@ -33,7 +35,7 @@ _.constructor("Controllers.Application", {
 
   currentOrganizationId: {
     afterWrite: function() {
-      this.layout.showOrganizationHeader();
+      this.layout.showOrganizationNavigationBar();
     },
 
     afterChange: function(organizationId, old) {

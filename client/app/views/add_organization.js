@@ -1,7 +1,7 @@
 _.constructor("Views.AddOrganization", View.Template, {
   content: function() { with(this.builder) {
     div({id: "addOrganization"}, function() {
-      div({'class': "grid5 largeFont"}, function() {
+      div({'class': "grid5"}, function() {
         label({'for': "name"}, "Organization Name");
         input({name: "name", 'class': "text"}).ref('organizationName');
         label({'for': "description"}, "Description (Optional)");
@@ -10,7 +10,7 @@ _.constructor("Views.AddOrganization", View.Template, {
           .ref('createOrganizationButton')
           .click('createOrganization');
       })
-      div({'class': "grid6 prefix1 largeFont"}, template.descriptionText());
+      div({'class': "grid6 prefix1"}, template.descriptionText());
       div({'class': "clear"});
     });
   }},
@@ -27,7 +27,8 @@ _.constructor("Views.AddOrganization", View.Template, {
     },
 
     navigate: function() {
-      Application.layout.showAlternateHeader("Add A New Organization");
+      Application.layout.showAlternateNavigationBar("Add A New Organization");
+      Application.layout.hideSubNavigationContent();
     },
 
     createOrganization: function() {

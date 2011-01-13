@@ -1,40 +1,34 @@
 _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'id': "electionOverview"}, function() {
-      div({id: "electionOverviewHeader"}, function() {
-        div({'class': "grid8"}, function() {
-          h1({'class': "clickable", style: "display: none"})
-            .click('goToOrganization')
-            .ref('organizationName');
+      div({'class': "headerContainer"}, function() {
+        div({id: "electionBodyContainer", 'class': "grid8"}, function() {
+          div({'class': "expandArrow", style: "display: none;"})
+            .ref('expandLink')
+            .click('expandOrContract');
 
-          div({id: "electionBodyContainer"}, function() {
-            div({'class': "expandArrow", style: "display: none;"})
-              .ref('expandLink')
-              .click('expandOrContract');
+          div({id: "electionBodyContainerRight"}, function() {
+            h2({'class': "electionBody"}).ref('bodyElement');
 
-            div({id: "electionBodyContainerRight"}, function() {
-              h2({'class': "electionBody"}).ref('bodyElement');
+            textarea({'class': "electionBody", style: "display: none;"})
+              .ref('bodyTextarea')
+              .bind('keyup paste', 'enableOrDisableSaveButton')
+              .keydown(function(view, event) {
+                if (event.keyCode === 13) {
+                  view.updateElectionBody();
+                  event.preventDefault();
+                }
+              });
 
-              textarea({'class': "electionBody", style: "display: none;"})
-                .ref('bodyTextarea')
-                .bind('keyup paste', 'enableOrDisableSaveButton')
-                .keydown(function(view, event) {
-                  if (event.keyCode === 13) {
-                    view.updateElectionBody();
-                    event.preventDefault();
-                  }
-                });
-
-              div({id: "expandedArea", style: "display: none;"}, function() {
-                button("Save")
-                  .ref('saveButton')
-                  .click('updateElectionBody');
-                button("Delete Question")
-                  .click('destroyElection');
-                div({'class': "loading", style: "display: none;"}).ref('electionSpinner');
-                div({'class': "clear"});
-              }).ref('expandedArea');
-            });
+            div({id: "expandedArea", style: "display: none;"}, function() {
+              button("Save")
+                .ref('saveButton')
+                .click('updateElectionBody');
+              button("Delete Question")
+                .click('destroyElection');
+              div({'class': "loading", style: "display: none;"}).ref('electionSpinner');
+              div({'class': "clear"});
+            }).ref('expandedArea');
           });
         });
 
@@ -42,7 +36,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
           a({id: "showCreateCandidateFormButton", 'class': "glossyLightGray roundedButton"}, "Suggest An Answer")
             .click('showOrHideCreateCandidateForm')
             .ref('showCreateCandidateFormButton');
-        })
+        });
 
         div({'class': "clear"});
       });
@@ -103,7 +97,26 @@ _.constructor("Views.ElectionOverview", View.Template, {
       });
 
       div({'class': "clear"});
+
+      div(function() {
+        div({id: "leftContent"}, function() {
+          a({id: "back"}, "Back to Questions")
+            .click(function() {
+              Application.layout.goToOrganization();
+            });
+        });
+//        div({id: "rightContent"}, function() {
+//          a("Previous")
+//            .ref("previousElectionLink");
+//          span().ref("electionPosition");
+//          span("of");
+//          span().ref("electionCount");
+//          a("Next")
+//            .ref("nextElectionLink");
+//        });
+      }).ref("subNavigationContent");
     });
+
   }},
 
   viewProperties: {
@@ -128,6 +141,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.electionId(parseInt(state.electionId));
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
       Server.post("/visited?election_id=" + state.electionId);
+
+      Application.layout.activateNavigationTab("questionsLink");
+      Application.layout.showSubNavigationContent("elections");
     },
 
     electionId: {
@@ -177,8 +193,40 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.candidatesList.election(election);
         this.rankedCandidatesList.election(election);
         this.votesList.election(election);
+
+//        this.populateSubNavigationBar();
       }
     },
+
+//    populateSubNavigationBar: function() {
+//      var elections = this.election().organization().elections();
+//      this.electionCount.bindHtml(this.election().organization(), 'electionCount');
+//
+//      var score = this.election().score();
+//      var position = elections.where(Election.score.gt(score)).size() + 1;
+//      this.electionPosition.html(position);
+//
+//      var nextElection = elections.where(Election.score.lt(score)).first();
+//      if (nextElection) {
+//        var nextElectionID = nextElection.id();
+//        this.nextElectionLink.show();
+//        this.nextElectionLink.click(function() {
+//          Application.layout.goToQuestion(nextElectionID);
+//        });
+//      } else {
+//        this.nextElectionLink.hide();
+//      }
+//      var previousElection = elections.where(Election.score.gt(score)).last();
+//      if (previousElection) {
+//        var previousElectionID = previousElection.id();
+//        this.previousElectionLink.show();
+//        this.previousElectionLink.click(function() {
+//          Application.layout.goToQuestion(previousElectionID);
+//        });
+//      } else {
+//        this.previousElectionLink.hide();
+//      }
+//    },
 
     hideElementsWhileLoading: function() {
       this.showCreateCandidateFormButton.hide();
@@ -203,7 +251,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     populateElectionDetails: function(election) {
-      this.organizationName.bindHtml(election.organization(), 'name');
       this.bodyTextarea.val(election.body());
       this.bodyElement.bindHtml(election, 'body');
       if (election.editableByCurrentUser()) {
@@ -342,6 +389,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
       $.bbq.pushState({view: "organization", organizationId: this.election().organizationId() }, 2);
     },
 
+    goToElection: function(id) {
+      $.bbq.pushState({view: "election", electionId: id}, 2);
+    },
+
     expandOrContract: function() {
       if (this.expanded) {
         this.contract();
@@ -419,7 +470,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       if (!this.is(":visible")) return;
 
       Application.layout.zeroScroll();
-      this.fillVerticalSpace(30, 300);
+      this.fillVerticalSpace(40, 300);
       this.candidatesList.adjustHeight();
       this.rankedCandidatesList.adjustHeight();
     }

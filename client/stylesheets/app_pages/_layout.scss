@@ -28,14 +28,15 @@
     }
   }
 
-  #header {
+  #globalHeader {
     width: 1000px;
     margin: 0 auto;
     padding-top: 5px;
     margin-bottom: 5px;
     height: auto;
+    @include noSelect;
 
-    .headerItem {
+    .globalHeaderItem {
       position: relative;
       float: right;
       margin-left: 6px;
@@ -45,11 +46,6 @@
       padding: 5px 10px;
       overflow: hidden;
       text-decoration:none;
-
-      &.dropdownLink {
-        padding-right: 20px;
-        background-position: 95% 50%;
-      }
     }
 
     .dropdownLink {
@@ -57,6 +53,8 @@
       color: $blue;
       cursor: pointer;
       padding-right: 15px;
+      padding-right: 20px;
+      background-position: 95% 50%;
       background-image: url(/images/expand_arrow_blue.png);
       background-repeat: no-repeat;
       background-position: right;
@@ -74,54 +72,108 @@
     background: white;
     width: 1000px;
     margin: 0 auto;
-    -moz-box-shadow: rgba(0, 0, 0, .5) 1px 1px 6px;
-    -webkit-box-shadow: rgba(0, 0, 0, .5) 1px 1px 6px;
-    -webkit-border-top-left-radius: 6px;
-    -webkit-border-top-right-radius: 6px;
-    -moz-border-radius-topleft: 6px;
-    -moz-border-radius-topright: 6px;
+    position: relative;
+    overflow: hidden;
 
-    #contentHeader {
-      -webkit-border-top-left-radius: 6px;
-      -webkit-border-top-right-radius: 6px;
-      -moz-border-radius-topleft: 6px;
-      -moz-border-radius-topright: 6px;
-      -moz-box-shadow: rgba(0, 0, 0, .5) 0px 1px 1px;
-      -webkit-box-shadow: rgba(0, 0, 0, .5) 0px 1px 1px;
+    @include borderRadius(6px);
+    @include dropShadow(6px);
+    background: white;
 
-      width: 1000 - (30 + 30);
-      height: 46 - 10;
-      margin: 0 auto;
-      padding: 5px 30px;
+    #navigationBar {
+      width: 1000px;
+      height: 40px;
+      padding: 0;
       margin: 0;
+      overflow: hidden;
 
-      h2 {
-        padding: 0;
-        margin: 0;
-        font-size: 28px;
-        display: inline-block;
-        letter-spacing: 1.1;
-        cursor: pointer;
-      }
+      @include noSelect;
+      @include borderRadiusTop(6px);
+      @include gradient($darkGray, 10%);
+      color: white;
 
-      a {
-        display: inline-block;
-        float: right;
-        margin-top: 11px;
-        color: white;
+      div {
+        height: 40px;
+        padding: 0 30px;
 
-        &#organizationSettings {
-          padding-left: 14px;
-          background-repeat: no-repeat;
-          background-image: url(/images/cog_alt_12x12_light.png);
-          background-position: 0 1px;
+        h2 {
+          display: inline-block;
+          margin-top: 5px;
+          margin-right: 24px;
+          font-size: 24px;
+          letter-spacing: 1.1;
+          cursor: pointer;
         }
 
-        &#backToLastOrganization {
-          padding-left: 16px;
-          background-repeat: no-repeat;
-          background-image: url(/images/undo_12x12_light.png);
-          background-position: 0 2px;
+        a {
+          display: inline-block;
+          z-index: 30;
+          margin: 0;
+          margin-top: 5px;
+          padding: 5px 12px;
+          color: white;
+          font-size: 18px;
+
+          &.active {
+            padding-bottom: 10px;
+            @include borderRadiusTop(4px);
+            @include dropShadow(4px);
+            background-color: lighten(lighten($darkGray, 3%), 6%);
+          }
+
+          &.rightSide {
+            float: right;
+            padding-left: 20px;
+            background-repeat: no-repeat;
+            background-position: 3px;
+          }
+
+          &#backToLastOrganization {
+            background-image: url(/images/undo_12x12_light.png);
+          }
+        }
+      }
+    }
+
+    #subnavigationBar {
+      width: 1000;
+      height: 28px;
+      padding: 0;
+      margin: 0;
+      position: relative;
+      z-index: 20;
+      overflow: hidden;
+
+      @include noSelect;
+      @include gradient(lighten($darkGray, 3%), 6%);
+      border-bottom: solid 1px darken($darkGray, 5%);
+      color: $lighterGray;
+      font-size: 14px;
+
+      div {
+        padding: 5px 20px;
+        overflow: hidden;
+
+        div {
+          padding: 0;
+          &#rightContent {float: right;}
+          &#leftContent {float: left;}
+        }
+
+        span {
+          color: lighten($gray, 25%);
+          padding: 0 2px;
+        }
+
+        a {
+          color: lighten($gray, 25%);
+          padding: 0 12px;
+
+          &#back {
+            padding-left: 20px;
+            background-repeat: no-repeat;
+            background-position: 3px;
+            background-image: url(/images/undo_12x12_light.png);
+          }
         }
       }
     }
@@ -130,8 +182,12 @@
       background: white;
       overflow-y: auto;
       height: 100%;
-      padding-top: 30px;
+      padding-top: 20px;
       padding-bottom: 10px;
+
+      h2, .headerContainer {
+        margin-bottom: 20px;
+      }
     }
   }
 
