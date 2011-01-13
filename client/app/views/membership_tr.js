@@ -32,5 +32,5 @@ _.constructor("Views.MembershipTr", View.Template, {
         }
       });
     });
-  }},
+  }}
 });
