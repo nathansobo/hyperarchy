@@ -152,8 +152,10 @@ _.constructor("Views.Layout", View.Template, {
         this.organizationName.bindHtml(organization, 'name');
         if (organization.currentUserCanEdit()) {
           this.editOrganizationLink.show();
+          this.membersLink.show();
         } else {
           this.editOrganizationLink.hide();
+          this.membersLink.hide();
         }
       }
     },
