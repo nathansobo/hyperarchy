@@ -41,8 +41,8 @@ group :test do
 
   # for monarch specs, since rubymine forces me to run them with this gemfile
   # hoses deployment when it goes to production
-  gem "sqlite3-ruby", "1.2.4", :require => "sqlite3"
-  gem "differ", "0.1.1"
+#  gem "sqlite3-ruby", "1.2.4", :require => "sqlite3"
+#  gem "differ", "0.1.1"
 end
 
 group :thor do
