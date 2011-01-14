@@ -95,15 +95,15 @@ class Membership < Monarch::Model::Record
     end
   end
 
-  def wants_alerts?(period)
-     wants_election_alerts?(period) || wants_candidate_alerts?(period) 
+  def wants_notifications?(period)
+     wants_election_notifications?(period) || wants_candidate_notifications?(period)
   end
 
-  def wants_candidate_alerts?(period)
+  def wants_candidate_notifications?(period)
     candidate_alerts == period
   end
 
-  def wants_election_alerts?(period)
+  def wants_election_notifications?(period)
     election_alerts == period
   end
 

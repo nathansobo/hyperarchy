@@ -1,15 +1,15 @@
 module Hyperarchy
   module Emails
-    class Alert < Erector::Widget
-      attr_reader :alert_presenter
+    class Notification < Erector::Widget
+      attr_reader :notification_presenter
 
       def content
         html do
           body do
             div :style => "font-size: 14px; font-family: 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;"  do
-              num_sections = alert_presenter.sections.length
+              num_sections = notification_presenter.sections.length
 
-              alert_presenter.sections.each do |section|
+              notification_presenter.sections.each do |section|
                 if num_sections > 1
                   h1 "#{section.organization.name}", :style => "font-size: 22px;"
                 end

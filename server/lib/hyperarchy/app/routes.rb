@@ -232,14 +232,14 @@ module Hyperarchy
     get "/alert" do
       authentication_required
       
-      presenter = Alerter::AlertPresenter.new(current_user, "weekly")
-      render_page Emails::Alert, :alert_presenter => presenter
+      presenter = Alerter::NotificationPresenter.new(current_user, "weekly")
+      render_page Emails::Notification, :alert_presenter => presenter
     end
 
     get "/alert_text" do
       authentication_required
 
-      presenter = Alerter::AlertPresenter.new(current_user, "weekly")
+      presenter = Alerter::NotificationPresenter.new(current_user, "weekly")
       presenter.to_s
     end
 
@@ -247,15 +247,15 @@ module Hyperarchy
     get "/send_alert" do
       authentication_required
 
-      alert_presenter = Alerter::AlertPresenter.new(current_user, "weekly")
+      alert_presenter = Alerter::NotificationPresenter.new(current_user, "weekly")
       Mailer.send(
         :to => ["nathansobo@gmail.com", "maxbrunsfeld@gmail.com"],
         :subject => alert_presenter.subject,
         :alert_presenter => alert_presenter,
         :body => alert_presenter.to_s,
-        :erector_class => Emails::Alert
+        :erector_class => Emails::Notification
       )
-      render_page Emails::Alert, :alert_presenter => alert_presenter
+      render_page Emails::Notification, :alert_presenter => alert_presenter
     end
   end
 end

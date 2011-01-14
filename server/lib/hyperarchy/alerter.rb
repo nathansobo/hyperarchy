@@ -5,36 +5,36 @@ module Hyperarchy
         @instance ||= new
       end
 
-      delegate :send_periodic_alerts, :send_immediate_alerts, :to => :instance
+      delegate :send_periodic_notifications, :send_immediate_notifications, :to => :instance
     end
 
 
-    def send_periodic_alerts(period)
+    def send_periodic_notifications(period)
       period = period.to_s
 
       User.each do |user|
-        send_alert_to_user(user, AlertPresenter.new(user, period))
+        send_notification_to_user(user, NotificationPresenter.new(user, period))
       end
     end
 
-    def send_immediate_alerts(item)
-      item.users_to_alert_immediately.each do |user|
-        send_alert_to_user(user, AlertPresenter.new(user, "immediately", item))
+    def send_immediate_notifications(item)
+      item.users_to_notify_immediately.each do |user|
+        send_notification_to_user(user, NotificationPresenter.new(user, "immediately", item))
       end
     end
 
-    def send_alert_to_user(user, alert_presenter)
-      return if alert_presenter.sections.empty?
+    def send_notification_to_user(user, notification_presenter)
+      return if notification_presenter.sections.empty?
       Mailer.send(
         :to => user.email_address,
-        :subject => alert_presenter.subject,
-        :alert_presenter => alert_presenter,
-        :body => alert_presenter.to_s,
-        :erector_class => Emails::Alert,
+        :subject => notification_presenter.subject,
+        :notification_presenter => notification_presenter,
+        :body => notification_presenter.to_s,
+        :erector_class => Emails::Notification,
       )
     end
 
-    class AlertPresenter
+    class NotificationPresenter
       attr_reader :user, :period, :sections, :item
 
       def initialize(user, period, item=nil)
@@ -43,21 +43,21 @@ module Hyperarchy
         @item = item
 
         if period == "immediately"
-          build_immediate_alert_section
+          build_immediate_notification_section
         else
-          build_periodic_alert_sections
+          build_periodic_notification_sections
         end
       end
 
-      # in this version, we know we only have 1 item to alert, so we get the membership from it
-      def build_immediate_alert_section
+      # in this version, we know we only have 1 item to notification, so we get the membership from it
+      def build_immediate_notification_section
         membership_for_item = item.organization.memberships.where(:user => user).first
         @sections = [MembershipSection.new(membership_for_item, period, item)]
       end
 
-      def build_periodic_alert_sections
+      def build_periodic_notification_sections
         @sections = memberships.map do |membership|
-          if membership.wants_alerts?(period)
+          if membership.wants_notifications?(period)
             section = MembershipSection.new(membership, period)
             section if section.candidates_section || section.elections_section
           end
@@ -120,30 +120,30 @@ module Hyperarchy
           @item = item
 
           if period == "immediately"
-            build_immediate_alert_section
+            build_immediate_notification_section
           else
-            build_periodic_alert_sections
+            build_periodic_notification_sections
           end
         end
 
-        def build_immediate_alert_section
+        def build_immediate_notification_section
           case item
             when Election
               @elections_section = ElectionsSection.new(membership, period, item)
             when Candidate
               @candidates_section = CandidatesSection.new(membership, period, item)
             else
-              raise "Can't build an alert for this kind of object"
+              raise "Can't build a notification for this kind of object"
           end
         end
 
-        def build_periodic_alert_sections
-          if membership.wants_candidate_alerts?(period)
+        def build_periodic_notification_sections
+          if membership.wants_candidate_notifications?(period)
             @candidates_section = CandidatesSection.new(membership, period)
             @candidates_section = nil if candidates_section.num_candidates == 0
           end
 
-          if membership.wants_election_alerts?(period)
+          if membership.wants_election_notifications?(period)
             @elections_section = ElectionsSection.new(membership, period)
             @elections_section = nil if elections_section.num_elections == 0
           end

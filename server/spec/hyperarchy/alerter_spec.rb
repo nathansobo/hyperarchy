@@ -2,8 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + "/../hyperarchy_spec_helper")
 
 module Hyperarchy
   describe Alerter do
-    describe "#send_periodic_alerts(period)" do
-      it "sends all alerts to all users for all their memberships" do
+    describe "#send_periodic_notifications(period)" do
+      it "sends all notifications to all users for all their memberships" do
         social_org = Organization.find(:social => true)
         pro_org = Organization.make
 
@@ -47,18 +47,18 @@ module Hyperarchy
         # time moves forward again by 30 minutes and the report is sent.
         Timecop.freeze(30.minutes.from_now)
         alerter = Alerter.new
-        alerter.send_periodic_alerts(:hourly)
+        alerter.send_periodic_notifications(:hourly)
 
         Mailer.emails.length.should == 2
-        social_user_alert = Mailer.emails.detect {|email| email[:to] == social_user.email_address}
-        pro_user_alert = Mailer.emails.detect {|email| email[:to] == pro_user.email_address}
+        social_user_notification = Mailer.emails.detect {|email| email[:to] == social_user.email_address}
+        pro_user_notification = Mailer.emails.detect {|email| email[:to] == pro_user.email_address}
 
         # the social user should only receive hourly updates about new elections in the social org
-        social_user_alert[:subject].should =~ /question/
-        social_user_alert[:subject].should_not =~ /answer/
-        alert_presenter = social_user_alert[:alert_presenter]
-        alert_presenter.sections.length.should == 1
-        section = alert_presenter.sections[0]
+        social_user_notification[:subject].should =~ /question/
+        social_user_notification[:subject].should_not =~ /answer/
+        notification_presenter = social_user_notification[:notification_presenter]
+        notification_presenter.sections.length.should == 1
+        section = notification_presenter.sections[0]
         section.membership.organization.should == social_org
         section.elections_section.should_not be_nil
         section.candidates_section.should be_nil
@@ -68,18 +68,18 @@ module Hyperarchy
         # as well as hourly updates about social elections AND social candidates
 
         # the pro org should always be listed first
-        pro_user_alert[:subject].should =~ /question/
-        pro_user_alert[:subject].should =~ /answer/
-        alert_presenter = pro_user_alert[:alert_presenter]
-        alert_presenter.sections.length.should == 2
-        pro_section = alert_presenter.sections[0]
+        pro_user_notification[:subject].should =~ /question/
+        pro_user_notification[:subject].should =~ /answer/
+        notification_presenter = pro_user_notification[:notification_presenter]
+        notification_presenter.sections.length.should == 2
+        pro_section = notification_presenter.sections[0]
         pro_section.membership.organization.should == pro_org
         pro_section.elections_section.should_not be_nil
         pro_section.candidates_section.should be_nil
         pro_section.elections_section.elections.should == [pro_election_2]
 
         # next comes the social org report, with 1 election and 2 groups of 3 candidates
-        social_section = alert_presenter.sections[1]
+        social_section = notification_presenter.sections[1]
         social_section.membership.organization.should == social_org
         social_section.elections_section.should_not be_nil
         social_section.candidates_section.should_not be_nil
