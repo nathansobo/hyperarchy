@@ -35,7 +35,7 @@ module Hyperarchy
         questions = num_questions == 1 ? "a question" : "questions"
 
         div :style => "margin-bottom: 20px" do
-          h2 candidates_section.headline, :style => "font-size: 18px;"
+          h2 candidates_section.headline, :style => "font-size: 18px;" if candidates_section.show_headline?
 
           candidates_section.candidate_groups.each do |candidate_group|
             div :style => "background: #eee; border: 1px solid #ddd; margin-bottom: 10px; padding: 8px; max-width: 500px;" do
@@ -56,9 +56,7 @@ module Hyperarchy
       end
 
       def elections_section(elections_section)
-        num_elections = elections_section.num_elections
-        heading = "There #{"is".numberize(num_elections)} #{num_elections} new #{"question".numberize(num_elections)}:"
-        h2 heading, :style => "font-size: 18px;"
+        h2 elections_section.headline, :style => "font-size: 18px;" if elections_section.show_headline?
 
         elections_section.elections.each do |election|
           div :style => "background: #eee; border: 1px solid #ddd; margin-bottom: 10px; padding: 8px; max-width: 500px;" do

@@ -77,6 +77,10 @@ module Hyperarchy
           section.add_lines(lines)
         end
 
+        lines.push("")
+        lines.push("To change the frequency of these notifications or unsubscribe entirely,")
+        lines.push("visit your account preferences page at:")
+        lines.push("https://#{HTTP_HOST}/app#view=account")
         lines.join("\n")
       end
 
@@ -172,6 +176,7 @@ module Hyperarchy
           end
 
           if period == "immediately"
+            @num_candidates = 1
             candidate_groups_by_election_id[immediate_candidate.election_id].add_candidate(immediate_candidate)
           else
             new_candidates.each do |candidate|
@@ -182,7 +187,7 @@ module Hyperarchy
         end
 
         def add_lines(lines)
-          lines.push(headline, "")
+          lines.push(headline, "") if show_headline?
           candidate_groups.each do |candidate_group|
             candidate_group.add_lines(lines)
           end
@@ -191,6 +196,10 @@ module Hyperarchy
         def headline
           questions = num_candidates == 1 ? "a question" : "questions"
           "There #{"is".numberize(num_candidates)} #{num_candidates} new #{"answer".numberize(num_candidates)} to #{questions} you voted on:"
+        end
+
+        def show_headline?
+          period != "immediately"
         end
 
         def new_candidates
@@ -244,11 +253,15 @@ module Hyperarchy
         end
 
         def add_lines(lines)
-          lines.push(headline, "")
+          lines.push(headline, "") if show_headline?
           elections.each do |election|
             lines.push("#{election.body} --#{election.creator.full_name}")
             lines.push("to vote on this question, visit: #{election.full_url}", "")
           end
+        end
+
+        def show_headline?
+          period != "immediately"
         end
 
         def headline
