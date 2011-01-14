@@ -6,3 +6,4 @@
 //= require "models/vote"
 //= require "models/election_visit"
 //= require "models/ranking"
+//= require "models/candidate_comment"

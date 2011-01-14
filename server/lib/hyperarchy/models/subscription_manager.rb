@@ -6,7 +6,8 @@ class SubscriptionManager
     delegate :start, :subscribe_to_organization, :to => :instance
   end
 
-  SUBSCRIBED_TABLES = [:organizations, :users, :memberships, :elections, :candidates, :votes, :election_visits, :rankings]
+  SUBSCRIBED_TABLES = [:organizations, :users, :memberships, :elections, :candidates,
+                       :votes, :election_visits, :rankings, :candidate_comments]
 
   def initialize
     @mutex = Mutex.new
