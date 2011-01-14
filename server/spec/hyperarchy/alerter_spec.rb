@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + "/../hyperarchy_spec_helper")
 
 module Hyperarchy
-  describe Alerter do
+  describe Notifier do
     describe "#send_periodic_notifications(period)" do
       it "sends all notifications to all users for all their memberships" do
         social_org = Organization.find(:social => true)
@@ -14,9 +14,9 @@ module Hyperarchy
 
         # move time backward. nothing should be reported until time advances into the reporting period (1 hour before report)
         Timecop.freeze(2.hours.ago)
-        social_org.memberships.make(:user => social_user, :election_alerts => "hourly", :candidate_alerts => "immediately")
-        social_org.memberships.make(:user => pro_user, :election_alerts => "hourly", :candidate_alerts => "hourly")
-        pro_org.memberships.make(:user => pro_user, :election_alerts => "hourly", :candidate_alerts => "weekly")
+        social_org.memberships.make(:user => social_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "immediately")
+        social_org.memberships.make(:user => pro_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "hourly")
+        pro_org.memberships.make(:user => pro_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "weekly")
 
         social_election_1 = social_org.elections.make
         social_candidate_1 = social_election_1.candidates.make
@@ -46,8 +46,8 @@ module Hyperarchy
 
         # time moves forward again by 30 minutes and the report is sent.
         Timecop.freeze(30.minutes.from_now)
-        alerter = Alerter.new
-        alerter.send_periodic_notifications(:hourly)
+        Notifier = Notifier.new
+        Notifier.send_periodic_notifications(:hourly)
 
         Mailer.emails.length.should == 2
         social_user_notification = Mailer.emails.detect {|email| email[:to] == social_user.email_address}

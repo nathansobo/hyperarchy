@@ -14,24 +14,24 @@ module Hyperarchy
       # every hour
       scheduler.cron '0 0 * * * *' do
         Hyperarchy.defer do
-          puts "Sending hourly alerts"
-          Alerter.new.send_periodic_notifications(:hourly)
+          puts "Sending hourly notifications"
+          Notifier.new.send_periodic_notifications(:hourly)
         end
       end
 
       # 5:30 am daily PST
       scheduler.cron '0 30 5 * * * America/Los_Angeles' do
         Hyperarchy.defer do
-          puts "Sending daily alerts"
-          Alerter.new.send_periodic_notifications(:daily)
+          puts "Sending daily notifications"
+          Notifier.new.send_periodic_notifications(:daily)
         end
       end
 
       # 5:30 am on wednesday PST
       scheduler.cron '0 30 5 * * 3 America/Los_Angeles' do
         Hyperarchy.defer do
-          puts "Sending weekly alerts"
-          Alerter.new.send_periodic_notifications(:weekly)
+          puts "Sending weekly notifications"
+          Notifier.new.send_periodic_notifications(:weekly)
         end
       end
     end

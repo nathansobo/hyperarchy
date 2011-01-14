@@ -68,14 +68,14 @@ class Election < Monarch::Model::Record
 
   def after_create
     unless suppress_notification_email
-      Hyperarchy.defer { Hyperarchy::Alerter.send_immediate_notifications(self) }
+      Hyperarchy.defer { Hyperarchy::Notifier.send_immediate_notifications(self) }
     end
     organization.increment(:election_count)
   end
 
   def users_to_notify_immediately
     organization.memberships.
-      where(:election_alerts => "immediately").
+      where(:notify_of_new_elections => "immediately").
       where(Membership[:user_id].neq(creator_id)).
       join_through(User)
   end

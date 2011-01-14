@@ -100,7 +100,7 @@ class Candidate < Monarch::Model::Record
     election.votes.
       join(Membership.where(:organization_id => election.organization_id)).
         on(Vote[:user_id].eq(Membership[:user_id])).
-      where(:candidate_alerts => "immediately").
+      where(:notify_of_new_candidates => "immediately").
       where(Membership[:user_id].neq(creator_id)).
       join_through(User)
   end
@@ -109,6 +109,6 @@ class Candidate < Monarch::Model::Record
 
   def send_notifications
     return if suppress_notification_email
-    Hyperarchy.defer { Hyperarchy::Alerter.send_immediate_notifications(self) }
+    Hyperarchy.defer { Hyperarchy::Notifier.send_immediate_notifications(self) }
   end
 end

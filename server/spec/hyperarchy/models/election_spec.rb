@@ -37,9 +37,9 @@ module Models
         @opted_out = User.make
         @non_member = User.make
 
-        organization.memberships.make(:user => creator, :election_alerts => "immediately")
-        organization.memberships.make(:user => opted_in, :election_alerts => "immediately")
-        organization.memberships.make(:user => opted_out, :election_alerts => "never")
+        organization.memberships.make(:user => creator, :notify_of_new_elections => "immediately")
+        organization.memberships.make(:user => opted_in, :notify_of_new_elections => "immediately")
+        organization.memberships.make(:user => opted_out, :notify_of_new_elections => "never")
 
         set_current_user(creator)
       end
@@ -51,7 +51,7 @@ module Models
       end
 
       it "does not try to send email if there are no people to notify" do
-        organization.memberships.update(:election_alerts => "never")
+        organization.memberships.update(:notify_of_new_elections => "never")
         organization.elections.create!(:body => "What should we eat for dinner?")
         Mailer.emails.should be_empty
       end

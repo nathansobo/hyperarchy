@@ -5,8 +5,8 @@ class Membership < Monarch::Model::Record
   column :role, :string, :default => "member"
   column :pending, :boolean, :default => true
   column :last_visited, :datetime
-  column :election_alerts, :string, :default => "weekly"
-  column :candidate_alerts, :string, :default => "weekly"
+  column :notify_of_new_elections, :string, :default => "weekly"
+  column :notify_of_new_candidates, :string, :default => "weekly"
   column :created_at, :datetime
   column :updated_at, :datetime
 
@@ -33,14 +33,14 @@ class Membership < Monarch::Model::Record
   end
 
   def create_whitelist
-    [:organization_id, :user_id, :role, :first_name, :last_name, :email_address, :election_alerts, :candidate_alerts]
+    [:organization_id, :user_id, :role, :first_name, :last_name, :email_address, :notify_of_new_elections, :notify_of_new_candidates]
   end
 
   def update_whitelist
     if current_user_is_admin_or_organization_owner?
-      [:first_name, :last_name, :role, :last_visited, :election_alerts, :candidate_alerts]
+      [:first_name, :last_name, :role, :last_visited, :notify_of_new_elections, :notify_of_new_candidates]
     else
-      [:last_visited, :election_alerts, :candidate_alerts]
+      [:last_visited, :notify_of_new_elections, :notify_of_new_candidates]
     end
   end
 
@@ -100,11 +100,11 @@ class Membership < Monarch::Model::Record
   end
 
   def wants_candidate_notifications?(period)
-    candidate_alerts == period
+    notify_of_new_candidates == period
   end
 
   def wants_election_notifications?(period)
-    election_alerts == period
+    notify_of_new_elections == period
   end
 
   def new_candidates_in_period(period)

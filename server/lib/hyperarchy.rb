@@ -21,7 +21,7 @@ require "#{dir}/hyperarchy/views"
 require "#{dir}/hyperarchy/emails"
 require "#{dir}/hyperarchy/app"
 require "#{dir}/hyperarchy/scheduler"
-require "#{dir}/hyperarchy/alerter"
+require "#{dir}/hyperarchy/notifier"
 
 require "newrelic_rpm"
 

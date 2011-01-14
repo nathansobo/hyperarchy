@@ -1,5 +1,5 @@
 module Hyperarchy
-  class Alerter
+  class Notifier
     class << self
       def instance
         @instance ||= new
