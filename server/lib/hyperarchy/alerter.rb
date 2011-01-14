@@ -1,15 +1,29 @@
 module Hyperarchy
   class Alerter
-    def send_alerts(period)
+    class << self
+      def instance
+        @instance ||= new
+      end
+
+      delegate :send_periodic_alerts, :send_immediate_alerts, :to => :instance
+    end
+
+
+    def send_periodic_alerts(period)
       period = period.to_s
 
       User.each do |user|
-        send_alerts_for_user(user, period)
+        send_alert_to_user(user, AlertPresenter.new(user, period))
       end
     end
 
-    def send_alerts_for_user(user, period)
-      alert_presenter = AlertPresenter.new(user, period)
+    def send_immediate_alerts(item)
+      item.users_to_alert_immediately.each do |user|
+        send_alert_to_user(user, AlertPresenter.new(user, "immediately", item))
+      end
+    end
+
+    def send_alert_to_user(user, alert_presenter)
       return if alert_presenter.sections.empty?
       Mailer.send(
         :to => user.email_address,
@@ -21,11 +35,27 @@ module Hyperarchy
     end
 
     class AlertPresenter
-      attr_reader :user, :period, :sections
+      attr_reader :user, :period, :sections, :item
 
-      def initialize(user, period)
+      def initialize(user, period, item=nil)
         @user = user
         @period = period
+        @item = item
+
+        if period == "immediately"
+          build_immediate_alert_section
+        else
+          build_periodic_alert_sections
+        end
+      end
+
+      # in this version, we know we only have 1 item to alert, so we get the membership from it
+      def build_immediate_alert_section
+        membership_for_item = item.organization.memberships.where(:user => user).first
+        @sections = [MembershipSection.new(membership_for_item, period, item)]
+      end
+
+      def build_periodic_alert_sections
         @sections = memberships.map do |membership|
           if membership.wants_alerts?(period)
             section = MembershipSection.new(membership, period)
@@ -59,10 +89,18 @@ module Hyperarchy
       end
 
       def subject
-        items = []
-        items.push("questions") if new_elections?
-        items.push("answers") if new_candidates?
-        "New #{items.join(" and ")} on Hyperarchy"
+        if period == "immediately"
+          if new_elections?
+            "New question on Hyperarchy"
+          else
+            "New answer on Hyperarchy"
+          end
+        else
+          items = []
+          items.push("questions") if new_elections?
+          items.push("answers") if new_candidates?
+          "New #{items.join(" and ")} on Hyperarchy"
+        end
       end
 
       def new_elections?
@@ -74,12 +112,32 @@ module Hyperarchy
       end
 
       class MembershipSection
-        attr_reader :membership, :period, :candidates_section, :elections_section
+        attr_reader :membership, :period, :candidates_section, :elections_section, :item
 
-        def initialize(membership, period)
+        def initialize(membership, period, item=nil)
           @membership = membership
           @period = period
+          @item = item
 
+          if period == "immediately"
+            build_immediate_alert_section
+          else
+            build_periodic_alert_sections
+          end
+        end
+
+        def build_immediate_alert_section
+          case item
+            when Election
+              @elections_section = ElectionsSection.new(membership, period, item)
+            when Candidate
+              @candidates_section = CandidatesSection.new(membership, period, item)
+            else
+              raise "Can't build an alert for this kind of object"
+          end
+        end
+
+        def build_periodic_alert_sections
           if membership.wants_candidate_alerts?(period)
             @candidates_section = CandidatesSection.new(membership, period)
             @candidates_section = nil if candidates_section.num_candidates == 0
@@ -105,7 +163,7 @@ module Hyperarchy
       class CandidatesSection
         attr_reader :membership, :period, :candidate_groups_by_election_id, :num_candidates
 
-        def initialize(membership, period)
+        def initialize(membership, period, immediate_candidate=nil)
           @membership = membership
           @period = period
           @num_candidates = 0
@@ -113,9 +171,13 @@ module Hyperarchy
             h[election_id] = CandidateGroup.new(Election.find(election_id))
           end
 
-          new_candidates.each do |candidate|
-            @num_candidates += 1
-            candidate_groups_by_election_id[candidate.election_id].add_candidate(candidate)
+          if period == "immediately"
+            candidate_groups_by_election_id[immediate_candidate.election_id].add_candidate(immediate_candidate)
+          else
+            new_candidates.each do |candidate|
+              @num_candidates += 1
+              candidate_groups_by_election_id[candidate.election_id].add_candidate(candidate)
+            end
           end
         end
 
@@ -170,10 +232,15 @@ module Hyperarchy
       class ElectionsSection
         attr_reader :membership, :period, :elections
 
-        def initialize(membership, period)
+        def initialize(membership, period, immediate_election=nil)
           @membership = membership
           @period = period
-          @elections = membership.new_elections_in_period(period).all
+
+          if period == "immediately"
+            @elections = [immediate_election]
+          else
+            @elections = membership.new_elections_in_period(period).all
+          end
         end
 
         def add_lines(lines)
@@ -187,7 +254,6 @@ module Hyperarchy
         def headline
           "There #{"is".numberize(num_elections)} #{num_elections} new #{"question".numberize(num_elections)}:"
         end
-
 
         def num_elections
           elections.size

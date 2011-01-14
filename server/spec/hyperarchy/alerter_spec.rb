@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../hyperarchy_spec_helper")
 
 module Hyperarchy
   describe Alerter do
-    describe "#send_alerts(period)" do
+    describe "#send_periodic_alerts(period)" do
       it "sends all alerts to all users for all their memberships" do
         social_org = Organization.find(:social => true)
         pro_org = Organization.make
@@ -47,7 +47,7 @@ module Hyperarchy
         # time moves forward again by 30 minutes and the report is sent.
         Timecop.freeze(30.minutes.from_now)
         alerter = Alerter.new
-        alerter.send_alerts(:hourly)
+        alerter.send_periodic_alerts(:hourly)
 
         Mailer.emails.length.should == 2
         social_user_alert = Mailer.emails.detect {|email| email[:to] == social_user.email_address}

@@ -15,7 +15,7 @@ module Hyperarchy
       scheduler.cron '0 0 * * * *' do
         Hyperarchy.defer do
           puts "Sending hourly alerts"
-          Alerter.new.send_alerts(:hourly)
+          Alerter.new.send_periodic_alerts(:hourly)
         end
       end
 
@@ -23,7 +23,7 @@ module Hyperarchy
       scheduler.cron '0 30 5 * * * America/Los_Angeles' do
         Hyperarchy.defer do
           puts "Sending daily alerts"
-          Alerter.new.send_alerts(:daily)
+          Alerter.new.send_periodic_alerts(:daily)
         end
       end
 
@@ -31,7 +31,7 @@ module Hyperarchy
       scheduler.cron '0 30 5 * * 3 America/Los_Angeles' do
         Hyperarchy.defer do
           puts "Sending weekly alerts"
-          Alerter.new.send_alerts(:weekly)
+          Alerter.new.send_periodic_alerts(:weekly)
         end
       end
     end

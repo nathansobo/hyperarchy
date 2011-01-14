@@ -67,44 +67,17 @@ class Election < Monarch::Model::Record
   end
 
   def after_create
-    return if suppress_notification_email
-    notify_users = organization.memberships.
-      where(:election_alerts => "immediately").
-      where(Membership[:user_id].neq(creator_id)).
-      join_through(User)
-
-    unless notify_users.empty?
-      to_addresses = notify_users.map(&:email_address)
-      subject = email_subject
-      body = email_body
-
-      Hyperarchy.defer do
-        to_addresses.each do |to_address|
-          Mailer.send(:to => to_address, :subject => subject, :body => body)
-        end
-      end
+    unless suppress_notification_email
+      Hyperarchy.defer { Hyperarchy::Alerter.send_immediate_alerts(self) }
     end
-
     organization.increment(:election_count)
   end
 
-  def email_subject
-    "There's a new question on Hyperarchy"
-  end
-
-  def email_body
-    "#{creator.full_name} added a new question to #{organization.name}.
-
-\"#{body}\"
-
-To view this question in Hyperarchy, visit this link:
-http://#{HTTP_HOST}/app#view=election&electionId=#{id}
-
-To unsubscribe from these emails, adjust your email preferences at:
-http://#{HTTP_HOST}/app#view=account
-
-Or just reply with 'unsubscribe' to this email.
-"
+  def users_to_alert_immediately
+    organization.memberships.
+      where(:election_alerts => "immediately").
+      where(Membership[:user_id].neq(creator_id)).
+      join_through(User)
   end
 
   def before_destroy
