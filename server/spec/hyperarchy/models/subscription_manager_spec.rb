@@ -13,6 +13,9 @@ describe SubscriptionManager do
     client_2 = RealTimeClient.new("client_2", hub)
     client_2.user = user_2
 
+    # freeze time to keep the updated_at from changing so we don't have to account for it in the mocks
+    Timecop.freeze(Time.now)
+
     org_1 = Organization.make
     org_2 = Organization.make
 
