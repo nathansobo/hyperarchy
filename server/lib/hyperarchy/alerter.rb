@@ -15,8 +15,8 @@ module Hyperarchy
         :to => user.email_address,
         :subject => alert_presenter.subject,
         :alert_presenter => alert_presenter,
+        :body => alert_presenter.to_s,
         :erector_class => Emails::Alert,
-        :template_name => "alert"
       )
     end
 
@@ -33,6 +33,23 @@ module Hyperarchy
           end
         end.compact
       end
+
+      def to_s
+        lines = []
+
+        sections.each do |section|
+          if sections.length > 1
+            lines.push(section.organization.name)
+            lines.push("-" * section.organization.name.length)
+            lines.push("")
+          end
+
+          section.add_lines(lines)
+        end
+
+        lines.join("\n")
+      end
+
 
       def memberships
         user.memberships.
@@ -74,6 +91,12 @@ module Hyperarchy
           end
         end
 
+        def add_lines(lines)
+          candidates_section.add_lines(lines) if candidates_section
+          elections_section.add_lines(lines) if elections_section
+          lines.push("", "", "")
+        end
+
         def organization
           membership.organization
         end
@@ -96,6 +119,18 @@ module Hyperarchy
           end
         end
 
+        def add_lines(lines)
+          lines.push(headline, "")
+          candidate_groups.each do |candidate_group|
+            candidate_group.add_lines(lines)
+          end
+        end
+
+        def headline
+          questions = num_candidates == 1 ? "a question" : "questions"
+          "There #{"is".numberize(num_candidates)} #{num_candidates} new #{"answer".numberize(num_candidates)} to #{questions} you voted on:"
+        end
+
         def new_candidates
           membership.new_candidates_in_period(period)
         end
@@ -115,6 +150,14 @@ module Hyperarchy
           @candidates = []
         end
 
+        def add_lines(lines)
+          lines.push("Question: #{election.body}")
+          candidates.each do |candidate|
+            lines.push("* #{candidate.body} --#{candidate.creator.full_name}")
+          end
+          lines.push("To vote on this question, visit: #{election.full_url}", "")
+        end
+
         def add_candidate(candidate)
           @candidates.push(candidate)
         end
@@ -132,6 +175,19 @@ module Hyperarchy
           @period = period
           @elections = membership.new_elections_in_period(period).all
         end
+
+        def add_lines(lines)
+          lines.push(headline, "")
+          elections.each do |election|
+            lines.push("#{election.body} --#{election.creator.full_name}")
+            lines.push("to vote on this question, visit: #{election.full_url}", "")
+          end
+        end
+
+        def headline
+          "There #{"is".numberize(num_elections)} #{num_elections} new #{"question".numberize(num_elections)}:"
+        end
+
 
         def num_elections
           elections.size

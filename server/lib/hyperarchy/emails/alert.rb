@@ -18,11 +18,9 @@ module Hyperarchy
                   num_candidates = candidates_section.num_candidates
                   num_questions = candidates_section.candidate_groups.length
                   questions = num_questions == 1 ? "a question" : "questions"
-                  heading = "There #{"is".numberize(num_candidates)} #{num_candidates} new #{"answer".numberize(num_candidates)} to #{questions} you voted on:"
-
 
                   div :style => "margin-bottom: 20px" do
-                    h2 heading, :style => "font-size: 18px;"
+                    h2 candidates_section.headline, :style => "font-size: 18px;"
 
                     candidates_section.candidate_groups.each do |candidate_group|
                       div :style => "background: #eee; border: 1px solid #ddd; margin-bottom: 10px; padding: 8px; max-width: 500px;" do

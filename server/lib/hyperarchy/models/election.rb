@@ -172,4 +172,8 @@ Or just reply with 'unsubscribe' to this email.
   def age_in_hours
     (Time.now.to_i - created_at.to_i) / 3600
   end
+
+  def full_url
+    "https://#{HTTP_HOST}/app#view=election&electionId=#{id}"
+  end
 end
