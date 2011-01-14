@@ -6,7 +6,7 @@ _.constructor("Views.EmailPreferences", View.Template, {
       h2(organization.name() + " Email Preferences");
       div({'class': "emailPreference"}, function() {
         label("Email me about new questions: ");
-        select({name: "electionAlerts"}, function() {
+        select({name: "notifyOfNewElections"}, function() {
           option({value: "immediately"}, "Immediately");
           option({value: "hourly"}, "Hourly");
           option({value: "daily"}, "Daily");
@@ -16,7 +16,7 @@ _.constructor("Views.EmailPreferences", View.Template, {
       });
       div({'class': "emailPreference"}, function() {
         label("Email me about new answers to questions on which I voted: ");
-        select({name: "candidateAlerts"}, function() {
+        select({name: "notifyOfNewCandidates"}, function() {
           option({value: "immediately"}, "Immediately");
           option({value: "hourly"}, "Hourly");
           option({value: "daily"}, "Daily");
