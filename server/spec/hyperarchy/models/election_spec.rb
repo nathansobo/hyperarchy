@@ -37,21 +37,21 @@ module Models
         @opted_out = User.make
         @non_member = User.make
 
-        organization.memberships.create!(:user => creator, :notify_of_new_elections => true, :suppress_invite_email => true)
-        organization.memberships.create!(:user => opted_in, :notify_of_new_elections => true, :suppress_invite_email => true)
-        organization.memberships.create!(:user => opted_out, :notify_of_new_elections => false, :suppress_invite_email => true)
+        organization.memberships.make(:user => creator, :election_alerts => "immediately")
+        organization.memberships.make(:user => opted_in, :election_alerts => "immediately")
+        organization.memberships.make(:user => opted_out, :election_alerts => "never")
 
         set_current_user(creator)
       end
 
-      it "sends an email to any members of the organization who have opted to receive one, except for the creator himself" do
+      it "sends an email to any members of the organization who have opted to receive one immediately, except for the creator himself" do
         organization.elections.create!(:body => "What should we eat for dinner?")
         Mailer.emails.length.should == 1
         Mailer.emails.first[:to].should == opted_in.email_address
       end
 
       it "does not try to send email if there are no people to notify" do
-        organization.memberships.update(:notify_of_new_elections => false)
+        organization.memberships.update(:election_alerts => "never")
         organization.elections.create!(:body => "What should we eat for dinner?")
         Mailer.emails.should be_empty
       end

@@ -69,7 +69,7 @@ class Election < Monarch::Model::Record
   def after_create
     return if suppress_notification_email
     notify_users = organization.memberships.
-      where(:notify_of_new_elections => true).
+      where(:election_alerts => "immediately").
       where(Membership[:user_id].neq(creator_id)).
       join_through(User)
 
