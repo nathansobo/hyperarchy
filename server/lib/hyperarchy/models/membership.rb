@@ -113,12 +113,14 @@ class Membership < Monarch::Model::Record
     user.votes.
       join_to(organization.elections).
       join_through(Candidate).
-      where(Candidate[:created_at] > (last_alerted_or_visited_at(period)))
+      where(Candidate[:created_at] > (last_alerted_or_visited_at(period))).
+      where(Candidate[:creator_id].neq(user_id))
   end
 
   def new_elections_in_period(period)
     organization.elections.
-      where(Election[:created_at] > last_alerted_or_visited_at(period))
+      where(Election[:created_at] > last_alerted_or_visited_at(period)).
+      where(Election[:creator_id].neq(user_id))
   end
 
   protected

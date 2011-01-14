@@ -230,8 +230,8 @@ module Hyperarchy
     end
 
     get "/alert" do
-      raise Monarch::Unauthorized unless current_user.admin?
-
+      authentication_required
+      
       presenter = Alerter::AlertPresenter.new(current_user, "weekly")
       render_page Emails::Alert, :alert_presenter => presenter
     end
