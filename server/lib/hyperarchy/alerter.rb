@@ -101,12 +101,14 @@ module Hyperarchy
         end
 
         def candidate_groups
-          candidate_groups_by_election_id.values
+          candidate_groups_by_election_id.values.sort_by do |candidate_group|
+            candidate_group.election.score
+          end.reverse
         end
       end
 
       class CandidateGroup
-        attr_reader :election, :candidates
+        attr_reader :election
 
         def initialize(election)
           @election = election
@@ -114,7 +116,11 @@ module Hyperarchy
         end
 
         def add_candidate(candidate)
-          candidates.push(candidate)
+          @candidates.push(candidate)
+        end
+
+        def candidates
+          @candidates.sort_by(&:position)
         end
       end
 

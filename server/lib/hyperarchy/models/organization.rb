@@ -9,7 +9,7 @@ class Organization < Monarch::Model::Record
   column :updated_at, :datetime
   column :social, :boolean, :default => false
 
-  has_many :elections
+  has_many :elections, :order_by => "score desc"
   has_many :memberships
 
   attr_accessor :suppress_membership_creation

@@ -213,7 +213,7 @@ module Hyperarchy
       offset = params[:offset]
       limit = params[:limit]
 
-      elections = organization.elections.order_by(Election[:score].desc).offset(offset).limit(limit)
+      elections = organization.elections.offset(offset).limit(limit)
       candidates = elections.join_through(Candidate)
       visits = elections.join_through(current_user.election_visits)
       
@@ -230,10 +230,23 @@ module Hyperarchy
     end
 
     get "/alert" do
-      authentication_required
-      puts "alerting????"
-      presenter = Alerter::AlertPresenter.new(current_user, "hourly")
+      raise Monarch::Unauthorized unless current_user.admin?
+
+      presenter = Alerter::AlertPresenter.new(current_user, "weekly")
       render_page Emails::Alert, :alert_presenter => presenter
+    end
+
+    get "/send_alert" do
+      authentication_required
+
+      alert_presenter = Alerter::AlertPresenter.new(current_user, "weekly")
+      Mailer.send(
+        :to => ["nathansobo@gmail.com", "maxbrunsfeld@gmail.com"],
+        :subject => alert_presenter.subject,
+        :alert_presenter => alert_presenter,
+        :erector_class => Emails::Alert
+      )
+      render_page Emails::Alert, :alert_presenter => alert_presenter
     end
   end
 end
