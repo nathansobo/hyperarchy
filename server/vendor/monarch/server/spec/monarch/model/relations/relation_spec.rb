@@ -246,6 +246,16 @@ module Monarch
             end
           end
 
+          describe "#order_by(*sort_specifications)" do
+            it "accepts one or more sort specifications, columns, symbols, or strings with embedded 'asc' / 'desc' instructions" do
+              Blog.order_by(:title).should == Blog.order_by(Blog[:title].asc)
+              Blog.order_by(Blog[:title]).should == Blog.order_by(Blog[:title].asc)
+              Blog.order_by(:title, :user_id).should == Ordering.new(Blog.table, [Blog[:title].asc, Blog[:user_id].asc])
+              Blog.order_by(Blog[:title], :user_id).should == Ordering.new(Blog.table, [Blog[:title].asc, Blog[:user_id].asc])
+              Blog.order_by("title asc", "user_id desc").should == Ordering.new(Blog.table, [Blog[:title].asc, Blog[:user_id].desc])
+            end
+          end
+
           describe "#find" do
             context "when passed an id" do
               it "returns the first Record in a Selection where id is equal to the given id" do

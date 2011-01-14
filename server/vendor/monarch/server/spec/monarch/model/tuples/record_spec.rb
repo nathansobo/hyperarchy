@@ -89,6 +89,12 @@ module Monarch
               post = new_blog.blog_posts.create!(:body => "New post")
               new_blog.blog_posts.all.should == [post]
             end
+
+            it "supports an order_by option" do
+              Blog.has_many(:blog_posts, :order_by => ["featured desc", :title])
+              blog = Blog.find("grain")
+              blog.blog_posts.should == BlogPost.where(:blog_id => blog.field(:id)).order_by(BlogPost[:featured].desc, BlogPost[:title])
+            end
           end
 
           describe ".belongs_to" do

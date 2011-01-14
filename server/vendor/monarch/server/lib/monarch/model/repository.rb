@@ -6,6 +6,10 @@ module Monarch
           @instance ||= new
         end
 
+        def reset
+          @instance = new
+        end
+
         delegate :new_table, :tables_by_name, :load_fixtures, :clear_tables, :create_schema, :num_subscriptions,
                  :tables, :initialize_local_identity_map, :clear_local_identity_map, :with_local_identity_map,
                  :transaction, :current_user, :current_user=, :to => :instance

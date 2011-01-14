@@ -11,7 +11,7 @@ module Monarch
           record.evaluate(left_operand) == record.evaluate(right_operand)
         end
 
-        def find_matchingstoredTuples(record, relation)
+        def find_matching_tuples(record, relation)
           join_field = record.field(left_operand) || record.field(right_operand)
           join_column = relation.column(left_operand) || relation.column(right_operand)
           relation.where(join_column.eq(join_field.value))

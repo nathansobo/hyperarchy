@@ -23,8 +23,6 @@ end
 Origin.connection = Sequel.sqlite
 Origin.connection.pragma_set(:full_column_names, false)
 Origin.connection.pragma_set(:short_column_names, true)
-
-Monarch::Model::Repository.create_schema
 Monarch::Model::convert_strings_to_keys = true
 
 Spec::Runner.configure do |config|

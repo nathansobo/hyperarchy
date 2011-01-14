@@ -9,16 +9,16 @@ module Monarch
         delegate :surface_tables, :to => :relation
         attr_reader :constituent_records_by_table
 
-        def initialize(field_values_orstoredTuples)
+        def initialize(field_values_or_tuples)
           @constituent_records_by_table = {}
 
-          if field_values_orstoredTuples.instance_of?(Array)
-            flatten_to_records(field_values_orstoredTuples).each do |tuple|
+          if field_values_or_tuples.instance_of?(Array)
+            flatten_to_records(field_values_or_tuples).each do |tuple|
               constituent_records_by_table[tuple.table] = tuple
             end
           else
             surface_tables.each do |table|
-              constituent_records_by_table[table] = build_constituent_record(table, field_values_orstoredTuples)
+              constituent_records_by_table[table] = build_constituent_record(table, field_values_or_tuples)
             end
           end
         end
@@ -95,8 +95,8 @@ module Monarch
           table.build_record_from_database(table_specific_field_values)
         end
 
-        def flatten_to_records(compositestoredTuples)
-          compositestoredTuples.map {|composite_tuple| composite_tuple.constituent_records }.flatten
+        def flatten_to_records(composite_tuples)
+          composite_tuples.map {|composite_tuple| composite_tuple.constituent_records }.flatten
         end
       end
     end
