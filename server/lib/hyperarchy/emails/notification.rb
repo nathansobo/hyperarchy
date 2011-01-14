@@ -7,9 +7,13 @@ module Hyperarchy
         html do
           body do
             div :style => "font-size: 14px; font-family: 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;"  do
-
               notification_presenter.sections.each do |section|
                 membership_section(section)
+              end
+              div :style => "margin-top: 20px; width: 550px;" do
+                rawtext "To change the frequency of these notifications or unsubscribe entirely, "
+                a "visit your account preferences page", :href => "https://#{HTTP_HOST}/app#view=account", :style => "color: #000094; white-space: nowrap;"
+                text "."
               end
             end
           end
