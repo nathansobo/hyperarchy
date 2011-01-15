@@ -136,7 +136,7 @@ module Monarch
         def project_changeset(changeset)
           projected_new_state = project_tuple(changeset.new_state)
           projected_old_state = project_tuple(changeset.old_state)
-          Changeset.new(projected_new_state, projected_old_state)
+          Changeset.new(project_tuple(changeset.tuple), projected_new_state, projected_old_state)
         end
       end
     end

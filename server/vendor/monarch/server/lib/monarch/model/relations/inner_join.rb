@@ -116,7 +116,7 @@ module Monarch
         def composite_changeset(composite_tuple, changeset_to_merge)
           composite_new_state = composite_tuple.snapshot(changeset_to_merge.new_state)
           composite_old_state = composite_tuple.snapshot(changeset_to_merge.old_state)
-          Changeset.new(composite_new_state, composite_old_state)
+          Changeset.new(composite_tuple, composite_new_state, composite_old_state)
         end
       end
     end

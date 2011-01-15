@@ -74,7 +74,6 @@ module Monarch
         def wire_representation
           wire_representation = {}
 
-          permitted_column_names = read_whitelist - read_blacklist
           permitted_column_names.each do |column_name|
             wire_representation[column_name.to_s] = field(column_name).value_wire_representation
           end
@@ -126,6 +125,10 @@ module Monarch
 
         def exposed_name
           relation.exposed_name
+        end
+
+        def permitted_column_names
+          read_whitelist - read_blacklist
         end
 
         def read_whitelist

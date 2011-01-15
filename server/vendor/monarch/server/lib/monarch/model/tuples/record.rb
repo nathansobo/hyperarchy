@@ -185,7 +185,7 @@ module Monarch
           Origin.update(table, id, field_values_for_database)
           mark_clean
           new_state = snapshot
-          changeset = Changeset.new(new_state, old_state)
+          changeset = Changeset.new(self, new_state, old_state)
           table.record_updated(self, changeset)
           after_update(changeset)
 
@@ -197,7 +197,7 @@ module Monarch
           table.where(:id => id).increment(column, count)
           reload(column)
           new_state = snapshot
-          table.record_updated(self, Changeset.new(new_state, old_state))
+          table.record_updated(self, Changeset.new(self, new_state, old_state))
         end
 
         def decrement(column, count=1)
