@@ -6,6 +6,7 @@ class User < Monarch::Model::Record
   column :admin, :boolean
   column :dismissed_welcome_blurb, :boolean, :default => false
   column :dismissed_welcome_guide, :boolean, :default => false
+  synthetic_column :email_hash, :string
 
   has_many :memberships
   has_many :election_visits
