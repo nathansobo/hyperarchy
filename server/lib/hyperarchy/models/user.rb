@@ -49,9 +49,9 @@ class User < Monarch::Model::Record
   # dont send email address to another user unless they are an admin or owner
   def read_blacklist
     if self == current_user || current_user.admin? || current_user.owns_organization_with_member?(self)
-      super
+      [:encrypted_password]
     else
-      [:email_address]
+      [:email_address, :encrypted_password]
     end
   end
 
