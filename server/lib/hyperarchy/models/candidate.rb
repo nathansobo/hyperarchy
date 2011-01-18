@@ -10,6 +10,7 @@ class Candidate < Monarch::Model::Record
   belongs_to :election
   belongs_to :creator, :class_name => "User"
   has_many :rankings
+  has_many :candidate_comments
 
   attr_accessor :suppress_notification_email
   delegate :organization, :to => :election

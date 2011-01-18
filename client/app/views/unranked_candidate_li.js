@@ -28,7 +28,8 @@ _.constructor("Views.UnrankedCandidateLi", Views.CandidateLi, {
         revert: 'invalid',
         revertDuration: 100,
         helper: 'clone',
-        zIndex: 100
+        zIndex: 100,
+        cancel: '.expandArrow' 
       });
     }
   }

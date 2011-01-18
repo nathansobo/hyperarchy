@@ -45,10 +45,12 @@ _.constructor("Views.CandidateLi", View.Template, {
         button("Save")
           .ref('saveButton')
           .click("saveCandidate");
-        button({style: "float: right"}, "Delete").click("destroyCandidate");
+        button({style: "float: right"}, "Delete")
+          .click("destroyCandidate")
+          .ref('destroyButton');
 
         label("Comments");
-        subview('candidateCommentsList', Views.CandidateCommentsList);
+        subview('candidateComments', Views.CandidateComments);
 
         div({'class': "clear"});
       }).ref('expandedInfo');
@@ -60,7 +62,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.subscriptions = new Monarch.SubscriptionBundle;
       this.assignBody(this.candidate.body());
       this.assignDetails(this.candidate.details());
-      this.candidateCommentsList.candidate(this.candidate);
+      this.candidateComments.candidate(this.candidate);
 
       this.subscriptions.add(this.candidate.onUpdate(function(changes) {
         if (changes.body) {
@@ -82,12 +84,14 @@ _.constructor("Views.CandidateLi", View.Template, {
       } else {
         this.detailsTextarea.hide();
         this.bodyTextarea.hide();
-        this.expandedInfo.find('button').hide();
+        this.saveButton.hide();
+        this.destroyButton.hide();
       }
     },
 
     afterRemove: function() {
       this.subscriptions.destroy();
+      this.candidateComments.remove();
     },
 
     expandOrContract: function() {

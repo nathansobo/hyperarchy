@@ -1,30 +1,24 @@
-_.constructor("Views.CandidateCommentsList", View.Template, {
+_.constructor("Views.CandidateComments", View.Template, {
   content: function() { with(this.builder) {
     div({id: "candidateCommentsList"}, function() {
       subview('candidateCommentsList', Views.SortedList, {
-        rootAttributes: { id: "candidateComments", 'class': "candidateComments" },
+        rootAttributes: {'class': "candidateComments" },
         buildElement: function(candidateComment) {
           return Views.CandidateCommentLi.toView({candidateComment: candidateComment});
         }
       });
 
       div({id: "createCommentForm"}, function() {
-          textarea({id: "shortAnswer"})
-            .ref('createCommentTextarea')
-            .keypress(function(view, e) {
-              if (e.keyCode === 13) {
-                view.createCommentButton.click();
-                return false;
-              }
-            });
-          div({'class': "clear"});
+        textarea({id: "shortAnswer"})
+          .ref('createCommentTextarea');
+        div({'class': "clear"});
 
-          button({id: "createCommentButton"}, "Make a Comment")
-            .ref('createCommentButton')
-            .click('createComment');
+        button({id: "createCommentButton"}, "Make a Comment")
+          .ref('createCommentButton')
+          .click('createComment');
 
-          div({'class': "loading", style: "display: none;"}).ref("createCommentSpinner");
-          div({'class': "clear"});
+        div({'class': "loading", style: "display: none;"}).ref("createCommentSpinner");
+        div({'class': "clear"});
       }).ref('createCommentForm');
 
       div({'class': "loading fetching", style: "display: none"}).ref('loading');
@@ -32,16 +26,15 @@ _.constructor("Views.CandidateCommentsList", View.Template, {
   }},
 
   viewProperties: {
-    initialize: function() {
-//      var adjustHeight = this.hitch('adjustHeight');
-//      _.defer(adjustHeight);
-//      $(window).resize(adjustHeight);
-    },
 
     candidate: {
       afterChange: function(candidate) {
-        // something?
+        this.candidateCommentsList.relation(candidate.candidateComments());
       }
+    },
+
+    afterRemove: function() {
+      this.candidateCommentsList.remove();
     },
 
     empty: function() {
@@ -73,14 +66,17 @@ _.constructor("Views.CandidateCommentsList", View.Template, {
 
       var body = this.createCommentTextarea.val();
       if (body === "") return;
+      this.createCommentTextarea.val("");
 
-      this.createCommentTextarea.attr('disabled', true);
+//      this.createCommentTextarea.attr('disabled', true);
       this.commentCreationDisabled = true;
 
       this.createCommentSpinner.show();
       this.candidate().candidateComments().create({body: body})
         .onSuccess(function() {
           this.createCommentSpinner.hide();
+          this.commentCreationDisabled = false;
+//          this.createCommentTextarea.attr('disabled', false);
         }, this);
     }
   }

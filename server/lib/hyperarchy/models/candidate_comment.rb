@@ -16,10 +16,6 @@ class CandidateComment < Monarch::Model::Record
     candidate.election
   end
 
-  def election_id
-    election.id
-  end
-
   def can_create?
     election.organization.has_member?(current_user)
   end
@@ -31,11 +27,11 @@ class CandidateComment < Monarch::Model::Record
   alias can_destroy? can_update_or_destroy?
 
   def create_whitelist
-    [:body, :details, :election_id]
+    [:body, :candidate_id]
   end
 
   def update_whitelist
-    [:body, :details]
+    [:body]
   end
 
   def before_create

@@ -152,7 +152,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
         var additionalRelations = [
           Election.where({id: electionId}).joinTo(Organization),
-          Candidate.where({electionId: electionId})
+          Candidate.where({electionId: electionId}),
+          Candidate.where({electionId: electionId}).joinThrough(CandidateComment)
         ];
         this.startLoading();
         Election.findOrFetch(electionId, additionalRelations)
