@@ -2,15 +2,15 @@ _.constructor("Views.NewElection", View.Template, {
   content: function() { with(this.builder) {
     div({id: "newElection"}, function() {
       h2("Raise a New Question");
-      textarea({placeholder: "Type your question here"})
+      textarea({placeholder: "Type your question here", tabindex: 1})
         .keypress(function(view, e) {
           if (e.keyCode === 13) {
             view.createElectionButton.click();
             return false;
           }
         })
-        .ref('createElectionInput');
-      a({'class': "glossyLightGray roundedButton"}, "Raise Question")
+        .ref('createElectionTextarea');
+      a({'class': "glossyLightGray roundedButton", tabindex: 2}, "Raise Question")
                 .ref('createElectionButton')
                 .click('createElection');
 
@@ -39,6 +39,8 @@ _.constructor("Views.NewElection", View.Template, {
 
       Application.layout.activateNavigationTab("newElectionLink");
       Application.layout.hideSubNavigationContent();
+
+      this.createElectionTextarea.focus();
     },
 
     organizationId: {
@@ -59,13 +61,13 @@ _.constructor("Views.NewElection", View.Template, {
     },
 
     createElection: function() {
-      var body = this.createElectionInput.val();
+      var body = this.createElectionTextarea.val();
       if (this.creatingElection || body === "") return;
       this.creatingElection = true;
       this.organization().elections().create({body: body})
         .onSuccess(function(election) {
           this.creatingElection = false;
-          this.createElectionInput.val("");
+          this.createElectionTextarea.val("");
           $.bbq.pushState({view: "election", electionId: election.id()});
         }, this);
     },
