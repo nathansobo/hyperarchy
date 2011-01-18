@@ -26,5 +26,9 @@ _.constructor("CandidateComment", Model.Record, {
 
   election: function() {
     return this.candidate().election();
-  }
+  },
+
+  formattedCreatedAt: function() {
+    return $.PHPDate("n/j/y g:ia", this.createdAt());
+  },
 });

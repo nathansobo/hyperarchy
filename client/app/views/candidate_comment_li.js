@@ -3,7 +3,12 @@ _.constructor("Views.CandidateCommentLi", View.Template, {
     var candidateComment = params.candidateComment;
     li({candidateCommentId: candidateComment.id(), 'class': "candidateComment"}, function() {
       div({'class': "commentBody"}, candidateComment.body());
-      div({'class': "commentCreator"}, "-- " + candidateComment.creator().fullName());
+
+      div({'class': "commentCreator"}, function() {
+        raw("&mdash;")
+        text(candidateComment.creator().fullName());
+      });
+      div({'class': "commentCreatedAt"}, candidateComment.formattedCreatedAt());
       div({'class': "clear"});
     });
   }}

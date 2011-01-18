@@ -306,6 +306,16 @@
                 }
 
                 .commentCreator {
+                  font-style: italic;
+                  display: inline-block;
+                  float: right;
+                  color: #888;
+                }
+
+                .commentCreatedAt {
+                  clear: both;
+                  font-style: italic;
+                  font-size: 10px;
                   display: inline-block;
                   float: right;
                   color: #888;

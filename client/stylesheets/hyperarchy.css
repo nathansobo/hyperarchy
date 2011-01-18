@@ -1643,6 +1643,14 @@ body.legal {
                 display: inline-block;
                 float: left; }
               #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentCreator {
+                font-style: italic;
+                display: inline-block;
+                float: right;
+                color: #888; }
+              #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentCreatedAt {
+                clear: both;
+                font-style: italic;
+                font-size: 10px;
                 display: inline-block;
                 float: right;
                 color: #888; }
