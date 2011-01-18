@@ -42,7 +42,9 @@ _.constructor("Views.SortedList", View.Template, {
         }, this));
 
         this.subscriptions.add(relation.onRemove(function(record, index) {
-          this.elementForRecord(record, index).remove();
+          var element = this.elementForRecord(record, index);
+          element.remove();
+          if (this.onRemove) this.onRemove(element, record, index);
         }, this));
       }
     },

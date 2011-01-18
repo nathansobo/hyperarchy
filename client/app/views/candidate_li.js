@@ -52,7 +52,6 @@ _.constructor("Views.CandidateLi", View.Template, {
           div({'class': "clear"});
         });
 
-        label("Comments");
         subview('candidateComments', Views.CandidateComments);
 
         div({'class': "clear"});

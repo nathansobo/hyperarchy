@@ -1,29 +1,35 @@
 _.constructor("Views.CandidateComments", View.Template, {
   content: function() { with(this.builder) {
-    div({'class': "commentsContainer"}, function() {
-      subview('candidateCommentsList', Views.SortedList, {
-        rootAttributes: {'class': "commentsList nonEditable" },
-        buildElement: function(candidateComment) {
-          return Views.CandidateCommentLi.toView({candidateComment: candidateComment});
-        }
+    div(function() {
+      label("Comments").ref('commentsLabel');
+      div({'class': "commentsContainer"}, function() {
+        subview('candidateCommentsList', Views.SortedList, {
+          rootAttributes: {'class': "commentsList nonEditable" },
+          buildElement: function(candidateComment) {
+            return Views.CandidateCommentLi.toView({candidateComment: candidateComment});
+          }
+        });
+
+        div({'class': "createCommentForm"}, function() {
+          textarea().ref('createCommentTextarea');
+          div({'class': "clear"});
+
+          button({'class': "createCommentButton"}, "Make a Comment")
+            .ref('createCommentButton')
+            .click('createComment');
+
+          div({'class': "loading", style: "display: none;"}).ref("createCommentSpinner");
+          div({'class': "clear"});
+        }).ref('createCommentForm');
       });
-
-      div({'class': "createCommentForm"}, function() {
-        textarea().ref('createCommentTextarea');
-        div({'class': "clear"});
-
-        button({'class': "createCommentButton"}, "Make a Comment")
-          .ref('createCommentButton')
-          .click('createComment');
-
-        div({'class': "loading", style: "display: none;"}).ref("createCommentSpinner");
-        div({'class': "clear"});
-      }).ref('createCommentForm');
     });
   }},
 
   viewProperties: {
     initialize: function() {
+      this.candidateCommentsList.onInsert = this.hitch('commentInserted');
+      this.candidateCommentsList.onRemove = this.hitch('commentRemoved');
+
       this.defer(function() {
         this.createCommentTextarea.elastic();
       });
@@ -32,11 +38,34 @@ _.constructor("Views.CandidateComments", View.Template, {
     candidate: {
       afterChange: function(candidate) {
         this.candidateCommentsList.relation(candidate.candidateComments());
+        if (this.candidate().candidateComments().empty()) {
+          this.hideList();
+        } else {
+          this.showList();
+        }
       }
     },
 
     afterRemove: function() {
       this.candidateCommentsList.remove();
+    },
+
+    commentInserted: function() {
+      this.showList();
+    },
+
+    commentRemoved: function() {
+      if (this.candidate().candidateComments().empty()) this.hideList();
+    },
+
+    hideList: function() {
+      this.commentsLabel.hide();
+      this.candidateCommentsList.hide();
+    },
+
+    showList: function() {
+      this.commentsLabel.show();
+      this.candidateCommentsList.show();
     },
 
     createComment: function(elt, e) {
@@ -47,6 +76,7 @@ _.constructor("Views.CandidateComments", View.Template, {
       var body = this.createCommentTextarea.val();
       if (body === "") return;
       this.createCommentTextarea.val("");
+      this.createCommentTextarea.keyup();
       this.commentCreationDisabled = true;
 
       this.createCommentSpinner.show();
