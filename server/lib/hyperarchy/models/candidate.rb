@@ -11,6 +11,9 @@ class Candidate < Monarch::Model::Record
   belongs_to :creator, :class_name => "User"
   has_many :rankings
 
+  attr_accessor :suppress_notification_email
+  delegate :organization, :to => :election
+
   def organization_ids
     election ? election.organization_ids : []
   end
@@ -57,7 +60,6 @@ class Candidate < Monarch::Model::Record
 
   def before_destroy
     election.lock
-    puts "destroying candidate #{id}"
     rankings.each do |ranking|
       ranking.suppress_vote_update = true
       ranking.destroy
@@ -94,47 +96,19 @@ class Candidate < Monarch::Model::Record
     election.majorities.where(:loser_id => id)
   end
 
+  def users_to_notify_immediately
+    election.votes.
+      join(Membership.where(:organization_id => election.organization_id)).
+        on(Vote[:user_id].eq(Membership[:user_id])).
+      where(:notify_of_new_candidates => "immediately").
+      where(Membership[:user_id].neq(creator_id)).
+      join_through(User)
+  end
+
   protected
 
   def send_notifications
-    notify_users = election.votes.
-      join(Membership.where(:organization_id => election.organization_id)).
-        on(Vote[:user_id].eq(Membership[:user_id])).
-      where(:notify_of_new_candidates => true).
-      where(Membership[:user_id].neq(creator_id)).
-      join_through(User)
-
-    unless notify_users.empty?
-      to_addresses = notify_users.map(&:email_address)
-      subject = email_subject
-      body = email_body
-
-      Hyperarchy.defer do
-        to_addresses.each do |to_address|
-          Mailer.send(:to => to_address, :subject => subject, :body => body)
-        end
-      end
-    end
-  end
-
-  def email_subject
-    "There's a new answer on Hyperarchy"
-  end
-
-  def email_body
-    "You previously voted on the question:
-\"#{election.body}\"
-
-#{creator.full_name} added a new answer:
-\"#{body}\"
-
-If you would like to vote on it, visit the following link:
-http://#{HTTP_HOST}/app#view=election&electionId=#{election_id}
-
-To unsubscribe from these emails, adjust your email preferences at:
-http://#{HTTP_HOST}/app#view=account
-
-Or just reply with 'unsubscribe' to this email.
-"
+    return if suppress_notification_email
+    Hyperarchy.defer { Hyperarchy::Notifier.send_immediate_notifications(self) }
   end
 end

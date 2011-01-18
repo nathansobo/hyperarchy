@@ -201,7 +201,7 @@ module Monarch
           []
         end
 
-        def internal_sql_offset
+        def internal_sql_offset(state)
           nil
         end
 

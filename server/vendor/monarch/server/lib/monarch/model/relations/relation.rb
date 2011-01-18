@@ -109,11 +109,17 @@ module Monarch
         end
 
         def to_sql
-          sql_query_specification(SqlGenerationState.new).to_sql
+          query_spec = sql_query_specification(SqlGenerationState.new)
+          [query_spec.to_sql, query_spec.literals_hash]
+        end
+
+        def to_update_sql(field_values)
+          update_statement = sql_update_statement(SqlGenerationState.new, field_values)
+          [update_statement.to_sql, update_statement.literals_hash]
         end
 
         def update(column_assignments)
-          Origin.execute_dui(to_update_sql(column_assignments))
+          Origin.execute_dui(*to_update_sql(column_assignments))
         end
 
         def increment(column, count = 1)
@@ -124,10 +130,6 @@ module Monarch
         def decrement(column, count = 1)
           column = column(column)
           update(column => column - count)
-        end
-
-        def to_update_sql(field_values)
-          sql_update_statement(SqlGenerationState.new, field_values).to_sql
         end
 
         def add_to_relational_dataset(dataset)
@@ -195,15 +197,15 @@ module Monarch
           nil
         end
 
-        def external_sql_limit
+        def external_sql_limit(state)
           nil
         end
 
-        def internal_sql_offset
+        def internal_sql_offset(state)
           nil
         end
 
-        def internal_sql_limit
+        def internal_sql_limit(state)
           nil
         end
 
@@ -341,7 +343,7 @@ module Monarch
 
         def sql_query_specification(state)
           state[self][:sql_query_specification] ||=
-            Sql::QuerySpecification.new(:all, internal_sql_select_list(state), internal_sql_table_ref(state), internal_sql_where_predicates(state), internal_sql_sort_specifications(state), internal_sql_grouping_column_refs(state), internal_sql_limit, internal_sql_offset)
+            Sql::QuerySpecification.new(:all, internal_sql_select_list(state), internal_sql_table_ref(state), internal_sql_where_predicates(state), internal_sql_sort_specifications(state), internal_sql_grouping_column_refs(state), internal_sql_limit(state), internal_sql_offset(state))
         end
 
         def sql_update_statement(state, field_values)

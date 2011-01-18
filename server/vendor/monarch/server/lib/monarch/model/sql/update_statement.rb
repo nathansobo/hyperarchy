@@ -11,6 +11,13 @@ module Monarch
           flatten_and_uniq_inner_joins unless from_clause_table_refs.empty?
         end
 
+        def literals_hash
+          [set_clause_assignments.values,
+           from_clause_table_refs,
+           where_clause_predicates
+          ].flatten.map(&:literals_hash).inject(:merge)
+        end
+
         protected
         def set_clause_assignments_sql
           set_clause_assignments.map do |column_ref, expression|

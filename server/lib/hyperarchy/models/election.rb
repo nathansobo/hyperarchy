@@ -67,44 +67,17 @@ class Election < Monarch::Model::Record
   end
 
   def after_create
-    return if suppress_notification_email
-    notify_users = organization.memberships.
-      where(:notify_of_new_elections => true).
-      where(Membership[:user_id].neq(creator_id)).
-      join_through(User)
-
-    unless notify_users.empty?
-      to_addresses = notify_users.map(&:email_address)
-      subject = email_subject
-      body = email_body
-
-      Hyperarchy.defer do
-        to_addresses.each do |to_address|
-          Mailer.send(:to => to_address, :subject => subject, :body => body)
-        end
-      end
+    unless suppress_notification_email
+      Hyperarchy.defer { Hyperarchy::Notifier.send_immediate_notifications(self) }
     end
-
     organization.increment(:election_count)
   end
 
-  def email_subject
-    "There's a new question on Hyperarchy"
-  end
-
-  def email_body
-    "#{creator.full_name} added a new question to #{organization.name}.
-
-\"#{body}\"
-
-To view this question in Hyperarchy, visit this link:
-http://#{HTTP_HOST}/app#view=election&electionId=#{id}
-
-To unsubscribe from these emails, adjust your email preferences at:
-http://#{HTTP_HOST}/app#view=account
-
-Or just reply with 'unsubscribe' to this email.
-"
+  def users_to_notify_immediately
+    organization.memberships.
+      where(:notify_of_new_elections => "immediately").
+      where(Membership[:user_id].neq(creator_id)).
+      join_through(User)
   end
 
   def before_destroy
@@ -117,7 +90,6 @@ Or just reply with 'unsubscribe' to this email.
   end
 
   def compute_global_ranking
-    puts "compute_global_ranking"
     already_processed = []
     graph = RGL::DirectedAdjacencyGraph.new
 
@@ -132,7 +104,6 @@ Or just reply with 'unsubscribe' to this email.
 
     graph.topsort_iterator.each_with_index do |candidate_id, index|
       candidate = candidates.find(candidate_id)
-      puts "updating #{candidate.body.inspect} from #{candidate.position} to #{index}"
       candidate.update!(:position => index + 1)
     end
 
@@ -173,5 +144,9 @@ Or just reply with 'unsubscribe' to this email.
 
   def age_in_hours
     (Time.now.to_i - created_at.to_i) / 3600
+  end
+
+  def full_url
+    "https://#{HTTP_HOST}/app#view=election&electionId=#{id}"
   end
 end

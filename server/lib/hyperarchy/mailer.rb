@@ -14,7 +14,15 @@ class Mailer
 
   attr_accessor :default_options, :base_url
   def send(options)
-    Pony.mail(default_options.merge(options))
+    Pony.mail(process_options(options))
+  end
+
+  def process_options(options)
+    options = (default_options || {}).merge(options)
+    if erector_class = options[:erector_class]
+      options[:html_body] = erector_class.new(options).to_s(:prettyprint => true)
+    end
+    options
   end
 end
 
@@ -34,6 +42,6 @@ class FakeMailer < Mailer
   end
 
   def send(options)
-    emails.push(options)
+    emails.push(process_options(options))
   end
 end

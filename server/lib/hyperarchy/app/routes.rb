@@ -213,7 +213,7 @@ module Hyperarchy
       offset = params[:offset]
       limit = params[:limit]
 
-      elections = organization.elections.order_by(Election[:score].desc).offset(offset).limit(limit)
+      elections = organization.elections.offset(offset).limit(limit)
       candidates = elections.join_through(Candidate)
       visits = elections.join_through(current_user.election_visits)
       
@@ -227,6 +227,33 @@ module Hyperarchy
         :body => "User id: #{current_user.id}\n\nError info: #{params[:error]}"
       )
       successful_json_response
+    end
+
+    get "/notification" do
+      authentication_required
+      presenter = Notifier::NotificationPresenter.new(current_user, "weekly")
+      render_page Emails::Notification, :notification_presenter => presenter
+    end
+
+    get "/notification_text" do
+      authentication_required
+      presenter = Notifier::NotificationPresenter.new(current_user, "weekly")
+      presenter.to_s
+    end
+
+
+    get "/send_notification" do
+      authentication_required
+
+      notification_presenter = Notifier::NotificationPresenter.new(current_user, "weekly")
+      Mailer.send(
+        :to => ["nathansobo@gmail.com", "maxbrunsfeld@gmail.com"],
+        :subject => notification_presenter.subject,
+        :notification_presenter => notification_presenter,
+        :body => notification_presenter.to_s,
+        :erector_class => Emails::Notification
+      )
+      render_page Emails::Notification, :notification_presenter => notification_presenter
     end
   end
 end

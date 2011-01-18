@@ -109,11 +109,11 @@ module Models
         other_org = Organization.make
 
         organization = election.organization
-        organization.memberships.create!(:user => creator, :suppress_invite_email => true)
-        organization.memberships.create!(:user => opted_in_voter, :suppress_invite_email => true)
-        organization.memberships.create!(:user => opted_out_voter, :notify_of_new_candidates => false, :suppress_invite_email => true)
-        other_org.memberships.create!(:user => opted_out_voter, :notify_of_new_candidates => true, :suppress_invite_email => true)
-        organization.memberships.create!(:user => opted_in_non_voter, :suppress_invite_email => true)
+        organization.memberships.make(:user => creator, :notify_of_new_candidates => "immediately")
+        organization.memberships.make(:user => opted_in_voter, :notify_of_new_candidates => "immediately")
+        organization.memberships.make(:user => opted_out_voter, :notify_of_new_candidates => "never")
+        other_org.memberships.make(:user => opted_out_voter, :notify_of_new_candidates => "never")
+        organization.memberships.make(:user => opted_in_non_voter, :notify_of_new_candidates => "immediately")
 
         c1 = election.candidates.create!(:body => "A")
         Mailer.emails.should be_empty

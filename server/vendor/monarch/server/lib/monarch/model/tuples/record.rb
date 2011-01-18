@@ -49,11 +49,13 @@ module Monarch
             end
           end
 
-          def has_many(relation_name, &block)
+          def has_many(relation_name, options={}, &block)
             relates_to_many(relation_name) do
               target_class = relation_name.to_s.singularize.classify.constantize
               foreign_key_column = target_class["#{self.class.basename.underscore}_id".to_sym]
-              target_class.where(foreign_key_column.eq(field(:id)), &block)
+              relation = target_class.where(foreign_key_column.eq(field(:id)), &block)
+              relation = relation.order_by(*options[:order_by]) if options[:order_by]
+              relation
             end
           end
 
@@ -100,8 +102,8 @@ module Monarch
             @validations ||= []
           end
 
-          delegate :create, :create!, :unsafe_create, :where, :project, :join, :join_to, :join_through, :aggregate, :find,
-                   :size, :concrete_columns_by_name, :[], :create_table, :drop_table, :clear_table, :all, :find_or_create,
+          delegate :create, :create!, :unsafe_create, :where, :project, :join, :join_to, :join_through, :aggregate, :order_by,
+                   :find, :size, :concrete_columns_by_name, :[], :create_table, :drop_table, :clear_table, :all, :find_or_create,
                    :left_join, :left_join_to, :group_by, :offset, :limit, :on_insert, :on_remove, :on_update, :to => :table
 
           protected
@@ -183,7 +185,7 @@ module Monarch
           Origin.update(table, id, field_values_for_database)
           mark_clean
           new_state = snapshot
-          changeset = Changeset.new(new_state, old_state)
+          changeset = Changeset.new(self, new_state, old_state)
           table.record_updated(self, changeset)
           after_update(changeset)
 
@@ -195,7 +197,7 @@ module Monarch
           table.where(:id => id).increment(column, count)
           reload(column)
           new_state = snapshot
-          table.record_updated(self, Changeset.new(new_state, old_state))
+          table.record_updated(self, Changeset.new(self, new_state, old_state))
         end
 
         def decrement(column, count=1)

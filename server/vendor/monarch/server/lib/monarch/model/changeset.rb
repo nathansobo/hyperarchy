@@ -1,10 +1,10 @@
 module Monarch
   module Model
     class Changeset
-      attr_reader :new_state, :old_state
+      attr_reader :tuple, :new_state, :old_state
 
-      def initialize(new_state, old_state)
-        @new_state, @old_state = new_state, old_state
+      def initialize(tuple, new_state, old_state)
+        @tuple, @new_state, @old_state = tuple, new_state, old_state
       end
 
       def has_changes?
@@ -20,8 +20,9 @@ module Monarch
 
       def wire_representation
         wire_representation = {}
-        new_state.fields.each do |field|
-          wire_representation[field.name.to_s] = field.value_wire_representation if changed?(field.column)
+        tuple.permitted_column_names.each do |column_name|
+          field = new_state.field(column_name)
+          wire_representation[column_name.to_s] = field.value_wire_representation if changed?(field.column)
         end
         wire_representation
       end

@@ -5,8 +5,8 @@ class Membership < Monarch::Model::Record
   column :role, :string, :default => "member"
   column :pending, :boolean, :default => true
   column :last_visited, :datetime
-  column :notify_of_new_elections, :boolean, :default => true
-  column :notify_of_new_candidates, :boolean, :default => true
+  column :notify_of_new_elections, :string, :default => "weekly"
+  column :notify_of_new_candidates, :string, :default => "weekly"
   column :created_at, :datetime
   column :updated_at, :datetime
 
@@ -41,6 +41,15 @@ class Membership < Monarch::Model::Record
       [:first_name, :last_name, :role, :last_visited, :notify_of_new_elections, :notify_of_new_candidates]
     else
       [:last_visited, :notify_of_new_elections, :notify_of_new_candidates]
+    end
+  end
+
+  # dont send email address to another user unless they are an admin or owner
+  def read_blacklist
+    if user == current_user || current_user.admin? || user && current_user.owns_organization_with_member?(user)
+      super
+    else
+      [:email_address]
     end
   end
 
@@ -95,6 +104,32 @@ class Membership < Monarch::Model::Record
     end
   end
 
+  def wants_notifications?(period)
+     wants_election_notifications?(period) || wants_candidate_notifications?(period)
+  end
+
+  def wants_candidate_notifications?(period)
+    notify_of_new_candidates == period
+  end
+
+  def wants_election_notifications?(period)
+    notify_of_new_elections == period
+  end
+
+  def new_candidates_in_period(period)
+    user.votes.
+      join_to(organization.elections).
+      join_through(Candidate).
+      where(Candidate[:created_at] > (last_alerted_or_visited_at(period))).
+      where(Candidate[:creator_id].neq(user_id))
+  end
+
+  def new_elections_in_period(period)
+    organization.elections.
+      where(Election[:created_at] > last_alerted_or_visited_at(period)).
+      where(Election[:creator_id].neq(user_id))
+  end
+
   protected
   def invite_email_subject
     "#{current_user.full_name} has invited you to join #{organization.name} on Hyperarchy"
@@ -107,6 +142,22 @@ class Membership < Monarch::Model::Record
 Visit #{invitation.signup_url} to join our private alpha test and start voting on issues for #{organization.name}.]
     else
       %[Visit http://#{HTTP_HOST}/confirm_membership/#{id} to become a member of #{organization.name}.]
+    end
+  end
+
+  # returns the time of last visit or the 1 <period> ago, whichever is more recent
+  def last_alerted_or_visited_at(period)
+    [period_ago(period), last_visited].max
+  end
+
+  def period_ago(period)
+    case period
+      when "hourly"
+        1.hour.ago
+      when "daily"
+        1.day.ago
+      when "weekly"
+        1.week.ago
     end
   end
 end

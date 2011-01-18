@@ -68,6 +68,7 @@ module Hyperarchy
       also_reload "#{dir}/../*.rb"
       also_reload "#{dir}/../models/*.rb"
       also_reload "#{dir}/../views/*.rb"
+      also_reload "#{dir}/../emails/*.rb"
     end
 
     configure(:demo) do

@@ -6,12 +6,19 @@ class User < Monarch::Model::Record
   column :admin, :boolean
   column :dismissed_welcome_blurb, :boolean, :default => false
   column :dismissed_welcome_guide, :boolean, :default => false
+  synthetic_column :email_hash, :string
 
   has_many :memberships
   has_many :election_visits
-  
+  has_many :votes
+  has_many :rankings
+
   relates_to_many :organizations do
     memberships.join_through(Organization)
+  end
+
+  relates_to_many :owned_organizations do
+    memberships.where(:role => "owner").join_through(Organization)
   end
 
   relates_to_many :elections do
@@ -40,6 +47,19 @@ class User < Monarch::Model::Record
     list
   end
 
+  # dont send email address to another user unless they are an admin or owner
+  def read_blacklist
+    if self == current_user || current_user.admin? || current_user.owns_organization_with_member?(self)
+      [:encrypted_password]
+    else
+      [:email_address, :encrypted_password]
+    end
+  end
+
+  def owns_organization_with_member?(user)
+    !owned_organizations.join_through(user.memberships).empty?
+  end
+
   def after_create
     if RACK_ENV =~ /production|demo/
       Hyperarchy.defer do
@@ -64,6 +84,10 @@ class User < Monarch::Model::Record
   def password
     return nil if encrypted_password.blank?
     BCrypt::Password.new(encrypted_password)
+  end
+
+  def email_hash
+    Digest::MD5.hexdigest(email_address.downcase)
   end
 
   def full_name

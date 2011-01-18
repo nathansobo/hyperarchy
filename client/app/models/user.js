@@ -4,6 +4,7 @@ _.constructor("User", Model.Record, {
       firstName: 'string',
       lastName: 'string',
       emailAddress: 'string',
+      emailHash: 'string',
       admin: 'boolean',
       dismissedWelcomeBlurb: 'boolean',
       dismissedWelcomeGuide: 'boolean'
@@ -38,10 +39,6 @@ _.constructor("User", Model.Record, {
     if (!size) size = 40;
     var baseUrl = Application.sslEnabled() ? "https://secure.gravatar.com" : "http://www.gravatar.com";
     return baseUrl + "/avatar/" + this.emailHash() + "?s=" + size.toString() + "&d=404"
-  },
-
-  emailHash: function() {
-    return hex_md5(this.emailAddress().toLowerCase());
   },
 
   lastVisitedOrganization: function() {

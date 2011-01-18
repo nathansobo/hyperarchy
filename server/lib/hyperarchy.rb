@@ -18,8 +18,10 @@ require "#{dir}/hyperarchy/mailer"
 require "#{dir}/hyperarchy/helpers"
 require "#{dir}/hyperarchy/models"
 require "#{dir}/hyperarchy/views"
+require "#{dir}/hyperarchy/emails"
 require "#{dir}/hyperarchy/app"
 require "#{dir}/hyperarchy/scheduler"
+require "#{dir}/hyperarchy/notifier"
 
 require "newrelic_rpm"
 

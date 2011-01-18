@@ -7,7 +7,8 @@ _.constructor("Organization", Model.Record, {
         membersCanInvite: "boolean",
         dismissedWelcomeGuide: 'boolean',
         electionCount: 'integer',
-        useSsl: 'boolean'
+        useSsl: 'boolean',
+        social: 'boolean'
       });
 
       this.hasMany("elections");
@@ -25,7 +26,7 @@ _.constructor("Organization", Model.Record, {
     },
 
     global: function() {
-      return this.find({name: "Alpha Testers"});
+      return this.find({social: true});
     }
   },
 

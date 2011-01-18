@@ -12,6 +12,10 @@ module Monarch
           "#{table_ref.name}.#{name}"
         end
 
+        def literals_hash
+          {}
+        end
+
         def derive(table_ref, &block)
           DerivedColumn.new(table_ref, self, block.call(self))
         end

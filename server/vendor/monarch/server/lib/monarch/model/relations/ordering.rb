@@ -27,8 +27,11 @@ module Monarch
           columns_or_sort_specs.map do |column_or_sort_spec|
             if column_or_sort_spec.instance_of?(Expressions::SortSpecification)
               column_or_sort_spec
+            elsif column_or_sort_spec.instance_of?(Expressions::ConcreteColumn)
+              column_or_sort_spec.asc
             else
-              Expressions::SortSpecification.new(column(column_or_sort_spec), :asc)
+              column_name, direction = column_or_sort_spec.to_s.split(/\s+/)
+              Expressions::SortSpecification.new(column(column_name.to_sym), direction ? direction.to_sym : :asc)
             end
           end
         end

@@ -5,12 +5,24 @@ _.constructor("Views.EmailPreferences", View.Template, {
       div({'class': "loading", style: "display: none;"}).ref('saving');
       h2(organization.name() + " Email Preferences");
       div({'class': "emailPreference"}, function() {
-        input({type: "checkbox", name: "notifyOfNewElections"});
-        label("Send me emails when new questions are added.");
+        label("Email me about new questions: ");
+        select({name: "notifyOfNewElections"}, function() {
+          option({value: "immediately"}, "Immediately");
+          option({value: "hourly"}, "Hourly");
+          option({value: "daily"}, "Daily");
+          option({value: "weekly"}, "Weekly");
+          option({value: "never"}, "Never");
+        });
       });
       div({'class': "emailPreference"}, function() {
-        input({type: "checkbox", name: "notifyOfNewCandidates"});
-        label("Send me emails when new answers are added to questions on which I have voted.");
+        label("Email me about new answers to questions on which I voted: ");
+        select({name: "notifyOfNewCandidates"}, function() {
+          option({value: "immediately"}, "Immediately");
+          option({value: "hourly"}, "Hourly");
+          option({value: "daily"}, "Daily");
+          option({value: "weekly"}, "Weekly");
+          option({value: "never"}, "Never");
+        });
       });
     });
   }},

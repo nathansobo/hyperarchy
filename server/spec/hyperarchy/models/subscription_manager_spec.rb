@@ -13,6 +13,9 @@ describe SubscriptionManager do
     client_2 = RealTimeClient.new("client_2", hub)
     client_2.user = user_2
 
+    # freeze time to keep the updated_at from changing so we don't have to account for it in the mocks
+    Timecop.freeze(Time.now)
+
     org_1 = Organization.make
     org_2 = Organization.make
 
@@ -37,14 +40,21 @@ describe SubscriptionManager do
     mock(client_2).send(user_1_update)
     user_1.update!(:first_name => "Shrew")
 
-    create_message = nil
-    mock(client_1).send(anything) do |message|
-      create_message = message
+    messages = []
+    mock(client_1).send(anything).twice do |message|
+      messages.push(message)
     end
+
     election = org_2.elections.create!(:body => "What's your name?", :suppress_notification_email => true)
+
+    create_message, update_message = messages
     create_message[0].should == "create"
     create_message[1].should == "elections"
     create_message[2].should == election.wire_representation
+    update_message[0].should == "update"
+    update_message[1].should == "organizations"
+    update_message[2].should == election.organization_id
+    update_message[3].should == { "election_count" => 1 }
   end
 
   it "only allows members of an organization to subscribe to it, unless the subscriber is an admin" do

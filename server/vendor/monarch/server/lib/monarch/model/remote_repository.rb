@@ -21,27 +21,28 @@ module Monarch
       end
 
       def read(relation)
-        records = connection[relation.to_sql].map do |field_values|
+        records = connection.fetch(*relation.to_sql).map do |field_values|
           relation.build_record_from_database(field_values)
         end
         records
       end
 
-      def execute_dui(sql)
-        LOGGER.debug("execute_dui -- #{sql}")
-        connection.execute_dui(sql)
+      def execute_dui(sql, literals_hash)
+        LOGGER.debug("execute_dui -- #{sql}, #{literals_hash.inspect}")
+        connection.execute_dui(sql.lit(literals_hash).to_s(connection.dataset))
       end
 
       def reload(record, columns=[])
         table = record.table
         relation = table.where(table.column(:id).eq(record.id))
         relation = relation.project(*columns) unless columns.empty?
-        field_values = connection[relation.to_sql].first
+        field_values = connection[*relation.to_sql].first
         raise "Record '#{record.id}' not found during reload" unless field_values
         record.update_fields_from_remote(field_values)
       end
 
       def create_table(name, &definition)
+        connection.drop_table(name) if connection.table_exists?(name)
         connection.create_table(name, &definition)
       end
 

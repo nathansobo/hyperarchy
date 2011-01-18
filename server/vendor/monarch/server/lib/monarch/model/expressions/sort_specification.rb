@@ -11,6 +11,11 @@ module Monarch
           state[self][:sql_sort_specification] ||=
             Sql::SortSpecification.new(column.sql_expression(state), direction)
         end
+
+        def ==(other)
+          return false unless other.instance_of?(self.class)
+          other.column == column && other.direction == direction
+        end
       end
     end
   end

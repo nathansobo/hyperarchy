@@ -37,6 +37,16 @@ module Monarch
           ].compact.join(" ")
         end
 
+        def literals_hash
+          [select_list,
+           from_clause_table_refs,
+           where_clause_predicates,
+           sort_specifications,
+           limit,
+           offset
+          ].flatten.compact.map(&:literals_hash).inject(:merge)
+        end
+
         protected
         def set_quantifier_sql
           nil
@@ -64,12 +74,12 @@ module Monarch
 
         def limit_clause_sql
           return nil if limit.nil?
-          "limit #{limit}"
+          "limit #{limit.to_sql}"
         end
 
         def offset_clause_sql
           return nil if offset.nil?
-          "offset #{offset}"
+          "offset #{offset.to_sql}"
         end
       end
     end
