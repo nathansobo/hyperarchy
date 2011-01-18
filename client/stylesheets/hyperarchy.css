@@ -1621,7 +1621,7 @@ body.legal {
             padding-top: 2px;
             resize: none; }
         #app #electionOverview ol.candidates li.candidate .expandedInfo .detailsContainer {
-          margin-bottom: 5px;
+          margin-bottom: 10px;
           display: block; }
           #app #electionOverview ol.candidates li.candidate .expandedInfo .detailsContainer textarea {
             width: 100%;
