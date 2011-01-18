@@ -25,7 +25,6 @@ _.constructor("Views.CandidateComments", View.Template, {
   }},
 
   viewProperties: {
-
     candidate: {
       afterChange: function(candidate) {
         this.candidateCommentsList.relation(candidate.candidateComments());
@@ -36,24 +35,6 @@ _.constructor("Views.CandidateComments", View.Template, {
       this.candidateCommentsList.remove();
     },
 
-    fadeIn: function($super) {
-      $super();
-      this.adjustHeight();
-    },
-
-    afterShow: function() {
-      this.adjustHeight();
-    },
-
-    adjustHeight: function() {
-      this.candidateCommentsList.fillVerticalSpace(50, 200);
-      this.loading.position({
-        my: 'center center',
-        at: 'center center',
-        of: this.rankedCandidatesList
-      });
-    },
-
     createComment: function(elt, e) {
       this.createCommentTextarea.blur();
       e.preventDefault();
@@ -62,8 +43,6 @@ _.constructor("Views.CandidateComments", View.Template, {
       var body = this.createCommentTextarea.val();
       if (body === "") return;
       this.createCommentTextarea.val("");
-
-//      this.createCommentTextarea.attr('disabled', true);
       this.commentCreationDisabled = true;
 
       this.createCommentSpinner.show();
@@ -71,7 +50,6 @@ _.constructor("Views.CandidateComments", View.Template, {
         .onSuccess(function() {
           this.createCommentSpinner.hide();
           this.commentCreationDisabled = false;
-//          this.createCommentTextarea.attr('disabled', false);
         }, this);
     }
   }
