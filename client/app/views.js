@@ -21,3 +21,5 @@
 //= require "views/avatar"
 //= require "views/members"
 //= require "views/new_election"
+//= require "views/candidate_comment_li"
+//= require "views/candidate_comments_list"

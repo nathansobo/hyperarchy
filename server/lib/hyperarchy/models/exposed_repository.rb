@@ -42,7 +42,7 @@ module Models
     end
 
     expose :candidate_comments do
-      candidates.join_through(CandidateComments)
+      candidates.join_through(CandidateComment)
     end
 
     def subscribe(*args)

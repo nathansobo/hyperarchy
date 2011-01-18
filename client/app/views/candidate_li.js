@@ -46,6 +46,10 @@ _.constructor("Views.CandidateLi", View.Template, {
           .ref('saveButton')
           .click("saveCandidate");
         button({style: "float: right"}, "Delete").click("destroyCandidate");
+
+        label("Comments");
+        subview('candidateCommentsList', Views.CandidateCommentsList);
+
         div({'class': "clear"});
       }).ref('expandedInfo');
     });
@@ -56,6 +60,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.subscriptions = new Monarch.SubscriptionBundle;
       this.assignBody(this.candidate.body());
       this.assignDetails(this.candidate.details());
+      this.candidateCommentsList.candidate(this.candidate);
 
       this.subscriptions.add(this.candidate.onUpdate(function(changes) {
         if (changes.body) {
