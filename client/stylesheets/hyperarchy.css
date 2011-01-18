@@ -778,12 +778,12 @@ button {
 .electionDetailsTooltip {
   -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
-  position: absolute;
-  width: 268px;
-  padding: 5px;
   background-color: #ffffee;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffea), color-stop(1, #fffffa));
-  background: -moz-linear-gradient(top, #ffffea 0%, #fffffa 100%); }
+  background: -moz-linear-gradient(top, #ffffea 0%, #fffffa 100%);
+  position: absolute;
+  width: 268px;
+  padding: 5px; }
   .electionDetailsTooltip label {
     display: block;
     margin-bottom: 2px; }
