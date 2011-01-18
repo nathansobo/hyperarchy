@@ -1,11 +1,12 @@
 Sequel.migration do
   up do
     create_table :candidate_comments do
-      column :body, String
-      column :candidate_id, Integer
-      column :creator_id, Integer
-      column :created_at, Time
-      column :updated_at, Time
+      primary_key :id
+      String :body
+      Integer :candidate_id
+      Integer :creator_id
+      Time :created_at
+      Time :updated_at
     end
   end
 
