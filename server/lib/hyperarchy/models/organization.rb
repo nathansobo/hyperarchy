@@ -36,6 +36,10 @@ class Organization < Monarch::Model::Record
     !memberships.find(:user_id => user.id, :role => "owner").nil?
   end
 
+  def current_user_is_owner?
+    has_owner?(current_user)
+  end
+
   def organization_ids
     [id]
   end
