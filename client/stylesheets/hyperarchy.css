@@ -791,7 +791,6 @@ button {
     background: white;
     border: 1px dashed rgba(200, 200, 200, 0.55);
     padding: 5px;
-    max-height: 150px;
     overflow-y: auto;
     color: #333; }
 
@@ -1613,6 +1612,12 @@ body.legal {
           display: inline-block;
           margin-bottom: 2px;
           padding-left: 1px; }
+        #app #electionOverview ol.candidates li.candidate .expandedInfo .nonEditable {
+          background: white;
+          border: 1px dashed rgba(200, 200, 200, 0.55);
+          padding: 5px;
+          overflow-y: auto;
+          color: #333; }
         #app #electionOverview ol.candidates li.candidate .expandedInfo .bodyContainer {
           margin-bottom: 10px; }
           #app #electionOverview ol.candidates li.candidate .expandedInfo .bodyContainer textarea {
@@ -1621,6 +1626,8 @@ body.legal {
             padding: 4px;
             padding-top: 2px;
             resize: none; }
+          #app #electionOverview ol.candidates li.candidate .expandedInfo .bodyContainer .nonEditable {
+            max-height: 150px; }
         #app #electionOverview ol.candidates li.candidate .expandedInfo .detailsContainer {
           margin-bottom: 10px;
           display: block; }
@@ -1631,6 +1638,8 @@ body.legal {
             max-height: 150px;
             resize: none;
             margin-bottom: 5px; }
+          #app #electionOverview ol.candidates li.candidate .expandedInfo .detailsContainer .nonEditable {
+            max-height: 150px; }
         #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer {
           display: block;
           margin-bottom: 10px; }
@@ -1639,21 +1648,26 @@ body.legal {
             background: white; }
             #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li {
               margin-bottom: 10px; }
+              #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li:last-child {
+                margin-bottom: 0px; }
+              #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentHeader {
+                border-bottom: 1px solid #eee;
+                margin-bottom: 4px; }
+                #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentHeader .commentCreator {
+                  font-style: italic;
+                  margin-right: 10px;
+                  display: inline;
+                  color: #888; }
+                #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentHeader .commentCreatedAt {
+                  margin-top: 2px;
+                  clear: both;
+                  font-style: italic;
+                  font-size: 10px;
+                  display: inline;
+                  color: #888;
+                  float: right; }
               #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentBody {
-                display: inline-block;
-                float: left; }
-              #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentCreator {
-                font-style: italic;
-                display: inline-block;
-                float: right;
-                color: #888; }
-              #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentCreatedAt {
-                clear: both;
-                font-style: italic;
-                font-size: 10px;
-                display: inline-block;
-                float: right;
-                color: #888; }
+                display: inline-block; }
           #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .createCommentForm {
             margin-top: 10px; }
             #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .createCommentForm textarea {
@@ -1663,13 +1677,6 @@ body.legal {
               max-height: 150px;
               resize: none;
               margin-bottom: 5px; }
-        #app #electionOverview ol.candidates li.candidate .expandedInfo .nonEditable {
-          background: white;
-          border: 1px dashed rgba(200, 200, 200, 0.55);
-          padding: 5px;
-          max-height: 150px;
-          overflow-y: auto;
-          color: #333; }
         #app #electionOverview ol.candidates li.candidate .expandedInfo button {
           float: right;
           font-size: 12px;

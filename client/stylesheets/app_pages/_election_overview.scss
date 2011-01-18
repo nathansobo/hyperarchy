@@ -263,6 +263,13 @@
             padding-left: 1px;
           }
 
+
+          // inside both body and details containers
+          .nonEditable {
+            @include nonEditableDottedBorder;
+          }
+
+
           .bodyContainer {
             margin-bottom: 10px;
 
@@ -272,6 +279,10 @@
               padding: 4px;
               padding-top: 2px;
               resize: none;
+            }
+
+            .nonEditable {
+              max-height: 150px;
             }
           }
 
@@ -287,6 +298,10 @@
               resize: none;
               margin-bottom: 5px;
             }
+
+            .nonEditable {
+              max-height: 150px;
+            }
           }
 
           .commentsContainer {
@@ -300,25 +315,35 @@
               li {
                 margin-bottom: 10px;
 
+                &:last-child {
+                  margin-bottom: 0px;
+                }
+
+                .commentHeader {
+                  border-bottom: 1px solid #eee;
+                  margin-bottom: 4px;
+
+                  .commentCreator {
+                    font-style: italic;
+                    margin-right: 10px;
+                    display: inline;
+                    color: #888;
+                  }
+
+                  .commentCreatedAt {
+                    margin-top: 2px;
+                    clear: both;
+                    font-style: italic;
+                    font-size: 10px;
+                    display: inline;
+                    color: #888;
+                    float: right;
+                  }
+                }
+
+
                 .commentBody {
                   display: inline-block;
-                  float: left;
-                }
-
-                .commentCreator {
-                  font-style: italic;
-                  display: inline-block;
-                  float: right;
-                  color: #888;
-                }
-
-                .commentCreatedAt {
-                  clear: both;
-                  font-style: italic;
-                  font-size: 10px;
-                  display: inline-block;
-                  float: right;
-                  color: #888;
                 }
               }
 
@@ -336,11 +361,6 @@
                 margin-bottom: 5px;
               }
             }
-          }
-
-          // inside body and details containers
-          .nonEditable {
-            @include nonEditableDottedBorder;
           }
 
           button {
