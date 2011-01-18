@@ -19,12 +19,16 @@ _.constructor("Views.CandidateComments", View.Template, {
         div({'class': "loading", style: "display: none;"}).ref("createCommentSpinner");
         div({'class': "clear"});
       }).ref('createCommentForm');
-
-      div({'class': "loading fetching", style: "display: none"}).ref('loading');
     });
   }},
 
   viewProperties: {
+    initialize: function() {
+      this.defer(function() {
+        this.createCommentTextarea.elastic();
+      });
+    },
+
     candidate: {
       afterChange: function(candidate) {
         this.candidateCommentsList.relation(candidate.candidateComments());

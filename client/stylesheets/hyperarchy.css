@@ -1645,13 +1645,15 @@ body.legal {
                 display: inline-block;
                 float: right;
                 color: #888; }
-          #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer textarea {
-            width: 100%;
-            height: 30px;
-            padding: 5px;
-            max-height: 150px;
-            resize: none;
-            margin-bottom: 5px; }
+          #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .createCommentForm {
+            margin-top: 10px; }
+            #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .createCommentForm textarea {
+              width: 100%;
+              height: 30px;
+              padding: 5px;
+              max-height: 150px;
+              resize: none;
+              margin-bottom: 5px; }
         #app #electionOverview ol.candidates li.candidate .expandedInfo .nonEditable {
           background: white;
           border: 1px dashed #737373;
