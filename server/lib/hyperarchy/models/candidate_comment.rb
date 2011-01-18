@@ -35,20 +35,6 @@ class CandidateComment < Monarch::Model::Record
   end
 
   def before_create
-    election.lock
     self.creator ||= current_user
   end
-
-  def after_create
-    election.unlock
-  end
-
-  def before_destroy
-    election.lock
-  end
-
-  def after_destroy
-    election.unlock
-  end
-
 end
