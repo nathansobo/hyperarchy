@@ -11,6 +11,8 @@ _.constructor("Views.CandidateLi", View.Template, {
       template.candidateIcon();
       div({'class': "candidateIcon detailsIcon"})
         .click('expandOrContract')
+        .mouseover('showTooltip')
+        .mouseout('hideTooltip')
         .ref('detailsIcon');
 
       div({'class': "body"}).ref('body');
@@ -48,6 +50,11 @@ _.constructor("Views.CandidateLi", View.Template, {
         button({style: "float: right"}, "Delete").click("destroyCandidate");
         div({'class': "clear"});
       }).ref('expandedInfo');
+
+      div({'class': "electionDetailsTooltip", style: "display: none;"}, function() {
+        div({'class': "nonEditable"})
+          .ref('tooltipDetails');
+      }).ref('tooltip');
     });
   }},
 
@@ -69,6 +76,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.defer(function() {
         this.bodyTextarea.elastic();
         this.detailsTextarea.elastic();
+        $('body').append(this.tooltip);
       });
 
       if (this.candidate.editableByCurrentUser()) {
@@ -189,8 +197,9 @@ _.constructor("Views.CandidateLi", View.Template, {
 
     assignDetails: function(details) {
       this.detailsTextarea.val(details);
-      this.detailsTextarea.keyup();
+      this.detailsTextarea.keyup(); // trigger the elastic resize
       this.nonEditableDetails.html(htmlEscape(details));
+      this.tooltipDetails.html(htmlEscape(details));
       if (details) {
         this.detailsIcon.show();
         this.expandArrow.show();
@@ -198,6 +207,22 @@ _.constructor("Views.CandidateLi", View.Template, {
         this.detailsIcon.hide();
         if (!this.candidate.editableByCurrentUser()) this.expandArrow.hide();
       }
+    },
+
+    showTooltip: function() {
+      this.showTooltipAfterDelay = true;
+      this.delay(function() {
+        if (!this.showTooltipAfterDelay) return;
+        var iconOffset = this.detailsIcon.offset();
+        var newOffset = { left: iconOffset.left + 20, top: iconOffset.top };
+        // for some reason, if offset is not called twice, the offset is not set properly on the _first_ showing
+        this.tooltip.show().offset(newOffset).offset(newOffset);
+      }, 300);
+    },
+
+    hideTooltip: function() {
+      this.tooltip.hide();
+      this.showTooltipAfterDelay = false;
     }
   }
 });

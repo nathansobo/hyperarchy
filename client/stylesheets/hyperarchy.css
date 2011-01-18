@@ -775,6 +775,15 @@ button {
   padding: 5px;
   background: white; }
 
+.electionDetailsTooltip {
+  position: absolute;
+  width: 288px;
+  background: white;
+  padding: 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
+  cursor: pointer; }
+
 #home #header, #learn_more #header {
   padding-top: 10px;
   margin-bottom: 30px;

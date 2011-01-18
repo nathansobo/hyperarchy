@@ -226,6 +226,7 @@
           background-repeat: no-repeat;
         }
 
+
         .detailsIcon {
           background-image: url(/images/speech_light.png);
           cursor: pointer;
@@ -234,6 +235,8 @@
             background-image: url(/images/speech_dark.png);
           }
         }
+        
+        // see global.scss for .electionDetailsTooltip (because it gets attached to the body so it displays above stuff)
 
         .loading {
           background-position: 2px 2px;

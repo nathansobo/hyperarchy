@@ -269,3 +269,12 @@ button {
   padding: 5px;
   background: white;
 }
+
+.electionDetailsTooltip {
+  position: absolute;
+  width: 288px;
+  background: white;
+  padding: 5px;
+  @include dropShadow(6px);
+  cursor: pointer;
+}
