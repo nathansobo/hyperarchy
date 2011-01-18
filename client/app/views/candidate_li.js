@@ -52,6 +52,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       }).ref('expandedInfo');
 
       div({'class': "electionDetailsTooltip", style: "display: none;"}, function() {
+        label("Details");
         div({'class': "nonEditable"})
           .ref('tooltipDetails');
       }).ref('tooltip');
@@ -107,6 +108,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.expanded = true;
       this.bodyTextarea.focus();
       this.body.hide();
+      this.hideTooltip();
 
       this.assignBody(this.candidate.body());
       this.assignDetails(this.candidate.details());
@@ -210,9 +212,13 @@ _.constructor("Views.CandidateLi", View.Template, {
     },
 
     showTooltip: function() {
+      if (this.expanded) return;
+
       this.showTooltipAfterDelay = true;
       this.delay(function() {
         if (!this.showTooltipAfterDelay) return;
+        if (this.expanded) return;
+        
         var iconOffset = this.detailsIcon.offset();
         var newOffset = { left: iconOffset.left + 20, top: iconOffset.top };
         // for some reason, if offset is not called twice, the offset is not set properly on the _first_ showing
