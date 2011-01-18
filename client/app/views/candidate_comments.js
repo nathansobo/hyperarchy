@@ -1,19 +1,18 @@
 _.constructor("Views.CandidateComments", View.Template, {
   content: function() { with(this.builder) {
-    div({id: "candidateCommentsList"}, function() {
+    div({'class': "commentsContainer"}, function() {
       subview('candidateCommentsList', Views.SortedList, {
-        rootAttributes: {'class': "candidateComments" },
+        rootAttributes: {'class': "commentsList nonEditable" },
         buildElement: function(candidateComment) {
           return Views.CandidateCommentLi.toView({candidateComment: candidateComment});
         }
       });
 
-      div({id: "createCommentForm"}, function() {
-        textarea({id: "shortAnswer"})
-          .ref('createCommentTextarea');
+      div({'class': "createCommentForm"}, function() {
+        textarea().ref('createCommentTextarea');
         div({'class': "clear"});
 
-        button({id: "createCommentButton"}, "Make a Comment")
+        button({'class': "createCommentButton"}, "Make a Comment")
           .ref('createCommentButton')
           .click('createComment');
 
@@ -35,10 +34,6 @@ _.constructor("Views.CandidateComments", View.Template, {
 
     afterRemove: function() {
       this.candidateCommentsList.remove();
-    },
-
-    empty: function() {
-      this.candidateCommentsList.empty();
     },
 
     fadeIn: function($super) {

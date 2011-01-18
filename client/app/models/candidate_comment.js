@@ -4,7 +4,6 @@ _.constructor("CandidateComment", Model.Record, {
       candidateId: 'key',
       creatorId: 'key',
       body: 'string',
-      details: 'string',
       updatedAt: 'datetime',
       createdAt: 'datetime'
     });

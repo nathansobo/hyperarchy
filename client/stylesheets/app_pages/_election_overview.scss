@@ -180,6 +180,8 @@
       overflow-x: hidden;
       overflow-y: auto;
 
+      @include noSelect;
+
       li.candidate {
         font-size: 15px;
         padding: 5px;
@@ -254,10 +256,10 @@
           font-size: 13px;
 
           label {
-            display: block;
+            width: 100%;
+            display: inline-block;
             margin-bottom: 2px;
           }
-
 
           .bodyContainer {
             margin-bottom: 10px;
@@ -272,7 +274,43 @@
           }
 
           .detailsContainer {
+            margin-bottom: 5px;
+            display: block;
+
+            textarea {
+              width: 100%;
+              height: 50px;
+              padding: 5px;
+              max-height: 150px;
+              resize: none;
+              margin-bottom: 5px;
+            }
+          }
+
+          .commentsContainer {
+            display: block;
             margin-bottom: 10px;
+
+            .commentsList {
+              margin-bottom: 5px;
+              background: white;
+
+              li {
+                margin-bottom: 10px;
+
+                .commentBody {
+                  display: inline-block;
+                  float: left;
+                }
+
+                .commentCreator {
+                  display: inline-block;
+                  float: right;
+                  color: #888;
+                }
+              }
+
+            }
 
             textarea {
               width: 100%;
@@ -280,6 +318,7 @@
               padding: 5px;
               max-height: 150px;
               resize: none;
+              margin-bottom: 5px;
             }
           }
 

@@ -18,6 +18,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       div({'class': "expandedInfoSpacer"}).ref('expandedInfoSpacer')
 
       div({'class': "expandedInfo", style: "display: none;"}, function() {
+
         label("Answer");
         div({'class': "bodyContainer"}, function() {
           textarea(candidate.body())
@@ -40,14 +41,14 @@ _.constructor("Views.CandidateLi", View.Template, {
             .ref('detailsTextarea');
           div({'class': "nonEditable"})
             .ref('nonEditableDetails');
+          button("Save")
+            .ref('saveButton')
+            .click("saveCandidate");
+          button("Delete")
+            .click("destroyCandidate")
+            .ref('destroyButton');
+          div({'class': "clear"});
         });
-
-        button("Save")
-          .ref('saveButton')
-          .click("saveCandidate");
-        button({style: "float: right"}, "Delete")
-          .click("destroyCandidate")
-          .ref('destroyButton');
 
         label("Comments");
         subview('candidateComments', Views.CandidateComments);
@@ -202,10 +203,10 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.nonEditableDetails.html(htmlEscape(details));
       if (details) {
         this.detailsIcon.show();
-        this.expandArrow.show();
+//        this.expandArrow.show();
       } else {
         this.detailsIcon.hide();
-        if (!this.candidate.editableByCurrentUser()) this.expandArrow.hide();
+//        if (!this.candidate.editableByCurrentUser()) this.expandArrow.hide();
       }
     }
   }

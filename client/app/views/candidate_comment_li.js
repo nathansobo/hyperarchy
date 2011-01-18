@@ -3,7 +3,9 @@ _.constructor("Views.CandidateCommentLi", View.Template, {
     var candidateComment = params.candidateComment;
     li({candidateCommentId: candidateComment.id(), 'class': "candidateComment"}, function() {
       div({'class': "loading", style: "display: none;"}).ref('loadingIcon');
-      div({'class': "body"}, candidateComment.body());
+      div({'class': "commentBody"}, candidateComment.body());
+      div({'class': "commentCreator"}, "-- " + candidateComment.creator().fullName());
+      div({'class': "clear"});
     });
   }},
 

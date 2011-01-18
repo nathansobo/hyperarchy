@@ -29,7 +29,7 @@ _.constructor("Views.UnrankedCandidateLi", Views.CandidateLi, {
         revertDuration: 100,
         helper: 'clone',
         zIndex: 100,
-        cancel: '.expandArrow' 
+        cancel: '.expandArrow, .detailsIcon'
       });
     }
   }
