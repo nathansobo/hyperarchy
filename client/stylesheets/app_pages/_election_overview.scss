@@ -201,9 +201,7 @@
         }
 
         &.expanded {
-          background-color: #ffffee;
-          background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffea), color-stop(1.0, #fffffa));
-          background: -moz-linear-gradient(top, #ffffea 0%, #fffffa 100%);
+          @include yellowFade;
 
           .expandedInfoSpacer {
             display: block;
@@ -228,6 +226,7 @@
           background-repeat: no-repeat;
         }
 
+
         .detailsIcon {
           background-image: url(/images/speech_light.png);
           cursor: pointer;
@@ -236,6 +235,8 @@
             background-image: url(/images/speech_dark.png);
           }
         }
+        
+        // see global.scss for .electionDetailsTooltip (because it gets attached to the body so it displays above stuff)
 
         .loading {
           background-position: 2px 2px;
@@ -324,12 +325,7 @@
 
           // inside body and details containers
           .nonEditable {
-            background: white;
-            border: 1px dashed #737373;
-            padding: 5px;
-            max-height: 150px;
-            overflow-y: auto;
-            color: #333;
+            @include nonEditableDottedBorder;
           }
 
           button {

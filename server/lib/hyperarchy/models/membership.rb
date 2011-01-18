@@ -46,11 +46,15 @@ class Membership < Monarch::Model::Record
 
   # dont send email address to another user unless they are an admin or owner
   def read_blacklist
-    if user == current_user || current_user.admin? || user && current_user.owns_organization_with_member?(user)
+    if current_user_can_read_email_address?
       super
     else
       [:email_address]
     end
+  end
+
+  def current_user_can_read_email_address?
+    user == current_user || current_user.admin? || organization.current_user_is_owner?
   end
 
   def organization_ids

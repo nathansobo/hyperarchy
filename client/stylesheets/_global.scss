@@ -50,6 +50,21 @@ $backgroundGray: #e6e6e6;
   -moz-user-select: none;
 }
 
+@mixin yellowFade {
+  background-color: #ffffee;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, #ffffea), color-stop(1.0, #fffffa));
+  background: -moz-linear-gradient(top, #ffffea 0%, #fffffa 100%);
+}
+
+@mixin nonEditableDottedBorder {
+  background: white;
+  border: 1px dashed #737373;
+  padding: 5px;
+  max-height: 150px;
+  overflow-y: auto;
+  color: #333;
+}
+
 .dropShadow {
   @include dropShadow(6px);
 }
@@ -268,4 +283,21 @@ button {
   width: 200px;
   padding: 5px;
   background: white;
+}
+
+.electionDetailsTooltip {
+  @include dropShadow(6px);
+  @include yellowFade;
+  position: absolute;
+  width: 268px;
+  padding: 5px;
+
+  label {
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .nonEditable {
+    @include nonEditableDottedBorder;
+  }
 }
