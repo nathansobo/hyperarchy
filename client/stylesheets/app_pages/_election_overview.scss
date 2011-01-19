@@ -180,8 +180,6 @@
       overflow-x: hidden;
       overflow-y: auto;
 
-      @include noSelect;
-
       li.candidate {
         font-size: 15px;
         padding: 5px;
@@ -245,6 +243,7 @@
         .body {
           margin-left: 19px;
           margin-right: 22px;
+          @include noSelect;
         }
 
         .expandedInfoSpacer {

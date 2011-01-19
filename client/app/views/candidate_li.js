@@ -22,7 +22,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       div({'class': "expandedInfo", style: "display: none;"}, function() {
 
         label("Answer");
-        div({'class': "bodyContainer"}, function() {
+        div({'class': "bodyContainer noDrag"}, function() {
           textarea(candidate.body())
             .keydown(function(view, e) {
               if (e.keyCode === 13) {
@@ -37,7 +37,7 @@ _.constructor("Views.CandidateLi", View.Template, {
         });
 
         label("Details").ref("detailsLabel");
-        div({'class': "detailsContainer"}, function() {
+        div({'class': "detailsContainer noDrag"}, function() {
           textarea({'class': "details"})
             .bind('keyup paste change', "deferredEnableOrDisableSaveButton")
             .ref('detailsTextarea');

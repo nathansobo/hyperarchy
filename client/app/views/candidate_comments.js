@@ -2,7 +2,7 @@ _.constructor("Views.CandidateComments", View.Template, {
   content: function() { with(this.builder) {
     div(function() {
       label("Comments").ref('commentsLabel');
-      div({'class': "commentsContainer"}, function() {
+      div({'class': "commentsContainer noDrag"}, function() {
         subview('candidateCommentsList', Views.SortedList, {
           rootAttributes: {'class': "commentsList nonEditable" },
           buildElement: function(candidateComment) {

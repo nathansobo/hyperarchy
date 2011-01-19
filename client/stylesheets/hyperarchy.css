@@ -1553,9 +1553,7 @@ body.legal {
     -moz-box-shadow: #c8c7c7 0px 0px 5px inset;
     -webkit-box-shadow: #c8c7c7 0px 0px 5px inset;
     overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-user-select: none;
-    -moz-user-select: none; }
+    overflow-y: auto; }
     #app #electionOverview ol.candidates li.candidate {
       font-size: 15px;
       padding: 5px;
@@ -1600,7 +1598,9 @@ body.legal {
         background-position: 2px 2px; }
       #app #electionOverview ol.candidates li.candidate .body {
         margin-left: 19px;
-        margin-right: 22px; }
+        margin-right: 22px;
+        -webkit-user-select: none;
+        -moz-user-select: none; }
       #app #electionOverview ol.candidates li.candidate .expandedInfoSpacer {
         display: none;
         height: 25px; }
