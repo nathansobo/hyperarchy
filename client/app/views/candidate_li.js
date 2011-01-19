@@ -145,6 +145,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.subscriptions.destroy();
       this.candidateCommentsList.remove();
       this.tooltipCandidateComments.remove();
+      this.tooltip.remove();
     },
 
     expandOrContract: function() {
