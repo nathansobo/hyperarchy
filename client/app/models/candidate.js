@@ -9,7 +9,7 @@ _.constructor("Candidate", Model.Record, {
     });
 
     this.hasMany('rankings');
-    this.hasMany('candidateComments');  //, {constructorName: "CandidateComment"});
+    this.hasMany('comments', {constructorName: "CandidateComment"});
     this.belongsTo('election');
     this.belongsTo('creator', {constructorName: "User"});
   },

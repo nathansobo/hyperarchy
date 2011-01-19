@@ -37,8 +37,8 @@ _.constructor("Views.CandidateComments", View.Template, {
 
     candidate: {
       afterChange: function(candidate) {
-        this.candidateCommentsList.relation(candidate.candidateComments());
-        if (this.candidate().candidateComments().empty()) {
+        this.candidateCommentsList.relation(candidate.comments());
+        if (this.candidate().comments().empty()) {
           this.hideList();
         } else {
           this.showList();
@@ -55,7 +55,7 @@ _.constructor("Views.CandidateComments", View.Template, {
     },
 
     commentRemoved: function() {
-      if (this.candidate().candidateComments().empty()) this.hideList();
+      if (this.candidate().comments().empty()) this.hideList();
     },
 
     hideList: function() {
@@ -80,7 +80,7 @@ _.constructor("Views.CandidateComments", View.Template, {
       this.commentCreationDisabled = true;
 
       this.createCommentSpinner.show();
-      this.candidate().candidateComments().create({body: body})
+      this.candidate().comments().create({body: body})
         .onSuccess(function() {
           this.createCommentSpinner.hide();
           this.commentCreationDisabled = false;
