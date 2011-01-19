@@ -12,40 +12,63 @@ module Hyperarchy
         pro_user = User.make
         social_user = User.make
 
+        ###########################
         # move time backward. nothing should be reported until time advances into the reporting period (1 hour before report)
         Timecop.freeze(2.hours.ago)
-        social_org.memberships.make(:user => social_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "immediately")
-        social_org.memberships.make(:user => pro_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "hourly")
-        pro_org.memberships.make(:user => pro_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "weekly")
+        ###########################
+
+        social_org.memberships.make(:user => social_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "immediately", :notify_of_new_comments_on_ranked_candidates => "weekly", :notify_of_new_comments_on_own_candidates => "hourly")
+        social_org.memberships.make(:user => pro_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "hourly", :notify_of_new_comments_on_ranked_candidates => "hourly", :notify_of_new_comments_on_own_candidates => "hourly")
+        pro_org.memberships.make(:user => pro_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "weekly", :notify_of_new_comments_on_ranked_candidates => "hourly", :notify_of_new_comments_on_own_candidates => "hourly")
 
         social_election_1 = social_org.elections.make
         social_candidate_1 = social_election_1.candidates.make
+        social_candidate_owned_by_social_user = social_election_1.candidates.make
+        social_candidate_owned_by_social_user.update(:creator => social_user)
         social_user.rankings.create!(:candidate => social_candidate_1, :position => 64)
         pro_user.rankings.create!(:candidate => social_candidate_1, :position => 64)
+        social_candidate_1.comments.make
 
         pro_election_1 = pro_org.elections.make
         pro_candidate_1 = pro_election_1.candidates.make
         pro_user.rankings.create!(:candidate => pro_candidate_1, :position => 64)
+        pro_candidate_1.comments.make
 
+        ############################
         # move time forward, so that subsequent creations fall within reporting period
         Timecop.freeze(1.5.hours.from_now)
+        ############################
 
+        # this new election should be reported on for social users
         social_election_2 = social_org.elections.make
         social_candidate_2 = social_election_2.candidates.make
         social_user.rankings.create!(:candidate => social_candidate_2, :position => 64)
         pro_user.rankings.create!(:candidate => social_candidate_2, :position => 64)
 
-        # this candidate should be reported on even though they belong to an older election
+        # these comments are on candidates before the reporting period, but should still be reported
+        # social user only wants to be notified of comments on their own candidates, so they should see only 1 of these
+        social_candidate_1_comment = social_candidate_1.comments.make
+        owned_social_candidate_comment = social_candidate_owned_by_social_user.comments.make
+        
+        # these candidates and their comments should be reported on because they are in the reporting period
+        # even though they belong to an election that was created before it
         social_candidate_3 = social_election_1.candidates.make
         social_candidate_4 = social_election_1.candidates.make
+        social_candidate_3_comment = social_candidate_3.comments.make
+        social_candidate_4_comment = social_candidate_4.comments.make
 
+        # this is a new election on the pro org, which should only be sent to pro user
         pro_election_2 = pro_org.elections.make
         pro_candidate_2 = pro_election_2.candidates.make
-        pro_user.rankings.create!(:candidate => pro_candidate_2, :position => 64)
 
+        # a comment on a pro candidate should be sent to to pro user
+        pro_candidate_1_comment = pro_candidate_1.comments.make
 
+        #############################
         # time moves forward again by 30 minutes and the report is sent.
         Timecop.freeze(30.minutes.from_now)
+        #############################
+
         Notifier = Notifier.new
         Notifier.send_periodic_notifications(:hourly)
 

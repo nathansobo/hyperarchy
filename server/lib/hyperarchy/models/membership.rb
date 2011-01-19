@@ -5,8 +5,10 @@ class Membership < Monarch::Model::Record
   column :role, :string, :default => "member"
   column :pending, :boolean, :default => true
   column :last_visited, :datetime
-  column :notify_of_new_elections, :string, :default => "weekly"
-  column :notify_of_new_candidates, :string, :default => "weekly"
+  column :notify_of_new_elections, :string, :default => "daily"
+  column :notify_of_new_candidates, :string, :default => "daily"
+  column :notify_of_new_comments_on_own_candidates, :string, :default => "hourly"
+  column :notify_of_new_comments_on_ranked_candidates, :string, :default => "hourly"
   column :created_at, :datetime
   column :updated_at, :datetime
 

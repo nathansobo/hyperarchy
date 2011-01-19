@@ -27,6 +27,11 @@ Candidate.blueprint do
   suppress_notification_email { true }
 end
 
+CandidateComment.blueprint do
+  candidate { Candidate.make }
+  body { Faker::Lorem.sentence }
+end
+
 Organization.blueprint do
   suppress_membership_creation { true }
   name { Sham.organization_name }
