@@ -36,7 +36,7 @@ _.constructor("Views.CandidateLi", View.Template, {
             .ref('nonEditableBody');
         });
 
-        label("Details");
+        label("Details").ref("detailsLabel");
         div({'class': "detailsContainer"}, function() {
           textarea({'class': "details"})
             .bind('keyup paste change', "deferredEnableOrDisableSaveButton")
@@ -58,7 +58,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       }).ref('expandedInfo');
 
       div({'class': "electionDetailsTooltip", style: "display: none;"}, function() {
-        label("Details");
+        label("Details").ref("tooltipDetailsLabel");
         div({'class': "nonEditable"})
           .ref('tooltipDetails');
       }).ref('tooltip');
@@ -213,8 +213,20 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.tooltipDetails.html(htmlEscape(details));
       if (details) {
         this.detailsIcon.show();
+        if (!this.candidate.editableByCurrentUser()) {
+          this.detailsLabel.show();
+          this.nonEditableDetails.show();
+        }
+        this.tooltipDetailsLabel.show();
+        this.tooltipDetails.show();
       } else {
         this.detailsIcon.hide();
+        if (!this.candidate.editableByCurrentUser()) {
+          this.detailsLabel.hide();
+          this.nonEditableDetails.hide();
+        }
+        this.tooltipDetailsLabel.hide();
+        this.tooltipDetails.hide();
       }
     },
 

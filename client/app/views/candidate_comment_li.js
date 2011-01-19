@@ -3,10 +3,22 @@ _.constructor("Views.CandidateCommentLi", View.Template, {
     var candidateComment = params.candidateComment;
     li({candidateCommentId: candidateComment.id(), 'class': "candidateComment"}, function() {
       div({'class': "commentHeader"}, function() {
-        div({'class': "commentCreator"}, candidateComment.creator().fullName());
+        div({'class': "commentCreator"}).ref('commentCreator');
         div({'class': "commentCreatedAt"}, candidateComment.formattedCreatedAt());
       });
       div({'class': "commentBody"}, candidateComment.body());
     });
-  }}
+  }},
+
+  viewProperties: {
+    initialize: function() {
+      this.hide();
+      User.findOrFetch(this.candidateComment.creatorId())
+        .onSuccess(function(creator) {
+          this.commentCreator.html(htmlEscape(creator.fullName()));
+          this.show();  
+        }, this);
+    }
+  }
+
 });
