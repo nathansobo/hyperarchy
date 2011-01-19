@@ -35,6 +35,8 @@ describe SubscriptionManager do
     mock(client_2).send(org_1_update)
     org_1.update!(:name => "Evil Empire")
 
+    RR.verify_doubles
+
     user_1_update = ["update", "users", user_1.id, {"first_name" => "Shrew"}]
     mock(client_1).send(user_1_update).twice
     mock(client_2).send(user_1_update)

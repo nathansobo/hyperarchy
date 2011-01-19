@@ -54,6 +54,7 @@ class Membership < Monarch::Model::Record
   end
 
   def current_user_can_read_email_address?
+    return false unless current_user
     user == current_user || current_user.admin? || organization.current_user_is_owner?
   end
 
