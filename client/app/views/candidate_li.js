@@ -54,7 +54,15 @@ _.constructor("Views.CandidateLi", View.Template, {
             div({'class': "clear"});
         });
         div({'class': "commentsContainer noDrag"}, function() {
-          subview('candidateComments', Views.CandidateCommentsList);
+          div(function() {
+            label("Comments").ref('commentsLabel');
+            subview('candidateCommentsList', Views.SortedList, {
+              rootAttributes: {'class': "candidateCommentsList nonEditable"},
+              buildElement: function(candidateComment) {
+                return Views.CandidateCommentLi.toView({candidateComment: candidateComment});
+              }
+            });
+          }).ref('candidateComments');
           div({'class': "createCommentForm"}, function() {
             textarea().ref('createCommentTextarea');
             div({'class': "clear"});
@@ -78,7 +86,15 @@ _.constructor("Views.CandidateLi", View.Template, {
             .ref('tooltipDetails');
         }).ref("tooltipDetailsContainer");
 
-        subview('tooltipCandidateComments', Views.CandidateCommentsList);
+        div(function() {
+          label("Comments").ref('commentsLabel');
+          subview('tooltipCandidateCommentsList', Views.SortedList, {
+            rootAttributes: {'class': "candidateCommentsList nonEditable"},
+            buildElement: function(candidateComment) {
+              return Views.CandidateCommentLi.toView({candidateComment: candidateComment});
+            }
+          });
+        }).ref('tooltipCandidateComments');
       }).ref('tooltip');
     });
   }},
@@ -88,8 +104,8 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.subscriptions = new Monarch.SubscriptionBundle;
       this.assignBody(this.candidate.body());
       this.assignDetails(this.candidate.details());
-      this.candidateComments.candidate(this.candidate);
-      this.tooltipCandidateComments.candidate(this.candidate);
+      this.candidateCommentsList.relation(this.candidate.comments());
+      this.tooltipCandidateCommentsList.relation(this.candidate.comments());
 
       this.subscriptions.add(this.candidate.onUpdate(function(changes) {
         if (changes.body) {
@@ -127,7 +143,7 @@ _.constructor("Views.CandidateLi", View.Template, {
 
     afterRemove: function() {
       this.subscriptions.destroy();
-      this.candidateComments.remove();
+      this.candidateCommentsList.remove();
       this.tooltipCandidateComments.remove();
     },
 
@@ -239,7 +255,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.detailsTextarea.keyup(); // trigger the elastic resize
       this.nonEditableDetails.html(htmlEscape(details));
       this.tooltipDetails.html(htmlEscape(details));
-      this.showOrHideDetailsIcon();
+      this.showOrHideDetailsOrComments();
 
       if (details) {
         if (!this.candidate.editableByCurrentUser()) {
@@ -277,20 +293,17 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.showTooltipAfterDelay = false;
     },
 
-    showOrHideDetailsIcon: function() {
-      if (this.candidate.comments().empty() && !this.candidate.details()) {
-        this.detailsIcon.hide();
-      } else {
-        this.detailsIcon.show();
-      }
-    },
-
     showOrHideDetailsOrComments: function() {
       this.detailsIcon.hide();
-      this.tooltipDetailsContainer.removeClass("marginBottom");
-      if (!this.candidate.comments().empty()) {
+      if (this.candidate.comments().empty()) {
+        this.tooltipDetailsContainer.removeClass("marginBottom");
+        this.candidateComments.hide();
+        this.tooltipCandidateComments.hide();
+      } else {
         this.detailsIcon.show();
         this.tooltipDetailsContainer.addClass("marginBottom");
+        this.candidateComments.show();
+        this.tooltipCandidateComments.show();
       }
       if (this.candidate.details()) {
         this.detailsIcon.show();
