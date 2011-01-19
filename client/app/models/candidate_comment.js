@@ -30,5 +30,5 @@ _.constructor("CandidateComment", Model.Record, {
 
   formattedCreatedAt: function() {
     return $.PHPDate("n/j/y g:ia", this.createdAt());
-  },
+  }
 });
