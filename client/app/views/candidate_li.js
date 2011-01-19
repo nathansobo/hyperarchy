@@ -52,9 +52,22 @@ _.constructor("Views.CandidateLi", View.Template, {
           div({'class': "clear"});
         });
 
-        subview('candidateComments', Views.CandidateComments);
+        div({'class': "commentsContainer noDrag"}, function() {
+          subview('candidateComments', Views.CandidateCommentsList);
+          div({'class': "createCommentForm"}, function() {
+            textarea().ref('createCommentTextarea');
+            div({'class': "clear"});
 
-        div({'class': "clear"});
+            button({'class': "createCommentButton"}, "Make a Comment")
+              .ref('createCommentButton')
+              .click('createComment');
+
+            div({'class': "loading", style: "display: none;"}).ref("createCommentSpinner");
+            div({'class': "clear"});
+            }).ref('createCommentForm');
+
+          div({'class': "clear"});
+        });
       }).ref('expandedInfo');
 
       div({'class': "candidateTooltip", style: "display: none;"}, function() {
@@ -64,7 +77,7 @@ _.constructor("Views.CandidateLi", View.Template, {
             .ref('tooltipDetails');
         }).ref("tooltipDetailsContainer");
 
-        subview('tooltipCandidateComments', Views.TooltipCandidateComments);
+        subview('tooltipCandidateComments', Views.CandidateCommentsList);
       }).ref('tooltip');
     });
   }},
@@ -85,21 +98,15 @@ _.constructor("Views.CandidateLi", View.Template, {
           this.assignDetails(changes.details.newValue);
         }
       }, this));
-      this.subscriptions.add(this.candidate.comments().onInsert(function() {
-        this.showOrHideDetailsIcon();
-        this.tooltipDetailsContainer.addClass("marginBottom");
-      }, this));
-      this.subscriptions.add(this.candidate.comments().onRemove(function() {
-        this.showOrHideDetailsIcon();
-        if (this.candidate.comments().empty()) {
-          this.tooltipDetailsContainer.removeClass("marginBottom");
-        }
-      }, this));
+      this.showOrHideDetailsOrComments();
+      
+      this.subscriptions.add(this.candidate.comments().onInsert(this.hitch("showOrHideDetailsOrComments")));
+      this.subscriptions.add(this.candidate.comments().onRemove(this.hitch("showOrHideDetailsOrComments")));
 
       this.defer(function() {
         this.bodyTextarea.elastic();
         this.detailsTextarea.elastic();
-        $('body').append(this.tooltip);
+        $('#mainContent').append(this.tooltip);
       });
 
       if (this.candidate.editableByCurrentUser()) {
@@ -111,6 +118,10 @@ _.constructor("Views.CandidateLi", View.Template, {
         this.saveButton.hide();
         this.destroyButton.hide();
       }
+
+      this.defer(function() {
+        this.createCommentTextarea.elastic();
+      });
     },
 
     afterRemove: function() {
@@ -271,6 +282,38 @@ _.constructor("Views.CandidateLi", View.Template, {
       } else {
         this.detailsIcon.show();
       }
+    },
+
+    showOrHideDetailsOrComments: function() {
+      this.detailsIcon.hide();
+      this.tooltipDetailsContainer.removeClass("marginBottom");
+      if (!this.candidate.comments().empty()) {
+        this.detailsIcon.show();
+        this.tooltipDetailsContainer.addClass("marginBottom");
+      }
+      if (this.candidate.details()) {
+        this.detailsIcon.show();
+      }
+    },
+
+    createComment: function(elt, e) {
+      this.createCommentTextarea.blur();
+      e.preventDefault();
+      if (this.commentCreationDisabled) return;
+
+      var body = this.createCommentTextarea.val();
+      if (body === "") return;
+      this.createCommentTextarea.val("");
+      this.createCommentTextarea.keyup();
+      this.commentCreationDisabled = true;
+
+      this.createCommentSpinner.show();
+      this.candidate.comments().create({body: body})
+        .onSuccess(function() {
+          this.createCommentSpinner.hide();
+          this.commentCreationDisabled = false;
+        }, this);
     }
+
   }
 });
