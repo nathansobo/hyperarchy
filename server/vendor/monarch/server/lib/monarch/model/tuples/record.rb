@@ -51,7 +51,10 @@ module Monarch
 
           def has_many(relation_name, options={}, &block)
             relates_to_many(relation_name) do
-              target_class = relation_name.to_s.singularize.classify.constantize
+              target_class = options[:class_name] ?
+                options[:class_name].constantize :
+                relation_name.to_s.singularize.classify.constantize
+
               foreign_key_column = target_class["#{self.class.basename.underscore}_id".to_sym]
               relation = target_class.where(foreign_key_column.eq(field(:id)), &block)
               relation = relation.order_by(*options[:order_by]) if options[:order_by]

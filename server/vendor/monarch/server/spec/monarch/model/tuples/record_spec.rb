@@ -95,6 +95,12 @@ module Monarch
               blog = Blog.find("grain")
               blog.blog_posts.should == BlogPost.where(:blog_id => blog.field(:id)).order_by(BlogPost[:featured].desc, BlogPost[:title])
             end
+
+            it "supports a class_name option so that the relation name can differ from the target table name" do
+              Blog.has_many(:posts, :class_name => "BlogPost")
+              blog = Blog.find("grain")
+              blog.posts.should == BlogPost.where(:blog_id => blog.field(:id))
+            end
           end
 
           describe ".belongs_to" do
