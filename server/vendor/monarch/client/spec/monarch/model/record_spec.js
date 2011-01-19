@@ -131,9 +131,9 @@ Screw.Unit(function(c) { with(c) {
         });
       });
 
-      context("if a 'table' option is provided", function() {
-        it("uses the named table instead of trying to infer it from the name of the relation", function() {
-          User.hasMany('blogsORama', { table: 'blogs' });
+      context("if a 'constructorName' option is provided", function() {
+        it("uses the table associated with that constructor instead of trying to infer it from the name of the relation", function() {
+          User.hasMany('blogsORama', { constructorName: 'Blog' });
           var user = User.createFromRemote({id: 'jake'});
           user.blogsORama().createFromRemote();
           expect(user.blogsORama().empty()).to(beFalse);

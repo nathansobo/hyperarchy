@@ -41,8 +41,7 @@
       var self = this;
       options = options || {};
       var conditions = options.conditions || {};
-
-      var targetTableName = options.table || _.underscore(relationName);
+      var targetTableName = options.constructorName ? _.underscoreAndPluralize(options.constructorName) : _.underscoreAndPluralize(relationName);
       var foreignKeyColumnName = options.key || _.camelize(_.singularize(this.table.globalName), true) + "Id";
 
       return this.relatesToMany(relationName, function() {
