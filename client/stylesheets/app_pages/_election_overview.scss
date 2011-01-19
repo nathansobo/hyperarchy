@@ -212,6 +212,7 @@
           left: 5px;
           margin-left: 1px;
           margin-right: 4px;
+          @include noSelect;
         }
 
         .candidateIcon {
@@ -225,9 +226,10 @@
         }
 
 
-        .detailsIcon {
+        .tooltipIcon {
           background-image: url(/images/speech_light.png);
           cursor: pointer;
+          @include noSelect;
 
           &:hover {
             background-image: url(/images/speech_dark.png);

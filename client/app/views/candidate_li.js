@@ -9,11 +9,11 @@ _.constructor("Views.CandidateLi", View.Template, {
       div({'class': "loading candidateIcon", style: "display: none;"}).ref('loadingIcon');
 
       template.candidateIcon();
-      div({'class': "candidateIcon detailsIcon"})
+      div({'class': "candidateIcon tooltipIcon"})
         .click('expandOrContract')
         .mouseover('showTooltip')
         .mouseout('hideTooltip')
-        .ref('detailsIcon');
+        .ref('tooltipIcon');
 
       div({'class': "body"}).ref('body');
 
@@ -264,7 +264,7 @@ _.constructor("Views.CandidateLi", View.Template, {
         }
         this.tooltipDetailsContainer.show();
       } else {
-        if (this.candidate.comments().empty()) this.detailsIcon.hide();
+        if (this.candidate.comments().empty()) this.tooltipIcon.hide();
         if (!this.candidate.editableByCurrentUser()) {
           this.detailsLabel.hide();
           this.nonEditableDetails.hide();
@@ -281,7 +281,7 @@ _.constructor("Views.CandidateLi", View.Template, {
         if (!this.showTooltipAfterDelay) return;
         if (this.expanded) return;
         
-        var iconOffset = this.detailsIcon.offset();
+        var iconOffset = this.tooltipIcon.offset();
         var newOffset = { left: iconOffset.left + 20, top: iconOffset.top };
         // for some reason, if offset is not called twice, the offset is not set properly on the _first_ showing
         this.tooltip.show().offset(newOffset).offset(newOffset);
@@ -294,19 +294,19 @@ _.constructor("Views.CandidateLi", View.Template, {
     },
 
     showOrHideDetailsOrComments: function() {
-      this.detailsIcon.hide();
+      this.tooltipIcon.hide();
       if (this.candidate.comments().empty()) {
         this.tooltipDetailsContainer.removeClass("marginBottom");
         this.candidateComments.hide();
         this.tooltipCandidateComments.hide();
       } else {
-        this.detailsIcon.show();
+        this.tooltipIcon.show();
         this.tooltipDetailsContainer.addClass("marginBottom");
         this.candidateComments.show();
         this.tooltipCandidateComments.show();
       }
       if (this.candidate.details()) {
-        this.detailsIcon.show();
+        this.tooltipIcon.show();
       }
     },
 

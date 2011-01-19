@@ -1605,7 +1605,9 @@ body.legal {
         top: 8px;
         left: 5px;
         margin-left: 1px;
-        margin-right: 4px; }
+        margin-right: 4px;
+        -webkit-user-select: none;
+        -moz-user-select: none; }
       #app #electionOverview ol.candidates li.candidate .candidateIcon {
         float: right;
         position: relative;
@@ -1614,10 +1616,12 @@ body.legal {
         width: 18px;
         background-position: 4px 4px;
         background-repeat: no-repeat; }
-      #app #electionOverview ol.candidates li.candidate .detailsIcon {
+      #app #electionOverview ol.candidates li.candidate .tooltipIcon {
         background-image: url(/images/speech_light.png);
-        cursor: pointer; }
-        #app #electionOverview ol.candidates li.candidate .detailsIcon:hover {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none; }
+        #app #electionOverview ol.candidates li.candidate .tooltipIcon:hover {
           background-image: url(/images/speech_dark.png); }
       #app #electionOverview ol.candidates li.candidate .loading {
         background-position: 2px 2px; }
