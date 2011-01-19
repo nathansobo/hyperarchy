@@ -284,7 +284,7 @@ button {
   background: white;
 }
 
-.electionDetailsTooltip {
+.candidateTooltip {
   @include dropShadow(6px);
   @include yellowFade;
   position: absolute;
@@ -298,5 +298,45 @@ button {
 
   .nonEditable {
     @include nonEditableDottedBorder;
+  }
+
+  .tooltipDetailsContainer.marginBottom {
+    margin-bottom: 10px;
+  }
+}
+
+.candidateCommentsList {
+  li {
+    margin-bottom: 10px;
+
+    &:last-child {
+      margin-bottom: 0px;
+    }
+
+    .commentHeader {
+      border-bottom: 1px solid #eee;
+      margin-bottom: 4px;
+
+      .commentCreator {
+        font-style: italic;
+        margin-right: 10px;
+        display: inline;
+        color: #888;
+      }
+
+      .commentCreatedAt {
+        margin-top: 2px;
+        clear: both;
+        font-style: italic;
+        font-size: 10px;
+        display: inline;
+        color: #888;
+        float: right;
+      }
+    }
+
+    .commentBody {
+      display: inline-block;
+    }
   }
 }

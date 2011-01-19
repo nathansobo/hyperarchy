@@ -4,26 +4,30 @@ _.constructor("Views.CandidateComments", View.Template, {
       label("Comments").ref('commentsLabel');
       div({'class': "commentsContainer noDrag"}, function() {
         subview('candidateCommentsList', Views.SortedList, {
-          rootAttributes: {'class': "commentsList nonEditable" },
+          rootAttributes: {'class': "candidateCommentsList nonEditable" },
           buildElement: function(candidateComment) {
             return Views.CandidateCommentLi.toView({candidateComment: candidateComment});
           }
         });
 
-        div({'class': "createCommentForm"}, function() {
-          textarea().ref('createCommentTextarea');
-          div({'class': "clear"});
+        if (template.renderForm) {
+          div({'class': "createCommentForm"}, function() {
+            textarea().ref('createCommentTextarea');
+            div({'class': "clear"});
 
-          button({'class': "createCommentButton"}, "Make a Comment")
-            .ref('createCommentButton')
-            .click('createComment');
+            button({'class': "createCommentButton"}, "Make a Comment")
+              .ref('createCommentButton')
+              .click('createComment');
 
-          div({'class': "loading", style: "display: none;"}).ref("createCommentSpinner");
-          div({'class': "clear"});
-        }).ref('createCommentForm');
+            div({'class': "loading", style: "display: none;"}).ref("createCommentSpinner");
+            div({'class': "clear"});
+          }).ref('createCommentForm');
+        }
       });
     });
   }},
+  
+  renderForm: true,
 
   viewProperties: {
     initialize: function() {

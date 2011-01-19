@@ -775,7 +775,7 @@ button {
   padding: 5px;
   background: white; }
 
-.electionDetailsTooltip {
+.candidateTooltip {
   -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
   background-color: #ffffee;
@@ -784,15 +784,40 @@ button {
   position: absolute;
   width: 268px;
   padding: 5px; }
-  .electionDetailsTooltip label {
+  .candidateTooltip label {
     display: block;
     margin-bottom: 2px; }
-  .electionDetailsTooltip .nonEditable {
+  .candidateTooltip .nonEditable {
     background: white;
     border: 1px dashed rgba(200, 200, 200, 0.55);
     padding: 5px;
     overflow-y: auto;
     color: #333; }
+  .candidateTooltip .tooltipDetailsContainer.marginBottom {
+    margin-bottom: 10px; }
+
+.candidateCommentsList li {
+  margin-bottom: 10px; }
+  .candidateCommentsList li:last-child {
+    margin-bottom: 0px; }
+  .candidateCommentsList li .commentHeader {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 4px; }
+    .candidateCommentsList li .commentHeader .commentCreator {
+      font-style: italic;
+      margin-right: 10px;
+      display: inline;
+      color: #888; }
+    .candidateCommentsList li .commentHeader .commentCreatedAt {
+      margin-top: 2px;
+      clear: both;
+      font-style: italic;
+      font-size: 10px;
+      display: inline;
+      color: #888;
+      float: right; }
+  .candidateCommentsList li .commentBody {
+    display: inline-block; }
 
 #home #header, #learn_more #header {
   padding-top: 10px;
@@ -1643,31 +1668,8 @@ body.legal {
         #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer {
           display: block;
           margin-bottom: 10px; }
-          #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList {
-            margin-bottom: 5px;
-            background: white; }
-            #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li {
-              margin-bottom: 10px; }
-              #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li:last-child {
-                margin-bottom: 0px; }
-              #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentHeader {
-                border-bottom: 1px solid #eee;
-                margin-bottom: 4px; }
-                #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentHeader .commentCreator {
-                  font-style: italic;
-                  margin-right: 10px;
-                  display: inline;
-                  color: #888; }
-                #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentHeader .commentCreatedAt {
-                  margin-top: 2px;
-                  clear: both;
-                  font-style: italic;
-                  font-size: 10px;
-                  display: inline;
-                  color: #888;
-                  float: right; }
-              #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .commentsList li .commentBody {
-                display: inline-block; }
+          #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .candidateCommentsList {
+            margin-bottom: 5px; }
           #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .createCommentForm {
             margin-top: 10px; }
             #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .createCommentForm textarea {

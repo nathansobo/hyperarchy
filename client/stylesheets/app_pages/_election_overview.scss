@@ -234,7 +234,7 @@
           }
         }
         
-        // see global.scss for .electionDetailsTooltip (because it gets attached to the body so it displays above stuff)
+        // see global.scss for .candidateTooltip (because it gets attached to the body so it displays above stuff)
 
         .loading {
           background-position: 2px 2px;
@@ -307,45 +307,9 @@
             display: block;
             margin-bottom: 10px;
 
-            .commentsList {
+            // see global.scss for the rest of the styles (needed because the tooltip is a child of body and has comments)
+            .candidateCommentsList {
               margin-bottom: 5px;
-              background: white;
-
-              li {
-                margin-bottom: 10px;
-
-                &:last-child {
-                  margin-bottom: 0px;
-                }
-
-                .commentHeader {
-                  border-bottom: 1px solid #eee;
-                  margin-bottom: 4px;
-
-                  .commentCreator {
-                    font-style: italic;
-                    margin-right: 10px;
-                    display: inline;
-                    color: #888;
-                  }
-
-                  .commentCreatedAt {
-                    margin-top: 2px;
-                    clear: both;
-                    font-style: italic;
-                    font-size: 10px;
-                    display: inline;
-                    color: #888;
-                    float: right;
-                  }
-                }
-
-
-                .commentBody {
-                  display: inline-block;
-                }
-              }
-
             }
 
             .createCommentForm {

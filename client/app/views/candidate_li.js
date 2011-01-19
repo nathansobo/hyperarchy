@@ -57,10 +57,14 @@ _.constructor("Views.CandidateLi", View.Template, {
         div({'class': "clear"});
       }).ref('expandedInfo');
 
-      div({'class': "electionDetailsTooltip", style: "display: none;"}, function() {
-        label("Details").ref("tooltipDetailsLabel");
-        div({'class': "nonEditable"})
-          .ref('tooltipDetails');
+      div({'class': "candidateTooltip", style: "display: none;"}, function() {
+        div({'class': "tooltipDetailsContainer"}, function() {
+          label("Details");
+          div({'class': "nonEditable"})
+            .ref('tooltipDetails');
+        }).ref("tooltipDetailsContainer");
+
+        subview('tooltipCandidateComments', Views.TooltipCandidateComments);
       }).ref('tooltip');
     });
   }},
@@ -71,6 +75,7 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.assignBody(this.candidate.body());
       this.assignDetails(this.candidate.details());
       this.candidateComments.candidate(this.candidate);
+      this.tooltipCandidateComments.candidate(this.candidate);
 
       this.subscriptions.add(this.candidate.onUpdate(function(changes) {
         if (changes.body) {
@@ -78,6 +83,16 @@ _.constructor("Views.CandidateLi", View.Template, {
         }
         if (changes.details) {
           this.assignDetails(changes.details.newValue);
+        }
+      }, this));
+      this.subscriptions.add(this.candidate.comments().onInsert(function() {
+        this.showOrHideDetailsIcon();
+        this.tooltipDetailsContainer.addClass("marginBottom");
+      }, this));
+      this.subscriptions.add(this.candidate.comments().onRemove(function() {
+        this.showOrHideDetailsIcon();
+        if (this.candidate.comments().empty()) {
+          this.tooltipDetailsContainer.removeClass("marginBottom");
         }
       }, this));
 
@@ -101,6 +116,7 @@ _.constructor("Views.CandidateLi", View.Template, {
     afterRemove: function() {
       this.subscriptions.destroy();
       this.candidateComments.remove();
+      this.tooltipCandidateComments.remove();
     },
 
     expandOrContract: function() {
@@ -211,22 +227,21 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.detailsTextarea.keyup(); // trigger the elastic resize
       this.nonEditableDetails.html(htmlEscape(details));
       this.tooltipDetails.html(htmlEscape(details));
+      this.showOrHideDetailsIcon();
+
       if (details) {
-        this.detailsIcon.show();
         if (!this.candidate.editableByCurrentUser()) {
           this.detailsLabel.show();
           this.nonEditableDetails.show();
         }
-        this.tooltipDetailsLabel.show();
-        this.tooltipDetails.show();
+        this.tooltipDetailsContainer.show();
       } else {
-        this.detailsIcon.hide();
+        if (this.candidate.comments().empty()) this.detailsIcon.hide();
         if (!this.candidate.editableByCurrentUser()) {
           this.detailsLabel.hide();
           this.nonEditableDetails.hide();
         }
-        this.tooltipDetailsLabel.hide();
-        this.tooltipDetails.hide();
+        this.tooltipDetailsContainer.hide();
       }
     },
 
@@ -248,6 +263,14 @@ _.constructor("Views.CandidateLi", View.Template, {
     hideTooltip: function() {
       this.tooltip.hide();
       this.showTooltipAfterDelay = false;
+    },
+
+    showOrHideDetailsIcon: function() {
+      if (this.candidate.comments().empty() && !this.candidate.details()) {
+        this.detailsIcon.hide();
+      } else {
+        this.detailsIcon.show();
+      }
     }
   }
 });
