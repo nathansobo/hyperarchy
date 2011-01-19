@@ -43,15 +43,16 @@ _.constructor("Views.CandidateLi", View.Template, {
             .ref('detailsTextarea');
           div({'class': "nonEditable"})
             .ref('nonEditableDetails');
+        });
+        div({'class': "buttonsContainer noDrag"}, function() {
           button("Save")
             .ref('saveButton')
             .click("saveCandidate");
-          button("Delete")
+          button("Delete Answer")
             .click("destroyCandidate")
             .ref('destroyButton');
-          div({'class': "clear"});
+            div({'class': "clear"});
         });
-
         div({'class': "commentsContainer noDrag"}, function() {
           subview('candidateComments', Views.CandidateCommentsList);
           div({'class': "createCommentForm"}, function() {

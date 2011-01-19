@@ -295,12 +295,16 @@
               padding: 5px;
               max-height: 150px;
               resize: none;
-              margin-bottom: 5px;
             }
 
             .nonEditable {
               max-height: 150px;
             }
+          }
+
+          .buttonsContainer {
+            margin-top: 0;
+            margin-bottom: 10px;
           }
 
           .commentsContainer {

@@ -1661,10 +1661,12 @@ body.legal {
             height: 50px;
             padding: 5px;
             max-height: 150px;
-            resize: none;
-            margin-bottom: 5px; }
+            resize: none; }
           #app #electionOverview ol.candidates li.candidate .expandedInfo .detailsContainer .nonEditable {
             max-height: 150px; }
+        #app #electionOverview ol.candidates li.candidate .expandedInfo .buttonsContainer {
+          margin-top: 0;
+          margin-bottom: 10px; }
         #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer {
           display: block;
           margin-bottom: 10px; }
