@@ -6,6 +6,11 @@ module Hyperarchy
       rescue Exception => e
         msg = ["#{e.class} - #{e.message}:", *e.backtrace].join("\n ")
         LOGGER.error(msg)
+        Mailer.send(
+          :to => ["admin@hyperarchy.com", "nathan@hyperarchy.com"],
+          :subject => "Error in deferred worker thread on #{RACK_ENV}",
+          :body => msg
+        )
       end
     end
   end
