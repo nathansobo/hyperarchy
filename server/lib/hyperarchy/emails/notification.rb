@@ -80,11 +80,7 @@ module Hyperarchy
       def comment_section(comment)
         div do
           div :style => "color: #777; border-bottom: 1px solid #f0f0f0; margin-bottom: 4px;" do
-            div comment.creator.full_name, :style => "float: left; font-style: italic;"
-            # can't find a non-zero-padded month number
-            created_at = comment.created_at
-            div created_at.strftime("#{created_at.month}/%d/%y %l:%M%P"), :style => "float: right"
-            div :style => "clear: both;"
+            div comment.creator.full_name, :style => "font-style: italic;"
           end
 
           div comment.body, :style => "margin-bottom: 16px;"

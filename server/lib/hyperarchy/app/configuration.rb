@@ -32,8 +32,6 @@ module Hyperarchy
       use NewRelic::Rack::DeveloperMode
     end
 
-    Time.zone = "Pacific Time (US & Canada)"
-
     use Monarch::Rack::IdentityMapManager unless RACK_ENV == "test"
     use Rack::Session::Cookie
     use Rack::Flash, :sweep => true
