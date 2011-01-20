@@ -107,12 +107,16 @@ module Hyperarchy
       end
 
       def build_periodic_notification
-        membership.new_elections_in_period(period).each do |election|
-          add_new_election(election)
+        if membership.wants_election_notifications?(period)
+          membership.new_elections_in_period(period).each do |election|
+            add_new_election(election)
+          end
         end
 
-        membership.new_candidates_in_period(period).each do |candidate|
-          add_new_candidate(candidate)
+        if membership.wants_candidate_notifications?(period)
+          membership.new_candidates_in_period(period).each do |candidate|
+            add_new_candidate(candidate)
+          end
         end
       end
 
