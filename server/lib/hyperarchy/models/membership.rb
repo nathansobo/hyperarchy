@@ -192,8 +192,7 @@ Visit #{invitation.signup_url} to join our private alpha test and start voting o
 
   # returns the time of last visit or the 1 <period> ago, whichever is more recent
   def last_alerted_or_visited_at(period)
-    period_ago(period)
-#    [period_ago(period), last_visited].max
+    [period_ago(period), last_visited].max
   end
 
   def period_ago(period)
