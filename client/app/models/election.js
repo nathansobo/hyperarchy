@@ -87,6 +87,18 @@ _.constructor("Election", Model.Record, {
     return Server.fetch([this.votes(), this.voters()]);
   },
 
+  fetchCommentsAndCommentersIfNeeded: function() {
+    if (this.commentFetchFuture) {
+      return this.commentFetchFuture;
+    } else {
+      return this.commentFetchFuture =
+        this.candidates()
+          .joinThrough(CandidateComment)
+          .join(User).on(CandidateComment.creatorId.eq(User.id))
+          .fetch();
+    }
+  },
+
   formattedCreatedAt: function() {
     return $.PHPDate("M j, Y @ g:ia", this.createdAt());
   },

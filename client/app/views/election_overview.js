@@ -149,18 +149,16 @@ _.constructor("Views.ElectionOverview", View.Template, {
     electionId: {
       afterChange: function(electionId, previousElectionId) {
         this.hideElementsWhileLoading();
-
         var additionalRelations = [
           Election.where({id: electionId}).joinTo(Organization),
-          Candidate.where({electionId: electionId}),
           Candidate.where({electionId: electionId})
-            .joinThrough(CandidateComment)
-            .join(User).on(CandidateComment.creatorId.eq(User.id))
         ];
+
         this.startLoading();
         Election.findOrFetch(electionId, additionalRelations)
           .onSuccess(function(election) {
             if (election) {
+              election.fetchCommentsAndCommentersIfNeeded();
               this.election(election);
             } else {
               var lastVisitedOrgId = Application.currentUser().lastVisitedOrganization().id();
