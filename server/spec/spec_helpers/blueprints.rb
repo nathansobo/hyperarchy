@@ -30,6 +30,7 @@ end
 CandidateComment.blueprint do
   candidate { Candidate.make }
   body { Faker::Lorem.sentence }
+  suppress_notification_email { true }
 end
 
 Organization.blueprint do

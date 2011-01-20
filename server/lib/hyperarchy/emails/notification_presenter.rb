@@ -120,8 +120,10 @@ module Hyperarchy
             add_new_election(item)
           when Candidate
             add_new_candidate(item)
+          when CandidateComment
+            add_new_comment(item)
           else
-            "No notification mechanism implemented for item: #{item.inspect}"
+            raise "No notification mechanism implemented for item: #{item.inspect}"
         end
       end
 

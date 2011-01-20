@@ -127,8 +127,11 @@ module Models
 
         Mailer.emails.length.should == 1
         email = Mailer.emails.first
+
         email[:to].should == opted_in_voter.email_address
+        email[:subject].should == "1 new answer on Hyperarchy"
         email[:body].should include(c2.body)
+        email[:html_body].should include(c2.body)
       end
     end
 

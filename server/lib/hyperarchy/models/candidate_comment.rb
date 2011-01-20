@@ -7,6 +7,8 @@ class CandidateComment < Monarch::Model::Record
 
   belongs_to :candidate
   belongs_to :creator, :class_name => "User"
+  attr_accessor :suppress_notification_email
+  delegate :organization, :to => :candidate
 
   def organization_ids
     election ? election.organization_ids : []
@@ -36,5 +38,28 @@ class CandidateComment < Monarch::Model::Record
 
   def before_create
     self.creator ||= current_user
+  end
+
+  def after_create
+    unless suppress_notification_email
+      Hyperarchy.defer { Hyperarchy::Notifier.send_immediate_notifications(self) }
+    end
+  end
+
+  def users_to_notify_immediately
+    notify_users = candidate.
+      rankings.
+      join_to(User).
+      join_to(Membership).
+      where(:notify_of_new_comments_on_ranked_candidates => "immediately").
+      where(Membership[:user_id].neq(creator_id)).
+      project(User).
+      all
+
+    candidate_creator_membership = organization.memberships.find(:user_id => candidate.creator_id)
+    if candidate_creator_membership && candidate_creator_membership.wants_own_candidate_comment_notifications?("immediately")
+      notify_users.push(candidate.creator)
+    end
+    notify_users
   end
 end
