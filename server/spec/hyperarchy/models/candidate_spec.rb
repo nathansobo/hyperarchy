@@ -105,6 +105,7 @@ module Models
         opted_out_voter = User.make
         opted_in_non_voter = User.make
         set_current_user(creator)
+        election.update(:creator => creator)
 
         other_org = Organization.make
 

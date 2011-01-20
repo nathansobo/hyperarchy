@@ -35,14 +35,22 @@ class Membership < Monarch::Model::Record
   end
 
   def create_whitelist
-    [:organization_id, :user_id, :role, :first_name, :last_name, :email_address, :notify_of_new_elections, :notify_of_new_candidates]
+    [:organization_id, :user_id, :role, :first_name, :last_name, :email_address,
+     :notify_of_new_elections, :notify_of_new_candidates,
+     :notify_of_new_comments_on_ranked_candidates,
+     :notify_of_new_comments_on_own_candidates]
   end
 
   def update_whitelist
     if current_user_is_admin_or_organization_owner?
-      [:first_name, :last_name, :role, :last_visited, :notify_of_new_elections, :notify_of_new_candidates]
+      [:first_name, :last_name, :role, :last_visited,
+       :notify_of_new_elections, :notify_of_new_candidates,
+       :notify_of_new_comments_on_ranked_candidates,
+       :notify_of_new_comments_on_own_candidates]
     else
-      [:last_visited, :notify_of_new_elections, :notify_of_new_candidates]
+      [:last_visited, :notify_of_new_elections, :notify_of_new_candidates,
+       :notify_of_new_comments_on_ranked_candidates,
+       :notify_of_new_comments_on_own_candidates]
     end
   end
 
@@ -112,7 +120,11 @@ class Membership < Monarch::Model::Record
   end
 
   def wants_notifications?(period)
-     wants_election_notifications?(period) || wants_candidate_notifications?(period)
+     wants_election_notifications?(period) ||
+       wants_candidate_notifications?(period) ||
+       wants_ranked_candidate_comment_notifications?(period) ||
+       wants_own_candidate_comment_notifications?(period)
+
   end
 
   def wants_candidate_notifications?(period)
@@ -123,6 +135,20 @@ class Membership < Monarch::Model::Record
     notify_of_new_elections == period
   end
 
+  def wants_ranked_candidate_comment_notifications?(period)
+    notify_of_new_comments_on_ranked_candidates == period
+  end
+
+  def wants_own_candidate_comment_notifications?(period)
+    notify_of_new_comments_on_own_candidates == period
+  end
+
+  def new_elections_in_period(period)
+    organization.elections.
+      where(Election[:created_at] > last_alerted_or_visited_at(period)).
+      where(Election[:creator_id].neq(user_id))
+  end
+
   def new_candidates_in_period(period)
     user.votes.
       join_to(organization.elections).
@@ -131,10 +157,22 @@ class Membership < Monarch::Model::Record
       where(Candidate[:creator_id].neq(user_id))
   end
 
-  def new_elections_in_period(period)
+  def new_comments_on_ranked_candidates_in_period(period)
+    user.votes.
+      join_to(organization.elections).
+      join_to(Candidate).
+      where(Candidate[:creator_id].neq(user_id)).
+      join_through(CandidateComment).
+      where(CandidateComment[:created_at] > (last_alerted_or_visited_at(period))).
+      where(CandidateComment[:creator_id].neq(user_id))
+  end
+
+  def new_comments_on_own_candidates_in_period(period)
     organization.elections.
-      where(Election[:created_at] > last_alerted_or_visited_at(period)).
-      where(Election[:creator_id].neq(user_id))
+      join_to(user.candidates).
+      join_through(CandidateComment).
+      where(CandidateComment[:created_at] > (last_alerted_or_visited_at(period))).
+      where(CandidateComment[:creator_id].neq(user_id))
   end
 
   protected

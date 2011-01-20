@@ -36,12 +36,21 @@ module Hyperarchy
 
         color = presenter.election_is_new ? "black" : "#888"
 
-        div :style => "background: #eee; border: 1px solid #DDD; margin-bottom: 10px; padding: 8px; max-width: 500px; color: #{color};" do
-          a "Vote", :href => "https://#{HTTP_HOST}/app#view=election&electionId=#{election.id}", :style => "float: right; padding: 5px 15px; background: white; margin-left: 10px; color: #000094;"
-          div election.body, :style => "padding: 0px; margin-bottom: 15px;"
+        div :style => "background: #eee; border: 1px solid #DDD; margin-bottom: 10px; max-width: 500px; color: #{color};" do
+          div :style => "margin: 8px;" do
+            a "View Question", :href => "https://#{HTTP_HOST}/app#view=election&electionId=#{election.id}", :style => "float: right; padding: 5px 15px; background: white; margin-left: 10px; color: #000094;"
+            div election.body, :style => "padding: 0px; padding-top: 5px;"
+            div :style => "clear: both;"
+          end
 
-          presenter.candidate_presenters.each do |candidate_presenter|
-            candidate_section(candidate_presenter)
+          unless presenter.candidate_presenters.empty?
+            div :style => "max-height: 400px; overflow-y: auto; padding: 0px 8px; margin-top: 8px;" do
+              div :style => "margin-top: 8px;" do
+                presenter.candidate_presenters.each do |candidate_presenter|
+                  candidate_section(candidate_presenter)
+                end
+              end
+            end
           end
         end
       end
@@ -54,6 +63,31 @@ module Hyperarchy
           div candidate.body, :style => "float: left; padding: 8px; margin-bottom: -8px;"
           div raw("&mdash;#{candidate.creator.full_name}"), :style => "white-space: nowrap; float: right; font-style: italic; color: #777; padding: 8px;"
           div :style => "clear: both;"
+
+          unless presenter.new_comments.empty?
+            div :style => "padding: 8px; padding-top: 0px;" do
+              div :style => "padding: 8px; background: white; color: black; border: 2px solid #ddd; font-size: 13px;" do
+                div "Comments", :style => "margin-bottom: 16px; font-weight: bold;"
+                presenter.new_comments.each do |comment|
+                  comment_section(comment)
+                end
+              end
+            end
+          end
+        end
+      end
+
+      def comment_section(comment)
+        div do
+          div :style => "color: #777; border-bottom: 1px solid #f0f0f0; margin-bottom: 4px;" do
+            div comment.creator.full_name, :style => "float: left; font-style: italic;"
+            # can't find a non-zero-padded month number
+            created_at = comment.created_at
+            div created_at.strftime("#{created_at.month}/%d/%y %l:%M%P"), :style => "float: right"
+            div :style => "clear: both;"
+          end
+
+          div comment.body, :style => "margin-bottom: 16px;"
         end
       end
 

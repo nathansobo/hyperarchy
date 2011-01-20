@@ -79,14 +79,19 @@ module Hyperarchy
         # the social user should only receive hourly updates about new elections in the social org
         # and they should only hear about comments on their own answers
         social_user_notification[:subject].should =~ /question/
+        social_user_notification[:subject].should =~ /comment/
         social_user_notification[:subject].should_not =~ /answer/
-        notification_presenter = social_user_notification[:notification_presenter]
-        notification_presenter.sections.length.should == 1
-        section = notification_presenter.sections[0]
-        section.membership.organization.should == social_org
-        section.elections_section.should_not be_nil
-        section.candidates_section.should be_nil
-        section.elections_section.elections.should == [social_election_2]
+
+        presenter = social_user_notification[:notification_presenter]
+        presenter.membership_presenters.length.should == 1
+        presenter.new_election_count.should == 1
+        presenter.new_candidate_count.should == 0
+        presenter.new_comment_count.should == 1
+
+        social_user_html = social_user_notification[:html_body]
+        social_user_html.should include(social_election_2.body)
+        social_user_html.should include(owned_social_candidate_comment.body)
+
 
         # the pro user should receive hourly updates about the new pro elections...
         # as well as hourly updates about social elections AND social candidates
@@ -94,31 +99,32 @@ module Hyperarchy
         # the pro org should always be listed first
         pro_user_notification[:subject].should =~ /question/
         pro_user_notification[:subject].should =~ /answer/
-        notification_presenter = pro_user_notification[:notification_presenter]
-        notification_presenter.sections.length.should == 2
-        pro_section = notification_presenter.sections[0]
-        pro_section.membership.organization.should == pro_org
-        pro_section.elections_section.should_not be_nil
-        pro_section.candidates_section.should be_nil
-        pro_section.elections_section.elections.should == [pro_election_2]
+        pro_user_notification[:subject].should =~ /comment/
 
-        # next comes the social org report, with 1 election and 2 groups of 3 candidates
-        social_section = notification_presenter.sections[1]
-        social_section.membership.organization.should == social_org
-        social_section.elections_section.should_not be_nil
-        social_section.candidates_section.should_not be_nil
-        social_section.elections_section.elections.should == [social_election_2]
+        presenter = pro_user_notification[:notification_presenter]
 
-        candidates_section = social_section.candidates_section
-        candidates_section.candidate_groups.length.should == 2
+        presenter.membership_presenters.length.should == 2
+        presenter.new_election_count.should == 2
+        presenter.new_candidate_count.should == 3
+        presenter.new_comment_count.should == 5
 
-        # one candidate was created in the reporting period for election 2
-        social_election_2_candidate_group = candidates_section.candidate_groups.detect {|g| g.election == social_election_2}
-        social_election_2_candidate_group.candidates.should == [social_candidate_2]
-
-        # two candidates were created in the reporting period for election 1
-        social_election_1_candidate_group = candidates_section.candidate_groups.detect {|g| g.election == social_election_1}
-        Set.new(social_election_1_candidate_group.candidates).should == Set.new([social_candidate_3, social_candidate_4])
+        pro_user_html = pro_user_notification[:html_body]
+        pro_user_html.should include(social_election_1.body)
+        pro_user_html.should include(social_election_2.body)
+        pro_user_html.should include(social_candidate_1.body)
+        pro_user_html.should include(social_candidate_2.body)
+        pro_user_html.should include(social_candidate_3.body)
+        pro_user_html.should include(social_candidate_4.body)
+        pro_user_html.should include(social_candidate_1_comment.body)
+        pro_user_html.should include(social_candidate_3_comment.body)
+        pro_user_html.should include(social_candidate_4_comment.body)
+        pro_user_html.should include(owned_social_candidate_comment.body)
+        
+        pro_user_html.should include(pro_election_1.body)
+        pro_user_html.should include(pro_election_2.body)
+        pro_user_html.should include(pro_candidate_1.body)
+        pro_user_html.should include(pro_candidate_2.body)
+        pro_user_html.should include(pro_candidate_1_comment.body)
       end
     end
   end
