@@ -231,7 +231,7 @@ module Hyperarchy
 
     get "/notification" do
       authentication_required
-      presenter = Notifier::NotificationPresenter.new(current_user, "weekly")
+      presenter = Emails::NotificationPresenter.new(current_user, "weekly")
       render_page Emails::Notification, :notification_presenter => presenter
     end
 

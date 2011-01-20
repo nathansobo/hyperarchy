@@ -77,6 +77,7 @@ module Hyperarchy
         pro_user_notification = Mailer.emails.detect {|email| email[:to] == pro_user.email_address}
 
         # the social user should only receive hourly updates about new elections in the social org
+        # and they should only hear about comments on their own answers
         social_user_notification[:subject].should =~ /question/
         social_user_notification[:subject].should_not =~ /answer/
         notification_presenter = social_user_notification[:notification_presenter]
