@@ -24,6 +24,26 @@ _.constructor("Views.EmailPreferences", View.Template, {
           option({value: "never"}, "Never");
         });
       });
+      div({'class': "emailPreference"}, function() {
+        label("Email me about new comments on answers I suggested: ");
+        select({name: "notifyOfNewCommentsOnOwnCandidates"}, function() {
+          option({value: "immediately"}, "Immediately");
+          option({value: "hourly"}, "Hourly");
+          option({value: "daily"}, "Daily");
+          option({value: "weekly"}, "Weekly");
+          option({value: "never"}, "Never");
+        });
+      });
+      div({'class': "emailPreference"}, function() {
+        label("Email me about new comments on answers I have ranked: ");
+        select({name: "notifyOfNewCommentsOnRankedCandidates"}, function() {
+          option({value: "immediately"}, "Immediately");
+          option({value: "hourly"}, "Hourly");
+          option({value: "daily"}, "Daily");
+          option({value: "weekly"}, "Weekly");
+          option({value: "never"}, "Never");
+        });
+      });
     });
   }},
 
