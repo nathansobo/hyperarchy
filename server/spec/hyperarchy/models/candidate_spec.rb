@@ -136,12 +136,14 @@ module Models
     end
 
     describe "#before_destroy" do
-      it "destroys any rankings and majorities associated with the candidate, but does not change the updated_at time of associated votes" do
+      it "destroys any rankings, comments, and majorities associated with the candidate, but does not change the updated_at time of associated votes" do
         user_1 = User.make
         user_2 = User.make
 
-        candidate_1 = election.candidates.create!(:body => "foo")
-        candidate_2 = election.candidates.create!(:body => "bar")
+        candidate_1 = election.candidates.make(:body => "foo")
+        candidate_2 = election.candidates.make(:body => "bar")
+        comment_1 = candidate_1.comments.make
+        comment_2 = candidate_1.comments.make
 
         Timecop.freeze(Time.now)
         voting_time = Time.now
@@ -153,6 +155,7 @@ module Models
         Ranking.where(:candidate_id => candidate_1.id).size.should == 2
         Majority.where(:winner_id => candidate_1.id).size.should == 1
         Majority.where(:loser_id => candidate_1.id).size.should == 1
+        CandidateComment.where(:candidate_id => candidate_1.id).size.should == 2
 
         election.votes.size.should == 2
         election.votes.each do |vote|
@@ -166,6 +169,7 @@ module Models
         Ranking.where(:candidate_id => candidate_1.id).should be_empty
         Majority.where(:winner_id => candidate_1.id).should be_empty
         Majority.where(:loser_id => candidate_1.id).should be_empty
+        CandidateComment.where(:candidate_id => candidate_1.id).should be_empty
 
         election.votes.size.should == 1
         election.votes.first.updated_at.should == voting_time

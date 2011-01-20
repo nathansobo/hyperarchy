@@ -60,6 +60,7 @@ class Candidate < Monarch::Model::Record
   end
 
   def before_destroy
+    comments.each(&:destroy)
     election.lock
     rankings.each do |ranking|
       ranking.suppress_vote_update = true
