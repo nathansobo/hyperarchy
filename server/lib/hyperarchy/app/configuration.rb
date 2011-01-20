@@ -2,7 +2,9 @@ module Hyperarchy
   def self.defer(&block)
     EM.defer do
       begin
+        Model::Repository.initialize_local_identity_map
         block.call
+        Model::Repository.clear_local_identity_map
       rescue Exception => e
         msg = ["#{e.class} - #{e.message}:", *e.backtrace].join("\n ")
         LOGGER.error(msg)
