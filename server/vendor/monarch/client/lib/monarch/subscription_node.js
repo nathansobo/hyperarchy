@@ -46,6 +46,10 @@ _.constructor("Monarch.SubscriptionNode", {
     }
   },
 
+  publishArgs: function(array) {
+    this.publish.apply(this, array);
+  },
+
   empty: function() {
     return this.subscriptions.length == 0;
   },

@@ -83,12 +83,12 @@ _.constructor("Monarch.Model.Relations.Table", Monarch.Model.Relations.Relation,
     var future = new Monarch.Http.AjaxFuture();
     var record = this.find(id);
     if (record) {
-      future.triggerSuccess(record);
+      future.triggerSuccess(record, false);
     } else {
       var relationsToFetch = [this.where({id: id})];
       if (additionalRelations) relationsToFetch = relationsToFetch.concat(additionalRelations);
       Server.fetch(relationsToFetch).onSuccess(function() {
-        future.triggerSuccess(this.find(id));
+        future.triggerSuccess(this.find(id), true);
       }, this);
     }
     return future;

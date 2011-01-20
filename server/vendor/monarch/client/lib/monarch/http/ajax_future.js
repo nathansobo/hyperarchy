@@ -34,17 +34,22 @@ _.constructor("Monarch.Http.AjaxFuture", {
     }
   },
 
-  triggerSuccess: function(data) {
+  triggerSuccess: function(/*data...*/) {
+    var data = _.toArray(arguments);
+
     this.triggered = true;
     this.successful = true;
     this.data = data;
-    this.beforeEventsNode.publish(data);
-    this.afterEventsNode.publish(data);
-    this.onSuccessNode.publish(data);
-    this.onCompleteNode.publish(data);
+    this.beforeEventsNode.publishArgs(data);
+    this.afterEventsNode.publishArgs(data);
+    this.onSuccessNode.publishArgs(data);
+    this.onCompleteNode.publishArgs(data);
   },
 
-  updateRepositoryAndTriggerCallbacks: function(data, repositoryOperation) {
+  updateRepositoryAndTriggerCallbacks: function(/* data..., repositoryOperation*/) {
+    var data = _.toArray(arguments)
+    var repositoryOperation = data.pop();
+
     this.triggered = true;
     this.repositoryUpdated = true;
     this.successful = true;
@@ -52,19 +57,21 @@ _.constructor("Monarch.Http.AjaxFuture", {
 
     Repository.pauseEvents();
     repositoryOperation();
-    this.beforeEventsNode.publish(data);
+    this.beforeEventsNode.publishArgs(data);
     Repository.resumeEvents();
-    this.afterEventsNode.publish(data);
-    this.onSuccessNode.publish(data);
-    this.onCompleteNode.publish(data);
+    this.afterEventsNode.publishArgs(data);
+    this.onSuccessNode.publishArgs(data);
+    this.onCompleteNode.publishArgs(data);
   },
   
-  triggerFailure: function(data) {
+  triggerFailure: function(/*data...*/) {
+    var data = _.toArray(arguments);
+
     this.triggered = true;
     this.failure = true;
     this.data = data;
-    this.onFailureNode.publish(data);
-    this.onCompleteNode.publish(data);
+    this.onFailureNode.publishArgs(data);
+    this.onCompleteNode.publishArgs(data);
   },
 
   triggerError: function(xhr, status, errorThrown) {
@@ -76,7 +83,7 @@ _.constructor("Monarch.Http.AjaxFuture", {
 
   onSuccess: function(callback, context) {
     if (this.triggered) {
-      if (this.successful) callback.call(context, this.data);
+      if (this.successful) callback.apply(context, this.data);
     } else {
       this.onSuccessNode.subscribe(callback, context);
     }
@@ -85,16 +92,16 @@ _.constructor("Monarch.Http.AjaxFuture", {
 
   onFailure: function(callback, context) {
     if (this.triggered) {
-      if (this.failure) callback.call(context, this.data);
+      if (this.failure) callback.apply(context, this.data);
     } else {
       this.onFailureNode.subscribe(callback, context);
     }
     return this;
   },
 
-  onError: function(errorCallback) {
+  onError: function(errorCallback, context) {
     if (this.triggered) {
-      if (this.error) errorCallback.apply(null, this.data);
+      if (this.error) errorCallback.apply(context, this.data);
     } else {
       this.onErrorNode.subscribe(errorCallback);
     }

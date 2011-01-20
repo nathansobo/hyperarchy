@@ -80,15 +80,14 @@ Screw.Unit(function(c) { with(c) {
     describe("#findOrFetch(id, additionalRelations)", function() {
       useFakeServer(false);
 
-      it("looks for a record in with the given id, and fetches it and any additional relations if it is not found, invoking the callback with the record", function() {
+      it("looks for a record in with the given id, and fetches it and any additional relations if it is not found, invoking the callback with the record and a boolean value indicating whether a fetch occurred", function() {
         // case where a record with given id is in the repo
         var extantRecord = Blog.createFromRemote({id: 1});
 
         var onSuccessCallback = mockFunction("onSuccessCallback");
         Blog.findOrFetch(1).onSuccess(onSuccessCallback);
 
-        expect(onSuccessCallback).to(haveBeenCalled, once);
-        expect(onSuccessCallback).to(haveBeenCalled, withArgs(extantRecord));
+        expect(onSuccessCallback).to(haveBeenCalled, withArgs(extantRecord, false));
         expect(Server.fetches).to(beEmpty);
 
         // case where a record with that id is not in the local repo
@@ -107,8 +106,7 @@ Screw.Unit(function(c) { with(c) {
           }
         });
 
-        expect(onSuccessCallback).to(haveBeenCalled, once);
-        expect(onSuccessCallback).to(haveBeenCalled, withArgs(Blog.find('on-server')));
+        expect(onSuccessCallback).to(haveBeenCalled, withArgs(Blog.find('on-server'), true));
       });
     });
 
