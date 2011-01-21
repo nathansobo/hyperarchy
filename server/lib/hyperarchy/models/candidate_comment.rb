@@ -11,7 +11,7 @@ class CandidateComment < Monarch::Model::Record
   delegate :organization, :to => :candidate
 
   def organization_ids
-    election ? election.organization_ids : []
+    candidate ? candidate.organization_ids : []
   end
 
   def election
