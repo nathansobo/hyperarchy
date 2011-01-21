@@ -135,7 +135,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.adjustHeight();
       }));
 
-      this.createCandidateDetailsTextarea.placeHeld();
+      this.defer(function() {
+        this.createCandidateDetailsTextarea.placeHeld();
+      });
     },
 
     navigate: function(state) {
@@ -317,7 +319,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     showCreateCandidateForm: function(instantly) {
       this.showCreateCandidateFormButton.addClass('pressed');
-      this.createCandidateDetailsTextarea.blur();
 
       var cancelResize = _.repeat(function() {
         this.votesList.adjustHeight();
