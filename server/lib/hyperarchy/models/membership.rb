@@ -197,6 +197,8 @@ Visit #{invitation.signup_url} to join our private alpha test and start voting o
 
   def period_ago(period)
     case period
+      when "every5"
+        5.minutes.ago
       when "hourly"
         1.hour.ago
       when "daily"

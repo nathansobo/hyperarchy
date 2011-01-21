@@ -50,7 +50,7 @@ class CandidateComment < Monarch::Model::Record
     notify_users = candidate.
       rankings.
       join_to(User).
-      join_to(Membership).
+      join_to(organization.memberships).
       where(:notify_of_new_comments_on_ranked_candidates => "immediately").
       where(Membership[:user_id].neq(creator_id)).
       project(User).
