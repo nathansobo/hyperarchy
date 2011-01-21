@@ -12,7 +12,7 @@ module Hyperarchy
       end
 
       # every 5 minutes
-      scheduler.every '5 * * * * *' do
+      scheduler.cron '5 * * * * *' do
         Hyperarchy.defer do
           puts "Sending 5-minutely notifications"
           Notifier.new.send_periodic_notifications(:every5)
