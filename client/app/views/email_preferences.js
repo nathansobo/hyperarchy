@@ -18,8 +18,8 @@ _.constructor("Views.EmailPreferences", View.Template, {
       div({'class': "emailPreference"}, function() {
         label("Email me about new answers to questions on which I voted: ");
         select({name: "notifyOfNewCandidates"}, function() {
-          option({value: "every5"}, "Every 5 Minutes");
           option({value: "immediately"}, "Immediately");
+          option({value: "every5"}, "Every 5 Minutes");
           option({value: "hourly"}, "Hourly");
           option({value: "daily"}, "Daily");
           option({value: "weekly"}, "Weekly");
