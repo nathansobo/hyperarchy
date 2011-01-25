@@ -202,7 +202,7 @@ _.constructor("Monarch.View.Template", {
         var elt = jQuery(this);
         var fieldName = elt.attr('name');
         if (model[fieldName]) {
-          elt.val(model[fieldName].call(model) || "");
+          elt.val(htmlEscape(model[fieldName].call(model)) || "");
         }
       });
     },

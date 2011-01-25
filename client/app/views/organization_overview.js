@@ -14,7 +14,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         },
         onUpdate: function(li, election, changeset) {
           if (changeset.updatedAt) li.contentDiv.effect('highlight', {color:"#ffffcc"}, 2000);
-          if (changeset.body) li.body.html(changeset.body.newValue);
+          if (changeset.body) li.body.html(htmlEscape(changeset.body.newValue));
           if (changeset.voteCount) li.updateVoteCount(changeset.voteCount.newValue);
         }
       });
