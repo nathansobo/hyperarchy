@@ -22,11 +22,11 @@ class User < Monarch::Model::Record
   end
 
   relates_to_many :elections do
-    Election.table
+    Election.where(:creator_id => field(:id))
   end
 
   relates_to_many :candidates do
-    Candidate.table
+    Candidate.where(:creator_id => field(:id))
   end
 
   validates_uniqueness_of :email_address, :message => "There is already an account with that email address." 

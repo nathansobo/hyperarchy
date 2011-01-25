@@ -231,13 +231,13 @@ module Hyperarchy
 
     get "/notification" do
       authentication_required
-      presenter = Notifier::NotificationPresenter.new(current_user, "weekly")
+      presenter = Emails::NotificationPresenter.new(current_user, "weekly")
       render_page Emails::Notification, :notification_presenter => presenter
     end
 
     get "/notification_text" do
       authentication_required
-      presenter = Notifier::NotificationPresenter.new(current_user, "weekly")
+      presenter = Emails::NotificationPresenter.new(current_user, "weekly")
       presenter.to_s
     end
 
@@ -245,7 +245,7 @@ module Hyperarchy
     get "/send_notification" do
       authentication_required
 
-      notification_presenter = Notifier::NotificationPresenter.new(current_user, "weekly")
+      notification_presenter = Emails::NotificationPresenter.new(current_user, "weekly")
       Mailer.send(
         :to => ["nathansobo@gmail.com", "maxbrunsfeld@gmail.com"],
         :subject => notification_presenter.subject,

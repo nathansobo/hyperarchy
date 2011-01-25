@@ -2,10 +2,26 @@ module Hyperarchy
   def self.defer(&block)
     EM.defer do
       begin
+        Monarch::Model::Repository.initialize_local_identity_map
         block.call
+        Monarch::Model::Repository.clear_local_identity_map
       rescue Exception => e
         msg = ["#{e.class} - #{e.message}:", *e.backtrace].join("\n ")
         LOGGER.error(msg)
+
+        # mail the exception on production or demo
+        if RACK_ENV == "production" || RACK_ENV == "demo"
+          Mailer.send(
+            :to => ["admin@hyperarchy.com", "nathan@hyperarchy.com"],
+            :subject => "Error in deferred worker thread on #{RACK_ENV}",
+            :body => msg
+          )
+        end
+
+        # don't crash the server on production, but everywhere else that's probably a good idea
+        if RACK_ENV != "production"
+          raise e
+        end
       end
     end
   end

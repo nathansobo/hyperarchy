@@ -8,6 +8,7 @@ _.constructor("Views.EmailPreferences", View.Template, {
         label("Email me about new questions: ");
         select({name: "notifyOfNewElections"}, function() {
           option({value: "immediately"}, "Immediately");
+          option({value: "every5"}, "Every 5 Minutes");
           option({value: "hourly"}, "Hourly");
           option({value: "daily"}, "Daily");
           option({value: "weekly"}, "Weekly");
@@ -18,6 +19,29 @@ _.constructor("Views.EmailPreferences", View.Template, {
         label("Email me about new answers to questions on which I voted: ");
         select({name: "notifyOfNewCandidates"}, function() {
           option({value: "immediately"}, "Immediately");
+          option({value: "every5"}, "Every 5 Minutes");
+          option({value: "hourly"}, "Hourly");
+          option({value: "daily"}, "Daily");
+          option({value: "weekly"}, "Weekly");
+          option({value: "never"}, "Never");
+        });
+      });
+      div({'class': "emailPreference"}, function() {
+        label("Email me about new comments on answers I suggested: ");
+        select({name: "notifyOfNewCommentsOnOwnCandidates"}, function() {
+          option({value: "immediately"}, "Immediately");
+          option({value: "every5"}, "Every 5 Minutes");
+          option({value: "hourly"}, "Hourly");
+          option({value: "daily"}, "Daily");
+          option({value: "weekly"}, "Weekly");
+          option({value: "never"}, "Never");
+        });
+      });
+      div({'class': "emailPreference"}, function() {
+        label("Email me about new comments on answers I have ranked: ");
+        select({name: "notifyOfNewCommentsOnRankedCandidates"}, function() {
+          option({value: "immediately"}, "Immediately");
+          option({value: "every5"}, "Every 5 Minutes");
           option({value: "hourly"}, "Hourly");
           option({value: "daily"}, "Daily");
           option({value: "weekly"}, "Weekly");
