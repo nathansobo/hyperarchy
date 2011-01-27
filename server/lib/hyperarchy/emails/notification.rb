@@ -7,8 +7,8 @@ module Hyperarchy
         html do
           body do
             div :style => "font-size: 14px; font-family: 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;"  do
-              notification_presenter.sections.each do |section|
-                membership_section(section)
+              notification_presenter.membership_presenters.each do |membership_presenter|
+                membership_section(membership_presenter)
               end
               div :style => "margin-top: 20px; width: 550px;" do
                 rawtext "To change the frequency of these notifications or unsubscribe entirely, "
@@ -20,34 +20,34 @@ module Hyperarchy
         end
       end
 
-      def membership_section(section)
-        if num_sections > 1
-          h1 "#{section.organization.name}", :style => "font-size: 22px;"
+      def membership_section(presenter)
+        if num_membership_presenters > 1
+          h1 "#{presenter.organization.name}", :style => "font-size: 22px;"
         end
-
-        candidates_section(section.candidates_section) if section.candidates_section
-        elections_section(section.elections_section) if section.elections_section
+        h2 presenter.headline
+        presenter.election_presenters.each do |election_presenter|
+          election_section(election_presenter)
+        end
       end
 
-      def candidates_section(candidates_section)
-        num_candidates = candidates_section.num_candidates
-        num_questions = candidates_section.candidate_groups.length
-        questions = num_questions == 1 ? "a question" : "questions"
 
-        div :style => "margin-bottom: 20px" do
-          h2 candidates_section.headline, :style => "font-size: 18px;" if candidates_section.show_headline?
+      def election_section(presenter)
+        election = presenter.election
 
-          candidates_section.candidate_groups.each do |candidate_group|
-            div :style => "background: #eee; border: 1px solid #ddd; margin-bottom: 10px; padding: 8px; max-width: 500px;" do
-              a "Vote", :href => "https://#{HTTP_HOST}/app#view=election&electionId=#{candidate_group.election.id}", :style => "float: right; padding: 5px 15px; background: white; margin-left: 10px; color: #000094;"
+        color = presenter.election_is_new ? "black" : "#888"
 
-              div candidate_group.election.body, :style => "padding: 0px; margin-bottom: 15px;"
+        div :style => "background: #eee; border: 1px solid #DDD; margin-bottom: 10px; max-width: 500px; color: #{color};" do
+          div :style => "margin: 8px;" do
+            a "View Question", :href => "https://#{HTTP_HOST}/app#view=election&electionId=#{election.id}", :style => "float: right; padding: 5px 15px; background: white; margin-left: 10px; color: #000094;"
+            div election.body, :style => "padding: 0px; padding-top: 5px;"
+            div :style => "clear: both;"
+          end
 
-              candidate_group.candidates.each do |candidate|
-                div :style => "margin-bottom: 8px; background: white;" do
-                  div candidate.body, :style => "float: left; padding: 8px; margin-bottom: -8px;"
-                  div raw("&mdash;#{candidate.creator.full_name}"), :style => "white-space: nowrap; float: right; font-style: italic; color: #777; padding: 8px;"
-                  div :style => "clear: both;"
+          unless presenter.candidate_presenters.empty?
+            div :style => "max-height: 400px; overflow-y: auto; padding: 0px 8px; margin-top: 8px;" do
+              div :style => "margin-top: 8px;" do
+                presenter.candidate_presenters.each do |candidate_presenter|
+                  candidate_section(candidate_presenter)
                 end
               end
             end
@@ -55,24 +55,40 @@ module Hyperarchy
         end
       end
 
-      def elections_section(elections_section)
-        h2 elections_section.headline, :style => "font-size: 18px;" if elections_section.show_headline?
+      def candidate_section(presenter)
+        candidate = presenter.candidate
+        color = presenter.candidate_is_new ? "black" : "#888"
 
-        elections_section.elections.each do |election|
-          div :style => "background: #eee; border: 1px solid #ddd; margin-bottom: 10px; padding: 8px; max-width: 500px;" do
-            a "Vote", :href => "https://#{HTTP_HOST}/app#view=election&electionId=#{election.id}", :style => "float: right; padding: 5px 15px; background: white; margin-left: 10px; color: #000094; margin-bottom: 8px;"
-            div :style => "background: white; width: 430px;" do
-              div election.body, :style => "padding: 8px; float: left; margin-bottom: -8px;"
-              div raw("&mdash;#{election.creator.full_name}"), :style => "padding: 8px; float: right; color: #777; font-style: italic;"
-              div :style => "clear: both;"
+        div :style => "margin-bottom: 8px; background: white; color: #{color};" do
+          div candidate.body, :style => "float: left; padding: 8px; margin-bottom: -8px;"
+          div raw("&mdash;#{candidate.creator.full_name}"), :style => "white-space: nowrap; float: right; font-style: italic; color: #777; padding: 8px;"
+          div :style => "clear: both;"
+
+          unless presenter.new_comments.empty?
+            div :style => "padding: 8px; padding-top: 0px;" do
+              div :style => "padding: 8px; background: white; color: black; border: 2px solid #ddd; font-size: 13px;" do
+                div "Comments", :style => "margin-bottom: 16px; font-weight: bold;"
+                presenter.new_comments.each do |comment|
+                  comment_section(comment)
+                end
+              end
             end
-            div :style => "clear: both;"
           end
         end
       end
 
-      def num_sections
-        num_sections = notification_presenter.sections.length
+      def comment_section(comment)
+        div do
+          div :style => "color: #777; border-bottom: 1px solid #f0f0f0; margin-bottom: 4px;" do
+            div comment.creator.full_name, :style => "font-style: italic;"
+          end
+
+          div comment.body, :style => "margin-bottom: 16px;"
+        end
+      end
+
+      def num_membership_presenters
+        notification_presenter.membership_presenters.length
       end
     end
   end
