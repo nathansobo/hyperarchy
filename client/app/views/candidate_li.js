@@ -245,10 +245,10 @@ _.constructor("Views.CandidateLi", View.Template, {
     },
 
     assignBody: function(body) {
-      this.body.html(body);
+      this.body.html(htmlEscape(body));
       this.bodyTextarea.val(body);
       this.bodyTextarea.keyup();
-      this.nonEditableBody.html(body);
+      this.nonEditableBody.html(htmlEscape(body));
     },
 
     assignDetails: function(details) {

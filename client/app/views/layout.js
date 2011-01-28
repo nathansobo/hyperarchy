@@ -167,7 +167,7 @@ _.constructor("Views.Layout", View.Template, {
 
     showAlternateNavigationBar: function(text) {
       var lastOrgName = Application.currentUser().lastVisitedOrganization().name();
-      this.backToLastOrganizationLink.html("Back to " + lastOrgName);
+      this.backToLastOrganizationLink.html("Back to " + htmlEscape(lastOrgName));
       this.alternateNavigationBarText.html(text);
       this.organizationNavigationBar.hide();
       this.alternateNavigationBar.show();
@@ -203,7 +203,7 @@ _.constructor("Views.Layout", View.Template, {
         if (!changes.name) return;
         var name = organization.name();
         var selector = 'a[organizationId=' + organization.id() + ']';
-        this.organizationsMenu.find(selector).html(name);
+        this.organizationsMenu.find(selector).html(htmlEscape(name));
       }, this);
     },
 

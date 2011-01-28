@@ -267,7 +267,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     populateCreator: function(election) {
       User.findOrFetch(election.creatorId()).onSuccess(function(creator) {
-        this.creatorName.html(creator.fullName());
+        this.creatorName.html(htmlEscape(creator.fullName()));
         this.createdAt.html(election.formattedCreatedAt());
         this.creatorAvatar.user(creator);
         this.creatorDiv.show();

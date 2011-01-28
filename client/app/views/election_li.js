@@ -26,7 +26,7 @@ _.constructor("Views.ElectionLi", View.Template, {
             }});
           },
           onUpdate: function(li, record, changes, index) {
-            if (changes.body) li.find('.candidateBody').html(changes.body.newValue);
+            if (changes.body) li.find('.candidateBody').html(htmlEscape(changes.body.newValue));
           },
           updateIndex: function(li, index) {
             li.find('.number').html(index + 1 + ".");

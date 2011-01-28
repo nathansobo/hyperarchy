@@ -80,7 +80,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
         this.rankedCandidatesList.sortable('enable');
         this.removeClass('otherUser');
       } else {
-        this.rankingsUserName.html(this.rankingsUser().fullName() + "'s Ranking");
+        this.rankingsUserName.html(htmlEscape(this.rankingsUser().fullName()) + "'s Ranking");
         this.backLink.show();
         this.adjustHeight(); // in case the header changed height from assigning the ranker
         this.rankedCandidatesList.sortable('disable');

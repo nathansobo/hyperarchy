@@ -15,10 +15,10 @@ jQuery.fn.extend({
     if (subscription) subscription.destroy();
     var field = record.field(fieldName);
     if (!field) throw new Error("No field named " + fieldName + " found.");
-    this.html(field.value());
+    this.html(htmlEscape(field.value()));
 
     var subscription = field.onUpdate(function(newValue) {
-      this.html(newValue);
+      this.html(htmlEscape(newValue));
     }, this);
     this.data('bindHtmlSubscription', subscription);
 
