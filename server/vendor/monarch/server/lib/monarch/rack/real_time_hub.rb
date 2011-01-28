@@ -61,14 +61,18 @@ module Monarch
 
         def register_connection
           @client_id = params["real_time_client_id"]
-          raise "No real_time_client_id param available with the request" unless client_id
+          unless client_id
+            render "No real_time_client_id param provided with the request"
+            finish
+            return
+          end
           hub.client_connected(client_id, self)
           padding_for_safari = " " * 256
           render(padding_for_safari + ["connected", client_id].to_json + "\n")
         end
 
         def register_disconnection
-          hub.client_disconnected(client_id)
+          hub.client_disconnected(client_id) if client_id
         end
 
         def hub
