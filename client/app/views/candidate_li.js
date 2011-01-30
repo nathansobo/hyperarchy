@@ -53,6 +53,17 @@ _.constructor("Views.CandidateLi", View.Template, {
             .ref('destroyButton');
             div({'class': "clear"});
         });
+
+        div({'class': "creatorContainer nonEditable noDrag"}, function() {
+          subview('creatorAvatar', Views.Avatar, { size: 40 });
+          div({'class': "details"}, function() {
+            div({'class': "suggestedBy"}, "Suggested By");
+
+            div({'class': "name"}, "").ref('creatorName');
+            div({'class': "date"}, "").ref('createdAt');
+          });
+        });
+
         div({'class': "commentsContainer noDrag"}, function() {
           div(function() {
             label("Comments").ref('commentsLabel');
@@ -104,6 +115,14 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.subscriptions = new Monarch.SubscriptionBundle;
       this.assignBody(this.candidate.body());
       this.assignDetails(this.candidate.details());
+
+      User.findOrFetch(this.candidate.creatorId())
+        .onSuccess(function(creator) {
+          this.creatorAvatar.user(creator);
+          this.creatorName.html(htmlEscape(creator.fullName()));
+          this.createdAt.html(this.candidate.formattedCreatedAt());
+        }, this);
+
       this.candidateCommentsList.relation(this.candidate.comments());
       this.tooltipCandidateCommentsList.relation(this.candidate.comments());
 

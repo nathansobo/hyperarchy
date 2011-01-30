@@ -768,6 +768,13 @@ button {
     .expandArrow.expanded:hover {
       background-position: -39px 0px; }
 
+.avatar {
+  width: 40px;
+  height: 40px;
+  background: #999999 url(/images/mystery_man.jpeg) no-repeat top left; }
+  .avatar.validGravatar {
+    background: #999; }
+
 #simpleTooltip {
   -moz-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0px 0px 6px;
@@ -1539,12 +1546,7 @@ body.legal {
     margin-top: 5px; }
     #app #electionOverview .relatedUser .avatar {
       float: left;
-      margin-right: 5px;
-      width: 40px;
-      height: 40px;
-      background: #999999 url(/images/mystery_man.jpeg) no-repeat top left; }
-      #app #electionOverview .relatedUser .avatar.validGravatar {
-        background: #999; }
+      margin-right: 5px; }
     #app #electionOverview .relatedUser .details {
       padding-top: 2px; }
       #app #electionOverview .relatedUser .details .name {
@@ -1671,6 +1673,17 @@ body.legal {
         #app #electionOverview ol.candidates li.candidate .expandedInfo .buttonsContainer {
           margin-top: 0;
           margin-bottom: 10px; }
+        #app #electionOverview ol.candidates li.candidate .expandedInfo .creatorContainer {
+          line-height: 1.2; }
+          #app #electionOverview ol.candidates li.candidate .expandedInfo .creatorContainer .suggestedBy {
+            color: #999999;
+            font-size: 11px; }
+          #app #electionOverview ol.candidates li.candidate .expandedInfo .creatorContainer .avatar {
+            float: left;
+            margin-right: 5px; }
+          #app #electionOverview ol.candidates li.candidate .expandedInfo .creatorContainer .date {
+            color: #999999;
+            font-size: 11px; }
         #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer {
           display: block;
           margin-bottom: 10px; }

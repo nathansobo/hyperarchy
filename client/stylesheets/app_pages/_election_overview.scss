@@ -108,13 +108,6 @@
       .avatar {
         float: left;
         margin-right: 5px;
-        width: 40px;
-        height: 40px;
-        background: #999 url(/images/mystery_man.jpeg) no-repeat top left;
-
-        &.validGravatar {
-          background: #999;
-        }
       }
 
       .details {
@@ -307,6 +300,25 @@
           .buttonsContainer {
             margin-top: 0;
             margin-bottom: 10px;
+          }
+
+          .creatorContainer {
+            line-height: 1.2;
+
+            .suggestedBy {
+              color: #999999;
+              font-size: 11px;
+            }
+
+            .avatar {
+              float: left;
+              margin-right: 5px;
+            }
+
+            .date {
+              color: #999999;
+              font-size: 11px;
+            }
           }
 
           .commentsContainer {

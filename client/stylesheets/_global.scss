@@ -277,6 +277,16 @@ button {
   }
 }
 
+.avatar {
+  width: 40px;
+  height: 40px;
+  background: #999 url(/images/mystery_man.jpeg) no-repeat top left;
+
+  &.validGravatar {
+    background: #999;
+  }
+}
+
 #simpleTooltip {
   @include dropShadow(6px);
   width: 200px;

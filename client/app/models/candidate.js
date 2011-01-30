@@ -5,7 +5,8 @@ _.constructor("Candidate", Model.Record, {
       creatorId: 'key',
       body: 'string',
       details: 'string',
-      position: 'integer'
+      position: 'integer',
+      createdAt: 'datetime'
     });
 
     this.hasMany('rankings');
@@ -39,5 +40,9 @@ _.constructor("Candidate", Model.Record, {
 
   organization: function() {
     return this.election().organization();
+  },
+
+  formattedCreatedAt: function() {
+    return $.PHPDate("M j, Y @ g:ia", this.createdAt());
   }
 });

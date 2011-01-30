@@ -105,15 +105,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
               Application.layout.goToOrganization();
             });
         });
-//        div({id: "rightContent"}, function() {
-//          a("Previous")
-//            .ref("previousElectionLink");
-//          span().ref("electionPosition");
-//          span("of");
-//          span().ref("electionCount");
-//          a("Next")
-//            .ref("nextElectionLink");
-//        });
       }).ref("subNavigationContent");
     });
 
