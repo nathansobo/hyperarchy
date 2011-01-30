@@ -48,9 +48,9 @@ _.constructor("Views.Members", View.Template, {
     viewName: 'members',
 
     initialize: function() {
-      this.createMembershipFirstName.placeHeld();
-      this.createMembershipLastName.placeHeld();
-      this.createMembershipEmail.placeHeld();
+      this.createMembershipFirstName.holdPlace();
+      this.createMembershipLastName.holdPlace();
+      this.createMembershipEmail.holdPlace();
       this.defer(function() {
         this.find('textarea').elastic();
       });

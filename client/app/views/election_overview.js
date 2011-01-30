@@ -135,7 +135,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.adjustHeight();
       }));
 
-      this.createCandidateDetailsTextarea.placeHeld();
+      this.createCandidateDetailsTextarea.holdPlace();
     },
 
     navigate: function(state) {

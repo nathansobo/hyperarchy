@@ -26,7 +26,7 @@ _.constructor("Views.NewElection", View.Template, {
 
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
-      this.createElectionTextarea.placeHeld();
+      this.createElectionTextarea.holdPlace();
     },
 
     navigate: function(state) {

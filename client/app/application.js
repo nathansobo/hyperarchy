@@ -11,7 +11,7 @@
 //= require <jquery-ui/jquery.effects.core>
 //= require <jquery-ui/jquery.effects.highlight>
 //= require <jquery.elastic.source>
-//= require <jquery.placeheld>
+//= require <jquery.holdplace>
 //= require <jquery.phpdate>
 //= require <jquery.tooltip.v.1.1>
 //= require <jquery.hotkeys>
