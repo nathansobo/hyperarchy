@@ -14,7 +14,7 @@ _.constructor("Views.WelcomeGuide", View.Template, {
           div({'class': "step"}, function() {
             h2("Welcome to Hyperarchy!");
             div({'class': "stepDescription"}, function() {
-              raw("This is a private discussion area for <em id='welcomeGuideOrganizationName'></em>. Let's get the conversation started by raising a question for your team to discuss. To do that, click on the black <strong>Raise Question</strong> button below.");
+              raw("This is a private discussion area for <em id='welcomeGuideOrganizationName'></em>. Let's get the conversation started by raising a question for your team to discuss. To do that, click on the <strong>Raise a Question</strong> tab in the navigation bar below.");
             })
           }).ref("step1A");
           div({'class': "step"}, function() {
@@ -95,7 +95,11 @@ _.constructor("Views.WelcomeGuide", View.Template, {
       if (!this.organization()) return;
       
       if (this.organization().elections().empty()) {
-        this.setStep(1, "A");
+        if ($.bbq.getState().view == "newElection") {
+          this.setStep(1, "B");
+        } else {
+          this.setStep(1, "A");
+        }
       } else if (this.organization().candidates().empty()) {
         if ($.bbq.getState().view == "election") {
           this.setStep(2, "A");
@@ -152,12 +156,6 @@ _.constructor("Views.WelcomeGuide", View.Template, {
         $(window).trigger('resize');
       });
       Server.post("/dismiss_welcome_guide", {organization_id: this.organization().id()});
-    },
-
-    raiseQuestionClicked: function() {
-      if (this.step == 1) {
-        this.setStep(1, "B");
-      }
     }
   }
 });
