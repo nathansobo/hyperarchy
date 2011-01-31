@@ -24,7 +24,8 @@ _.constructor("Views.Layout", View.Template, {
           a({href: "#view=account"}, "Preferences");
         });
         li(function() {
-          a({href: "#"}, "Log Out").click(function() {
+          a({href: "#"}, "Log Out").click(function(elt, e) {
+            e.preventDefault();
             $("<form action='/logout' method='post'>").appendTo($("body")).submit();
             return false;
           });
