@@ -1686,6 +1686,7 @@ body.legal {
             font-size: 11px; }
         #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer {
           display: block;
+          margin-top: 10px;
           margin-bottom: 10px; }
           #app #electionOverview ol.candidates li.candidate .expandedInfo .commentsContainer .candidateCommentsList {
             margin-bottom: 5px; }

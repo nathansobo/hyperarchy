@@ -144,7 +144,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.hideElementsWhileLoading();
         var additionalRelations = [
           Election.where({id: electionId}).joinTo(Organization),
-          Candidate.where({electionId: electionId})
+          Candidate.where({electionId: electionId}).join(User).on(Candidate.creatorId.eq(User.id))
         ];
 
         this.startLoading();

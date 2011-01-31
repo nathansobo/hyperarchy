@@ -214,7 +214,7 @@ module Hyperarchy
       limit = params[:limit]
 
       elections = organization.elections.offset(offset).limit(limit)
-      candidates = elections.join_through(Candidate)
+      candidates = elections.join_through(Candidate).join(User).on(Candidate[:creator_id].eq(User[:id]))
       visits = elections.join_through(current_user.election_visits)
       
       successful_json_response(nil, [elections, candidates, visits])
