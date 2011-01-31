@@ -41,6 +41,8 @@ module Monarch
         end
 
         def set_field_value(column_or_name, value)
+          field = field(column_or_name)
+          raise "No field found for column #{column_or_name}" unless field
           field(column_or_name).value = value
         end
 
