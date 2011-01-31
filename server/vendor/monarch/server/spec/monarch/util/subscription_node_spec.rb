@@ -37,6 +37,8 @@ module Monarch
       end
 
       describe "#pause and #resume" do
+        manually_manage_identity_map # stubbing thread local vars interferes with operation of id map, which isn't needed anyway
+
         specify "#pause causes events on the current thread to be enqueued and does not fire callbacks until #resume flushes them, after which callbacks are triggered normally" do
           fake_thread_1 = {}
           fake_thread_2 = {}
@@ -71,6 +73,8 @@ module Monarch
       end
 
       describe "#pause and #cancel" do
+        manually_manage_identity_map # stubbing thread local vars interferes with operation of id map, which isn't needed anyway
+
         specify "#pause enqueues events and does not fire callbacks, then #cancel does not flush enqueued events but causes callbacks to trigger normally after it is called" do
           fake_thread_1 = {}
           fake_thread_2 = {}

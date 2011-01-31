@@ -167,34 +167,37 @@ module Monarch
           end
         end
 
-        describe "#initialize_identity_map" do
-          after do
-            # verify doubles before the global after clears the identity map, causing an unexpected invocation
-            RR::verify_doubles
-          end
-
-          it "initializes a thread-local identity map" do
-            mock(Thread.current)['blog_posts_identity_map'] = {};
-            BlogPost.table.initialize_identity_map
-          end
-        end
 
         describe "#local_identity_map" do
+          manually_manage_identity_map
+
           it "returns the thread-local identity map" do
             mock(Thread.current)['blog_posts_identity_map']
             BlogPost.table.local_identity_map
           end
         end
 
-        describe "#clear_identity_map" do
-          after do
-            # verify doubles before the global after clears the identity map, causing an unexpected invocation
-            RR::verify_doubles
-          end
+        describe "#initialize_identity_map and #clear_identity_map" do
+          manually_manage_identity_map
 
-          it "assigns the thread-local identity map to nil" do
-            mock(Thread.current)['blog_posts_identity_map'] = nil;
+          specify "the first call to initialize sets a thread local id map, and the last call to clear removes it" do
+            Thread.current['blog_posts_identity_map'].should be_nil
+
+            BlogPost.table.initialize_identity_map
+
+            BlogPost.table.local_identity_map[:foo] = "bar"
+            BlogPost.table.initialize_identity_map
+            BlogPost.table.local_identity_map[:foo].should == "bar"
+
+            Thread.current['blog_posts_identity_map'].should_not be_nil
+
             BlogPost.table.clear_identity_map
+
+            Thread.current['blog_posts_identity_map'].should_not be_nil
+
+            BlogPost.table.clear_identity_map
+
+            Thread.current['blog_posts_identity_map'].should be_nil
           end
         end
 

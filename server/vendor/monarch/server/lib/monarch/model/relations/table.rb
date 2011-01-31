@@ -131,16 +131,32 @@ module Monarch
           end
         end
 
-        def initialize_identity_map
-          Thread.current["#{global_name}_identity_map"] = {}
-        end
-
         def local_identity_map
           Thread.current["#{global_name}_identity_map"]
         end
 
+        def local_identity_map=(val)
+          Thread.current["#{global_name}_identity_map"] = val
+        end
+
+        def local_identity_map_init_count
+          Thread.current["#{global_name}_identity_map_init_count"]
+        end
+
+        def local_identity_map_init_count=(val)
+          Thread.current["#{global_name}_identity_map_init_count"] = val
+        end
+
+        def initialize_identity_map
+          self.local_identity_map_init_count ||= 0
+          self.local_identity_map = {} if local_identity_map_init_count == 0
+          self.local_identity_map_init_count += 1
+        end
+
         def clear_identity_map
-          Thread.current["#{global_name}_identity_map"] = nil
+          raise "Init has not been called on #{global_name}" if local_identity_map_init_count.nil?
+          self.local_identity_map_init_count -= 1
+          self.local_identity_map = nil if local_identity_map_init_count == 0
         end
 
         def load_fixtures(fixtures)

@@ -71,6 +71,8 @@ module Monarch
       end
 
       def initialize_local_identity_map
+
+
         tables.each {|table| table.initialize_identity_map}
       end
 
