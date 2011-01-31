@@ -6,6 +6,8 @@ class User < Monarch::Model::Record
   column :admin, :boolean
   column :dismissed_welcome_blurb, :boolean, :default => false
   column :dismissed_welcome_guide, :boolean, :default => false
+  column :password_reset_token, :string
+  column :password_reset_token_generated_at, :datetime
   synthetic_column :email_hash, :string
 
   has_many :memberships
@@ -89,6 +91,13 @@ class User < Monarch::Model::Record
   def password
     return nil if encrypted_password.blank?
     BCrypt::Password.new(encrypted_password)
+  end
+
+  def generate_password_reset_token
+    update!(
+      :password_reset_token => SecureRandom.hex(8),
+      :password_reset_token_generated_at => Time.now
+    )
   end
 
   def email_hash

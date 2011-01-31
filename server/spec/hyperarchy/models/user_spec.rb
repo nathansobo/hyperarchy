@@ -41,6 +41,18 @@ module Models
       end
     end
 
+    describe "#generate_password_reset_token" do
+      it "sets the password reset token to a random string and also sets the password reset timestamp" do
+        Timecop.freeze(Time.now)
+
+        user.password_reset_token.should be_nil
+        user.password_reset_token_generated_at.should be_nil
+        user.generate_password_reset_token
+        user.password_reset_token.should_not be_nil
+        user.password_reset_token_generated_at.should == Time.now
+      end
+    end
+
     describe "security" do
       describe "#can_update? and #can_destroy?" do
         it "only allows admins and the users themselves to update / destroy user records, and only allows admins to set the admin flag" do

@@ -53,6 +53,30 @@ module Hyperarchy
       redirect "/"
     end
 
+    get "/request_password_reset" do
+      render_page Views::RequestPasswordReset
+    end
+
+    post "/request_password_reset" do
+      use_ssl
+
+      email_address = params[:email_address]
+      user = User.find(:email_address => email_address)
+      user.generate_password_reset_token
+
+      Mailer.send(
+        :to => email_address,
+        :subject => "Reset your Hyperarchy password",
+        :body => "Visit https://hyperarchy.com/reset_password?token=#{user.password_reset_token} to reset your password."
+      )
+
+      ""
+    end
+
+    get "/sent_password_reset_token" do
+      render_page Views::SentPasswordResetToken
+    end
+
     get "/signup" do
       redirect_if_logged_in
       use_ssl

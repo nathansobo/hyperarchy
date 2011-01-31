@@ -1,21 +1,15 @@
 Sequel.migration do
   up do
-    alter_table :memberships do
-      add_column :notify_of_new_comments_on_own_candidates, String
-      add_column :notify_of_new_comments_on_ranked_candidates, String
+    alter_table :users do
+      add_column :password_reset_token, String
+      add_column :password_reset_token_generated_at, Time
     end
-
-    execute %{
-      update memberships
-      set notify_of_new_comments_on_own_candidates = 'daily',
-          notify_of_new_comments_on_ranked_candidates = notify_of_new_candidates
-    }
   end
 
   down do
-    alter_table :memberships do
-      drop_column :notify_of_new_comments_on_own_candidates
-      drop_column :notify_of_new_comments_on_ranked_candidates
+    alter_table :users do
+      drop_column :password_reset_token
+      drop_column :password_reset_token_generated_at
     end
   end
 end
