@@ -19,7 +19,7 @@ module Views
     end
 
     def signup_form
-      form :id => "signupForm", :class => "dropShadow", :action => "/signup", :method => "post" do
+      form :id => "signupForm", :class => "floatingCard dropShadow", :action => "/signup", :method => "post" do
         div :style => "border-bottom: 1px solid #ccc; margin-bottom: 20px;" do
           a :id => "smallLogo", :href => "/"
         end
@@ -64,7 +64,7 @@ module Views
 
     def errors_section
       if flash[:errors]
-        div :id => "errors" do
+        div :class => "errors" do
           div "Whoops! Please correct the following problems and try again:", :id => "pleaseCorrect"
           ul do
             flash[:errors].each do |error|

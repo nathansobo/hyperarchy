@@ -1,15 +1,7 @@
 module Views
-  class Login < Layout
-    def body_content
-      form :id => "loginForm", :class => "dropShadow", :action => "login", :method => "post" do
-        div :style => "border-bottom: 1px solid #ccc; margin-bottom: 20px;" do
-          a :id => "smallLogo", :href => "/"
-        end
-
-        if flash[:errors]
-          div flash[:errors].join("\n"), :class => "errors"
-        end
-
+  class Login < FloatingCard
+    def floating_card_content
+      form :id => "loginForm", :action => "login", :method => "post" do
         if flash[:already_redeemed]
           div "The invitation code you entered has already been redeemed. If you've created an account you can log in.", :class => "errors"
         end

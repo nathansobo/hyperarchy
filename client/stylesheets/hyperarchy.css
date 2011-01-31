@@ -956,6 +956,29 @@ button {
       padding: 10px;
       text-align: center; }
 
+.floatingCard {
+  font-size: 16px;
+  width: 320px;
+  padding: 20px;
+  margin: 50px auto; }
+  .floatingCard .floatingCardHeader {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px; }
+  .floatingCard #smallLogo {
+    margin: 0 auto 10px; }
+  .floatingCard #errors {
+    background-color: #ffe0e4;
+    padding: 10px;
+    margin-bottom: 20px; }
+  .floatingCard label {
+    display: block;
+    margin-bottom: 3px; }
+  .floatingCard input {
+    font-size: 22px;
+    display: block;
+    width: 100%;
+    margin-bottom: 10px; }
+
 #signup #centeredWrapper {
   margin: 50px auto;
   width: 360px; }
@@ -969,26 +992,13 @@ button {
     display: inline-block;
     text-align: center; }
   #signup #centeredWrapper #signupForm {
-    font-size: 16px;
-    width: 320px;
-    padding: 20px;
-    float: left; }
-    #signup #centeredWrapper #signupForm #smallLogo {
-      margin: 0 auto 10px; }
-    #signup #centeredWrapper #signupForm #errors {
-      background-color: #ffe0e4;
-      padding: 10px;
-      margin-bottom: 20px; }
-      #signup #centeredWrapper #signupForm #errors #pleaseCorrect {
-        font-weight: bold;
-        margin-bottom: 5px; }
-      #signup #centeredWrapper #signupForm #errors ul li {
-        list-style: disc inside; }
-    #signup #centeredWrapper #signupForm label {
-      display: block;
-      margin-bottom: 3px; }
-      #signup #centeredWrapper #signupForm label.inline {
-        display: inline; }
+    float: left;
+    margin: 0px auto; }
+    #signup #centeredWrapper #signupForm .errors #pleaseCorrect {
+      font-weight: bold;
+      margin-bottom: 5px; }
+    #signup #centeredWrapper #signupForm .errors ul li {
+      list-style: disc inside; }
     #signup #centeredWrapper #signupForm #canChangeLater {
       font-size: 12px;
       color: gray;
@@ -1011,18 +1021,10 @@ button {
       top: 23px;
       text-align: right;
       width: 150px; }
-    #signup #centeredWrapper #signupForm input {
-      font-size: 22px;
-      width: 100%;
-      display: block;
-      margin-bottom: 10px; }
-      #signup #centeredWrapper #signupForm input[type=checkbox] {
-        display: inline;
-        width: auto; }
-      #signup #centeredWrapper #signupForm input[type=submit] {
-        margin-top: 15px;
-        width: 150px;
-        float: right; }
+    #signup #centeredWrapper #signupForm input[type=submit] {
+      margin-top: 15px;
+      width: 150px;
+      float: right; }
   #signup #centeredWrapper #invitationInfo {
     float: right;
     width: 550px;
@@ -1051,38 +1053,33 @@ button {
       #signup #centeredWrapper #invitationInfo #invitationError #description {
         margin-left: 0; }
 
-#login #loginForm {
-  font-size: 16px;
-  width: 320px;
-  padding: 20px;
-  margin: 50px auto; }
-  #login #loginForm #smallLogo {
-    margin: 0 auto 10px; }
-  #login #loginForm label {
-    display: block;
-    margin-bottom: 3px; }
-  #login #loginForm input {
-    font-size: 22px;
-    display: block;
-    width: 100%;
-    margin-bottom: 10px; }
-    #login #loginForm input[type=submit] {
-      font-size: 22px;
-      padding: 10px;
-      letter-spacing: 1;
-      width: 120px;
-      margin-top: 15px;
-      display: inline-block;
-      text-align: center;
-      float: right; }
-  #login #loginForm #signUp {
-    font-size: 12px;
-    color: gray;
-    font-style: italic;
-    position: relative;
-    top: 23px;
-    text-align: right;
-    width: 180px; }
+#login #loginForm input[type=submit] {
+  font-size: 22px;
+  padding: 10px;
+  letter-spacing: 1;
+  width: 120px;
+  margin-top: 15px;
+  display: inline-block;
+  text-align: center;
+  float: right; }
+#login #loginForm #signUp {
+  font-size: 12px;
+  color: gray;
+  font-style: italic;
+  position: relative;
+  top: 23px;
+  text-align: right;
+  width: 180px; }
+
+#request_password_reset #requestPasswordResetForm input[type=submit] {
+  font-size: 18px;
+  padding: 10px;
+  letter-spacing: 1;
+  width: 220px;
+  margin-top: 15px;
+  display: inline-block;
+  text-align: center;
+  float: right; }
 
 body.legal {
   width: 600px;
