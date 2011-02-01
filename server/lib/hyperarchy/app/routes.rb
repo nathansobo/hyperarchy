@@ -92,6 +92,18 @@ module Hyperarchy
       render_page Views::SentPasswordResetToken
     end
 
+    get "/reset_password" do
+
+    end
+
+    post "/reset_password" do
+      user = User.find(:password_reset_token => params[:token])
+      user.update(:password => params[:password])
+      warden.set_user(user)
+
+      redirect "/app"
+    end
+
     get "/signup" do
       redirect_if_logged_in
       use_ssl
