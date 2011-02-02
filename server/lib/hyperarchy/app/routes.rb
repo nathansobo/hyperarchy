@@ -53,6 +53,74 @@ module Hyperarchy
       redirect "/"
     end
 
+    get "/request_password_reset" do
+      use_ssl
+      render_page Views::RequestPasswordReset
+    end
+
+    post "/request_password_reset" do
+      use_ssl
+
+      email_address = params[:email_address]
+
+      if email_address.blank?
+        flash[:errors] = ["You must enter your email address."]
+        redirect "/request_password_reset"
+        return
+      end
+
+      unless user = User.find(:email_address => email_address)
+        flash[:errors] = ["No user found with that email address."]
+        redirect "/request_password_reset"
+        return
+      end
+
+      user.generate_password_reset_token
+
+      Mailer.send(
+        :to => email_address,
+        :subject => "Reset your Hyperarchy password",
+        :body => "Visit https://hyperarchy.com/reset_password?token=#{user.password_reset_token} to reset your password.",
+        :erector_class => Emails::PasswordReset,
+        :token => user.password_reset_token
+      )
+
+      redirect "/sent_password_reset_token"
+    end
+
+    get "/sent_password_reset_token" do
+      render_page Views::SentPasswordResetToken
+    end
+
+    get "/reset_password" do
+      user = User.find(:password_reset_token => params[:token]) if params[:token]
+
+      unless params[:token] && user
+        flash[:errors] = ["Sorry, that password reset token is not valid. Please request a reset again."]
+        redirect "/request_password_reset" 
+      end
+
+      render_page Views::ResetPassword, :token => params[:token]
+    end
+
+    post "/reset_password" do
+      unless params[:password] == params[:password_confirmation]
+        flash[:errors] = ["Your password did not match your confirmation. Please try again"]
+        return render_page Views::ResetPassword, :token => params[:token]
+      end
+
+      user = User.find(:password_reset_token => params[:token]) if params[:token]
+      unless params[:token] && user
+        flash[:errors] = ["Sorry, that password reset token is not valid. Please request a reset again."]
+        redirect "/request_password_reset"
+      end
+
+      user.update(:password => params[:password])
+      warden.set_user(user)
+
+      redirect "/app"
+    end
+
     get "/signup" do
       redirect_if_logged_in
       use_ssl

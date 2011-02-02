@@ -17,20 +17,12 @@
     }
 
     #signupForm {
-      font-size: 16px;
-      width: 320px;
-      padding: 20px;
       float: left;
 
-      #smallLogo {
-        margin: 0 auto 10px;
-      }
+      margin: 0px auto;
 
-      #errors {
-        background-color: $errorBackground;
-        padding: 10px;
-        margin-bottom: 20px;
 
+      .errors {
         #pleaseCorrect {
           font-weight: bold;
           margin-bottom: 5px;
@@ -39,12 +31,6 @@
         ul li {
           list-style: disc inside;
         }
-      }
-
-      label {
-        display: block;
-        margin-bottom: 3px;
-        &.inline { display: inline }
       }
 
       #canChangeLater {
@@ -76,22 +62,10 @@
         width: 150px;
       }
 
-      input {
-        font-size: 22px;
-        width: 100%;
-        display: block;
-        margin-bottom: 10px;
-
-        &[type=checkbox] {
-          display: inline;
-          width: auto;
-        }
-
-        &[type=submit] {
-          margin-top: 15px;
-          width: 150px;
-          float: right;
-        }
+      input[type=submit] {
+        margin-top: 15px;
+        width: 150px;
+        float: right;
       }
     }
 

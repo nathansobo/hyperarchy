@@ -1,22 +1,17 @@
 module Views
-  class Login < Layout
-    def body_content
-      form :id => "loginForm", :class => "dropShadow", :action => "login", :method => "post" do
-        div :style => "border-bottom: 1px solid #ccc; margin-bottom: 20px;" do
-          a :id => "smallLogo", :href => "/"
-        end
-
-        if flash[:errors]
-          div flash[:errors].join("\n"), :class => "errors"
-        end
-
+  class Login < FloatingCard
+    def floating_card_content
+      form :id => "loginForm", :action => "login", :method => "post" do
         if flash[:already_redeemed]
           div "The invitation code you entered has already been redeemed. If you've created an account you can log in.", :class => "errors"
         end
 
         label "Email Address", :for => "email_address"
         input :name => "email_address", :value => flash[:entered_email_address]
+
+        a "forgot my password", :id => "forgotPassword", :href => "/request_password_reset"
         label "Password", :for => "password"
+
         input :type => "password", :name => "password"
         input :value => "Log In", :type => "submit", :class => "glossyBlack roundedButton"
 
