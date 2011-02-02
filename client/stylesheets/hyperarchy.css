@@ -1062,6 +1062,11 @@ button {
   display: inline-block;
   text-align: center;
   float: right; }
+#login #loginForm #forgotPassword {
+  float: right;
+  font-size: 12px;
+  font-style: italic;
+  margin-top: 3px; }
 #login #loginForm #signUp {
   font-size: 12px;
   color: gray;

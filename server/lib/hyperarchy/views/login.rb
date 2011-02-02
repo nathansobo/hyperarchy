@@ -8,7 +8,10 @@ module Views
 
         label "Email Address", :for => "email_address"
         input :name => "email_address", :value => flash[:entered_email_address]
+
+        a "forgot my password", :id => "forgotPassword", :href => "/request_password_reset"
         label "Password", :for => "password"
+
         input :type => "password", :name => "password"
         input :value => "Log In", :type => "submit", :class => "glossyBlack roundedButton"
 
