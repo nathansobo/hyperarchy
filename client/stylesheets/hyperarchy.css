@@ -1081,6 +1081,16 @@ button {
   text-align: center;
   float: right; }
 
+#reset_password #resetPasswordForm input[type=submit] {
+  font-size: 18px;
+  padding: 10px;
+  letter-spacing: 1;
+  width: 220px;
+  margin-top: 15px;
+  display: inline-block;
+  text-align: center;
+  float: right; }
+
 body.legal {
   width: 600px;
   padding: 30px; }

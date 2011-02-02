@@ -93,11 +93,28 @@ module Hyperarchy
     end
 
     get "/reset_password" do
+      user = User.find(:password_reset_token => params[:token]) if params[:token]
 
+      unless params[:token] && user
+        flash[:errors] = ["Sorry, that password reset token is not valid. Please request a reset again."]
+        redirect "/request_password_reset" 
+      end
+
+      render_page Views::ResetPassword, :token => params[:token]
     end
 
     post "/reset_password" do
-      user = User.find(:password_reset_token => params[:token])
+      unless params[:password] == params[:password_confirmation]
+        flash[:errors] = ["Your password did not match your confirmation. Please try again"]
+        return render_page Views::ResetPassword, :token => params[:token]
+      end
+
+      user = User.find(:password_reset_token => params[:token]) if params[:token]
+      unless params[:token] && user
+        flash[:errors] = ["Sorry, that password reset token is not valid. Please request a reset again."]
+        redirect "/request_password_reset"
+      end
+
       user.update(:password => params[:password])
       warden.set_user(user)
 
