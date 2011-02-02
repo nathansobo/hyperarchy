@@ -77,13 +77,15 @@ module Hyperarchy
 
       user.generate_password_reset_token
 
-      Mailer.send(
-        :to => email_address,
-        :subject => "Reset your Hyperarchy password",
-        :body => "Visit https://hyperarchy.com/reset_password?token=#{user.password_reset_token} to reset your password.",
-        :erector_class => Emails::PasswordReset,
-        :token => user.password_reset_token
-      )
+      Hyperarchy.defer do
+        Mailer.send(
+          :to => email_address,
+          :subject => "Reset your Hyperarchy password",
+          :body => "Visit https://hyperarchy.com/reset_password?token=#{user.password_reset_token} to reset your password.",
+          :erector_class => Emails::PasswordReset,
+          :token => user.password_reset_token
+        )
+      end
 
       redirect "/sent_password_reset_token"
     end
