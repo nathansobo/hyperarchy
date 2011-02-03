@@ -1,0 +1,15 @@
+development:
+  adapter: postgres
+  database: hyperarchy_development
+
+test:
+  adapter: postgres
+  database: hyperarchy_test
+
+demo:
+  adapter: postgres
+  database: hyperarchy_demo
+
+production:
+  adapter: postgres
+  database: hyperarchy_production
