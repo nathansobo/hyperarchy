@@ -8,6 +8,7 @@ class User < Monarch::Model::Record
   column :dismissed_welcome_guide, :boolean, :default => false
   column :password_reset_token, :string
   column :password_reset_token_generated_at, :datetime
+  column :guest, :boolean, :default => false
   synthetic_column :email_hash, :string
 
   has_many :memberships
