@@ -433,20 +433,28 @@ module Monarch
           []
         end
 
-        def create_whitelist
+        def write_whitelist
           whitelist
+        end
+
+        def write_blacklist
+          blacklist
+        end
+
+        def create_whitelist
+          write_whitelist
         end
 
         def create_blacklist
-          blacklist
+          write_blacklist
         end
 
         def update_whitelist
-          whitelist
+          write_whitelist
         end
 
         def update_blacklist
-          blacklist
+          write_blacklist
         end
 
         protected
