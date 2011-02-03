@@ -11,7 +11,6 @@ Spec::Runner.configure do |config|
 
   config.before do
     Monarch::Model::Repository.clear_tables
-    Organization.create!(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
     Monarch::Model::Repository.initialize_local_identity_map
     SubscriptionManager.start
     Sham.reset
@@ -21,6 +20,9 @@ Spec::Runner.configure do |config|
     def EM.defer
       yield
     end
+
+    Organization.make(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
+    User.make(:first_name => "Guest", :last_name => "User", :guest => true)
   end
 
   config.after do

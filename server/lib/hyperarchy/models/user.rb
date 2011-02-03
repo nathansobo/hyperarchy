@@ -38,6 +38,10 @@ class User < Monarch::Model::Record
     BCrypt::Password.create(unencrypted_password).to_s
   end
 
+  def self.guest
+    find(:guest => true)
+  end
+
   def can_update_or_destroy?
     current_user.admin? || current_user == self
   end

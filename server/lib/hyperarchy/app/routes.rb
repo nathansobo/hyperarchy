@@ -22,7 +22,7 @@ module Hyperarchy
 
     get "/app" do
       use_ssl
-      authentication_required
+      allow_guests
       render_page Views::App
     end
 
@@ -34,7 +34,6 @@ module Hyperarchy
     post "/login" do
       warden.logout(:default)
       if warden.authenticate
-
         if params[:redirected_from]
           redirect params[:redirected_from]
         else

@@ -17,6 +17,11 @@ module Hyperarchy
       halt render_page(Views::RedirectToLogin)
     end
 
+    def allow_guests
+      return if current_user
+      warden.set_user(User.guest)
+    end
+
     def no_internet_explorer
       if user_agent =~ /MSIE/ && user_agent !~ /chromeframe/
         halt render_page(Views::NoInternetExplorer)
