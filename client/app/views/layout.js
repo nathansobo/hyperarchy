@@ -167,7 +167,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     showAlternateNavigationBar: function(text) {
-      var lastOrgName = Application.currentUser().lastVisitedOrganization().name();
+      var lastOrgName = Application.currentUser().defaultOrganization().name();
       this.backToLastOrganizationLink.html("Back to " + htmlEscape(lastOrgName));
       this.alternateNavigationBarText.html(text);
       this.organizationNavigationBar.hide();
@@ -333,7 +333,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     goToLastOrganization: function() {
-      var organizationId = Application.currentUser().lastVisitedOrganization().id();
+      var organizationId = Application.currentUser().defaultOrganization().id();
       $.bbq.pushState({view: "organization", organizationId: organizationId }, 2);
     }
   }

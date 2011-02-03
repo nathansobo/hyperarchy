@@ -154,7 +154,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
               election.fetchCommentsAndCommentersIfNeeded();
               this.election(election);
             } else {
-              var lastVisitedOrgId = Application.currentUser().lastVisitedOrganization().id();
+              var lastVisitedOrgId = Application.currentUser().defaultOrganization().id();
               $.bbq.pushState({view: 'organization', organizationId: lastVisitedOrgId}, 2);
             }
             this.stopLoading();

@@ -44,7 +44,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     navigate: function(state) {
       if (!state.organizationId) {
-        $.bbq.pushState({view: 'organization', organizationId: Application.currentUser().lastVisitedOrganization().id()});
+        $.bbq.pushState({view: 'organization', organizationId: Application.currentUser().defaultOrganization().id()});
         return;
       }
       var organizationId = parseInt(state.organizationId);
