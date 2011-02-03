@@ -21,6 +21,10 @@ class Organization < Monarch::Model::Record
   alias can_update? can_update_or_destroy?
   alias can_destroy? can_update_or_destroy?
 
+  def write_blacklist
+    [:social]
+  end
+
   def after_create
     memberships.create(:user => current_user, :role => "owner", :pending => false) unless suppress_membership_creation
   end
