@@ -626,6 +626,9 @@ button {
 .largeFont {
   font-size: 21px; }
 
+.disabledText {
+  color: #bbb; }
+
 .errors {
   margin-bottom: 20px;
   font-size: 16px;
@@ -1762,6 +1765,8 @@ body.legal {
   #app #addOrganization a.roundedButton, #app #editOrganization a.roundedButton, #app #members a.roundedButton {
     margin-top: 10px; }
 
+#app #editOrganization label[for="privacy"] {
+  display: block; }
 #app #editOrganization input[name="name"] {
   width: 300px; }
 #app #editOrganization textarea {

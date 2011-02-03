@@ -8,7 +8,8 @@ _.constructor("Organization", Model.Record, {
         dismissedWelcomeGuide: 'boolean',
         electionCount: 'integer',
         useSsl: 'boolean',
-        social: 'boolean'
+        social: 'boolean',
+        privacy: 'string'
       });
 
       this.hasMany("elections");
