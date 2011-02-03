@@ -222,7 +222,7 @@ module Hyperarchy
       Mailer.send(
         :to => ["admin@hyperarchy.com", "nathansobo+hyperarchy@gmail.com"],
         :subject => "#{current_user.full_name} submitted feedback",
-        :body => "User id: #{current_user.id}\n\nTheir comments: #{params[:feedback]}"
+        :body => "User id: #{current_user.id}\n\nUser email: #{current_user.email_address}\n\nTheir comments: #{params[:feedback]}"
       )
       successful_json_response
     end
