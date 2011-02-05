@@ -275,9 +275,11 @@ module Hyperarchy
     end
 
     get "/fetch_election_data" do
-      authentication_required
       organization = Organization.find(params[:organization_id])
-      raise Monarch::Unauthorized unless organization.current_user_is_member? || current_user.admin?
+      raise Monarch::Unauthorized unless current_user
+      if organization.private? && !(organization.current_user_is_member? || current_user.admin?)
+        raise Monarch::Unauthorized
+      end
 
       offset = params[:offset]
       limit = params[:limit]

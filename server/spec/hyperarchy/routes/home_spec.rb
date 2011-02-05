@@ -1,8 +1,6 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper")
 
 describe "GET /", :type => :rack do
-
-
   context "if the user is logged in" do
     it "redirects the user to their last visited organization" do
       current_user = login_as(User.make)
