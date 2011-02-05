@@ -25,7 +25,7 @@ module Monarch
               
               offset = Offset.from_wire_representation(representation, repository)
               offset.count.should == 2
-              offset.operand.should == repository.resolve_table_name(:blogs)
+              offset.operand.should == repository.get_view(:blogs)
             end
           end
         end

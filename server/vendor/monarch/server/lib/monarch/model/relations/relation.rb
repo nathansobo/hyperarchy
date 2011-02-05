@@ -6,7 +6,7 @@ module Monarch
           def from_wire_representation(representation, repository)
             case representation["type"]
             when "table"
-              repository.resolve_table_name(representation["name"])
+              repository.get_view(representation["name"])
             when "selection"
               Selection.from_wire_representation(representation, repository)
             when "inner_join"
@@ -106,6 +106,10 @@ module Monarch
 
         def offset(n)
           Offset.new(self, n)
+        end
+
+        def view(name)
+          View.new(name, self)
         end
 
         def to_sql

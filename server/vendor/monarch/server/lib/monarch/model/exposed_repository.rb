@@ -7,7 +7,7 @@ module Monarch
         def expose(name, &relation_definition)
           exposed_relation_definitions_by_name[name] = relation_definition
           define_method name do
-            resolve_table_name(name)
+            get_view(name)
           end
         end
 
@@ -61,7 +61,7 @@ module Monarch
         [successful, response_data]
       end
 
-      def resolve_table_name(name)
+      def get_view(name)
         if relation = exposed_relations_by_name[name]
           return relation
         end
@@ -88,7 +88,7 @@ module Monarch
       end
 
       def perform_create(table_name, field_values)
-        relation = resolve_table_name(table_name)
+        relation = get_view(table_name)
         record = relation.build(field_values)
 
         unless record.can_create? && record.can_create_with_columns?(field_values.keys)
@@ -103,7 +103,7 @@ module Monarch
       end
 
       def perform_update(table_name, id, field_values)
-        relation = resolve_table_name(table_name)
+        relation = get_view(table_name)
         record = relation.find(id)
         record.soft_update_fields(field_values)
 
@@ -123,7 +123,7 @@ module Monarch
       end
 
       def perform_destroy(table_name, id)
-        relation = resolve_table_name(table_name)
+        relation = get_view(table_name)
         record = relation.find(id)
         raise Monarch::Unauthorized unless record.can_destroy?
         record.destroy

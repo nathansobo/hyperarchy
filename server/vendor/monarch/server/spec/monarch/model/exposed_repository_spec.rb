@@ -13,7 +13,7 @@ module Monarch
 
       describe ".expose(name, &relation_definition)" do
         it "binds the given relation definition to a table name" do
-          exposed_repository.resolve_table_name(:blogs).should == user.blogs
+          exposed_repository.get_view(:blogs).should == user.blogs
         end
       end
 
@@ -92,7 +92,7 @@ module Monarch
           }
 
           dataset = exposed_repository.fetch([super_blog_posts_relation_representation])
-          expected_records = exposed_repository.resolve_table_name(:super_blog_posts).where(Blog[:user_id].eq('jan')).all
+          expected_records = exposed_repository.get_view(:super_blog_posts).where(Blog[:user_id].eq('jan')).all
           expected_records.should_not be_empty
 
           expected_records.each do |record|
@@ -424,6 +424,8 @@ module Monarch
           relation.should == exposed_repository.user.blog_posts
         end
       end
+
+
     end
   end
 end
