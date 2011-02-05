@@ -88,6 +88,21 @@ class User < Monarch::Model::Record
     memberships.map(&:organization_id)
   end
 
+  def initial_repository_contents
+    [self, *memberships.all, *initial_repository_organizations]
+  end
+
+  def initial_repository_organizations
+    if admin?
+      Organization.all
+    elsif guest?
+      Organization.where(Organization[:privacy].neq('private')).all
+    else
+      Organization.where(Organization[:privacy].neq('private')).all +
+        memberships.join_through(Organization.where(:privacy => 'private')).all
+    end
+  end
+
   def password=(unencrypted_password)
     return nil if unencrypted_password.blank?
     self.encrypted_password = self.class.encrypt_password(unencrypted_password)

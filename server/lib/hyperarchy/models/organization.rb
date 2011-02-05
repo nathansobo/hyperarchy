@@ -45,6 +45,22 @@ class Organization < Monarch::Model::Record
     has_owner?(current_user)
   end
 
+  def allow_subscription?(user)
+    if public_readable?
+      true
+    else
+      user.admin? || has_member?(client.user)
+    end
+  end
+
+  def public_readable?
+    privacy == "public" || privacy == "read_only"
+  end
+
+  def private?
+    privacy == "private"
+  end
+
   def organization_ids
     [id]
   end

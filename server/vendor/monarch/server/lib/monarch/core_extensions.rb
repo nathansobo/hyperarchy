@@ -28,7 +28,7 @@ class Object
   end
 
   def union(*operands, &block)
-    Model::Relations::Union.new(operands, &block)
+    Monarch::Model::Relations::Union.new(operands, &block)
   end
 end
 

@@ -59,21 +59,40 @@ describe SubscriptionManager do
     update_message[3].should == { "election_count" => 1 }
   end
 
-  it "only allows members of an organization to subscribe to it, unless the subscriber is an admin" do
-    user = User.make
-    client = RealTimeClient.new("client_1", "fake hub")
-    client.user = user
-    org = Organization.make
+  describe ".subscribe_to_organization" do
+    context "when subscribing to a private organization" do
+      it "only allows members of an organization to subscribe to it, unless the subscriber is an admin" do
+        user = User.make
+        client = RealTimeClient.new("client_1", "fake hub")
+        client.user = user
+        org = Organization.make(:privacy => "private")
 
-    org.should_not have_member(user)
+        org.should_not have_member(user)
 
-    lambda do
-      SubscriptionManager.subscribe_to_organization(client, org)
-    end.should raise_error(Monarch::Unauthorized)
+        lambda do
+          SubscriptionManager.subscribe_to_organization(client, org)
+        end.should raise_error(Monarch::Unauthorized)
 
-    user.update(:admin => true)
-    SubscriptionManager.subscribe_to_organization(client, org)
-    mock(client).send(anything)
-    org.update(:name => "Pink Panther Party")
+        user.update(:admin => true)
+        SubscriptionManager.subscribe_to_organization(client, org)
+        mock(client).send(anything)
+        org.update(:name => "Pink Panther Party")
+      end
+    end
+
+    context "when subscribing to a public or read-only organization" do
+      it "allows any user to subscribe to i" do
+        guest = User.make(:guest => true)
+        client = RealTimeClient.new("client_1", "fake hub")
+        client.user = guest
+        org = Organization.make(:privacy => "read_only")
+
+        org.should_not have_member(guest)
+
+        SubscriptionManager.subscribe_to_organization(client, org)
+        mock(client).send(anything)
+        org.update(:name => "Pink Panther Party")
+      end
+    end
   end
 end
