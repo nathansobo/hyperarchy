@@ -49,7 +49,7 @@ class Organization < Monarch::Model::Record
     if public_readable?
       true
     else
-      user.admin? || has_member?(client.user)
+      user.admin? || has_member?(user)
     end
   end
 
