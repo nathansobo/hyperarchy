@@ -325,6 +325,25 @@ module Monarch
         #
       end
 
+      specify "unions" do
+        union(
+          Blog.where(:user_id => 1),
+          Blog.where(:user_id => 2)
+        ).to_sql.should be_like_query(%{
+          select t1.*
+            from (
+              select blogs.*
+              from blogs
+              where blogs.user_id = :v1
+            ) as t1
+            union (
+              select blogs.*
+              from blogs
+              where blogs.user_id = :v2
+            )
+        }, :v1 => 1, :v2 => 2)
+      end
+
       specify "views" do
         Blog.view(:blogs_1).join_through(BlogPost).to_sql.should be_like_query(%{
           select blog_posts.*
