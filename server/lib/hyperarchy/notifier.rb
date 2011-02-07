@@ -30,7 +30,7 @@ module Hyperarchy
         :subject => notification_presenter.subject,
         :notification_presenter => notification_presenter,
         :body => notification_presenter.to_s,
-        :erector_class => Emails::Notification,
+        :erector_class => Emails::Notification
       )
     end
   end

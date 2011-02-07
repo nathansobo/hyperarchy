@@ -89,7 +89,7 @@ class User < Monarch::Model::Record
   end
 
   def initial_repository_contents
-    [self, *memberships.all, *initial_repository_organizations]
+    [self] + memberships.all  + initial_repository_organizations
   end
 
   def initial_repository_organizations
