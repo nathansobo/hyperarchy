@@ -103,6 +103,10 @@ module Monarch
           @exposed_name || global_name
         end
 
+        def viable_foreign_key_name
+          @viable_foreign_key_name ||= "#{global_name.singularize}_id".to_sym
+        end
+
         def pause_events
           event_nodes.each {|node| node.pause}
         end

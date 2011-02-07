@@ -50,10 +50,8 @@ module Monarch
 
               projection = TableProjection.from_wire_representation(representation, repository)
               projection.to_sql.should be_like_query(%{
-                select blog_posts.*
-                from blogs, blog_posts
-                where blogs.id = blog_posts.blog_id and blogs.user_id = :v1
-              }, :v1 => "jan".to_key)
+                select blog_posts_1.* from blogs_1, blog_posts_1 where blogs_1.id = blog_posts_1.blog_id
+              }, {})
             end
           end
         end

@@ -52,15 +52,16 @@ module Monarch
 
           context "when the projection contains an aggregation function" do
             def projected_columns
-              @projected_columns ||= [Blog[:id], Blog[:id].count.as(:count)]
+              @projected_columns ||= [Blog[:id].count.as(:count)]
             end
 
             it "returns the results of the aggregation, allowing the aggregation result field to to be referenced by name, expression, or index" do
               expected_count = operand.size
+
               tuple = projection.first
-              tuple[1].should == expected_count
+              tuple[0].should == expected_count
               tuple[:count].should == expected_count
-              tuple[projection[1]].should == expected_count
+              tuple[projection[0]].should == expected_count
             end
           end
         end

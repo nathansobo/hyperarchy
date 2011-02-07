@@ -19,7 +19,6 @@ module Monarch
     end
 
     def exposed_repository
-      p @exposed_repository
       @exposed_repository ||= Models::ExposedRepository.new(current_user)
     end
 

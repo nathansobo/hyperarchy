@@ -33,7 +33,7 @@ module Monarch
               selection.class.should == Relations::Selection
               selection.operand.should == repository.get_view(:blog_posts)
               selection.predicate.class.should == Expressions::Eq
-              selection.predicate.left_operand.should == BlogPost[:blog_id]
+              selection.predicate.left_operand.should == repository.get_view(:blog_posts).column(:blog_id)
               selection.predicate.right_operand.should == "grain".hash
             end
           end
