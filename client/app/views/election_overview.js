@@ -143,7 +143,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       afterChange: function(electionId, previousElectionId) {
         this.hideElementsWhileLoading();
         var additionalRelations = [
-          Election.where({id: electionId}).joinTo(Organization),
+          Election.where({id: electionId}),
           Candidate.where({electionId: electionId}).join(User).on(Candidate.creatorId.eq(User.id))
         ];
 
