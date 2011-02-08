@@ -250,7 +250,7 @@ module Hyperarchy
     end
 
     post "/visited" do
-      authentication_required
+      return if current_user.guest?
       visit = ElectionVisit.find_or_create(:user_id => current_user.id, :election_id => params[:election_id])
       visit.update!(:updated_at => Time.now)
       successful_json_response(nil, visit)

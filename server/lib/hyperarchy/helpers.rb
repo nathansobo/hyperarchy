@@ -41,7 +41,7 @@ module Hyperarchy
 
     def redirect_if_logged_in
       return unless current_user
-      redirect "/app#view=organization&organizationId=#{current_user.last_visited_organization.id}"
+      redirect "/app#view=organization&organizationId=#{current_user.default_organization.id}"
       halt
     end
 

@@ -26,4 +26,11 @@ describe "POST /visited?election_id=:id", :type => :rack do
     current_user.election_visits.size.should == 1
     visit.updated_at.should == Time.now
   end
+
+  it "does not create visits for the guest user" do
+    current_user.update(:guest => true)
+    current_user.election_visits.should be_empty
+    post "/visited", :election_id => election.id
+    current_user.election_visits.should be_empty
+  end
 end
