@@ -11,7 +11,7 @@ module Hyperarchy
     end
 
     get "/" do
-      redirect_if_logged_in
+      redirect_if_logged_in(:including_guests)
       render_page Views::Home
     end
 
@@ -134,7 +134,16 @@ module Hyperarchy
     end
 
     post "/signup" do
+      if request.xhr?
+        xhr_signup
+      else
+        normal_signup
+      end
+    end
+
+    def normal_signup
       redirect_if_logged_in
+
       if invitation_code = session[:invitation_code]
         invitation = validate_invitation_code(invitation_code)
       else
@@ -150,6 +159,16 @@ module Hyperarchy
         redeem_invitation(invitation)
       else
         create_user_and_organization(organization_name)
+      end
+    end
+
+    def xhr_signup
+      user = User.new(params[:user])
+      if user.save
+        warden.set_user(user)
+        successful_json_response({"current_user_id" => user.id}, user)
+      else
+        unsuccessful_json_response
       end
     end
 

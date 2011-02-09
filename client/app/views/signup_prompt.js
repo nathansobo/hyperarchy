@@ -43,7 +43,8 @@ _.constructor("Views.SignupPrompt", View.Template, {
     },
 
     submitForm: function() {
-      console.debug("SUBMIT!!!!!!!!");
+      Server.post("/signup");
+      console.debug("SIGNUP");
       return false;
     }
   }
