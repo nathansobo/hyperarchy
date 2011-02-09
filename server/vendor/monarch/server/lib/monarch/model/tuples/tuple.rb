@@ -37,7 +37,9 @@ module Monarch
         end
 
         def get_field_value(column_or_name)
-          field(column_or_name).value
+          field = field(column_or_name)
+          raise "No field found: #{column_or_name.inspect}" unless field
+          field.value
         end
 
         def set_field_value(column_or_name, value)
