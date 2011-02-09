@@ -7,7 +7,6 @@ Sequel.migration do
       time_columns[table] =
         schema(table).select{|column| column[1][:type] == :datetime}.map{|column| column[0]}
     end
-    puts time_columns.inspect
 
     tables.each do |table|
       time_columns[table].each do |column|
@@ -26,8 +25,7 @@ Sequel.migration do
       time_columns[table] =
         schema(table).select{|column| column[1][:type] == :datetime}.map{|column| column[0]}
     end
-    puts time_columns.inspect
-    
+
     tables.each do |table|
       time_columns[table].each do |column|
         alter_table table do
