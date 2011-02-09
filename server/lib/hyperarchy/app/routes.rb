@@ -168,7 +168,7 @@ module Hyperarchy
         warden.set_user(user)
         successful_json_response({"current_user_id" => user.id}, user)
       else
-        unsuccessful_json_response
+        unsuccessful_json_response({"errors" => user.validation_errors_by_column_name })
       end
     end
 

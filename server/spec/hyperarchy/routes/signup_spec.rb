@@ -119,7 +119,22 @@ describe "/signup", :type => :rack do
       end
 
       context "if any of the params are invalid" do
+        it "returns an unsuccessful json response with validation errors" do
+          invalid_params = {
+            :first_name => "Joe",
+            :last_name => "",
+            :email_address => "",
+            :password => "nicotine"
+          }
 
+          xhr_post "/signup", :user => invalid_params
+
+          current_user.should == guest
+
+          response_json = last_response.body_from_json
+          response_json["successful"].should be_false
+          response_json["data"]["errors"].should == User.new(invalid_params).validation_errors_by_column_name.stringify_keys
+        end
       end
     end
 
