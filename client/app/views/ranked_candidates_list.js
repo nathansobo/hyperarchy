@@ -74,11 +74,11 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     assignRankingsRelation: function() {
-      if (this.rankingsUser().isCurrent() && this.election().organization().currentUserIsMember()) {
+      if (this.rankingsUser().isCurrent()) {
         this.rankingsUserName.html("Your Ranking");
         this.backLink.hide();
-        this.rankedCandidatesList.sortable('enable');
         this.removeClass('otherUser');
+        this.rankedCandidatesList.sortable('enable');
       } else {
         this.rankingsUserName.html(htmlEscape(this.rankingsUser().fullName()) + "'s Ranking");
         this.backLink.show();
@@ -165,7 +165,14 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     handleUpdate: function(event, ui) {
       var candidate = Candidate.find(ui.item.attr('candidateId'));
       var rankedCandidateLi = this.findLi(candidate);
-      rankedCandidateLi.handleUpdate();
+
+      this.ensureCurrentUserCanRank()
+        .onSuccess(function() {
+          rankedCandidateLi.handleUpdate();
+        }, this)
+        .onFailure(function() {
+          rankedCandidateLi.remove();
+        }, this);
     },
 
     handleSort:  function(event, ui) {
@@ -194,6 +201,19 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     findLi: function(candidate) {
       var li = this.rankedCandidatesList.find("li[candidateId='" + candidate.id() + "']");
       return li.view() ? li.view() : li;
+    },
+
+    ensureCurrentUserCanRank: function() {
+      var future = new Monarch.Http.AjaxFuture();
+
+      if (Application.currentUser().guest()) {
+        Application.layout.signupPrompt.future = future;
+        Application.layout.signupPrompt.show()
+      } else {
+        future.triggerSuccess();
+      }
+
+      return future;
     },
 
     adjustHeight: function() {

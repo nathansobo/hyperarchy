@@ -5,6 +5,7 @@ _.constructor("Views.Layout", View.Template, {
       div({id: "notification", style: "display: none"}).ref("notification");
       div({id: "darkenBackground", style: "display: none"})
         .ref('darkenBackground');
+      subview('signupPrompt', Views.SignupPrompt);
       subview('disconnectDialog', Views.DisconnectDialog);
       subview('inviteForm', Views.Invite);
       div({id: "feedback", style: "display: none", 'class': "dropShadow"}, function() {

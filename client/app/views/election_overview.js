@@ -133,7 +133,8 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.adjustHeight();
       this.electionId(parseInt(state.electionId));
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
-      Server.post("/visited?election_id=" + state.electionId);
+
+      if (!Application.currentUser().guest()) Server.post("/visited?election_id=" + state.electionId);
 
       Application.layout.activateNavigationTab("questionsLink");
       Application.layout.showSubNavigationContent("elections");
