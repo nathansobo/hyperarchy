@@ -119,6 +119,41 @@ module Monarch
           end
         end
 
+        describe "#secure_create(field_values)" do
+          it "only assigns fields that are on the whitelist and not on the blacklist" do
+            User.class_eval do
+              def create_whitelist
+                [:full_name, :age, :has_hair]
+              end
+
+              def create_blacklist
+                [:has_hair]
+              end
+            end
+
+            signed_up_at = 3.days.ago
+            user = User.secure_create(
+              :full_name => "Nathan Sobo",
+              :age => 33,
+              :has_hair => true,
+              :signed_up_at => signed_up_at
+            )
+
+            user.full_name.should == "Nathan Sobo"
+            user.age.should == 33
+            user.has_hair.should be_false
+            user.signed_up_at.should_not == signed_up_at
+
+            # test ! version
+            user = User.secure_create!(:has_hair => true)
+            user.has_hair.should be_false
+
+            lambda do
+              User.secure_create!(:age => 2)
+            end.should raise_error(Model::InvalidRecordException)
+          end
+        end
+
         describe "#find_or_create(predicate)" do
           context "when a record matching the predicate exists in the table" do
             it "returns the matching record" do
