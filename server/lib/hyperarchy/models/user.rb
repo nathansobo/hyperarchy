@@ -48,6 +48,10 @@ class User < Monarch::Model::Record
   alias can_update? can_update_or_destroy?
   alias can_destroy? can_update_or_destroy?
 
+  def create_whitelist
+    [:first_name, :last_name, :email_address, :password]
+  end 
+
   def update_whitelist
     list = [:first_name, :last_name, :email_address]
     list.push(:admin) if current_user.admin?

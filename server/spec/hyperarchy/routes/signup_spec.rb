@@ -106,7 +106,8 @@ describe "/signup", :type => :rack do
             :last_name => "Camel",
             :email_address => "joe@example.com",
             :password => "nicotine"
-          }
+          }.to_json
+          last_response.should be_ok
 
           current_user.should_not == guest
           current_user.first_name.should == "Joe"
@@ -127,7 +128,7 @@ describe "/signup", :type => :rack do
             :password => "nicotine"
           }
 
-          xhr_post "/signup", :user => invalid_params
+          xhr_post "/signup", :user => invalid_params.to_json
 
           current_user.should == guest
 

@@ -163,8 +163,8 @@ module Hyperarchy
     end
 
     def xhr_signup
-      user = User.new(params[:user])
-      if user.save
+      user = User.secure_create(params[:user].from_json)
+      if user.valid?
         warden.set_user(user)
         successful_json_response({"current_user_id" => user.id}, user)
       else
@@ -185,7 +185,7 @@ module Hyperarchy
     end
 
     def create_user_and_organization(organization_name)
-      new_user = User.create(params[:user])
+      new_user = User.secure_create(params[:user])
       if new_user.valid?
         warden.set_user(new_user)
         organization = Organization.create!(:name => organization_name)
