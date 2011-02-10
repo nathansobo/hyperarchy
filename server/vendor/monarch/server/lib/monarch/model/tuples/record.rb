@@ -107,9 +107,9 @@ module Monarch
             @validations ||= []
           end
 
-          delegate :create, :create!, :secure_create, :secure_create!, :unsafe_create, :where, :project, :join, :view,
-                   :join_to, :join_through, :aggregate, :order_by, :find, :size, :concrete_columns_by_name, :[], :create_table,
-                   :drop_table, :clear_table, :all, :find_or_create, :left_join, :left_join_to, :group_by, :offset,
+          delegate :build, :secure_build, :create, :create!, :secure_create, :secure_create!, :unsafe_create, :where, :project,
+                   :join, :view, :join_to, :join_through, :aggregate, :order_by, :find, :size, :concrete_columns_by_name, :[],
+                   :create_table, :drop_table, :clear_table, :all, :find_or_create, :left_join, :left_join_to, :group_by, :offset,
                    :limit, :on_insert, :on_remove, :on_update, :to => :table
 
           protected
@@ -419,6 +419,7 @@ module Monarch
         end
 
         def can_create_with_column?(column)
+          column = column.to_sym
           create_whitelist.include?(column) && !create_blacklist.include?(column)
         end
 

@@ -38,7 +38,7 @@ module Monarch
 
         def get_field_value(column_or_name)
           field = field(column_or_name)
-          raise "No field found: #{column_or_name.inspect}" unless field
+          raise "No field found: #{column_or_name.inspect} on record #{inspect}" unless field
           field.value
         end
 

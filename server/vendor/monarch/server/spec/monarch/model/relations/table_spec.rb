@@ -76,10 +76,11 @@ module Monarch
             now = Time.now
             Timecop.freeze(now)
 
-            record = table.create!(:body => "Brown Rice", :blog_id => "grain")
+            record = table.create!(:body => "Brown Rice", 'blog_id' => 1)
             record.id.should_not be_nil
             table.find(:body => "Brown Rice").should == record
             record.body.should == "Brown Rice"
+            record.blog_id.should == 1
             record.created_at.to_i.should == now.to_i
             record.updated_at.to_i.should == now.to_i
             record.should be_valid
@@ -134,7 +135,7 @@ module Monarch
             signed_up_at = 3.days.ago
             user = User.secure_create(
               :full_name => "Nathan Sobo",
-              :age => 33,
+              "age" => 33,
               :has_hair => true,
               :signed_up_at => signed_up_at
             )

@@ -43,8 +43,7 @@ _.constructor("Views.SignupPrompt", View.Template, {
     },
 
     submitForm: function() {
-      Server.post("/signup");
-      console.debug("SIGNUP");
+      Server.post("/signup", { user: _.underscoreKeys(this.fieldValues()) });
       return false;
     }
   }
