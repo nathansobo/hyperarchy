@@ -20,7 +20,7 @@ describe "GET /", :type => :rack do
 
   context "if a guest is logged in" do
     it "redirects the guest to the social organization" do
-      login_as(User.find(:guest => true))
+      login_as(User.guest)
       social_org = Organization.find(:social => true)
       
       get "/"

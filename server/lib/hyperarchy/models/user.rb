@@ -140,7 +140,7 @@ class User < Monarch::Model::Record
   end
 
   def default_organization
-    if guest?
+    if memberships.empty?
       Organization.find(:social => true)    
     else
       memberships.order_by(Membership[:last_visited].desc).first.organization

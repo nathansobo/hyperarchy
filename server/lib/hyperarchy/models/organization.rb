@@ -53,6 +53,10 @@ class Organization < Monarch::Model::Record
     end
   end
 
+  def public?
+    privacy == "public"
+  end
+
   def public_readable?
     privacy == "public" || privacy == "read_only"
   end

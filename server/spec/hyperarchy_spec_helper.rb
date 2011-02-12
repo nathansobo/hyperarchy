@@ -115,6 +115,10 @@ class Rack::MockResponse
   def body_from_json
     JSON.parse(body)
   end
+
+  def dataset
+    body_from_json["dataset"]
+  end
 end
 
 class Rack::Test::Session

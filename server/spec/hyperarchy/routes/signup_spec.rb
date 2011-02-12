@@ -95,7 +95,7 @@ describe "/signup", :type => :rack do
     context "if the request is XHR" do
       attr_reader :guest
       before do
-        @guest = User.find(:guest => true)
+        @guest = User.guest
         login_as(guest)
       end
 

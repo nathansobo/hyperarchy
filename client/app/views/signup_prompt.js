@@ -39,11 +39,17 @@ _.constructor("Views.SignupPrompt", View.Template, {
 
     afterHide: function() {
       Application.layout.darkenBackground.hide();
-      this.future.triggerFailure();
+      if (this.future) this.future.triggerFailure();
     },
 
     submitForm: function() {
-      Server.post("/signup", { user: _.underscoreKeys(this.fieldValues()) });
+      Server.post("/signup", { user: _.underscoreKeys(this.fieldValues()) })
+        .onSuccess(function(data) {
+          Application.currentUserIdEstablished(data.current_user_id)
+          this.future.triggerSuccess();
+          delete this.future;
+          this.hide();
+        }, this);
       return false;
     }
   }

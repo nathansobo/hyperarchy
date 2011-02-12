@@ -120,6 +120,28 @@ module Models
       end
     end
 
+    describe "#default_organization" do
+      context "when the user has memberships" do
+        it "returns their last visited organization" do
+          organization_1 = Organization.make
+          organization_2 = Organization.make
+          user = User.make
+          user.memberships.make(:organization => organization_1, :created_at => 3.hours.ago)
+          user.memberships.make(:organization => organization_2, :created_at => 1.hour.ago)
+
+          user.default_organization.should == organization_2
+        end
+      end
+
+      context "when the user has no memberships" do
+        it "returns the social organization" do
+          guest = User.make
+          guest.memberships.should be_empty
+          guest.default_organization.should == Organization.find(:social => true)
+        end
+      end
+    end
+
     describe "security" do
       describe "#can_update? and #can_destroy?" do
         it "only allows admins and the users themselves to update / destroy user records, and only allows admins to set the admin flag" do

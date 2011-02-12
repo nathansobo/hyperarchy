@@ -276,11 +276,12 @@ module Hyperarchy
     end
 
     post "/rankings" do
-      authentication_required
-
+      raise Monarch::Unauthorized if !current_user || current_user.guest?
       organization = Candidate.find(params[:candidate_id]).election.organization
-      unless current_user && organization.has_member?(current_user)
-        raise Monarch::Unauthorized
+
+      unless organization.has_member?(current_user)
+        raise Monarch::Unauthorized unless organization.public?
+        new_membership = organization.memberships.create!(:user => current_user, :pending => false)
       end
 
       attributes = { :user_id => current_user.id, :candidate_id => params[:candidate_id] }
@@ -290,7 +291,7 @@ module Hyperarchy
       else
         ranking = Ranking.create!(attributes.merge(:position => params[:position]))
       end
-      successful_json_response({:ranking_id => ranking.id}, ranking)
+      successful_json_response({:ranking_id => ranking.id}, [ranking, new_membership].compact)
     end
 
     get "/fetch_election_data" do
