@@ -20,7 +20,7 @@ class Candidate < Monarch::Model::Record
   end
 
   def can_create?
-    election.organization.has_member?(current_user)
+    (organization.public? && !current_user.guest?) || organization.has_member?(current_user)
   end
 
   def can_update_or_destroy?

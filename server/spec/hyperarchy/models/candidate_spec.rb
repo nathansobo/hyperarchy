@@ -177,10 +177,11 @@ module Models
     end
 
     describe "security" do
-      attr_reader :member, :owner, :non_member, :membership, :election, :candidate
+      attr_reader :member, :organization, :owner, :non_member, :membership, :election, :candidate
 
       before do
         @election = Election.make
+        @organization = election.organization
         @member = make_member(election.organization)
         @owner = make_owner(election.organization)
         @non_member = User.make
@@ -189,12 +190,32 @@ module Models
       end
 
       describe "#can_create?" do
-        specify "only members of the candidate's election can create it" do
-          set_current_user(member)
-          election.candidates.build(:body => "What should we do about all the possums?").can_create?.should be_true
+        before do
+          election.organization.update(:privacy => "read_only")
+        end
 
-          set_current_user(non_member)
-          election.candidates.build(:body => "What should we do about all the whales?").can_create?.should be_false
+        context "if the given election's organization is non-public" do
+          specify "only members create candidates" do
+            set_current_user(member)
+            election.candidates.make_unsaved.can_create?.should be_true
+
+            set_current_user(non_member)
+            election.candidates.make_unsaved.can_create?.should be_false
+          end
+        end
+
+        context "if the given election's organization is public" do
+          before do
+            election.organization.update(:privacy => "public")
+          end
+
+          specify "non-guest users can create candidates" do
+            set_current_user(User.guest)
+            election.candidates.make_unsaved.can_create?.should be_false
+
+            set_current_user(non_member)
+            election.candidates.make_unsaved.can_create?.should be_true
+          end
         end
       end
 
