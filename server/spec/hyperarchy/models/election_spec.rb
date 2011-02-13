@@ -2,12 +2,13 @@ require File.expand_path(File.dirname(__FILE__) + "/../../hyperarchy_spec_helper
 
 module Models
   describe Election do
-    attr_reader :election, :memphis, :knoxville, :chattanooga, :nashville, :unranked
+    attr_reader :election, :organization, :memphis, :knoxville, :chattanooga, :nashville, :unranked
 
     before do
       Timecop.freeze(Time.now)
 
       @election = Election.make(:body => "Where should the capital of Tennesee be?")
+      @organization = election.organization
       @memphis = election.candidates.make(:body => "Memphis")
       @knoxville = election.candidates.make(:body => "Knoxville")
       @chattanooga = election.candidates.make(:body => "Chattanooga")
@@ -16,6 +17,21 @@ module Models
     end
 
     describe "before create" do
+      it "if the creator is not a member of the election's organization, makes them one (as long as the org is public)" do
+        set_current_user(User.make)
+        current_user.memberships.should be_empty
+
+        organization.update(:privacy => "private")
+        expect do
+          organization.elections.create!(:body => "foo")
+        end.should raise_error(Monarch::Unauthorized)
+
+        organization.update(:privacy => "public")
+        organization.elections.create!(:body => "foo")
+
+        current_user.memberships.where(:organization => organization).size.should == 1
+      end
+
       it "assigns the creator to the Model::Record.current_user" do
         set_current_user(User.make)
         election = Election.make
@@ -168,17 +184,36 @@ module Models
       end
 
       describe "#can_create?" do
-        it "only allows admins and members of an organization to create elections in it" do
-          set_current_user(non_member)
-          election = organization.elections.build(:body => "What should we do?")
+        before do
+          @election = organization.elections.make_unsaved
+        end
 
-          election.can_create?.should be_false
+        context "if the election's organization is non-public" do
+          before do
+            election.organization.update(:privacy => "read_only")
+          end
 
-          set_current_user(member)
-          election.can_create?.should be_true
+          specify "only members create candidates" do
+            set_current_user(member)
+            election.can_create?.should be_true
 
-          set_current_user(admin)
-          election.can_create?.should be_true
+            set_current_user(non_member)
+            election.can_create?.should be_false
+          end
+        end
+
+        context "if the given election's organization is public" do
+          before do
+            election.organization.update(:privacy => "public")
+          end
+
+          specify "non-guest users can create candidates" do
+            set_current_user(User.guest)
+            election.can_create?.should be_false
+
+            set_current_user(non_member)
+            election.can_create?.should be_true
+          end
         end
       end
 

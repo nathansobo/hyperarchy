@@ -16,7 +16,7 @@ class Election < Monarch::Model::Record
   belongs_to :creator, :class_name => "User"
   belongs_to :organization
 
-  attr_accessor :suppress_notification_email
+  attr_accessor :suppress_notification_email, :suppress_current_user_membership_check
 
   class << self
     def update_scores
@@ -36,7 +36,7 @@ class Election < Monarch::Model::Record
   INITIAL_SCORE = compute_score(0, 0)
 
   def can_create?
-    current_user.admin? || organization.has_member?(current_user)
+    organization.current_user_can_create_items?
   end
 
   def can_update_or_destroy?
@@ -58,6 +58,7 @@ class Election < Monarch::Model::Record
   end
 
   def before_create
+    organization.ensure_current_user_is_member unless suppress_current_user_membership_check
     self.creator ||= current_user
     self.score = INITIAL_SCORE
   end

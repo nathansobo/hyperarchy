@@ -47,7 +47,7 @@ describe SubscriptionManager do
       messages.push(message)
     end
 
-    election = org_2.elections.create!(:body => "What's your name?", :suppress_notification_email => true)
+    election = org_2.elections.make
 
     create_message, update_message = messages
     create_message[0].should == "create"

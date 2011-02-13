@@ -19,6 +19,7 @@ Election.blueprint do
   body { Sham.question }
   organization { Organization.make }
   suppress_notification_email { true }
+  suppress_current_user_membership_check { true }
 end
 
 Candidate.blueprint do
