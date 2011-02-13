@@ -88,7 +88,7 @@ _.constructor("Organization", Model.Record, {
   ensureCurrentUserCanParticipate: function() {
     var future = new Monarch.Http.AjaxFuture();
 
-    if (this.public()) {
+    if (this.isPublic()) {
       if (Application.currentUser().guest()) {
         Application.layout.signupPrompt.future = future;
         Application.layout.signupPrompt.show()
@@ -111,7 +111,7 @@ _.constructor("Organization", Model.Record, {
     return Application.currentUser().admin() || this.currentUserIsOwner();
   },
 
-  public: function() {
+  isPublic: function() {
     return this.privacy() === "public";
   }
 });
