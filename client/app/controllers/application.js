@@ -17,12 +17,18 @@ _.constructor("Controllers.Application", {
     this.layout = Views.Layout.toView({views: this.views});
     $("#loadingPage").remove();
     this.body.append(this.layout);
+    this.currentUserIdEstablished(this.currentUserId);
     $(window).trigger('hashchange');
     Election.updateScoresPeriodically();
   },
 
   currentUserIdEstablished: function(currentUserId) {
     this.currentUserId = currentUserId;
+    if (this.currentUser().guest()) {
+      this.layout.accountMenuLink.hide();
+    } else {
+      this.layout.accountMenuLink.show();
+    }
   },
 
   currentUser: function() {
