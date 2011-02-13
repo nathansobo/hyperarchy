@@ -202,6 +202,11 @@ button {
   font-size: 14px;
 }
 
+.lightbox {
+  position: absolute;
+  z-index: 100;
+}
+
 .cancelX {
   height: 21px;
   width: 21px;

@@ -63,6 +63,10 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       }
     },
 
+    organization: function() {
+      return this.election().organization();
+    },
+
     rankingsUser: {
       afterChange: function(rankingsUser) {
         if (this.election()) {
@@ -166,7 +170,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       var candidate = Candidate.find(ui.item.attr('candidateId'));
       var rankedCandidateLi = this.findLi(candidate);
 
-      this.ensureCurrentUserCanRank()
+      this.organization().ensureCurrentUserCanParticipate()
         .onSuccess(function() {
           rankedCandidateLi.handleUpdate();
         }, this)
@@ -201,19 +205,6 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     findLi: function(candidate) {
       var li = this.rankedCandidatesList.find("li[candidateId='" + candidate.id() + "']");
       return li.view() ? li.view() : li;
-    },
-
-    ensureCurrentUserCanRank: function() {
-      var future = new Monarch.Http.AjaxFuture();
-
-      if (Application.currentUser().guest()) {
-        Application.layout.signupPrompt.future = future;
-        Application.layout.signupPrompt.show()
-      } else {
-        future.triggerSuccess();
-      }
-
-      return future;
     },
 
     adjustHeight: function() {

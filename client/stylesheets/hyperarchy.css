@@ -710,6 +710,10 @@ button {
   margin-bottom: 5px;
   font-size: 14px; }
 
+.lightbox {
+  position: absolute;
+  z-index: 100; }
+
 .cancelX, .rightCancelX {
   height: 21px;
   width: 21px;
@@ -1320,6 +1324,8 @@ body.legal {
   position: fixed;
   top: 0px;
   left: 0px; }
+#app #mustBeMemberMessage h1 {
+  margin-bottom: 10px; }
 
 #app #signupPrompt {
   position: absolute;

@@ -2,7 +2,7 @@ module Monarch
   module Model
     module Relations
       class Union < Relation
-        delegate :build_record_from_database, :column, :concrete_columns, :viable_foreign_key_name, :to => "operands.first"
+        delegate :build_record_from_database, :build, :create, :create!, :column, :concrete_columns, :viable_foreign_key_name, :to => "operands.first"
         attr_reader :operands
 
         def initialize(operands, &block)
