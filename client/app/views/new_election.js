@@ -61,15 +61,20 @@ _.constructor("Views.NewElection", View.Template, {
       $.bbq.pushState({view: "editOrganization", organizationId: this.organizationId()}, 2);
     },
 
-    createElection: function() {
+    createElection: function(elt, e) {
+      e.preventDefault();
       var body = this.createElectionTextarea.val();
       if (this.creatingElection || body === "") return;
-      this.creatingElection = true;
-      this.organization().elections().create({body: body})
-        .onSuccess(function(election) {
-          this.creatingElection = false;
-          this.createElectionTextarea.val("");
-          $.bbq.pushState({view: "election", electionId: election.id()});
+
+      this.organization().ensureCurrentUserCanParticipate()
+        .onSuccess(function() {
+          this.creatingElection = true;
+          this.organization().elections().create({body: body})
+            .onSuccess(function(election) {
+              this.creatingElection = false;
+              this.createElectionTextarea.val("");
+              $.bbq.pushState({view: "election", electionId: election.id()});
+            }, this);
         }, this);
     },
 
