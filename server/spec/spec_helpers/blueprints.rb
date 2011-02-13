@@ -25,6 +25,7 @@ Candidate.blueprint do
   election { Election.make }
   body { Sham.answer }
   suppress_notification_email { true }
+  suppress_current_user_membership_check { true }
 end
 
 CandidateComment.blueprint do

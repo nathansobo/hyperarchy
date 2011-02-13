@@ -8,11 +8,11 @@ module Models
       Timecop.freeze(Time.now)
 
       @election = Election.make(:body => "Where should the capital of Tennesee be?")
-      @memphis = election.candidates.create!(:body => "Memphis")
-      @knoxville = election.candidates.create!(:body => "Knoxville")
-      @chattanooga = election.candidates.create!(:body => "Chattanooga")
-      @nashville = election.candidates.create!(:body => "Nashville")
-      @unranked = election.candidates.create!(:body => "Unranked")
+      @memphis = election.candidates.make(:body => "Memphis")
+      @knoxville = election.candidates.make(:body => "Knoxville")
+      @chattanooga = election.candidates.make(:body => "Chattanooga")
+      @nashville = election.candidates.make(:body => "Nashville")
+      @unranked = election.candidates.make(:body => "Unranked")
     end
 
     describe "before create" do

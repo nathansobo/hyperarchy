@@ -2,9 +2,10 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 
 module Models
   describe Candidate do
-    attr_reader :election
+    attr_reader :election, :organization
     before do
       @election = Election.make
+      @organization = election.organization
     end
 
     describe "before create" do
@@ -14,6 +15,21 @@ module Models
 
         candidate = election.candidates.create(:body => "foo")
         candidate.creator.should == current_user
+      end
+
+      it "if the creator is not a member of the organization, makes them one (as long as the org is public)" do
+        set_current_user(User.make)
+        current_user.memberships.should be_empty
+
+        organization.update(:privacy => "private")
+        expect do
+          election.candidates.create(:body => "foo")
+        end.should raise_error(Monarch::Unauthorized)
+
+        organization.update(:privacy => "public")
+        candidate = election.candidates.create(:body => "foo")
+
+        current_user.memberships.where(:organization => organization).size.should == 1
       end
     end
 
@@ -27,13 +43,13 @@ module Models
       it "creates a winning and losing majority every pairing of the created candidate with other candidates" do
         election.candidates.should be_empty
 
-        falafel = election.candidates.create!(:body => "Falafel")
-        tacos = election.candidates.create!(:body => "Tacos")
+        falafel = election.candidates.make(:body => "Falafel")
+        tacos = election.candidates.make(:body => "Tacos")
 
         verify_majority(falafel, tacos, election)
         verify_majority(tacos, falafel, election)
 
-        fish = election.candidates.create(:body => "Fish")
+        fish = election.candidates.make(:body => "Fish")
 
         verify_majority(falafel, fish, election)
         verify_majority(tacos, fish, election)
@@ -46,11 +62,11 @@ module Models
         user_2 = User.make
         user_3 = User.make
 
-        _3_up_0_down = election.candidates.create(:body => "3 Up - 0 Down")
-        _2_up_1_down = election.candidates.create(:body => "2 Up - 1 Down")
-        _1_up_2_down = election.candidates.create(:body => "1 Up - 2 Down")
-        _0_up_3_down = election.candidates.create(:body => "0 Up - 3 Down")
-        unranked     = election.candidates.create(:body => "Unranked")
+        _3_up_0_down = election.candidates.make(:body => "3 Up - 0 Down")
+        _2_up_1_down = election.candidates.make(:body => "2 Up - 1 Down")
+        _1_up_2_down = election.candidates.make(:body => "1 Up - 2 Down")
+        _0_up_3_down = election.candidates.make(:body => "0 Up - 3 Down")
+        unranked     = election.candidates.make(:body => "Unranked")
 
         election.rankings.create(:user => user_1, :candidate => _3_up_0_down, :position => 64)
         election.rankings.create(:user => user_1, :candidate => _2_up_1_down, :position => 32)
@@ -68,7 +84,7 @@ module Models
         election.rankings.create(:user => user_3, :candidate => _0_up_3_down, :position => -64)
 
         mock.proxy(election).compute_global_ranking
-        candidate = election.candidates.create(:body => "Alpaca")
+        candidate = election.candidates.make(:body => "Alpaca")
         # new candidate is tied with 'Unranked' so could go either before it or after it
         # until we handle ties, but it should be less than the negatively ranked candidates
         candidate.position.should be < 5
@@ -185,8 +201,8 @@ module Models
         @member = make_member(election.organization)
         @owner = make_owner(election.organization)
         @non_member = User.make
-        @membership = election.organization.memberships.create!(:user => member, :suppress_invite_email => true)
-        @candidate = election.candidates.create!(:body => "Hey you!")
+        @membership = election.organization.memberships.make(:user => member, :suppress_invite_email => true)
+        @candidate = election.candidates.make(:body => "Hey you!")
       end
 
       describe "#can_create?" do

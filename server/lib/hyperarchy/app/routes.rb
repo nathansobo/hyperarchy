@@ -278,11 +278,7 @@ module Hyperarchy
     post "/rankings" do
       raise Monarch::Unauthorized if !current_user || current_user.guest?
       organization = Candidate.find(params[:candidate_id]).election.organization
-
-      unless organization.has_member?(current_user)
-        raise Monarch::Unauthorized unless organization.public?
-        new_membership = organization.memberships.create!(:user => current_user, :pending => false)
-      end
+      new_membership = organization.ensure_current_user_is_member
 
       attributes = { :user_id => current_user.id, :candidate_id => params[:candidate_id] }
 

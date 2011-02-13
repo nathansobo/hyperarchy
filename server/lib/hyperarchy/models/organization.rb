@@ -37,6 +37,12 @@ class Organization < Monarch::Model::Record
     has_member?(current_user)
   end
 
+  def ensure_current_user_is_member
+    return if current_user_is_member?
+    raise Monarch::Unauthorized unless public?
+    memberships.create!(:user => current_user, :pending => false)
+  end
+
   def has_owner?(user)
     !memberships.find(:user_id => user.id, :role => "owner").nil?
   end

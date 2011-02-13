@@ -8,9 +8,9 @@ module Models
       before do
         @user = User.make
         @election = Election.make
-        @candidate_1 = election.candidates.create(:body => "1")
-        @candidate_2 = election.candidates.create(:body => "2")
-        @candidate_3 = election.candidates.create(:body => "3")
+        @candidate_1 = election.candidates.make(:body => "1")
+        @candidate_2 = election.candidates.make(:body => "2")
+        @candidate_3 = election.candidates.make(:body => "3")
       end
 
       specify "majorities are updated accordingly and #compute_global_ranking is called on the ranking's election" do
@@ -278,7 +278,7 @@ module Models
       attr_reader :creator, :other_member, :ranking, :candidate
       before do
         election = Election.make
-        @candidate = election.candidates.create!(:body => "candidate")
+        @candidate = election.candidates.make
         @creator = make_member(candidate.election.organization)
         @other_member = make_member(candidate.election.organization)
         @ranking = Ranking.create!(:user => creator, :candidate => candidate, :position => 64)
