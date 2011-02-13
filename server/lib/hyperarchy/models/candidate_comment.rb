@@ -7,7 +7,7 @@ class CandidateComment < Monarch::Model::Record
 
   belongs_to :candidate
   belongs_to :creator, :class_name => "User"
-  attr_accessor :suppress_notification_email
+  attr_accessor :suppress_notification_email, :suppress_current_user_membership_check
   delegate :organization, :to => :candidate
 
   def organization_ids
@@ -19,6 +19,7 @@ class CandidateComment < Monarch::Model::Record
   end
 
   def can_create?
+    return true if organization.public? && !current_user.guest?
     election.organization.has_member?(current_user)
   end
 
@@ -37,6 +38,7 @@ class CandidateComment < Monarch::Model::Record
   end
 
   def before_create
+    organization.ensure_current_user_is_member unless suppress_current_user_membership_check
     self.creator ||= current_user
   end
 

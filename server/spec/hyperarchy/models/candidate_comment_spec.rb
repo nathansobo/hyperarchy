@@ -2,12 +2,33 @@ require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper
 
 module Models
   describe Candidate do
+    attr_reader :candidate, :organization
+    before do
+      @candidate = Candidate.make
+      @organization = candidate.organization
+    end
+    
     describe "before create" do
       it "assigns the creator to the Model::Record.current_user" do
         set_current_user(User.make)
-        candidate = Candidate.make
+        organization.memberships.make(:user => current_user)
         comment = candidate.comments.create!(:body => "Terrible terrible candidate", :suppress_notification_email => true)
         comment.creator.should == current_user
+      end
+
+      it "if the creator is not a member of the organization, makes them one (as long as the org is public)" do
+        set_current_user(User.make)
+        current_user.memberships.should be_empty
+
+        organization.update(:privacy => "private")
+        expect do
+          candidate.comments.create!(:body => "foo")
+        end.should raise_error(Monarch::Unauthorized)
+
+        organization.update(:privacy => "public")
+        candidate.comments.create!(:body => "foo")
+
+        current_user.memberships.where(:organization => organization).size.should == 1
       end
     end
 
@@ -23,6 +44,7 @@ module Models
         election = Election.make
         election.update!(:creator => opted_in_creator)
         organization = election.organization
+        organization.memberships.make(:user => comment_creator)
 
         c1 = election.candidates.make
         c1.update!(:creator => opted_in_creator)
@@ -55,6 +77,43 @@ module Models
         ranker_email[:subject].should == "1 new comment on Hyperarchy"
         ranker_email[:body].should include(c1_comment.body)
         ranker_email[:html_body].should include(c1_comment.body)
+      end
+    end
+
+    describe "security" do
+      describe "#can_create?" do
+        attr_reader :comment
+        before do
+          @comment = candidate.comments.make_unsaved
+        end
+
+        context "if the organization is public" do
+          before do
+            organization.update(:privacy => "public")
+          end
+
+          it "returns true if the current user is not a guest" do
+            set_current_user(User.guest)
+            comment.can_create?.should be_false
+
+            set_current_user(User.make)
+            comment.can_create?.should be_true
+          end
+        end
+
+        context "if the organization is not public" do
+          before do
+            organization.update(:privacy => "read_only")
+          end
+
+          it "returns true only if the current user is a member of the organization" do
+            set_current_user(User.make)
+            comment.can_create?.should be_false
+
+            organization.memberships.make(:user => current_user)
+            comment.can_create?.should be_true
+          end
+        end
       end
     end
   end

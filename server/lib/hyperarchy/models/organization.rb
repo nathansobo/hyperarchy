@@ -38,6 +38,7 @@ class Organization < Monarch::Model::Record
   end
 
   def ensure_current_user_is_member
+    raise Monarch::Unauthorized unless current_user
     return if current_user_is_member?
     raise Monarch::Unauthorized unless public?
     memberships.create!(:user => current_user, :pending => false)
