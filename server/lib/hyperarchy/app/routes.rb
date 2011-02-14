@@ -32,7 +32,7 @@ module Hyperarchy
     end
 
     post "/login" do
-      warden.logout(:default)
+      warden.logout
       if warden.authenticate
         if params[:redirected_from]
           redirect params[:redirected_from]
@@ -48,7 +48,7 @@ module Hyperarchy
     end
 
     post "/logout" do
-      warden.logout(:default)
+      warden.logout
       redirect "/"
     end
 
