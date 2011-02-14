@@ -103,7 +103,7 @@ _.constructor("Views.Layout", View.Template, {
   viewProperties: {
     initialize: function() {
       window.notify = this.hitch('notify');
-
+      this.currentUserSubscriptions = new Monarch.SubscriptionBundle();
       this.defer(this.hitch('adjustHeight'));
       $(window).resize(this.hitch('adjustHeight'));
       
@@ -118,12 +118,6 @@ _.constructor("Views.Layout", View.Template, {
         this.body.append(view);
       }, this);
       this.hideSubNavigationContent();
-
-      this.populateOrganizations();
-      var organizationsPermitted = Application.currentUser().organizationsPermittedToInvite();
-      organizationsPermitted.onInsert(this.hitch('showOrHideInviteLink'));
-      organizationsPermitted.onRemove(this.hitch('showOrHideInviteLink'));
-      this.showOrHideInviteLink();
     },
 
     adjustHeight: function() {
@@ -163,6 +157,25 @@ _.constructor("Views.Layout", View.Template, {
       }
     },
 
+    currentUser: {
+      afterChange: function(user) {
+        this.currentUserSubscriptions.destroy();
+
+        if (user.guest()) {
+          this.accountMenuLink.hide();
+        } else {
+          this.accountMenuLink.show();
+        }
+
+        this.populateOrganizations();
+
+        var organizationsPermitted = user.organizationsPermittedToInvite();
+        this.currentUserSubscriptions.add(organizationsPermitted.onInsert(this.hitch('showOrHideInviteLink')));
+        this.currentUserSubscriptions.add(organizationsPermitted.onRemove(this.hitch('showOrHideInviteLink')));
+        this.showOrHideInviteLink();
+      }
+    },
+
     showOrganizationNavigationBar: function() {
       this.alternateNavigationBar.hide();
       this.organizationNavigationBar.show();
@@ -196,18 +209,17 @@ _.constructor("Views.Layout", View.Template, {
 
     populateOrganizations: function() {
       var organizations =
-        Application.currentUser().admin() ?
+        this.currentUser().admin() ?
           Organization.orderBy('name')
           : Application.currentUser().confirmedMemberships().joinThrough(Organization).orderBy('name');
 
-      organizations.onEach(this.hitch('populateOrganization'));
-
-      Organization.onUpdate(function(organization, changes) {
+      this.currentUserSubscriptions.add(organizations.onEach(this.hitch('populateOrganization')));
+      this.currentUserSubscriptions.add(Organization.onUpdate(function(organization, changes) {
         if (!changes.name) return;
         var name = organization.name();
         var selector = 'a[organizationId=' + organization.id() + ']';
         this.organizationsMenu.find(selector).html(htmlEscape(name));
-      }, this);
+      }, this));
     },
 
     populateOrganization: function(organization, addToAdminMenu) {
@@ -222,7 +234,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     showOrHideInviteLink: function() {
-      if (Application.currentUser().organizationsPermittedToInvite().empty()) {
+      if (this.currentUser().guest() || this.currentUser().organizationsPermittedToInvite().empty()) {
         this.inviteLink.hide();
       } else {
         this.inviteLink.show();

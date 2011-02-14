@@ -24,11 +24,7 @@ _.constructor("Controllers.Application", {
 
   currentUserIdEstablished: function(currentUserId) {
     this.currentUserId = currentUserId;
-    if (this.currentUser().guest()) {
-      this.layout.accountMenuLink.hide();
-    } else {
-      this.layout.accountMenuLink.show();
-    }
+    this.layout.currentUser(this.currentUser());
   },
 
   currentUser: function() {
