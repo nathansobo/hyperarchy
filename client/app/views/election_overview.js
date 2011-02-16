@@ -127,6 +127,15 @@ _.constructor("Views.ElectionOverview", View.Template, {
       }));
 
       this.createCandidateDetailsTextarea.holdPlace();
+
+      this.defer(function() {
+        Application.onUserSwitch(function(newUser) {
+          var state = $.bbq.getState();
+          if (state.view == 'election' && !state.rankingsUserId) {
+            this.rankingsUserId(newUser.id());
+          }
+        }, this);
+      });
     },
 
     navigate: function(state) {

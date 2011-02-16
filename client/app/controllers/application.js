@@ -11,6 +11,8 @@ _.constructor("Controllers.Application", {
       account: Views.Account.toView(),
       newElection: Views.NewElection.toView()
     };
+
+    this.userSwitchNode = new Monarch.SubscriptionNode();
   },
 
   initializeNavigation: function() {
@@ -24,7 +26,9 @@ _.constructor("Controllers.Application", {
 
   currentUserIdEstablished: function(currentUserId) {
     this.currentUserId = currentUserId;
-    this.layout.currentUser(this.currentUser());
+    var user = this.currentUser();
+    this.layout.currentUser(user);
+    this.userSwitchNode.publish(user);
   },
 
   currentUser: function() {
@@ -52,5 +56,9 @@ _.constructor("Controllers.Application", {
 
   sslEnabled: function() {
     return window.location.protocol === "https:";
+  },
+
+  onUserSwitch: function(callback, context) {
+    return this.userSwitchNode.subscribe(callback, context);
   }
 });
