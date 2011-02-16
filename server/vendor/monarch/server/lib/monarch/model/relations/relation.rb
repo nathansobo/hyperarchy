@@ -6,7 +6,7 @@ module Monarch
           def from_wire_representation(representation, repository)
             case representation["type"]
             when "table"
-              repository.resolve_table_name(representation["name"])
+              repository.get_view(representation["name"])
             when "selection"
               Selection.from_wire_representation(representation, repository)
             when "inner_join"
@@ -106,6 +106,10 @@ module Monarch
 
         def offset(n)
           Offset.new(self, n)
+        end
+
+        def view(name)
+          View.new(name, self)
         end
 
         def to_sql
@@ -278,9 +282,9 @@ module Monarch
         end
 
         def find_join_columns(table_1, table_2)
-          if foreign_key = table_2.column("#{table_1.global_name.singularize}_id".to_sym)
+          if foreign_key = table_2.column(table_1.viable_foreign_key_name)
             [table_1.column(:id), foreign_key]
-          elsif foreign_key = table_1.column("#{table_2.global_name.singularize}_id".to_sym)
+          elsif foreign_key = table_1.column(table_2.viable_foreign_key_name)
             [table_2.column(:id), foreign_key]
           else
             raise "No viable foreign key column found between #{table_1.global_name} and #{table_2.global_name}"

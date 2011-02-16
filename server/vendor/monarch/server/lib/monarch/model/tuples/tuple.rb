@@ -37,7 +37,22 @@ module Monarch
         end
 
         def get_field_value(column_or_name)
-          field(column_or_name).value
+          field = field(column_or_name)
+
+          unless field
+            puts "column arg:"
+            p column_or_name.name
+            p column_or_name.object_id
+
+            puts "concrete_fields_by_column keys:"
+            concrete_fields_by_column.values.each do |column|
+              p column.name
+              p column.object_id
+            end
+
+            raise "No field found: #{column_or_name.inspect} on record #{inspect}"
+          end
+          field.value
         end
 
         def set_field_value(column_or_name, value)
@@ -67,6 +82,10 @@ module Monarch
             result[column_field_pair[0].name] = column_field_pair[1].value
             result
           end
+        end
+
+        def to_param
+          id.to_s
         end
 
         def inspect

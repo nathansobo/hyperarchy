@@ -10,6 +10,26 @@ jQuery.fn.extend({
     return this.data('view');
   },
 
+  fieldValues: function() {
+    var values = {};
+    this.find("input,select,textarea").each(function() {
+      var elt = jQuery(this);
+      var name = elt.attr('name');
+      if (!name) return;
+      if (elt.is(':checkbox')) {
+        values[name] = elt.attr('checked');
+      } else {
+        values[name] = elt.val();
+      }
+    });
+
+    if (this.customFieldValues) {
+      jQuery.extend(values, this.customFieldValues());
+    }
+
+    return values;
+  },
+
   bindHtml: function(record, fieldName) {
     var subscription = this.data('bindHtmlSubscription');
     if (subscription) subscription.destroy();

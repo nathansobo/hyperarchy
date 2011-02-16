@@ -324,6 +324,49 @@ module Monarch
         # switching project and offset fails on 5/2011
         #
       end
+
+      specify "unions" do
+        union(
+          Blog.where(:user_id => 1),
+          Blog.where(:user_id => 2)
+        ).to_sql.should be_like_query(%{
+          select t1.*
+            from (
+              select blogs.*
+              from blogs
+              where blogs.user_id = :v1
+            ) as t1
+            union (
+              select blogs.*
+              from blogs
+              where blogs.user_id = :v2
+            )
+        }, :v1 => 1, :v2 => 2)
+      end
+
+      specify "views" do
+        Blog.view(:blogs_1).join_through(BlogPost).to_sql.should be_like_query(%{
+          select blog_posts.*
+          from blogs_1, blog_posts
+          where blogs_1.id = blog_posts.blog_id
+        }, {})
+
+        Blog.view(:blogs_1).join_to(BlogPost).to_sql.should be_like_query(%{
+          select
+            blogs_1.id as blogs_1__id,
+            blogs_1.title as blogs_1__title,
+            blogs_1.user_id as blogs_1__user_id,
+            blog_posts.id as blog_posts__id,
+            blog_posts.title as blog_posts__title,
+            blog_posts.body as blog_posts__body,
+            blog_posts.blog_id as blog_posts__blog_id,
+            blog_posts.created_at as blog_posts__created_at,
+            blog_posts.updated_at as blog_posts__updated_at,
+            blog_posts.featured as blog_posts__featured
+          from blogs_1, blog_posts
+          where blogs_1.id = blog_posts.blog_id
+        }, {})
+      end
     end
   end
 end

@@ -20,9 +20,9 @@ Dir["#{File.dirname(__FILE__)}/spec_helpers/*.rb"].each do |spec_helper_path|
   require spec_helper_path
 end
 
-Origin.connection = Sequel.sqlite
-Origin.connection.pragma_set(:full_column_names, false)
-Origin.connection.pragma_set(:short_column_names, true)
+Origin.connection = Sequel.postgres(:database => "monarch_test")
+#Origin.connection.pragma_set(:full_column_names, false)
+#Origin.connection.pragma_set(:short_column_names, true)
 Monarch::Model::convert_strings_to_keys = true
 
 Spec::Runner.configure do |config|

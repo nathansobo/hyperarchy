@@ -25,7 +25,7 @@ module Monarch
               
               limit = Limit.from_wire_representation(representation, repository)
               limit.count.should == 2
-              limit.operand.should == repository.resolve_table_name(:blogs)
+              limit.operand.should == repository.get_view(:blogs)
             end
           end
         end

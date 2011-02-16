@@ -32,7 +32,7 @@ module Machinist
         if lathe.object.valid?
           lathe.object.save
         else
-          raise("Save failed")
+          raise("Save failed: #{lathe.object.validation_errors.inspect}")
         end
       end
       lathe.object(&block)

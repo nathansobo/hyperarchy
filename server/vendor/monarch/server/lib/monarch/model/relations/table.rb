@@ -53,12 +53,28 @@ module Monarch
           tuple_class.new(field_values)
         end
 
+        def secure_build(attributes = {})
+          tuple_class.new.tap do |record|
+            record.soft_update(record.filter_create_attributes(attributes))
+          end
+        end
+
         def create(field_values = {})
           insert(build(field_values))
         end
 
         def create!(field_values = {})
           record = create(field_values)
+          raise InvalidRecordException.new(record, record.validation_errors_by_column_name) unless record.valid?
+          record
+        end
+
+        def secure_create(field_values = {})
+          insert(secure_build(field_values))
+        end
+
+        def secure_create!(field_values = {})
+          record = secure_create(field_values)
           raise InvalidRecordException.new(record, record.validation_errors_by_column_name) unless record.valid?
           record
         end
@@ -101,6 +117,10 @@ module Monarch
 
         def exposed_name
           @exposed_name || global_name
+        end
+
+        def viable_foreign_key_name
+          @viable_foreign_key_name ||= "#{global_name.singularize}_id".to_sym
         end
 
         def pause_events

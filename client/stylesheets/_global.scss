@@ -110,6 +110,10 @@ button {
   font-size: 21px;
 }
 
+.disabledText {
+  color: #bbb;
+}
+
 .errors {
   margin-bottom: 20px;
   font-size: 16px;
@@ -196,6 +200,11 @@ button {
   border-bottom: 1px solid #8e8e8e;
   margin-bottom: 5px;
   font-size: 14px;
+}
+
+.lightbox {
+  position: absolute;
+  z-index: 100;
 }
 
 .cancelX {

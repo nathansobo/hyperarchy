@@ -48,7 +48,7 @@ module Monarch
               it "returns an Eq predicate with the indicated column as one of its operands" do
                 eq = Eq.from_wire_representation(wire_representation, repository)
                 eq.class.should == Eq
-                eq.left_operand.should == repository.resolve_table_name(:super_blog_posts).column(:body)
+                eq.left_operand.should == repository.get_view(:super_blog_posts).column(:body)
                 eq.right_operand.should == 2
               end
             end

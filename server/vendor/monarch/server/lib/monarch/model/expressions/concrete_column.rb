@@ -44,6 +44,10 @@ module Monarch
           false
         end
 
+        def inspect
+          "<ConcreteColumn table=#{table.global_name.inspect} name=#{name.inspect}>"
+        end
+
         protected
         def schema_type
           case type

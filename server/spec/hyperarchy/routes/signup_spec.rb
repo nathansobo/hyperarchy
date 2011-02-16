@@ -92,6 +92,53 @@ describe "/signup", :type => :rack do
       }
     end
 
+    context "if the request is XHR" do
+      attr_reader :guest
+      before do
+        @guest = User.guest
+        login_as(guest)
+      end
+
+      context "if all the params are valid" do
+        it "creates and authenticates a new user and returns its id and a dataset containing its record" do
+          xhr_post "/signup", :user => {
+            :first_name => "Joe",
+            :last_name => "Camel",
+            :email_address => "joe@example.com",
+            :password => "nicotine"
+          }.to_json
+          last_response.should be_ok
+
+          current_user.should_not == guest
+          current_user.first_name.should == "Joe"
+
+          response_json = last_response.body_from_json
+          response_json["successful"].should be_true
+          response_json["data"].should == {"current_user_id" => current_user.id}
+          response_json["dataset"]["users"][current_user.id.to_s].should == current_user.wire_representation
+        end
+      end
+
+      context "if any of the params are invalid" do
+        it "returns an unsuccessful json response with validation errors" do
+          invalid_params = {
+            :first_name => "Joe",
+            :last_name => "",
+            :email_address => "",
+            :password => "nicotine"
+          }
+
+          xhr_post "/signup", :user => invalid_params.to_json
+
+          current_user.should == guest
+
+          response_json = last_response.body_from_json
+          response_json["successful"].should be_false
+          response_json["data"]["errors"].should == User.new(invalid_params).validation_errors_by_column_name.values.flatten
+        end
+      end
+    end
+
     context "if no invitation code has been associated with the session" do
       context "if all the parameters are valid" do
         it "creates a user with the given attributes and makes them owner of an organization with the given name, then redirects to that organization" do

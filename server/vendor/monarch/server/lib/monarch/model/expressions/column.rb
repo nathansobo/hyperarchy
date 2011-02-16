@@ -4,7 +4,7 @@ module Monarch
       class Column < Expression
         class << self
           def from_wire_representation(representation, repository)
-            table = repository.resolve_table_name(representation["table"].to_sym)
+            table = repository.get_view(representation["table"].to_sym)
             table.column(representation["name"].to_sym)
           end
         end

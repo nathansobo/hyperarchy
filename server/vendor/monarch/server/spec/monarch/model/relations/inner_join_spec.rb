@@ -36,10 +36,10 @@ module Monarch
 
               join = InnerJoin.from_wire_representation(representation, repository)
               join.class.should == InnerJoin
-              join.left_operand.should == repository.resolve_table_name(:blogs)
-              join.right_operand.should == repository.resolve_table_name(:blog_posts)
-              join.predicate.left_operand.should == Blog[:id]
-              join.predicate.right_operand.should == BlogPost[:blog_id]
+              join.left_operand.should == repository.get_view(:blogs)
+              join.right_operand.should == repository.get_view(:blog_posts)
+              join.predicate.left_operand.should == repository.get_view(:blogs).column(:id)
+              join.predicate.right_operand.should == repository.get_view(:blog_posts).column(:blog_id)
             end
           end
         end

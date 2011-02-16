@@ -11,18 +11,24 @@ _.constructor("Controllers.Application", {
       account: Views.Account.toView(),
       newElection: Views.NewElection.toView()
     };
+
+    this.userSwitchNode = new Monarch.SubscriptionNode();
   },
 
   initializeNavigation: function() {
     this.layout = Views.Layout.toView({views: this.views});
     $("#loadingPage").remove();
     this.body.append(this.layout);
+    this.currentUserIdEstablished(this.currentUserId);
     $(window).trigger('hashchange');
     Election.updateScoresPeriodically();
   },
 
   currentUserIdEstablished: function(currentUserId) {
     this.currentUserId = currentUserId;
+    var user = this.currentUser();
+    this.layout.currentUser(user);
+    this.userSwitchNode.publish(user);
   },
 
   currentUser: function() {
@@ -50,5 +56,9 @@ _.constructor("Controllers.Application", {
 
   sslEnabled: function() {
     return window.location.protocol === "https:";
+  },
+
+  onUserSwitch: function(callback, context) {
+    return this.userSwitchNode.subscribe(callback, context);
   }
 });

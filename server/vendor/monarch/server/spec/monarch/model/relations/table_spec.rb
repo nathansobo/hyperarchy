@@ -76,10 +76,11 @@ module Monarch
             now = Time.now
             Timecop.freeze(now)
 
-            record = table.create!(:body => "Brown Rice", :blog_id => "grain")
+            record = table.create!(:body => "Brown Rice", 'blog_id' => 1)
             record.id.should_not be_nil
             table.find(:body => "Brown Rice").should == record
             record.body.should == "Brown Rice"
+            record.blog_id.should == 1
             record.created_at.to_i.should == now.to_i
             record.updated_at.to_i.should == now.to_i
             record.should be_valid
@@ -116,6 +117,41 @@ module Monarch
               record = User.create!(:age => 2)
             end.should raise_error(Model::InvalidRecordException)
             User.create!(:age => 20).should be_valid
+          end
+        end
+
+        describe "#secure_create(field_values)" do
+          it "only assigns fields that are on the whitelist and not on the blacklist" do
+            User.class_eval do
+              def create_whitelist
+                [:full_name, :age, :has_hair]
+              end
+
+              def create_blacklist
+                [:has_hair]
+              end
+            end
+
+            signed_up_at = 3.days.ago
+            user = User.secure_create(
+              :full_name => "Nathan Sobo",
+              "age" => 33,
+              :has_hair => true,
+              :signed_up_at => signed_up_at
+            )
+
+            user.full_name.should == "Nathan Sobo"
+            user.age.should == 33
+            user.has_hair.should be_false
+            user.signed_up_at.should_not == signed_up_at
+
+            # test ! version
+            user = User.secure_create!(:has_hair => true)
+            user.has_hair.should be_false
+
+            lambda do
+              User.secure_create!(:age => 2)
+            end.should raise_error(Model::InvalidRecordException)
           end
         end
 

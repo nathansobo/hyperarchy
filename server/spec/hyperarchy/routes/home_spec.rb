@@ -1,9 +1,7 @@
 require File.expand_path("#{File.dirname(__FILE__)}/../../hyperarchy_spec_helper")
 
 describe "GET /", :type => :rack do
-
-
-  context "if the user is logged in" do
+  context "if a member is logged in" do
     it "redirects the user to their last visited organization" do
       current_user = login_as(User.make)
       org1 = Organization.make
@@ -17,6 +15,17 @@ describe "GET /", :type => :rack do
       get "/"
       last_response.should be_redirect
       last_response.location.should == "/app#view=organization&organizationId=#{org2.id}"
+    end
+  end
+
+  context "if a guest is logged in" do
+    it "redirects the guest to the social organization" do
+      login_as(User.guest)
+      social_org = Organization.find(:social => true)
+      
+      get "/"
+      last_response.should be_redirect
+      last_response.location.should == "/app#view=organization&organizationId=#{social_org.id}"
     end
   end
 end

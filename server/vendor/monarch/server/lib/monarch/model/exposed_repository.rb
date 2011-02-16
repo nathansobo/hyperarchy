@@ -3,21 +3,37 @@ module Monarch
     class ExposedRepository
       include Util::BuildRelationalDataset
 
+      cattr_accessor :unique_id_mutex
+      self.unique_id_mutex = Mutex.new
+
       class << self
         def expose(name, &relation_definition)
           exposed_relation_definitions_by_name[name] = relation_definition
           define_method name do
-            resolve_table_name(name)
+            get_view(name)
           end
         end
 
         def exposed_relation_definitions_by_name
           @exposed_relation_definitions_by_name ||= HashWithIndifferentAccess.new
         end
+
+        def next_unique_id
+          unique_id_mutex.synchronize do
+            @next_unique_id ||= 0
+            @next_unique_id += 1
+          end
+        end
       end
 
       def fetch(relation_wire_representations)
-        build_relational_dataset(build_relations_from_wire_representations(relation_wire_representations))
+        Repository.transaction do
+          begin
+            build_relational_dataset(build_relations_from_wire_representations(relation_wire_representations))
+          ensure
+            drop_views
+          end
+        end
       end
 
       def mutate(operations)
@@ -57,19 +73,31 @@ module Monarch
             end
           end
         end
-
         [successful, response_data]
+      ensure
+        drop_views
       end
 
-      def resolve_table_name(name)
-        if relation = exposed_relations_by_name[name]
-          return relation
+      def get_view(name)
+        if view = exposed_views_by_name[name]
+          return view
         end
         relation_definition = exposed_relation_definitions_by_name[name]
         raise "No table named #{name} defined in #{inspect}" unless relation_definition
-        relation = instance_eval(&relation_definition)
-        relation.exposed_name = name
-        exposed_relations_by_name[name] = relation
+        view = instance_eval(&relation_definition).view("#{name}_#{unique_id}")
+        view.create_view(:temporary)
+
+        view.exposed_name = name
+        exposed_views_by_name[name] = view
+      end
+
+      def drop_views
+        exposed_views_by_name.values.each(&:drop_view)
+        @exposed_views_by_name = {}
+      end
+
+      def unique_id
+        @unique_id ||= self.class.next_unique_id
       end
 
       protected
@@ -88,7 +116,7 @@ module Monarch
       end
 
       def perform_create(table_name, field_values)
-        relation = resolve_table_name(table_name)
+        relation = get_view(table_name)
         record = relation.build(field_values)
 
         unless record.can_create? && record.can_create_with_columns?(field_values.keys)
@@ -103,7 +131,7 @@ module Monarch
       end
 
       def perform_update(table_name, id, field_values)
-        relation = resolve_table_name(table_name)
+        relation = get_view(table_name)
         record = relation.find(id)
         record.soft_update_fields(field_values)
 
@@ -123,7 +151,7 @@ module Monarch
       end
 
       def perform_destroy(table_name, id)
-        relation = resolve_table_name(table_name)
+        relation = get_view(table_name)
         record = relation.find(id)
         raise Monarch::Unauthorized unless record.can_destroy?
         record.destroy
@@ -144,8 +172,8 @@ module Monarch
         Relations::Relation.from_wire_representation(representation, self)
       end
 
-      def exposed_relations_by_name
-        @exposed_relations_by_name ||= HashWithIndifferentAccess.new
+      def exposed_views_by_name
+        @exposed_views_by_name ||= HashWithIndifferentAccess.new
       end
 
       def exposed_relation_definitions_by_name

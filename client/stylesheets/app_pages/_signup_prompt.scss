@@ -1,0 +1,34 @@
+#app {
+  #signupPrompt {
+    position: absolute;
+    z-index: 100;
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    input[type=submit] {
+      margin-top: 20px;
+      margin-left: 20px;
+      width: 170px;
+      float: right;
+    }
+
+    #forgotPassword {
+      float: right;
+      font-size: 12px;
+      font-style: italic;
+      margin-top: 3px;
+    }
+
+    #login, #signup {
+      font-size: 13px;
+      color: gray;
+      font-style: italic;
+      position: relative;
+      top: 23px;
+      text-align: right;
+      width: 150px;
+    }
+  }
+}
