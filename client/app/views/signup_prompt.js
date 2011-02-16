@@ -1,6 +1,8 @@
 _.constructor("Views.SignupPrompt", View.Template, {
   content: function() { with(this.builder) {
     div({id: "signupPrompt", 'class': "floatingCard dropShadow", style: "display: none;"}, function() {
+      div({'class': "cancelX"}).click('hide');
+
       div({'class': "errors", style: "display: none;"}).ref('errorsDiv');
       
       form(function() {

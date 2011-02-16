@@ -1330,6 +1330,8 @@ body.legal {
 #app #signupPrompt {
   position: absolute;
   z-index: 100; }
+  #app #signupPrompt .cancelX, #app #signupPrompt .rightCancelX {
+    float: right; }
   #app #signupPrompt h1 {
     margin-bottom: 20px; }
   #app #signupPrompt input[type=submit] {
