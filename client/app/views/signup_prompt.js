@@ -66,6 +66,7 @@ _.constructor("Views.SignupPrompt", View.Template, {
       this.errorsDiv.hide();
       this.signupForm.show();
       this.loginForm.hide();
+      this.find('input[type="text"]').val("")
       if (this.future) this.future.triggerFailure();
     },
 
@@ -73,8 +74,8 @@ _.constructor("Views.SignupPrompt", View.Template, {
       this.errorsDiv.hide();
       this.signupForm.toggle();
       this.loginForm.toggle();
+      this.find('input[type="text"]').val("")
       this.find("input:visible:first").focus();
-      
       return false;
     },
 
