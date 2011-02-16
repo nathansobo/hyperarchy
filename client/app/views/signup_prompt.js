@@ -1,8 +1,9 @@
 _.constructor("Views.SignupPrompt", View.Template, {
   content: function() { with(this.builder) {
     div({id: "signupPrompt", 'class': "floatingCard dropShadow", style: "display: none;"}, function() {
-      h1("Please sign up to vote:");
       form(function() {
+        h1("Sign up to participate:");
+
         label("First Name");
         input({name: "firstName"}).ref('firstName');
         label("Last Name");
@@ -14,11 +15,30 @@ _.constructor("Views.SignupPrompt", View.Template, {
 
         input({type: "submit", value: "Sign Up", 'class': "glossyBlack roundedButton"});
 
-        div({id: "logIn"}, function() {
+        div({id: "login"}, function() {
           div("Already a member?");
-          a("Click here to log in.");
+          a("Click here to log in.", {href: '#'}).click('toggleForms');
         });
-      }).submit('submitForm');
+      }).ref('signupForm')
+        .submit('submitSignupForm');
+
+      form({style: "display: none;"}, function() {
+        h1("Log in to participate:");
+
+        label("Email Address");
+        input({name: "emailAddress"});
+        a({id: "forgotPassword", href: "/request_password_reset" }, "forgot my password")
+
+        label("Password");
+        input({name: "password", type: "password"});
+
+        input({type: "submit", value: "Log In", 'class': "glossyBlack roundedButton"});
+        div({id: "signup"}, function() {
+          div("Not yet a member?");
+          a("Click here to sign up.", {href: '#'}).click('toggleForms');
+        });
+      }).ref('loginForm')
+        .submit('submitLoginForm');
     });
   }},
 
@@ -42,15 +62,32 @@ _.constructor("Views.SignupPrompt", View.Template, {
       if (this.future) this.future.triggerFailure();
     },
 
-    submitForm: function() {
-      Server.post("/signup", { user: _.underscoreKeys(this.fieldValues()) })
-        .onSuccess(function(data) {
-          Application.currentUserIdEstablished(data.current_user_id)
-          this.future.triggerSuccess();
-          delete this.future;
-          this.hide();
-        }, this);
+    toggleForms: function() {
+      this.signupForm.toggle();
+      this.loginForm.toggle();
+      this.find("input:visible:first").focus();
+      
       return false;
+    },
+
+    submitSignupForm: function() {
+      Server.post("/signup", { user: _.underscoreKeys(this.signupForm.fieldValues()) })
+        .onSuccess(this.hitch('userEstablished'));
+      return false;
+    },
+
+    submitLoginForm: function() {
+      Server.post("/login", _.underscoreKeys(this.loginForm.fieldValues()))
+        .onSuccess(this.hitch('userEstablished'));
+      return false;
+    },
+
+    userEstablished: function(data) {
+      console.debug("UId");
+      Application.currentUserIdEstablished(data.current_user_id)
+      this.future.triggerSuccess();
+      delete this.future;
+      this.hide();
     }
   }
 });

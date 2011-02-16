@@ -1337,7 +1337,12 @@ body.legal {
     margin-left: 20px;
     width: 170px;
     float: right; }
-  #app #signupPrompt #logIn {
+  #app #signupPrompt #forgotPassword {
+    float: right;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 3px; }
+  #app #signupPrompt #login, #app #signupPrompt #signup {
     font-size: 13px;
     color: gray;
     font-style: italic;

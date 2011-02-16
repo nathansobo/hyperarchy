@@ -14,7 +14,14 @@
       float: right;
     }
 
-    #logIn {
+    #forgotPassword {
+      float: right;
+      font-size: 12px;
+      font-style: italic;
+      margin-top: 3px;
+    }
+
+    #login, #signup {
       font-size: 13px;
       color: gray;
       font-style: italic;

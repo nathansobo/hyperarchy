@@ -33,6 +33,21 @@ module Hyperarchy
 
     post "/login" do
       warden.logout
+
+      if request.xhr?
+        xhr_login
+      else
+        normal_login
+      end
+    end
+
+    def xhr_login
+      if warden.authenticate
+        successful_json_response({"current_user_id" => current_user.id}, current_user.initial_repository_contents)
+      end
+    end
+
+    def normal_login
       if warden.authenticate
         if params[:redirected_from]
           redirect params[:redirected_from]
