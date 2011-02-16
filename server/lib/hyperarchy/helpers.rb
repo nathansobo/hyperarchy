@@ -4,6 +4,10 @@ module Hyperarchy
       warden.user
     end
 
+    def flash
+      env['x-rack.flash']
+    end
+
     def warden
       @warden ||= request.env['warden']
     end

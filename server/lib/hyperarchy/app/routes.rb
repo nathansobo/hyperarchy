@@ -32,20 +32,11 @@ module Hyperarchy
     end
 
     post "/login" do
-      warden.logout
-
+      warden.logout(:default)
       if request.xhr?
         xhr_login
       else
         normal_login
-      end
-    end
-
-    def xhr_login
-      if warden.authenticate
-        successful_json_response({"current_user_id" => current_user.id}, current_user.initial_repository_contents)
-      else
-        unsuccessful_json_response("errors" => warden.errors.full_messages)
       end
     end
 
@@ -64,8 +55,16 @@ module Hyperarchy
       end
     end
 
+    def xhr_login
+      if warden.authenticate
+        successful_json_response({"current_user_id" => current_user.id}, current_user.initial_repository_contents)
+      else
+        unsuccessful_json_response("errors" => warden.errors.full_messages)
+      end
+    end
+
     post "/logout" do
-      warden.logout
+      warden.logout(:default)
       redirect "/"
     end
 
