@@ -28,16 +28,16 @@ _.constructor("Views.SignupPrompt", View.Template, {
         h1("Log in to participate:");
 
         label("Email Address");
-        input({name: "emailAddress", tabindex: 1});
+        input({name: "emailAddress", tabindex: 101});
 
-        a({id: "forgotPassword", href: "/request_password_reset", tabindex: 4 }, "forgot my password")
+        a({id: "forgotPassword", href: "/request_password_reset", tabindex: 104 }, "forgot my password")
         label("Password");
-        input({name: "password", type: "password", tabindex: 2});
+        input({name: "password", type: "password", tabindex: 102});
 
-        input({type: "submit", value: "Log In", 'class': "glossyBlack roundedButton", tabindex: 3});
+        input({type: "submit", value: "Log In", 'class': "glossyBlack roundedButton", tabindex: 103});
         div({id: "signup"}, function() {
           div("Not yet a member?");
-          a("Click here to sign up.", {href: '#', tabindex: 5}).click('toggleForms');
+          a("Click here to sign up.", {href: '#', tabindex: 105}).click('toggleForms');
         });
       }).ref('loginForm')
         .submit('submitLoginForm');
