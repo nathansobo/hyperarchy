@@ -17,10 +17,12 @@ module Monarch
         end
 
         def define_concrete_column(name, type, options={})
+          warn_if_duplicate_column(name)
           concrete_columns_by_name[name] = Expressions::ConcreteColumn.new(self, name, type, options)
         end
 
         def define_synthetic_column(name, type, signal_definition)
+          warn_if_duplicate_column(name)
           synthetic_columns_by_name[name] = Expressions::SyntheticColumn.new(self, name, type, signal_definition)
         end
 
@@ -243,6 +245,12 @@ module Monarch
 
         def has_operands?
           false
+        end
+
+        def warn_if_duplicate_column(name)
+          if concrete_columns_by_name.has_key?(name) || synthetic_columns_by_name.has_key?(name)
+            puts "WARNING!!! Duplicate column with name #{name} being defined"
+          end
         end
       end
     end
