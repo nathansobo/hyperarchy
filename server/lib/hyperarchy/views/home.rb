@@ -48,8 +48,8 @@ module Views
           div "View screenshots and learn how Hyperarchy can help your team.", :class => "buttonDescription"
         end
         div :class => "grid4 prefix1 suffix1" do
-          a "Sign Up Free", :href => "/signup", :id => "signUpButton", :class => "roundedButton glossyBlack"
-          div "Invite your teammates and start voting on your first question now.", :class => "buttonDescription"
+          a "Try It Now", :href => "/app", :id => "signUpButton", :class => "roundedButton glossyBlack"
+          div "Check out a public conversation on Hyperarchy Social.", :class => "buttonDescription"
         end
         div :class => "clear"
       end

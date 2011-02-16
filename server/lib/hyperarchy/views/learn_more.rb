@@ -83,7 +83,7 @@ module Views
           end
         end
         div :class => "grid5 suffix1" do
-          a "Sign Up Free", :href => "/signup", :class => "glossyBlack roundedButton"
+          a "Try It For Free", :href => "/app", :class => "glossyBlack roundedButton"
         end
         div :class => "clear"
       end
