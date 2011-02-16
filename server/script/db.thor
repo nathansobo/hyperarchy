@@ -58,6 +58,14 @@ class Db < Thor
     DatabaseDownloader.new.download(source_env, target_env)
   end
 
+  desc "password NEW_PASSWORD", "changes all users' passwords on the development database"
+  def password(new_password="password")
+    require_hyperarchy("development")
+    new_encrypted_password = User.encrypt_password(new_password)
+    db("development").execute("update users set encrypted_password = '#{new_encrypted_password}';")
+  end
+  map "passwords" => :password
+
   private
 
   def db(env=nil)
