@@ -269,10 +269,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
       if (changeset && changeset[columnName] && changeset[columnName].column === column) {
         sortKey[qualifiedColumnName] =  changeset[columnName].oldValue;
       } else {
-
         var field = tuple.field(column);
-        if (!field) console.debug(column);
-
         sortKey[qualifiedColumnName] =  tuple.field(column).value();
       }
     });

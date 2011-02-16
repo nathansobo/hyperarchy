@@ -63,6 +63,9 @@ _.constructor("Views.SignupPrompt", View.Template, {
 
     afterHide: function() {
       Application.layout.darkenBackground.hide();
+      this.errorsDiv.hide();
+      this.signupForm.show();
+      this.loginForm.hide();
       if (this.future) this.future.triggerFailure();
     },
 
@@ -93,7 +96,6 @@ _.constructor("Views.SignupPrompt", View.Template, {
     },
 
     userEstablished: function(data) {
-      console.debug("UId");
       Application.currentUserIdEstablished(data.current_user_id)
       this.future.triggerSuccess();
       delete this.future;
@@ -101,7 +103,6 @@ _.constructor("Views.SignupPrompt", View.Template, {
     },
 
     handleErrors: function(data) {
-      console.debug(data);
       this.errorsDiv.html(data.errors.join("<br/>"));
       this.errorsDiv.show();
     }
