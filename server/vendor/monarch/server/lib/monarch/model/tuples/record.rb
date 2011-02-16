@@ -78,9 +78,7 @@ module Monarch
             column = table.column(column_name)
             raise "No column #{column_name.inspect} to validate the uniqueness of" unless column
             validate do
-              field = field(column)
-              raise "No field found for column #{column}" unless field
-              field_value = field.value
+              field_value = get_field_value(column)
               relation = table.where(column => field_value)
               relation = relation.where(column(:id).neq(id)) if persisted?
               unless relation.empty?
