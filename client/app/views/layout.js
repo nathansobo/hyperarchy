@@ -35,7 +35,7 @@ _.constructor("Views.Layout", View.Template, {
       }).ref('accountMenu');
       ol({'class': "dropdownMenu"}, function() {
         li(function() {
-          a({href: "#view=addOrganization"}, "Add Organization...")
+          a({href: "#"}, "Add Organization...").click('goToAddOrganization');
         }).ref('addOrganizationLi')
       }).ref('organizationsMenu');
 
@@ -349,6 +349,15 @@ _.constructor("Views.Layout", View.Template, {
     goToLastOrganization: function() {
       var organizationId = Application.currentUser().defaultOrganization().id();
       $.bbq.pushState({view: "organization", organizationId: organizationId }, 2);
+    },
+
+    goToAddOrganization: function(elt, e) {
+      e.preventDefault();
+      if (Application.currentUser().guest()) {
+        window.location = "/signup"
+      } else {
+        $.bbq.pushState({view: "addOrganization" }, 2);
+      }
     }
   }
 });

@@ -15,6 +15,10 @@ class Organization < Monarch::Model::Record
 
   attr_accessor :suppress_membership_creation
 
+  def can_create?
+    current_user && !current_user.guest?
+  end
+
   def can_update_or_destroy?
     current_user.admin? || has_owner?(current_user)
   end
