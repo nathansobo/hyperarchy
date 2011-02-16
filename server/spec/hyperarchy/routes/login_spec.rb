@@ -13,7 +13,6 @@ describe "POST /login", :type => :rack do
 
       last_response.should be_redirect
       last_response.location.should == "https://example.org/login"
-
     end
   end
 
@@ -24,6 +23,17 @@ describe "POST /login", :type => :rack do
         last_response.should be_ok
 
         last_response.body_from_json["successful"].should be_true
+      end
+    end
+
+    context "if there is a login error" do
+      it "returns an unsuccessful json response with the validation errors" do
+        xhr_post "/login", :email_address => user.email_address, :password => "garbage"
+        last_response.should be_ok
+        
+        json = last_response.body_from_json
+        json["successful"].should be_false
+        json["data"]["errors"].should_not be_empty
       end
     end
   end

@@ -44,6 +44,8 @@ module Hyperarchy
     def xhr_login
       if warden.authenticate
         successful_json_response({"current_user_id" => current_user.id}, current_user.initial_repository_contents)
+      else
+        unsuccessful_json_response("errors" => warden.errors.full_messages)
       end
     end
 
@@ -183,7 +185,7 @@ module Hyperarchy
         warden.set_user(user)
         successful_json_response({"current_user_id" => user.id}, user)
       else
-        unsuccessful_json_response({"errors" => user.validation_errors_by_column_name })
+        unsuccessful_json_response({"errors" => user.validation_errors_by_column_name.values.flatten })
       end
     end
 

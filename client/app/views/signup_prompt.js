@@ -1,6 +1,8 @@
 _.constructor("Views.SignupPrompt", View.Template, {
   content: function() { with(this.builder) {
     div({id: "signupPrompt", 'class': "floatingCard dropShadow", style: "display: none;"}, function() {
+      div({'class': "errors", style: "display: none;"}).ref('errorsDiv');
+      
       form(function() {
         h1("Sign up to participate:");
 
@@ -63,6 +65,7 @@ _.constructor("Views.SignupPrompt", View.Template, {
     },
 
     toggleForms: function() {
+      this.errorsDiv.hide();
       this.signupForm.toggle();
       this.loginForm.toggle();
       this.find("input:visible:first").focus();
@@ -71,14 +74,19 @@ _.constructor("Views.SignupPrompt", View.Template, {
     },
 
     submitSignupForm: function() {
+      this.errorsDiv.hide();
       Server.post("/signup", { user: _.underscoreKeys(this.signupForm.fieldValues()) })
-        .onSuccess(this.hitch('userEstablished'));
+        .onSuccess(this.hitch('userEstablished'))
+        .onFailure(this.hitch('handleErrors'));
+
       return false;
     },
 
     submitLoginForm: function() {
+      this.errorsDiv.hide();
       Server.post("/login", _.underscoreKeys(this.loginForm.fieldValues()))
-        .onSuccess(this.hitch('userEstablished'));
+        .onSuccess(this.hitch('userEstablished'))
+        .onFailure(this.hitch('handleErrors'));
       return false;
     },
 
@@ -88,6 +96,12 @@ _.constructor("Views.SignupPrompt", View.Template, {
       this.future.triggerSuccess();
       delete this.future;
       this.hide();
+    },
+
+    handleErrors: function(data) {
+      console.debug(data);
+      this.errorsDiv.html(data.errors.join("<br/>"));
+      this.errorsDiv.show();
     }
   }
 });

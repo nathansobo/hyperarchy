@@ -134,7 +134,7 @@ describe "/signup", :type => :rack do
 
           response_json = last_response.body_from_json
           response_json["successful"].should be_false
-          response_json["data"]["errors"].should == User.new(invalid_params).validation_errors_by_column_name.stringify_keys
+          response_json["data"]["errors"].should == User.new(invalid_params).validation_errors_by_column_name.values.flatten
         end
       end
     end
