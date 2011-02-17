@@ -11,7 +11,7 @@ module Hyperarchy
     end
 
     get "/" do
-      redirect_if_logged_in
+      redirect_if_logged_in(:including_guests)
       render_page Views::Home
     end
 
