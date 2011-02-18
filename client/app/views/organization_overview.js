@@ -2,7 +2,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizationOverview"}, function() {
       div({'class': "grid12", style: "display: none;"}, function() {
-        div({class: "guestWelcome dropShadow"}, function() {
+        div({'class': "guestWelcome dropShadow"}, function() {
           div({'class': "left"}, function() {
             h1("Hyperarchy makes it easy to put any anything to a vote.");
           });
