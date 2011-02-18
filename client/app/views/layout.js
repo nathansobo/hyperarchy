@@ -43,6 +43,9 @@ _.constructor("Views.Layout", View.Template, {
         div({id: "logoWrapper"}, function() {
           div({id: "logo"}).click('goToLastOrganization');
         });
+        a({'class': "globalHeaderItem", href: "#"}, "Log In")
+          .ref('loginLink')
+          .click("showLoginForm");
         a({'class': "globalHeaderItem dropdownLink", href: "#"}, "Account")
           .ref('accountMenuLink')
           .click("toggleAccountMenu");
@@ -160,8 +163,12 @@ _.constructor("Views.Layout", View.Template, {
         this.currentUserSubscriptions.destroy();
 
         if (user.guest()) {
+          this.loginLink.show();
+          this.organizationsMenuLink.hide();
           this.accountMenuLink.hide();
         } else {
+          this.loginLink.hide();
+          this.organizationsMenuLink.show();
           this.accountMenuLink.show();
         }
 
@@ -356,6 +363,11 @@ _.constructor("Views.Layout", View.Template, {
       } else {
         $.bbq.pushState({view: "addOrganization" }, 2);
       }
+    },
+
+    showLoginForm: function() {
+      this.signupPrompt.show().showLoginForm();
+      return false;
     }
   }
 });

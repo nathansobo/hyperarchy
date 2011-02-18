@@ -79,6 +79,14 @@ _.constructor("Views.SignupPrompt", View.Template, {
       return false;
     },
 
+    showLoginForm: function() {
+      this.errorsDiv.hide();
+      this.signupForm.hide();
+      this.loginForm.show();
+      this.find('input[type="text"]').val("")
+      this.find("input:visible:first").focus();
+    },
+
     submitSignupForm: function() {
       this.errorsDiv.hide();
       Server.post("/signup", { user: _.underscoreKeys(this.signupForm.fieldValues()) })
