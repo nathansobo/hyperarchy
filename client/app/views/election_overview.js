@@ -463,6 +463,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       if (Application.currentUser().guest()) {
         this.guestWelcomeCreatorName.html(htmlEscape(this.election().creator().fullName()));
         this.guestWelcome.show();
+        this.adjustHeight();
         if (this.election().candidates().empty()) {
           this.guestWelcomeSuggest.show();
           this.guestWelcomeRank.hide();
@@ -474,6 +475,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.userSwitchSubscription = Application.onUserSwitch(this.hitch('toggleGuestWelcome'));
       } else {
         this.guestWelcome.hide();
+        this.adjustHeight();
       }
     },
 
