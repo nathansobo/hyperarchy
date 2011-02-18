@@ -4,7 +4,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       div({'class': "grid12", style: "display: none;"}, function() {
         div({'class': "guestWelcome dropShadow"}, function() {
           div({'class': "left"}, function() {
-            h1("Hyperarchy makes it easy to put any anything to a vote.");
+            h1("Hyperarchy makes it easy to put anything to a vote.");
           });
           div({'class': "right"},
             "Here are the top-ranked answers to questions we're discussing right now. " +
