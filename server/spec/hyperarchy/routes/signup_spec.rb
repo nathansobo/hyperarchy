@@ -19,7 +19,7 @@ describe "/signup", :type => :rack do
 
         get "/signup"
         last_response.should be_redirect
-        last_response.location.should == "/app#view=organization&organizationId=#{org.id}"
+        last_response.location.should == "/#view=organization&organizationId=#{org.id}"
       end
     end
 
@@ -157,7 +157,7 @@ describe "/signup", :type => :rack do
           organization.name.should == "The Foo Bar"
 
           last_response.should be_redirect
-          last_response.location.should == "/app#view=organization&organizationId=#{organization.id}"
+          last_response.location.should == "/#view=organization&organizationId=#{organization.id}"
         end
       end
 

@@ -148,6 +148,6 @@ class Election < Monarch::Model::Record
   end
 
   def full_url
-    "https://#{HTTP_HOST}/app#view=election&electionId=#{id}"
+    "https://#{HTTP_HOST}/#view=election&electionId=#{id}"
   end
 end
