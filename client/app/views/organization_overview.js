@@ -1,6 +1,18 @@
 _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizationOverview"}, function() {
+      div({'class': "grid12", style: "display: none;"}, function() {
+        div({class: "guestWelcome dropShadow"}, function() {
+          div({'class': "left"}, function() {
+            h1("Hyperarchy makes it easy to put any anything to a vote.");
+          });
+          div({'class': "right"},
+            "Here are the top-ranked answers to questions we're discussing right now. " +
+            "Click on a question that interests you to chime in."
+          );
+          div({'class': "clear"});
+        });
+      }).ref('guestWelcome');
 
       h2('Questions Under Discussion');
 
@@ -40,6 +52,11 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
+      
+      this.defer(function() {
+        this.toggleGuestWelcome();
+        Application.onUserSwitch(this.hitch('toggleGuestWelcome'));
+      });
     },
 
     navigate: function(state) {
@@ -57,6 +74,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     organizationId: {
       afterChange: function(organizationId) {
+        this.toggleGuestWelcome();
         var membership = this.organization().membershipForCurrentUser();
         if (membership) membership.update({lastVisited: new Date()});
 
@@ -105,6 +123,14 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     editOrganization: function(elt, e) {
       e.preventDefault();
       $.bbq.pushState({view: "editOrganization", organizationId: this.organizationId()}, 2);
+    },
+
+    toggleGuestWelcome: function() {
+      if (this.organization().social() && Application.currentUser().guest()) {
+        this.guestWelcome.show();
+      } else {
+        this.guestWelcome.hide();
+      }
     },
 
     startLoading: function() {

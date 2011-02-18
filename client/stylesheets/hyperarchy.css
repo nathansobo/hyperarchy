@@ -1462,11 +1462,21 @@ body.legal {
 
 #app #organizationOverview h2 {
   padding-left: 8px; }
-#app #organizationOverview #welcomeBlurb {
-  background: #ffffcc;
+#app #organizationOverview .guestWelcome {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: #EFFFB9;
   margin-bottom: 30px;
-  padding: 10px;
+  padding: 20px;
   font-size: 18px; }
+  #app #organizationOverview .guestWelcome .left {
+    float: left;
+    width: 45%;
+    margin-right: 5%;
+    text-align: center; }
+  #app #organizationOverview .guestWelcome .right {
+    float: right;
+    width: 48%; }
 #app #organizationOverview .election {
   padding: 8px;
   margin-bottom: 20px;

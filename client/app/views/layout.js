@@ -1,7 +1,6 @@
 _.constructor("Views.Layout", View.Template, {
   content: function() { with(this.builder) {
     div({id: "application"}, function() {
-
       div({id: "notification", style: "display: none"}).ref("notification");
       div({id: "darkenBackground", style: "display: none"})
         .ref('darkenBackground');
@@ -62,7 +61,6 @@ _.constructor("Views.Layout", View.Template, {
       subview("welcomeGuide", Views.WelcomeGuide);
 
       div({id: "mainContent"}, function() {
-
         div({id: "navigationBar"}, function() {
           div(function() {
             h2({id: "organizationName"})
