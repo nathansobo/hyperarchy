@@ -202,6 +202,26 @@ button {
   font-size: 14px;
 }
 
+.guestWelcome {
+  @include borderRadius(3px);
+  background: #EFFFB9;
+  margin-bottom: 30px;
+  padding: 20px;
+  font-size: 18px;
+
+  .left {
+    float: left;
+    width: 45%;
+    margin-right: 5%;
+    text-align: center;
+  }
+
+  .right {
+    float: right;
+    width: 48%;
+  }
+}
+
 .lightbox {
   position: absolute;
   z-index: 100;

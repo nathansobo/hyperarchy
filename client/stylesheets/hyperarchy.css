@@ -710,6 +710,22 @@ button {
   margin-bottom: 5px;
   font-size: 14px; }
 
+.guestWelcome {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: #EFFFB9;
+  margin-bottom: 30px;
+  padding: 20px;
+  font-size: 18px; }
+  .guestWelcome .left {
+    float: left;
+    width: 45%;
+    margin-right: 5%;
+    text-align: center; }
+  .guestWelcome .right {
+    float: right;
+    width: 48%; }
+
 .lightbox {
   position: absolute;
   z-index: 100; }
@@ -1462,21 +1478,6 @@ body.legal {
 
 #app #organizationOverview h2 {
   padding-left: 8px; }
-#app #organizationOverview .guestWelcome {
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  background: #EFFFB9;
-  margin-bottom: 30px;
-  padding: 20px;
-  font-size: 18px; }
-  #app #organizationOverview .guestWelcome .left {
-    float: left;
-    width: 45%;
-    margin-right: 5%;
-    text-align: center; }
-  #app #organizationOverview .guestWelcome .right {
-    float: right;
-    width: 48%; }
 #app #organizationOverview .election {
   padding: 8px;
   margin-bottom: 20px;
@@ -1539,6 +1540,8 @@ body.legal {
   margin: 0;
   clear: both;
   overflow-y: hidden; }
+  #app #electionOverview .guestWelcome .right {
+    padding-top: 10px; }
   #app #electionOverview .headerContainer {
     margin-bottom: 20px; }
     #app #electionOverview .headerContainer #electionBodyContainer .expandArrow {

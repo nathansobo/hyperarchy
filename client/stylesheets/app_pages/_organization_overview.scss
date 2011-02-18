@@ -5,26 +5,6 @@
       padding-left: 8px;
     }
 
-    .guestWelcome {
-      @include borderRadius(3px);
-      background: #EFFFB9;
-      margin-bottom: 30px;
-      padding: 20px;
-      font-size: 18px;
-
-      .left {
-        float: left;
-        width: 45%;
-        margin-right: 5%;
-        text-align: center;
-      }
-
-      .right {
-        float: right;
-        width: 48%;
-      }
-    }
-
     .election {
       padding: 8px;
       margin-bottom: 20px;

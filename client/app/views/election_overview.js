@@ -1,6 +1,24 @@
 _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'id': "electionOverview"}, function() {
+      div({style: "display: none;", 'class': "grid12"}, function() {
+        div({class: "guestWelcome dropShadow"}, function() {
+          div({'class': "left"}, function() {
+            h1(function() {
+              text("Help ");
+              span("").ref('guestWelcomeCreatorName');
+              text(" answer this question using Hyperarchy.");
+            }).ref('welcomeGuideHeadline');
+          });
+          div({'class': "right"}, function() {
+            span("Vote by ranking the answers from best to worst, and see how your vote changes the consensus.").ref('guestWelcomeRank');
+            span("Suggest some answers. Then you and others can rank them to build a consensus.").ref('guestWelcomeSuggest');
+          });
+          div({'class': "clear"});
+        });
+      }).ref('guestWelcome');
+
+
       div({'class': "headerContainer"}, function() {
         div({id: "electionBodyContainer", 'class': "grid8"}, function() {
           div({'class': "expandArrow", style: "display: none;"})
@@ -119,16 +137,14 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.find('textarea').elastic();
       });
 
-      this.defer(function() {
-        this.adjustHeight();
-      });
+      this.createCandidateDetailsTextarea.holdPlace();
+
       $(window).resize(this.bind(function() {
         this.adjustHeight();
       }));
 
-      this.createCandidateDetailsTextarea.holdPlace();
-
       this.defer(function() {
+        this.adjustHeight();
         Application.onUserSwitch(function(newUser) {
           var state = $.bbq.getState();
           if (state.view == 'election' && !state.rankingsUserId) {
@@ -144,9 +160,14 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
 
       if (!Application.currentUser().guest()) Server.post("/visited?election_id=" + state.electionId);
-
       Application.layout.activateNavigationTab("questionsLink");
       Application.layout.showSubNavigationContent("elections");
+    },
+
+    afterHide: function() {
+      if (this.userSwitchSubscription) {
+        this.userSwitchSubscription.destroy();
+      }
     },
 
     electionId: {
@@ -240,6 +261,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     populateCreator: function(election) {
       User.findOrFetch(election.creatorId()).onSuccess(function(creator) {
+        this.toggleGuestWelcome();
         this.creatorName.html(htmlEscape(creator.fullName()));
         this.createdAt.html(election.formattedCreatedAt());
         this.creatorAvatar.user(creator);
@@ -435,6 +457,24 @@ _.constructor("Views.ElectionOverview", View.Template, {
         .onSuccess(function() {
           this.electionSpinner.hide();
         }, this);
+    },
+
+    toggleGuestWelcome: function() {
+      if (Application.currentUser().guest()) {
+        this.guestWelcomeCreatorName.html(htmlEscape(this.election().creator().fullName()));
+        this.guestWelcome.show();
+        if (this.election().candidates().empty()) {
+          this.guestWelcomeSuggest.show();
+          this.guestWelcomeRank.hide();
+        } else {
+          this.guestWelcomeSuggest.hide();
+          this.guestWelcomeRank.show();
+        }
+
+        this.userSwitchSubscription = Application.onUserSwitch(this.hitch('toggleGuestWelcome'));
+      } else {
+        this.guestWelcome.hide();
+      }
     },
 
     startLoading: function() {

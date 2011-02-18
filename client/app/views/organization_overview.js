@@ -52,11 +52,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     initialize: function() {
       this.subscriptions = new Monarch.SubscriptionBundle();
-      
-      this.defer(function() {
-        this.toggleGuestWelcome();
-        Application.onUserSwitch(this.hitch('toggleGuestWelcome'));
-      });
     },
 
     navigate: function(state) {
@@ -68,8 +63,16 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);
 
+      this.toggleGuestWelcome();
+
       Application.layout.activateNavigationTab("questionsLink");
       Application.layout.hideSubNavigationContent();
+    },
+
+    afterHide: function() {
+      if (this.userSwitchSubscription) {
+        this.userSwitchSubscription.destroy();
+      }
     },
 
     organizationId: {
@@ -127,6 +130,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     toggleGuestWelcome: function() {
       if (this.organization().social() && Application.currentUser().guest()) {
+        this.userSwitchSubscription = Application.onUserSwitch(this.hitch('toggleGuestWelcome'));
         this.guestWelcome.show();
       } else {
         this.guestWelcome.hide();
