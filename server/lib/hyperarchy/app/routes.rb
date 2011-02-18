@@ -11,19 +11,14 @@ module Hyperarchy
     end
 
     get "/" do
-      redirect_if_logged_in(:including_guests)
-      render_page Views::Home
+      use_ssl
+      allow_guests
+      render_page Views::App
     end
 
     get "/learn_more" do
       redirect_if_logged_in
       render_page Views::LearnMore
-    end
-
-    get "/app" do
-      use_ssl
-      allow_guests
-      render_page Views::App
     end
 
     get "/login" do
@@ -45,7 +40,7 @@ module Hyperarchy
         if params[:redirected_from]
           redirect params[:redirected_from]
         else
-          redirect "/app#view=organization"
+          redirect "/#view=organization"
         end
       else
         flash[:errors] = warden.errors.full_messages
@@ -135,7 +130,7 @@ module Hyperarchy
       user.update(:password => params[:password])
       warden.set_user(user)
 
-      redirect "/app"
+      redirect "/"
     end
 
     get "/signup" do
@@ -193,7 +188,7 @@ module Hyperarchy
       if new_user.valid?
         warden.set_user(new_user)
         session.delete(:invitation_code)
-        redirect "/app#view=organization&organizationId=#{new_user.organizations.first.id}"
+        redirect "/#view=organization&organizationId=#{new_user.organizations.first.id}"
       else
         flash[:errors] = new_user.validation_errors
         redirect "/signup"
@@ -205,7 +200,7 @@ module Hyperarchy
       if new_user.valid?
         warden.set_user(new_user)
         organization = Organization.create!(:name => organization_name)
-        redirect "/app#view=organization&organizationId=#{organization.id}"
+        redirect "/#view=organization&organizationId=#{organization.id}"
       else
         flash[:errors] = new_user.validation_errors
         redirect "/signup"
@@ -217,7 +212,7 @@ module Hyperarchy
 
       membership = Membership.find(membership_id)
       membership.update(:pending => false) if membership.user == current_user
-      redirect "/app#view=organization&organizationId=#{membership.organization_id}"
+      redirect "/#view=organization&organizationId=#{membership.organization_id}"
     end
 
     post "/invite" do
