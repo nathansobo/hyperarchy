@@ -8,7 +8,8 @@ _.constructor("Organization", Model.Record, {
         dismissedWelcomeGuide: 'boolean',
         electionCount: 'integer',
         useSsl: 'boolean',
-        social: 'boolean'
+        social: 'boolean',
+        privacy: 'string'
       });
 
       this.hasMany("elections");
@@ -80,10 +81,37 @@ _.constructor("Organization", Model.Record, {
 
   currentUserIsOwner: function() {
     var currentUserMembership = this.memberships().find({userId: Application.currentUserId});
+    if (!currentUserMembership) return false;
     return currentUserMembership.role() === "owner";
+  },
+
+  ensureCurrentUserCanParticipate: function() {
+    var future = new Monarch.Http.AjaxFuture();
+
+    if (this.isPublic()) {
+      if (Application.currentUser().guest()) {
+        Application.layout.signupPrompt.future = future;
+        Application.layout.signupPrompt.show()
+      } else {
+        future.triggerSuccess();
+      }
+    } else {
+      if (!this.currentUserIsMember()) {
+        Application.layout.mustBeMemberMessage.show();
+        future.triggerFailure();
+      } else {
+        future.triggerSuccess();
+      }
+    }
+
+    return future;
   },
 
   currentUserCanEdit: function() {
     return Application.currentUser().admin() || this.currentUserIsOwner();
+  },
+
+  isPublic: function() {
+    return this.privacy() === "public";
   }
 });

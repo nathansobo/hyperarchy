@@ -2,14 +2,14 @@ module Monarch
   module Model
     module Sql
       class DerivedTable
-        attr_accessor :subquery, :name, :algebra_relation
+        attr_accessor :subquery, :name, :algebra_relation, :suppress_alias
 
         def initialize(subquery, name, algebra_relation)
           @subquery, @name, @algebra_relation = subquery, name, algebra_relation
         end
 
         def to_sql
-          "(#{subquery.to_sql}) as #{name}"
+          "(#{subquery.to_sql})" + (suppress_alias ? "" : " as #{name}")
         end
 
         def literals_hash

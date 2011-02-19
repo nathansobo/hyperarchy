@@ -84,6 +84,13 @@ module Monarch
           end
         end
       end
+
+      describe "#execute_ddl" do
+        it "constructs a literal string from a sql string and a literals hash and sends it to the database" do
+          mock(Origin.connection).execute_ddl("create temporary view foo as (select * from bar where id = 1)")
+          Origin.execute_ddl("create temporary view foo as (select * from bar where id = 1)", {:id => 1})
+        end
+      end
     end
   end
 end

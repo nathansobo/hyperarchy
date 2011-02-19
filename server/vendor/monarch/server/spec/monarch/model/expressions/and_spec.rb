@@ -40,7 +40,7 @@ module Monarch
               pred.operands[0].right_operand.should == 1
 
               pred.operands[1].should be_an_instance_of(Eq)
-              pred.operands[1].left_operand.should == repository.resolve_table_name(:super_blog_posts).column(:body)
+              pred.operands[1].left_operand.should == repository.get_view(:super_blog_posts).column(:body)
               pred.operands[1].right_operand.should == "General Mao"
             end
           end

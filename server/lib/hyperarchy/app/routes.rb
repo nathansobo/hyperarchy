@@ -11,19 +11,14 @@ module Hyperarchy
     end
 
     get "/" do
-      redirect_if_logged_in
-      render_page Views::Home
+      use_ssl
+      allow_guests
+      render_page Views::App
     end
 
     get "/learn_more" do
       redirect_if_logged_in
       render_page Views::LearnMore
-    end
-
-    get "/app" do
-      use_ssl
-      authentication_required
-      render_page Views::App
     end
 
     get "/login" do
@@ -33,18 +28,33 @@ module Hyperarchy
 
     post "/login" do
       warden.logout(:default)
-      if warden.authenticate
+      if request.xhr?
+        xhr_login
+      else
+        normal_login
+      end
+    end
 
+    def normal_login
+      if warden.authenticate
         if params[:redirected_from]
           redirect params[:redirected_from]
         else
-          redirect "/app#view=organization"
+          redirect "/#view=organization"
         end
       else
         flash[:errors] = warden.errors.full_messages
         flash[:email_address_errors] = warden.errors[:email_address]
         flash[:entered_email_address] = params[:email_address]
         redirect "/login"
+      end
+    end
+
+    def xhr_login
+      if warden.authenticate
+        successful_json_response({"current_user_id" => current_user.id}, current_user.initial_repository_contents)
+      else
+        unsuccessful_json_response("errors" => warden.errors.full_messages)
       end
     end
 
@@ -120,7 +130,7 @@ module Hyperarchy
       user.update(:password => params[:password])
       warden.set_user(user)
 
-      redirect "/app"
+      redirect "/"
     end
 
     get "/signup" do
@@ -135,7 +145,16 @@ module Hyperarchy
     end
 
     post "/signup" do
+      if request.xhr?
+        xhr_signup
+      else
+        normal_signup
+      end
+    end
+
+    def normal_signup
       redirect_if_logged_in
+
       if invitation_code = session[:invitation_code]
         invitation = validate_invitation_code(invitation_code)
       else
@@ -154,12 +173,22 @@ module Hyperarchy
       end
     end
 
+    def xhr_signup
+      user = User.secure_create(params[:user].from_json)
+      if user.valid?
+        warden.set_user(user)
+        successful_json_response({"current_user_id" => user.id}, user)
+      else
+        unsuccessful_json_response({"errors" => user.validation_errors_by_column_name.values.flatten })
+      end
+    end
+
     def redeem_invitation(invitation)
       new_user = invitation.redeem(params[:user])
       if new_user.valid?
         warden.set_user(new_user)
         session.delete(:invitation_code)
-        redirect "/app#view=organization&organizationId=#{new_user.organizations.first.id}"
+        redirect "/#view=organization&organizationId=#{new_user.organizations.first.id}"
       else
         flash[:errors] = new_user.validation_errors
         redirect "/signup"
@@ -167,11 +196,11 @@ module Hyperarchy
     end
 
     def create_user_and_organization(organization_name)
-      new_user = User.create(params[:user])
+      new_user = User.secure_create(params[:user])
       if new_user.valid?
         warden.set_user(new_user)
         organization = Organization.create!(:name => organization_name)
-        redirect "/app#view=organization&organizationId=#{organization.id}"
+        redirect "/#view=organization&organizationId=#{organization.id}"
       else
         flash[:errors] = new_user.validation_errors
         redirect "/signup"
@@ -183,7 +212,7 @@ module Hyperarchy
 
       membership = Membership.find(membership_id)
       membership.update(:pending => false) if membership.user == current_user
-      redirect "/app#view=organization&organizationId=#{membership.organization_id}"
+      redirect "/#view=organization&organizationId=#{membership.organization_id}"
     end
 
     post "/invite" do
@@ -222,7 +251,7 @@ module Hyperarchy
       Mailer.send(
         :to => ["admin@hyperarchy.com", "nathansobo+hyperarchy@gmail.com"],
         :subject => "#{current_user.full_name} submitted feedback",
-        :body => "User id: #{current_user.id}\n\nTheir comments: #{params[:feedback]}"
+        :body => "User id: #{current_user.id}\n\nUser email: #{current_user.email_address}\n\nTheir comments: #{params[:feedback]}"
       )
       successful_json_response
     end
@@ -251,19 +280,16 @@ module Hyperarchy
     end
 
     post "/visited" do
-      authentication_required
+      return if current_user.guest?
       visit = ElectionVisit.find_or_create(:user_id => current_user.id, :election_id => params[:election_id])
       visit.update!(:updated_at => Time.now)
       successful_json_response(nil, visit)
     end
 
     post "/rankings" do
-      authentication_required
-
+      raise Monarch::Unauthorized if !current_user || current_user.guest?
       organization = Candidate.find(params[:candidate_id]).election.organization
-      unless current_user && organization.has_member?(current_user)
-        raise Monarch::Unauthorized
-      end
+      new_membership = organization.ensure_current_user_is_member
 
       attributes = { :user_id => current_user.id, :candidate_id => params[:candidate_id] }
 
@@ -272,13 +298,15 @@ module Hyperarchy
       else
         ranking = Ranking.create!(attributes.merge(:position => params[:position]))
       end
-      successful_json_response({:ranking_id => ranking.id}, ranking)
+      successful_json_response({:ranking_id => ranking.id}, [ranking, new_membership].compact)
     end
 
     get "/fetch_election_data" do
-      authentication_required
       organization = Organization.find(params[:organization_id])
-      raise Monarch::Unauthorized unless organization.current_user_is_member? || current_user.admin?
+      raise Monarch::Unauthorized unless current_user
+      if organization.private? && !(organization.current_user_is_member? || current_user.admin?)
+        raise Monarch::Unauthorized
+      end
 
       offset = params[:offset]
       limit = params[:limit]

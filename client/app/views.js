@@ -4,6 +4,10 @@
 //= require "views/email_preferences"
 //= require "views/membership_tr"
 //= require "views/invite"
+//= require "views/lightbox"
+//= require "views/must_be_member_message"
+
+//= require "views/signup_prompt"
 //= require "views/disconnect_dialog"
 //= require "views/layout"
 //= require "views/welcome_guide"

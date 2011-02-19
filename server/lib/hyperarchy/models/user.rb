@@ -8,6 +8,7 @@ class User < Monarch::Model::Record
   column :dismissed_welcome_guide, :boolean, :default => false
   column :password_reset_token, :string
   column :password_reset_token_generated_at, :datetime
+  column :guest, :boolean, :default => false
   synthetic_column :email_hash, :string
 
   has_many :memberships
@@ -37,11 +38,19 @@ class User < Monarch::Model::Record
     BCrypt::Password.create(unencrypted_password).to_s
   end
 
+  def self.guest
+    find(:guest => true)
+  end
+
   def can_update_or_destroy?
     current_user.admin? || current_user == self
   end
   alias can_update? can_update_or_destroy?
   alias can_destroy? can_update_or_destroy?
+
+  def create_whitelist
+    [:first_name, :last_name, :email_address, :password]
+  end 
 
   def update_whitelist
     list = [:first_name, :last_name, :email_address]
@@ -83,6 +92,21 @@ class User < Monarch::Model::Record
     memberships.map(&:organization_id)
   end
 
+  def initial_repository_contents
+    [self] + memberships.all  + initial_repository_organizations
+  end
+
+  def initial_repository_organizations
+    if admin?
+      Organization.all
+    elsif guest?
+      Organization.where(Organization[:privacy].neq('private')).all
+    else
+      Organization.where(Organization[:privacy].neq('private')).all +
+        memberships.join_through(Organization.where(:privacy => 'private')).all
+    end
+  end
+
   def password=(unencrypted_password)
     return nil if unencrypted_password.blank?
     self.encrypted_password = self.class.encrypt_password(unencrypted_password)
@@ -115,7 +139,11 @@ class User < Monarch::Model::Record
     validation_error(:encrypted_password, "You must enter a password.") if encrypted_password.blank?
   end
 
-  def last_visited_organization
-    memberships.order_by(Membership[:last_visited].desc).first.organization
+  def default_organization
+    if memberships.empty?
+      Organization.find(:social => true)    
+    else
+      memberships.order_by(Membership[:last_visited].desc).first.organization
+    end
   end
 end

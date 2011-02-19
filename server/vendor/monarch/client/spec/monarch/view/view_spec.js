@@ -42,7 +42,6 @@ Screw.Unit(function(c) { with(c) {
           }
         })
 
-
         model = SampleModel.createFromRemote({
           foo: "foo",
           bar: "bar",
@@ -55,34 +54,6 @@ Screw.Unit(function(c) { with(c) {
           baz: true,
           quux: 3
         });  
-      });
-
-      describe("#fieldValues", function() {
-        it("returns a hash of name value pairs for all input elements on the view", function() {
-          expect(view.fieldValues()).to(equal, {
-            foo: "Foo",
-            bar: "Bar",
-            baz: false,
-            textarea: "This too",
-            quux: '2'
-          });
-        });
-
-        it("if a customFieldValues method is present, merges its results into the returned fieldValues", function() {
-          view.customFieldValues = function() {
-            return {
-              corge: "hi there"
-            }
-          }
-          expect(view.fieldValues()).to(equal, {
-            foo: "Foo",
-            bar: "Bar",
-            baz: false,
-            quux: '2',
-            textarea: "This too",
-            corge: "hi there"
-          });
-        });
       });
 
       describe("#fieldValuesDiffer()", function() {

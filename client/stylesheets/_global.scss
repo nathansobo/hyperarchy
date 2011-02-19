@@ -110,6 +110,10 @@ button {
   font-size: 21px;
 }
 
+.disabledText {
+  color: #bbb;
+}
+
 .errors {
   margin-bottom: 20px;
   font-size: 16px;
@@ -196,6 +200,31 @@ button {
   border-bottom: 1px solid #8e8e8e;
   margin-bottom: 5px;
   font-size: 14px;
+}
+
+.guestWelcome {
+  @include borderRadius(3px);
+  background: #EFFFB9;
+  margin-bottom: 30px;
+  padding: 20px;
+  font-size: 18px;
+
+  .left {
+    float: left;
+    width: 45%;
+    margin-right: 5%;
+    text-align: center;
+  }
+
+  .right {
+    float: right;
+    width: 48%;
+  }
+}
+
+.lightbox {
+  position: absolute;
+  z-index: 100;
 }
 
 .cancelX {

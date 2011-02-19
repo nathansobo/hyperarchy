@@ -1,6 +1,18 @@
 _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizationOverview"}, function() {
+      div({'class': "grid12", style: "display: none;"}, function() {
+        div({'class': "guestWelcome dropShadow"}, function() {
+          div({'class': "left"}, function() {
+            h1("Hyperarchy makes it easy to put anything to a vote.");
+          });
+          div({'class': "right"},
+            "Here are the top-ranked answers to questions we're discussing right now. " +
+            "Click on a question that interests you to chime in."
+          );
+          div({'class': "clear"});
+        });
+      }).ref('guestWelcome');
 
       h2('Questions Under Discussion');
 
@@ -44,19 +56,28 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     navigate: function(state) {
       if (!state.organizationId) {
-        $.bbq.pushState({view: 'organization', organizationId: Application.currentUser().lastVisitedOrganization().id()});
+        $.bbq.pushState({view: 'organization', organizationId: Application.currentUser().defaultOrganization().id()});
         return;
       }
       var organizationId = parseInt(state.organizationId);
       Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);
 
+      this.toggleGuestWelcome();
+
       Application.layout.activateNavigationTab("questionsLink");
       Application.layout.hideSubNavigationContent();
     },
 
+    afterHide: function() {
+      if (this.userSwitchSubscription) {
+        this.userSwitchSubscription.destroy();
+      }
+    },
+
     organizationId: {
       afterChange: function(organizationId) {
+        this.toggleGuestWelcome();
         var membership = this.organization().membershipForCurrentUser();
         if (membership) membership.update({lastVisited: new Date()});
 
@@ -105,6 +126,15 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     editOrganization: function(elt, e) {
       e.preventDefault();
       $.bbq.pushState({view: "editOrganization", organizationId: this.organizationId()}, 2);
+    },
+
+    toggleGuestWelcome: function() {
+      if (this.organization().social() && Application.currentUser().guest()) {
+        this.userSwitchSubscription = Application.onUserSwitch(this.hitch('toggleGuestWelcome'));
+        this.guestWelcome.show();
+      } else {
+        this.guestWelcome.hide();
+      }
     },
 
     startLoading: function() {

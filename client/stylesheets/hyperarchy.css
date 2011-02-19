@@ -626,6 +626,9 @@ button {
 .largeFont {
   font-size: 21px; }
 
+.disabledText {
+  color: #bbb; }
+
 .errors {
   margin-bottom: 20px;
   font-size: 16px;
@@ -706,6 +709,26 @@ button {
   border-bottom: 1px solid #8e8e8e;
   margin-bottom: 5px;
   font-size: 14px; }
+
+.guestWelcome {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background: #EFFFB9;
+  margin-bottom: 30px;
+  padding: 20px;
+  font-size: 18px; }
+  .guestWelcome .left {
+    float: left;
+    width: 45%;
+    margin-right: 5%;
+    text-align: center; }
+  .guestWelcome .right {
+    float: right;
+    width: 48%; }
+
+.lightbox {
+  position: absolute;
+  z-index: 100; }
 
 .cancelX, .rightCancelX {
   height: 21px;
@@ -960,7 +983,8 @@ button {
   font-size: 16px;
   width: 320px;
   padding: 20px;
-  margin: 50px auto; }
+  margin: 50px auto;
+  background: white; }
   .floatingCard .floatingCardHeader {
     border-bottom: 1px solid #ccc;
     margin-bottom: 20px; }
@@ -1316,6 +1340,34 @@ body.legal {
   position: fixed;
   top: 0px;
   left: 0px; }
+#app #mustBeMemberMessage h1 {
+  margin-bottom: 10px; }
+
+#app #signupPrompt {
+  position: absolute;
+  z-index: 100; }
+  #app #signupPrompt .cancelX, #app #signupPrompt .rightCancelX {
+    float: right; }
+  #app #signupPrompt h1 {
+    margin-bottom: 20px; }
+  #app #signupPrompt input[type=submit] {
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 170px;
+    float: right; }
+  #app #signupPrompt #forgotPassword {
+    float: right;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 3px; }
+  #app #signupPrompt #login, #app #signupPrompt #signup {
+    font-size: 13px;
+    color: gray;
+    font-style: italic;
+    position: relative;
+    top: 23px;
+    text-align: right;
+    width: 150px; }
 
 #app #invite {
   background: white;
@@ -1426,11 +1478,6 @@ body.legal {
 
 #app #organizationOverview h2 {
   padding-left: 8px; }
-#app #organizationOverview #welcomeBlurb {
-  background: #ffffcc;
-  margin-bottom: 30px;
-  padding: 10px;
-  font-size: 18px; }
 #app #organizationOverview .election {
   padding: 8px;
   margin-bottom: 20px;
@@ -1493,6 +1540,8 @@ body.legal {
   margin: 0;
   clear: both;
   overflow-y: hidden; }
+  #app #electionOverview .guestWelcome .right {
+    padding-top: 10px; }
   #app #electionOverview .headerContainer {
     margin-bottom: 20px; }
     #app #electionOverview .headerContainer #electionBodyContainer .expandArrow {
@@ -1762,6 +1811,8 @@ body.legal {
   #app #addOrganization a.roundedButton, #app #editOrganization a.roundedButton, #app #members a.roundedButton {
     margin-top: 10px; }
 
+#app #editOrganization label[for="privacy"] {
+  display: block; }
 #app #editOrganization input[name="name"] {
   width: 300px; }
 #app #editOrganization textarea {

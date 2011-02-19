@@ -7,17 +7,17 @@ module Views
         end
 
         label "Email Address", :for => "email_address"
-        input :name => "email_address", :value => flash[:entered_email_address]
+        input :name => "email_address", :value => flash[:entered_email_address], :tabindex => 1
 
-        a "forgot my password", :id => "forgotPassword", :href => "/request_password_reset"
+        a "forgot my password", :id => "forgotPassword", :href => "/request_password_reset", :tabindex => 4
         label "Password", :for => "password"
 
-        input :type => "password", :name => "password"
-        input :value => "Log In", :type => "submit", :class => "glossyBlack roundedButton"
+        input :type => "password", :name => "password", :tabindex => 2
+        input :value => "Log In", :type => "submit", :class => "glossyBlack roundedButton", :tabindex => 3
 
         div :id => "signUp" do
           div "Don't have an account?"
-          a "Click here to sign up.", :href => "/signup"
+          a "Click here to sign up.", :href => "/signup", :tabindex => 5
         end
 
         div :class => "clear"

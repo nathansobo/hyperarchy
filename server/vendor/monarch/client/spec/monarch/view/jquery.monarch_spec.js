@@ -40,6 +40,54 @@ Screw.Unit(function(c) { with(c) {
     });
   });
 
+
+  describe("jQuery.fn.fieldValues()", function() {
+    var view;
+    before(function() {
+      view = Monarch.View.build(function(b) { with(b) {
+        div(function() {
+          input({name: "foo", value: "Foo"}).ref('foo');
+          input({name: "bar", value: "Bar"}).ref('bar');
+          input({name: "baz", type: "checkbox", checked: false}).ref('baz');
+          input({value: "Do not include because I have no name"});
+          textarea({name: 'textarea'}, "This too");
+
+          select({name: "quux"}, function() {
+            option({value: "1"});
+            option({value: "2", selected: 1});
+            option({value: "3"});
+          }).ref('quux');
+        });
+      }});
+    });
+
+    it("returns a hash of name value pairs for all input elements on the view", function() {
+      expect(view.fieldValues()).to(equal, {
+        foo: "Foo",
+        bar: "Bar",
+        baz: false,
+        textarea: "This too",
+        quux: '2'
+      });
+    });
+
+    it("if a customFieldValues method is present, merges its results into the returned fieldValues", function() {
+      view.customFieldValues = function() {
+        return {
+          corge: "hi there"
+        }
+      }
+      expect(view.fieldValues()).to(equal, {
+        foo: "Foo",
+        bar: "Bar",
+        baz: false,
+        quux: '2',
+        textarea: "This too",
+        corge: "hi there"
+      });
+    });
+  });
+
   describe("jQuery.fn.bindHtml(record, fieldName)", function() {
     useExampleDomainModel();
 

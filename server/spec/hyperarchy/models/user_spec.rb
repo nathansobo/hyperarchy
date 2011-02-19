@@ -53,6 +53,95 @@ module Models
       end
     end
 
+    describe "#initial_repository_contents" do
+      attr_reader :org_1, :org_2, :org_3
+
+      before do
+        @org_1 = Organization.make(:privacy => "public")
+        @org_2 = Organization.make(:privacy => "read_only")
+        @org_3 = Organization.make(:privacy => "private")
+      end
+
+      context "if the user is a member" do
+        attr_reader :member, :contents, :org_4, :membership_1, :membership_2
+
+        before do
+          @org_4 = Organization.make(:privacy => "private")
+
+          @member = User.make
+          @membership_1 = member.memberships.make(:organization => org_1)
+          @membership_2 = member.memberships.make(:organization => org_3)
+          @contents = member.initial_repository_contents
+        end
+
+        it "includes the member's user model, their memberships, all non-private organizations, and all private organizations that the user is a member of" do
+          contents.should include(member)
+          contents.should include(membership_1)
+          contents.should include(membership_2)
+          contents.should include(org_1)
+          contents.should include(org_2)
+          contents.should include(org_3)
+          contents.should_not include(org_4)
+        end
+      end
+
+      context "if the user is an admin" do
+        attr_reader :admin, :contents, :membership
+
+        before do
+          @admin = User.make(:admin => true)
+          @membership = admin.memberships.make(:organization => org_1)
+          @contents = admin.initial_repository_contents
+        end
+
+        it "includes the admin's user model, memberships, and all organizations" do
+          contents.should include(admin)
+          contents.should include(membership)
+          contents.should include(org_1)
+          contents.should include(org_2)
+          contents.should include(org_3)
+        end
+      end
+
+      context "if the user is a guest" do
+        attr_reader :guest, :contents
+
+        before do
+          @guest = User.make(:guest => true)
+          @contents = guest.initial_repository_contents
+        end
+
+        it "includes the guest user model and all non-private organizations" do
+          contents.should include(guest)
+          contents.should include(org_1)
+          contents.should include(org_2)
+          contents.should_not include(org_3)
+        end
+      end
+    end
+
+    describe "#default_organization" do
+      context "when the user has memberships" do
+        it "returns their last visited organization" do
+          organization_1 = Organization.make
+          organization_2 = Organization.make
+          user = User.make
+          user.memberships.make(:organization => organization_1, :created_at => 3.hours.ago)
+          user.memberships.make(:organization => organization_2, :created_at => 1.hour.ago)
+
+          user.default_organization.should == organization_2
+        end
+      end
+
+      context "when the user has no memberships" do
+        it "returns the social organization" do
+          guest = User.make
+          guest.memberships.should be_empty
+          guest.default_organization.should == Organization.find(:social => true)
+        end
+      end
+    end
+
     describe "security" do
       describe "#can_update? and #can_destroy?" do
         it "only allows admins and the users themselves to update / destroy user records, and only allows admins to set the admin flag" do

@@ -6,6 +6,8 @@ module Monarch
           attr_reader :relation
 
           def relation=(relation)
+            raise "reassigning relation. does this make sense?!" if @relation
+
             @relation = relation
             relation.concrete_columns.each { |column| define_field_reader(column) }
           end
@@ -37,7 +39,17 @@ module Monarch
         end
 
         def get_field_value(column_or_name)
-          field(column_or_name).value
+          field = field(column_or_name)
+
+          unless field
+            puts "Field not found for #{column_or_name.inspect}. Column object id: #{column_or_name.object_id}. Trying with the name only."
+            field = field(column_or_name.name) # try again
+
+            puts "Field found associated with column #{field.column.inspect}. Column object id: #{field.column.object_id}"
+            raise "No field found after retry for column: #{column_or_name.inspect} on record #{inspect}" unless field
+            raise "Raising in development so we notice this strange situation" if RACK_ENV == "development" || RACK_ENV == "test"
+          end
+          field.value
         end
 
         def set_field_value(column_or_name, value)
@@ -67,6 +79,10 @@ module Monarch
             result[column_field_pair[0].name] = column_field_pair[1].value
             result
           end
+        end
+
+        def to_param
+          id.to_s
         end
 
         def inspect

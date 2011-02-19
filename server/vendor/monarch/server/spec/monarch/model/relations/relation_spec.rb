@@ -17,7 +17,7 @@ module Monarch
                   "type" => "table",
                   "name" => "blog_posts"
                 }, exposed_repository)
-                relation.should == exposed_repository.resolve_table_name(:blog_posts)
+                relation.should == exposed_repository.get_view(:blog_posts)
               end
             end
 
@@ -253,6 +253,15 @@ module Monarch
               Blog.order_by(:title, :user_id).should == Ordering.new(Blog.table, [Blog[:title].asc, Blog[:user_id].asc])
               Blog.order_by(Blog[:title], :user_id).should == Ordering.new(Blog.table, [Blog[:title].asc, Blog[:user_id].asc])
               Blog.order_by("title asc", "user_id desc").should == Ordering.new(Blog.table, [Blog[:title].asc, Blog[:user_id].desc])
+            end
+          end
+
+          describe "#view(name)" do
+            it "instantiates a view with the given name and self as its relation" do
+              relation = BlogPost.where(:id => "grain_quinoa")
+              view = relation.view(:foo)
+              view.name.should == :foo
+              view.relation.should == relation
             end
           end
 

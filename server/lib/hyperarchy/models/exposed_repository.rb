@@ -9,7 +9,7 @@ module Models
       if user.admin?
         Organization.table
       else
-        user.organizations
+        union(user.organizations, Organization.where(Organization[:privacy].neq("private")))
       end
     end
 

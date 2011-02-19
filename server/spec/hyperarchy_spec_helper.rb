@@ -11,7 +11,6 @@ Spec::Runner.configure do |config|
 
   config.before do
     Monarch::Model::Repository.clear_tables
-    Organization.create!(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
     Monarch::Model::Repository.initialize_local_identity_map
     SubscriptionManager.start
     Sham.reset
@@ -21,6 +20,9 @@ Spec::Runner.configure do |config|
     def EM.defer
       yield
     end
+
+    Organization.make(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
+    User.make(:first_name => "Guest", :last_name => "User", :guest => true)
   end
 
   config.after do
@@ -97,11 +99,25 @@ class RackExampleGroup < Spec::Example::ExampleGroup
     super
     user
   end
+
+  def xhr(verb, path, params = {})
+    send(verb, path, params, "HTTP_X_REQUESTED_WITH" => "XMLHttpRequest")
+  end
+
+  [:get, :put, :post, :delete].each do |verb|
+    define_method("xhr_#{verb}") do |path, params = {}|
+      xhr(verb, path, params)
+    end
+  end
 end
 
 class Rack::MockResponse
   def body_from_json
     JSON.parse(body)
+  end
+
+  def dataset
+    body_from_json["dataset"]
   end
 end
 

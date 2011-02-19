@@ -78,9 +78,7 @@ module Monarch
             column = table.column(column_name)
             raise "No column #{column_name.inspect} to validate the uniqueness of" unless column
             validate do
-              field = field(column)
-              raise "No field found for column #{column}" unless field
-              field_value = field.value
+              field_value = get_field_value(column)
               relation = table.where(column => field_value)
               relation = relation.where(column(:id).neq(id)) if persisted?
               unless relation.empty?
@@ -107,9 +105,10 @@ module Monarch
             @validations ||= []
           end
 
-          delegate :create, :create!, :unsafe_create, :where, :project, :join, :join_to, :join_through, :aggregate, :order_by,
-                   :find, :size, :concrete_columns_by_name, :[], :create_table, :drop_table, :clear_table, :all, :find_or_create,
-                   :left_join, :left_join_to, :group_by, :offset, :limit, :on_insert, :on_remove, :on_update, :to => :table
+          delegate :build, :secure_build, :create, :create!, :secure_create, :secure_create!, :unsafe_create, :where, :project,
+                   :join, :view, :join_to, :join_through, :aggregate, :order_by, :find, :size, :concrete_columns_by_name, :[],
+                   :create_table, :drop_table, :clear_table, :all, :find_or_create, :left_join, :left_join_to, :group_by, :offset,
+                   :limit, :on_insert, :on_remove, :on_update, :to => :table
 
           protected
           def define_field_writer(column)
@@ -340,12 +339,18 @@ module Monarch
           super
         end
 
-        def soft_update(values_by_method_name)
+        def soft_update(values_by_method_name, secure=false)
           values_by_method_name.each do |method_name, value|
             writer_method_name = "#{method_name}="
-            self.send(writer_method_name, value) if self.respond_to?(writer_method_name)
+            if self.respond_to?(writer_method_name) && (!secure || can_update_column?(method_name))
+              self.send(writer_method_name, value)
+            end
           end
           self
+        end
+
+        def secure_soft_update(values_by_method_name)
+          soft_update(values_by_method_name, true)
         end
 
         def soft_update_fields(values_by_field_name, include_dirty=true, mark_clean=false)
@@ -411,6 +416,11 @@ module Monarch
           (columns.map(&:to_sym) - permitted_columns).empty?
         end
 
+        def can_create_with_column?(column)
+          column = column.to_sym
+          create_whitelist.include?(column) && !create_blacklist.include?(column)
+        end
+
         def can_update?
           true
         end
@@ -420,10 +430,22 @@ module Monarch
           (columns.map(&:to_sym) - permitted_columns).empty?
         end
 
+        def can_update_column?(column)
+          column = column.to_sym
+          update_whitelist.include?(column) && !update_blacklist.include?(column)
+        end
+
+        def filter_create_attributes(attributes)
+          {}.tap do |filtered_attributes|
+            attributes.each do |name, value|
+              filtered_attributes[name] = value if can_create_with_column?(name)
+            end
+          end
+        end
+
         def can_destroy?
           true
         end
-
 
         def whitelist
           columns.map(&:name)
@@ -433,20 +455,28 @@ module Monarch
           []
         end
 
-        def create_whitelist
+        def write_whitelist
           whitelist
+        end
+
+        def write_blacklist
+          blacklist
+        end
+
+        def create_whitelist
+          write_whitelist
         end
 
         def create_blacklist
-          blacklist
+          write_blacklist
         end
 
         def update_whitelist
-          whitelist
+          write_whitelist
         end
 
         def update_blacklist
-          blacklist
+          write_blacklist
         end
 
         protected

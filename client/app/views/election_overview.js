@@ -1,6 +1,24 @@
 _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'id': "electionOverview"}, function() {
+      div({style: "display: none;", 'class': "grid12"}, function() {
+        div({'class': "guestWelcome dropShadow"}, function() {
+          div({'class': "left"}, function() {
+            h1(function() {
+              text("Help ");
+              span("").ref('guestWelcomeCreatorName');
+              text(" answer this question using Hyperarchy.");
+            }).ref('welcomeGuideHeadline');
+          });
+          div({'class': "right"}, function() {
+            span("Vote by ranking the answers from best to worst, and see how your vote changes the consensus.").ref('guestWelcomeRank');
+            span("Suggest some answers. Then you and others can rank them to build a consensus.").ref('guestWelcomeSuggest');
+          });
+          div({'class': "clear"});
+        });
+      }).ref('guestWelcome');
+
+
       div({'class': "headerContainer"}, function() {
         div({id: "electionBodyContainer", 'class': "grid8"}, function() {
           div({'class': "expandArrow", style: "display: none;"})
@@ -119,31 +137,44 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.find('textarea').elastic();
       });
 
-      this.defer(function() {
-        this.adjustHeight();
-      });
+      this.createCandidateDetailsTextarea.holdPlace();
+
       $(window).resize(this.bind(function() {
         this.adjustHeight();
       }));
 
-      this.createCandidateDetailsTextarea.holdPlace();
+      this.defer(function() {
+        this.adjustHeight();
+        Application.onUserSwitch(function(newUser) {
+          var state = $.bbq.getState();
+          if (state.view == 'election' && !state.rankingsUserId) {
+            this.rankingsUserId(newUser.id());
+          }
+        }, this);
+      });
     },
 
     navigate: function(state) {
       this.adjustHeight();
       this.electionId(parseInt(state.electionId));
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
-      Server.post("/visited?election_id=" + state.electionId);
 
+      if (!Application.currentUser().guest()) Server.post("/visited?election_id=" + state.electionId);
       Application.layout.activateNavigationTab("questionsLink");
       Application.layout.showSubNavigationContent("elections");
+    },
+
+    afterHide: function() {
+      if (this.userSwitchSubscription) {
+        this.userSwitchSubscription.destroy();
+      }
     },
 
     electionId: {
       afterChange: function(electionId, previousElectionId) {
         this.hideElementsWhileLoading();
         var additionalRelations = [
-          Election.where({id: electionId}).joinTo(Organization),
+          Election.where({id: electionId}),
           Candidate.where({electionId: electionId}).join(User).on(Candidate.creatorId.eq(User.id))
         ];
 
@@ -154,7 +185,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
               election.fetchCommentsAndCommentersIfNeeded();
               this.election(election);
             } else {
-              var lastVisitedOrgId = Application.currentUser().lastVisitedOrganization().id();
+              var lastVisitedOrgId = Application.currentUser().defaultOrganization().id();
               $.bbq.pushState({view: 'organization', organizationId: lastVisitedOrgId}, 2);
             }
             this.stopLoading();
@@ -187,40 +218,12 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.candidatesList.election(election);
         this.rankedCandidatesList.election(election);
         this.votesList.election(election);
-
-//        this.populateSubNavigationBar();
       }
     },
 
-//    populateSubNavigationBar: function() {
-//      var elections = this.election().organization().elections();
-//      this.electionCount.bindHtml(this.election().organization(), 'electionCount');
-//
-//      var score = this.election().score();
-//      var position = elections.where(Election.score.gt(score)).size() + 1;
-//      this.electionPosition.html(position);
-//
-//      var nextElection = elections.where(Election.score.lt(score)).first();
-//      if (nextElection) {
-//        var nextElectionID = nextElection.id();
-//        this.nextElectionLink.show();
-//        this.nextElectionLink.click(function() {
-//          Application.layout.goToQuestion(nextElectionID);
-//        });
-//      } else {
-//        this.nextElectionLink.hide();
-//      }
-//      var previousElection = elections.where(Election.score.gt(score)).last();
-//      if (previousElection) {
-//        var previousElectionID = previousElection.id();
-//        this.previousElectionLink.show();
-//        this.previousElectionLink.click(function() {
-//          Application.layout.goToQuestion(previousElectionID);
-//        });
-//      } else {
-//        this.previousElectionLink.hide();
-//      }
-//    },
+    organization: function() {
+      return this.election().organization();
+    },
 
     hideElementsWhileLoading: function() {
       this.showCreateCandidateFormButton.hide();
@@ -258,6 +261,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     populateCreator: function(election) {
       User.findOrFetch(election.creatorId()).onSuccess(function(creator) {
+        this.toggleGuestWelcome();
         this.creatorName.html(htmlEscape(creator.fullName()));
         this.createdAt.html(election.formattedCreatedAt());
         this.creatorAvatar.user(creator);
@@ -354,29 +358,31 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     createCandidate: function(elt, e) {
+      e.preventDefault();
       this.createCandidateBodyTextarea.blur();
       this.createCandidateDetailsTextarea.blur();
-      e.preventDefault();
-
       if (this.candidateCreationDisabled) return;
 
-      var body = this.createCandidateBodyTextarea.val();
-      var details = this.createCandidateDetailsTextarea.val();
-      if (body === "") return;
-
-      this.createCandidateBodyTextarea.attr('disabled', true);
-      this.createCandidateDetailsTextarea.attr('disabled', true);
-      this.candidateCreationDisabled = true;
-
-      this.createCandidateSpinner.show();
-      this.election().candidates().create({body: body, details: details})
+      this.organization().ensureCurrentUserCanParticipate()
         .onSuccess(function() {
-          this.createCandidateSpinner.hide();
-          this.hideCreateCandidateForm(false, this.bind(function() {
-            this.createCandidateBodyTextarea.attr('disabled', false);
-            this.createCandidateDetailsTextarea.attr('disabled', false);
-            this.candidateCreationDisabled = false;
-          }));
+          var body = this.createCandidateBodyTextarea.val();
+          var details = this.createCandidateDetailsTextarea.val();
+          if (body === "") return;
+
+          this.createCandidateBodyTextarea.attr('disabled', true);
+          this.createCandidateDetailsTextarea.attr('disabled', true);
+          this.candidateCreationDisabled = true;
+
+          this.createCandidateSpinner.show();
+          this.election().candidates().create({body: body, details: details})
+            .onSuccess(function() {
+              this.createCandidateSpinner.hide();
+              this.hideCreateCandidateForm(false, this.bind(function() {
+                this.createCandidateBodyTextarea.attr('disabled', false);
+                this.createCandidateDetailsTextarea.attr('disabled', false);
+                this.candidateCreationDisabled = false;
+              }));
+            }, this);
         }, this);
     },
 
@@ -451,6 +457,26 @@ _.constructor("Views.ElectionOverview", View.Template, {
         .onSuccess(function() {
           this.electionSpinner.hide();
         }, this);
+    },
+
+    toggleGuestWelcome: function() {
+      if (Application.currentUser().guest()) {
+        this.guestWelcomeCreatorName.html(htmlEscape(this.election().creator().fullName()));
+        this.guestWelcome.show();
+        this.adjustHeight();
+        if (this.election().candidates().empty()) {
+          this.guestWelcomeSuggest.show();
+          this.guestWelcomeRank.hide();
+        } else {
+          this.guestWelcomeSuggest.hide();
+          this.guestWelcomeRank.show();
+        }
+
+        this.userSwitchSubscription = Application.onUserSwitch(this.hitch('toggleGuestWelcome'));
+      } else {
+        this.guestWelcome.hide();
+        this.adjustHeight();
+      }
     },
 
     startLoading: function() {

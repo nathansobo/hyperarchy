@@ -36,12 +36,10 @@ group :test do
   gem "faker", "0.3.1"
   gem "timecop", "0.3.4"
   gem "ruby-debug-base19", "0.11.23"
-  gem "ruby-debug19", "0.11.6", :require => "ruby-debug"
 
   # for monarch specs, since rubymine forces me to run them with this gemfile
   # hoses deployment when it goes to production
-#  gem "sqlite3-ruby", "1.2.4", :require => "sqlite3"
-#  gem "differ", "0.1.1"
+  gem "differ", "0.1.1"
 end
 
 group :thor do

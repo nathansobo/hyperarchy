@@ -7,7 +7,8 @@ _.constructor("User", Model.Record, {
       emailHash: 'string',
       admin: 'boolean',
       dismissedWelcomeBlurb: 'boolean',
-      dismissedWelcomeGuide: 'boolean'
+      dismissedWelcomeGuide: 'boolean',
+      guest: 'boolean'
     });
 
     this.hasMany('rankings');
@@ -41,7 +42,11 @@ _.constructor("User", Model.Record, {
     return baseUrl + "/avatar/" + this.emailHash() + "?s=" + size.toString() + "&d=404"
   },
 
-  lastVisitedOrganization: function() {
-    return this.memberships().orderBy(Membership.lastVisited.desc()).first().organization();
+  defaultOrganization: function() {
+    if (this.guest()) {
+      return Organization.find({social: true});
+    } else {
+      return this.memberships().orderBy(Membership.lastVisited.desc()).first().organization();
+    }
   }
 });

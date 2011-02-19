@@ -2,7 +2,7 @@ module Monarch
   module Model
     class RemoteRepository
       attr_accessor :connection
-      delegate :transaction, :database_type, :to => :connection
+      delegate :transaction, :database_type, :execute_ddl, :to => :connection
 
       def insert(table, field_values)
         LOGGER.debug("insert -- #{table.global_name}, #{field_values.inspect}")
@@ -21,18 +21,24 @@ module Monarch
       end
 
       def read(relation)
+#        p relation.to_sql
         records = connection.fetch(*relation.to_sql).map do |field_values|
           relation.build_record_from_database(field_values)
         end
         records
       end
 
-      def execute_dui(sql, literals_hash)
+      def execute_dui(sql, literals_hash={})
         LOGGER.debug("execute_dui -- #{sql}, #{literals_hash.inspect}")
         connection.execute_dui(sql.lit(literals_hash).to_s(connection.dataset))
       end
 
-      def reload(record, columns=[])
+      def execute_ddl(sql, literals_hash={})
+#        p [sql, literals_hash]
+        connection.execute_ddl(sql.lit(literals_hash).to_s(connection.dataset))
+      end
+
+      def reload(record, *columns)
         table = record.table
         relation = table.where(table.column(:id).eq(record.id))
         relation = relation.project(*columns) unless columns.empty?

@@ -4,6 +4,10 @@ module Hyperarchy
       warden.user
     end
 
+    def flash
+      env['x-rack.flash']
+    end
+
     def warden
       @warden ||= request.env['warden']
     end
@@ -15,6 +19,11 @@ module Hyperarchy
     def authentication_required
       return if current_user
       halt render_page(Views::RedirectToLogin)
+    end
+
+    def allow_guests
+      return if current_user
+      warden.set_user(User.guest)
     end
 
     def no_internet_explorer
@@ -34,9 +43,9 @@ module Hyperarchy
       end
     end
 
-    def redirect_if_logged_in
-      return unless current_user
-      redirect "/app#view=organization&organizationId=#{current_user.last_visited_organization.id}"
+    def redirect_if_logged_in(redirect_guests=false)
+      return if !current_user || (!redirect_guests && current_user.guest?)
+      redirect "/#view=organization&organizationId=#{current_user.default_organization.id}"
       halt
     end
 

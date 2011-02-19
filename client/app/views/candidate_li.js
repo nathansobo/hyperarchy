@@ -160,6 +160,10 @@ _.constructor("Views.CandidateLi", View.Template, {
       });
     },
 
+    organization: function() {
+      return this.candidate.organization();
+    },
+
     afterRemove: function() {
       this.subscriptions.destroy();
       this.candidateCommentsList.remove();
@@ -334,18 +338,21 @@ _.constructor("Views.CandidateLi", View.Template, {
       this.createCommentTextarea.blur();
       e.preventDefault();
       if (this.commentCreationDisabled) return;
-
       var body = this.createCommentTextarea.val();
       if (body === "") return;
-      this.createCommentTextarea.val("");
-      this.createCommentTextarea.keyup();
-      this.commentCreationDisabled = true;
 
-      this.createCommentSpinner.show();
-      this.candidate.comments().create({body: body})
+      this.organization().ensureCurrentUserCanParticipate()
         .onSuccess(function() {
-          this.createCommentSpinner.hide();
-          this.commentCreationDisabled = false;
+          this.createCommentTextarea.val("");
+          this.createCommentTextarea.keyup();
+          this.commentCreationDisabled = true;
+
+          this.createCommentSpinner.show();
+          this.candidate.comments().create({body: body})
+            .onSuccess(function() {
+              this.createCommentSpinner.hide();
+              this.commentCreationDisabled = false;
+            }, this);
         }, this);
     }
 

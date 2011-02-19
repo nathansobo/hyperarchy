@@ -5,13 +5,13 @@ module Monarch
         class << self
           def from_wire_representation(representation, repository)
             operand = Relation.from_wire_representation(representation["operand"], repository)
-            projected_table = repository.resolve_table_name(representation["projected_table"]).surface_tables.first
+            projected_table = repository.get_view(representation["projected_table"]).surface_tables.first
             new(operand, projected_table)
           end
         end
 
         attr_reader :operand, :projected_table
-        delegate :column, :build, :create, :create!, :exposed_name, :to => :projected_table
+        delegate :column, :build, :create, :create!, :exposed_name, :concrete_columns, :viable_foreign_key_name, :to => :projected_table
         def initialize(operand, projected_table, &block)
           super(&block)
           @operand, @projected_table = operand, projected_table

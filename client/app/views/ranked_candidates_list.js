@@ -63,6 +63,10 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
       }
     },
 
+    organization: function() {
+      return this.election().organization();
+    },
+
     rankingsUser: {
       afterChange: function(rankingsUser) {
         if (this.election()) {
@@ -74,11 +78,11 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     assignRankingsRelation: function() {
-      if (this.rankingsUser().isCurrent() && this.election().organization().currentUserIsMember()) {
+      if (this.rankingsUser().isCurrent()) {
         this.rankingsUserName.html("Your Ranking");
         this.backLink.hide();
-        this.rankedCandidatesList.sortable('enable');
         this.removeClass('otherUser');
+        this.rankedCandidatesList.sortable('enable');
       } else {
         this.rankingsUserName.html(htmlEscape(this.rankingsUser().fullName()) + "'s Ranking");
         this.backLink.show();
@@ -165,7 +169,14 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     handleUpdate: function(event, ui) {
       var candidate = Candidate.find(ui.item.attr('candidateId'));
       var rankedCandidateLi = this.findLi(candidate);
-      rankedCandidateLi.handleUpdate();
+
+      this.organization().ensureCurrentUserCanParticipate()
+        .onSuccess(function() {
+          rankedCandidateLi.handleUpdate();
+        }, this)
+        .onFailure(function() {
+          rankedCandidateLi.remove();
+        }, this);
     },
 
     handleSort:  function(event, ui) {

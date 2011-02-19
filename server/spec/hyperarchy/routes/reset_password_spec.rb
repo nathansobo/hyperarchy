@@ -33,7 +33,7 @@ describe "POST /reset_password", :type => :rack do
     current_user.password.should == "newpassword"
 
     last_response.should be_redirect
-    last_response.location.should == "/app"
+    last_response.location.should == "/"
 
     # bad confirmation
     post "/reset_password", :token => user.password_reset_token, :password => "newpassword", :password_confirmation => "bad"

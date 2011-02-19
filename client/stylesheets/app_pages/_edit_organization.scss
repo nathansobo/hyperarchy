@@ -2,6 +2,10 @@
   #editOrganization {
     @extend #addOrganization;
 
+    label[for="privacy"] {
+      display: block;
+    }
+
     input[name="name"] {
       width: 300px;
     }

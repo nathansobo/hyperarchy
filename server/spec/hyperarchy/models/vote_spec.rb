@@ -9,7 +9,7 @@ module Models
         @user_1 = User.make
         @user_2 = User.make
         @election = Election.make
-        @candidate = election.candidates.create(:body => "1")
+        @candidate = election.candidates.make
       end
 
       specify "the vote count of the election is increment or decrement appropriately" do

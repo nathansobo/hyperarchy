@@ -13,13 +13,13 @@ describe "GET /confirm_membership/:membership_id", :type => :rack do
   end
 
   context "when the membership belongs to the logged-in user" do
-    it "activates the membership and redirects to /app" do
+    it "activates the membership and redirects to /" do
       membership.should be_pending
       get "/confirm_membership/#{membership.id}"
       membership.should_not be_pending
 
       last_response.should be_redirect
-      last_response.location.should == "/app#view=organization&organizationId=#{membership.organization_id}"
+      last_response.location.should == "/#view=organization&organizationId=#{membership.organization_id}"
     end
   end
 
@@ -31,7 +31,7 @@ describe "GET /confirm_membership/:membership_id", :type => :rack do
     it "redirects to the main page" do
       get "/confirm_membership/#{membership.id}"
       last_response.should be_redirect
-      last_response.location.should == "/app#view=organization&organizationId=#{membership.organization_id}"
+      last_response.location.should == "/#view=organization&organizationId=#{membership.organization_id}"
     end
   end
 end

@@ -9,13 +9,15 @@ module Monarch
         describe "class methods" do
           describe ".from_wire_representation" do
             it "returns a ConcreteColumn based on the 'table' and 'name' of the given representation" do
+              repo = UserRepository.new(User.find('jan'))
+
               column = ConcreteColumn.from_wire_representation({
                 "type" => "column",
                 "table" => "blog_posts",
                 "name" => "body"
-              }, UserRepository.new(User.find('jan')))
+              }, repo)
 
-              column.should == BlogPost[:body]
+              column.should ==  repo.get_view(:blog_posts).column(:body)
             end
           end
         end

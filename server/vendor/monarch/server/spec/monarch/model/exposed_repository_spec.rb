@@ -12,8 +12,8 @@ module Monarch
       end
 
       describe ".expose(name, &relation_definition)" do
-        it "binds the given relation definition to a table name" do
-          exposed_repository.resolve_table_name(:blogs).should == user.blogs
+        it "binds a view based on the given relation definition to a table name" do
+          exposed_repository.get_view(:blogs).relation.should == user.blogs
         end
       end
 
@@ -92,7 +92,7 @@ module Monarch
           }
 
           dataset = exposed_repository.fetch([super_blog_posts_relation_representation])
-          expected_records = exposed_repository.resolve_table_name(:super_blog_posts).where(Blog[:user_id].eq('jan')).all
+          expected_records = exposed_repository.get_view(:super_blog_posts).where(:user_id => 'jan').all
           expected_records.should_not be_empty
 
           expected_records.each do |record|
@@ -417,11 +417,43 @@ module Monarch
 
 
         it "resolves relation names to primitive Tables" do
-          relation = exposed_repository.build_relation_from_wire_representation({
+          view = exposed_repository.build_relation_from_wire_representation({
             "type" => "table",
             "name" => "blog_posts"
           })
-          relation.should == exposed_repository.user.blog_posts
+          view.relation.should == exposed_repository.user.blog_posts
+        end
+      end
+
+      describe "#get_view" do
+        it "returns the exposed view by the given name, creating it temporarily in the database the first time its called for a given name" do
+          ddl_sql = nil
+          ddl_literals = nil
+          mock(Origin).execute_ddl(anything, anything).once do |sql, literals|
+            ddl_sql = sql
+            ddl_literals = literals
+          end
+          
+          view = exposed_repository.get_view(:blog_posts)
+          [ddl_sql, ddl_literals].should == view.to_sql(:temporary)
+
+          exposed_repository.get_view(:blog_posts)
+        end
+      end
+
+      describe "#drop_views" do
+        it "drops any views that were created by previous calls to #get_view and clears the view cache" do
+          stub(Origin).execute_ddl
+
+          view_1 = exposed_repository.get_view(:blog_posts)
+          view_2 = exposed_repository.get_view(:blogs)
+          mock(view_1).drop_view
+          mock(view_2).drop_view
+
+          exposed_repository.drop_views
+
+
+          exposed_repository.get_view(:blog_posts).should_not eql(view_1)
         end
       end
     end
