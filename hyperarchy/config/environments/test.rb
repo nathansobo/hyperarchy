@@ -32,4 +32,8 @@ Hyperarchy::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+
+  # TODO: This should use a more Rails-approved mechanism
+  HTTP_HOST = "test.hyperarchy.com"
 end

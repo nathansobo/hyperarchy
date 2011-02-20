@@ -1,4 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + "/../../hyperarchy_spec_helper")
+#require File.expand_path(File.dirname(__FILE__) + "/../../hyperarchy_spec_helper")
+require 'spec_helper'
 
 module Models
   describe Vote do

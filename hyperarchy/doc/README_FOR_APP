@@ -1,2 +1,9 @@
+Deferred cleanup:
+Can Hyperarchy.defer be stubbed in tests and not redefined? RR stubbing with blocks that take blocks seems to be broken
+Eliminate use of HTTP_HOST constant
+eleminate HYPERARCHY_BLURB constant
+
+
+
 Use this README file to introduce your application and point to useful places in the API for learning more.
 Run "rake doc:app" to generate API documentation for your models, controllers, helpers, and libraries.

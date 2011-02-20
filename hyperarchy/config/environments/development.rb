@@ -22,5 +22,8 @@ Hyperarchy::Application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
+
+  # TODO: This should use a more Rails-approved mechanism
+  HTTP_HOST = "local.hyperarchy.com"
 end
 

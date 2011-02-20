@@ -1,9 +1,8 @@
 require File.expand_path('../boot', __FILE__)
 
-require 'rails/all'
-require "action_controller/railtie"
-require "sequel-rails/railtie"
-require "action_mailer/railtie"
+require 'action_controller/railtie'
+require 'sequel_rails3/railtie'
+require 'action_mailer/railtie'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -43,3 +42,7 @@ module Hyperarchy
     config.filter_parameters += [:password]
   end
 end
+
+HYPERARCHY_BLURB =       %{Hyperarchy helps your organization track its own collective opinion.
+It lets you put any issue to a vote by raising questions, then allows members to suggest and rank answers to these questions.
+As individuals change their rankings, Hyperarchy computes and broadcasts the evolving consensus in real time, making it easier to communicate and make decisions.}
