@@ -1,4 +1,8 @@
 Hyperarchy::Application.routes.draw do
+  root :to => 'home#show'
+  match 'login' => 'sessions#create'
+  match 'logout' => 'sessions#destroy'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

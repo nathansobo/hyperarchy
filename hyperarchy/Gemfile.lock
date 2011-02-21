@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/bigfix/erector.git
+  revision: adac17b5c02e47c0ebb834684d2a759cf34b8796
+  ref: adac17b5c02e47c0ebb8
+  specs:
+    erector (0.8.1)
+      rake
+      treetop (>= 1.2.3)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -32,14 +41,12 @@ GEM
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
     diff-lcs (1.1.2)
-    erector (0.8.2)
-      rake
-      treetop (>= 1.2.3)
     erubis (2.6.6)
       abstract (>= 1.0.0)
     faker (0.9.5)
       i18n (~> 0.4)
     guid (0.1.1)
+    haml (3.0.25)
     i18n (0.5.0)
     json (1.5.1)
     machinist (1.0.6)
@@ -76,23 +83,24 @@ GEM
       rake
       stream (>= 0.5)
     rr (1.0.2)
-    rspec (2.4.0)
-      rspec-core (~> 2.4.0)
-      rspec-expectations (~> 2.4.0)
-      rspec-mocks (~> 2.4.0)
-    rspec-core (2.4.0)
-    rspec-expectations (2.4.0)
+    rspec (2.5.0)
+      rspec-core (~> 2.5.0)
+      rspec-expectations (~> 2.5.0)
+      rspec-mocks (~> 2.5.0)
+    rspec-core (2.5.1)
+    rspec-expectations (2.5.0)
       diff-lcs (~> 1.1.2)
-    rspec-mocks (2.4.0)
-    rspec-rails (2.4.1)
+    rspec-mocks (2.5.0)
+    rspec-rails (2.5.0)
       actionpack (~> 3.0)
       activesupport (~> 3.0)
       railties (~> 3.0)
-      rspec (~> 2.4.0)
+      rspec (~> 2.5.0)
     sequel (3.16.0)
     sequel_rails3 (0.0.3)
       rails (>= 3.0.0)
       sequel (>= 3.0.0)
+    spork (0.9.0.rc3)
     stream (0.5)
     thor (0.14.6)
     treetop (1.4.9)
@@ -104,9 +112,10 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt-ruby
-  erector
+  erector!
   faker
   guid
+  haml
   json
   machinist
   pg (= 0.9.0)
@@ -114,7 +123,8 @@ DEPENDENCIES
   rails (= 3.0.4)
   rgl
   rr
-  rspec
-  rspec-rails
+  rspec (~> 2.5.0)
+  rspec-rails (~> 2.5.0)
   sequel (= 3.16.0)
   sequel_rails3
+  spork (~> 0.9.0.rc)

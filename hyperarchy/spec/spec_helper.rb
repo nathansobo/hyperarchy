@@ -1,34 +1,17 @@
-# This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV["RAILS_ENV"] ||= 'test'
-require File.expand_path("../../config/environment", __FILE__)
-require 'rspec/rails'
-require 'machinist'
-require 'monarch/machinist_monarch_adaptor'
-require 'rr'
-require 'faker'
+require 'rubygems'
+require 'spork'
 
-# Requires supporting ruby files with custom matchers and macros, etc,
-# in spec/support/ and its subdirectories.
-Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+Spork.prefork do
+  ENV["RAILS_ENV"] ||= 'test'
+  require File.expand_path("../../config/environment", __FILE__)
 
-RSpec.configure do |config|
-  config.mock_with :rr
-  config.include SpecMethods
-  config.include ModelSpecMethods, :type => :model
-  config.before do
-    Monarch::Model::Repository.clear_tables
-    Monarch::Model::Repository.initialize_local_identity_map
-    Mailer.reset
-    Sham.reset
+  require 'rspec/rails'
+  require 'machinist'
+  require 'monarch/machinist_monarch_adaptor'
+  require 'rr'
+  require 'faker'
+end
 
-    Organization.make(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
-    User.make(:first_name => "Guest", :last_name => "User", :guest => true)
-  end
-
-  # TODO: Why doesn't a block taking a block work with RR?
-  def Hyperarchy.defer
-    yield
-  end
-
-  Mailer.use_fake
+Spork.each_run do
+  require Rails.root.join('spec', 'each_run_spec_helper')
 end

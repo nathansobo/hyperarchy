@@ -1,6 +1,5 @@
-$LOAD_PATH << Rails.root.join('lib', 'monarch', 'lib')
-autoload :Monarch, 'monarch/lib/monarch'
-
+$LOAD_PATH << Rails.root.join('vendor', 'monarch', 'lib')
+require 'monarch'
 autoload :Mailer, 'mailer'
 
 module Hyperarchy

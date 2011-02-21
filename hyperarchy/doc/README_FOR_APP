@@ -1,8 +1,23 @@
+todo:
+re-enable the real time client and the disconnect dialog (disconect_dialog.js line 14)
+
 Deferred cleanup:
 Can Hyperarchy.defer be stubbed in tests and not redefined? RR stubbing with blocks that take blocks seems to be broken
 Eliminate use of HTTP_HOST constant
 eleminate HYPERARCHY_BLURB constant
 
+
+come up with a better json protocol between server and client.
+success and failure could be signalled with a status code
+
+giftwrapper
+- configure with environment-specific yml??
+- use rack built-ins to mount resource paths different spots like the jasmine server
+- giftwrapper should not be loaded as an initializer. should be able to configure it in environment files
+
+
+remove references to 'Origin' constant and hide this within monarch...
+figure out how to auto-load pieces of monarch on an as-needed basis
 
 
 Use this README file to introduce your application and point to useful places in the API for learning more.

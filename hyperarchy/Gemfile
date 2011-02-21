@@ -6,7 +6,7 @@ gem 'sequel', '3.16.0'
 gem 'sequel_rails3'
 gem 'bcrypt-ruby', :require => 'bcrypt'
 gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
-gem 'erector'
+gem 'erector', :git => "https://github.com/bigfix/erector.git", :ref => 'adac17b5c02e47c0ebb8'
 gem 'pony'
 
 # monarch
@@ -14,9 +14,11 @@ gem 'guid'
 gem 'json'
 
 group :development, :test do
-  gem 'rspec'
-  gem 'rspec-rails'
+  gem 'haml'
+  gem 'rspec', '~> 2.5.0'
+  gem 'rspec-rails', '~> 2.5.0'
   gem 'rr'
   gem 'machinist'
   gem 'faker'
+  gem 'spork', '~> 0.9.0.rc'
 end

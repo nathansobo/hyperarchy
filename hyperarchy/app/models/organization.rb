@@ -15,6 +15,10 @@ class Organization < Monarch::Model::Record
 
   attr_accessor :suppress_membership_creation
 
+  def self.social
+    find(:social => true)
+  end
+
   def can_create?
     current_user && !current_user.guest?
   end
