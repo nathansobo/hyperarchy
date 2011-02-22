@@ -29,7 +29,7 @@ class SessionsController < ApplicationController
       return false
     end
 
-    session[:current_user_id] = user.id
+    set_current_user(user)
     true
   end
 

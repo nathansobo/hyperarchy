@@ -11,6 +11,7 @@ describe SessionsController do
   describe "#create" do
     describe "when the email address and password match an existing user" do
       it "logs the user in, and returns the current user id plus the user's initial dataset" do
+        mock(Monarch::Model::Repository).current_user = user
         current_user.should be_nil
         xhr :post, :create, :user => { :email_address => user.email_address, :password => "password" }
         current_user.should == user
@@ -48,7 +49,9 @@ describe SessionsController do
 
   describe "#destroy" do
     it "logs the current user out" do
-      login_as(User.make)
+      login_as(user)
+      mock(Monarch::Model::Repository).current_user = user # this happens before the log out
+      mock(Monarch::Model::Repository).current_user = nil # this should happen upon log out
       current_user.should_not be_nil
       xhr :post, :destroy
       current_user.should be_nil

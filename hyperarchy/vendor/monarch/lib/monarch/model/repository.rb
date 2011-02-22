@@ -24,7 +24,7 @@ module Monarch
       def transaction
         cancelled = false
         result = nil
-        pause_events
+#        pause_events
         Origin.transaction do
           begin
             result = yield
@@ -36,7 +36,7 @@ module Monarch
         end
 
         unless cancelled
-          resume_events
+#          resume_events
         end
         result
       end

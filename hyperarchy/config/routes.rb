@@ -2,6 +2,10 @@ Hyperarchy::Application.routes.draw do
   root :to => 'home#show'
   match 'login' => 'sessions#create'
   match 'logout' => 'sessions#destroy'
+  match '/repository/fetch' => 'repository#fetch', :via => :get
+  match '/repository/mutate' => 'repository#mutate', :via => :post
+
+  resources :elections
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

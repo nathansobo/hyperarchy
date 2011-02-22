@@ -8,14 +8,7 @@ describe HomeController do
         get :show
         current_user.should == User.guest
         response.should be_success
-
-        show = Views::Home::Show.new
-        stub(show).current_user { current_user }
-        puts show.to_html
-
         response.should render_template(Views::Home::Show)
-
-        puts response.body
       end
     end
 

@@ -29,7 +29,7 @@ module Monarch
       def fetch(relation_wire_representations)
         Repository.transaction do
           begin
-            build_relational_dataset(build_relations_from_wire_representations(relation_wire_representations))
+            build_relations_from_wire_representations(relation_wire_representations)
           ensure
             drop_views
           end

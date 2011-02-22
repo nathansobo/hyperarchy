@@ -52,8 +52,12 @@ class Organization < Monarch::Model::Record
     memberships.create!(:user => current_user, :pending => false)
   end
 
+  def current_user_can_read?
+    public? || current_user.admin? || current_user_is_member?
+  end
+
   def current_user_can_create_items?
-    (public? && !current_user.guest?) || has_member?(current_user)
+    (public? && !current_user.guest?) || current_user_is_member?
   end
 
   def has_owner?(user)
