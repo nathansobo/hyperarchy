@@ -17,3 +17,14 @@ desc "Run prequel specs"
 task :spec do
   system "rspec spec/prequel"
 end
+
+namespace :db do
+  desc "Create the test database in postgres"
+  task :create do
+    system "createdb -E utf8 prequel_test"
+  end
+
+  task :drop do
+    system "dropdb prequel_test"
+  end
+end
