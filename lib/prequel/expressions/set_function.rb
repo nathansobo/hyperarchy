@@ -1,22 +1,22 @@
 module Prequel
   module Expressions
     class SetFunction < Expression
-      attr_reader :expression, :type
+      attr_reader :expression, :name
 
-      def initialize(expression, type)
-        @expression, @type = expression, type
+      def initialize(expression, name)
+        @expression, @name = expression, name
       end
 
       def resolve_in_relations(relations)
-        SetFunction.new(expression.resolve_in_relations(relations), type)
+        SetFunction.new(expression.resolve_in_relations(relations), name)
       end
 
       def resolve_in_query(query)
-        SetFunction.new(expression.resolve_in_query(query), type)
+        SetFunction.new(expression.resolve_in_query(query), name)
       end
 
       def to_sql
-        "#{type}(#{expression.to_sql})"
+        "#{name}(#{expression.to_sql})"
       end
     end
   end

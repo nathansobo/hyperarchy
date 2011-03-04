@@ -1,6 +1,8 @@
 $LOAD_PATH.unshift File.expand_path("../lib", __FILE__)
 require "prequel/version"
 
+task :default => :spec
+
 desc "Build prequel #{Prequel::VERSION}"
 task :build do
   system "gem build prequel.gemspec"

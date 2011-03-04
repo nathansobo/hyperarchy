@@ -14,9 +14,13 @@ Gem::Specification.new do |s|
   s.summary     = "A ground-up relational algebraic ORM."
   s.description = "Prequel is the database library I've always wanted."
 
+  s.add_dependency('i18n', '>= 0.5.0')
   s.add_dependency('activesupport', '>= 3.0.4')
   s.add_dependency('sequel', '>= 3.20.0')
+
   s.add_development_dependency "rspec"
+  s.add_development_dependency "rr"
+  s.add_development_dependency "pg"
 
   s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.md)
   s.require_path = 'lib'

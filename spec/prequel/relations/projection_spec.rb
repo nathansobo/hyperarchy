@@ -89,8 +89,17 @@ module Prequel
           end
         end
 
-        context "when the projection is embedded in a join" do
+        context "when projecting a count" do
+          it "returns a single result" do
+            DB[:blogs] << { :id => 1, :user_id => 1, :title => "Blog 1"}
+            DB[:blogs] << { :id => 2, :user_id => 1, :title => "Blog 2"}
+            DB[:blogs] << { :id => 3, :user_id => 3, :title => "Blog 3"}
 
+            Blog.where(:user_id => 1).project(:id.count).all.first.count.should == 2
+          end
+        end
+
+        context "when the projection is embedded in a join" do
           it "constructs the appropriate composite tuples" do
             DB[:blogs] << { :id => 1, :user_id => 1, :title => "Blog 1"}
             DB[:posts] << { :id => 1, :blog_id => 1, :title => "Blog 1, Post 1"}
