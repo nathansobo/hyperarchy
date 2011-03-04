@@ -1,3 +1,7 @@
+require 'active_support/all'
+require 'sequel'
+require 'prequel/version'
+
 module Prequel
   extend ActiveSupport::Autoload
   extend self
