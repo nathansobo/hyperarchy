@@ -8,7 +8,7 @@ end
 
 desc "Push prequel #{Prequel::VERSION} to the gem repository"
 task :release => :build do
-  system "gem push prequel-#{Prequel::VERSION}"
+  system "gem push prequel-#{Prequel::VERSION}.gem"
 end
 
 desc "Run prequel specs"
