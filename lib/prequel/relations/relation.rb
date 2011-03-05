@@ -27,6 +27,10 @@ module Prequel
         GroupBy.new(self, *expressions)
       end
 
+      def order_by(*order_specs)
+        OrderBy.new(self, *order_specs)
+      end
+
       def table_ref(query)
         singular_table_ref(query)
       end

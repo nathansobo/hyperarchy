@@ -4,6 +4,7 @@ module Prequel
 
     autoload :GroupBy
     autoload :InnerJoin
+    autoload :OrderBy
     autoload :Projection
     autoload :Relation
     autoload :Selection

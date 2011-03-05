@@ -1,7 +1,7 @@
 module Prequel
   module Sql
     class Query
-      attr_accessor :select_list, :group_bys
+      attr_accessor :select_list, :group_bys, :order_bys
       attr_reader :relation, :table_ref, :conditions, :literals, :singular_table_refs, :subquery_count, :query_columns
       attr_writer :tuple_builder
 
@@ -84,6 +84,7 @@ module Prequel
           "from",
           from_clause_sql,
           where_clause_sql,
+          order_by_clause_sql,
           group_by_clause_sql
         ].compact.join(" ")
       end
@@ -108,6 +109,11 @@ module Prequel
       def group_by_clause_sql
         return nil unless group_bys
         'group by ' + group_bys.map(&:to_sql).join(', ')
+      end
+
+      def order_by_clause_sql
+        return nil unless order_bys
+        'order by ' + order_bys.map(&:to_sql).join(', ')
       end
     end
   end

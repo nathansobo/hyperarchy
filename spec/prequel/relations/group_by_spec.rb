@@ -28,7 +28,6 @@ module Prequel
           DB[:posts] << { :id => 1, :blog_id => 1 }
           DB[:posts] << { :id => 2, :blog_id => 1 }
           DB[:posts] << { :id => 3, :blog_id => 2 }
-
         end
 
         context "a projection on top of a group by" do
