@@ -19,8 +19,12 @@ module Prequel
         InnerJoin.new(self, right, predicate)
       end
 
-      def project(*symbols)
-        Projection.new(self, *symbols)
+      def project(*expressions)
+        Projection.new(self, *expressions)
+      end
+
+      def group_by(*expressions)
+        GroupBy.new(self, *expressions)
       end
 
       def table_ref(query)

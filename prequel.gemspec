@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec"
   s.add_development_dependency "rr"
   s.add_development_dependency "pg"
+  s.add_development_dependency "differ"
 
   s.files        = Dir.glob("lib/**/*") + %w(LICENSE README.md)
   s.require_path = 'lib'

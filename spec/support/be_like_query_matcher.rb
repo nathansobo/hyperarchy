@@ -1,3 +1,5 @@
+require 'differ'
+
 module BeLikeQueryMatcher
   class BeLikeQuery
     def initialize(expected_query, expected_literals)

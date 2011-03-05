@@ -3,9 +3,9 @@ module Prequel
     class Projection < Relation
       attr_reader :operand
 
-      def initialize(operand, *symbols)
+      def initialize(operand, *expressions)
         @operand = operand
-        assign_derived_columns(symbols)
+        assign_derived_columns(expressions)
       end
 
       def get_column(name)
