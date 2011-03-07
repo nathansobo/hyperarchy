@@ -1,7 +1,6 @@
 TODO:
 relations
 ----------
-add order by
 add left outer join
 add limit and offset
 add union
