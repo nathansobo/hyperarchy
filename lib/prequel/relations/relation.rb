@@ -35,6 +35,10 @@ module Prequel
         OrderBy.new(self, *order_specs)
       end
 
+      def limit(count)
+        Limit.new(self, count)
+      end
+
       def table_ref(query)
         singular_table_ref(query)
       end

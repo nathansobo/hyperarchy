@@ -6,6 +6,7 @@ module Prequel
     autoload :Join
     autoload :InnerJoin
     autoload :LeftJoin
+    autoload :Limit
     autoload :OrderBy
     autoload :Projection
     autoload :Relation
