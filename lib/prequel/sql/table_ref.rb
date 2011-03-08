@@ -19,7 +19,8 @@ module Prequel
       end
 
       def build_tuple(field_values)
-        tuple_class.new(extract_field_values(field_values))
+        specific_field_values = extract_field_values(field_values)
+        tuple_class.new(specific_field_values) if specific_field_values[:id]
       end
     end
   end

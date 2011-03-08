@@ -3,7 +3,9 @@ module Prequel
     extend ActiveSupport::Autoload
 
     autoload :DerivedQueryColumn
+    autoload :JoinedTableRef
     autoload :InnerJoinedTableRef
+    autoload :LeftJoinedTableRef
     autoload :NamedTableRef
     autoload :Query
     autoload :QueryColumn

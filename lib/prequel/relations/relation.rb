@@ -19,6 +19,10 @@ module Prequel
         InnerJoin.new(self, right, predicate)
       end
 
+      def left_join(right, predicate)
+        LeftJoin.new(self, right, predicate)
+      end
+
       def project(*expressions)
         Projection.new(self, *expressions)
       end

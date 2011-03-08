@@ -1,10 +1,10 @@
 module Prequel
   module Sql
-    class InnerJoinedTableRef < JoinedTableRef
+    class LeftJoinedTableRef < JoinedTableRef
       protected
 
       def join_type
-        "inner join"
+        "left outer join"
       end
     end
   end

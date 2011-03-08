@@ -1,10 +1,10 @@
 module Prequel
   module Relations
-    class InnerJoin < Join
+    class LeftJoin < Join
       protected
 
       def table_ref_class
-        Sql::InnerJoinedTableRef
+        Sql::LeftJoinedTableRef
       end
     end
   end

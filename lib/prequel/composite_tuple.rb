@@ -11,7 +11,7 @@ module Prequel
     end
 
     def get_record(table_name)
-      left.get_record(table_name) || right.get_record(table_name)
+      left.try(:get_record, table_name) || right.try(:get_record, table_name)
     end
 
     def get_field_value(name)
@@ -20,7 +20,7 @@ module Prequel
         field_name = $2.to_sym
         get_record(table_name).try(:get_field_value, field_name)
       else
-        left.get_field_value(name) || right.get_field_value(name)
+        left.try(:get_field_value, name) || right.try(:get_field_value, name)
       end
     end
 
