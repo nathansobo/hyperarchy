@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Prequel
   module Relations
-    describe Limit do
+    describe Offset do
       before do
         class Blog < Prequel::Record
           column :id, :integer
@@ -18,29 +18,31 @@ module Prequel
           DB[:blogs] << { :id => 3 }
         end
 
-        it "returns the results with the correct limit" do
-          results = Blog.limit(2).all
-          results.should == [Blog.find(1), Blog.find(2)]
+        it "returns the results with the correct offset" do
+          results = Blog.limit(2).offset(1).all
+          results.should == [Blog.find(2), Blog.find(3)]
         end
       end
 
       describe "#to_sql" do
         describe "with an explicitly ascending column" do
           it "generates the appropriate sql with a limit clause" do
-            Blog.limit(2).to_sql.should be_like_query(%{
+            Blog.limit(3).offset(2).to_sql.should be_like_query(%{
               select *
               from   blogs
-              limit 2
+              limit 3
+              offset 2
             })
           end
         end
 
-        describe "with a limit on top of a limit" do
-          it "honors the count associated with the uppermost limit in the relational op tree" do
-            Blog.limit(2).limit(10).to_sql.should be_like_query(%{
+        describe "with an offset on top of an offset" do
+          it "honors the count associated with the uppermost offset in the relational op tree" do
+            Blog.limit(3).offset(2).offset(10).to_sql.should be_like_query(%{
               select *
               from   blogs
-              limit 10
+              limit 3
+              offset 10
             })
           end
         end

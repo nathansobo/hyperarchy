@@ -39,6 +39,10 @@ module Prequel
         Limit.new(self, count)
       end
 
+      def offset(count)
+        Offset.new(self, count)
+      end
+
       def table_ref(query)
         singular_table_ref(query)
       end
