@@ -42,7 +42,7 @@ module Prequel
       describe "#join_through(right)" do
         it "joins to the operand and then projects through its surface table" do
           Blog.where(:user_id => 1).join_through(Post).should ==
-          Blog.where(:user_id => 1).join(Post).project(Post)
+            Blog.where(:user_id => 1).join(Post).project(Post)
         end
       end
     end

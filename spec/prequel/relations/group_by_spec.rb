@@ -44,6 +44,14 @@ module Prequel
         end
       end
 
+      describe "#==" do
+        it "implements semantic equality" do
+          Post.group_by(:blog_id).should == Post.group_by(:blog_id)
+          Post.group_by(:blog_id).should_not == Blog.group_by(:user_id)
+          Post.group_by(:blog_id).should_not == Post.group_by(:category_id)
+        end
+      end
+
       describe "#to_sql" do
         it "generates the appropriate sql with a group by clause" do
           Blog.join(Post, Blog[:id] => :blog_id).group_by(:user_id, :category_id).project(Post[:id].count).to_sql.should be_like_query(%{

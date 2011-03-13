@@ -1,6 +1,8 @@
 module Prequel
   module Relations
     class Relation
+      extend EqualityDerivation
+
       delegate :to_sql, :result_set, :all, :first, :to => :query
 
       def query

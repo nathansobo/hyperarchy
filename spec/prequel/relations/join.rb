@@ -34,6 +34,8 @@ module Prequel
         left.infer_join_columns(columns) || right.infer_join_columns(columns)
       end
 
+      derive_equality :predicate, :left, :right
+
       protected
 
       def operands

@@ -17,6 +17,8 @@ module Prequel
         end
       end
 
+      derive_equality :operand, :expressions
+
       protected
 
       def operands

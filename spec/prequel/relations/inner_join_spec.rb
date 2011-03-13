@@ -34,7 +34,7 @@ module Prequel
           compound_join.predicate.right.should == Comment.table.get_column(:post_id)
         end
 
-        context "when the predicate is ellided" do
+        context "when the predicate is elided" do
           context "for simple joins" do
             it "infers the predicate correctly" do
               join = Blog.join(Post)
@@ -127,9 +127,14 @@ module Prequel
       end
 
       describe "#==" do
+        before do
+          Post.column(:blog_2_id, :integer)
+        end
+
         it "compares the inner joins semantically" do
           Blog.join(Post).should == Blog.join(Post)
           Blog.join(Post).should_not == Post.join(Comment)
+          Blog.join(Post, Blog[:id] => :blog_2_id).should_not == Blog.join(Post)
         end
       end
 

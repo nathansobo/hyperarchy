@@ -1,6 +1,8 @@
 module Prequel
   module Expressions
     class Equal
+      extend EqualityDerivation
+
       attr_reader :left, :right
       def initialize(left, right)
         @left, @right = left, right
@@ -14,10 +16,7 @@ module Prequel
         Equal.new(left.resolve_in_query(query), right.resolve_in_query(query))
       end
 
-      def ==(other)
-        return false unless other.instance_of?(self.class)
-        left == other.left && right == other.right
-      end
+      derive_equality :left, :right
 
       def to_sql
         "#{left.to_sql} = #{right.to_sql}"

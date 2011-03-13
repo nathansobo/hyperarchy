@@ -54,8 +54,10 @@ module Prequel
         end
       end
 
+      derive_equality :operand, :projected_table, :projected_columns
+
       protected
-      attr_reader :projected_table
+      attr_reader :projected_table, :projected_columns
 
       def assign_derived_columns(expressions)
         if @projected_table = detect_projected_table(expressions)
@@ -63,7 +65,7 @@ module Prequel
             derive(resolve(column.qualified_name.as(column.name)))
           end
         else
-          expressions.each do |column_name|
+          @projected_columns = expressions.map do |column_name|
             derive(resolve(column_name))
           end
         end

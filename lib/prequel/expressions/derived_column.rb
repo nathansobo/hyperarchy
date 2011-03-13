@@ -1,6 +1,8 @@
 module Prequel
   module Expressions
     class DerivedColumn
+      extend EqualityDerivation
+
       attr_reader :relation, :expression, :alias_name
       delegate :origin, :qualified_name, :to => :expression
 
@@ -11,6 +13,8 @@ module Prequel
       def name
         alias_name || expression.name
       end
+
+      derive_equality :relation, :expression, :alias_name
 
       def resolve_in_query(query)
         if subquery = query.singular_table_refs[relation]

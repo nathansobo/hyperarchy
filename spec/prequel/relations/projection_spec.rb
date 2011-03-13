@@ -119,6 +119,12 @@ module Prequel
         end
       end
 
+      describe "#==" do
+        it "compares projections semantically" do
+          Comment.project(:post_id.as(:comment_post_id), :body.as(:comment_body)).should ==
+            Comment.project(:post_id.as(:comment_post_id), :body.as(:comment_body))
+        end
+      end
       describe "#to_sql" do
         describe "a projection of particular columns, some with aliases" do
           it "generates the appropriate sql" do

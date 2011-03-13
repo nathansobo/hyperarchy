@@ -29,6 +29,7 @@ module Prequel
   require 'prequel/core_extensions'
   autoload :CompositeTuple
   autoload :Expressions
+  autoload :EqualityDerivation
   autoload :Field
   autoload :Record
   autoload :Relations
