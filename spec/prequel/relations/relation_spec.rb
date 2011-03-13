@@ -8,6 +8,13 @@ module Prequel
           column :id, :integer
           column :title, :string
         end
+
+        class Post < Record
+          column :id, :integer
+          column :blog_id, :integer
+          column :title, :string
+        end
+
         Blog.create_table
       end
 
@@ -21,7 +28,6 @@ module Prequel
 
       describe ".find(id)" do
         before do
-          Blog.create_table
           DB[:blogs] << { :id => 1, :title => "Blog 1" }
           DB[:blogs] << { :id => 2, :title => "Blog 2" }
         end
@@ -30,6 +36,13 @@ module Prequel
           Blog.find(1).title.should == "Blog 1"
           Blog.find(2).title.should == "Blog 2"
           Blog.find(99).should be_nil
+        end
+      end
+
+      describe "#join_through(right)" do
+        it "joins to the operand and then projects through its surface table" do
+          Blog.where(:user_id => 1).join_through(Post).should ==
+          Blog.where(:user_id => 1).join(Post).project(Post)
         end
       end
     end

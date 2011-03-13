@@ -52,6 +52,10 @@ module Prequel
         nil
       end
 
+      def tables
+        [self]
+      end
+
       class TableDefinitionContext
         attr_reader :table
         def initialize(table)

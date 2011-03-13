@@ -21,6 +21,13 @@ module Prequel
         query.add_condition(predicate.resolve_in_query(query))
       end
 
+      def ==(other)
+        return false unless other.instance_of?(self.class)
+        p predicate == other.predicate
+        p operand == other.operand
+        predicate == other.predicate && operand == other.operand
+      end
+
       protected
 
       def operands

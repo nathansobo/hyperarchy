@@ -14,6 +14,11 @@ module Prequel
         Equal.new(left.resolve_in_query(query), right.resolve_in_query(query))
       end
 
+      def ==(other)
+        return false unless other.instance_of?(self.class)
+        left == other.left && right == other.right
+      end
+
       def to_sql
         "#{left.to_sql} = #{right.to_sql}"
       end

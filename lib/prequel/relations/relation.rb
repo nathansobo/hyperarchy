@@ -19,6 +19,12 @@ module Prequel
         InnerJoin.new(self, right, predicate)
       end
 
+      def join_through(right, predicate=nil)
+        tables = right.tables
+        raise "Can only join through to a relation with a single surface table" unless tables.size == 1
+        join(right, predicate).project(tables.first)
+      end
+
       def left_join(right, predicate=nil)
         LeftJoin.new(self, right, predicate)
       end

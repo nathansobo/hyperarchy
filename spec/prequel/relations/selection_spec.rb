@@ -26,6 +26,21 @@ module Prequel
           end
         end
       end
+
+      describe "#==" do
+        before do
+          class Blog2 < Prequel::Record
+            column :id, :integer
+            column :user_id, :integer
+          end
+        end
+
+        it "performs a semantic comparison based on predicate and argument" do
+          Blog.where(:user_id => 1).should == Blog.where(:user_id => 1)
+          Blog.where(:user_id => 1).should_not == Blog.where(:user_id => 2)
+          Blog2.where(:user_id => 1).should_not == Blog.where(:user_id => 1)
+        end
+      end
     end
   end
 end

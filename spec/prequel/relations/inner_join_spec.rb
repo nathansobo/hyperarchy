@@ -126,6 +126,13 @@ module Prequel
         end
       end
 
+      describe "#==" do
+        it "compares the inner joins semantically" do
+          Blog.join(Post).should == Blog.join(Post)
+          Blog.join(Post).should_not == Post.join(Comment)
+        end
+      end
+
       describe "#to_sql" do
         describe "a simple inner join" do
           it "generates appropriate sql, aliasing select list columns to their fully qualified names" do
