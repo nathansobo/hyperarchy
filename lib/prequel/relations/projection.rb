@@ -46,6 +46,14 @@ module Prequel
         end
       end
 
+      def infer_join_columns(columns)
+        if projected_table
+          projected_table.infer_join_columns(columns)
+        else
+          raise "Cannot infer join columns through a projection"
+        end
+      end
+
       protected
       attr_reader :projected_table
 

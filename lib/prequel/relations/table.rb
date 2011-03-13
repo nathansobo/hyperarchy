@@ -41,6 +41,17 @@ module Prequel
         query.add_singular_table_ref(self, Sql::TableRef.new(self))
       end
 
+      def singular_name
+        @singular_name = name.to_s.singularize.to_sym
+      end
+
+      def infer_join_columns(columns)
+        columns.each do |column|
+          return [self[:id], column.qualified_name] if column.name =~ /(.+)_id$/ && $1.to_sym == singular_name
+        end
+        nil
+      end
+
       class TableDefinitionContext
         attr_reader :table
         def initialize(table)

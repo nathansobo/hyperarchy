@@ -8,7 +8,7 @@ module Prequel
         @predicate = resolve(predicate.to_predicate)
       end
 
-      delegate :get_table, :to => :operand
+      delegate :get_table, :infer_join_columns, :to => :operand
 
       def columns
         operand.columns.map do |column|

@@ -2,7 +2,7 @@ module Prequel
   module Expressions
     class DerivedColumn
       attr_reader :relation, :expression, :alias_name
-      delegate :origin, :to => :expression
+      delegate :origin, :qualified_name, :to => :expression
 
       def initialize(relation, expression, alias_name)
         @relation, @expression, @alias_name = relation, expression, alias_name

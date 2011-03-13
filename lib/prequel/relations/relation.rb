@@ -15,11 +15,11 @@ module Prequel
         Selection.new(self, predicate)
       end
 
-      def join(right, predicate)
+      def join(right, predicate=nil)
         InnerJoin.new(self, right, predicate)
       end
 
-      def left_join(right, predicate)
+      def left_join(right, predicate=nil)
         LeftJoin.new(self, right, predicate)
       end
 

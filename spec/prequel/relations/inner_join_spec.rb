@@ -33,6 +33,40 @@ module Prequel
           compound_join.predicate.left.should == simple_join.get_column(Post[:id])
           compound_join.predicate.right.should == Comment.table.get_column(:post_id)
         end
+
+        context "when the predicate is ellided" do
+          context "for simple joins" do
+            it "infers the predicate correctly" do
+              join = Blog.join(Post)
+              join.predicate.left.qualified_name.should == Blog[:id]
+              join.predicate.right.qualified_name.should == Post[:blog_id]
+            end
+          end
+
+          context "for compound joins" do
+            it "infers the predicate correctly" do
+              join = Blog.join(Post).join(Comment)
+              join.predicate.left.qualified_name.should == Post[:id]
+              join.predicate.right.qualified_name.should == Comment[:post_id]
+            end
+          end
+
+          context "for joins of selections" do
+            it "infers the predicate correctly" do
+              join = Blog.where(:user_id => 1).join(Post)
+              join.predicate.left.qualified_name.should == Blog[:id]
+              join.predicate.right.qualified_name.should == Post[:blog_id]
+            end
+          end
+
+          context "for joins of projections" do
+            it "infers the predicate correctly" do
+              join = Blog.join(Post).project(Post).join(Comment)
+              join.predicate.left.qualified_name.should == Post[:id]
+              join.predicate.right.qualified_name.should == Comment[:post_id]
+            end
+          end
+        end
       end
 
       describe "#all" do
