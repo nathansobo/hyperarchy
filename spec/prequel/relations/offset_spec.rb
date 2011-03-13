@@ -24,6 +24,14 @@ module Prequel
         end
       end
 
+      describe "#==" do
+        it "defines equality semantically" do
+          Blog.offset(2).should == Blog.offset(2)
+          Blog.offset(2).should_not == Blog.offset(3)
+          class OtherRelation < Prequel::Record; end;
+          Blog.offset(2).should_not == OtherRelation.offset(2)
+        end
+      end
       describe "#to_sql" do
         describe "with an explicitly ascending column" do
           it "generates the appropriate sql with a limit clause" do

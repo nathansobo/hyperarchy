@@ -11,6 +11,8 @@ module Prequel
         operand.visit(query)
         query.offset = count
       end
+
+      derive_equality :operand, :count
     end
   end
 end

@@ -24,6 +24,14 @@ module Prequel
         end
       end
 
+      describe "#==" do
+        it "defines equality semantically" do
+          Blog.limit(2).should == Blog.limit(2)
+          Blog.limit(2).should_not == Blog.limit(3)
+          class Blog2 < Prequel::Record; end;
+          Blog.limit(2).should_not == Blog2.limit(3)
+        end
+      end
       describe "#to_sql" do
         describe "with an explicitly ascending column" do
           it "generates the appropriate sql with a limit clause" do
