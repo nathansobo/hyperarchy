@@ -37,6 +37,20 @@ module Prequel
       def new(field_values={})
         Prequel.session[table.name][field_values[:id]] ||= super
       end
+
+      def has_many(name, options = {})
+        class_name = options[:class_name] || name.to_s.singularize.camelize
+        klass = class_name.constantize
+        foreign_key = table.infer_join_columns(klass.columns)[1]
+        define_method name do
+          relation = klass.where(foreign_key => id) 
+          if options[:order_by]
+            relation.order_by(*options[:order_by])
+          else
+            relation
+          end
+        end
+      end
     end
 
     def table

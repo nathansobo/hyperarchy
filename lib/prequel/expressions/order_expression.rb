@@ -1,6 +1,7 @@
 module Prequel
   module Expressions
     class OrderExpression
+      extend EqualityDerivation
       attr_reader :expression, :direction
 
       def initialize(expression, direction)
@@ -14,6 +15,8 @@ module Prequel
       def resolve_in_query(query)
         OrderExpression.new(expression.resolve_in_query(query), direction)
       end
+
+      derive_equality :expression, :direction
 
       def to_sql
         "#{expression.to_sql} #{direction}"

@@ -26,6 +26,13 @@ module Prequel
         end
       end
 
+      describe "#==" do
+        it "defines equality semantically" do
+          Blog.order_by(:user_id.asc, :title.desc).should ==
+            Blog.order_by(:user_id.asc, :title.desc)
+        end
+      end
+
       describe "#to_sql" do
         describe "with an explicitly ascending column" do
           it "generates the appropriate sql with an order by clause" do

@@ -36,5 +36,35 @@ module Prequel
         Blog.find(1).should_not equal(blog)
       end
     end
+
+    describe ".has_many(name)" do
+      before do
+        class ::Post < Record
+          column :id, :integer
+          column :blog_id, :integer
+        end
+      end
+
+      it "gives records a one-to-many relation to the table with the given name" do
+        Blog.has_many(:posts)
+        blog = Blog.new(:id => 1)
+        blog.posts.should == Post.where(:blog_id => 1)
+      end
+      
+      it "accepts a class name" do
+        Blog.has_many(:posts_with_another_name, :class_name => "Post")
+        blog = Blog.new(:id => 1)
+        blog.posts_with_another_name.should == Post.where(:blog_id => 1)
+      end
+
+      it "accepts an order by option" do
+        Blog.has_many(:posts, :order_by => :id)
+        blog = Blog.new(:id => 1)
+        blog.posts.should == Post.where(:blog_id => 1).order_by(:id)
+
+        Blog.has_many(:posts, :order_by => [:id, :blog_id.desc])
+        blog.posts.should == Post.where(:blog_id => 1).order_by(:id, :blog_id.desc)
+      end
+    end
   end
 end
