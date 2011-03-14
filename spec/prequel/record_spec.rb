@@ -3,7 +3,7 @@ require 'spec_helper'
 module Prequel
   describe Record do
     before do
-      class Blog < Record
+      class ::Blog < Record
         column :id, :integer
         column :title, :string
       end
@@ -37,33 +37,53 @@ module Prequel
       end
     end
 
-    describe ".has_many(name)" do
+    describe "relation macros" do
       before do
         class ::Post < Record
           column :id, :integer
           column :blog_id, :integer
         end
       end
+      describe ".has_many(name)" do
+        it "gives records a one-to-many relation to the table with the given name" do
+          Blog.has_many(:posts)
+          blog = Blog.new(:id => 1)
+          blog.posts.should == Post.where(:blog_id => 1)
+        end
 
-      it "gives records a one-to-many relation to the table with the given name" do
-        Blog.has_many(:posts)
-        blog = Blog.new(:id => 1)
-        blog.posts.should == Post.where(:blog_id => 1)
+        it "accepts a class name" do
+          Blog.has_many(:posts_with_another_name, :class_name => "Post")
+          blog = Blog.new(:id => 1)
+          blog.posts_with_another_name.should == Post.where(:blog_id => 1)
+        end
+
+        it "accepts an order by option" do
+          Blog.has_many(:posts, :order_by => :id)
+          blog = Blog.new(:id => 1)
+          blog.posts.should == Post.where(:blog_id => 1).order_by(:id)
+
+          Blog.has_many(:posts, :order_by => [:id, :blog_id.desc])
+          blog.posts.should == Post.where(:blog_id => 1).order_by(:id, :blog_id.desc)
+        end
       end
-      
-      it "accepts a class name" do
-        Blog.has_many(:posts_with_another_name, :class_name => "Post")
-        blog = Blog.new(:id => 1)
-        blog.posts_with_another_name.should == Post.where(:blog_id => 1)
-      end
 
-      it "accepts an order by option" do
-        Blog.has_many(:posts, :order_by => :id)
-        blog = Blog.new(:id => 1)
-        blog.posts.should == Post.where(:blog_id => 1).order_by(:id)
+      describe ".belongs_to(name)" do
+        before do
+          Blog.create_table
+          DB[:blogs] << { :id => 1 }
+        end
 
-        Blog.has_many(:posts, :order_by => [:id, :blog_id.desc])
-        blog.posts.should == Post.where(:blog_id => 1).order_by(:id, :blog_id.desc)
+        it "gives records a method that finds the associated record" do
+          Post.belongs_to(:blog)
+          post = Post.new(:blog_id => 1)
+          post.blog.should == Blog.find(1)
+        end
+
+        it "accepts a class name option" do
+          Post.belongs_to(:my_blog, :class_name => "Blog")
+          post = Post.new(:blog_id => 1)
+          post.my_blog.should == Blog.find(1)
+        end
       end
     end
   end

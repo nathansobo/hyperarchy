@@ -51,6 +51,16 @@ module Prequel
           end
         end
       end
+
+      def belongs_to(name, options = {})
+        class_name = options[:class_name] || name.to_s.camelize
+        foreign_key_name = class_name.to_s.underscore + "_id"
+        klass = class_name.constantize
+        define_method name do
+          parent_id = send(foreign_key_name)
+          klass.find(parent_id)
+        end
+      end
     end
 
     def table
