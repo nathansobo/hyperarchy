@@ -123,13 +123,23 @@ module Prequel
       end
 
       describe "#wire_representation" do
-        it "returns all field values that are on the #read_white_list and not on the black list, with stringified keys" do
-          pending
+        it "returns all field values that are on the #read_whitelist and not on the black list, with stringified keys" do
           blog = Blog.new(:title => "My Blog")
           blog.wire_representation.should == {
             'id' => nil,
             'lucky_number' => 7,
             'title' => "My Blog"
+          }
+
+          stub(blog).read_whitelist { [:id, :lucky_number] }
+          blog.wire_representation.should == {
+            'id' => nil,
+            'lucky_number' => 7,
+          }
+
+          stub(blog).read_blacklist { [:lucky_number] }
+          blog.wire_representation.should == {
+            'id' => nil
           }
         end
       end

@@ -98,6 +98,14 @@ module Prequel
       end
     end
 
+    def wire_representation
+      readable_fields = read_whitelist - read_blacklist
+      field_values.inject({}) do |wire_representation, (name, value)|
+        wire_representation[name.to_s] = value if readable_fields.include?(name)
+        wire_representation
+      end
+    end
+
     protected
 
     def default_field_values
@@ -105,6 +113,26 @@ module Prequel
         hash[column.name] = column.default_value if column.default_value
         hash
       end
+    end
+
+    def global_whitelist
+      columns.map(&:name) + synthetic_columns.map(&:name)
+    end
+
+    def global_blacklist
+      []
+    end
+
+    def read_whitelist
+      global_whitelist
+    end
+
+    def read_blacklist
+      global_blacklist
+    end
+
+    def readable_fields
+      read_whitelist - read_blacklist
     end
   end
 end
