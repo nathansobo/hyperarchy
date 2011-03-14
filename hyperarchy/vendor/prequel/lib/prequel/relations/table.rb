@@ -1,16 +1,21 @@
 module Prequel
   module Relations
     class Table < Relation
-      attr_reader :name, :columns_by_name, :tuple_class
+      attr_reader :name, :columns_by_name, :synthetic_columns, :tuple_class
 
       def initialize(name, tuple_class=nil, &block)
         @name, @tuple_class = name, tuple_class
         @columns_by_name = {}
+        @synthetic_columns = []
         TableDefinitionContext.new(self).instance_eval(&block) if block
       end
 
-      def def_column(name, type)
-        columns_by_name[name] = Expressions::Column.new(self, name, type)
+      def def_column(name, type, options = {})
+        columns_by_name[name] = Expressions::Column.new(self, name, type, options)
+      end
+
+      def def_synthetic_column(name, type)
+        synthetic_columns.push(Expressions::Column.new(self, name, type))
       end
 
       def [](col_name)

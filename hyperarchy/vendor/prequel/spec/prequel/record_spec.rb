@@ -35,6 +35,10 @@ module Prequel
         
         Blog.find(1).should_not equal(blog)
       end
+
+      it "does not attempt to store records with no id in the identity map" do
+        Blog.new.should_not equal(Blog.new)
+      end
     end
 
     describe "relation macros" do
@@ -44,6 +48,7 @@ module Prequel
           column :blog_id, :integer
         end
       end
+
       describe ".has_many(name)" do
         it "gives records a one-to-many relation to the table with the given name" do
           Blog.has_many(:posts)
@@ -83,6 +88,49 @@ module Prequel
           Post.belongs_to(:my_blog, :class_name => "Blog")
           post = Post.new(:blog_id => 1)
           post.my_blog.should == Blog.find(1)
+        end
+      end
+    end
+
+    describe "#initialize" do
+      it "honors default values from the table's column declarations, if they aren't specified in the attributes" do
+        Blog.column :title, :string, :default => "New Blog"
+        Blog.new.title.should == "New Blog"
+        Blog.new(:title => "My Blog").title.should == "My Blog"
+      end
+    end
+
+    describe "methods that return field values" do
+      before do
+        class ::Blog
+          Blog.synthetic_column :lucky_number, :integer
+
+          def lucky_number
+            7
+          end
+        end
+      end
+
+      describe "#field_values" do
+        it "returns the real and synthetic field values as a hash" do
+          blog = Blog.new(:title => "My Blog")
+          blog.field_values.should == {
+            :id => nil,
+            :lucky_number => 7,
+            :title => "My Blog"
+          }
+        end
+      end
+
+      describe "#wire_representation" do
+        it "returns all field values that are on the #read_white_list and not on the black list, with stringified keys" do
+          pending
+          blog = Blog.new(:title => "My Blog")
+          blog.wire_representation.should == {
+            'id' => nil,
+            'lucky_number' => 7,
+            'title' => "My Blog"
+          }
         end
       end
     end

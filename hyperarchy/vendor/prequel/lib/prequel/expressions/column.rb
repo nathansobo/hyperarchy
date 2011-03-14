@@ -1,14 +1,18 @@
 module Prequel
   module Expressions
     class Column
-      attr_reader :table, :name, :type
+      attr_reader :table, :name, :type, :options
 
-      def initialize(table, name, type)
-        @table, @name, @type = table, name, type
+      def initialize(table, name, type, options = {})
+        @table, @name, @type, @options = table, name, type, options
       end
 
       def alias_name
         nil
+      end
+
+      def default_value
+        options[:default]
       end
 
       def eq(other)

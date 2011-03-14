@@ -2,8 +2,8 @@ module Prequel
   class Record < Tuple
     class << self
       delegate :all, :result_set, :[], :to_sql, :get_column, :first, :find, :where,
-               :join, :left_join, :project, :group_by, :order_by, :limit, :offset, :tables, 
-               :to => :relation
+               :join, :left_join, :project, :group_by, :order_by, :limit, :offset, :tables,
+               :synthetic_columns, :to => :relation
 
       def table
         relation
@@ -29,13 +29,21 @@ module Prequel
         end
       end
 
-      def column(name, type)
-        relation.def_column(name, type)
+      def column(name, type, options = {})
+        table.def_column(name, type, options)
         def_field_accessor(name)
       end
 
+      def synthetic_column(name, type)
+        table.def_synthetic_column(name, type)
+      end
+
       def new(field_values={})
-        Prequel.session[table.name][field_values[:id]] ||= super
+        if field_values[:id]
+          Prequel.session[table.name][field_values[:id]] ||= super
+        else
+          super
+        end
       end
 
       def has_many(name, options = {})
@@ -63,6 +71,12 @@ module Prequel
       end
     end
 
+    delegate :synthetic_columns, :to => 'self.class'
+
+    def initialize(values = {})
+      super(default_field_values.merge(values))
+    end
+
     def table
       relation
     end
@@ -71,6 +85,26 @@ module Prequel
 
     def get_record(table_name)
       self if table_name == table.name
+    end
+
+    def field_values
+      super.merge(synthetic_field_values)
+    end
+
+    def synthetic_field_values
+      synthetic_columns.inject({}) do |hash, column|
+        hash[column.name] = send(column.name)
+        hash
+      end
+    end
+
+    protected
+
+    def default_field_values
+      columns.inject({}) do |hash, column|
+        hash[column.name] = column.default_value if column.default_value
+        hash
+      end
     end
   end
 end
