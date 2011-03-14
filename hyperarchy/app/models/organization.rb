@@ -1,4 +1,4 @@
-class Organization < Monarch::Model::Record
+class Organization < Prequel::Record
   column :name, :string
   column :description, :string, :default => ""
   column :members_can_invite, :boolean, :default => false

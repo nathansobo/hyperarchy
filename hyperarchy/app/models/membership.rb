@@ -1,4 +1,4 @@
-class Membership < Monarch::Model::Record
+class Membership < Prequel::Record
   column :organization_id, :key
   column :user_id, :key
   column :invitation_id, :key

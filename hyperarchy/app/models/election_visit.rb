@@ -1,4 +1,4 @@
-class ElectionVisit < Monarch::Model::Record
+class ElectionVisit < Prequel::Record
   column :election_id, :key
   column :user_id, :key
   column :created_at, :datetime

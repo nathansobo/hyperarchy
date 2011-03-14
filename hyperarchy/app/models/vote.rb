@@ -1,4 +1,4 @@
-class Vote < Monarch::Model::Record
+class Vote < Prequel::Record
   column :user_id, :key
   column :election_id, :key
   column :created_at, :datetime

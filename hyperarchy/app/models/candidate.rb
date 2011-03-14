@@ -1,4 +1,4 @@
-class Candidate < Monarch::Model::Record
+class Candidate < Prequel::Record
   column :body, :string
   column :details, :string, :default => ""
   column :election_id, :key

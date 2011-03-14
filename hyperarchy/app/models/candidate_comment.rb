@@ -1,4 +1,4 @@
-class CandidateComment < Monarch::Model::Record
+class CandidateComment < Prequel::Record
   column :body, :string
   column :candidate_id, :key
   column :creator_id, :key

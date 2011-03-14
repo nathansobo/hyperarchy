@@ -1,4 +1,4 @@
-class Invitation < Monarch::Model::Record
+class Invitation < Prequel::Record
   column :guid, :string
   column :sent_to_address, :string
   column :first_name, :string, :default => ""

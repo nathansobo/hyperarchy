@@ -1,4 +1,4 @@
-class Election < Monarch::Model::Record
+class Election < Prequel::Record
   column :organization_id, :key
   column :creator_id, :key
   column :body, :string

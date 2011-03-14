@@ -1,4 +1,4 @@
-class User < Monarch::Model::Record
+class User < Prequel::Record
   column :first_name, :string
   column :last_name, :string
   column :email_address, :string
