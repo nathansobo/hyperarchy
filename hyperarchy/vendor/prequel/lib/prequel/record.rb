@@ -38,12 +38,16 @@ module Prequel
         table.def_synthetic_column(name, type)
       end
 
-      def new(field_values={})
-        if field_values[:id]
-          Prequel.session[table.name][field_values[:id]] ||= super
+      def new(attributes={})
+        if attributes[:id]
+          Prequel.session[table.name][attributes[:id]] ||= super
         else
           super
         end
+      end
+
+      def create(attributes)
+        new(attributes).save
       end
 
       def has_many(name, options = {})
@@ -82,6 +86,11 @@ module Prequel
     end
 
     public :set_field_value
+
+    def save
+      self.id = (DB[table.name] << field_values_without_id)
+      Prequel.session[table.name][id] = self
+    end
 
     def get_record(table_name)
       self if table_name == table.name
@@ -133,6 +142,12 @@ module Prequel
 
     def readable_fields
       read_whitelist - read_blacklist
+    end
+
+    def field_values_without_id
+      field_values.tap do |field_values|
+        field_values.delete(:id)
+      end
     end
   end
 end

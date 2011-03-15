@@ -22,72 +22,86 @@ module Prequel
       end
     end
 
-    describe ".new(field_values)" do
-      it "returns a record with the same id from the identity map if it exists" do
-        Blog.create_table
-        DB[:blogs] << { :id => 1, :title => "Blog 1" }
+    describe "class methods" do
+      describe "relation macros" do
+        before do
+          class ::Post < Record
+            column :id, :integer
+            column :blog_id, :integer
+          end
+        end
 
-        blog = Blog.find(1)
-        blog.id.should == 1
-        Blog.find(1).should equal(blog)
+        describe ".has_many(name)" do
+          it "gives records a one-to-many relation to the table with the given name" do
+            Blog.has_many(:posts)
+            blog = Blog.new(:id => 1)
+            blog.posts.should == Post.where(:blog_id => 1)
+          end
 
-        stub(Prequel).session { Session.new }
-        
-        Blog.find(1).should_not equal(blog)
-      end
+          it "accepts a class name" do
+            Blog.has_many(:posts_with_another_name, :class_name => "Post")
+            blog = Blog.new(:id => 1)
+            blog.posts_with_another_name.should == Post.where(:blog_id => 1)
+          end
 
-      it "does not attempt to store records with no id in the identity map" do
-        Blog.new.should_not equal(Blog.new)
-      end
-    end
+          it "accepts an order by option" do
+            Blog.has_many(:posts, :order_by => :id)
+            blog = Blog.new(:id => 1)
+            blog.posts.should == Post.where(:blog_id => 1).order_by(:id)
 
-    describe "relation macros" do
-      before do
-        class ::Post < Record
-          column :id, :integer
-          column :blog_id, :integer
+            Blog.has_many(:posts, :order_by => [:id, :blog_id.desc])
+            blog.posts.should == Post.where(:blog_id => 1).order_by(:id, :blog_id.desc)
+          end
+        end
+
+        describe ".belongs_to(name)" do
+          before do
+            Blog.create_table
+            DB[:blogs] << { :id => 1 }
+          end
+
+          it "gives records a method that finds the associated record" do
+            Post.belongs_to(:blog)
+            post = Post.new(:blog_id => 1)
+            post.blog.should == Blog.find(1)
+          end
+
+          it "accepts a class name option" do
+            Post.belongs_to(:my_blog, :class_name => "Blog")
+            post = Post.new(:blog_id => 1)
+            post.my_blog.should == Blog.find(1)
+          end
         end
       end
 
-      describe ".has_many(name)" do
-        it "gives records a one-to-many relation to the table with the given name" do
-          Blog.has_many(:posts)
-          blog = Blog.new(:id => 1)
-          blog.posts.should == Post.where(:blog_id => 1)
+      describe ".new(field_values)" do
+        it "returns a record with the same id from the identity map if it exists" do
+          Blog.create_table
+          DB[:blogs] << { :id => 1, :title => "Blog 1" }
+
+          blog = Blog.find(1)
+          blog.id.should == 1
+          Blog.find(1).should equal(blog)
+
+          stub(Prequel).session { Session.new }
+
+          Blog.find(1).should_not equal(blog)
         end
 
-        it "accepts a class name" do
-          Blog.has_many(:posts_with_another_name, :class_name => "Post")
-          blog = Blog.new(:id => 1)
-          blog.posts_with_another_name.should == Post.where(:blog_id => 1)
-        end
-
-        it "accepts an order by option" do
-          Blog.has_many(:posts, :order_by => :id)
-          blog = Blog.new(:id => 1)
-          blog.posts.should == Post.where(:blog_id => 1).order_by(:id)
-
-          Blog.has_many(:posts, :order_by => [:id, :blog_id.desc])
-          blog.posts.should == Post.where(:blog_id => 1).order_by(:id, :blog_id.desc)
+        it "does not attempt to store records with no id in the identity map" do
+          Blog.new.should_not equal(Blog.new)
         end
       end
 
-      describe ".belongs_to(name)" do
+      describe ".create(attributes)" do
         before do
           Blog.create_table
-          DB[:blogs] << { :id => 1 }
         end
 
-        it "gives records a method that finds the associated record" do
-          Post.belongs_to(:blog)
-          post = Post.new(:blog_id => 1)
-          post.blog.should == Blog.find(1)
-        end
-
-        it "accepts a class name option" do
-          Post.belongs_to(:my_blog, :class_name => "Blog")
-          post = Post.new(:blog_id => 1)
-          post.my_blog.should == Blog.find(1)
+        it "builds and saves an instance, ensuring it is present in the identity map" do
+          blog = Blog.create(:title => "My Blog!")
+          blog.id.should_not be_nil
+          blog.should == Blog.find(blog.id)
         end
       end
     end
