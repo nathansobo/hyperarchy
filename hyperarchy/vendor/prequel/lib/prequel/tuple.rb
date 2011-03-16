@@ -10,12 +10,15 @@ module Prequel
           get_field_value(name)
         end
       end
+
+      def new_from_database(attributes)
+        new(attributes).tap(&:mark_clean)
+      end
     end
 
-    def initialize(values = {})
+    def initialize(attributes={})
       initialize_fields
-      soft_update_fields(values)
-      mark_clean
+      soft_update_fields(attributes)
     end
 
     delegate :columns, :to => :relation
@@ -37,6 +40,14 @@ module Prequel
       end
     end
 
+    def clean?
+      !dirty?
+    end
+
+    def dirty?
+      fields.any?(&:dirty?)
+    end
+
     def dirty_field_values
       fields_by_name.inject({}) do |h, (name, field)|
         h[name] = field.value if field.dirty?
@@ -50,8 +61,16 @@ module Prequel
 
     delegate :inspect, :to => :field_values
 
+    def mark_clean
+      fields.each(&:mark_clean)
+    end
+
     protected
     attr_reader :fields_by_name
+
+    def fields
+      fields_by_name.values
+    end
 
     def initialize_fields
       @fields_by_name = {}
@@ -66,10 +85,6 @@ module Prequel
         raise "No field found #{name.inspect}"
       end
       field.value = value
-    end
-
-    def mark_clean
-      fields_by_name.values.each(&:mark_clean)
     end
   end
 end

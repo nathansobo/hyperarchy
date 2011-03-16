@@ -212,5 +212,34 @@ module Prequel
         end
       end
     end
+
+    describe "clean vs. dirty state" do
+      before do
+        Blog.create_table
+      end
+
+      specify "a record is dirty before it has been saved for the first time and clean thereafter" do
+        blog = Blog.new(:title => "Hello there")
+        blog.should be_dirty
+        blog.save
+        blog.should be_clean
+      end
+
+      specify "a record is clean when it is freshly retrieved from the database, dirty after local modifications, and clean again after being saved" do
+        DB[:blogs] << { :id => 1, :title => "Hi!" }
+        DB[:blogs] << { :id => 2, :title => "Ho!" }
+        blog = Blog.find(1)
+        blog.should be_clean
+
+        Blog.all.each do |blog|
+          blog.should be_clean
+        end
+
+        blog.title = "Bye!"
+        blog.should be_dirty
+        blog.save
+        blog.should be_clean
+      end
+    end
   end
 end

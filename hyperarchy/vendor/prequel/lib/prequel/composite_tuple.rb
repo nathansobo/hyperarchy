@@ -1,5 +1,11 @@
 module Prequel
   class CompositeTuple
+    class << self
+      def new_from_database(left, right)
+        new(left, right) #.tap(&:mark_clean)
+      end
+    end
+
     attr_reader :left, :right
 
     def initialize(left, right)

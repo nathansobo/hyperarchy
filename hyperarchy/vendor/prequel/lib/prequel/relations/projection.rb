@@ -34,7 +34,7 @@ module Prequel
       end
 
       def build_tuple(field_values)
-        tuple_class.new(field_values)
+        tuple_class.new_from_database(field_values)
       end
 
       def tuple_class

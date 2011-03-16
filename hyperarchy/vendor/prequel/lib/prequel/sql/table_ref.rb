@@ -20,7 +20,7 @@ module Prequel
 
       def build_tuple(field_values)
         specific_field_values = extract_field_values(field_values)
-        tuple_class.new(specific_field_values) if specific_field_values[:id]
+        tuple_class.new_from_database(specific_field_values) if specific_field_values[:id]
       end
     end
   end

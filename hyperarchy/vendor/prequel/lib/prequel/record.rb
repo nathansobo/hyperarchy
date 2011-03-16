@@ -38,16 +38,12 @@ module Prequel
         table.def_synthetic_column(name, type)
       end
 
-      def new(attributes={})
-        if attributes[:id]
-          Prequel.session[table.name][attributes[:id]] ||= super
-        else
-          super
-        end
+      def new_from_database(attributes)
+        Prequel.session[table.name][attributes[:id]] ||= super
       end
 
       def create(attributes)
-        new(attributes).save
+        new(attributes).tap(&:save)
       end
 
       def has_many(name, options = {})
@@ -99,6 +95,7 @@ module Prequel
         after_save
         self
       end
+      mark_clean
     end
 
     def get_record(table_name)

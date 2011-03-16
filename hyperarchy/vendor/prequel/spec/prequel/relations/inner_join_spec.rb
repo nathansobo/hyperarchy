@@ -124,6 +124,11 @@ module Prequel
             blogs_posts_comments[2][:comments].should == Comment.find(3)
           end
         end
+
+        it "returns clean tuples" do
+          relation = Blog.join(Post)
+          relation.all.each
+        end
       end
 
       describe "#==" do
