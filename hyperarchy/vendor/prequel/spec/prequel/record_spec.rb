@@ -98,10 +98,10 @@ module Prequel
           Blog.create_table
         end
 
-        it "builds and saves an instance, ensuring it is present in the identity map" do
+        it "builds and saves an instance, sets its id, and ensures it is present in the session's identity map" do
           blog = Blog.create(:title => "My Blog!")
           blog.id.should_not be_nil
-          blog.should == Blog.find(blog.id)
+          blog.should equal(Blog.find(blog.id))
         end
       end
     end
@@ -111,6 +111,32 @@ module Prequel
         Blog.column :title, :string, :default => "New Blog"
         Blog.new.title.should == "New Blog"
         Blog.new(:title => "My Blog").title.should == "My Blog"
+      end
+    end
+
+    describe "#save" do
+      before do
+        Blog.create_table
+      end
+
+      describe "when the record has not yet been inserted into the database" do
+        attr_reader :blog
+        before do
+          @blog = Blog.new({:title => "Unsaved Blog"})
+          blog.id.should be_nil
+        end
+
+        it "inserts the record, sets its id, and ensures it is present in the session's identity map" do
+          blog.save
+          blog.id.should_not be_nil
+          blog.should equal(Blog.find(blog.id))
+        end
+
+        it "executes before_create and after_create hooks at the appropriate moments" do
+          mock(blog).before_create { blog.id.should be_nil }
+          mock(blog).after_create { blog.id.should_not be_nil }
+          blog.save
+        end
       end
     end
 

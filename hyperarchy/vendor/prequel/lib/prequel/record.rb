@@ -88,8 +88,11 @@ module Prequel
     public :set_field_value
 
     def save
+      before_create
       self.id = (DB[table.name] << field_values_without_id)
       Prequel.session[table.name][id] = self
+      after_create
+      self
     end
 
     def get_record(table_name)
@@ -116,6 +119,9 @@ module Prequel
     end
 
     protected
+
+    def before_create; end
+    def after_create; end
 
     def default_field_values
       columns.inject({}) do |hash, column|
