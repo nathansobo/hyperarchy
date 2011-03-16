@@ -15,6 +15,7 @@ module Prequel
     def initialize(values = {})
       initialize_fields
       soft_update_fields(values)
+      mark_clean
     end
 
     delegate :columns, :to => :relation
@@ -32,6 +33,13 @@ module Prequel
     def field_values
       fields_by_name.inject({}) do |h, (name, field)|
         h[name] = field.value
+        h
+      end
+    end
+
+    def dirty_field_values
+      fields_by_name.inject({}) do |h, (name, field)|
+        h[name] = field.value if field.dirty?
         h
       end
     end
@@ -58,6 +66,10 @@ module Prequel
         raise "No field found #{name.inspect}"
       end
       field.value = value
+    end
+
+    def mark_clean
+      fields_by_name.values.each(&:mark_clean)
     end
   end
 end

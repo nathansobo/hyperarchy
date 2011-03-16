@@ -115,20 +115,20 @@ module Prequel
     end
 
     describe "#save" do
+      attr_reader :blog
+
       before do
+        Blog.column :user_id, :integer
         Blog.create_table
+        @blog = Blog.new({:title => "Unsaved Blog", :user_id => 1})
+        blog.id.should be_nil
       end
 
       describe "when the record has not yet been inserted into the database" do
-        attr_reader :blog
-        before do
-          @blog = Blog.new({:title => "Unsaved Blog"})
-          blog.id.should be_nil
-        end
-
         it "inserts the record, sets its id, and ensures it is present in the session's identity map" do
           blog.save
           blog.id.should_not be_nil
+          DB[:blogs].filter(:id => blog.id).first.should == blog.field_values
           blog.should equal(Blog.find(blog.id))
         end
 
@@ -136,6 +136,34 @@ module Prequel
           mock(blog).before_create { blog.id.should be_nil }
           mock(blog).after_create { blog.id.should_not be_nil }
           blog.save
+        end
+
+        it "executes before_save and after_save hooks at the appropriate moments" do
+          mock(blog).before_save { blog.id.should be_nil }
+          mock(blog).after_save { blog.id.should_not be_nil }
+          blog.save
+        end
+      end
+
+      describe "when the record has already been inserted into the database" do
+        before do
+          blog.save
+          blog.id.should_not be_nil
+        end
+
+        it "saves only the fields that are dirty back into the database" do
+          blog.title = "New Title"
+          DB[:blogs].filter(:id => blog.id).update(:user_id => 2)
+          blog.user_id.should == 1
+
+          blog.save
+
+          DB[:blogs].count.should == 1
+          DB[:blogs].filter(:id => blog.id).first.should == {
+            :id => blog.id,
+            :title => "New Title",
+            :user_id => 2
+          }
         end
       end
     end

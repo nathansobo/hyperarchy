@@ -88,11 +88,17 @@ module Prequel
     public :set_field_value
 
     def save
-      before_create
-      self.id = (DB[table.name] << field_values_without_id)
-      Prequel.session[table.name][id] = self
-      after_create
-      self
+      if id
+        DB[table.name].filter(:id => id).update(dirty_field_values)
+      else
+        before_create
+        before_save
+        self.id = (DB[table.name] << field_values_without_id)
+        Prequel.session[table.name][id] = self
+        after_create
+        after_save
+        self
+      end
     end
 
     def get_record(table_name)
@@ -119,6 +125,9 @@ module Prequel
     end
 
     protected
+
+    def before_save; end
+    def after_save; end
 
     def before_create; end
     def after_create; end
