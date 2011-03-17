@@ -57,7 +57,7 @@ module Prequel
         describe ".belongs_to(name)" do
           before do
             Blog.create_table
-            DB[:blogs] << { :id => 1 }
+            DB[:blogs] << {:id => 1}
           end
 
           it "gives records a method that finds the associated record" do
@@ -80,7 +80,7 @@ module Prequel
       describe ".new(field_values)" do
         it "returns a record with the same id from the identity map if it exists" do
           Blog.create_table
-          DB[:blogs] << { :id => 1, :title => "Blog 1" }
+          DB[:blogs] << {:id => 1, :title => "Blog 1"}
 
           blog = Blog.find(1)
           blog.id.should == 1
@@ -129,7 +129,7 @@ module Prequel
         it "only allows attributes that are on the create whitelist and not on the create blacklist to be assigned" do
           blog = Blog.secure_create(:title => "The Chefanies", :subtitle => "Exploring Deliciousness", :user_id => 4)
           blog.id.should_not be_nil
-          
+
           blog.title.should == "The Chefanies"
           blog.subtitle.should == "Exploring Deliciousness"
           blog.user_id.should be_nil
@@ -199,6 +199,36 @@ module Prequel
       end
     end
 
+    describe "#update(attributes)" do
+      attr_reader :blog
+
+      before do
+        class ::Blog
+          column :user_id, :integer
+          column :subtitle, :string
+
+          def tricky_subtitle=(subtitle)
+            self.subtitle = "Tricky #{subtitle}"
+          end
+
+          create_table
+        end
+        @blog = Blog.new({:title => "Unsaved Blog", :user_id => 1})
+        blog.id.should be_nil
+      end
+
+      it "assigns all attributes and saves the record" do
+        blog.update(:title => "Coding For Fun", :tricky_subtitle => "And Maybe Eventually Profit?", :user_id => 4)
+
+        DB[:blogs].find(blog.id).first.should == {
+          :id => blog.id,
+          :title => "Coding For Fun",
+          :subtitle => "Tricky And Maybe Eventually Profit?",
+          :user_id => 4
+        }
+      end
+    end
+
     describe "methods that return field values" do
       before do
         class ::Blog
@@ -257,8 +287,8 @@ module Prequel
       end
 
       specify "a record is clean when it is freshly retrieved from the database, dirty after local modifications, and clean again after being saved" do
-        DB[:blogs] << { :id => 1, :title => "Hi!" }
-        DB[:blogs] << { :id => 2, :title => "Ho!" }
+        DB[:blogs] << {:id => 1, :title => "Hi!"}
+        DB[:blogs] << {:id => 2, :title => "Ho!"}
         blog = Blog.find(1)
         blog.should be_clean
 

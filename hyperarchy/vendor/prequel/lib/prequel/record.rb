@@ -95,6 +95,17 @@ module Prequel
 
     public :set_field_value
 
+    def soft_update(attributes)
+      attributes.each do |name, value|
+        self.send("#{name}=", value)
+      end
+    end
+
+    def update(attributes)
+      soft_update(attributes)
+      save
+    end
+
     def save
       if id
         DB[table.name].filter(:id => id).update(dirty_field_values)
