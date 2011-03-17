@@ -64,6 +64,9 @@ module Prequel
             Post.belongs_to(:blog)
             post = Post.new(:blog_id => 1)
             post.blog.should == Blog.find(1)
+
+            post.blog_id = 99
+            post.blog.should be_nil
           end
 
           it "accepts a class name option" do
@@ -102,6 +105,34 @@ module Prequel
           blog = Blog.create(:title => "My Blog!")
           blog.id.should_not be_nil
           blog.should equal(Blog.find(blog.id))
+        end
+      end
+
+      describe ".secure_create(attributes)" do
+        before do
+          class ::Blog < Record
+            column :subtitle, :string
+            column :user_id, :integer
+
+            def create_whitelist
+              [:subtitle, :title, :user_id]
+            end
+
+            def create_blacklist
+              [:user_id]
+            end
+          end
+
+          Blog.create_table
+        end
+
+        it "only allows attributes that are on the create whitelist and not on the create blacklist to be assigned" do
+          blog = Blog.secure_create(:title => "The Chefanies", :subtitle => "Exploring Deliciousness", :user_id => 4)
+          blog.id.should_not be_nil
+          
+          blog.title.should == "The Chefanies"
+          blog.subtitle.should == "Exploring Deliciousness"
+          blog.user_id.should be_nil
         end
       end
     end

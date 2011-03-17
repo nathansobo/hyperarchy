@@ -42,8 +42,16 @@ module Prequel
         Prequel.session[table.name][attributes[:id]] ||= super
       end
 
-      def create(attributes)
+      def create(attributes={})
         new(attributes).tap(&:save)
+      end
+
+      def secure_create(attributes={})
+        secure_new(attributes).tap(&:save)
+      end
+
+      def secure_new(attributes={})
+        allocate.tap {|r| r.secure_initialize(attributes)}
       end
 
       def has_many(name, options = {})
@@ -73,8 +81,12 @@ module Prequel
 
     delegate :synthetic_columns, :to => 'self.class'
 
-    def initialize(values = {})
+    def initialize(values={})
       super(default_field_values.merge(values))
+    end
+
+    def secure_initialize(values={})
+      initialize(values.slice(*create_whitelist - create_blacklist))
     end
 
     def table
@@ -114,11 +126,7 @@ module Prequel
     end
 
     def wire_representation
-      readable_fields = read_whitelist - read_blacklist
-      field_values.inject({}) do |wire_representation, (name, value)|
-        wire_representation[name.to_s] = value if readable_fields.include?(name)
-        wire_representation
-      end
+      field_values.slice(*read_whitelist - read_blacklist).stringify_keys
     end
 
     protected
