@@ -106,6 +106,11 @@ module Prequel
       save
     end
 
+    def secure_update(attributes)
+      soft_update(attributes.slice(*update_whitelist - update_blacklist))
+      save
+    end
+
     def save
       if id
         DB[table.name].filter(:id => id).update(dirty_field_values)

@@ -199,9 +199,8 @@ module Prequel
       end
     end
 
-    describe "#update(attributes)" do
+    describe "#update and #secure_update" do
       attr_reader :blog
-
       before do
         class ::Blog
           column :user_id, :integer
@@ -213,19 +212,35 @@ module Prequel
 
           create_table
         end
-        @blog = Blog.new({:title => "Unsaved Blog", :user_id => 1})
-        blog.id.should be_nil
+        @blog = Blog.create({:title => "Saved Blog", :user_id => 1})
       end
 
-      it "assigns all attributes and saves the record" do
-        blog.update(:title => "Coding For Fun", :tricky_subtitle => "And Maybe Eventually Profit?", :user_id => 4)
+      describe "#update(attributes)" do
+        it "assigns all attributes and saves the record" do
+          blog.update(:title => "Coding For Fun", :tricky_subtitle => "And Maybe Eventually Profit?", :user_id => 4)
 
-        DB[:blogs].find(blog.id).first.should == {
-          :id => blog.id,
-          :title => "Coding For Fun",
-          :subtitle => "Tricky And Maybe Eventually Profit?",
-          :user_id => 4
-        }
+          DB[:blogs].find(blog.id).first.should == {
+            :id => blog.id,
+            :title => "Coding For Fun",
+            :subtitle => "Tricky And Maybe Eventually Profit?",
+            :user_id => 4
+          }
+        end
+      end
+
+      describe "#secure_update(attributes)" do
+        it "only allows whitelisted attributes to be assigned" do
+          stub(blog).update_whitelist { [:title, :subtitle] }
+          stub(blog).update_blacklist { [:title] }
+
+          blog.secure_update(:title => "Coding For Fun", :subtitle => "And Maybe Eventually Profit?", :user_id => 4)
+          DB[:blogs].find(blog.id).first.should == {
+            :id => blog.id,
+            :title => "Saved Blog",
+            :subtitle => "And Maybe Eventually Profit?",
+            :user_id => 1
+          }
+        end
       end
     end
 
