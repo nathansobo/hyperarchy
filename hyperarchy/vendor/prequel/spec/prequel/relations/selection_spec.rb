@@ -7,6 +7,7 @@ module Prequel
         class Blog < Prequel::Record
           column :id, :integer
           column :user_id, :integer
+          column :title, :integer
         end
       end
 
@@ -24,6 +25,14 @@ module Prequel
               select * from blogs where blogs.user_id = :v1
             }, :v1 => 1)
           end
+        end
+      end
+
+      describe "#to_update_sql" do
+        it "generates the appropriate SQL" do
+          Blog.where(:user_id => 1).to_update_sql(:title => "New Title").should be_like_query(%{
+            update blogs set title = :v2 where blogs.user_id = :v1
+          }, :v1 => 1, :v2 => "New Title")
         end
       end
 
