@@ -8,8 +8,6 @@ increment
 
 record functionality
 --------------------
-can_update? / create? / destroy? in secure mutation methods
-destroy
 reload
 validations
 

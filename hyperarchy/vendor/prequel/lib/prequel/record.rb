@@ -130,7 +130,7 @@ module Prequel
 
     def save
       if id
-        DB[table.name].filter(:id => id).update(dirty_field_values)
+        table.where(:id => id).update(dirty_field_values)
       else
         before_create
         before_save
@@ -141,6 +141,13 @@ module Prequel
         self
       end
       mark_clean
+    end
+
+    def reload(*columns)
+      field_values = columns.empty??
+        table.where(:id => id).dataset.first :
+        table.where(:id => id).project(*columns).dataset.first
+      soft_update_fields(field_values, true)
     end
 
     def get_record(table_name)

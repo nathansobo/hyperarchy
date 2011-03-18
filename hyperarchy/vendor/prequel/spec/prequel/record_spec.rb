@@ -157,6 +157,56 @@ module Prequel
       end
     end
 
+
+    describe "#reload(columns = nil)" do
+      attr_reader :blog
+
+      before do
+        class ::Blog < Record
+          column :user_id, :integer
+          column :subtitle, :string
+        end
+        Blog.create_table
+        @blog = Blog.create(:title => "Title 1", :subtitle => "Subtitle 1", :user_id => 1)
+      end
+
+      context "when not passed any columns" do
+        it "reloads the record and marks it clean" do
+          blog.soft_update(:title => "Dirty Title", :subtitle => "Dirty Subtitle", :user_id => 99)
+          blog.should be_dirty
+
+          blog.reload
+
+          blog.should be_clean
+          blog.title.should == "Title 1"
+          blog.subtitle.should == "Subtitle 1"
+          blog.user_id.should == 1
+
+          DB[:blogs].update(:title => "Title 2", :subtitle => "Subtitle 2", :user_id => 100)
+          blog.reload
+
+          blog.should be_clean
+          blog.title.should == "Title 2"
+          blog.subtitle.should == "Subtitle 2"
+          blog.user_id.should == 100
+        end
+      end
+
+      context "when passed columns" do
+        it "reloads only the given columns and marks them clean" do
+          blog.soft_update(:title => "Dirty Title", :subtitle => "Dirty Subtitle", :user_id => 99)
+          blog.should be_dirty
+
+          blog.reload(:title, :subtitle)
+
+          blog.dirty_field_values.keys.should == [:user_id]
+          blog.title.should == "Title 1"
+          blog.subtitle.should == "Subtitle 1"
+          blog.user_id.should == 99
+        end
+      end
+    end
+
     describe "#save" do
       attr_reader :blog
 

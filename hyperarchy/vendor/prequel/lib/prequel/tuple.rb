@@ -23,9 +23,9 @@ module Prequel
 
     delegate :columns, :to => :relation
 
-    def soft_update_fields(values)
+    def soft_update_fields(values, mark_clean=false)
       values.each do |name, value|
-        set_field_value(name, value)
+        set_field_value(name, value, mark_clean)
       end
     end
 
@@ -79,12 +79,13 @@ module Prequel
       end
     end
 
-    def set_field_value(name, value)
+    def set_field_value(name, value, mark_clean=false)
       field = fields_by_name[name]
       unless field
         raise "No field found #{name.inspect}"
       end
       field.value = value
+      field.mark_clean if mark_clean
     end
   end
 end
