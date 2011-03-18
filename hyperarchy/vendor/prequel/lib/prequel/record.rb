@@ -123,6 +123,11 @@ module Prequel
       Prequel.session[table.name].delete(id)
     end
 
+    def secure_destroy
+      return false unless can_destroy?
+      destroy
+    end
+
     def save
       if id
         DB[table.name].filter(:id => id).update(dirty_field_values)

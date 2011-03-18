@@ -270,22 +270,29 @@ module Prequel
       end
     end
 
-    describe "#destroy" do
+    describe "#destroy and #secure_destroy" do
       attr_reader :blog
       before do
         Blog.create_table
         @blog = Blog.create
       end
 
-      it "removes the record from the database and the identity map" do
-        blog.destroy
-        Blog.find(blog.id).should be_nil
-        Prequel.session[:blogs][blog.id].should be_nil
+      describe "#destroy" do
+        it "removes the record from the database and the identity map" do
+          blog.destroy
+          Blog.find(blog.id).should be_nil
+          Prequel.session[:blogs][blog.id].should be_nil
+        end
       end
-    end
 
-    describe "#secure_destroy" do
-
+      describe "#secure_destroy" do
+        it "if can_destroy? returns false, returns false and does not destroy the record" do
+          stub(blog).can_destroy? { false }
+          blog.secure_destroy
+          Blog.find(blog.id).should == blog
+          Prequel.session[:blogs][blog.id].should == blog
+        end
+      end
     end
 
     describe "methods that return field values" do
