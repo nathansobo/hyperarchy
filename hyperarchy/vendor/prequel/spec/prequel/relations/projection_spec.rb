@@ -119,6 +119,30 @@ module Prequel
         end
       end
 
+      describe "#update(attributes)" do
+        before do
+          Blog.create_table
+          Post.create_table
+          Comment.create_table
+
+          DB[:blogs] << { :id => 1 }
+          DB[:blogs] << { :id => 2 }
+          DB[:posts] << { :id => 1, :blog_id => 1 }
+          DB[:posts] << { :id => 2, :blog_id => 1 }
+          DB[:posts] << { :id => 3, :blog_id => 2 }
+          DB[:comments] << { :id => 1, :post_id => 1 }
+          DB[:comments] << { :id => 2, :post_id => 2 }
+          DB[:comments] << { :id => 3, :post_id => 3 }
+        end
+
+        it "performs an update with the projected table as the target" do
+          Blog.where(:id => 1).join(Post).join_through(Comment).update(:body => "New Body").should == 2
+          Comment.find(1).body.should == "New Body"
+          Comment.find(2).body.should == "New Body"
+          Comment.find(3).body.should be_nil
+        end
+      end
+
       describe "#==" do
         it "compares projections semantically" do
           Comment.project(:post_id.as(:comment_post_id), :body.as(:comment_body)).should ==
