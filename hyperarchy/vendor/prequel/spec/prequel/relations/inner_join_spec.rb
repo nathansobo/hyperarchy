@@ -38,6 +38,7 @@ module Prequel
           context "for simple joins" do
             it "infers the predicate correctly" do
               join = Blog.join(Post)
+
               join.predicate.left.qualified_name.should == Blog[:id]
               join.predicate.right.qualified_name.should == Post[:blog_id]
             end

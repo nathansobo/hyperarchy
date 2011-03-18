@@ -15,17 +15,17 @@ module Prequel
       end
 
       def all
-        result_set.map do |field_values|
+        dataset.map do |field_values|
           tuple_builder.build_tuple(field_values)
         end
       end
 
       def first
-        r = result_set
-        r.empty?? nil : tuple_builder.build_tuple(r.first)
+        r = dataset
+        r.empty? ? nil : tuple_builder.build_tuple(r.first)
       end
 
-      def result_set
+      def dataset
         DB[*to_sql]
       end
 
@@ -79,28 +79,27 @@ module Prequel
       protected
 
       def sql_string
-        ["select",
-          select_clause_sql,
-          "from",
-          from_clause_sql,
-          where_clause_sql,
-          order_by_clause_sql,
-          group_by_clause_sql,
-          limit_clause_sql,
-          offset_clause_sql
+        [select_clause_sql,
+         from_clause_sql,
+         where_clause_sql,
+         order_by_clause_sql,
+         group_by_clause_sql,
+         limit_clause_sql,
+         offset_clause_sql
         ].compact.join(" ")
       end
 
       def select_clause_sql
-        if select_list
-          select_list.map {|column| column.to_select_clause_sql}.join(', ')
-        else
-          '*'
-        end
+        "select " +
+          if select_list
+            select_list.map { |column| column.to_select_clause_sql }.join(', ')
+          else
+            '*'
+          end
       end
 
       def from_clause_sql
-        table_ref.to_sql
+        "from #{table_ref.to_sql}"
       end
 
       def where_clause_sql

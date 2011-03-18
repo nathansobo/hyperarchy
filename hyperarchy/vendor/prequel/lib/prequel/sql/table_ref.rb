@@ -14,6 +14,10 @@ module Prequel
         name
       end
 
+      def flatten_table_refs
+        [[self], []]
+      end
+
       def resolve_column(column)
         query_columns[column] ||= Sql::QueryColumn.new(self, column.name)
       end

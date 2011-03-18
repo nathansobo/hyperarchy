@@ -44,9 +44,47 @@ module Prequel
         end
       end
 
+      describe "#update(attributes)" do
+        before do
+          Blog.create_table
+          DB[:blogs] << { :user_id => 1, :title => "Blog 1" }
+          DB[:blogs] << { :user_id => 2, :title => "Blog 2" }
+          DB[:blogs] << { :user_id => 3, :title => "Blog 3" }
+        end
+
+        it "updates every record in the table and returns the count" do
+          Blog.update(:user_id => 99, :title => "You're all mine!").should == 3
+
+          blogs = Blog.all
+          blogs.size.should == 3
+          blogs.each do |blog|
+            blog.user_id.should == 99
+            blog.title.should == "You're all mine!"
+          end
+        end
+      end
+
       describe "#to_sql" do
         it "generates the appropriate SQL" do
           Blog.to_sql.should be_like_query("select * from blogs")
+        end
+      end
+
+      describe "#to_update_sql(attributes)" do
+        it "generates the appropriate update SQL for simple updates" do
+          Blog.to_update_sql(:user_id => 22, :title => "New Title").should be_like_query(%{
+            update blogs set user_id = :v1, title = :v2
+          }, :v1 => 22, :v2 => "New Title")
+        end
+
+        it "generates the appropriate update SQL for updates involving more complex expressions" do
+          Blog.to_update_sql(:user_id => :user_id + 1).should be_like_query(%{
+            update blogs set user_id = blogs.user_id + :v1
+          }, :v1 => 1)
+
+          Blog.to_update_sql(:user_id => :user_id - 1).should be_like_query(%{
+            update blogs set user_id = blogs.user_id - :v1
+          }, :v1 => 1)
         end
       end
     end

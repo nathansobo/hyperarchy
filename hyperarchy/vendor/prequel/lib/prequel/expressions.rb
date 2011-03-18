@@ -7,6 +7,7 @@ module Prequel
     autoload :DerivedColumn
     autoload :Equal
     autoload :Expression
+    autoload :NumericExpression
     autoload :OrderExpression
     autoload :SetFunction
   end

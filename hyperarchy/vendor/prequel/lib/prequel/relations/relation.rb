@@ -3,10 +3,22 @@ module Prequel
     class Relation
       extend EqualityDerivation
 
-      delegate :to_sql, :result_set, :all, :first, :to => :query
+      delegate :to_sql, :dataset, :all, :first, :to => :query
 
       def query
         Sql::Query.new(self).build
+      end
+
+      def update_statement(attributes)
+        Sql::UpdateStatement.new(self, resolve_update_attributes(attributes)).build
+      end
+
+      def to_update_sql(attributes)
+        update_statement(attributes).to_sql
+      end
+
+      def update(attributes)
+        update_statement(attributes).perform
       end
 
       def find(id)
@@ -72,6 +84,12 @@ module Prequel
 
       def resolve(expression)
         expression.resolve_in_relations(operands)
+      end
+
+      def resolve_update_attributes(attributes)
+        Hash[attributes.map do |name, expression|
+          [name, expression.resolve_in_relations([self])]
+        end]
       end
 
       def derive(resolved_expression)

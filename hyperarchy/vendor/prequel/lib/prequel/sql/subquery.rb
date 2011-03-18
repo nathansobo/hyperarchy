@@ -13,6 +13,10 @@ module Prequel
 
       delegate :add_literal, :add_singular_table_ref, :add_subquery, :singular_table_refs, :to => :parent
 
+      def flatten_table_refs
+        [[self], []]
+      end
+
       def to_sql
         ['(', sql_string, ') as ', name].join
       end

@@ -29,6 +29,14 @@ module Prequel
       Expressions::OrderExpression.new(self, :desc)
     end
 
+    def +(right)
+      Expressions::NumericExpression.new(:+, self, right)
+    end
+
+    def -(right)
+      Expressions::NumericExpression.new(:-, self, right)
+    end
+
     def resolve_in_relations(relations)
       if self =~ /^(.+)___(.+)$/
         column_name = $1.to_sym

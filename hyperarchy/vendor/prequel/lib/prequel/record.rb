@@ -1,8 +1,8 @@
 module Prequel
   class Record < Tuple
     class << self
-      delegate :all, :result_set, :[], :to_sql, :get_column, :first, :find, :where,
-               :join, :left_join, :project, :group_by, :order_by, :limit, :offset, :tables,
+      delegate :all, :update, :dataset, :[], :to_update_sql, :to_sql, :get_column, :first, :find,
+               :where, :join, :left_join, :project, :group_by, :order_by, :limit, :offset, :tables,
                :synthetic_columns, :to => :relation
 
       def table
