@@ -28,7 +28,7 @@ module Prequel
         end
       end
 
-      describe "#to_update_sql" do
+      describe "#to_update_sql(attributes)" do
         it "generates the appropriate SQL" do
           Blog.where(:user_id => 1).to_update_sql(:title => "New Title").should be_like_query(%{
             update blogs set title = :v2 where blogs.user_id = :v1

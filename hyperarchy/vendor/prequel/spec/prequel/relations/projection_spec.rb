@@ -125,6 +125,7 @@ module Prequel
             Comment.project(:post_id.as(:comment_post_id), :body.as(:comment_body))
         end
       end
+      
       describe "#to_sql" do
         describe "a projection of particular columns, some with aliases" do
           it "generates the appropriate sql" do
@@ -203,6 +204,26 @@ module Prequel
                                           on posts.id = t2.post_id_of_comment) as t1
                        on blogs.id = t1.posts__blog_id
             })
+          end
+        end
+      end
+
+      describe "#to_update_sql(attributes)" do
+        describe "for a table projection above 2-table inner join" do
+          it "generates the appropriate update SQL, with the non-target table in the from clause and the join condition in the where clause" do
+            Blog.join_through(Post).to_update_sql(:body => "New Body").should be_like_query(%{
+              update posts set body = :v1 from blogs where blogs.id = posts.blog_id
+            }, :v1 => "New Body")
+          end
+        end
+
+        describe "for a table projection above 3-table inner join" do
+          it "generates the appropriate update SQL, with the flattened non-target tables in the from clause and the join conditions in the where clause" do
+            Blog.join(Post).join(Comment).project(Post).to_update_sql(:body => "New Body").should be_like_query(%{
+              update posts set body = :v1
+              from blogs, comments
+              where blogs.id = posts.blog_id and posts.id = comments.post_id
+            }, :v1 => "New Body")
           end
         end
       end

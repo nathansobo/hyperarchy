@@ -27,7 +27,9 @@ module Prequel
         end
 
         if projected_table
-          query.tuple_builder = query.singular_table_refs[projected_table]
+          projected_table_ref = query.singular_table_refs[projected_table]
+          query.projected_table_ref = projected_table_ref
+          query.tuple_builder = projected_table_ref
         else
           query.tuple_builder = self
         end
