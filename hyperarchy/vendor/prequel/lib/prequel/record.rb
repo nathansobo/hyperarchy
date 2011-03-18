@@ -107,8 +107,14 @@ module Prequel
     end
 
     def secure_update(attributes)
+      return false unless can_update?
       soft_update(attributes.slice(*update_whitelist - update_blacklist))
       save
+    end
+
+    def destroy
+      DB[table.name].filter(:id => id).delete
+      Prequel.session[table.name].delete(id)
     end
 
     def save
@@ -160,6 +166,18 @@ module Prequel
       end
     end
 
+    def can_mutate?
+      true
+    end
+
+    def can_create?
+      can_mutate?
+    end
+
+    def can_update?
+      can_mutate?
+    end
+
     def global_whitelist
       columns.map(&:name) + synthetic_columns.map(&:name)
     end
@@ -174,6 +192,30 @@ module Prequel
 
     def read_blacklist
       global_blacklist
+    end
+
+    def mutate_whitelist
+      global_whitelist
+    end
+
+    def mutate_blacklist
+      global_blacklist
+    end
+
+    def create_whitelist
+      mutate_whitelist
+    end
+
+    def create_blacklist
+      mutate_blacklist
+    end
+
+    def update_whitelist
+      mutate_whitelist
+    end
+
+    def update_blacklist
+      mutate_blacklist
     end
 
     def readable_fields

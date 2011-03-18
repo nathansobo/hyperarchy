@@ -241,6 +241,34 @@ module Prequel
             :user_id => 1
           }
         end
+
+        it "if can_update? returns false does not perform the update and returns false" do
+          stub(blog).can_update? { false }
+          blog.secure_update(:title => "Coding For Fun", :subtitle => "And Maybe Eventually Profit?").should be_false
+          DB[:blogs].find(blog.id).first.should == {
+            :id => blog.id,
+            :title => "Saved Blog",
+            :subtitle => nil,
+            :user_id => 1
+          }
+          
+
+          stub(blog).can_update? { true }
+        end
+      end
+    end
+
+    describe "#destroy" do
+      attr_reader :blog
+      before do
+        Blog.create_table
+        @blog = Blog.create
+      end
+
+      it "removes the record from the database and the identity map" do
+        blog.destroy
+        Blog.find(blog.id).should be_nil
+        Prequel.session[:blogs][blog.id].should be_nil
       end
     end
 
