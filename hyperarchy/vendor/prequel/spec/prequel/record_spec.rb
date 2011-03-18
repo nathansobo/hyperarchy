@@ -142,8 +142,9 @@ module Prequel
             end
           end
 
-          Blog.secure_create(:title => "Hola!").should be_false
-
+          expect {
+            Blog.secure_create(:title => "Hola!").should be_false
+          }.should_not change(Blog, :count)
         end
       end
     end
@@ -281,6 +282,10 @@ module Prequel
         Blog.find(blog.id).should be_nil
         Prequel.session[:blogs][blog.id].should be_nil
       end
+    end
+
+    describe "#secure_destroy" do
+
     end
 
     describe "methods that return field values" do
