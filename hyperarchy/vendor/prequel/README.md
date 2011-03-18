@@ -8,7 +8,6 @@ increment
 
 record functionality
 --------------------
-reload
 validations
 
 secure sandbox that accepts mutations and responds to queries

@@ -23,6 +23,14 @@ module Prequel
 
       derive_equality :predicate, :operand
 
+      def wire_representation
+        {
+          'type' => "selection",
+          'operand' => operand.wire_representation,
+          'predicate' => predicate.wire_representation
+        }
+      end
+
       protected
 
       def operands

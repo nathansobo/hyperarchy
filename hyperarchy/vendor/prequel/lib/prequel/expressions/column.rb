@@ -34,6 +34,14 @@ module Prequel
       def resolve_in_query(query)
         query.singular_table_refs[table].resolve_column(self)
       end
+
+      def wire_representation
+        {
+          'type' => "column",
+          'table' => table.name.to_s,
+          'name' => name.to_s
+        }
+      end
     end
   end
 end

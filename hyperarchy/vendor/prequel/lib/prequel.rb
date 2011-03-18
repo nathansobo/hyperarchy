@@ -33,6 +33,7 @@ module Prequel
   autoload :Field
   autoload :Record
   autoload :Relations
+  autoload :Sandbox
   autoload :Session
   autoload :Sql
   autoload :Tuple

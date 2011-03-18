@@ -251,6 +251,18 @@ module Prequel
           end
         end
       end
+
+      describe "#wire_representation" do
+        it "returns a JSON representation that can be evaluated in a sandbox" do
+          projection = Blog.join_through(Post)
+
+          projection.wire_representation.should == {
+            :type => "table_projection",
+            :operand => projection.operand.wire_representation,
+            :projected_table => "posts"
+          }
+        end
+      end
     end
   end
 end

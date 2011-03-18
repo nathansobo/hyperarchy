@@ -261,6 +261,35 @@ module Prequel
           end
         end
       end
+
+      describe "#wire_representation" do
+        it "returns a JSON representation that can be evaluated in a sandbox" do
+          Blog.join(Post).wire_representation.should == {
+            "type" => "inner_join",
+            "left_operand" => {
+              "type" => "table",
+              "name" => "blogs"
+            },
+            "right_operand" => {
+              "type" => "table",
+              "name" => "posts"
+            },
+            "predicate" => {
+              "type" => "eq",
+              "left_operand" => {
+                "type" => "column",
+                "table" => "blogs",
+                "name" => "id"
+              },
+              "right_operand" => {
+                "type" => "column",
+                "table" => "posts",
+                "name" => "blog_id"
+              }
+            }
+          }
+        end
+      end
     end
   end
 end

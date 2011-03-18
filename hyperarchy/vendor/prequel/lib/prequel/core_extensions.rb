@@ -68,6 +68,13 @@ module Prequel
       query.add_literal(self)
     end
 
+    def wire_representation
+      {
+        'type' => 'scalar',
+        'value' => self
+      }
+    end
+
     Numeric.send(:include, self)
     String.send(:include, self)
     TrueClass.send(:include, self)

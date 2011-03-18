@@ -16,10 +16,22 @@ module Prequel
         Equal.new(left.resolve_in_query(query), right.resolve_in_query(query))
       end
 
+      def to_predicate
+        self
+      end
+
       derive_equality :left, :right
 
       def to_sql
         "#{left.to_sql} = #{right.to_sql}"
+      end
+
+      def wire_representation
+        {
+          'type' => "eq",
+          'left_operand' => left.wire_representation,
+          'right_operand' => right.wire_representation
+        }
       end
     end
   end

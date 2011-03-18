@@ -61,6 +61,13 @@ module Prequel
         [self]
       end
 
+      def wire_representation
+        {
+          'type' => 'table',
+          'name' => name.to_s
+        }
+      end
+
       class TableDefinitionContext
         attr_reader :table
         def initialize(table)

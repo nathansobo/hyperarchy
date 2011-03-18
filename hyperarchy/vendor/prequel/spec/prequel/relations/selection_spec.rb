@@ -50,6 +50,30 @@ module Prequel
           Blog2.where(:user_id => 1).should_not == Blog.where(:user_id => 1)
         end
       end
+
+      describe "#wire_representation" do
+        it "returns a JSON representation that can be evaluated in a sandbox" do
+          Blog.where(:user_id => 1).wire_representation.should == {
+            "type" => "selection",
+            "operand" => {
+              "type" => "table",
+              "name" => "blogs"
+            },
+            "predicate" => {
+              "type" => "eq",
+              "left_operand" => {
+                "type" => "column",
+                "table" => "blogs",
+                "name" => "user_id"
+              },
+              "right_operand" => {
+                "type" => "scalar",
+                "value" => 1
+              }
+            }
+          }
+        end
+      end
     end
   end
 end

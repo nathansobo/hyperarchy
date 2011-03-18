@@ -56,7 +56,20 @@ module Prequel
         end
       end
 
+      def get_table(name)
+        projected_table if projected_table.name == name
+      end
+
       derive_equality :operand, :projected_table, :projected_columns
+
+      def wire_representation
+        raise "Can only wire-represent table projections" unless projected_table
+        {
+          :type => 'table_projection',
+          :operand => operand.wire_representation,
+          :projected_table => projected_table.name.to_s
+        }
+      end
 
       protected
       attr_reader :projected_table, :projected_columns
