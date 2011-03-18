@@ -47,11 +47,15 @@ module Prequel
       end
 
       def secure_create(attributes={})
-        secure_new(attributes).tap(&:save)
+        if record = secure_new(attributes)
+          record.tap(&:save)
+        else
+          false
+        end
       end
 
       def secure_new(attributes={})
-        allocate.tap {|r| r.secure_initialize(attributes)}
+        allocate.secure_initialize(attributes)
       end
 
       def has_many(name, options = {})
@@ -86,7 +90,9 @@ module Prequel
     end
 
     def secure_initialize(values={})
+      return false unless can_create?
       initialize(values.slice(*create_whitelist - create_blacklist))
+      self
     end
 
     def table

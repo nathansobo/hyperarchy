@@ -134,6 +134,17 @@ module Prequel
           blog.subtitle.should == "Exploring Deliciousness"
           blog.user_id.should be_nil
         end
+
+        it "if can_create? returns false, and does not create the record and returns false" do
+          class ::Blog
+            def can_create?
+              false
+            end
+          end
+
+          Blog.secure_create(:title => "Hola!").should be_false
+
+        end
       end
     end
 
