@@ -31,6 +31,10 @@ module Prequel
         get_relation(wire_rep[:name])
       when 'selection'
         Relations::Selection.new(evaluate(wire_rep[:operand]), evaluate(wire_rep[:predicate]))
+      when 'inner_join'
+        Relations::InnerJoin.new(evaluate(wire_rep[:left_operand]), evaluate(wire_rep[:right_operand]), evaluate(wire_rep[:predicate]))
+      when 'table_projection'
+        Relations::Projection.new(evaluate(wire_rep[:operand]), wire_rep[:projected_table].to_sym)
       when 'eq'
         Expressions::Equal.new(evaluate(wire_rep[:left_operand]), evaluate(wire_rep[:right_operand]))
       when 'column'

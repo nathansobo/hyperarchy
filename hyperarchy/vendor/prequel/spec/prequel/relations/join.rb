@@ -24,6 +24,7 @@ module Prequel
         query.select_list = columns.map do |derived_column|
           query.resolve_derived_column(derived_column, :qualified)
         end
+
       end
 
       def table_ref(query)
