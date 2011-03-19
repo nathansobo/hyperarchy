@@ -60,10 +60,10 @@ module Prequel
 
       def has_many(name, options = {})
         class_name = options[:class_name] || name.to_s.singularize.camelize
-        klass = class_name.constantize
-        foreign_key = table.infer_join_columns(klass.columns)[1]
         define_method name do
-          relation = klass.where(foreign_key => id) 
+          klass = class_name.constantize
+          foreign_key = table.infer_join_columns(klass.columns)[1]
+          relation = klass.where(foreign_key => id)
           if options[:order_by]
             relation.order_by(*options[:order_by])
           else
@@ -165,8 +165,16 @@ module Prequel
       end
     end
 
+    def to_param
+      id.to_s
+    end
+
     def wire_representation
       field_values.slice(*read_whitelist - read_blacklist).stringify_keys
+    end
+
+    def add_to_client_dataset(dataset)
+      dataset[table.name.to_s][to_param] ||= wire_representation
     end
 
     protected

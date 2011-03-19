@@ -21,6 +21,12 @@ module Prequel
         end
       end
 
+      def each
+        dataset.each do |field_values|
+          yield tuple_builder.build_tuple(field_values)
+        end
+      end
+
       def first
         r = dataset
         r.empty? ? nil : tuple_builder.build_tuple(r.first)

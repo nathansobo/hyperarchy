@@ -34,6 +34,11 @@ module Prequel
       [left.field_values, right.field_values]
     end
 
+    def add_to_client_dataset(dataset)
+      left.add_to_client_dataset(dataset)
+      right.add_to_client_dataset(dataset)
+    end
+
     delegate :inspect, :to => :field_values
   end
 end

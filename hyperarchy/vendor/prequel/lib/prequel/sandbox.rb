@@ -19,6 +19,14 @@ module Prequel
 
     delegate :exposed_relation_definitions, :to => 'self.class'
 
+    def fetch(*wire_reps)
+      (Hash.new {|h,k| h[k] = {}}).tap do |dataset|
+        wire_reps.each do |wire_rep|
+          evaluate(wire_rep).add_to_client_dataset(dataset)
+        end
+      end
+    end
+
     def get_relation(name)
       instance_eval(&exposed_relation_definitions[name])
     end

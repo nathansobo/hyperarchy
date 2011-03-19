@@ -7,7 +7,7 @@ module Prequel
         class Blog < Prequel::Record
           column :id, :integer
           column :user_id, :integer
-          column :title, :integer
+          column :title, :string
         end
       end
 
@@ -15,6 +15,14 @@ module Prequel
         it "resolves symbols in the selection's predicate to columns derived from the selection's operand, not the selection itself" do
           selection = Blog.where(:user_id => 1)
           selection.predicate.left.should == Blog.table.get_column(:user_id)
+        end
+      end
+
+      describe "#create(attributes)" do
+        it "creates a record with attributes that match the predicate" do
+          Blog.create_table
+          blog = Blog.where(:user_id => 1).create(:title => "User 1's Blog")
+          blog.user_id.should == 1
         end
       end
 

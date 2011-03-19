@@ -20,6 +20,10 @@ module Prequel
         self
       end
 
+      def enhance_attributes(attributes)
+        attributes.merge(left.name => right)
+      end
+
       derive_equality :left, :right
 
       def to_sql

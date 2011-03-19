@@ -3,7 +3,7 @@ module Prequel
     class Relation
       extend EqualityDerivation
 
-      delegate :to_sql, :dataset, :all, :first, :count, :to => :query
+      delegate :to_sql, :dataset, :all, :first, :count, :each, :to => :query
 
       def query
         Sql::Query.new(self).build
@@ -19,6 +19,12 @@ module Prequel
 
       def update(attributes)
         update_statement(attributes).perform
+      end
+
+      def add_to_client_dataset(dataset)
+        each do |record|
+          record.add_to_client_dataset(dataset)
+        end
       end
 
       def find(id)

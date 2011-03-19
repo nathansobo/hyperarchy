@@ -8,6 +8,10 @@ module Prequel
         @predicate = resolve(predicate.to_predicate)
       end
 
+      def create(attributes={})
+        operand.create(predicate.enhance_attributes(attributes))
+      end
+
       delegate :get_table, :infer_join_columns, :to => :operand
 
       def columns
