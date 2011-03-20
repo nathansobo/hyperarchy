@@ -79,11 +79,11 @@ module Prequel
 
         it "generates the appropriate update SQL for updates involving more complex expressions" do
           Blog.to_update_sql(:user_id => :user_id + 1).should be_like_query(%{
-            update blogs set user_id = blogs.user_id + :v1
+            update blogs set user_id = user_id + :v1
           }, :v1 => 1)
 
           Blog.to_update_sql(:user_id => :user_id - 1).should be_like_query(%{
-            update blogs set user_id = blogs.user_id - :v1
+            update blogs set user_id = user_id - :v1
           }, :v1 => 1)
         end
       end

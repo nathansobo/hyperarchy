@@ -35,7 +35,7 @@ module Prequel
 
       def set_clause_sql
         "set " + attributes.map do |field_name, value|
-          "#{field_name} = #{value.to_sql}"
+          "#{field_name} = #{value.to_set_clause_sql}"
         end.join(", ")
       end
 

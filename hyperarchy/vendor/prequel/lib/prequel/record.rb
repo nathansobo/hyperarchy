@@ -178,6 +178,16 @@ module Prequel
       end
     end
 
+    def increment(field_name, count=1)
+      table.where(:id => id).increment(field_name, count)
+      reload(field_name)
+    end
+
+    def decrement(field_name, count=1)
+      table.where(:id => id).decrement(field_name, count)
+      reload(field_name)
+    end
+
     def valid?
       errors.clear
       validate

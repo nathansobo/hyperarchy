@@ -21,6 +21,10 @@ module Prequel
       def to_sql
         "#{left.to_sql} #{operator} #{right.to_sql}"
       end
+
+      def to_set_clause_sql
+        "#{left.to_set_clause_sql} #{operator} #{right.to_set_clause_sql}"
+      end
     end
   end
 end

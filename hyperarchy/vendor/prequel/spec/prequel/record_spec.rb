@@ -357,6 +357,37 @@ module Prequel
       end
     end
 
+    describe "#increment and #decrement" do
+      attr_reader :blog
+      before do
+        class ::Blog
+          column :times_read, :integer
+
+          create_table
+        end
+
+        @blog = Blog.create(:times_read => 5)
+      end
+
+      describe "#increment(field_name, count=1)" do
+        it "atomically increments the given field name by the given amount" do
+          DB[:blogs].filter(:id => blog.id).update(:times_read => 7)
+          blog.increment(:times_read, 2)
+          blog.times_read.should == 9
+          blog.reload.times_read.should == 9
+        end
+      end
+
+      describe "#decrement(field_name)" do
+        it "atomically decrements the given field name by the given amount" do
+          DB[:blogs].filter(:id => blog.id).update(:times_read => 3)
+          blog.decrement(:times_read, 2)
+          blog.times_read.should == 1
+          blog.reload.times_read.should == 1
+        end
+      end
+    end
+
     describe "#valid?" do
       it "performs a validation, and returns false if there were any errors" do
         class ::Blog

@@ -21,6 +21,14 @@ module Prequel
         update_statement(attributes).perform
       end
 
+      def increment(column_name, count=1)
+        update(column_name => column_name + count)
+      end
+
+      def decrement(column_name, count=1)
+        update(column_name => column_name - count)
+      end
+
       def add_to_client_dataset(dataset)
         each do |record|
           record.add_to_client_dataset(dataset)

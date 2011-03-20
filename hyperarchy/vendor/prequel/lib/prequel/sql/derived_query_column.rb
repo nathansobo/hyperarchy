@@ -11,6 +11,10 @@ module Prequel
         "#{subquery.name}.#{name}"
       end
 
+      def to_set_clause_sql
+        name
+      end
+
       def to_select_clause_sql
         "#{expression.to_sql} as #{name}"
       end
