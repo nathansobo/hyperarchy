@@ -2,6 +2,7 @@ module Prequel
   module Expressions
     class Column
       attr_reader :table, :name, :type, :options
+      delegate :resolve_in_relations, :to => :qualified_name
 
       def initialize(table, name, type, options = {})
         @table, @name, @type, @options = table, name, type, options
@@ -21,6 +22,10 @@ module Prequel
 
       def qualified_name
         "#{table.name}__#{name}".to_sym
+      end
+
+      def inspect
+        "#{table.name}.#{name}"
       end
 
       def expression

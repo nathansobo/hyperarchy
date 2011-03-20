@@ -10,7 +10,7 @@ module Prequel
       end
 
       def update_statement(attributes)
-        Sql::UpdateStatement.new(self, resolve_update_attributes(attributes)).build
+        Sql::UpdateStatement.new(pull_up_conditions, resolve_update_attributes(attributes)).build
       end
 
       def to_update_sql(attributes)
@@ -94,6 +94,10 @@ module Prequel
       def get_column(name)
         resolved = resolve(name)
         derive(resolved) if resolved
+      end
+
+      def extract_conditions
+        [self, []]
       end
 
       protected

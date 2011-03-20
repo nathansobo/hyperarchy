@@ -277,8 +277,33 @@ module Prequel
           }, :v1 => "New Title")
 
           Blog.where(:user_id => 1).join(Post).to_update_sql(Post[:title] => "New Title").should be_like_query(%{
-            update posts set title = :v2 from (select * from blogs where blogs.user_id = :v1) as t1 where t1.id = posts.blog_id
+            update posts set title = :v2 from blogs where blogs.user_id = :v1 and blogs.id = posts.blog_id
           }, :v1 => 1, :v2 => "New Title")
+        end
+
+        it "pulls up conditions that would otherwise produce subqueries, allowing tables beneath where clauses to be targeted for update" do
+          Blog.where(:user_id => 1).join(Post).to_update_sql(Blog[:title] => "New Title").should be_like_query(%{
+            update blogs set title = :v2 from posts where blogs.user_id = :v1 and blogs.id = posts.blog_id
+          }, :v1 => 1, :v2 => "New Title")
+
+          Blog.where(:user_id => 1).join(Post).where(Post[:title] => "Hi").to_update_sql(Blog[:title] => "New Title").should be_like_query(%{
+            update blogs set title = :v3 from posts where posts.title = :v2 and blogs.user_id = :v1 and blogs.id = posts.blog_id
+          }, :v1 => 1, :v2 => "Hi", :v3 => "New Title")
+
+          Blog.where(:user_id => 1).join(Post).project(:blogs).to_update_sql(:title => "New Title").should be_like_query(%{
+            update blogs set title = :v2 from posts where blogs.user_id = :v1 and blogs.id = posts.blog_id
+          }, :v1 => 1, :v2 => "New Title")
+        end
+      end
+
+
+      describe "#pull_up_conditions" do
+        it "moves any conditions in the operands into the join predicate" do
+          Blog.where(:user_id => 1).join(Post).pull_up_conditions.predicate.should ==
+            Blog.join(Post, :user_id.eq(1) & Blog[:id].eq(:blog_id)).predicate
+
+          Blog.where(:user_id => 1).join(Post).join(Comment).pull_up_conditions.predicate.left.expression.should ==
+            Blog.join(Post, :user_id.eq(1) & Blog[:id].eq(:blog_id)).join(Comment).predicate.left.expression
         end
       end
 

@@ -67,6 +67,10 @@ module Prequel
         [self]
       end
 
+      def pull_up_conditions
+        self
+      end
+
       def wire_representation
         {
           'type' => 'table',

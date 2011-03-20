@@ -3,6 +3,7 @@ module Prequel
     extend ActiveSupport::Autoload
 
     autoload :AliasedExpression
+    autoload :And
     autoload :Column
     autoload :DerivedColumn
     autoload :Equal

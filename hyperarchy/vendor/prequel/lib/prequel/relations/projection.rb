@@ -5,6 +5,7 @@ module Prequel
 
       def initialize(operand, *expressions)
         @operand = operand
+        @original_projected_expressions = expressions
         assign_derived_columns(expressions)
       end
 
@@ -62,6 +63,10 @@ module Prequel
 
       derive_equality :operand, :projected_table, :projected_columns
 
+      def pull_up_conditions
+        Projection.new(operand.pull_up_conditions, *original_projected_expressions)
+      end
+
       def wire_representation
         raise "Can only wire-represent table projections" unless projected_table
         {
@@ -72,7 +77,7 @@ module Prequel
       end
 
       protected
-      attr_reader :projected_table, :projected_columns
+      attr_reader :original_projected_expressions, :projected_table, :projected_columns
 
       def assign_derived_columns(expressions)
         if @projected_table = detect_projected_table(expressions)

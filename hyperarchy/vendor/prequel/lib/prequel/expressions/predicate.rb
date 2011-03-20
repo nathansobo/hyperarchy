@@ -8,6 +8,10 @@ module Prequel
         @left, @right = left, right
       end
 
+      def &(other)
+        And.new(self, other)
+      end
+
       def resolve_in_relations(relations)
         self.class.new(left.resolve_in_relations(relations), right.resolve_in_relations(relations))
       end

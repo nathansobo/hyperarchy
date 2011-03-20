@@ -1,8 +1,9 @@
 module Prequel
   module HashExtensions
     def to_predicate
-      raise NotImplementedError unless size == 1
-      keys.first.eq(values.first)
+      map do |key, value|
+        key.eq(value)
+      end.inject(:&)
     end
 
     Hash.send(:include, self)

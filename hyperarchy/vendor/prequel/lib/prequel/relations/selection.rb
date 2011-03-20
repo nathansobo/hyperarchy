@@ -35,6 +35,15 @@ module Prequel
 
       derive_equality :predicate, :operand
 
+      def pull_up_conditions
+        Selection.new(operand.pull_up_conditions, predicate)
+      end
+
+      def extract_conditions
+        new_operand, extracted_predicates = operand.extract_conditions
+        [new_operand, extracted_predicates + [predicate]]
+      end
+
       def wire_representation
         {
           'type' => "selection",
