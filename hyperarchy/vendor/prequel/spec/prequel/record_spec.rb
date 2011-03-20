@@ -10,15 +10,25 @@ module Prequel
     end
 
     describe "when it is subclassed" do
-      specify "the subclass gets associated with a table" do
+      it "associates the subclass with a table" do
         Blog.table.name.should == :blogs
         Blog.table.tuple_class.should == Blog
       end
 
-      specify "accessor methods are assigned on the subclass for columns on the table" do
+      it "defines accessor methods on the subclass for columns on the table" do
         b = Blog.new
         b.title = "Title"
         b.title.should == "Title"
+      end
+
+      it "for boolean columns, defines an additional predicate-style '?' method" do
+        Blog.column :admin, :boolean
+        b = Blog.new(:admin => true)
+        b.admin?.should be_true
+      end
+
+      it "registers the subclass on the global record class array" do
+        Prequel.record_classes.should == [::Blog]
       end
     end
 
@@ -58,15 +68,25 @@ module Prequel
           before do
             Blog.create_table
             DB[:blogs] << {:id => 1}
+            DB[:blogs] << {:id => 2}
           end
 
-          it "gives records a method that finds the associated record" do
+          it "gives records a reader method that finds the associated record" do
             Post.belongs_to(:blog)
             post = Post.new(:blog_id => 1)
             post.blog.should == Blog.find(1)
 
             post.blog_id = 99
             post.blog.should be_nil
+          end
+
+          it "gives record a writer method that assigns the foreign key based on a given record" do
+            Post.belongs_to(:blog)
+            post = Post.new
+            post.blog = Blog.find(2)
+            post.blog_id.should == 2
+            post.blog = nil
+            post.blog_id.should be_nil
           end
 
           it "accepts a class name option" do
@@ -261,6 +281,25 @@ module Prequel
       end
     end
 
+    describe "#valid?" do
+      it "performs a validation, and returns false if there were any errors" do
+        class ::Blog
+          def validate
+            errors.add(:title, "Not a good name!")
+          end
+        end
+
+        blog = Blog.new
+        blog.should_not be_valid
+        
+        class ::Blog
+          def validate
+          end
+        end
+        blog.should be_valid
+      end
+    end
+
     describe "#update and #secure_update" do
       attr_reader :blog
       before do
@@ -357,11 +396,10 @@ module Prequel
       end
 
       describe "#field_values" do
-        it "returns the real and synthetic field values as a hash" do
+        it "returns only real field values as a hash" do
           blog = Blog.new(:title => "My Blog")
           blog.field_values.should == {
             :id => nil,
-            :lucky_number => 7,
             :title => "My Blog"
           }
         end

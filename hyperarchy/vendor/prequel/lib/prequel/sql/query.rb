@@ -4,7 +4,7 @@ module Prequel
       attr_accessor :select_list, :group_bys, :order_bys, :limit, :offset, :projected_table_ref
       attr_reader :relation, :table_ref, :conditions, :literals, :singular_table_refs, :subquery_count, :query_columns
       attr_writer :tuple_builder
-      delegate :count, :to => :dataset
+      delegate :count, :empty?, :to => :dataset
 
       def initialize(relation)
         @relation = relation

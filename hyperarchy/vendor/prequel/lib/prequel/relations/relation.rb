@@ -3,7 +3,7 @@ module Prequel
     class Relation
       extend EqualityDerivation
 
-      delegate :to_sql, :dataset, :all, :first, :count, :each, :to => :query
+      delegate :to_sql, :dataset, :all, :first, :count, :each, :empty?, :to => :query
 
       def query
         Sql::Query.new(self).build

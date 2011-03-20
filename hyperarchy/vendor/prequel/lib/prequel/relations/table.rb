@@ -2,7 +2,7 @@ module Prequel
   module Relations
     class Table < Relation
       attr_reader :name, :columns_by_name, :synthetic_columns, :tuple_class
-      delegate :create, :to => :tuple_class
+      delegate :new, :create, :to => :tuple_class
 
       def initialize(name, tuple_class=nil, &block)
         @name, @tuple_class = name, tuple_class
@@ -67,6 +67,10 @@ module Prequel
           'type' => 'table',
           'name' => name.to_s
         }
+      end
+
+      def clear
+        DB[name].delete
       end
 
       class TableDefinitionContext

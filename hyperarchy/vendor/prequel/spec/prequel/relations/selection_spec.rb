@@ -18,6 +18,15 @@ module Prequel
         end
       end
 
+      describe "#new(attributes)" do
+        it "instantiates an unsaved record with attributes that match the predicate" do
+          Blog.create_table
+          blog = Blog.where(:user_id => 1).new(:title => "User 1's Blog")
+          blog.id.should be_nil
+          blog.user_id.should == 1
+        end
+      end
+      
       describe "#create(attributes)" do
         it "creates a record with attributes that match the predicate" do
           Blog.create_table

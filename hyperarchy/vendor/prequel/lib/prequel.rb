@@ -26,6 +26,14 @@ module Prequel
     Thread.current[:prequel_session] = nil if Thread.current[:prequel_session]
   end
 
+  def record_classes
+    @record_classes ||= []
+  end
+
+  def clear_tables
+    record_classes.each(&:clear)
+  end
+
   require 'prequel/core_extensions'
   autoload :CompositeTuple
   autoload :Expressions

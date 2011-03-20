@@ -1,7 +1,7 @@
 module Prequel
   class Record < Tuple
     class << self
-      delegate :all, :update, :dataset, :count, :[], :to_update_sql, :to_sql, :get_column, :first, :find,
+      delegate :all, :update, :dataset, :count, :[], :to_update_sql, :to_sql, :get_column, :first, :find, :clear,
                :where, :join, :join_through, :left_join, :project, :group_by, :order_by, :limit, :offset, :tables,
                :synthetic_columns, :wire_representation, :to => :relation
 
@@ -15,6 +15,7 @@ module Prequel
 
       def inherited(klass)
         table_name = klass.name.demodulize.underscore.pluralize.to_sym
+        Prequel.record_classes.push(klass)
         klass.relation = Relations::Table.new(table_name, klass)
       end
 
@@ -29,9 +30,16 @@ module Prequel
         end
       end
 
+      def def_predicate(name)
+        define_method("#{name}?") do
+          get_field_value(name)
+        end
+      end
+
       def column(name, type, options = {})
         table.def_column(name, type, options)
         def_field_accessor(name)
+        def_predicate(name) if type == :boolean
       end
 
       def synthetic_column(name, type)
@@ -79,6 +87,10 @@ module Prequel
         define_method name do
           parent_id = send(foreign_key_name)
           klass.find(parent_id)
+        end
+
+        define_method "#{name}=" do |record|
+          send("#{foreign_key_name}=", record.try(:id))
         end
       end
     end
@@ -143,6 +155,18 @@ module Prequel
       mark_clean
     end
 
+    def valid?
+      errors.clear
+      validate
+      errors.empty?
+    end
+
+    def errors
+      @errors ||= Sequel::Model::Errors.new
+    end
+    
+    def validate; end
+
     def reload(*columns)
       field_values = columns.empty??
         table.where(:id => id).dataset.first :
@@ -152,10 +176,6 @@ module Prequel
 
     def get_record(table_name)
       self if table_name == table.name
-    end
-
-    def field_values
-      super.merge(synthetic_field_values)
     end
 
     def synthetic_field_values
@@ -170,7 +190,7 @@ module Prequel
     end
 
     def wire_representation
-      field_values.slice(*read_whitelist - read_blacklist).stringify_keys
+      field_values.merge(synthetic_field_values).slice(*read_whitelist - read_blacklist).stringify_keys
     end
 
     def add_to_client_dataset(dataset)
