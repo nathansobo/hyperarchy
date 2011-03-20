@@ -119,15 +119,36 @@ module Prequel
         end
       end
 
-      describe ".create(attributes)" do
+      describe ".create and .create!" do
         before do
           Blog.create_table
         end
 
-        it "builds and saves an instance, sets its id, and ensures it is present in the session's identity map" do
-          blog = Blog.create(:title => "My Blog!")
-          blog.id.should_not be_nil
-          blog.should equal(Blog.find(blog.id))
+        describe ".create(attributes)" do
+          it "builds and saves an instance, sets its id, and ensures it is present in the session's identity map" do
+            blog = Blog.create(:title => "My Blog!")
+            blog.id.should_not be_nil
+            blog.should equal(Blog.find(blog.id))
+          end
+        end
+
+        describe ".create!(attributes)" do
+          it "if the record is not valid, raises a Record::NotValid exception" do
+            class ::Blog
+              def valid?
+                false
+              end
+            end
+
+            expect {
+              Blog.create!(:title => "My Blog!")
+            }.to raise_error(Record::NotValid)
+          end
+
+          it "if the record is valid, creates it as normal" do
+            blog = Blog.create!(:title => "My Blog!")
+            blog.id.should_not be_nil
+          end
         end
       end
 
@@ -230,7 +251,7 @@ module Prequel
       end
     end
 
-    describe "#save" do
+    describe "#save and #save!" do
       attr_reader :blog
 
       before do
@@ -240,81 +261,98 @@ module Prequel
         blog.id.should be_nil
       end
 
-      describe "when the record has not yet been inserted into the database" do
-        it "inserts the record, sets its id, and ensures it is present in the session's identity map" do
-          blog.save
-          blog.id.should_not be_nil
-          DB[:blogs].filter(:id => blog.id).first.should == blog.field_values
-          blog.should equal(Blog.find(blog.id))
+      describe "#save" do
+        describe "when the record has not yet been inserted into the database" do
+          it "inserts the record, sets its id, and ensures it is present in the session's identity map" do
+            blog.save
+            blog.id.should_not be_nil
+            DB[:blogs].filter(:id => blog.id).first.should == blog.field_values
+            blog.should equal(Blog.find(blog.id))
+          end
+
+          it "executes before_create and after_create hooks at the appropriate moments" do
+            mock(blog).before_create { blog.id.should be_nil }
+            mock(blog).after_create { blog.id.should_not be_nil }
+            blog.save
+          end
+
+          it "executes before_save and after_save hooks at the appropriate moments" do
+            mock(blog).before_save { blog.id.should be_nil }
+            mock(blog).after_save { blog.id.should_not be_nil }
+            blog.save
+          end
+
+          it "if the record is invalid, returns false and does not insert it" do
+            stub(blog).valid? { false }
+            expect {
+              blog.save.should == false
+            }.to_not change(Blog, :count)
+          end
         end
 
-        it "executes before_create and after_create hooks at the appropriate moments" do
-          mock(blog).before_create { blog.id.should be_nil }
-          mock(blog).after_create { blog.id.should_not be_nil }
-          blog.save
-        end
+        describe "when the record has already been inserted into the database" do
+          before do
+            blog.save
+            blog.id.should_not be_nil
+          end
 
-        it "executes before_save and after_save hooks at the appropriate moments" do
-          mock(blog).before_save { blog.id.should be_nil }
-          mock(blog).after_save { blog.id.should_not be_nil }
-          blog.save
-        end
+          it "saves only the fields that are dirty back into the database" do
+            blog.title = "New Title"
+            DB[:blogs].filter(:id => blog.id).update(:user_id => 2)
+            blog.user_id.should == 1
 
-        it "if the record is invalid, returns false and does not insert it" do
-          stub(blog).valid? { false }
-          expect {
-            blog.save.should == false
-          }.to_not change(Blog, :count)
+            blog.save
+
+            DB[:blogs].count.should == 1
+            DB[:blogs].filter(:id => blog.id).first.should == {
+              :id => blog.id,
+              :title => "New Title",
+              :user_id => 2
+            }
+          end
+
+          it "executes before_update and after_update hooks" do
+            mock(blog).before_update
+            mock(blog).after_update
+
+            blog.title = "New Title"
+            blog.save
+          end
+
+          it "executes before_save and after_save hooks" do
+            mock(blog).before_save
+            mock(blog).after_save
+
+            blog.title = "New Title"
+            blog.save
+          end
+
+          it "if the record is invalid, returns false and does not update it" do
+            old_title = blog.title
+            blog.title = "New Title"
+            mock(blog).valid? { false }
+            blog.save.should be_false
+            blog.reload.title.should == old_title
+          end
+
+          it "does not blow up if there are no dirty fields" do
+            blog.save
+          end
         end
       end
 
-      describe "when the record has already been inserted into the database" do
-        before do
-          blog.save
-          blog.id.should_not be_nil
-        end
-
-        it "saves only the fields that are dirty back into the database" do
-          blog.title = "New Title"
-          DB[:blogs].filter(:id => blog.id).update(:user_id => 2)
-          blog.user_id.should == 1
-
-          blog.save
-
-          DB[:blogs].count.should == 1
-          DB[:blogs].filter(:id => blog.id).first.should == {
-            :id => blog.id,
-            :title => "New Title",
-            :user_id => 2
-          }
-        end
-
-        it "executes before_update and after_update hooks" do
-          mock(blog).before_update
-          mock(blog).after_update
-
-          blog.title = "New Title"
-          blog.save
-        end
-
-        it "executes before_save and after_save hooks" do
-          mock(blog).before_save
-          mock(blog).after_save
-
-          blog.title = "New Title"
-          blog.save
-        end
-
-        it "if the record is invalid, returns false and does not update it" do
-          old_title = blog.title
-          blog.title = "New Title"
+      describe "#save!" do
+        it "raises a Record::NotValid if the record is invalid" do
           mock(blog).valid? { false }
-          blog.save.should be_false
-          blog.reload.title.should == old_title
+          expect {
+            blog.save!
+          }.to raise_error(Record::NotValid)
         end
 
-        it "does not blow up if there are no dirty fields" do
-          blog.save
+        it "saves the record as normal if it is valid" do
+          blog.title = "New Title"
+          blog.save!
+          blog.reload.title.should == "New Title"
         end
       end
     end
@@ -338,7 +376,7 @@ module Prequel
       end
     end
 
-    describe "#update and #secure_update" do
+    describe "#update(!) and #secure_update" do
       attr_reader :blog
       before do
         class ::Blog
@@ -364,6 +402,23 @@ module Prequel
             :subtitle => "Tricky And Maybe Eventually Profit?",
             :user_id => 4
           }
+        end
+      end
+
+      describe "#update!(attributes)" do
+        it "if the update causes the record to not be valid, raises a Record::NotValid exception" do
+          mock(blog).valid? { false }
+
+          old_title = blog.title
+          expect {
+            blog.update!(:title => "Coding For Fun", :user_id => 4)
+          }.to raise_error(Record::NotValid)
+          blog.reload.title.should == old_title
+        end
+
+        it "if the record is valid, updates it as normal" do
+          blog.update!(:title => "Coding For Fun")
+          blog.title.should == "Coding For Fun"
         end
       end
 

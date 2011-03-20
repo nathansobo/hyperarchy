@@ -54,6 +54,10 @@ module Prequel
         new(attributes).tap(&:save)
       end
 
+      def create!(attributes={})
+        new(attributes).tap(&:save!)
+      end
+
       def secure_create(attributes={})
         if record = secure_new(attributes)
           record.tap(&:save)
@@ -124,6 +128,11 @@ module Prequel
       save
     end
 
+    def update!(attributes)
+      soft_update(attributes)
+      save!
+    end
+
     def secure_update(attributes)
       return false unless can_update?
       soft_update(attributes.slice(*update_whitelist - update_blacklist))
@@ -159,6 +168,14 @@ module Prequel
       end
       mark_clean
       true
+    end
+
+    def save!
+      if save
+        true
+      else
+        raise NotValid
+      end
     end
 
     def valid?
@@ -203,6 +220,8 @@ module Prequel
     def add_to_client_dataset(dataset)
       dataset[table.name.to_s][to_param] ||= wire_representation
     end
+
+    class NotValid < Exception; end;
 
     protected
 
