@@ -1,19 +1,15 @@
 module Prequel
   module Expressions
-    class Equal < Predicate
-      def enhance_attributes(attributes)
-        attributes.merge(left.name => right)
-      end
-
+    class NotEqual < Predicate
       def type
-        :eq
+        :neq
       end
 
       def operator_sql
         if left.nil? || right.nil?
-          'is'
+          'is not'
         else
-          '='
+          '!='
         end
       end
     end

@@ -17,6 +17,10 @@ module Prequel
       Expressions::Equal.new(self, other)
     end
 
+    def neq(other)
+      Expressions::NotEqual.new(self, other)
+    end
+
     def count
       Expressions::SetFunction.new(self, :count)
     end
@@ -81,5 +85,17 @@ module Prequel
     FalseClass.send(:include, self)
     NilClass.send(:include, self)
     Time.send(:include, self)
+  end
+
+  module NilClassExtensions
+    def resolve_in_query(query)
+      self
+    end
+
+    def to_sql
+      "null"
+    end
+
+    NilClass.send(:include, self)
   end
 end

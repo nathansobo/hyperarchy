@@ -43,6 +43,30 @@ module Prequel
             }, :v1 => 1)
           end
         end
+
+        describe "with an equal predicate involving nil" do
+          it "generates 'is' instead of '='" do
+            Blog.where(:user_id => nil).to_sql.should be_like_query(%{
+              select * from blogs where blogs.user_id is null
+            })
+          end
+        end
+
+        describe "with a not-equal predicate" do
+          it "generates the appropriate sql" do
+            Blog.where(:user_id.neq(1)).to_sql.should be_like_query(%{
+              select * from blogs where blogs.user_id != :v1
+            }, :v1 => 1)
+          end
+        end
+
+        describe "with a not-equal predicate involving nil" do
+          it "generates 'is not' instead of '!='" do
+            Blog.where(:user_id.neq(nil)).to_sql.should be_like_query(%{
+              select * from blogs where blogs.user_id is not null
+            })
+          end
+        end
       end
 
       describe "#to_update_sql(attributes)" do
