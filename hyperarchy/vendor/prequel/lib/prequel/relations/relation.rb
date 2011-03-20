@@ -27,8 +27,10 @@ module Prequel
         end
       end
 
-      def find(id)
-        where(:id => id).first
+      def find(arg)
+        return nil unless arg
+        predicate = arg.is_a?(Integer) ? :id.eq(arg) : arg.to_predicate
+        where(predicate).first
       end
 
       def where(predicate)

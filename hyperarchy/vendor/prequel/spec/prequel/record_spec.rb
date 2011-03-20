@@ -90,9 +90,12 @@ module Prequel
           end
 
           it "accepts a class name option" do
+            Post.column(:my_blog_id, :integer)
             Post.belongs_to(:my_blog, :class_name => "Blog")
-            post = Post.new(:blog_id => 1)
+            post = Post.new(:my_blog_id => 1)
             post.my_blog.should == Blog.find(1)
+            post.my_blog = Blog.find(2)
+            post.my_blog_id.should == 2
           end
         end
       end
@@ -255,6 +258,13 @@ module Prequel
           mock(blog).before_save { blog.id.should be_nil }
           mock(blog).after_save { blog.id.should_not be_nil }
           blog.save
+        end
+
+        it "if the record is invalid, returns false and does not insert it" do
+          stub(blog).valid? { false }
+          expect {
+            blog.save.should == false
+          }.to_not change(Blog, :count)
         end
       end
 

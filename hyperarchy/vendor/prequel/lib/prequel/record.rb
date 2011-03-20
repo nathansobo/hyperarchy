@@ -82,7 +82,7 @@ module Prequel
 
       def belongs_to(name, options = {})
         class_name = options[:class_name] || name.to_s.camelize
-        foreign_key_name = class_name.to_s.underscore + "_id"
+        foreign_key_name = "#{name}_id"
         klass = class_name.constantize
         define_method name do
           parent_id = send(foreign_key_name)
@@ -144,6 +144,7 @@ module Prequel
       if id
         table.where(:id => id).update(dirty_field_values)
       else
+        return false unless valid?
         before_create
         before_save
         self.id = (DB[table.name] << field_values_without_id)

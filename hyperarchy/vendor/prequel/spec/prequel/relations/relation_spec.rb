@@ -26,16 +26,24 @@ module Prequel
         end
       end
 
-      describe ".find(id)" do
+      describe ".find" do
         before do
           DB[:blogs] << { :id => 1, :title => "Blog 1" }
           DB[:blogs] << { :id => 2, :title => "Blog 2" }
         end
 
-        it "returns the record with that id or nil if it is not found" do
+        it "when passed an integer, returns the record with that id or nil if it is not found" do
           Blog.find(1).title.should == "Blog 1"
           Blog.find(2).title.should == "Blog 2"
           Blog.find(99).should be_nil
+        end
+
+        it "when passed a hash, returns the record matching the corresponding predicate" do
+          Blog.find(:title => "Blog 2").should == Blog.find(2)
+        end
+
+        it "when passed nil, returns nil" do
+          Blog.find(nil).should be_nil
         end
       end
 
