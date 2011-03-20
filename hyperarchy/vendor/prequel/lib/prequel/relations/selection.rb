@@ -12,6 +12,10 @@ module Prequel
         operand.create(predicate.enhance_attributes(attributes))
       end
 
+      def create!(attributes={})
+        operand.create!(predicate.enhance_attributes(attributes))
+      end
+
       def new(attributes={})
         operand.new(predicate.enhance_attributes(attributes))
       end

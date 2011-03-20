@@ -4,7 +4,7 @@ module Prequel
   module Relations
     describe Selection do
       before do
-        class Blog < Prequel::Record
+        class ::Blog < Prequel::Record
           column :id, :integer
           column :user_id, :integer
           column :title, :string
@@ -20,18 +20,41 @@ module Prequel
 
       describe "#new(attributes)" do
         it "instantiates an unsaved record with attributes that match the predicate" do
-          Blog.create_table
           blog = Blog.where(:user_id => 1).new(:title => "User 1's Blog")
           blog.id.should be_nil
           blog.user_id.should == 1
         end
       end
-      
-      describe "#create(attributes)" do
-        it "creates a record with attributes that match the predicate" do
+
+      describe "#create and #create!" do
+        before do
           Blog.create_table
-          blog = Blog.where(:user_id => 1).create(:title => "User 1's Blog")
-          blog.user_id.should == 1
+        end
+
+        describe "#create(attributes)" do
+          it "creates a record with attributes that match the predicate" do
+            blog = Blog.where(:user_id => 1).create(:title => "User 1's Blog")
+            blog.user_id.should == 1
+          end
+        end
+
+        describe "#create!(attributes)" do
+          it "when the record is not valid, raises a Record::NotValid exception" do
+            class ::Blog
+              def valid?
+                false
+              end
+            end
+
+            expect {
+              blog = Blog.where(:user_id => 1).create!(:title => "User 1's Blog")
+            }.to raise_error(Record::NotValid)
+          end
+
+          it "if the record is valid, creates a it as normal" do
+            blog = Blog.where(:user_id => 1).create!(:title => "User 1's Blog")
+            blog.user_id.should == 1
+          end
         end
       end
 
