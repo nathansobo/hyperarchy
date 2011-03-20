@@ -288,6 +288,26 @@ module Prequel
             :user_id => 2
           }
         end
+
+        it "executes before_update and after_update hooks" do
+          mock(blog).before_update
+          mock(blog).after_update
+
+          blog.title = "New Title"
+          blog.save
+        end
+
+        it "executes before_save and after_save hooks" do
+          mock(blog).before_save
+          mock(blog).after_save
+
+          blog.title = "New Title"
+          blog.save
+        end
+
+        it "does not blow up if there are no dirty fields" do
+          blog.save
+        end
       end
     end
 

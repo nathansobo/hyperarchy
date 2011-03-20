@@ -142,7 +142,12 @@ module Prequel
 
     def save
       if id
-        table.where(:id => id).update(dirty_field_values)
+        before_update
+        before_save
+        dirty_fields = dirty_field_values
+        table.where(:id => id).update(dirty_fields) unless dirty_fields.empty?
+        after_update
+        after_save
       else
         return false unless valid?
         before_create
@@ -205,6 +210,9 @@ module Prequel
 
     def before_create; end
     def after_create; end
+
+    def before_update; end
+    def after_update; end
 
     def default_field_values
       columns.inject({}) do |hash, column|
