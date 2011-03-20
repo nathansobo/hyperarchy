@@ -90,6 +90,38 @@ module Prequel
             })
           end
         end
+
+        describe "with a less-than predicate" do
+          it "generates the appropriate sql" do
+            Blog.where(:user_id.lt(2)).to_sql.should be_like_query(%{
+              select * from blogs where blogs.user_id < :v1
+            }, :v1 => 2)
+          end
+        end
+
+        describe "with a less-than-or-equal predicate" do
+          it "generates the appropriate sql" do
+            Blog.where(:user_id.lte(2)).to_sql.should be_like_query(%{
+              select * from blogs where blogs.user_id <= :v1
+            }, :v1 => 2)
+          end
+        end
+
+        describe "with a greater-than predicate" do
+          it "generates the appropriate sql" do
+            Blog.where(:user_id.gt(2)).to_sql.should be_like_query(%{
+              select * from blogs where blogs.user_id > :v1
+            }, :v1 => 2)
+          end
+        end
+
+        describe "with a greater-than-or-equal predicate" do
+          it "generates the appropriate sql" do
+            Blog.where(:user_id.gte(2)).to_sql.should be_like_query(%{
+              select * from blogs where blogs.user_id >= :v1
+            }, :v1 => 2)
+          end
+        end
       end
 
       describe "#to_update_sql(attributes)" do

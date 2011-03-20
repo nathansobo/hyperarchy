@@ -7,6 +7,10 @@ module Prequel
     autoload :DerivedColumn
     autoload :Equal
     autoload :Expression
+    autoload :GreaterThan
+    autoload :GreaterThanOrEqual
+    autoload :LessThan
+    autoload :LessThanOrEqual
     autoload :NotEqual
     autoload :NumericExpression
     autoload :OrderExpression

@@ -21,6 +21,22 @@ module Prequel
       Expressions::NotEqual.new(self, other)
     end
 
+    def gt(other)
+      Expressions::GreaterThan.new(self, other)
+    end
+
+    def gte(other)
+      Expressions::GreaterThanOrEqual.new(self, other)
+    end
+
+    def lt(other)
+      Expressions::LessThan.new(self, other)
+    end
+
+    def lte(other)
+      Expressions::LessThanOrEqual.new(self, other)
+    end
+
     def count
       Expressions::SetFunction.new(self, :count)
     end
