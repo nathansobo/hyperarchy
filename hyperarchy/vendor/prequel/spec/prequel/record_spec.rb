@@ -305,6 +305,14 @@ module Prequel
           blog.save
         end
 
+        it "if the record is invalid, returns false and does not update it" do
+          old_title = blog.title
+          blog.title = "New Title"
+          mock(blog).valid? { false }
+          blog.save.should be_false
+          blog.reload.title.should == old_title
+        end
+
         it "does not blow up if there are no dirty fields" do
           blog.save
         end

@@ -141,6 +141,7 @@ module Prequel
     end
 
     def save
+      return false unless valid?
       if id
         before_update
         before_save
@@ -149,16 +150,15 @@ module Prequel
         after_update
         after_save
       else
-        return false unless valid?
         before_create
         before_save
         self.id = (DB[table.name] << field_values_without_id)
         Prequel.session[table.name][id] = self
         after_create
         after_save
-        self
       end
       mark_clean
+      true
     end
 
     def valid?
@@ -178,6 +178,7 @@ module Prequel
         table.where(:id => id).dataset.first :
         table.where(:id => id).project(*columns).dataset.first
       soft_update_fields(field_values, true)
+      self
     end
 
     def get_record(table_name)
