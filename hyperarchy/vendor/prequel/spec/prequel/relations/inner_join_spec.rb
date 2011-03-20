@@ -275,6 +275,10 @@ module Prequel
           Blog.join(Post).to_update_sql(:title => "New Title").should be_like_query(%{
             update blogs set title = :v1 from posts where blogs.id = posts.blog_id
           }, :v1 => "New Title")
+
+          Blog.where(:user_id => 1).join(Post).to_update_sql(Post[:title] => "New Title").should be_like_query(%{
+            update posts set title = :v2 from (select * from blogs where blogs.user_id = :v1) as t1 where t1.id = posts.blog_id
+          }, :v1 => 1, :v2 => "New Title")
         end
       end
 

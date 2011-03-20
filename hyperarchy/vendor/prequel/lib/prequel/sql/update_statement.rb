@@ -65,7 +65,7 @@ module Prequel
       def determine_target_table_ref
         return projected_table_ref if projected_table_ref
         table_refs.detect do |table_ref|
-          table_ref.has_all_columns?(*attributes.keys)
+          table_ref.instance_of?(TableRef) && table_ref.has_all_columns?(*attributes.keys)
         end
       end
     end
