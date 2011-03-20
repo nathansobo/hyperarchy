@@ -76,10 +76,6 @@ module Prequel
       inspect
     end
 
-    def to_set_clause_sql
-      inspect
-    end
-
     Symbol.send(:include, self)
   end
 

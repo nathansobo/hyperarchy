@@ -10,10 +10,6 @@ module Prequel
         "#{table_ref.name}.#{name}"
       end
 
-      def to_set_clause_sql
-        name
-      end
-
       def to_select_clause_sql
         to_sql
       end

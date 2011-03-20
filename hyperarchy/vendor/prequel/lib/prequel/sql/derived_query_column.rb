@@ -8,11 +8,11 @@ module Prequel
       end
 
       def to_sql
-        "#{subquery.name}.#{name}"
-      end
-
-      def to_set_clause_sql
-        name
+        if subquery.name
+          "#{subquery.name}.#{name}"
+        else
+          expression.to_sql
+        end
       end
 
       def to_select_clause_sql

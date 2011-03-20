@@ -45,6 +45,11 @@ module Prequel
         self
       end
 
+      # only subqueries have names
+      def name
+        nil
+      end
+
       def table_ref=(table_ref)
         raise "A table ref has already been assigned" if @table_ref
         @table_ref = table_ref
