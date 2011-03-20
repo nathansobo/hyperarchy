@@ -262,6 +262,22 @@ module Prequel
         end
       end
 
+      describe "#to_update_sql(attributes)" do
+        it "automatically determines the target table from the attributes being updated" do
+          Blog.join(Post).to_update_sql(Post[:title] => "New Title").should be_like_query(%{
+            update posts set title = :v1 from blogs where blogs.id = posts.blog_id
+          }, :v1 => "New Title")
+
+          Blog.join(Post).to_update_sql(:title => "New Title", :blog_id => 90).should be_like_query(%{
+            update posts set title = :v1, blog_id = :v2 from blogs where blogs.id = posts.blog_id
+          }, :v1 => "New Title", :v2 => 90)
+
+          Blog.join(Post).to_update_sql(:title => "New Title").should be_like_query(%{
+            update blogs set title = :v1 from posts where blogs.id = posts.blog_id
+          }, :v1 => "New Title")
+        end
+      end
+
       describe "#wire_representation" do
         it "returns a JSON representation that can be evaluated in a sandbox" do
           Blog.join(Post).wire_representation.should == {

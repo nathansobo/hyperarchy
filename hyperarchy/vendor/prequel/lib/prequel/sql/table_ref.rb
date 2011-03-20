@@ -3,7 +3,7 @@ module Prequel
     class TableRef
       include NamedTableRef
       attr_reader :relation, :query_columns
-      delegate :name, :columns, :tuple_class, :to => :relation
+      delegate :name, :columns, :tuple_class, :has_all_columns?, :to => :relation
 
       def initialize(relation)
         @relation = relation

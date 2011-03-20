@@ -88,6 +88,14 @@ module Prequel
         end
       end
 
+      describe "#has_all_columns?(*column_names)" do
+        it "returns true only if the table has all the given columns" do
+          Blog.table.should have_all_columns(:id, :title)
+          Blog.table.should have_all_columns(:blogs__id, :blogs__title)
+          Blog.table.should_not have_all_columns(:id, :title, :garbage)
+        end
+      end
+
       describe "#wire_representation" do
         it "returns a JSON representation that can be evaluated in a sandbox" do
           Blog.wire_representation.should == {

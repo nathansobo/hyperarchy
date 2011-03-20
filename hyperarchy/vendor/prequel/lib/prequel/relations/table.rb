@@ -24,11 +24,8 @@ module Prequel
       end
 
       def get_column(column_name)
-        if column_name.match(/(.+)__(.+)/)
-          qualifier, column_name = $1.to_sym, $2.to_sym
-          return nil unless qualifier == name
-        end
-        columns_by_name[column_name]
+        return nil unless dequalified_name = dequalify(column_name)
+        columns_by_name[dequalified_name]
       end
 
       def get_table(table_name)
@@ -37,6 +34,14 @@ module Prequel
 
       def columns
         columns_by_name.values
+      end
+
+      def has_all_columns?(*column_names)
+        column_names.all? do |name|
+          if dequalified_name = dequalify(name)
+            columns_by_name.has_key?(dequalified_name)
+          end
+        end
       end
 
       def visit(query)
@@ -71,6 +76,16 @@ module Prequel
 
       def clear
         DB[name].delete
+      end
+
+      protected
+
+      def dequalify(column_name)
+        if column_name.match(/(.+)__(.+)/)
+          qualifier, column_name = $1.to_sym, $2.to_sym
+          return nil unless qualifier == name
+        end
+        column_name
       end
 
       class TableDefinitionContext

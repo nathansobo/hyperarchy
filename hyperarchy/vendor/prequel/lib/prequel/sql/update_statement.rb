@@ -35,7 +35,7 @@ module Prequel
 
       def set_clause_sql
         "set " + attributes.map do |field_name, value|
-          "#{field_name} = #{value.to_sql}"
+          "#{field_name.to_s.gsub(/.+__/, '')} = #{value.to_sql}"
         end.join(", ")
       end
 
@@ -54,11 +54,18 @@ module Prequel
         @table_refs, join_predicates = table_ref.flatten_table_refs
         conditions.concat(join_predicates)
         if table_refs.size > 1
-          @updated_table_ref = projected_table_ref
+          @updated_table_ref = determine_target_table_ref
           table_refs.delete(updated_table_ref)
         else
           @updated_table_ref = table_refs.first
           @table_refs = nil
+        end
+      end
+
+      def determine_target_table_ref
+        return projected_table_ref if projected_table_ref
+        table_refs.detect do |table_ref|
+          table_ref.has_all_columns?(*attributes.keys)
         end
       end
     end
