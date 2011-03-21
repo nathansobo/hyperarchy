@@ -13,7 +13,11 @@ module Prequel
       end
 
       def resolve_in_relations(relations)
-        self.class.new(left.resolve_in_relations(relations), right.resolve_in_relations(relations))
+        if new_left = convert_record_reference(relations)
+          self.class.new(new_left, right.try(:id))
+        else
+          self.class.new(left.resolve_in_relations(relations), right.resolve_in_relations(relations))
+        end
       end
 
       def resolve_in_query(query)
@@ -36,6 +40,14 @@ module Prequel
           'left_operand' => left.wire_representation,
           'right_operand' => right.wire_representation
         }
+      end
+
+      protected
+
+      def convert_record_reference(relations)
+        return unless left.instance_of?(Symbol) && (right.is_a?(Record) || right.nil?)
+        return if left.resolve_in_relations(relations)
+        "#{left}_id".to_sym.resolve_in_relations(relations)
       end
     end
   end

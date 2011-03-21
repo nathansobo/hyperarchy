@@ -9,12 +9,28 @@ module Prequel
           column :user_id, :integer
           column :title, :string
         end
+
+        class ::User < Prequel::Record
+          column :id, :integer
+        end
       end
 
       describe "#initialize" do
         it "resolves symbols in the selection's predicate to columns derived from the selection's operand, not the selection itself" do
           selection = Blog.where(:user_id => 1)
           selection.predicate.left.should == Blog.table.get_column(:user_id)
+        end
+
+        it "translates record equality to foreign key equality" do
+          User.create_table
+          DB[:users] << { :id => 1 }
+          selection = Blog.where(:user => User.find(1))
+          selection.predicate.left.should == Blog.table.get_column(:user_id)
+          selection.predicate.right.should == 1
+
+          selection = Blog.where(:user => nil)
+          selection.predicate.left.should == Blog.table.get_column(:user_id)
+          selection.predicate.right.should == nil
         end
       end
 
@@ -76,7 +92,6 @@ module Prequel
             end
           end
         end
-
       end
 
       describe "#to_sql" do
