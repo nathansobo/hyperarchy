@@ -46,6 +46,14 @@ module Prequel
         table.def_synthetic_column(name, type)
       end
 
+      def validate(&block)
+        validations.push(block)
+      end
+
+      def validations
+        @validations ||= []
+      end
+
       def new_from_database(attributes)
         Prequel.session[table.name][attributes[:id]] ||= super
       end
@@ -189,8 +197,22 @@ module Prequel
       reload(field_name)
     end
 
+    def mark_clean
+      @persisted = true
+      super
+    end
+
+    def persisted?
+      @persisted
+    end
+
+    def unpersisted?
+      !persisted?
+    end
+
     def valid?
       errors.clear
+      run_validations
       validate
       errors.empty?
     end
@@ -244,6 +266,12 @@ module Prequel
 
     def before_update(changeset); end
     def after_update(changeset); end
+
+    def run_validations
+      self.class.validations.each do |validation|
+        instance_eval(&validation)
+      end
+    end
 
     def default_field_values
       columns.inject({}) do |hash, column|

@@ -260,6 +260,44 @@ module Prequel
             }, :v1 => "Post Title")
           end
         end
+
+        describe "an inner join whose predicate is based on a nested join" do
+
+          it "generates correct SQL" do
+            Blog.create_table
+            Post.create_table
+
+            class ::User < Prequel::Record
+              column :id, :integer
+
+              create_table
+            end
+
+            Blog.where(:user_id => 1).join(Post).where(Post[:title] => "Foo").join(User).to_sql.should be_like_query(%{
+              select t1.t2__id         as t1__t2__id,
+                     t1.t2__user_id    as t1__t2__user_id,
+                     t1.t2__title      as t1__t2__title,
+                     t1.posts__id      as t1__posts__id,
+                     t1.posts__blog_id as t1__posts__blog_id,
+                     t1.posts__title   as t1__posts__title,
+                     users.id          as users__id
+              from   (select t2.id         as t2__id,
+                             t2.user_id    as t2__user_id,
+                             t2.title      as t2__title,
+                             posts.id      as posts__id,
+                             posts.blog_id as posts__blog_id,
+                             posts.title   as posts__title
+                      from   (select *
+                              from   blogs
+                              where  blogs.user_id = :v1) as t2
+                             inner join posts
+                               on t2.id = posts.blog_id
+                      where  posts.title = :v2) as t1
+                     inner join users
+                       on users.id = t1.t2__user_id
+            }, :v1 => 1, :v2 => "Foo")
+          end
+        end
       end
 
       describe "#to_update_sql(attributes)" do

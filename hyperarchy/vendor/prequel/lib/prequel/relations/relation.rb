@@ -119,7 +119,6 @@ module Prequel
           alias_name = resolved_expression.alias_name
           resolved_expression = resolved_expression.expression
         end
-
           derived_columns[resolved_expression] ||=
           Expressions::DerivedColumn.new(self, resolved_expression, alias_name).tap do |derived_column|
             derived_columns[resolved_expression] = derived_column

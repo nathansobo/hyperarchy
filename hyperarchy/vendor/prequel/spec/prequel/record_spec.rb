@@ -408,7 +408,7 @@ module Prequel
     end
 
     describe "#valid?" do
-      it "performs a validation, and returns false if there were any errors" do
+      it "calls validation hooks and the validate method, and returns false if there were any errors" do
         class ::Blog
           def validate
             errors.add(:title, "Not a good name!")
@@ -417,12 +417,19 @@ module Prequel
 
         blog = Blog.new
         blog.should_not be_valid
-        
+
         class ::Blog
           def validate
           end
         end
         blog.should be_valid
+
+
+        Blog.validate do
+          errors.add(:title, "Not a nice name!")
+        end
+
+        blog.should_not be_valid
       end
     end
 
@@ -568,6 +575,22 @@ module Prequel
             'id' => nil
           }
         end
+      end
+    end
+
+    describe "unpersisted vs. persisted state" do
+      before do
+        Blog.create_table
+      end
+
+      specify "a record is unpersisted before it is saved in the database and persisted thereafter" do
+        blog = Blog.new(:title => "Hello there")
+        blog.should be_unpersisted
+        blog.save
+        blog.should be_persisted
+
+        DB[:blogs] << { :id => 2 }
+        Blog.find(2).should be_persisted
       end
     end
 

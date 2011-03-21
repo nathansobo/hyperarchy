@@ -42,6 +42,13 @@ module Prequel
 
       def build
         relation.visit(self)
+
+        if !select_list && table_ref.size > 1
+          self.select_list = relation.columns.map do |derived_column|
+            resolve_derived_column(derived_column, nil, :qualified)
+          end
+        end
+
         self
       end
 
@@ -85,7 +92,7 @@ module Prequel
             elsif qualified
               resolved_expression.qualified_name
             else
-              column.name
+              resolved_expression.name
             end
           Sql::DerivedQueryColumn.new(self, resolved_name, resolved_expression)
         end

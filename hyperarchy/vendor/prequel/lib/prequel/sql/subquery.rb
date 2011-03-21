@@ -9,6 +9,7 @@ module Prequel
       def initialize(parent, relation, name)
         @parent, @name = parent, name
         super(relation)
+        @singular_table_refs = nil
       end
 
       delegate :add_literal, :add_singular_table_ref, :add_subquery, :singular_table_refs, :to => :parent
@@ -23,6 +24,10 @@ module Prequel
 
       def build_tuple(field_values)
         tuple_builder.build_tuple(extract_field_values(field_values))
+      end
+
+      def size
+        1
       end
     end
   end

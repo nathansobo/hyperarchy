@@ -2,6 +2,7 @@ module Prequel
   module Relations
     class Selection < Relation
       attr_reader :operand, :predicate
+      delegate :get_table, :infer_join_columns, :tables, :to => :operand
 
       def initialize(operand, predicate)
         @operand = operand
@@ -24,8 +25,6 @@ module Prequel
       def new(attributes={})
         operand.new(predicate.enhance_attributes(attributes))
       end
-
-      delegate :get_table, :infer_join_columns, :to => :operand
 
       def columns
         operand.columns.map do |column|

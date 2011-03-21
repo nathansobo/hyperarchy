@@ -18,6 +18,10 @@ module Prequel
       def build_tuple(field_values)
         CompositeTuple.new_from_database(left.build_tuple(field_values), right.build_tuple(field_values))
       end
+
+      def size
+        left.size + right.size
+      end
     end
   end
 end

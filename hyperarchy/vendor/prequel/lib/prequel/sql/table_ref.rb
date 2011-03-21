@@ -26,6 +26,10 @@ module Prequel
         specific_field_values = extract_field_values(field_values)
         tuple_class.new_from_database(specific_field_values) if specific_field_values[:id]
       end
+
+      def size
+        1
+      end
     end
   end
 end
