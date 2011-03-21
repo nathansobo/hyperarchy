@@ -28,7 +28,7 @@ module Prequel
         end
       end
 
-      describe ".find" do
+      describe "#find" do
         before do
           DB[:blogs] << { :id => 1, :title => "Blog 1" }
           DB[:blogs] << { :id => 2, :title => "Blog 2" }

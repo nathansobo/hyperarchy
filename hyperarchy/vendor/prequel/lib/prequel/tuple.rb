@@ -18,7 +18,7 @@ module Prequel
 
     def initialize(attributes={})
       initialize_fields
-      soft_update_fields(attributes)
+      soft_update(attributes)
     end
 
     delegate :columns, :to => :relation
@@ -28,6 +28,7 @@ module Prequel
         set_field_value(name, value, mark_clean)
       end
     end
+    alias_method :soft_update, :soft_update_fields
 
     def get_field_value(name)
       fields_by_name[name].try(:value)

@@ -16,6 +16,11 @@ module Prequel
         operand.create!(predicate.enhance_attributes(attributes))
       end
 
+      def find_or_create(attributes)
+        enhanced_attributes = predicate.enhance_attributes(attributes)
+        operand.find(enhanced_attributes) || operand.create(enhanced_attributes)
+      end
+
       def new(attributes={})
         operand.new(predicate.enhance_attributes(attributes))
       end

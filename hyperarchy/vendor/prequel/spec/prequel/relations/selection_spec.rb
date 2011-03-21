@@ -26,7 +26,7 @@ module Prequel
         end
       end
 
-      describe "#create and #create!" do
+      describe "#create, #create!, and #find_or_create" do
         before do
           Blog.create_table
         end
@@ -56,6 +56,27 @@ module Prequel
             blog.user_id.should == 1
           end
         end
+
+        describe "#find_or_create(attributes)" do
+          describe "when a record matching the criteria exists" do
+            it "returns the matching record" do
+              DB[:blogs] << { :id => 1, :user_id => 1, :title => "My Blog"}
+              Blog.where(:user_id => 1).find_or_create(:title => "My Blog").should == Blog.find(1)
+            end
+          end
+
+          describe "when no record matching the criteria exists" do
+            it "creates and returns a new record that matches" do
+              expect {
+                blog = Blog.where(:user_id => 1).find_or_create(:title => "My Blog")
+                blog.id.should_not be_nil
+                blog.user_id.should == 1
+                blog.title.should == "My Blog"
+              }.should change(Blog, :count).by(1)
+            end
+          end
+        end
+
       end
 
       describe "#to_sql" do
