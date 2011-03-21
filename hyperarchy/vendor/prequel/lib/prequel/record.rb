@@ -152,11 +152,12 @@ module Prequel
     def save
       return false unless valid?
       if id
-        before_update
+        changeset = build_changeset
+        before_update(changeset)
         before_save
         dirty_fields = dirty_field_values
         table.where(:id => id).update(dirty_fields) unless dirty_fields.empty?
-        after_update
+        after_update(changeset)
         after_save
       else
         before_create
@@ -241,13 +242,21 @@ module Prequel
     def before_create; end
     def after_create; end
 
-    def before_update; end
-    def after_update; end
+    def before_update(changeset); end
+    def after_update(changeset); end
 
     def default_field_values
       columns.inject({}) do |hash, column|
         hash[column.name] = column.default_value if column.default_value
         hash
+      end
+    end
+
+    def build_changeset
+      Changeset.new.tap do |changeset|
+        fields.each do |field|
+          field.update_changeset(changeset)
+        end
       end
     end
 

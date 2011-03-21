@@ -311,11 +311,30 @@ module Prequel
             }
           end
 
-          it "executes before_update and after_update hooks" do
-            mock(blog).before_update
-            mock(blog).after_update
+          it "executes before_update and after_update hooks with a changeset" do
+            old_title = blog.title
+            old_user_id = blog.user_id
+
+            expected_changeset = Changeset.new
+            expected_changeset.changed(:title, old_title, "New Title")
+            expected_changeset.changed(:user_id, old_user_id, 99)
+
+            mock(blog).before_update(expected_changeset)
+            mock(blog).after_update(expected_changeset)
 
             blog.title = "New Title"
+            blog.user_id = 99
+            blog.save
+
+            expected_changeset = Changeset.new
+            expected_changeset.changed(:title, "New Title", "Newer Title")
+            expected_changeset.changed(:user_id, 99, 100)
+
+            mock(blog).before_update(expected_changeset)
+            mock(blog).after_update(expected_changeset)
+
+            blog.title = "Newer Title"
+            blog.user_id = 100
             blog.save
           end
 

@@ -1,6 +1,7 @@
 module Prequel
   class Field
-    attr_reader :tuple, :column, :value
+    attr_reader :tuple, :column, :value, :clean_value
+    delegate :name, :to => :column
 
     def initialize(tuple, column)
       @tuple, @column = tuple, column
@@ -8,7 +9,7 @@ module Prequel
 
     def value=(value)
       @value = value
-      @dirty = true
+      @dirty = (value != clean_value)
     end
 
     def dirty?
@@ -17,6 +18,11 @@ module Prequel
 
     def mark_clean
       @dirty = false
+      @clean_value = value
+    end
+
+    def update_changeset(changeset)
+      changeset.changed(name, clean_value, value) if dirty?
     end
   end
 end

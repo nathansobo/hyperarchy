@@ -35,6 +35,7 @@ module Prequel
   end
 
   require 'prequel/core_extensions'
+  autoload :Changeset
   autoload :CompositeTuple
   autoload :Expressions
   autoload :EqualityDerivation
