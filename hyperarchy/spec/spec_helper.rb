@@ -7,7 +7,7 @@ Spork.prefork do
 
   require 'rspec/rails'
   require 'machinist'
-  require 'monarch/machinist_monarch_adaptor'
+  require 'prequel/machinist_adaptor'
   require 'rr'
   require 'faker'
 end

@@ -1,4 +1,5 @@
 class Ranking < Prequel::Record
+  column :id, :integer
   column :user_id, :key
   column :election_id, :key
   column :candidate_id, :key
@@ -56,7 +57,7 @@ class Ranking < Prequel::Record
 
   def after_update(changeset)
     return unless changeset.changed?(:position)
-    old_position = changeset.old_state.position
+    old_position = changeset.old(:position)
     if position > old_position
       after_ranking_moved_up(old_position)
     else
@@ -137,16 +138,16 @@ class Ranking < Prequel::Record
 
   def victories_over(rankings_or_candidates)
     majorities_where_ranked_candidate_is_winner.
-      join(rankings_or_candidates).on(:loser_id => candidate_id_join_column(rankings_or_candidates))
+      join(rankings_or_candidates, :loser_id => candidate_id_join_column(rankings_or_candidates))
   end
 
   def defeats_by(rankings_or_candidates)
     majorities_where_ranked_candidate_is_loser.
-      join(rankings_or_candidates).on(:winner_id => candidate_id_join_column(rankings_or_candidates))
+      join(rankings_or_candidates, :winner_id => candidate_id_join_column(rankings_or_candidates))
   end
 
   def candidate_id_join_column(rankings_or_candidates)
-    rankings_or_candidates.column(:candidate_id) ? :candidate_id : Candidate[:id]
+    rankings_or_candidates.get_column(:candidate_id) ? :candidate_id : Candidate[:id]
   end
 
   def rankings_by_same_user
@@ -154,35 +155,35 @@ class Ranking < Prequel::Record
   end
 
   def higher_rankings_by_same_user
-    rankings_by_same_user.where(Ranking[:position] > position)
+    rankings_by_same_user.where(:position.gt(position))
   end
 
   def lower_rankings_by_same_user
-    rankings_by_same_user.where(Ranking[:position] < position)
+    rankings_by_same_user.where(:position.lt(position))
   end
 
   def positive_rankings_by_same_user
-    rankings_by_same_user.where(Ranking[:position] > 0)
+    rankings_by_same_user.where(:position.gt(0))
   end
 
   def negative_rankings_by_same_user
-    rankings_by_same_user.where(Ranking[:position] < 0)
+    rankings_by_same_user.where(:position.lt(0))
   end 
 
   def higher_positive_rankings_by_same_user
-    positive_rankings_by_same_user.where(Ranking[:position] > position)
+    positive_rankings_by_same_user.where(:position.gt(position))
   end
 
   def lower_positive_rankings_by_same_user
-    positive_rankings_by_same_user.where(Ranking[:position] < position)
+    positive_rankings_by_same_user.where(:position.lt(position))
   end
 
   def higher_negative_rankings_by_same_user
-    negative_rankings_by_same_user.where(Ranking[:position] > position)
+    negative_rankings_by_same_user.where(:position.gt(position))
   end
 
   def lower_negative_rankings_by_same_user
-    negative_rankings_by_same_user.where(Ranking[:position] < position)
+    negative_rankings_by_same_user.where(:position.lt(position))
   end
 
   def majorities_where_ranked_candidate_is_winner
@@ -203,7 +204,7 @@ class Ranking < Prequel::Record
 
   def candidates_not_ranked_by_same_user
     all_candidates_in_election.
-      left_join_to(rankings_by_same_user).
+      left_join(rankings_by_same_user).
       where(Ranking[:id] => nil).
       project(Candidate)
   end

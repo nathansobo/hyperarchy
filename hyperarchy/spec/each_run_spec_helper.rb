@@ -7,8 +7,8 @@ RSpec.configure do |config|
   config.include ControllerSpecMethods, :type => :controller
 
   config.before do
-    Monarch::Model::Repository.clear_tables
-    Monarch::Model::Repository.initialize_local_identity_map
+    Prequel.clear_tables
+    Prequel.clear_session
     Mailer.reset
     Sham.reset
 

@@ -1,4 +1,5 @@
 class Organization < Prequel::Record
+  column :id, :integer
   column :name, :string
   column :description, :string, :default => ""
   column :members_can_invite, :boolean, :default => false
@@ -46,9 +47,9 @@ class Organization < Prequel::Record
   end
 
   def ensure_current_user_is_member
-    raise Monarch::Unauthorized unless current_user
+    raise SecurityError unless current_user
     return if current_user_is_member?
-    raise Monarch::Unauthorized unless public?
+    raise SecurityError unless public?
     memberships.create!(:user => current_user, :pending => false)
   end
 

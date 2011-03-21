@@ -1,4 +1,5 @@
 class User < Prequel::Record
+  column :id, :integer
   column :first_name, :string
   column :last_name, :string
   column :email_address, :string
@@ -15,24 +16,18 @@ class User < Prequel::Record
   has_many :election_visits
   has_many :votes
   has_many :rankings
+  has_many :elections
+  has_many :candidates
 
-  relates_to_many :organizations do
+  def organizations
     memberships.join_through(Organization)
   end
 
-  relates_to_many :owned_organizations do
+  def owned_organizations
     memberships.where(:role => "owner").join_through(Organization)
   end
 
-  relates_to_many :elections do
-    Election.where(:creator_id => field(:id))
-  end
-
-  relates_to_many :candidates do
-    Candidate.where(:creator_id => field(:id))
-  end
-
-  validates_uniqueness_of :email_address, :message => "There is already an account with that email address." 
+  validates_uniqueness_of :email_address, :message => "There is already an account with that email address."
 
   def self.encrypt_password(unencrypted_password)
     BCrypt::Password.create(unencrypted_password).to_s
@@ -133,10 +128,10 @@ class User < Prequel::Record
   end
 
   def validate
-    validation_error(:first_name, "You must enter a first name.") if first_name.blank?
-    validation_error(:last_name, "You must enter a last name.") if last_name.blank?
-    validation_error(:email_address, "You must enter an email address.") if email_address.blank?
-    validation_error(:encrypted_password, "You must enter a password.") if encrypted_password.blank?
+    errors.add(:first_name, "You must enter a first name.") if first_name.blank?
+    errors.add(:last_name, "You must enter a last name.") if last_name.blank?
+    errors.add(:email_address, "You must enter an email address.") if email_address.blank?
+    errors.add(:encrypted_password, "You must enter a password.") if encrypted_password.blank?
   end
 
   def default_organization

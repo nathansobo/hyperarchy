@@ -1,10 +1,10 @@
 module ModelSpecMethods
   def set_current_user(user)
-    Monarch::Model::Repository.current_user = user
+    Prequel.session.current_user = user
   end
 
   def current_user
-    Monarch::Model::Repository.current_user
+    Prequel.session.current_user
   end
 
   def make_member(organization, attributes = {})

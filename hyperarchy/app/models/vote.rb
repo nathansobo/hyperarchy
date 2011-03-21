@@ -1,4 +1,5 @@
 class Vote < Prequel::Record
+  column :id, :integer
   column :user_id, :key
   column :election_id, :key
   column :created_at, :datetime

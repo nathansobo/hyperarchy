@@ -1,4 +1,5 @@
 class Majority < Prequel::Record
+  column :id, :integer
   column :election_id, :key
   column :winner_id, :key
   column :loser_id, :key

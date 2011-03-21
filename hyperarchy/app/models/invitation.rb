@@ -1,4 +1,5 @@
 class Invitation < Prequel::Record
+  column :id, :integer
   column :guid, :string
   column :sent_to_address, :string
   column :first_name, :string, :default => ""
@@ -12,10 +13,11 @@ class Invitation < Prequel::Record
   belongs_to :inviter, :class_name => "User"
   belongs_to :invitee, :class_name => "User"
   has_many :memberships
-  relates_to_many :organizations do
+
+  def organizations
     memberships.join_through(Organization)
   end
-
+  
   attr_accessor :send_email
 
   def before_create

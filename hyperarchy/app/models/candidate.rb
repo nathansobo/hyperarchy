@@ -1,4 +1,5 @@
 class Candidate < Prequel::Record
+  column :id, :integer
   column :body, :string
   column :details, :string, :default => ""
   column :election_id, :key
@@ -81,14 +82,12 @@ class Candidate < Prequel::Record
 
   def victories_over(other_candidate_ranking_counts)
     winning_majorities.
-      join(other_candidate_ranking_counts).
-        on(:loser_id => :candidate_id)
+      join(other_candidate_ranking_counts, :loser_id => :candidate_id)
   end
 
   def defeats_by(other_candidate_ranking_counts)
     losing_majorities.
-      join(other_candidate_ranking_counts).
-        on(:winner_id => :candidate_id)
+      join(other_candidate_ranking_counts, :winner_id => :candidate_id)
   end
 
   def winning_majorities
@@ -101,8 +100,7 @@ class Candidate < Prequel::Record
 
   def users_to_notify_immediately
     election.votes.
-      join(Membership.where(:organization_id => election.organization_id)).
-        on(Vote[:user_id].eq(Membership[:user_id])).
+      join(Membership.where(:organization_id => election.organization_id), Vote[:user_id].eq(Membership[:user_id])).
       where(:notify_of_new_candidates => "immediately").
       where(Membership[:user_id].neq(creator_id)).
       join_through(User)

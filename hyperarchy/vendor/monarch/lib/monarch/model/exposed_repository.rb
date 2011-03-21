@@ -120,7 +120,7 @@ module Monarch
         record = relation.build(field_values)
 
         unless record.can_create? && record.can_create_with_columns?(field_values.keys)
-          raise Monarch::Unauthorized
+          raise SecurityError
         end
 
         if record.save
@@ -136,7 +136,7 @@ module Monarch
         record.soft_update_fields(field_values)
 
         unless record.can_update? && record.can_update_columns?(field_values.keys)
-          raise Monarch::Unauthorized, "Not allowed to perform update: #{table_name}, #{id}, #{field_values.inspect}"
+          raise SecurityError, "Not allowed to perform update: #{table_name}, #{id}, #{field_values.inspect}"
         end
 
         if record.save
@@ -153,7 +153,7 @@ module Monarch
       def perform_destroy(table_name, id)
         relation = get_view(table_name)
         record = relation.find(id)
-        raise Monarch::Unauthorized unless record.can_destroy?
+        raise SecurityError unless record.can_destroy?
         record.destroy
         valid_result(nil)
       end

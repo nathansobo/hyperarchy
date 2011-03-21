@@ -1,4 +1,5 @@
 class ElectionVisit < Prequel::Record
+  column :id, :integer
   column :election_id, :key
   column :user_id, :key
   column :created_at, :datetime

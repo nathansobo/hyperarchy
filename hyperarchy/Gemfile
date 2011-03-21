@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 gem 'rails', '3.0.4'
 gem 'pg', '0.9.0'
 gem 'sequel', '3.16.0'
-gem 'sequel_rails3'
+gem 'sequel-rails'
 gem 'bcrypt-ruby', :require => 'bcrypt'
 gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
 gem 'erector', :git => "https://github.com/bigfix/erector.git", :ref => 'adac17b5c02e47c0ebb8'

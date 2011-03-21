@@ -1,4 +1,5 @@
 class Election < Prequel::Record
+  column :id, :integer
   column :organization_id, :key
   column :creator_id, :key
   column :body, :string
@@ -64,7 +65,7 @@ class Election < Prequel::Record
   end
 
   def before_update(changeset)
-    self.score = compute_score if changeset[:vote_count]
+    self.score = compute_score if changeset.changed?(:vote_count)
   end
 
   def after_create
@@ -112,11 +113,11 @@ class Election < Prequel::Record
   end
 
   def positive_rankings
-    rankings.where(Ranking[:position] > 0)
+    rankings.where(Ranking[:position].gt(0))
   end
 
   def negative_rankings
-    rankings.where(Ranking[:position] < 0)
+    rankings.where(Ranking[:position].lt(0))
   end
 
   def positive_candidate_ranking_counts
@@ -135,7 +136,7 @@ class Election < Prequel::Record
 
   def ranked_candidates
     candidates.
-      join_to(rankings).
+      join(rankings).
       project(Candidate)
   end
 

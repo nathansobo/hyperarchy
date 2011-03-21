@@ -71,7 +71,7 @@ describe SubscriptionManager do
 #
 #        lambda do
 #          SubscriptionManager.subscribe_to_organization(client, org)
-#        end.should raise_error(Monarch::Unauthorized)
+#        end.should raise_error(SecurityError)
 #
 #        user.update(:admin => true)
 #        SubscriptionManager.subscribe_to_organization(client, org)

@@ -1,4 +1,4 @@
-class ExposedRepository < Monarch::Model::ExposedRepository
+class ExposedRepository < Prequel::Sandbox
   attr_reader :user
   def initialize(user)
     @user = user
@@ -46,6 +46,6 @@ class ExposedRepository < Monarch::Model::ExposedRepository
 
   def subscribe(*args)
     # subscribe is disabled for now in favor of the custom SubscriptionManager
-    raise Monarch::Unauthorized
+    raise SecurityError
   end
 end

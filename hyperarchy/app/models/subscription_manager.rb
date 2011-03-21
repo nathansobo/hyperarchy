@@ -1,5 +1,5 @@
 class SubscriptionManager
-  include Monarch::Util
+#  include Monarch::Util
   
   class << self
     def instance; @instance ||= new; end
@@ -19,7 +19,7 @@ class SubscriptionManager
   end
 
   def subscribe_to_organization(client, organization)
-    raise Monarch::Unauthorized unless organization.allow_subscription?(client.user)
+    raise SecurityError unless organization.allow_subscription?(client.user)
     client.subscribe(organization_node(organization.id))
   end
 

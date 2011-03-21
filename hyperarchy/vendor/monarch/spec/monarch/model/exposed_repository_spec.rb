@@ -139,7 +139,7 @@ module Monarch
                 mock.instance_of(User).can_create? { false }
                 lambda do
                   exposed_repository.mutate([['create', 'users', {'full_name' => "Ted Leitner"}]])
-                end.should raise_error(Monarch::Unauthorized)
+                end.should raise_error(SecurityError)
               end
             end
 
@@ -156,12 +156,12 @@ module Monarch
                 # on blacklist
                 lambda do
                   exposed_repository.mutate([['create', 'users', {'full_name' => "Justin Timberlake", 'has_hair' => true}]])
-                end.should raise_error(Monarch::Unauthorized)
+                end.should raise_error(SecurityError)
 
                 # not on whitelist
                 lambda do
                   exposed_repository.mutate([['create', 'users', {'full_name' => "Justin Timberlake", 'age' => 32}]])
-                end.should raise_error(Monarch::Unauthorized)
+                end.should raise_error(SecurityError)
               end
             end
           end
@@ -224,7 +224,7 @@ module Monarch
                 mock(record).can_update? { false }
                 lambda do
                   exposed_repository.mutate([['update', 'users', 'jan', {'full_name' => "Elizabeth Scarborough"}]])
-                end.should raise_error(Monarch::Unauthorized)
+                end.should raise_error(SecurityError)
               end
             end
 
@@ -237,12 +237,12 @@ module Monarch
                 # on blacklist
                 lambda do
                   exposed_repository.mutate([['update', 'users', 'jan', {'has_hair' => false}]])
-                end.should raise_error(Monarch::Unauthorized)
+                end.should raise_error(SecurityError)
 
                 # not on whitelist
                 lambda do
                   exposed_repository.mutate([['update', 'users', 'jan', {'age' => 99}]])
-                end.should raise_error(Monarch::Unauthorized)
+                end.should raise_error(SecurityError)
               end
             end
           end
@@ -300,7 +300,7 @@ module Monarch
               mock(record).can_destroy? { false }
               lambda do
                 exposed_repository.mutate([['destroy', 'users', 'jan']])
-              end.should raise_error(Monarch::Unauthorized)
+              end.should raise_error(SecurityError)
               mock(record).can_destroy? { true }
               exposed_repository.mutate([['destroy', 'users', 'jan']])
             end

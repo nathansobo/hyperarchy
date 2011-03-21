@@ -1,4 +1,5 @@
 class CandidateComment < Prequel::Record
+  column :id, :integer
   column :body, :string
   column :candidate_id, :key
   column :creator_id, :key
@@ -50,8 +51,8 @@ class CandidateComment < Prequel::Record
   def users_to_notify_immediately
     notify_users = candidate.
       rankings.
-      join_to(User).
-      join_to(organization.memberships).
+      join(User).
+      join(organization.memberships).
       where(:notify_of_new_comments_on_ranked_candidates => "immediately").
       where(Membership[:user_id].neq(creator_id)).
       project(User).

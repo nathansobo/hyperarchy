@@ -1,4 +1,5 @@
 class Membership < Prequel::Record
+  column :id, :integer
   column :organization_id, :key
   column :user_id, :key
   column :invitation_id, :key
@@ -151,7 +152,7 @@ class Membership < Prequel::Record
 
   def new_candidates_in_period(period)
     user.votes.
-      join_to(organization.elections).
+      join(organization.elections).
       join_through(Candidate).
       where(Candidate[:created_at] > (last_alerted_or_visited_at(period))).
       where(Candidate[:creator_id].neq(user_id))
@@ -159,8 +160,8 @@ class Membership < Prequel::Record
 
   def new_comments_on_ranked_candidates_in_period(period)
     user.votes.
-      join_to(organization.elections).
-      join_to(Candidate).
+      join(organization.elections).
+      join(Candidate).
       where(Candidate[:creator_id].neq(user_id)).
       join_through(CandidateComment).
       where(CandidateComment[:created_at] > (last_alerted_or_visited_at(period))).
@@ -169,7 +170,7 @@ class Membership < Prequel::Record
 
   def new_comments_on_own_candidates_in_period(period)
     organization.elections.
-      join_to(user.candidates).
+      join(user.candidates).
       join_through(CandidateComment).
       where(CandidateComment[:created_at] > (last_alerted_or_visited_at(period))).
       where(CandidateComment[:creator_id].neq(user_id))

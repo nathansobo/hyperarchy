@@ -91,7 +91,7 @@ module Models
           admin = User.make(:admin => true)
           other_user = User.make
 
-          new_membership = organization.memberships.build(:user => other_user)
+          new_membership = organization.memberships.new(:user => other_user)
           membership = organization.memberships.find(:user => member)
 
           set_current_user(member)

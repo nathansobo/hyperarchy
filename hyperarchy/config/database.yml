@@ -1,10 +1,12 @@
 development:
   adapter: postgres
   database: hyperarchy_development
+  username: hyperarchy
 
 test:
   adapter: postgres
   database: hyperarchy_test
+  username: hyperarchy
 
 demo:
   adapter: postgres

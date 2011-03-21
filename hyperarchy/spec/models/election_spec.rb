@@ -24,7 +24,7 @@ module Models
         organization.update(:privacy => "private")
         expect do
           organization.elections.create!(:body => "foo")
-        end.should raise_error(Monarch::Unauthorized)
+        end.should raise_error(SecurityError)
 
         organization.update(:privacy => "public")
         organization.elections.create!(:body => "foo")
