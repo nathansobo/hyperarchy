@@ -24,7 +24,7 @@ module Prequel
       def visit(query)
         operand.visit(query)
         query.select_list = columns.map do |derived_column|
-          query.resolve_derived_column(derived_column)
+          derived_column.resolve_in_query(query)
         end
 
         if projected_table

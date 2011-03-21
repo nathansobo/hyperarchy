@@ -76,10 +76,17 @@ module Prequel
         subquery.build
       end
 
-      def resolve_derived_column(column, qualified=false)
+      def resolve_derived_column(column, alias_name, qualified=false)
         query_columns[column] ||= begin
           resolved_expression = column.expression.resolve_in_query(self)
-          resolved_name = qualified ? resolved_expression.qualified_name : column.name
+          resolved_name =
+            if alias_name
+              alias_name
+            elsif qualified
+              resolved_expression.qualified_name
+            else
+              column.name
+            end
           Sql::DerivedQueryColumn.new(self, resolved_name, resolved_expression)
         end
       end

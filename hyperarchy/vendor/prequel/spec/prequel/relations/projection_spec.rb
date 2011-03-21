@@ -250,6 +250,22 @@ module Prequel
             }, :v1 => "New Body")
           end
         end
+
+        describe "for an update based on an aliased column" do
+          it "generates the appropriate sql, using the alias name to reference the column" do
+            Post.column(:comment_count, :integer)
+            Post.join(Comment.group_by(:post_id).project(:post_id, :id.count.as(:num_comments))).to_update_sql(:comment_count => :num_comments).should be_like_query(%{
+              update posts
+              set    comment_count = t1.num_comments
+              from   (select comments.post_id   as post_id,
+                             count(comments.id) as num_comments
+                      from   comments
+                      group  by comments.post_id) as t1
+              where  posts.id = t1.post_id
+            })
+          end
+        end
+
       end
 
       describe "#wire_representation" do

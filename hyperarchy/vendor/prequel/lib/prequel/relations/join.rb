@@ -22,7 +22,7 @@ module Prequel
       def visit(query)
         query.table_ref = table_ref(query)
         query.select_list = columns.map do |derived_column|
-          query.resolve_derived_column(derived_column, :qualified)
+          query.resolve_derived_column(derived_column, nil, :qualified)
         end
 
       end

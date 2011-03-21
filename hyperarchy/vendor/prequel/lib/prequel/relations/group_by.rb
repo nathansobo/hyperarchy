@@ -19,6 +19,10 @@ module Prequel
 
       derive_equality :operand, :expressions
 
+      def pull_up_conditions
+        GroupBy.new(operand.pull_up_conditions, *expressions)
+      end
+
       protected
 
       def operands

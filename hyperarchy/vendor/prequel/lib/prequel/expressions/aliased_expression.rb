@@ -8,7 +8,7 @@ module Prequel
       end
 
       def resolve_in_relations(relations)
-        AliasedExpression.new(expression.resolve_in_relations(relations), alias_name)
+         AliasedExpression.new(expression.resolve_in_relations(relations), alias_name)
       end
     end
   end

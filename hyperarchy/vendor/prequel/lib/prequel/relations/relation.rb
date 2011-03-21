@@ -10,7 +10,9 @@ module Prequel
       end
 
       def update_statement(attributes)
-        Sql::UpdateStatement.new(pull_up_conditions, resolve_update_attributes(attributes)).build
+        relation_to_update = pull_up_conditions
+        update_attributes = relation_to_update.resolve_update_attributes(attributes)
+        Sql::UpdateStatement.new(relation_to_update, update_attributes).build
       end
 
       def to_update_sql(attributes)

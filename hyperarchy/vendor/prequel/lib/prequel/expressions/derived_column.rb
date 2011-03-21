@@ -18,7 +18,7 @@ module Prequel
 
       def resolve_in_query(query)
         if subquery = query.singular_table_refs[relation]
-          subquery.resolve_derived_column(self)
+          subquery.resolve_derived_column(self, alias_name)
         else
           expression.resolve_in_query(query)
         end
