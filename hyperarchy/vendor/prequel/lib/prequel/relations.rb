@@ -13,5 +13,6 @@ module Prequel
     autoload :Relation
     autoload :Selection
     autoload :Table
+    autoload :UnaryRelationMethods
   end
 end

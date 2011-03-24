@@ -1,6 +1,8 @@
 module Prequel
   module Relations
     class OrderBy < Relation
+      include UnaryRelationMethods
+
       attr_reader :operand, :order_expressions
 
       def initialize(operand, *order_expressions)
@@ -18,12 +20,6 @@ module Prequel
       end
 
       derive_equality :operand, :order_expressions
-      
-      protected
-
-      def operands
-        [operand]
-      end
     end
   end
 end

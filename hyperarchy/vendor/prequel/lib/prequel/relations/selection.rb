@@ -1,6 +1,8 @@
 module Prequel
   module Relations
     class Selection < Relation
+      include UnaryRelationMethods
+      
       attr_reader :operand, :predicate
       delegate :get_table, :infer_join_columns, :tables, :to => :operand
 
@@ -54,12 +56,6 @@ module Prequel
           'operand' => operand.wire_representation,
           'predicate' => predicate.wire_representation
         }
-      end
-
-      protected
-
-      def operands
-        [operand]
       end
     end
   end

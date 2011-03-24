@@ -1,6 +1,8 @@
 module Prequel
   module Relations
     class Limit < Relation
+      include UnaryRelationMethods
+
       attr_reader :operand, :count
 
       def initialize(operand, count)

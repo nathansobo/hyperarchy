@@ -1,6 +1,8 @@
 module Prequel
   module Relations
     class GroupBy < Relation
+      include UnaryRelationMethods
+
       attr_reader :operand, :expressions
 
       def initialize(operand, *expressions)
@@ -21,12 +23,6 @@ module Prequel
 
       def pull_up_conditions
         GroupBy.new(operand.pull_up_conditions, *expressions)
-      end
-
-      protected
-
-      def operands
-        [operand]
       end
     end
   end
