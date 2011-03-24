@@ -5,6 +5,7 @@ module Prequel
       attr_reader :relation, :table_ref, :conditions, :literals, :singular_table_refs, :subquery_count, :query_columns
       attr_writer :tuple_builder
       delegate :count, :empty?, :to => :dataset
+      alias_method :size, :count
 
       def initialize(relation)
         @relation = relation
