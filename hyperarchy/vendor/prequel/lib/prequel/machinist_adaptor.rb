@@ -72,9 +72,15 @@ module Prequel
     Relations::Selection.send(:include, MachinistSelectionMixin)
   end
 
+  module MachinistTableMixin
+    delegate :make, :make_unsaved, :plan, :to => :tuple_class
+
+    Relations::Table.send(:include, MachinistTableMixin)
+  end
+
   module MachinistRelationMixin
     delegate :make, :make_unsaved, :plan, :to => :operand
 
-    Relations::Relation.send(:include, MachinistSelectionMixin)
+    Relations::Relation.send(:include, MachinistRelationMixin)
   end
 end
