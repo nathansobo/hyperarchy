@@ -1,7 +1,7 @@
 class Election < Prequel::Record
   column :id, :integer
-  column :organization_id, :key
-  column :creator_id, :key
+  column :organization_id, :integer
+  column :creator_id, :integer
   column :body, :string
   column :vote_count, :integer, :default => 0
   column :score, :float

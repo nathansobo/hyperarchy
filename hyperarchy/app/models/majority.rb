@@ -1,8 +1,8 @@
 class Majority < Prequel::Record
   column :id, :integer
-  column :election_id, :key
-  column :winner_id, :key
-  column :loser_id, :key
+  column :election_id, :integer
+  column :winner_id, :integer
+  column :loser_id, :integer
   column :pro_count, :integer, :default => 0
   column :con_count, :integer, :default => 0
   column :winner_created_at, :datetime

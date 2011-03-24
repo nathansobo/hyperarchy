@@ -2,8 +2,8 @@ class Candidate < Prequel::Record
   column :id, :integer
   column :body, :string
   column :details, :string, :default => ""
-  column :election_id, :key
-  column :creator_id, :key
+  column :election_id, :integer
+  column :creator_id, :integer
   column :position, :integer
   column :created_at, :datetime
   column :updated_at, :datetime

@@ -5,8 +5,8 @@ class Invitation < Prequel::Record
   column :first_name, :string, :default => ""
   column :last_name, :string, :default => ""
   column :redeemed, :boolean
-  column :inviter_id, :key
-  column :invitee_id, :key
+  column :inviter_id, :integer
+  column :invitee_id, :integer
   column :created_at, :datetime
   column :updated_at, :datetime
 

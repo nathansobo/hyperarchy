@@ -1,8 +1,8 @@
 class Membership < Prequel::Record
   column :id, :integer
-  column :organization_id, :key
-  column :user_id, :key
-  column :invitation_id, :key
+  column :organization_id, :integer
+  column :user_id, :integer
+  column :invitation_id, :integer
   column :role, :string, :default => "member"
   column :pending, :boolean, :default => true
   column :last_visited, :datetime

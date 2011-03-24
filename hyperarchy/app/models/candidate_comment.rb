@@ -1,8 +1,8 @@
 class CandidateComment < Prequel::Record
   column :id, :integer
   column :body, :string
-  column :candidate_id, :key
-  column :creator_id, :key
+  column :candidate_id, :integer
+  column :creator_id, :integer
   column :created_at, :datetime
   column :updated_at, :datetime
 

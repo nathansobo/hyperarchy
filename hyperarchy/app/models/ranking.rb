@@ -1,9 +1,9 @@
 class Ranking < Prequel::Record
   column :id, :integer
-  column :user_id, :key
-  column :election_id, :key
-  column :candidate_id, :key
-  column :vote_id, :key
+  column :user_id, :integer
+  column :election_id, :integer
+  column :candidate_id, :integer
+  column :vote_id, :integer
   column :position, :float
   column :created_at, :datetime
   column :updated_at, :datetime
