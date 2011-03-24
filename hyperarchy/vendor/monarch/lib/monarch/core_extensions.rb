@@ -82,15 +82,6 @@ class String
   def from_json
     JSON.parse(self)
   end
-
-  def numberize(count=0, plural=nil)
-    if count == 1
-      self
-    else
-      return "are" if self == "is"
-      plural || self.pluralize
-    end
-  end
 end
 
 class Array

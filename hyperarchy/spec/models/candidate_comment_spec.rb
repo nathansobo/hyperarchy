@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module Models
-  describe Candidate do
+  describe CandidateComment do
     attr_reader :candidate, :organization
     before do
       @candidate = Candidate.make
