@@ -148,8 +148,10 @@ module Prequel
     end
 
     def destroy
+      before_destroy
       DB[table.name].filter(:id => id).delete
       Prequel.session[table.name].delete(id)
+      after_destroy
     end
 
     def secure_destroy
@@ -266,6 +268,9 @@ module Prequel
 
     def before_update(changeset); end
     def after_update(changeset); end
+
+    def before_destroy; end
+    def after_destroy; end
 
     def run_validations
       self.class.validations.each do |validation|

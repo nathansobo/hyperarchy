@@ -522,6 +522,13 @@ module Prequel
           Blog.find(blog.id).should be_nil
           Prequel.session[:blogs][blog.id].should be_nil
         end
+
+        it "executes before_destroy and after_destroy destroy hooks at the appropriate moment" do
+          mock(blog).before_destroy { Blog.find(blog.id).should be }
+          mock(blog).after_destroy { Blog.find(blog.id).should be_nil }
+
+          blog.destroy
+        end
       end
 
       describe "#secure_destroy" do
