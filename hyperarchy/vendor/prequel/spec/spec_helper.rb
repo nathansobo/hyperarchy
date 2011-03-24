@@ -13,6 +13,7 @@ Dir[File.expand_path("../support/**/*.rb", __FILE__)].each {|f| require f}
 RSpec.configure do |config|
   config.mock_with :rr
   config.include BeLikeQueryMatcher
+  config.include TimeTravel
   config.after do
     Prequel::Relations::Table.drop_all_tables
     Prequel::Record.subclasses.each do |subclass|

@@ -48,6 +48,8 @@ module Prequel
             String
           when :integer
             Integer
+          when :datetime
+            Time
           else
             raise "Can't convert to a type suitable for Sequel migrations"
         end

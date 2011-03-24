@@ -256,6 +256,8 @@ module Prequel
 
       before do
         Blog.column :user_id, :integer
+        Blog.column :created_at, :datetime
+        Blog.column :updated_at, :datetime
         Blog.create_table
         @blog = Blog.new({:title => "Unsaved Blog", :user_id => 1})
         blog.id.should be_nil
@@ -288,6 +290,13 @@ module Prequel
               blog.save.should == false
             }.to_not change(Blog, :count)
           end
+
+          it "assigns the current time to created_at and updated_at fields if they are present" do
+            freeze_time
+            blog.save
+            blog.created_at.should == Time.now
+            blog.updated_at.should == Time.now
+          end
         end
 
         describe "when the record has already been inserted into the database" do
@@ -304,11 +313,11 @@ module Prequel
             blog.save
 
             DB[:blogs].count.should == 1
-            DB[:blogs].filter(:id => blog.id).first.should == {
-              :id => blog.id,
-              :title => "New Title",
-              :user_id => 2
-            }
+            fields = DB[:blogs].filter(:id => blog.id).first
+
+            fields[:id].should == blog.id
+            fields[:title].should == "New Title"
+            fields[:user_id].should == 2
           end
 
           it "executes before_update and after_update hooks with a changeset" do
@@ -356,6 +365,15 @@ module Prequel
 
           it "does not blow up if there are no dirty fields" do
             blog.save
+          end
+
+          it "assigns the current time to the updated_at field if it is present" do
+            jump(1.minute)
+
+            blog.save
+
+            blog.created_at.to_s.should == 1.minute.ago.to_s
+            blog.updated_at.should == Time.now
           end
         end
       end
