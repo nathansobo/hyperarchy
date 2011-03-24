@@ -4,7 +4,7 @@ module Prequel
   class MachinistAdaptor
     class << self
       def has_association?(object, attribute)
-        object.respond_to?(attribute) && object.send(attribute).is_a?(Relations::Relation)
+        object.respond_to?("#{attribute}_id")
       end
 
       def class_for_association(object, attribute)
@@ -26,6 +26,8 @@ module Prequel
       end
     end
   end
+
+  Record.extend(Machinist::Blueprints::ClassMethods)
 
   module MachinistRecordExtensions
     def make(*args, &block)
@@ -50,34 +52,29 @@ module Prequel
       lathe = Machinist::Lathe.run(MachinistAdaptor, self.new, *args)
       MachinistAdaptor.assigned_attributes_without_associations(lathe)
     end
+
+    Record.extend(self)
+  end
+
+  module MachinistSelectionMixin
+    def make(attributes={})
+      operand.make(predicate.enhance_attributes(attributes))
+    end
+
+    def make_unsaved(attributes={})
+      operand.make_unsaved(predicate.enhance_attributes(attributes))
+    end
+
+    def plan(attributes={})
+      operand.plan(predicate.enhance_attributes(attributes))
+    end
+
+    Relations::Selection.send(:include, MachinistSelectionMixin)
   end
 
   module MachinistRelationMixin
-    def make(*args, &block)
-      lathe = Machinist::Lathe.run(MachinistAdaptor, self.new, *args)
-      unless Machinist.nerfed?
-        if lathe.object.valid?
-          lathe.object.save
-        else
-          raise("Save failed")
-        end
-      end
-      lathe.object(&block)
-    end
+    delegate :make, :make_unsaved, :plan, :to => :operand
 
-    def make_unsaved(*args)
-      object = Machinist.with_save_nerfed { make(*args) }
-      yield object if block_given?
-      object
-    end
-
-    def plan(*args)
-      lathe = Machinist::Lathe.run(MachinistAdaptor, self.new, *args)
-      MachinistAdaptor.assigned_attributes_without_associations(lathe)
-    end
+    Relations::Relation.send(:include, MachinistSelectionMixin)
   end
-
-  Record.extend(Machinist::Blueprints::ClassMethods)
-  Record.extend(MachinistRecordExtensions)
-  Relations::Relation.send(:include, MachinistRelationMixin)
 end

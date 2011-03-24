@@ -3,6 +3,8 @@ require 'rspec'
 
 $LOAD_PATH.unshift(File.expand_path("../../lib", __FILE__))
 require 'prequel'
+require 'machinist'
+require 'prequel/machinist_adaptor'
 Sequel.postgres("prequel_test")
 Prequel::DB # touch the Prequel::DB constant so it gets assigned to the connection made above
 
