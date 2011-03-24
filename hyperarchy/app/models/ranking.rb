@@ -70,7 +70,7 @@ class Ranking < Prequel::Record
   end
 
   def after_ranking_moved_up(old_position)
-    previously_higher_rankings = lower_rankings_by_same_user.where(Ranking[:position] > old_position)
+    previously_higher_rankings = lower_rankings_by_same_user.where(:position.gt(old_position))
 
     increment_victories_over(previously_higher_rankings)
     decrement_defeats_by(previously_higher_rankings)
@@ -82,7 +82,7 @@ class Ranking < Prequel::Record
   end
 
   def after_ranking_moved_down(old_position)
-    previously_lower_rankings = higher_rankings_by_same_user.where(Ranking[:position] < old_position)
+    previously_lower_rankings = higher_rankings_by_same_user.where(:position.lt(old_position))
     decrement_victories_over(previously_lower_rankings)
     increment_defeats_by(previously_lower_rankings)
 
