@@ -43,6 +43,20 @@ module Prequel
             }, :v1 => 1, :v2 => 2, :v3 => true)
           end
         end
+
+        describe "when the union is inside of a join" do
+          before do
+            class ::Post < Prequel::Record
+              column :id, :integer
+              column :blog_id, :integer
+            end
+          end
+
+          it "returns the appropriate SQL" do
+            pending
+            puts (Blog.where(:user_id => 1) | Blog.where(:public => true)).join(Post).to_sql
+          end
+        end
       end
     end
   end
