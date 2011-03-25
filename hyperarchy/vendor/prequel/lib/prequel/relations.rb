@@ -14,5 +14,6 @@ module Prequel
     autoload :Selection
     autoload :Table
     autoload :UnaryRelationMethods
+    autoload :Union
   end
 end

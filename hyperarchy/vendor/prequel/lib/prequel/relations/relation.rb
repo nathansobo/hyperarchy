@@ -5,8 +5,8 @@ module Prequel
 
       delegate :to_sql, :dataset, :all, :first, :count, :size, :each, :empty?, :to => :query
 
-      def query
-        Sql::Query.new(self).build
+      def query(parent=nil)
+        Sql::Query.new(self, parent).build
       end
 
       def update_statement(attributes)
@@ -80,6 +80,12 @@ module Prequel
       def offset(count)
         Offset.new(self, count)
       end
+
+      def union(right)
+        Union.new(self, right)
+      end
+
+      alias_method :|, :union
 
       def table_ref(query)
         singular_table_ref(query)

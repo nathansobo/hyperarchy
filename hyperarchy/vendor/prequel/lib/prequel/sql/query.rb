@@ -2,13 +2,13 @@ module Prequel
   module Sql
     class Query
       attr_accessor :select_list, :group_bys, :order_bys, :limit, :offset, :projected_table_ref
-      attr_reader :relation, :table_ref, :conditions, :literals, :singular_table_refs, :subquery_count, :query_columns
+      attr_reader :relation, :parent, :table_ref, :conditions, :singular_table_refs, :subquery_count, :query_columns
       attr_writer :tuple_builder
       delegate :count, :empty?, :to => :dataset
       alias_method :size, :count
 
-      def initialize(relation)
-        @relation = relation
+      def initialize(relation, parent=nil)
+        @relation, @parent = relation, parent
         @conditions = []
         @literals = {}
         @singular_table_refs = { relation => self }
@@ -58,6 +58,10 @@ module Prequel
         nil
       end
 
+      def literals
+        parent.try(:literals) || @literals
+      end
+
       def table_ref=(table_ref)
         raise "A table ref has already been assigned" if @table_ref
         @table_ref = table_ref
@@ -79,7 +83,7 @@ module Prequel
 
       def add_subquery(relation)
         @subquery_count += 1
-        subquery = Subquery.new(self, relation, "t#{subquery_count}".to_sym)
+        subquery = Subquery.new(relation, self, "t#{subquery_count}".to_sym)
         add_singular_table_ref(relation, subquery)
         subquery.build
       end

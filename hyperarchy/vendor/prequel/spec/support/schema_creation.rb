@@ -50,8 +50,10 @@ module Prequel
             Integer
           when :datetime
             Time
+          when :boolean
+            TrueClass
           else
-            raise "Can't convert to a type suitable for Sequel migrations"
+            raise "Can't convert #{type.inspect} to a type suitable for Sequel migrations"
         end
       end
     end

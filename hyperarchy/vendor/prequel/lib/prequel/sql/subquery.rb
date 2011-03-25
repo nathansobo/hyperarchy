@@ -6,9 +6,9 @@ module Prequel
       attr_reader :parent, :relation, :name
       delegate :columns, :to => :relation
 
-      def initialize(parent, relation, name)
-        @parent, @name = parent, name
-        super(relation)
+      def initialize(relation, parent, name)
+        @name = name
+        super(relation, parent)
         @singular_table_refs = nil
       end
 

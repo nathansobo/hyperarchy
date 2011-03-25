@@ -11,6 +11,7 @@ module Prequel
     autoload :QueryColumn
     autoload :Subquery
     autoload :TableRef
+    autoload :UnionQuery
     autoload :UpdateStatement
   end
 end
