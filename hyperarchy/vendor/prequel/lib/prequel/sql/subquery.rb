@@ -7,9 +7,8 @@ module Prequel
       delegate :add_subquery, :add_singular_table_ref, :singular_table_refs, :literals, :to => :parent
 
       def initialize(relation, parent, name)
-        @parent = parent
-        @child_query = Query.new(relation, self)
-        @name = name
+        @parent, @name = parent, name
+        @child_query = relation.query_class.new(relation, self)
         @query_columns = {}
       end
 

@@ -6,7 +6,11 @@ module Prequel
       delegate :to_sql, :dataset, :all, :first, :count, :size, :each, :empty?, :to => :query
 
       def query(parent=nil)
-        Sql::Query.new(self, parent).build
+        query_class.new(self, parent).build
+      end
+
+      def query_class
+        Sql::Query
       end
 
       def update_statement(attributes)

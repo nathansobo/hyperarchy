@@ -8,11 +8,19 @@ module Prequel
         @left, @right= left, right
       end
 
-      def query(parent=nil)
-        Sql::UnionQuery.new(parent).tap do |union_query|
-          union_query.left = left.query(union_query)
-          union_query.right = right.query(union_query)
-        end.build
+      def query_class
+        Sql::UnionQuery
+      end
+
+      def columns
+        left.columns.map do |column|
+          derive(column)
+        end
+      end
+
+      def visit(union_query)
+        union_query.left = left.query(union_query)
+        union_query.right = right.query(union_query)
       end
 
       # PROVE THIS IS NEEDED

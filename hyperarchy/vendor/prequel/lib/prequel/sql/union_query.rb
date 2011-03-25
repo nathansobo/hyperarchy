@@ -2,13 +2,9 @@ module Prequel
   module Sql
     class UnionQuery < Query
       attr_accessor :parent, :left, :right
-      def initialize(parent=nil)
-        @parent = parent
-        @singular_table_refs = {}
-        @literals = {}
-      end
 
       def build
+        relation.visit(self)
         @tuple_builder = left.table_ref
         self
       end
