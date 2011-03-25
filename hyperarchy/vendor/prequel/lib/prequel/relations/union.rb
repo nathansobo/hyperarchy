@@ -11,7 +11,7 @@ module Prequel
         Sql::UnionQuery.new(parent).tap do |union_query|
           union_query.left = left.query(union_query)
           union_query.right = right.query(union_query)
-        end
+        end.build
       end
     end
   end

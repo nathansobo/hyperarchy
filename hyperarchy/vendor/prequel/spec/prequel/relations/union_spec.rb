@@ -11,6 +11,22 @@ module Prequel
         end
       end
 
+      describe "#all" do
+        attr_reader :blog_1, :blog_2, :blog_3
+
+        before do
+          Blog.create_table
+          @blog_1 = Blog.create(:user_id => 1)
+          @blog_2 = Blog.create(:user_id => 1)
+          @blog_3 = Blog.create(:user_id => 2, :public => true)
+          Blog.create(:user_id => 2)
+        end
+
+        it "returns all the tuples in the union" do
+          (Blog.where(:user_id => 1) | Blog.where(:public => true)).all.should =~ [blog_1, blog_2, blog_3]
+        end
+      end
+
       describe "#to_sql" do
         context "for a union of 2 tables" do
           it "returns the appropriate SQL" do
