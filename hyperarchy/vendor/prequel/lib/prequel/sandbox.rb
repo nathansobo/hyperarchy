@@ -19,6 +19,15 @@ module Prequel
 
     delegate :exposed_relation_definitions, :to => 'self.class'
 
+    def create(relation_name, field_values)
+      record = get_relation(relation_name).new(field_values)
+      if record.save
+        [201, record.wire_representation]
+      else
+        
+      end
+    end
+
     def fetch(*wire_reps)
       (Hash.new {|h,k| h[k] = {}}).tap do |dataset|
         wire_reps.each do |wire_rep|

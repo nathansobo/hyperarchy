@@ -1,16 +1,6 @@
 TODO:
-relations
-----------
-delete
-union
-increment
-
-record functionality
---------------------
-secure sandbox
- - mutations
-get model specs passing
-table events that queue up during transactions and flush after commit, create, update (no old value new value), destroy
-controller extensions?
-validations
-nested transactions around creation etc, so that all hooks are handled within
+unions as subqueries in joins
+sandbox mutations
+transactions around sandbox mutations and check if the object is in the relation still
+transactions batch events
+sandbox controller superclass

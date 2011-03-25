@@ -124,5 +124,28 @@ module Prequel
         end
       end
     end
+
+    describe "Mutation methods" do
+      before do
+        Blog.create_table
+      end
+
+      describe "#create(command_wire_representation)" do
+        context "when the created record is valid" do
+          it "returns the a 'created' response with the wire representation of the created record" do
+            Blog.should be_empty
+            status, response = sandbox.create(:blogs, { 'user_id' => 1, 'title' => 'Blog Title' })
+            status.should == 201
+            response.should == Blog.first.wire_representation
+          end
+        end
+
+        context "when the created record is invalid" do
+
+        end
+      end
+
+    end
+
   end
 end
