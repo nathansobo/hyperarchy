@@ -2,7 +2,7 @@ module Prequel
   module Sql
     class Query
       attr_accessor :select_list, :group_bys, :order_bys, :limit, :offset, :projected_table_ref
-      attr_reader :relation, :parent, :table_ref, :conditions, :singular_table_refs, :subquery_count, :query_columns
+      attr_reader :relation, :parent, :table_ref, :conditions, :subquery_count, :query_columns
       attr_writer :tuple_builder
       delegate :count, :empty?, :to => :dataset
       alias_method :size, :count
@@ -10,10 +10,13 @@ module Prequel
       def initialize(relation, parent=nil)
         @relation, @parent = relation, parent
         @conditions = []
-        @literals = {}
-        @singular_table_refs = { relation => self }
-        @subquery_count = 0
         @query_columns = {}
+
+        unless parent
+          @literals = {}
+          @singular_table_refs = { relation => self }
+          @subquery_count = 0
+        end
       end
 
       def all
@@ -78,17 +81,23 @@ module Prequel
       end
 
       def add_singular_table_ref(relation, table_ref)
+        return parent.add_singular_table_ref(relation, table_ref) if parent
         singular_table_refs[relation] = table_ref
       end
 
+      def singular_table_refs
+        parent.try(:singular_table_refs) || @singular_table_refs
+      end
+
       def add_subquery(relation)
+        return parent.add_subquery(relation) if parent
         @subquery_count += 1
         subquery = Subquery.new(relation, self, "t#{subquery_count}".to_sym)
         add_singular_table_ref(relation, subquery)
         subquery.build
       end
 
-      def resolve_derived_column(column, alias_name, qualified=false)
+      def resolve_derived_column(column, alias_name=nil, qualified=false)
         query_columns[column] ||= begin
           resolved_expression = column.expression.resolve_in_query(self)
           resolved_name =

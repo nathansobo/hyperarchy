@@ -4,6 +4,7 @@ module Prequel
       attr_accessor :parent, :left, :right
       def initialize(parent=nil)
         @parent = parent
+        @singular_table_refs = {}
         @literals = {}
       end
 
