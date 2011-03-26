@@ -91,45 +91,45 @@ module Prequel
         describe "a left join containing a subquery" do
           it "generates appropriate sql, aliasing columns to their qualified names and correctly referencing columns derived from the subquery" do
             Blog.where(:user_id => 1).left_join(Post, Blog[:id] => :blog_id).to_sql.should be_like_query(%{
-              select
-                t1.id as t1__id,
-                t1.user_id as t1__user_id,
-                t1.title as t1__title,
-                posts.id as posts__id,
-                posts.blog_id as posts__blog_id,
-                posts.title as posts__title
-              from (
-                  select *
-                  from blogs
-                  where blogs.user_id = :v1
-                ) as t1
-                left outer join posts on t1.id = posts.blog_id
-              }, :v1 => 1)
+              select t1.id         as t1__id,
+                     t1.user_id    as t1__user_id,
+                     t1.title      as t1__title,
+                     posts.id      as posts__id,
+                     posts.blog_id as posts__blog_id,
+                     posts.title   as posts__title
+              from   (select blogs.id,
+                             blogs.user_id,
+                             blogs.title
+                      from   blogs
+                      where  blogs.user_id = :v1) as t1
+                     left outer join posts
+                       on t1.id = posts.blog_id
+            }, :v1 => 1)
           end
         end
 
         describe "a left-associative 3-table left join with a subquery" do
           it "generates the appropriate sql" do
             Blog.where(:user_id => 1).left_join(Post, Blog[:id] => :blog_id).left_join(Comment, Post[:id] => :post_id).to_sql.should be_like_query(%{
-              select
-                t1.id as t1__id,
-                t1.user_id as t1__user_id,
-                t1.title as t1__title,
-                posts.id as posts__id,
-                posts.blog_id as posts__blog_id,
-                posts.title as posts__title,
-                comments.id as comments__id,
-                comments.post_id as comments__post_id,
-                comments.body as comments__body
-              from
-                (
-                  select *
-                  from blogs
-                  where blogs.user_id = :v1
-                ) as t1
-                left outer join posts on t1.id = posts.blog_id
-                left outer join comments on posts.id = comments.post_id
-              }, :v1 => 1)
+              select t1.id            as t1__id,
+                     t1.user_id       as t1__user_id,
+                     t1.title         as t1__title,
+                     posts.id         as posts__id,
+                     posts.blog_id    as posts__blog_id,
+                     posts.title      as posts__title,
+                     comments.id      as comments__id,
+                     comments.post_id as comments__post_id,
+                     comments.body    as comments__body
+              from   (select blogs.id,
+                             blogs.user_id,
+                             blogs.title
+                      from   blogs
+                      where  blogs.user_id = :v1) as t1
+                     left outer join posts
+                       on t1.id = posts.blog_id
+                     left outer join comments
+                       on posts.id = comments.post_id
+            }, :v1 => 1)
           end
         end
 
@@ -148,18 +148,20 @@ module Prequel
                      t2.comments__id      as t2__comments__id,
                      t2.comments__post_id as t2__comments__post_id,
                      t2.comments__body    as t2__comments__body
-              from   (select *
+              from   (select blogs.id,
+                             blogs.user_id,
+                             blogs.title
                       from   blogs
                       where  blogs.user_id = :v1) as t1
                      left outer join (select posts.id         as posts__id,
-                                        posts.blog_id    as posts__blog_id,
-                                        posts.title      as posts__title,
-                                        comments.id      as comments__id,
-                                        comments.post_id as comments__post_id,
-                                        comments.body    as comments__body
-                                 from   posts
-                                        left outer join comments
-                                          on posts.id = comments.post_id) as t2
+                                             posts.blog_id    as posts__blog_id,
+                                             posts.title      as posts__title,
+                                             comments.id      as comments__id,
+                                             comments.post_id as comments__post_id,
+                                             comments.body    as comments__body
+                                      from   posts
+                                             left outer join comments
+                                               on posts.id = comments.post_id) as t2
                        on t1.id = t2.posts__blog_id
             }, :v1 => 1)
           end
@@ -176,12 +178,12 @@ module Prequel
                      t1.blog_id    as t1__blog_id,
                      t1.title      as t1__title
               from   blogs
-                     left outer join (select posts.id      as id,
-                                        posts.blog_id as blog_id,
-                                        posts.title   as title
-                                 from   posts
-                                        left outer join comments
-                                          on posts.id = comments.post_id) as t1
+                     left outer join (select posts.id,
+                                             posts.blog_id,
+                                             posts.title
+                                      from   posts
+                                             left outer join comments
+                                               on posts.id = comments.post_id) as t1
                        on blogs.id = t1.blog_id
               where  t1.title = :v1
             }, :v1 => "Post Title")

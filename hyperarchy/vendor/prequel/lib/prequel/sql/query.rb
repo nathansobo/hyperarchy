@@ -46,13 +46,7 @@ module Prequel
 
       def build
         relation.visit(self)
-
-        if !select_list && table_ref.size > 1
-          self.select_list = relation.columns.map do |derived_column|
-            resolve_derived_column(derived_column, nil, :qualified)
-          end
-        end
-
+        build_default_select_list if !select_list
         self
       end
 
@@ -117,6 +111,13 @@ module Prequel
       end
 
       protected
+
+      def build_default_select_list
+        qualified = table_ref.size > 1
+        self.select_list = relation.columns.map do |derived_column|
+          resolve_derived_column(derived_column, nil, qualified)
+        end
+      end
 
       def sql_string
         [select_clause_sql,

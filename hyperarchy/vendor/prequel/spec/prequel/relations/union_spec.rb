@@ -51,7 +51,17 @@ module Prequel
         context "for a union of 2 tables" do
           it "returns the appropriate SQL" do
             (Blog.where(:user_id => 1) | Blog.where(:public => true)).to_sql.should be_like_query(%{
-              (select * from blogs where blogs.user_id = :v1) union (select * from blogs where blogs.public = :v2)
+              (select blogs.id,
+                      blogs.user_id,
+                      blogs.public
+               from   blogs
+               where  blogs.user_id = :v1)
+              union
+              (select blogs.id,
+                      blogs.user_id,
+                      blogs.public
+               from   blogs
+               where  blogs.public = :v2)
             }, :v1 => 1, :v2 => true)
           end
         end
@@ -59,7 +69,23 @@ module Prequel
         context "for a union of 3 tables" do
           it "returns the appropriate SQL" do
             (Blog.where(:user_id => 1) | Blog.where(:user_id => 2) | Blog.where(:public => true)).to_sql.should be_like_query(%{
-              ((select * from blogs where blogs.user_id = :v1) union (select * from blogs where blogs.user_id = :v2)) union (select * from blogs where blogs.public = :v3)
+              ((select blogs.id,
+                       blogs.user_id,
+                       blogs.public
+                from   blogs
+                where  blogs.user_id = :v1)
+               union
+               (select blogs.id,
+                       blogs.user_id,
+                       blogs.public
+                from   blogs
+                where  blogs.user_id = :v2))
+              union
+              (select blogs.id,
+                      blogs.user_id,
+                      blogs.public
+               from   blogs
+               where  blogs.public = :v3)
             }, :v1 => 1, :v2 => 2, :v3 => true)
           end
         end
@@ -72,11 +98,15 @@ module Prequel
                      t1.public     as t1__public,
                      posts.id      as posts__id,
                      posts.blog_id as posts__blog_id
-              from   ((select *
+              from   ((select blogs.id,
+                              blogs.user_id,
+                              blogs.public
                        from   blogs
                        where  blogs.user_id = :v1)
                       union
-                      (select *
+                      (select blogs.id,
+                              blogs.user_id,
+                              blogs.public
                        from   blogs
                        where  blogs.public = :v2)) as t1
                      inner join posts
@@ -88,13 +118,17 @@ module Prequel
         describe "when the union is inside a join-project" do
           it "returns the appropriate SQL" do
             (Blog.where(:user_id => 1) | Blog.where(:public => true)).join_through(Post).to_sql.should be_like_query(%{
-              select posts.id      as id,
-                     posts.blog_id as blog_id
-              from   ((select *
+              select posts.id,
+                     posts.blog_id
+              from   ((select blogs.id,
+                              blogs.user_id,
+                              blogs.public
                        from   blogs
                        where  blogs.user_id = :v1)
                       union
-                      (select *
+                      (select blogs.id,
+                              blogs.user_id,
+                              blogs.public
                        from   blogs
                        where  blogs.public = :v2)) as t1
                      inner join posts

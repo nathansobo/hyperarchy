@@ -66,7 +66,7 @@ module Prequel
 
       describe "#to_sql" do
         it "generates the appropriate SQL" do
-          Blog.to_sql.should be_like_query("select * from blogs")
+          Blog.to_sql.should be_like_query("select blogs.id, blogs.user_id, blogs.title from blogs")
         end
       end
 

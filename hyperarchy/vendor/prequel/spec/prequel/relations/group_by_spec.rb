@@ -55,7 +55,7 @@ module Prequel
       describe "#to_sql" do
         it "generates the appropriate sql with a group by clause" do
           Blog.join(Post, Blog[:id] => :blog_id).group_by(:user_id, :category_id).project(Post[:id].count).to_sql.should be_like_query(%{
-            select count(posts.id) as count
+            select count(posts.id)
             from   blogs
                    inner join posts
                      on blogs.id = posts.blog_id

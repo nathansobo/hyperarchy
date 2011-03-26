@@ -36,7 +36,7 @@ module Prequel
         describe "with an explicitly ascending column" do
           it "generates the appropriate sql with a limit clause" do
             Blog.limit(2).to_sql.should be_like_query(%{
-              select *
+              select blogs.id
               from   blogs
               limit 2
             })
@@ -46,7 +46,7 @@ module Prequel
         describe "with a limit on top of a limit" do
           it "honors the count associated with the uppermost limit in the relational op tree" do
             Blog.limit(2).limit(10).to_sql.should be_like_query(%{
-              select *
+              select blogs.id
               from   blogs
               limit 10
             })

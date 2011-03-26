@@ -28,12 +28,6 @@ module Prequel
         operand.new(predicate.enhance_attributes(attributes))
       end
 
-      def columns
-        operand.columns.map do |column|
-          derive(column)
-        end
-      end
-
       def visit(query)
         operand.visit(query)
         query.add_condition(predicate.resolve_in_query(query))

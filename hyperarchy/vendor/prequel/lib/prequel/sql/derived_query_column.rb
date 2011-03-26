@@ -16,7 +16,15 @@ module Prequel
       end
 
       def to_select_clause_sql
-        "#{expression.to_sql} as #{name}"
+        if name == expression_name
+          expression.to_sql
+        else
+          "#{expression.to_sql} as #{name}"
+        end
+      end
+
+      def expression_name
+        expression.respond_to?(:name) && expression.name
       end
 
       def qualified_name

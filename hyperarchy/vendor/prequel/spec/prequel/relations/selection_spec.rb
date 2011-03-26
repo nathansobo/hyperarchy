@@ -98,7 +98,11 @@ module Prequel
         describe "a selection on a table" do
           it "generates the appropriate SQL" do
             Blog.where(:user_id => 1).to_sql.should be_like_query(%{
-              select * from blogs where blogs.user_id = :v1
+              select blogs.id,
+                     blogs.user_id,
+                     blogs.title
+              from   blogs
+              where  blogs.user_id = :v1
             }, :v1 => 1)
           end
         end
@@ -106,7 +110,11 @@ module Prequel
         describe "with an equal predicate involving nil" do
           it "generates 'is' instead of '='" do
             Blog.where(:user_id => nil).to_sql.should be_like_query(%{
-              select * from blogs where blogs.user_id is null
+              select blogs.id,
+                     blogs.user_id,
+                     blogs.title
+              from   blogs
+              where  blogs.user_id is null
             })
           end
         end
@@ -114,7 +122,11 @@ module Prequel
         describe "with a not-equal predicate" do
           it "generates the appropriate sql" do
             Blog.where(:user_id.neq(1)).to_sql.should be_like_query(%{
-              select * from blogs where blogs.user_id != :v1
+              select blogs.id,
+                     blogs.user_id,
+                     blogs.title
+              from   blogs
+              where  blogs.user_id != :v1
             }, :v1 => 1)
           end
         end
@@ -122,7 +134,11 @@ module Prequel
         describe "with a not-equal predicate involving nil" do
           it "generates 'is not' instead of '!='" do
             Blog.where(:user_id.neq(nil)).to_sql.should be_like_query(%{
-              select * from blogs where blogs.user_id is not null
+              select blogs.id,
+                     blogs.user_id,
+                     blogs.title
+              from   blogs
+              where  blogs.user_id is not null
             })
           end
         end
@@ -130,7 +146,11 @@ module Prequel
         describe "with a less-than predicate" do
           it "generates the appropriate sql" do
             Blog.where(:user_id.lt(2)).to_sql.should be_like_query(%{
-              select * from blogs where blogs.user_id < :v1
+              select blogs.id,
+                     blogs.user_id,
+                     blogs.title
+              from   blogs
+              where  blogs.user_id < :v1
             }, :v1 => 2)
           end
         end
@@ -138,7 +158,11 @@ module Prequel
         describe "with a less-than-or-equal predicate" do
           it "generates the appropriate sql" do
             Blog.where(:user_id.lte(2)).to_sql.should be_like_query(%{
-              select * from blogs where blogs.user_id <= :v1
+              select blogs.id,
+                     blogs.user_id,
+                     blogs.title
+              from   blogs
+              where  blogs.user_id <= :v1
             }, :v1 => 2)
           end
         end
@@ -146,7 +170,11 @@ module Prequel
         describe "with a greater-than predicate" do
           it "generates the appropriate sql" do
             Blog.where(:user_id.gt(2)).to_sql.should be_like_query(%{
-              select * from blogs where blogs.user_id > :v1
+              select blogs.id,
+                     blogs.user_id,
+                     blogs.title
+              from   blogs
+              where  blogs.user_id > :v1
             }, :v1 => 2)
           end
         end
@@ -154,7 +182,11 @@ module Prequel
         describe "with a greater-than-or-equal predicate" do
           it "generates the appropriate sql" do
             Blog.where(:user_id.gte(2)).to_sql.should be_like_query(%{
-              select * from blogs where blogs.user_id >= :v1
+              select blogs.id,
+                     blogs.user_id,
+                     blogs.title
+              from   blogs
+              where  blogs.user_id >= :v1
             }, :v1 => 2)
           end
         end

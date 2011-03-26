@@ -154,7 +154,7 @@ module Prequel
         describe "a projection of particular columns, some with aliases" do
           it "generates the appropriate sql" do
             Blog.project(:user_id, :title.as(:name)).to_sql.should be_like_query(%{
-              select blogs.user_id as user_id, blogs.title as name from blogs
+              select blogs.user_id, blogs.title as name from blogs
             })
           end
         end
@@ -170,9 +170,9 @@ module Prequel
         describe "a projection of all columns in a table on top of a simple inner join" do
           it "generates the appropriate sql" do
             Blog.join(Post, Blog[:id] => :blog_id).project(:posts).to_sql.should be_like_query(%{
-              select posts.id      as id,
-                     posts.blog_id as blog_id,
-                     posts.title   as title
+              select posts.id,
+                     posts.blog_id,
+                     posts.title
               from   blogs
                      inner join posts
                        on blogs.id = posts.blog_id
@@ -257,7 +257,7 @@ module Prequel
             Post.join(Comment.group_by(:post_id).project(:post_id, :id.count.as(:num_comments))).to_update_sql(:comment_count => :num_comments).should be_like_query(%{
               update posts
               set    comment_count = t1.num_comments
-              from   (select comments.post_id   as post_id,
+              from   (select comments.post_id,
                              count(comments.id) as num_comments
                       from   comments
                       group  by comments.post_id) as t1

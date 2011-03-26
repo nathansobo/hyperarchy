@@ -37,9 +37,12 @@ module Prequel
         describe "with an explicitly ascending column" do
           it "generates the appropriate sql with an order by clause" do
             Blog.order_by(:user_id.asc, :id.desc).to_sql.should be_like_query(%{
-              select *
+              select blogs.id,
+                     blogs.user_id,
+                     blogs.title
               from   blogs
-              order  by blogs.user_id asc, blogs.id desc
+              order  by blogs.user_id asc,
+                        blogs.id desc
             })
           end
         end
@@ -47,7 +50,9 @@ module Prequel
         describe "with an unspecified column" do
           it "does not specify the direction in sql" do
             Blog.order_by(:user_id).to_sql.should be_like_query(%{
-              select *
+              select blogs.id,
+                     blogs.user_id,
+                     blogs.title
               from   blogs
               order  by blogs.user_id
             })

@@ -164,19 +164,19 @@ module Prequel
         describe "an inner join containing a subquery" do
           it "generates appropriate sql, aliasing columns to their qualified names and correctly referencing columns derived from the subquery" do
             Blog.where(:user_id => 1).join(Post, Blog[:id] => :blog_id).to_sql.should be_like_query(%{
-              select
-                t1.id as t1__id,
-                t1.user_id as t1__user_id,
-                t1.title as t1__title,
-                posts.id as posts__id,
-                posts.blog_id as posts__blog_id,
-                posts.title as posts__title
-              from (
-                  select *
-                  from blogs
-                  where blogs.user_id = :v1
-                ) as t1
-                inner join posts on t1.id = posts.blog_id
+              select t1.id         as t1__id,
+                     t1.user_id    as t1__user_id,
+                     t1.title      as t1__title,
+                     posts.id      as posts__id,
+                     posts.blog_id as posts__blog_id,
+                     posts.title   as posts__title
+              from   (select blogs.id,
+                             blogs.user_id,
+                             blogs.title
+                      from   blogs
+                      where  blogs.user_id = :v1) as t1
+                     inner join posts
+                       on t1.id = posts.blog_id
               }, :v1 => 1)
           end
         end
@@ -184,24 +184,24 @@ module Prequel
         describe "a left-associative 3-table inner join with a subquery" do
           it "generates the appropriate sql" do
             Blog.where(:user_id => 1).join(Post, Blog[:id] => :blog_id).join(Comment, Post[:id] => :post_id).to_sql.should be_like_query(%{
-              select
-                t1.id as t1__id,
-                t1.user_id as t1__user_id,
-                t1.title as t1__title,
-                posts.id as posts__id,
-                posts.blog_id as posts__blog_id,
-                posts.title as posts__title,
-                comments.id as comments__id,
-                comments.post_id as comments__post_id,
-                comments.body as comments__body
-              from
-                (
-                  select *
-                  from blogs
-                  where blogs.user_id = :v1
-                ) as t1
-                inner join posts on t1.id = posts.blog_id
-                inner join comments on posts.id = comments.post_id
+              select t1.id            as t1__id,
+                     t1.user_id       as t1__user_id,
+                     t1.title         as t1__title,
+                     posts.id         as posts__id,
+                     posts.blog_id    as posts__blog_id,
+                     posts.title      as posts__title,
+                     comments.id      as comments__id,
+                     comments.post_id as comments__post_id,
+                     comments.body    as comments__body
+              from   (select blogs.id,
+                             blogs.user_id,
+                             blogs.title
+                      from   blogs
+                      where  blogs.user_id = :v1) as t1
+                     inner join posts
+                       on t1.id = posts.blog_id
+                     inner join comments
+                       on posts.id = comments.post_id
               }, :v1 => 1)
           end
         end
@@ -221,7 +221,9 @@ module Prequel
                      t2.comments__id      as t2__comments__id,
                      t2.comments__post_id as t2__comments__post_id,
                      t2.comments__body    as t2__comments__body
-              from   (select *
+              from   (select blogs.id,
+                             blogs.user_id,
+                             blogs.title
                       from   blogs
                       where  blogs.user_id = :v1) as t1
                      inner join (select posts.id         as posts__id,
@@ -249,9 +251,9 @@ module Prequel
                      t1.blog_id    as t1__blog_id,
                      t1.title      as t1__title
               from   blogs
-                     inner join (select posts.id      as id,
-                                        posts.blog_id as blog_id,
-                                        posts.title   as title
+                     inner join (select posts.id,
+                                        posts.blog_id,
+                                        posts.title
                                  from   posts
                                         inner join comments
                                           on posts.id = comments.post_id) as t1
@@ -287,12 +289,14 @@ module Prequel
                              posts.id      as posts__id,
                              posts.blog_id as posts__blog_id,
                              posts.title   as posts__title
-                      from   (select *
+                      from   (select blogs.id,
+                                     blogs.user_id,
+                                     blogs.title
                               from   blogs
                               where  blogs.user_id = :v1) as t2
                              inner join posts
                                on t2.id = posts.blog_id
-                      where  posts.title = :v2) as t1
+                      where  posts.title = :v2) as t1 
                      inner join users
                        on users.id = t1.t2__user_id
             }, :v1 => 1, :v2 => "Foo")
