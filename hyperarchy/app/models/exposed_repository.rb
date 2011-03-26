@@ -8,7 +8,7 @@ class ExposedRepository < Prequel::Sandbox
     if user.admin?
       Organization.table
     else
-      union(user.organizations, Organization.where(Organization[:privacy].neq("private")))
+      user.organizations | Organization.where(Organization[:privacy].neq("private"))
     end
   end
 

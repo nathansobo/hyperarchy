@@ -35,7 +35,7 @@ describe ExposedRepository do
          "right_operand" => {"type" => "column", "table" => "users", "name" => "id"}}}
     ]
 
-    dataset = repository.fetch(wire_reps)
+    dataset = repository.fetch(*wire_reps)
     dataset["users"].should have_key(user_1.id)
     dataset["users"].should have_key(user_2.id)
     dataset["candidates"].should have_key(candidate_1.id)
