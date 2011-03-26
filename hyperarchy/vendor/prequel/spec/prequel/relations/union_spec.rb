@@ -84,6 +84,24 @@ module Prequel
             }, :v1 => 1, :v2 => true)
           end
         end
+
+        describe "when the union is inside a join-project" do
+          it "returns the appropriate SQL" do
+            (Blog.where(:user_id => 1) | Blog.where(:public => true)).join_through(Post).to_sql.should be_like_query(%{
+              select posts.id      as id,
+                     posts.blog_id as blog_id
+              from   ((select *
+                       from   blogs
+                       where  blogs.user_id = :v1)
+                      union
+                      (select *
+                       from   blogs
+                       where  blogs.public = :v2)) as t1
+                     inner join posts
+                       on t1.id = posts.blog_id
+            }, :v1 => 1, :v2 => true)
+          end
+        end
       end
     end
   end

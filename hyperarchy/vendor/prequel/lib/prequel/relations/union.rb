@@ -23,10 +23,9 @@ module Prequel
         union_query.right = right.query(union_query)
       end
 
-      # PROVE THIS IS NEEDED
-#      def get_table(name)
-#        left.get_table(name) || right.get_table(name)
-#      end
+      def get_table(name)
+        left.get_table(name) || right.get_table(name)
+      end
 
       protected
 
