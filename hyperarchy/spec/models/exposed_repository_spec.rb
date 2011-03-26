@@ -36,10 +36,10 @@ describe ExposedRepository do
     ]
 
     dataset = repository.fetch(*wire_reps)
-    dataset["users"].should have_key(user_1.id)
-    dataset["users"].should have_key(user_2.id)
-    dataset["candidates"].should have_key(candidate_1.id)
-    dataset["candidates"].should have_key(candidate_2.id)
+    dataset["users"].should have_key(user_1.to_param)
+    dataset["users"].should have_key(user_2.to_param)
+    dataset["candidates"].should have_key(candidate_1.to_param)
+    dataset["candidates"].should have_key(candidate_2.to_param)
   end
 end
 
