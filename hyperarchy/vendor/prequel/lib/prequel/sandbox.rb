@@ -24,7 +24,7 @@ module Prequel
       if record.save
         [201, record.wire_representation]
       else
-        
+        [400, record.errors]
       end
     end
 

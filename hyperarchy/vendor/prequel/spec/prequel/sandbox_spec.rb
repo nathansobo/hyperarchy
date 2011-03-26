@@ -90,7 +90,6 @@ module Prequel
               comment_2.to_param => comment_2.wire_representation
             }
           }
-
         end
       end
     end
@@ -132,7 +131,7 @@ module Prequel
 
       describe "#create(command_wire_representation)" do
         context "when the created record is valid" do
-          it "returns the a 'created' response with the wire representation of the created record" do
+          it "returns the a '201 created' response with the wire representation of the created record" do
             Blog.should be_empty
             status, response = sandbox.create(:blogs, { 'user_id' => 1, 'title' => 'Blog Title' })
             status.should == 201
@@ -141,11 +140,26 @@ module Prequel
         end
 
         context "when the created record is invalid" do
+          before do
+            class ::Blog
+              def validate
+                errors.add(:title, "Title must be in Spanish.")
+                errors.add(:user_id, "User must be from Spain.")
+              end
+            end
+          end
 
+          it "returns a '400 bad request' with the validation errors" do
+            Blog.should be_empty
+            status, response = sandbox.create(:blogs, { 'user_id' => 1, 'title' => 'Blog Title' })
+            status.should == 400
+            response.should == {
+              :title => ["Title must be in Spanish."],
+              :user_id => ["User must be from Spain."]
+            }
+          end
         end
       end
-
     end
-
   end
 end
