@@ -64,6 +64,39 @@ module Prequel
         end
       end
 
+      describe "on create/update/destroy methods" do
+        attr_reader :create_events, :update_events, :destroy_events
+        attr_reader :blog_1, :blog_2
+        before do
+          @create_events = []
+          @update_events = []
+          @destroy_events = []
+
+          @blog_1 = Blog.create(:title => "Blog 1")
+          @blog_2 = Blog.create(:title => "Blog 2")
+        end
+
+        def expect_no_events
+          create_events.should be_empty
+          update_events.should be_empty
+          destroy_events.should be_empty
+        end
+
+        specify "callbacks are fired for events on the table only after the transaction completes" do
+          Blog.on_create {|blog| create_events << blog }
+          Blog.on_update {|blog, changeset| update_events << [blog, changeset] }
+          Blog.on_destroy {|blog| destroy_events << blog }
+
+          new_blog = nil
+          Prequel.transaction do
+            new_blog = Blog.create!(:title => "New Blog")
+            expect_no_events
+            new_blog.update(:title => "New Blog Prime")
+            blog_1.update(:title => "Blog 1 Prime")
+          end
+        end
+      end
+
       describe "#to_sql" do
         it "generates the appropriate SQL" do
           Blog.to_sql.should be_like_query("select blogs.id, blogs.user_id, blogs.title from blogs")
