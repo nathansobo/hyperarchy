@@ -38,6 +38,12 @@ module Prequel
       end
     end
 
+    def destroy(relation_name, id)
+      record = get_relation(relation_name).find(id)
+      record.destroy
+      200
+    end
+
     def fetch(*wire_reps)
       (Hash.new {|h,k| h[k] = {}}).tap do |dataset|
         wire_reps.each do |wire_rep|

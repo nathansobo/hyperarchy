@@ -163,6 +163,7 @@ module Prequel
 
       describe "#update(relation_name, id, field_values)" do
         attr_reader :blog
+
         before do
           @blog = Blog.create!(:title => "Blog Title", :user_id => 1)
         end
@@ -192,6 +193,22 @@ module Prequel
               status.should == 422
               response.should == blog.errors
             end
+          end
+        end
+      end
+
+      describe "#destroy(relation_name, id)" do
+        attr_reader :blog
+
+        before do
+          @blog = Blog.create!(:title => "Blog Title", :user_id => 1)
+        end
+
+        context "when a record with the given id is a member of the exposed relation" do
+          it "destroys the record and returns '200 ok'" do
+            status = sandbox.destroy('blogs', blog.id)
+            status.should == 200
+            Blog.find(blog.id).should be_nil
           end
         end
       end
