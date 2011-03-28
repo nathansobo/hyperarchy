@@ -22,9 +22,19 @@ module Prequel
     def create(relation_name, field_values)
       record = get_relation(relation_name).new(field_values)
       if record.save
-        [201, record.wire_representation]
+        [200, record.wire_representation]
       else
-        [400, record.errors]
+        [422, record.errors]
+      end
+    end
+
+    def update(relation_name, id, field_values)
+      record = get_relation(relation_name).find(id)
+      record.soft_update(field_values)
+      if record.save
+        [200, record.wire_representation]
+      else
+        [422, record.errors]
       end
     end
 

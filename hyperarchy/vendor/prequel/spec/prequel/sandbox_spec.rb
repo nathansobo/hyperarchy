@@ -129,12 +129,12 @@ module Prequel
         Blog.create_table
       end
 
-      describe "#create(command_wire_representation)" do
+      describe "#create(relation_name, field_values)" do
         context "when the created record is valid" do
-          it "returns the a '201 created' response with the wire representation of the created record" do
+          it "returns the a '200 ok' response with the wire representation of the created record" do
             Blog.should be_empty
-            status, response = sandbox.create(:blogs, { 'user_id' => 1, 'title' => 'Blog Title' })
-            status.should == 201
+            status, response = sandbox.create('blogs', { 'user_id' => 1, 'title' => 'Blog Title' })
+            status.should == 200
             response.should == Blog.first.wire_representation
           end
         end
@@ -149,14 +149,49 @@ module Prequel
             end
           end
 
-          it "returns a '400 bad request' with the validation errors" do
+          it "returns a '422 unprocessable entity' with the validation errors" do
             Blog.should be_empty
-            status, response = sandbox.create(:blogs, { 'user_id' => 1, 'title' => 'Blog Title' })
-            status.should == 400
+            status, response = sandbox.create('blogs', { 'user_id' => 1, 'title' => 'Blog Title' })
+            status.should == 422
             response.should == {
               :title => ["Title must be in Spanish."],
               :user_id => ["User must be from Spain."]
             }
+          end
+        end
+      end
+
+      describe "#update(relation_name, id, field_values)" do
+        attr_reader :blog
+        before do
+          @blog = Blog.create!(:title => "Blog Title", :user_id => 1)
+        end
+
+        context "when a record with the given id is a member of the exposed relation" do
+          context "when the update leaves the record in a valid state" do
+            it "returns '200 ok' with the wire representation of the updated record" do
+              status, response = sandbox.update('blogs', blog.id, { 'title' => "New Title" })
+              blog.reload.title.should == "New Title"
+              status.should == 200
+              response.should == blog.wire_representation
+            end
+          end
+
+          context "when the update leaves the record in an invalid state" do
+            before do
+              class ::Blog
+                def validate
+                  errors.add(:title, "Title must be in Spanish.")
+                end
+              end
+            end
+
+            it "returns '422 unprocessable entity' with the validation errors" do
+              status, response = sandbox.update('blogs', blog.id, { 'title' => "New Title" })
+              blog.reload.title.should == "Blog Title"
+              status.should == 422
+              response.should == blog.errors
+            end
           end
         end
       end
