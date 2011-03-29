@@ -1544,38 +1544,37 @@ body.legal {
     padding-top: 10px; }
   #app #electionOverview .headerContainer {
     margin-bottom: 20px; }
-    #app #electionOverview .headerContainer #electionBodyContainer .expandArrow {
-      float: left;
-      margin-right: 5px;
-      margin-top: 8px; }
-    #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight {
-      width: 595px;
-      display: inline-block; }
-      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight h2 {
-        display: inline;
-        margin-right: 5px; }
-      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight textarea.electionBody {
-        width: 100%;
-        resize: none;
-        font-size: 23px;
-        padding: 4px;
-        height: 50px;
-        margin-bottom: 10px; }
-      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight #expandedArea button {
-        float: right;
-        margin-left: 5px; }
-      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight #expandedArea .loading {
-        float: right;
-        top: 2px;
-        position: relative; }
+    #app #electionOverview .headerContainer #electionBodyContainer {
+      min-height: 40px; }
+      #app #electionOverview .headerContainer #electionBodyContainer .expandArrow {
+        float: left;
+        margin-right: 5px;
+        margin-top: 8px; }
+      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight {
+        width: 595px;
+        display: inline-block; }
+        #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight h2 {
+          display: inline;
+          margin-right: 5px; }
+        #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight textarea.electionBody {
+          width: 100%;
+          resize: none;
+          font-size: 23px;
+          padding: 4px;
+          height: 50px;
+          margin-bottom: 10px; }
+        #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight #expandedArea button {
+          float: right;
+          margin-left: 5px; }
+        #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight #expandedArea .loading {
+          float: right;
+          top: 2px;
+          position: relative; }
   #app #electionOverview #showCreateCandidateFormButton {
     padding: 6px 20px;
     float: right;
     display: inline-block;
     text-align: center; }
-    #app #electionOverview #showCreateCandidateFormButton.pressed {
-      -webkit-box-shadow: 0px 0px 4px black inset;
-      -moz-box-shadow: 0px 0px 4px black inset; }
   #app #electionOverview div#createCandidateForm {
     margin-bottom: 30px; }
     #app #electionOverview div#createCandidateForm .cancelX, #app #electionOverview div#createCandidateForm .rightCancelX {

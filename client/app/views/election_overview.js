@@ -311,7 +311,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     showCreateCandidateForm: function(instantly) {
-      this.showCreateCandidateFormButton.addClass('pressed');
+      this.showCreateCandidateFormButton.fadeOut();
       this.createCandidateDetailsTextarea.blur();
 
       var cancelResize = _.repeat(function() {
@@ -333,7 +333,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     hideCreateCandidateForm: function(instantly, whenDone, preserveText) {
-      this.showCreateCandidateFormButton.removeClass('pressed');
+      this.showCreateCandidateFormButton.fadeIn();
 
       if (!preserveText) {
         this.createCandidateBodyTextarea.val("");
