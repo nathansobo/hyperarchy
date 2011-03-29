@@ -22,12 +22,12 @@ class Vote < Monarch::Model::Record
   # but currently plan to serialize all operations per election so it's ok
   # we want to go through the record so the update gets broadcast
   def after_create
-    election.vote_count = election.vote_count + 1
+    election.increment(:vote_count)
     election.save
   end
 
   def after_destroy
-    election.vote_count -= 1
+    election.decrement(:vote_count)
     election.save
   end
 
