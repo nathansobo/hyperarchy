@@ -1,4 +1,4 @@
-require 'cramp/controller'
+require 'cramp'
 
 module Monarch
   module Rack
@@ -49,7 +49,7 @@ module Monarch
         clients_mutex.synchronize { clients[client_id] }
       end
 
-      class CometHandler < Cramp::Controller::Action
+      class CometHandler < Cramp::Action
         attr_reader :env, :client_id
         keep_connection_alive
         on_start :register_connection

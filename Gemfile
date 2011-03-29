@@ -1,14 +1,14 @@
 source :gemcutter
 
 # monarch
-gem "rack", "1.1.0"
+gem "rack", "1.2.1"
 gem "sinatra", "1.0"
 gem "pg", "0.9.0"
 gem "sequel", "3.16.0"
-gem "activesupport", "3.0.1"
+gem "activesupport", "3.0.4"
 gem "json", "1.2.0"
 gem "guid", "0.1.1"
-gem "cramp", "0.11"
+gem "cramp", "0.12"
 
 ## hyperarchy
 gem "thin", "1.2.7"
@@ -50,5 +50,4 @@ group :thor do
   gem "daemons", "1.0.10"
   gem "sequel", "3.16.0"
   gem "pg", "0.9.0"
-  gem "mysql", "2.8.1"
 end
