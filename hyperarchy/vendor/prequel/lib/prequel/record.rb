@@ -105,6 +105,30 @@ module Prequel
           send("#{foreign_key_name}=", record.try(:id))
         end
       end
+
+      def on_create(&proc)
+        on_create_node.subscribe(&proc)
+      end
+
+      def on_update(&proc)
+        on_update_node.subscribe(&proc)
+      end
+
+      def on_destroy(&proc)
+        on_destroy_node.subscribe(&proc)
+      end
+
+      def on_create_node
+        @on_create_node ||= SubscriptionNode.new
+      end
+
+      def on_update_node
+        @on_update_node ||= SubscriptionNode.new
+      end
+
+      def on_destroy_node
+        @on_destroy_node ||= SubscriptionNode.new
+      end
     end
 
     delegate :synthetic_columns, :to => 'self.class'
@@ -152,6 +176,7 @@ module Prequel
       DB[table.name].filter(:id => id).delete
       Prequel.session[table.name].delete(id)
       after_destroy
+      Prequel.session.handle_destroy_event(self)
     end
 
     def secure_destroy
@@ -170,6 +195,7 @@ module Prequel
         table.where(:id => id).update(dirty_fields) unless dirty_fields.empty?
         after_update(changeset)
         after_save
+        Prequel.session.handle_update_event(self, changeset)
       else
         before_create
         before_save
@@ -179,6 +205,7 @@ module Prequel
         Prequel.session[table.name][id] = self
         after_create
         after_save
+        Prequel.session.handle_create_event(self)
       end
       mark_clean
       true

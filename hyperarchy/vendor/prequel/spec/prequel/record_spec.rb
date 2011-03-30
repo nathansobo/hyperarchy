@@ -191,6 +191,89 @@ module Prequel
           }.should_not change(Blog, :count)
         end
       end
+
+      describe "on create/update/destroy methods" do
+        attr_reader :create_events, :update_events, :destroy_events
+        attr_reader :blog_1, :blog_2
+        before do
+          Blog.create_table
+          @blog_1 = Blog.create(:title => "Blog 1")
+          @blog_2 = Blog.create(:title => "Blog 2")
+
+          @create_events = []
+          @update_events = []
+          @destroy_events = []
+
+          Prequel.session.flush_deferred_events
+          Blog.on_create {|blog| create_events << blog }
+          Blog.on_update {|blog, changeset| update_events << [blog, changeset] }
+          Blog.on_destroy {|blog| destroy_events << blog }
+        end
+
+        context "when mutations are performed inside of a transaction" do
+          specify "if the transaction completes, events are flushed and fire callbacks" do
+            new_blog = nil
+            Prequel.transaction do
+              new_blog = Blog.create!(:title => "New Blog")
+              new_blog.update(:title => "New Blog Prime")
+              blog_1.update(:title => "Blog 1 Prime")
+              blog_1.destroy
+              blog_2.destroy
+
+              create_events.should be_empty
+              update_events.should be_empty
+              destroy_events.should be_empty
+            end
+
+            create_events.should == [new_blog]
+            update_events.should == [
+              [new_blog, {:title => { :old_value => "New Blog", :new_value => "New Blog Prime"}}],
+              [blog_1, {:title => { :old_value => "Blog 1", :new_value => "Blog 1 Prime"}}]
+            ]
+            destroy_events.should == [blog_1, blog_2]
+          end
+
+          specify "if the transaction is aborted, the events are cleared and never fire callbacks" do
+            Prequel.transaction do
+              Blog.create!(:title => "New Blog")
+              blog_1.update(:title => "Blog 1 Prime")
+              blog_2.destroy
+
+              create_events.should be_empty
+              update_events.should be_empty
+              destroy_events.should be_empty
+
+              raise Sequel::Rollback
+            end
+
+            create_events.should be_empty
+            update_events.should be_empty
+            destroy_events.should be_empty
+
+            new_blog = nil
+            Prequel.transaction do
+              new_blog = Blog.create!(:title => "New Blog")
+              new_blog.update(:title => "New Blog Prime")
+              blog_2.destroy
+            end
+
+            create_events.should == [new_blog]
+            update_events.should == [[new_blog, {:title => {:old_value => "New Blog", :new_value => "New Blog Prime"}}]]
+            destroy_events.should == [blog_2]
+          end
+        end
+
+        context "when mutations are performed outside of a transaction" do
+          specify "they trigger events immediately" do
+            blog = Blog.create!(:title => "New Blog")
+            create_events.should == [blog]
+            blog.update(:title => "New Blog Prime")
+            update_events.should == [[blog, {:title => {:old_value => "New Blog", :new_value => "New Blog Prime"}}]]
+            blog.destroy
+            destroy_events.should == [blog]
+          end
+        end
+      end
     end
 
     describe "#initialize" do

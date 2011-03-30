@@ -18,6 +18,20 @@ module Prequel
     Relations::Table.new(name, &block)
   end
 
+  def transaction(&block)
+    DB.transaction do
+      begin
+        Prequel.session.transaction_depth += 1
+        block.call
+      rescue Exception => e
+        Prequel.session.clear_deferred_events
+      ensure
+        Prequel.session.transaction_depth -= 1
+      end
+    end
+    Prequel.session.flush_deferred_events
+  end
+
   def session
     Thread.current[:prequel_session] ||= Session.new
   end
@@ -44,6 +58,7 @@ module Prequel
   autoload :Relations
   autoload :Sandbox
   autoload :Session
+  autoload :SubscriptionNode
   autoload :Sql
   autoload :Tuple
 end
