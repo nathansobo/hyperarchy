@@ -15,6 +15,29 @@ describe Prequel do
     end
   end
 
+  describe ".transaction" do
+    it "does not swallow exceptions, but ensure the transaction depth is managed" do
+      expect {
+        Prequel.transaction do
+          raise "boom!"
+        end
+      }.should raise_error("boom!")
+      Prequel.session.transaction_depth.should == 0
+    end
+
+    it "manages Prequel.session.transaction_depth" do
+      Prequel.session.transaction_depth.should == 0
+      Prequel.transaction do
+        Prequel.session.transaction_depth.should == 1
+        Prequel.transaction do
+          Prequel.session.transaction_depth.should == 2
+        end
+        Prequel.session.transaction_depth.should == 1
+      end
+      Prequel.session.transaction_depth.should == 0
+    end
+  end
+
   describe ".clear_tables" do
     it "clears all tables associated with subclasses of Prequel::Record" do
       class Blog < Prequel::Record

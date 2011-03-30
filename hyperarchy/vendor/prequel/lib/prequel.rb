@@ -25,6 +25,7 @@ module Prequel
         block.call
       rescue Exception => e
         Prequel.session.clear_deferred_events
+        raise e
       ensure
         Prequel.session.transaction_depth -= 1
       end
