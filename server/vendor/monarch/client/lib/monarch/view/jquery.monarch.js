@@ -30,15 +30,15 @@ jQuery.fn.extend({
     return values;
   },
 
-  bindHtml: function(record, fieldName) {
+  bindHtml: function(record, fieldName, autolink) {
     var subscription = this.data('bindHtmlSubscription');
     if (subscription) subscription.destroy();
     var field = record.field(fieldName);
     if (!field) throw new Error("No field named " + fieldName + " found.");
-    this.html(htmlEscape(field.value()));
+    this.html(htmlEscape(field.value(), autolink));
 
     var subscription = field.onUpdate(function(newValue) {
-      this.html(htmlEscape(newValue));
+      this.html(htmlEscape(newValue, autolink));
     }, this);
     this.data('bindHtmlSubscription', subscription);
 

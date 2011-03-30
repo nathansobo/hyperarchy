@@ -249,7 +249,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     populateElectionDetails: function(election) {
       this.bodyTextarea.val(election.body());
-      this.bodyElement.bindHtml(election, 'body');
+      this.bodyElement.bindHtml(election, 'body', true);
       if (election.editableByCurrentUser()) {
         this.expandLink.show();
       } else {
