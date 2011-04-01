@@ -4,7 +4,6 @@ module Prequel
   end
 
   class Record
-
     class << self
       def validates_uniqueness_of(column_name, options={})
         column = table.get_column(column_name)

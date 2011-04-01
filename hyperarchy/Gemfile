@@ -8,6 +8,7 @@ gem 'bcrypt-ruby', :require => 'bcrypt'
 gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
 gem 'erector', :git => "https://github.com/bigfix/erector.git", :ref => 'adac17b5c02e47c0ebb8'
 gem 'pony'
+gem 'uuidtools'
 
 group :development, :test do
   gem 'thin'

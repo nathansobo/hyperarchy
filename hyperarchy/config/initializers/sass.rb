@@ -1,1 +1,1 @@
-Sass::Plugin.options[:template_location] = { "#{Rails.public_path}/stylesheets" => "#{Rails.public_path}/stylesheets" }
+Sass::Plugin.options[:template_location] = { "#{Rails.root}/client_src/stylesheets" => "#{Rails.public_path}/stylesheets" }

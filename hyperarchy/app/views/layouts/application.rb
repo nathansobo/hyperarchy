@@ -46,7 +46,7 @@ module Views
       end
 
       def store_in_repository(dataset)
-        %{Repository.update(#{build_relational_dataset(dataset).to_json});}
+        %{Repository.update(#{build_client_dataset(dataset).to_json});}
       end
 
       def google_analytics_javascript

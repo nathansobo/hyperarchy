@@ -1,11 +1,8 @@
 class ApplicationController < ActionController::Base
-  protect_from_forgery
   layout false
-  helper_method :current_user
-
-  before_filter :initialize_local_identity_map
-  before_filter :set_current_user_on_model
-  after_filter :clear_local_identity_map
+  protect_from_forgery
+  helper_method :current_user, :build_client_dataset, :make_guid
+  around_filter :manage_session
 
   protected
 
@@ -13,27 +10,21 @@ class ApplicationController < ActionController::Base
     render :status => :forbidden, :text => "That's not allowed"
   end
 
-  def set_current_user_on_model
-    return unless current_user
-    Monarch::Model::Repository.current_user = current_user
-  end
-
-  def initialize_local_identity_map
-    Monarch::Model::Repository.initialize_local_identity_map
-  end
-
-  def clear_local_identity_map
-    Monarch::Model::Repository.clear_local_identity_map
+  def manage_session
+    Prequel.session.current_user = current_user
+    yield
+  ensure
+    Prequel.clear_session
   end
 
   def set_current_user(user)
     session[:current_user_id] = user.id
-    set_current_user_on_model
+    Prequel.session.current_user = user
   end
 
   def clear_current_user
     session[:current_user_id] = nil
-    Monarch::Model::Repository.current_user = nil
+    Prequel.session.current_user = nil
   end
 
   def current_user_id
@@ -48,7 +39,7 @@ class ApplicationController < ActionController::Base
     render :json => {
       :successful => true,
       :data => data,
-      :dataset => dataset_json(dataset)
+      :dataset => build_client_dataset(dataset)
     }
   end
 
@@ -59,11 +50,15 @@ class ApplicationController < ActionController::Base
     }
   end
 
-  def dataset_json(records_or_relations)
-    {}.tap do |dataset|
+  def build_client_dataset(*records_or_relations)
+    (Hash.new {|h,k| h[k] = {}}).tap do |dataset|
       Array(records_or_relations).flatten.each do |r|
-        r.add_to_relational_dataset(dataset)
+        r.add_to_client_dataset(dataset)
       end
     end
+  end
+
+  def make_guid
+    UUIDTools::UUID.random_create.to_s
   end
 end

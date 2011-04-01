@@ -47,10 +47,8 @@ GEM
     eventmachine (0.12.10)
     faker (0.9.5)
       i18n (~> 0.4)
-    guid (0.1.1)
     haml (3.0.25)
     i18n (0.5.0)
-    json (1.5.1)
     machinist (1.0.6)
     mail (2.2.15)
       activesupport (>= 2.3.6)
@@ -114,6 +112,7 @@ GEM
     treetop (1.4.9)
       polyglot (>= 0.3.1)
     tzinfo (0.3.24)
+    uuidtools (2.1.2)
 
 PLATFORMS
   ruby
@@ -122,9 +121,7 @@ DEPENDENCIES
   bcrypt-ruby
   erector!
   faker
-  guid
   haml
-  json
   machinist
   pg (= 0.9.0)
   pony
@@ -137,3 +134,4 @@ DEPENDENCIES
   sequel-rails
   spork (~> 0.9.0.rc)
   thin
+  uuidtools
