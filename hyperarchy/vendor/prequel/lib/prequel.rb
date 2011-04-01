@@ -19,20 +19,18 @@ module Prequel
   end
 
   def transaction(&block)
+    Prequel.session.transaction_depth += 1
     result = nil
     DB.transaction do
-      begin
-        Prequel.session.transaction_depth += 1
-        result = block.call
-      rescue Exception => e
-        Prequel.session.clear_deferred_events
-        raise e
-      ensure
-        Prequel.session.transaction_depth -= 1
-      end
+      result = block.call
     end
     Prequel.session.flush_deferred_events
     result
+  rescue Exception => e
+    Prequel.session.clear_deferred_events if Prequel.session.transaction_depth == 1
+    raise e unless Prequel.session.transaction_depth == 1 && e.instance_of?(Prequel::Rollback)
+  ensure
+    Prequel.session.transaction_depth -= 1
   end
 
   def session
@@ -59,6 +57,7 @@ module Prequel
   autoload :Field
   autoload :Record
   autoload :Relations
+  autoload :Rollback
   autoload :Sandbox
   autoload :Session
   autoload :SubscriptionNode

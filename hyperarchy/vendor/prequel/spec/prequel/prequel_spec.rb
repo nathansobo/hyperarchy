@@ -40,6 +40,18 @@ describe Prequel do
     it "returns the given block's return value" do
       Prequel.transaction { 7 }.should == 7
     end
+
+    it "clears deferred events on the session once when the transaction is aborted, despite layers of transaction nesting" do
+      dont_allow(Prequel.session).flush_deferred_events
+      mock(Prequel.session).clear_deferred_events
+      Prequel.transaction do
+        Prequel.transaction do
+          Prequel.session.transaction_depth.should == 2
+          raise Prequel::Rollback
+        end
+      end
+      Prequel.session.transaction_depth.should == 0
+    end
   end
 
   describe ".clear_tables" do

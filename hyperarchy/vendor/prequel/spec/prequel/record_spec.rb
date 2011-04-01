@@ -243,7 +243,7 @@ module Prequel
               update_events.should be_empty
               destroy_events.should be_empty
 
-              raise Sequel::Rollback
+              raise Prequel::Rollback
             end
 
             create_events.should be_empty
