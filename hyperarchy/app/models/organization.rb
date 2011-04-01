@@ -11,7 +11,7 @@ class Organization < Prequel::Record
   column :social, :boolean, :default => false
   column :privacy, :string, :default => "read_only"
 
-  has_many :elections, :order_by => "score desc"
+  has_many :elections, :order_by => :score.desc
   has_many :memberships
 
   attr_accessor :suppress_membership_creation

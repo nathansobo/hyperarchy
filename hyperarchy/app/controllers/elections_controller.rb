@@ -8,7 +8,7 @@ class ElectionsController < ApplicationController
     limit = params[:limit]
 
     elections = organization.elections.offset(offset).limit(limit)
-    candidates = elections.join_through(Candidate).join(User).on(Candidate[:creator_id].eq(User[:id]))
+    candidates = elections.join_through(Candidate).join(User, :creator_id => User[:id])
     visits = elections.join_through(current_user.election_visits)
 
     render_success_json(nil, [elections, candidates, visits])
