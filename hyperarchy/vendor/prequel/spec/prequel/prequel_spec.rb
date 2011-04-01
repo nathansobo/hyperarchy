@@ -36,6 +36,10 @@ describe Prequel do
       end
       Prequel.session.transaction_depth.should == 0
     end
+
+    it "returns the given block's return value" do
+      Prequel.transaction { 7 }.should == 7
+    end
   end
 
   describe ".clear_tables" do

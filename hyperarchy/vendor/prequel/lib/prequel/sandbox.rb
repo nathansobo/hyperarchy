@@ -20,11 +20,15 @@ module Prequel
     delegate :exposed_relation_definitions, :to => 'self.class'
 
     def create(relation_name, field_values)
-      record = get_relation(relation_name).new(field_values)
-      if record.save
-        [200, record.wire_representation]
-      else
-        [422, record.errors]
+      Prequel.transaction do
+        relation = get_relation(relation_name)
+        record = relation.new(field_values)
+        if record.save
+          raise SecurityError unless relation.find(record.id)
+          [200, record.wire_representation]
+        else
+          [422, record.errors]
+        end
       end
     end
 

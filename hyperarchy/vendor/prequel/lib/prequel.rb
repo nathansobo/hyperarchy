@@ -19,10 +19,11 @@ module Prequel
   end
 
   def transaction(&block)
+    result = nil
     DB.transaction do
       begin
         Prequel.session.transaction_depth += 1
-        block.call
+        result = block.call
       rescue Exception => e
         Prequel.session.clear_deferred_events
         raise e
@@ -31,6 +32,7 @@ module Prequel
       end
     end
     Prequel.session.flush_deferred_events
+    result
   end
 
   def session

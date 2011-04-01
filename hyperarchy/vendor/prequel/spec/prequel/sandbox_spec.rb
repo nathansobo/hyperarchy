@@ -131,11 +131,30 @@ module Prequel
 
       describe "#create(relation_name, field_values)" do
         context "when the created record is valid" do
-          it "returns the a '200 ok' response with the wire representation of the created record" do
-            Blog.should be_empty
-            status, response = sandbox.create('blogs', { 'user_id' => 1, 'title' => 'Blog Title' })
-            status.should == 200
-            response.should == Blog.first.wire_representation
+          attr_reader :blog_1, :blog_2
+          before do
+            Post.create_table
+            @blog_1 = Blog.create(:user_id => 1)
+            @blog_2 = Blog.create(:user_id => 2)
+          end
+
+          context "when the created record ends up being a member of the exposed relation" do
+            it "returns the a '200 ok' response with the wire representation of the created record" do
+              Post.should be_empty
+              status, response = sandbox.create('posts', { 'blog_id' => blog_1.id, 'title' => 'Post Title' })
+              status.should == 200
+              response.should == Post.first.wire_representation
+            end
+          end
+
+          context "when the created record does not end up being a member of the exposed relation" do
+            it "raises a SecurityError and does not commit the transaction to create the record" do
+              Post.should be_empty
+              expect do
+                sandbox.create('posts', { 'blog_id' => blog_2.id, 'title' => 'Post Title' })
+              end.should raise_error(SecurityError)
+              Post.should be_empty
+            end
           end
         end
 
