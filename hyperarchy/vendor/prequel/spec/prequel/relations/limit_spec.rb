@@ -75,10 +75,9 @@ module Prequel
                         on blogs.id = t1.blog_id
             })
 
-            Blog.limit(5).join(Post).to_sql.should be_like_query(%{
-              select t1.id as t1__id,
-                     posts.id as posts__id,
-                     posts.blog_id as posts__blog_id
+            Blog.limit(5).join_through(Post).to_sql.should be_like_query(%{
+              select posts.id,
+                     posts.blog_id
               from   (select blogs.id
                       from blogs
                       limit 5) as t1
