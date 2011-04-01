@@ -1,0 +1,439 @@
+#app {
+  #electionOverview {
+    padding: 0;
+    margin: 0;
+    clear: both;
+    overflow-y: hidden;
+
+    .guestWelcome {
+      .right {
+        padding-top: 10px;
+      }
+    }
+
+    .headerContainer {
+      margin-bottom: 20px;
+
+      #electionBodyContainer {
+        .expandArrow {
+          float: left;
+          margin-right: 5px;
+          margin-top: 8px;
+        }
+
+        #electionBodyContainerRight {
+          width: 595px;
+          display: inline-block;
+
+          h2 {
+            display: inline;
+            margin-right: 5px;
+          }
+
+          textarea.electionBody {
+            width: 100%;
+            resize: none;
+            font-size: 23px;
+            padding: 4px;
+            height: 50px;
+            margin-bottom: 10px;
+          }
+
+          #expandedArea {
+            button {
+              float: right;
+              margin-left: 5px;
+            }
+
+            .loading {
+              float: right;
+              top: 2px;
+              position: relative;
+            }
+          }
+        }
+      }
+    }
+
+    #showCreateCandidateFormButton {
+      padding: 6px 20px;
+      float: right;
+      display: inline-block;
+      text-align: center;
+
+      &.pressed {
+        -webkit-box-shadow: 0px 0px 4px black inset;
+        -moz-box-shadow: 0px 0px 4px black inset;
+      }
+    }
+
+    div#createCandidateForm {
+      margin-bottom: 30px;
+
+      .cancelX {
+        float: right;
+        margin-top: 6px;
+      }
+
+      textarea {
+        font-size: 15px;
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 5px;
+        display: block;
+        resize: none;
+        line-height: 1.1;
+        border: 1px solid #c8c7c7;
+
+        &#shortAnswer {
+          height: 49px;
+        }
+
+        &#optionalDetails {
+          height: 80px;
+        }
+      }
+
+      #createCandidateButton {
+        display: inline-block;
+        padding: 5px 10px;
+        font-size: 18px;
+      }
+
+      .loading {
+        display: inline-block;
+        position: relative;
+        top: 3px;
+        left: 4px;
+      }
+    }
+
+    .relatedUser {
+      margin-top: 5px;
+
+      .avatar {
+        float: left;
+        margin-right: 5px;
+      }
+
+      .details {
+        padding-top: 2px;
+
+        .name {
+          font-size: 15px;
+          margin-bottom: 2px;
+        }
+
+        .date {
+          color: #999999;
+          font-size: 12px;
+        }
+      }
+    }
+
+    #createdBy {
+      margin-bottom: 20px;
+
+      .columnHeader {
+        border-bottom: 1px solid #e0e0e0;
+      }
+    }
+
+
+    #votes {
+      #voteCount {
+        border-bottom: 1px solid #e0e0e0;
+
+        &.noVotes {
+          border-bottom: none;
+        }
+      }
+
+      ol {
+        overflow-y: auto;
+
+        .relatedUser {
+          cursor: pointer;
+          &:hover {
+            background-color: #ffffcc;
+          }
+        }
+      }
+    }
+
+    .columnHeader {
+      font-size: 18px;
+      color: #999999;
+      padding-bottom: 3px;
+    }
+
+    .bigLoading {
+      position: absolute;
+    }
+
+    // specific styles for global consensus / ranked candidates below
+    ol.candidates {
+      background-color: $lightGray;
+      -moz-box-shadow: #c8c7c7 0px 0px 5px inset;
+      -webkit-box-shadow: #c8c7c7 0px 0px 5px inset;
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      li.candidate {
+        font-size: 15px;
+        padding: 5px;
+        border: 1px solid #c8c7c7;
+        border-bottom: none;
+        cursor: default;
+        background: white;
+        -moz-box-shadow: #c8c7c7 0px 1px 3px;
+        -webkit-box-shadow: #c8c7c7 0px 1px 3px;
+        position: relative;
+
+        &:last-child { border-bottom: 1px solid #d6d3d3; }
+
+        &.ui-draggable-dragging {
+          width: 288px;
+          list-style-type: none;
+        }
+
+        &.expanded {
+          @include yellowFade;
+
+          .expandedInfoSpacer {
+            display: block;
+          }
+        }
+
+        .expandArrow {
+          position: absolute;
+          top: 8px;
+          left: 5px;
+          margin-left: 1px;
+          margin-right: 4px;
+          @include noSelect;
+        }
+
+        .candidateIcon {
+          float: right;
+          position: relative;
+          top: 1px;
+          height: 20px;
+          width: 18px;
+          background-position: 4px 4px;
+          background-repeat: no-repeat;
+        }
+
+
+        .tooltipIcon {
+          background-image: url(/images/speech_light.png);
+          cursor: pointer;
+          @include noSelect;
+
+          &:hover {
+            background-image: url(/images/speech_dark.png);
+          }
+        }
+        
+        // see global.scss for .candidateTooltip (because it gets attached to the body so it displays above stuff)
+
+        .loading {
+          background-position: 2px 2px;
+        }
+
+        .body {
+          margin-left: 19px;
+          margin-right: 22px;
+          @include noSelect;
+        }
+
+        .expandedInfoSpacer {
+          display: none;
+          height: 25px;
+        }
+
+        .expandedInfo {
+          margin: 0 10px 10px 10px;
+          font-size: 13px;
+
+          label {
+            width: 100%;
+            display: inline-block;
+            margin-bottom: 2px;
+            padding-left: 1px;
+          }
+
+
+          // inside both body and details containers
+          .nonEditable {
+            @include nonEditableDottedBorder;
+          }
+
+
+          .bodyContainer {
+            margin-bottom: 10px;
+
+            textarea {
+              outline: none;
+              width: 100%;
+              padding: 4px;
+              padding-top: 2px;
+              resize: none;
+            }
+
+            .nonEditable {
+              max-height: 150px;
+            }
+          }
+
+          .detailsContainer {
+            margin-bottom: 10px;
+            display: block;
+
+            textarea {
+              width: 100%;
+              height: 50px;
+              padding: 5px;
+              max-height: 150px;
+              resize: none;
+            }
+
+            .nonEditable {
+              max-height: 150px;
+            }
+          }
+
+          .buttonsContainer {
+            margin-top: 0;
+            margin-bottom: 10px;
+          }
+
+          .creatorContainer {
+            line-height: 1.2;
+
+            .suggestedBy {
+              color: #999999;
+              font-size: 11px;
+            }
+
+            .avatar {
+              float: left;
+              margin-right: 5px;
+            }
+
+            .date {
+              color: #999999;
+              font-size: 11px;
+            }
+          }
+
+          .commentsContainer {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 10px;
+
+            // see global.scss for the rest of the styles (needed because the tooltip is a child of body and has comments)
+            .candidateCommentsList {
+              margin-bottom: 5px;
+            }
+
+            .createCommentForm {
+              margin-top: 10px;
+
+              textarea {
+                width: 100%;
+                height: 30px;
+                padding: 5px;
+                max-height: 150px;
+                resize: none;
+                margin-bottom: 5px;
+              }
+            }
+          }
+
+          button {
+            float: right;
+            font-size: 12px;
+            margin-left: 5px;
+          }
+        }
+      }
+    }
+
+    #candidatesList {
+      ol#candidates {
+        li.candidate {
+          .candidateRanked {
+            background-image: url(/images/check_12x10_light.png);
+          }
+        }
+      }
+    }
+
+    #rankedCandidatesList {
+      &.otherUser {
+        ol#rankedCandidates {
+          .dragTargetExplanation {
+            visibility: hidden;
+          }
+
+          li.candidate {
+            .unrankCandidate {
+              visibility: hidden;
+            }
+          }
+        }
+      }
+
+      .columnHeader {
+        #back {
+          float: right;
+        }
+      }
+
+      ol#rankedCandidates {
+        .dragTargetExplanation {
+          font-size: 15px;
+          padding: 0 40px;
+          text-align: center;
+        }
+
+        li.candidate {
+          .unrankCandidate {
+            background-image: url(/images/x_11x11_light.png);
+
+            &:hover {
+              cursor: pointer;
+              background-image: url(/images/x_11x11_dark.png);
+            }
+          }
+        }
+
+        li.separator {
+          text-align: center;
+          padding: 5px;
+          cursor: default;
+          font-size: 15px;
+
+          .up {
+            background: url("/images/arrow_up_white.png");
+            background-repeat: no-repeat;
+            padding-left: 20px;
+            height: 22px;
+            display: inline-block;
+            margin-right: 20px;
+          }
+
+          .down {
+            background: url("/images/arrow_down_white.png");
+            background-repeat: no-repeat;
+            background-position: right;
+            padding-right: 20px;
+            height: 22px;
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
+}

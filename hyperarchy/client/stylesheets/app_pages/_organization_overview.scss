@@ -1,0 +1,89 @@
+#app {
+  #organizationOverview {
+
+    h2 {
+      padding-left: 8px;
+    }
+
+    .election {
+      padding: 8px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      height: 160px;
+      overflow-y: hidden;
+      position: relative;
+
+      &.voted {
+        background: #F3F3F4;
+
+        .body {
+          font-weight: normal;
+        }
+
+        .fadeOut {
+          background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, rgba(243, 243, 244, 0)), color-stop(0.8, rgba(243, 243, 244, 1)));
+          background: -moz-linear-gradient(top, rgba(243, 243, 244, 0), rgba(243, 243, 244, 1));
+        }
+      }
+
+      .voteCount {
+        padding: 5px;
+        margin: 0 0 10px 10px;
+        float: right;
+        background: #F3F3F4;
+        min-width: 37px;
+        line-height: 1;
+        text-align: center;
+        -moz-box-shadow: rgba(0,0,0,.3) 1px 1px 3px;
+        -webkit-box-shadow: rgba(0,0,0,.3) 1px 1px 3px;
+
+        .number {
+          font-weight: bold;
+          font-size: 22px;
+        }
+      }
+
+      .body {
+        font-weight: bold;
+        font-size: 19px;
+        margin-bottom: 10px;
+      }
+
+      .fadeOut {
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0.0, rgba(255, 255, 255, 0)), color-stop(0.8, rgba(255, 255, 255, 1)));
+        background: -moz-linear-gradient(top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+        height: 50px;
+        width: 100%;
+        position: absolute;
+        left: 0px;
+        bottom: 0px;
+        color: #ffffcc;
+      }
+
+      .candidates li {
+        font-size: 15px;
+
+        padding: 2px;
+
+        .number {
+          display: inline-block;
+          font-weight: bold;
+          vertical-align: top;
+          padding-right: 6px;
+        }
+
+        .candidateBody {
+          padding-top: 1px;
+        }
+      }
+    }
+
+    .bigLoading {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      margin-left: -40px;
+      margin-top: -40px;
+    }
+  }
+}
