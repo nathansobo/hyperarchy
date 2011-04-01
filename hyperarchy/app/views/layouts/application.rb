@@ -1,7 +1,7 @@
 module Views
   module Layouts
     class Application < Erector::Widget
-      include Monarch::Util::BuildRelationalDataset
+#      include Monarch::Util::BuildRelationalDataset
 
       GOOGLE_ANALYTICS_CODES = {
         "production" => 'UA-19678731-1',

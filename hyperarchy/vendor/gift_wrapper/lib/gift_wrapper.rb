@@ -1,6 +1,7 @@
 dir = File.dirname(__FILE__)
 require "digest/sha1"
 require "yaml"
+require "fileutils"
 require "#{dir}/gift_wrapper/location"
 require "#{dir}/gift_wrapper/js_file"
 require "#{dir}/gift_wrapper/require_context"
@@ -46,7 +47,7 @@ class GiftWrapper
   end
 
   def mount_package_dir(physical_path_prefix, web_path_prefix="/pkg")
-    Dir.mkdir(physical_path_prefix) unless File.directory?(physical_path_prefix)
+    FileUtils.mkdir_p(physical_path_prefix) unless File.directory?(physical_path_prefix)
     @package_dir = mount(physical_path_prefix, web_path_prefix)
   end
 
