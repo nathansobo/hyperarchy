@@ -3,19 +3,26 @@ require 'spec_helper'
 describe ApplicationController do
   controller do
     def index
+      raise if params[:explode]
       render :text => "ok"
+    end
+
+    def explode
+      raise
     end
   end
 
-  it "initializes and clears the local identity map on the repository" do
-    mock(Monarch::Model::Repository).initialize_local_identity_map.ordered
-    mock(Monarch::Model::Repository).clear_local_identity_map.ordered
+  it "clears the Prequel session after the request, even if an exception occurred" do
+    mock(Prequel).clear_session
     get :index
+
+    mock(Prequel).clear_session
+    expect { get :index, :explode => true }.to raise_error
   end
 
   it "sets the current user on the model" do
     login_as(User.make)
-    mock(Monarch::Model::Repository).current_user = current_user
+    mock(Prequel.session).current_user = current_user
     get :index
   end
 end
