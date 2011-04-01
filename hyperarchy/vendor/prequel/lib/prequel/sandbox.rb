@@ -20,30 +20,51 @@ module Prequel
     delegate :exposed_relation_definitions, :to => 'self.class'
 
     def create(relation_name, field_values)
+      response = nil
       Prequel.transaction do
         relation = get_relation(relation_name)
         record = relation.new(field_values)
         if record.save
-          raise SecurityError unless relation.find(record.id)
-          [200, record.wire_representation]
+          if relation.find(record.id)
+            response = [200, record.wire_representation]
+          else
+            response = [403, "Create operation forbidden."]
+            raise Sequel::Rollback
+          end
         else
-          [422, record.errors]
+          response = [422, record.errors]
         end
       end
+      response
     end
 
     def update(relation_name, id, field_values)
-      record = get_relation(relation_name).find(id)
-      record.soft_update(field_values)
-      if record.save
-        [200, record.wire_representation]
-      else
-        [422, record.errors]
+      response = nil
+      Prequel.transaction do
+        relation = get_relation(relation_name)
+        record = relation.find(id)
+        unless record
+          response = [404, "No record with id #{id} found in #{relation_name}"]
+          raise Prequel::Rollback
+        end
+        record.soft_update(field_values)
+        if record.save
+          if relation.find(id)
+            response = [200, record.wire_representation]
+          else
+            response = [403, "Update operation forbidden."]
+            raise Prequel::Rollback
+          end
+        else
+          response = [422, record.errors]
+        end
       end
+      response
     end
 
     def destroy(relation_name, id)
       record = get_relation(relation_name).find(id)
+      return 404 unless record
       record.destroy
       200
     end

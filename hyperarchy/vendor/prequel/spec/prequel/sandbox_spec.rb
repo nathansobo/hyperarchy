@@ -148,11 +148,10 @@ module Prequel
           end
 
           context "when the created record does not end up being a member of the exposed relation" do
-            it "raises a SecurityError and does not commit the transaction to create the record" do
+            it "returns '403 forbidden' as its status" do
               Post.should be_empty
-              expect do
-                sandbox.create('posts', { 'blog_id' => blog_2.id, 'title' => 'Post Title' })
-              end.should raise_error(SecurityError)
+              status, response = sandbox.create('posts', { 'blog_id' => blog_2.id, 'title' => 'Post Title' })
+              status.should == 403
               Post.should be_empty
             end
           end
@@ -187,7 +186,19 @@ module Prequel
           @blog = Blog.create!(:title => "Blog Title", :user_id => 1)
         end
 
-        context "when a record with the given id is a member of the exposed relation" do
+        context "when the record with the given id is NOT a member of the exposed relation" do
+          attr_reader :other_blog
+          before do
+            @other_blog = Blog.create!(:title => "Not Exposed", :user_id => 99)
+          end
+
+          it "returns '404 not found'" do
+            status, response = sandbox.update('blogs', other_blog.id, { 'title' => "New Title" })
+            status.should == 404
+          end
+        end
+
+        context "when the record with the given id is a member of the exposed relation" do
           context "when the update leaves the record in a valid state" do
             it "returns '200 ok' with the wire representation of the updated record" do
               status, response = sandbox.update('blogs', blog.id, { 'title' => "New Title" })
@@ -213,6 +224,14 @@ module Prequel
               response.should == blog.errors
             end
           end
+
+          context "when the update causes the record to no longer be a member of the exposed relation" do
+            it "returns '403 forbidden' as its status and does not commit the transaction to update the record" do
+              status, response = sandbox.update('blogs', blog.id, { 'user_id' => 90, 'title' => "New Title" })
+              blog.reload.title.should == "Blog Title"
+              status.should == 403
+            end
+          end
         end
       end
 
@@ -228,6 +247,19 @@ module Prequel
             status = sandbox.destroy('blogs', blog.id)
             status.should == 200
             Blog.find(blog.id).should be_nil
+          end
+        end
+
+        context "when no record with the given id is a member of the exposed relation" do
+          attr_reader :other_blog
+          before do
+            @other_blog = Blog.create(:title => "Not in relation", :user_id => 99)
+          end
+
+          it "returns '404 not found' and does not destroy the record" do
+            status = sandbox.destroy('blogs', other_blog.id)
+            status.should == 404
+            Blog.find(other_blog.id).should_not be_nil
           end
         end
       end
