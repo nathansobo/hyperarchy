@@ -1,4 +1,6 @@
 class Invitation < Prequel::Record
+  include GuidGeneration
+
   column :id, :integer
   column :guid, :string
   column :sent_to_address, :string
@@ -21,7 +23,7 @@ class Invitation < Prequel::Record
   attr_accessor :send_email
 
   def before_create
-    self.guid = Guid.new.to_s
+    self.guid = make_guid
   end
   
   def after_create

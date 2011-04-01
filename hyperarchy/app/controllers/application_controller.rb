@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  include GuidGeneration
+
   layout false
   protect_from_forgery
   helper_method :current_user, :build_client_dataset, :make_guid
@@ -56,9 +58,5 @@ class ApplicationController < ActionController::Base
         r.add_to_client_dataset(dataset)
       end
     end
-  end
-
-  def make_guid
-    UUIDTools::UUID.random_create.to_s
   end
 end
