@@ -32,6 +32,7 @@ module Prequel
           Blog.limit(2).should_not == Blog2.limit(3)
         end
       end
+
       describe "#to_sql" do
         describe "with an explicitly ascending column" do
           it "generates the appropriate sql with a limit clause" do
@@ -49,6 +50,40 @@ module Prequel
               select blogs.id
               from   blogs
               limit 10
+            })
+          end
+        end
+
+        describe "when nested inside of a join" do
+          before do
+            class Post < Prequel::Record
+              column :id, :integer
+              column :blog_id, :integer
+            end
+          end
+
+          it "generates a subquery with the limit" do
+            Blog.join(Post.limit(5)).to_sql.should be_like_query(%{
+              select blogs.id as blogs__id,
+                     t1.id as t1__id,
+                     t1.blog_id as t1__blog_id
+              from   blogs
+                     inner join (select posts.id,
+                                        posts.blog_id
+                                 from posts
+                                 limit 5) as t1
+                        on blogs.id = t1.blog_id
+            })
+
+            Blog.limit(5).join(Post).to_sql.should be_like_query(%{
+              select t1.id as t1__id,
+                     posts.id as posts__id,
+                     posts.blog_id as posts__blog_id
+              from   (select blogs.id
+                      from blogs
+                      limit 5) as t1
+                     inner join posts
+                        on t1.id = posts.blog_id
             })
           end
         end
