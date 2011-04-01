@@ -68,7 +68,7 @@ $backgroundGray: #e6e6e6;
   @include dropShadow(6px);
 }
 
-html#app {
+html.home.show {
   background: $backgroundGray;
 }
 
