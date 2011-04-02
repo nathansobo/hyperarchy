@@ -46,9 +46,9 @@ _.constructor("Controllers.Application", {
 
     afterChange: function(organizationId, old) {
       if (this.previousOrganizationSubscription) this.previousOrganizationSubscription.destroy();
-      Server.post("/subscribe_to_organization/" + organizationId, { real_time_client_id: Server.realTimeClientId() }).onSuccess(function(subscriptionId) {
-        this.previousOrganizationSubscription = new Monarch.Http.RemoteSubscription(subscriptionId)
-      }, this);
+//      Server.post("/subscribe_to_organization/" + organizationId, { real_time_client_id: Server.realTimeClientId() }).onSuccess(function(subscriptionId) {
+//        this.previousOrganizationSubscription = new Monarch.Http.RemoteSubscription(subscriptionId)
+//      }, this);
       this.layout.organization(this.currentOrganization());
       this.welcomeGuide.organization(this.currentOrganization());
     }

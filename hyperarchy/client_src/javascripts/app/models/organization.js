@@ -52,7 +52,7 @@ _.constructor("Organization", Model.Record, {
       limit = 16;
     }
 
-    var future = Server.get("/fetch_election_data", {
+    var future = Server.get("/elections", {
       organization_id: this.id(),
       offset: offset,
       limit: limit

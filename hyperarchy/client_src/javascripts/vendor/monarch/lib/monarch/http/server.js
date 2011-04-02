@@ -9,7 +9,7 @@ _.constructor("Monarch.Http.Server", {
 
   realTimeClientId: {
     afterWrite: function() {
-      this.connectRealTimeClient();
+//      this.connectRealTimeClient();
     }
   },
 
