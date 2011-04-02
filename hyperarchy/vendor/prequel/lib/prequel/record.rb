@@ -274,12 +274,18 @@ module Prequel
       end
     end
 
+    def all_fields
+      fields_by_name.merge(synthetic_fields_by_name)
+    end
+
     def to_param
       id.to_s
     end
 
     def wire_representation
-      field_values.merge(synthetic_field_values).slice(*read_whitelist - read_blacklist).stringify_keys
+      Hash[all_fields.slice(*read_whitelist - read_blacklist).map do |name, field|
+        [name.to_s, field.wire_representation]
+      end]
     end
 
     def add_to_client_dataset(dataset)

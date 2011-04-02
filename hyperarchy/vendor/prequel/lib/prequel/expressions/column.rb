@@ -52,6 +52,14 @@ module Prequel
         end
       end
 
+      def convert_value_for_wire(value)
+        if type == :datetime
+          value.try(:to_millis)
+        else
+          value
+        end
+      end
+
       def wire_representation
         {
           'type' => "column",

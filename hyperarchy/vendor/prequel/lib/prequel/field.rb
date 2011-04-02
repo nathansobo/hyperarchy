@@ -12,6 +12,10 @@ module Prequel
       @dirty = (value != clean_value)
     end
 
+    def wire_representation
+      column.convert_value_for_wire(value)
+    end
+
     def dirty?
       @dirty
     end

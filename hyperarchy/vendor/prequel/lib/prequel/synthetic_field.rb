@@ -14,5 +14,9 @@ module Prequel
     def value
       tuple.send(name)
     end
+
+    def wire_representation
+      column.convert_value_for_wire(value)
+    end
   end
 end

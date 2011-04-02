@@ -715,7 +715,6 @@ module Prequel
         end
 
         it "converts all datetime fields (including synthetic) to epoch milliseconds" do
-          pending
           freeze_time
 
           Blog.column(:created_at, :datetime)
