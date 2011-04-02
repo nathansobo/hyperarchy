@@ -77,4 +77,61 @@ describe Prequel do
       Prequel::DB[:posts].should be_empty
     end
   end
+
+  describe ".clear_session" do
+    before do
+      Prequel.session
+      Thread.current[:prequel_session].should_not be_nil
+    end
+
+    context "if test mode is false" do
+      before do
+        Prequel.test_mode = false
+      end
+
+      it "sets the thread-local session variable to nil" do
+        Prequel.clear_session
+        Thread.current[:prequel_session].should be_nil
+      end
+    end
+
+    context "if test mode is true" do
+      before do
+        Prequel.test_mode = true
+      end
+
+      it "does not clear the session, and instead only allows clear_session_in_test_mode to do it." do
+        Prequel.clear_session
+        Thread.current[:prequel_session].should_not be_nil
+      end
+    end
+  end
+
+  describe ".clear_session_in_test_mode" do
+    before do
+      Prequel.session
+      Thread.current[:prequel_session].should_not be_nil
+    end
+
+    context "if test mode is true" do
+      before do
+        Prequel.test_mode = true
+      end
+
+      it "clears the session" do
+        Prequel.clear_session_in_test_mode
+        Thread.current[:prequel_session].should be_nil
+      end
+    end
+
+    context "if test mode is false" do
+      before do
+        Prequel.test_mode = false
+      end
+
+      it "raises an exception" do
+        expect { Prequel.clear_session_in_test_mode }.to raise_error
+      end
+    end
+  end
 end

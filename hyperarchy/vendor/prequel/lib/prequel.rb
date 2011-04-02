@@ -6,6 +6,8 @@ module Prequel
   extend ActiveSupport::Autoload
   extend self
 
+  attr_accessor :test_mode
+
   def const_missing(name)
     if name == :DB
       const_set(:DB, Sequel::DATABASES.first)
@@ -38,6 +40,12 @@ module Prequel
   end
 
   def clear_session
+    return if test_mode
+    Thread.current[:prequel_session] = nil if Thread.current[:prequel_session]
+  end
+
+  def clear_session_in_test_mode
+    raise "Prequel#clear_session_in_test_mode can only be called when test_mode=true" unless test_mode
     Thread.current[:prequel_session] = nil if Thread.current[:prequel_session]
   end
 
