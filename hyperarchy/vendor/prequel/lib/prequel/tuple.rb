@@ -80,9 +80,12 @@ module Prequel
       end
     end
 
+    def get_field(name)
+      fields_by_name[name.to_sym]
+    end
+
     def set_field_value(name, value, mark_clean=false)
-      field = fields_by_name[name]
-      unless field
+      unless field = get_field(name)
         raise "No field found #{name.inspect}"
       end
       field.value = value

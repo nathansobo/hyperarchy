@@ -151,7 +151,7 @@ module Prequel
 
     def soft_update(attributes)
       attributes.each do |name, value|
-        self.send("#{name}=", value)
+        set_field_value(name, value)
       end
     end
 
@@ -289,6 +289,7 @@ module Prequel
     class NotValid < Exception; end;
 
     protected
+    attr_reader :synthetic_fields_by_name
 
     def before_save; end
     def after_save; end
@@ -377,6 +378,19 @@ module Prequel
 
     def readable_fields
       read_whitelist - read_blacklist
+    end
+
+    def initialize_fields
+      super
+      @synthetic_fields_by_name = {}
+      synthetic_columns.each do |column|
+        synthetic_fields_by_name[column.name] = SyntheticField.new(self, column)
+      end
+    end
+
+    def get_field(name)
+      name = name.to_sym
+      field = fields_by_name[name] ||  synthetic_fields_by_name[name]
     end
 
     def field_values_without_id

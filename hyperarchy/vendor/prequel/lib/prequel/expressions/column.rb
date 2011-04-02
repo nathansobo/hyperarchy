@@ -40,6 +40,18 @@ module Prequel
         query.singular_table_refs[table].resolve_column(self)
       end
 
+      def normalize_field_value(value)
+        return value unless type == :datetime
+        case value
+          when Time, NilClass
+            value
+          when Integer
+            Time.at(value / 1000)
+          else
+            raise "Can't convert value #{value.inspect} for storage as a :datetime"
+        end
+      end
+
       def wire_representation
         {
           'type' => "column",

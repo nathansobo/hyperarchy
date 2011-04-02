@@ -540,6 +540,7 @@ module Prequel
         class ::Blog
           column :user_id, :integer
           column :subtitle, :string
+          synthetic_column :tricky_subtitle, :string
 
           def tricky_subtitle=(subtitle)
             self.subtitle = "Tricky #{subtitle}"
@@ -551,7 +552,7 @@ module Prequel
       end
 
       describe "#update(attributes)" do
-        it "assigns all attributes and saves the record" do
+        it "assigns all fields and synthetic fields and saves the record" do
           blog.update(:title => "Coding For Fun", :tricky_subtitle => "And Maybe Eventually Profit?", :user_id => 4)
 
           DB[:blogs].find(blog.id).first.should == {
@@ -561,6 +562,35 @@ module Prequel
             :user_id => 4
           }
         end
+
+        describe "datetime conversion" do
+          attr_reader :post
+          before do
+            class ::Post < Prequel::Record
+              column :id, :integer
+              column :published_at, :datetime
+              synthetic_column :party_time, :datetime
+
+              attr_accessor :party_time
+            end
+            Post.create_table
+            @post = Post.create!
+            freeze_time
+          end
+
+          it "when assigning fields of type :datetime, converts epoch milliseconds to time if necessary" do
+            post.update(:published_at => Time.now.to_millis)
+            post.published_at.should be_a(Time)
+            post.published_at.to_i.should == Time.now.to_i
+          end
+
+          it "when assigniing synthetic fields of type :datetime, converts epoch milliseconds to time if necessary" do
+            post.update(:party_time => Time.now.to_millis)
+            post.party_time.should be_a(Time)
+            post.party_time.to_i.should == Time.now.to_i
+          end
+        end
+
       end
 
       describe "#update!(attributes)" do
@@ -664,7 +694,7 @@ module Prequel
       end
 
       describe "#wire_representation" do
-        it "returns all field values that are on the #read_whitelist and not on the black list, with stringified keys" do
+        it "returns all field values (including synthetic) that are on the #read_whitelist and not on the black list, with stringified keys" do
           blog = Blog.new(:title => "My Blog")
           blog.wire_representation.should == {
             'id' => nil,
@@ -682,6 +712,16 @@ module Prequel
           blog.wire_representation.should == {
             'id' => nil
           }
+        end
+
+        it "converts all datetime fields (including synthetic) to epoch milliseconds" do
+          pending
+          freeze_time
+
+          Blog.column(:created_at, :datetime)
+          blog = Blog.new
+          blog.created_at = Time.now
+          blog.wire_representation['created_at'].should == Time.now.to_millis
         end
       end
     end

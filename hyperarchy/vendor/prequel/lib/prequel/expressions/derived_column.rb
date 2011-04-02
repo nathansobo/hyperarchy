@@ -4,7 +4,7 @@ module Prequel
       extend EqualityDerivation
 
       attr_reader :relation, :expression, :alias_name
-      delegate :origin, :qualified_name, :wire_representation, :resolve_in_relations, :to => :expression
+      delegate :origin, :qualified_name, :wire_representation, :resolve_in_relations, :normalize_field_value, :to => :expression
 
       def initialize(relation, expression, alias_name)
         @relation, @expression, @alias_name = relation, expression, alias_name

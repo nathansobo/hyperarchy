@@ -1,14 +1,14 @@
 module Prequel
   class Field
     attr_reader :tuple, :column, :value, :clean_value
-    delegate :name, :to => :column
+    delegate :name, :type, :to => :column
 
     def initialize(tuple, column)
       @tuple, @column = tuple, column
     end
 
     def value=(value)
-      @value = value
+      @value = column.normalize_field_value(value)
       @dirty = (value != clean_value)
     end
 

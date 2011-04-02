@@ -131,4 +131,12 @@ module Prequel
 
     String.send(:include, self)
   end
+
+  module TimeExtensions
+    def to_millis
+      to_i * 1000
+    end
+
+    Time.send(:include, self)
+  end
 end

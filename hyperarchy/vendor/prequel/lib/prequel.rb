@@ -70,5 +70,6 @@ module Prequel
   autoload :Session
   autoload :SubscriptionNode
   autoload :Sql
+  autoload :SyntheticField
   autoload :Tuple
 end
