@@ -115,4 +115,20 @@ module Prequel
 
     NilClass.send(:include, self)
   end
+
+  module IntegerExtensions
+    def to_predicate
+      {:id => self}.to_predicate
+    end
+
+    Integer.send(:include, self)
+  end
+
+  module StringExtensions
+    def to_predicate
+      {:id => Integer(self)}.to_predicate
+    end
+
+    String.send(:include, self)
+  end
 end

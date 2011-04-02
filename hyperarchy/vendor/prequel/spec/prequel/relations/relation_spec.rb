@@ -40,6 +40,12 @@ module Prequel
           Blog.find(99).should be_nil
         end
 
+        it "when passed a string that represents an integer, returns the record with that id or nil if it is not found" do
+          Blog.find('1').title.should == "Blog 1"
+          Blog.find('2').title.should == "Blog 2"
+          Blog.find('99').should be_nil
+        end
+
         it "when passed a hash, returns the record matching the corresponding predicate" do
           Blog.find(:title => "Blog 2").should == Blog.find(2)
         end
