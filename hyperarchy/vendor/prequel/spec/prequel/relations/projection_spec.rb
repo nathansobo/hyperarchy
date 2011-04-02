@@ -41,13 +41,23 @@ module Prequel
       end
 
       describe "#get_column" do
-        it "returns a derived column on the projection by name or qualified name" do
-          projection = Blog.join(Post, Blog[:id] => :blog_id).project(Post)
+        let :projection do
+          Blog.join(Post, Blog[:id] => :blog_id).project(Post)
+        end
 
-          derived_column = projection.get_column(:id)
-          derived_column.origin.should == Post.get_column(:id)
-          projection.get_column(Post[:id]).should == derived_column
-          projection.get_column(Blog[:id]).should be_nil
+        context "when passed a bare name" do
+          it "returns a derived column on the projection with that name or nil" do
+            derived_column = projection.get_column(:id)
+            derived_column.origin.should == Post.get_column(:id)
+            projection.get_column(:junk).should be_nil
+          end
+        end
+
+        context "when passed a qualified name" do
+          it "only returns a column if the qualifier matches the name of the projected table" do
+            projection.get_column(Post[:id]).origin.should == Post.get_column(:id)
+            projection.get_column(Blog[:id]).should be_nil
+          end
         end
       end
 
