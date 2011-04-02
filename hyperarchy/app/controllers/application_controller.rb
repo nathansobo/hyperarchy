@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   end
 
   def manage_session
-    Prequel.session.current_user = current_user
+    Prequel.session.current_user = current_user if current_user
     yield
   ensure
     Prequel.clear_session
@@ -37,11 +37,11 @@ class ApplicationController < ActionController::Base
     current_user_id ? User.find(current_user_id) : nil
   end
 
-  def render_success_json(data=nil, dataset=nil)
+  def render_success_json(data=nil, dataset=[])
     render :json => {
       :successful => true,
       :data => data,
-      :dataset => build_client_dataset(dataset)
+      :dataset => build_client_dataset(*dataset)
     }
   end
 

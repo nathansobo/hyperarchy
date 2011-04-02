@@ -7,13 +7,17 @@ RSpec.configure do |config|
   config.include ControllerSpecMethods, :type => :controller
 
   config.before do
+    Prequel.test_mode = true
     Prequel.clear_tables
-    Prequel.clear_session
     Mailer.reset
     Sham.reset
 
     Organization.make(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
     User.make(:first_name => "Guest", :last_name => "User", :guest => true)
+  end
+
+  config.after do
+    Prequel.clear_session_in_test_mode
   end
 
   # TODO: Why doesn't a block taking a block work with RR?
