@@ -85,11 +85,16 @@ module Prequel
     end
 
     def set_field_value(name, value, mark_clean=false)
-      unless field = get_field(name)
-        raise "No field found #{name.inspect}"
+      if field = get_field(name)
+        field.value = value
+        field.mark_clean if mark_clean
+      else
+        if get_field("#{name}_id")
+          set_field_value("#{name}_id", value.try(:id))
+        else
+          raise "No field found #{name.inspect}"
+        end
       end
-      field.value = value
-      field.mark_clean if mark_clean
     end
   end
 end

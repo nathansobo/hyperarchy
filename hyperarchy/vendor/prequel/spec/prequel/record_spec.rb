@@ -563,6 +563,29 @@ module Prequel
           }
         end
 
+        describe "assigning a record corresponding to a foreign key" do
+          attr_reader :post
+          before do
+            class ::Post < Prequel::Record
+              column :id, :integer
+              column :blog_id, :integer
+
+              create_table
+            end
+
+            @post = Post.create!
+          end
+
+          it "assigns the foreign key based on the given model" do
+            blog = Blog.create!
+            post.update(:blog => blog)
+            post.blog_id.should == blog.id
+
+            post.update(:blog => nil)
+            post.blog_id.should be_nil
+          end
+        end
+
         describe "datetime conversion" do
           attr_reader :post
           before do
@@ -572,8 +595,9 @@ module Prequel
               synthetic_column :party_time, :datetime
 
               attr_accessor :party_time
+
+              create_table
             end
-            Post.create_table
             @post = Post.create!
             freeze_time
           end
