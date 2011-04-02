@@ -563,6 +563,15 @@ module Prequel
           }
         end
 
+        it "will assign to writer methods if no field or synthetic field is defined" do
+          class ::Blog
+            attr_accessor :normal_attribute
+          end
+
+          blog.update(:normal_attribute => "foo")
+          blog.normal_attribute.should == 'foo'
+        end
+
         describe "assigning a record corresponding to a foreign key" do
           attr_reader :post
           before do

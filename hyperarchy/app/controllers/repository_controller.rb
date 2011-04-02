@@ -13,6 +13,6 @@ class RepositoryController < ApplicationController
   end
 
   def exposed_repository
-    @exposed_repository ||= ExposedRepository.new(current_user)
+    @exposed_repository ||= Sandbox.new(current_user)
   end
 end

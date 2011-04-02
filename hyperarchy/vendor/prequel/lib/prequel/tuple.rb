@@ -91,6 +91,8 @@ module Prequel
       else
         if get_field("#{name}_id")
           set_field_value("#{name}_id", value.try(:id))
+        elsif respond_to?("#{name}=")
+          send("#{name}=", value)
         else
           raise "No field found #{name.inspect}"
         end

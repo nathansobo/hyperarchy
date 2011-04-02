@@ -1,4 +1,7 @@
 todo:
+get monarch client fetching from the sandbox... add a sandbox controller. get /sandbox?relations= should be the url
+
+
 re-enable the connecting of the real time client and the disconnect dialog (disconect_dialog.js line 14)
 
 

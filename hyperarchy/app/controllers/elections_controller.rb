@@ -1,6 +1,7 @@
 class ElectionsController < ApplicationController
+  before_filter :authentication_required
+
   def index
-    raise SecurityError unless current_user
     organization = Organization.find(params[:organization_id])
     raise SecurityError unless organization.current_user_can_read?
 

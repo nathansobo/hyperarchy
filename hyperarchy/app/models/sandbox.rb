@@ -1,4 +1,4 @@
-class ExposedRepository < Prequel::Sandbox
+class Sandbox < Prequel::Sandbox
   attr_reader :user
   def initialize(user)
     @user = user

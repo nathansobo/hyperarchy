@@ -37,6 +37,10 @@ class ApplicationController < ActionController::Base
     current_user_id ? User.find(current_user_id) : nil
   end
 
+  def authentication_required
+    raise SecurityError unless current_user
+  end
+
   def render_success_json(data=nil, dataset=[])
     render :json => {
       :successful => true,

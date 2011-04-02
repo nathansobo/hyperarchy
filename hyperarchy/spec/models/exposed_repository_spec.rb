@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ExposedRepository do
+describe Sandbox do
 
   attr_reader :election, :repository, :user_1, :user_2, :candidate_1, :candidate_2
 
@@ -15,7 +15,7 @@ describe ExposedRepository do
     @candidate_1 = election.candidates.make(:creator => user_1)
     @candidate_2 = election.candidates.make(:creator => user_2)
 
-    @repository = ExposedRepository.new(current_user)
+    @repository = Sandbox.new(current_user)
   end
 
   it "correctly interprets a join from candidates on a given election to their users" do
