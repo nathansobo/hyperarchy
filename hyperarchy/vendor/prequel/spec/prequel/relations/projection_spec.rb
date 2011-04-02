@@ -47,6 +47,7 @@ module Prequel
           derived_column = projection.get_column(:id)
           derived_column.origin.should == Post.get_column(:id)
           projection.get_column(Post[:id]).should == derived_column
+          projection.get_column(Blog[:id]).should be_nil
         end
       end
 
@@ -277,6 +278,18 @@ module Prequel
             :operand => projection.operand.wire_representation,
             :projected_table => "posts"
           }
+        end
+      end
+
+      describe "join column inference" do
+        it "is able to infer projected columns as join columns" do
+          Post.column(:comment_count, :integer)
+          projection = Comment.group_by(:post_id).project(:post_id, :id.count.as(:num_comments))
+
+          join = Post.join(projection)
+
+          join.predicate.left.should == Post.get_column(:id)
+          join.predicate.right.should == projection.get_column(:post_id)
         end
       end
     end

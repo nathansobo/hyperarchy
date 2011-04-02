@@ -11,11 +11,12 @@ module Prequel
       end
 
       def get_column(name)
-        if name.to_s.include?("__")
-          super
-        else
-          derived_columns_by_name[name]
+        if name =~ /(.+)__(.+)/
+          qualifier = $1.to_sym
+          return if projected_table && projected_table.name != qualifier
+          name = $2.to_sym
         end
+        derived_columns_by_name[name]
       end
 
       def columns
