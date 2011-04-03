@@ -5,6 +5,11 @@ class SandboxController < ApplicationController
     render :json => sandbox.fetch(JSON.parse(params[:relations]))
   end
 
+  def create
+    status, response = sandbox.create(params[:relation], params[:field_values])
+    render :status => status, :json => response.to_json
+  end
+
   protected
 
   def sandbox

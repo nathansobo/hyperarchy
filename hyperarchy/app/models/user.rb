@@ -131,7 +131,7 @@ class User < Prequel::Record
     errors.add(:first_name, "You must enter a first name.") if first_name.blank?
     errors.add(:last_name, "You must enter a last name.") if last_name.blank?
     errors.add(:email_address, "You must enter an email address.") if email_address.blank?
-    errors.add(:encrypted_password, "You must enter a password.") if encrypted_password.blank?
+    errors.add(:password, "You must enter a password.") if encrypted_password.blank?
   end
 
   def default_organization
