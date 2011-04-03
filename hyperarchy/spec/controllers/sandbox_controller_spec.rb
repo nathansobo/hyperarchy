@@ -1,13 +1,13 @@
 require 'spec_helper'
 
 describe SandboxController do
-  attr_reader :organization, :other_organization, :election
+  attr_reader :organization, :other_organization, :election, :user
 
   before do
     @organization = Organization.make(:privacy => 'public')
     @other_organization = Organization.make(:privacy => 'private')
     @election = organization.elections.make
-    login_as make_member(organization)
+    @user = login_as make_member(organization)
   end
 
   describe "#fetch" do
@@ -30,7 +30,7 @@ describe SandboxController do
     end
 
     context "when creating an illegal record" do
-      it "returns an error" do
+      it "returns '403 forbidden'" do
         Election.count.should == 1
         post :create, :relation => "elections", :field_values => Election.plan(:organization => other_organization)
         Election.count.should == 1
@@ -54,6 +54,39 @@ describe SandboxController do
       it "returns a 404 not found" do
         post :create, :relation => "junk"
         response.should be_not_found
+      end
+    end
+  end
+
+  describe "#update" do
+    describe "when performing a legal update" do
+      it "updates the record and returns its new wire representation" do
+        put :update, :relation => "elections", :id => election.to_param, :field_values => { :body => "New body" }
+        response.should be_success
+        json = JSON.parse(response.body)
+        json.should == election.wire_representation
+        election.body.should == "New body"
+      end
+    end
+
+    describe "when performing an invalid update" do
+      it "returns '422 unprocessable entity'" do
+        put :update, :relation => "users", :id => user.to_param, :field_values => { :first_name => "" }
+        response.status.should == 422
+      end
+    end
+
+    describe "when performing an update against a relation that does not exist" do
+      it "returns '404 not found'" do
+        put :update, :relation => "junk", :id => '1', :field_values => { :body => "New body" }
+        response.status.should == 404
+      end
+    end
+
+    describe "when performing an update against a record that is not in the relation" do
+      it "returns '404 not found'" do
+        put :update, :relation => "elections", :id => '909', :field_values => { :body => "New body" }
+        response.status.should == 404
       end
     end
   end

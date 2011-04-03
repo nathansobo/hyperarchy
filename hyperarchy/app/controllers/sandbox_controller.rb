@@ -10,6 +10,11 @@ class SandboxController < ApplicationController
     render :status => status, :json => response.to_json
   end
 
+  def update
+    status, response = sandbox.update(params[:relation], params[:id], params[:field_values])
+    render :status => status, :json => response.to_json
+  end
+
   protected
 
   def sandbox
