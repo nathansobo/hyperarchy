@@ -2,7 +2,7 @@ class SandboxController < ApplicationController
   before_filter :authentication_required
 
   def fetch
-    render :json => sandbox.fetch(JSON.parse(params[:relations]))
+    render :json => sandbox.fetch(*JSON.parse(params[:relations]))
   end
 
   def create

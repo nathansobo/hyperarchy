@@ -12,7 +12,7 @@ describe SandboxController do
 
   describe "#fetch" do
     it "calls #fetch on the sandbox object with the given relations, parsed from json and returns the result as json" do
-      get :fetch, :relations => Election.wire_representation.to_json
+      get :fetch, :relations => [Election.wire_representation].to_json
       JSON.parse(response.body)['elections'][election.to_param].should == election.wire_representation
     end
   end
