@@ -24,7 +24,7 @@ _.constructor("Monarch.Http.Server", {
   },
 
   fetch: function(relations) {
-    return this.get(Repository.originUrl + "/fetch", {
+    return this.get(Repository.originUrl, {
       relations: _.map(relations, function(relation) {
         return relation.wireRepresentation();
       })
