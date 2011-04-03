@@ -20,5 +20,5 @@
 //= require "controllers"
 //= require "routes"
 
-Repository.originUrl = "/repository";
+Repository.originUrl = "/sandbox";
 //window.debugEvents = true;
