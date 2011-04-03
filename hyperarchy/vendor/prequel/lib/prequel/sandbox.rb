@@ -23,13 +23,17 @@ module Prequel
       response = nil
       Prequel.transaction do
         relation = get_relation(relation_name)
+        unless relation
+          response = [404, "Relation #{relation_name} not found."]
+          raise Prequel::Rollback
+        end
         record = relation.new(field_values)
         if record.save
           if relation.find(record.id)
             response = [200, record.wire_representation]
           else
             response = [403, "Create operation forbidden."]
-            raise Sequel::Rollback
+            raise Prequel::Rollback
           end
         else
           response = [422, record.errors]
@@ -78,7 +82,9 @@ module Prequel
     end
 
     def get_relation(name)
-      instance_eval(&exposed_relation_definitions[name])
+      if definition = exposed_relation_definitions[name]
+        instance_eval(&definition)
+      end
     end
 
     def evaluate(wire_rep)

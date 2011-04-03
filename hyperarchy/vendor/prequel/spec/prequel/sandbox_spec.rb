@@ -177,6 +177,13 @@ module Prequel
             }
           end
         end
+
+        context "when the relation does not exist" do
+          it "returns a '404 not found'" do
+            status, response = sandbox.create('garbage', { 'junk' => 'tastic'})
+            status.should == 404
+          end
+        end
       end
 
       describe "#update(relation_name, id, field_values)" do
