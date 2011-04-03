@@ -21,7 +21,7 @@ Screw.Unit(function(c) { with(c) {
         server.request = FakeServer.prototype.request;
         server.addRequest = FakeServer.prototype.addRequest;
         server.removeRequest = FakeServer.prototype.removeRequest;
-        Repository.originUrl = "/repository"
+        Repository.sandboxUrl = "/sandbox"
       });
 
       describe("#fetch(relations)", function() {
@@ -34,11 +34,11 @@ Screw.Unit(function(c) { with(c) {
         });
 
 
-        it("performs a GET to {Repository.originUrl}/fetch with the json to fetch the given relations, then merges the results into the Repository with the delta events sandwiched by beforeEvents and afterEvents callback triggers on the returned future", function() {
+        it("performs a GET to {Repository.sandboxUrl}/fetch with the json to fetch the given relations, then merges the results into the Repository with the delta events sandwiched by beforeEvents and afterEvents callback triggers on the returned future", function() {
           var future = server.fetch([Blog.table, User.table]);
 
           expect(server.gets).to(haveLength, 1);
-          expect(server.lastGet.url).to(eq, "/repository/fetch");
+          expect(server.lastGet.url).to(eq, "/sandbox");
           expect(server.lastGet.data).to(equal, {
             relations: [Blog.table.wireRepresentation(), User.table.wireRepresentation()]
           });
@@ -114,7 +114,7 @@ Screw.Unit(function(c) { with(c) {
 
           expect(server.posts.length).to(eq, 1);
           expect(server.lastPost.type).to(eq, "post");
-          expect(server.lastPost.url).to(eq, Repository.originUrl + "/subscribe");
+          expect(server.lastPost.url).to(eq, Repository.sandboxUrl + "/subscribe");
           expect(server.lastPost.data).to(equal, {
             real_time_client_id: "sample-id",
             relations: [Blog.table.wireRepresentation(), BlogPost.table.wireRepresentation()]
@@ -166,7 +166,7 @@ Screw.Unit(function(c) { with(c) {
       describe("#unsubscribe(remoteSubscriptions)", function() {
         useExampleDomainModel();
         
-        it("performs a POST to {Repository.originUrl/unsubscribe with the ids of the given RemoteSubscriptions", function() {
+        it("performs a POST to {Repository.sandboxUrl/unsubscribe with the ids of the given RemoteSubscriptions", function() {
           var remoteSubscription1 = new Monarch.Http.RemoteSubscription("fakeSubscription1", Blog.table);
           var remoteSubscription2 = new Monarch.Http.RemoteSubscription("fakeSubscription2", BlogPost.table);
 
@@ -175,7 +175,7 @@ Screw.Unit(function(c) { with(c) {
           server.unsubscribe([remoteSubscription1, remoteSubscription2]);
           expect(server.posts.length).to(eq, 1);
           expect(server.lastPost.type).to(eq, "post");
-          expect(server.lastPost.url).to(eq, Repository.originUrl + "/unsubscribe");
+          expect(server.lastPost.url).to(eq, Repository.sandboxUrl + "/unsubscribe");
           expect(server.lastPost.data).to(equal, {
             real_time_client_id: "sample-id",
             subscription_ids: [remoteSubscription1.id, remoteSubscription2.id]
@@ -205,11 +205,11 @@ Screw.Unit(function(c) { with(c) {
             record.afterRemoteCreate = mockFunction("optional after create hook");
           });
 
-          it("sends a create command to {Repository.originUrl}/mutate", function() {
+          it("sends a create command to {Repository.sandboxUrl}/mutate", function() {
             server.create(record);
 
             expect(server.posts.length).to(eq, 1);
-            expect(server.lastPost.url).to(eq, "/repository/mutate");
+            expect(server.lastPost.url).to(eq, "/sandbox/mutate");
             expect(server.lastPost.data).to(equal, {
               operations: [['create', 'users', record.dirtyWireRepresentation()]]
             });
@@ -300,12 +300,12 @@ Screw.Unit(function(c) { with(c) {
             record.afterRemoteUpdate = mockFunction("optional record on update method");
           });
 
-          it("sends an update command to {Repository.originUrl}/mutate", function() {
+          it("sends an update command to {Repository.sandboxUrl}/mutate", function() {
             record.name("Bad Bad Children");
             server.update(record);
 
             expect(server.posts.length).to(eq, 1);
-            expect(server.lastPost.url).to(eq, "/repository/mutate");
+            expect(server.lastPost.url).to(eq, "/sandbox/mutate");
             expect(server.lastPost.data).to(equal, {
               operations: [['update', 'blogs', 'recipes', record.dirtyWireRepresentation()]]
             });
@@ -450,7 +450,7 @@ Screw.Unit(function(c) { with(c) {
                 expect(record.localVersion).to(eq, 1);
 
                 expect(server.posts.length).to(eq, 1);
-                expect(server.lastPost.url).to(eq, "/repository/mutate");
+                expect(server.lastPost.url).to(eq, "/sandbox/mutate");
                 expect(server.lastPost.data).to(equal, {
                   operations: [['update', 'blogs', 'recipes', { name: "Bad Bad Children", user_id: "funda" }]]
                 });
@@ -487,7 +487,7 @@ Screw.Unit(function(c) { with(c) {
                 expect(record.localVersion).to(eq, 2);
 
                 expect(server.posts.length).to(eq, 1);
-                expect(server.lastPost.url).to(eq, "/repository/mutate");
+                expect(server.lastPost.url).to(eq, "/sandbox/mutate");
                 expect(server.lastPost.data).to(equal, {
                   operations: [['update', 'blogs', 'recipes', { name: "Bratty Argentine Children" }]]
                 });
@@ -508,11 +508,11 @@ Screw.Unit(function(c) { with(c) {
             record.afterRemoteDestroy = mockFunction("optional afterRemoteDestroy method");
           });
 
-          it("sends a destroy command to {Repository.originUrl}/mutate", function() {
+          it("sends a destroy command to {Repository.sandboxUrl}/mutate", function() {
             server.destroy(record);
 
             expect(server.posts.length).to(eq, 1);
-            expect(server.lastPost.url).to(eq, "/repository/mutate");
+            expect(server.lastPost.url).to(eq, "/sandbox/mutate");
             expect(server.lastPost.data).to(equal, {
               operations: [['destroy', 'blogs', 'recipes']]
             });

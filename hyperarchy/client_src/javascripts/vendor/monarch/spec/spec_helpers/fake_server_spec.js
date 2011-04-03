@@ -6,7 +6,7 @@ Screw.Unit(function(c) { with(c) {
 
     var fakeServer;
     before(function() {
-      Repository.originUrl = "/users/bob/sandbox"
+      Repository.sandboxUrl = "/users/bob/sandbox"
       fakeServer = new FakeServer(false);
       fakeServer.Repository.loadFixtures({
         users: {

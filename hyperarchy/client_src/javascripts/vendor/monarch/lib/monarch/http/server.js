@@ -24,7 +24,7 @@ _.constructor("Monarch.Http.Server", {
   },
 
   fetch: function(relations) {
-    return this.get(Repository.originUrl, {
+    return this.get(Repository.sandboxUrl, {
       relations: _.map(relations, function(relation) {
         return relation.wireRepresentation();
       })
@@ -34,7 +34,7 @@ _.constructor("Monarch.Http.Server", {
   subscribe: function(relations) {
     var subscribeFuture = new Monarch.Http.AjaxFuture();
 
-    this.post(Repository.originUrl + "/subscribe", {
+    this.post(Repository.sandboxUrl + "/subscribe", {
       real_time_client_id: this.realTimeClientId(),
       relations: _.map(relations, function(relation) {
         if (relation.isA(Monarch.Model.Record)) {
@@ -53,7 +53,7 @@ _.constructor("Monarch.Http.Server", {
   },
 
   unsubscribe: function(remoteSubscriptions) {
-    return this.post(Repository.originUrl + "/unsubscribe", {
+    return this.post(Repository.sandboxUrl + "/unsubscribe", {
       real_time_client_id: this.realTimeClientId(),
       subscription_ids: _.map(remoteSubscriptions, function(remoteSubscription) {
         return remoteSubscription.id;

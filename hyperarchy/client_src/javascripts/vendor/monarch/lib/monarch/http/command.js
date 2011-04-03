@@ -8,7 +8,7 @@ _.constructor("Monarch.Http.Command", {
   },
 
   perform: function() {
-    this.server.post(Repository.originUrl + "/mutate", { operations: [this.wireRepresentation()] })
+    this.server.post(Repository.sandboxUrl + "/mutate", { operations: [this.wireRepresentation()] })
       .onSuccess(this.hitch('handleSuccessfulResponse'))
       .onFailure(this.hitch('handleUnsuccessfulResponse'))
     return this.future;

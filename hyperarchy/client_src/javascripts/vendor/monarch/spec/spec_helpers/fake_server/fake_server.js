@@ -19,7 +19,7 @@ _.constructor("FakeServer", Monarch.Http.Server, {
   },
 
   fetch: function(relations) {
-    var fakeFetch = new FakeServer.FakeFetch(Repository.originUrl, relations, this);
+    var fakeFetch = new FakeServer.FakeFetch(Repository.sandboxUrl, relations, this);
     if (this.auto) {
       fakeFetch.simulateSuccess();
     } else {
@@ -37,7 +37,7 @@ _.constructor("FakeServer", Monarch.Http.Server, {
   },
 
   subscribe: function(relations) {
-    var fakeSubscribe = new FakeServer.FakeSubscribe(Repository.originUrl, relations, this);
+    var fakeSubscribe = new FakeServer.FakeSubscribe(Repository.sandboxUrl, relations, this);
 
     if (this.auto) {
       fakeSubscribe.simulateSuccess();
@@ -49,7 +49,7 @@ _.constructor("FakeServer", Monarch.Http.Server, {
   },
 
   unsubscribe: function(remoteSubscriptions) {
-    var fakeUnsubscribe = new FakeServer.FakeUnsubscribe(Repository.originUrl, remoteSubscriptions, this);
+    var fakeUnsubscribe = new FakeServer.FakeUnsubscribe(Repository.sandboxUrl, remoteSubscriptions, this);
 
     if (this.auto) {
       fakeUnsubscribe.simulateSuccess();
@@ -62,7 +62,7 @@ _.constructor("FakeServer", Monarch.Http.Server, {
 
   performCommand: function(command) {
     Repository.pauseMutations();
-    var fakeMutation = new FakeServer.FakeMutation(Repository.originUrl, command, this);
+    var fakeMutation = new FakeServer.FakeMutation(Repository.sandboxUrl, command, this);
     return fakeMutation.perform().onComplete(Repository.hitch('resumeMutations'));
   },
 
