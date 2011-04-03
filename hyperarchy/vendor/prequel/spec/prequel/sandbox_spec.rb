@@ -276,6 +276,13 @@ module Prequel
             Blog.find(other_blog.id).should_not be_nil
           end
         end
+
+        context "when the specified relation does not exist" do
+          it "returns '404 not found'" do
+            status = sandbox.destroy('junk', 44)
+            status.should == 404
+          end
+        end
       end
     end
   end

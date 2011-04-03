@@ -71,7 +71,9 @@ module Prequel
     end
 
     def destroy(relation_name, id)
-      record = get_relation(relation_name).find(id)
+      relation = get_relation(relation_name)
+      return 404 unless relation
+      record = relation.find(id)
       return 404 unless record
       record.destroy
       200
