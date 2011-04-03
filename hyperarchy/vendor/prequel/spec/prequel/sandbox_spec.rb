@@ -258,7 +258,7 @@ module Prequel
 
         context "when a record with the given id is a member of the exposed relation" do
           it "destroys the record and returns '200 ok'" do
-            status = sandbox.destroy('blogs', blog.id)
+            status, response = sandbox.destroy('blogs', blog.id)
             status.should == 200
             Blog.find(blog.id).should be_nil
           end
@@ -271,7 +271,7 @@ module Prequel
           end
 
           it "returns '404 not found' and does not destroy the record" do
-            status = sandbox.destroy('blogs', other_blog.id)
+            status, response = sandbox.destroy('blogs', other_blog.id)
             status.should == 404
             Blog.find(other_blog.id).should_not be_nil
           end
@@ -279,7 +279,7 @@ module Prequel
 
         context "when the specified relation does not exist" do
           it "returns '404 not found'" do
-            status = sandbox.destroy('junk', 44)
+            status, response = sandbox.destroy('junk', 44)
             status.should == 404
           end
         end
