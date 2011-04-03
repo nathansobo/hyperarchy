@@ -16,7 +16,7 @@ module Prequel
         lathe.assigned_attributes.each_pair do |attribute, value|
           if has_association?(lathe.object, attribute)
             if lathe.object.respond_to?("#{attribute}_id=".to_sym)
-              attributes["#{attributes}_id".to_sym] = value.id
+              attributes["#{attribute}_id".to_sym] = value.id
             end
           else
             attributes[attribute] = value
