@@ -90,4 +90,28 @@ describe SandboxController do
       end
     end
   end
+
+  describe "#destroy" do
+    describe "when destroying a record that exists" do
+      it "destroys the record and returns 200 ok" do
+        delete :destroy, :relation => "elections", :id => election.to_param
+        response.should be_success
+        Election.find(election.id).should be_nil
+      end
+    end
+
+    describe "when destroying a record that doesn't exist" do
+      it "returns '404 not found'" do
+        delete :destroy, :relation => "elections", :id => '909'
+        response.status.should == 404
+      end
+    end
+
+    describe "when the specified relation does not exist" do
+      it "returns '404 not found'" do
+        delete :destroy, :relation => "junk", :id => '909'
+        response.status.should == 404
+      end
+    end
+  end
 end

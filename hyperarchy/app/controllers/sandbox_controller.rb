@@ -15,6 +15,11 @@ class SandboxController < ApplicationController
     render :status => status, :json => response.to_json
   end
 
+  def destroy
+    status, response = sandbox.destroy(params[:relation], params[:id])
+    render :status => status, :json => response
+  end
+
   protected
 
   def sandbox
