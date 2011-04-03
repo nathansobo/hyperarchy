@@ -49,5 +49,12 @@ describe SandboxController do
         json['password'].should_not be_empty
       end
     end
+
+    context "when creating in a non-existent relation" do
+      it "returns a 404 not found" do
+        post :create, :relation => "junk"
+        response.should be_not_found
+      end
+    end
   end
 end
