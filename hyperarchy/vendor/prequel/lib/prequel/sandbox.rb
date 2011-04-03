@@ -46,6 +46,10 @@ module Prequel
       response = nil
       Prequel.transaction do
         relation = get_relation(relation_name)
+        unless relation
+          response = [404, "No relation named #{relation_name} found"]
+          raise Prequel::Rollback
+        end
         record = relation.find(id)
         unless record
           response = [404, "No record with id #{id} found in #{relation_name}"]

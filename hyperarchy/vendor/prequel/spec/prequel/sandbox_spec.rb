@@ -239,6 +239,13 @@ module Prequel
               status.should == 403
             end
           end
+
+          context "when the relation does not exist" do
+            it "returns '404 not found'" do
+              status, response = sandbox.update('junk', blog.id, { 'user_id' => 90, 'title' => "New Title" })
+              status.should == 404
+            end
+          end
         end
       end
 
