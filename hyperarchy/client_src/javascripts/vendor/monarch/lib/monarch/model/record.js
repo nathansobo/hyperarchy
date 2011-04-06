@@ -4,7 +4,8 @@
       this.delegateConstructorMethods('find', 'fetch', 'findOrFetch', 'tuples', 'first', 'each', 'onEach', 'map', 'any',
                                       'onInsert', 'onUpdate', 'onRemove', 'onDirty', 'onClean', 'onInvalid', 'defaultOrderBy',
                                       'onValid', 'where', 'offset', 'contains', 'orderBy', 'project', 'union', 'difference',
-                                      'empty', 'build', 'create', 'createFromRemote', 'fixture', 'clear', 'table');
+                                      'empty', 'build', 'create', 'createFromRemote', 'fixture', 'clear', 'wireRepresentation',
+                                      'table');
     },
 
     inherited: function(subconstructor) {

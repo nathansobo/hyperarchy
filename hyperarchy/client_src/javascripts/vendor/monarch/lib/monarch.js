@@ -21,6 +21,7 @@
 //= require "monarch/view"
 //= require "monarch/http"
 //= require "monarch/model"
+//= require "monarch/promise"
 
 Server = new Monarch.Http.Server();
 Repository = new Monarch.Model.Repository();
