@@ -24,7 +24,27 @@ _.constructor("Monarch.Http.Server", {
     });
 
     return promise;
+  },
+
+  create: function(record) {
+    var promise = new Monarch.Promise();
+
+    jQuery.ajax({
+      url: this.sandboxUrl + '/' + record.table.globalName,
+      type: 'post',
+      data: { field_values: record.wireRepresentation() },
+      success: function(fieldValues) {
+        record.remotelyCreated(fieldValues);
+        promise.triggerSuccess(record);
+      },
+      error: function(jqXhr, textStatus, errorThrown) {
+      }
+    });
+
+    return promise;
   }
+
+
 });
 
 })(Monarch, jQuery);
