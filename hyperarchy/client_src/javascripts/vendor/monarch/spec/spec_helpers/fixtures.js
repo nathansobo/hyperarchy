@@ -48,10 +48,6 @@ Screw.Unit(function(c) {
           }
         });
       });
-
-      c.after(function() {
-        Repository.clear();
-      });
     });
   };
 });

@@ -72,10 +72,24 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#create", function() {
-      var record;
+      var record, insertCallback, createCallback, successCallback, invalidCallback;
 
       before(function() {
         record = User.build({ fullName: "Jesus Chang", age: 22, signedUpAt: 1302070303036 });
+
+        var expectUserInRepository = function() {
+          expect(User.find(22)).to(eq, record);
+        }
+
+        insertCallback = mockFunction('insertCallback', expectUserInRepository);
+        createCallback = mockFunction('createCallback', expectUserInRepository);
+        successCallback = mockFunction('successCallback', expectUserInRepository);
+        invalidCallback = mockFunction('invalidCallback', function() {
+          expect(User.find(22)).to(beNull);
+        });
+
+        User.onInsert(insertCallback);
+        record.onCreate(createCallback);
       });
       
       it("sends a POST request to the sandbox url corresponding to the given record's table with its field values", function() {
@@ -108,20 +122,6 @@ Screw.Unit(function(c) { with(c) {
 
         it("fires insert/create callbacks on the table/record, and success callbacks registered on the returned promise", function() {
           var promise = server.create(record);
-
-          var insertCallback = mockFunction('insertCallback', function() {
-            expect(User.find(22)).to(eq, record);
-          });
-          User.onInsert(insertCallback);
-
-          var createCallback = mockFunction('createCallback', function() {
-            expect(User.find(22)).to(eq, record);
-          });
-          record.onCreate(createCallback);
-
-          var successCallback = mockFunction('successCallback', function() {
-            expect(User.find(22)).to(eq, record);
-          });
           promise.onSuccess(successCallback);
 
           requests[0].success({ id: 22 });
@@ -131,10 +131,51 @@ Screw.Unit(function(c) { with(c) {
           expect(createCallback).to(haveBeenCalled);
           expect(successCallback).to(haveBeenCalled, withArgs(record));
         });
+
+        it("pauses all other events on the repository until the create request is completed and its callbacks are fired", function() {
+          var otherCallback = mockFunction('otherCallback', function() {
+            expect(insertCallback).to(haveBeenCalled);
+            expect(createCallback).to(haveBeenCalled);
+            expect(successCallback).to(haveBeenCalled);
+          });
+          Blog.onInsert(otherCallback);
+
+          var promise = server.create(record);
+          promise.onSuccess(successCallback);
+
+          expect(Repository.mutationsPaused).to(beTrue);
+          Repository.mutate([['create', 'blogs', { id: 1}]]);
+          expect(otherCallback).toNot(haveBeenCalled);
+
+          requests[0].success({ id: 22 });
+
+          expect(Repository.mutationsPaused).to(beFalse);
+
+          expect(otherCallback).to(haveBeenCalled);
+        });
       });
 
       context("when the creation results in a validation error", function() {
+        it("assigns validation errors to the record, fires onInvalid handlers, and resumes mutations", function() {
+          var promise = server.create(record);
+          promise.onInvalid(invalidCallback);
 
+          var validationErrors = {
+            full_name: ["This name is very unlikely"],
+            age: ["Much too young", "Must be a baby-boomer"]
+          };
+
+          requests[0].error({
+            status: 422,
+            responseText: JSON.stringify(validationErrors)
+          });
+
+          expect(invalidCallback).to(haveBeenCalled, withArgs(record));
+          expect(record.isRemotelyCreated).to(beFalse);
+          expect(record.valid()).to(beFalse);
+
+          expect(Repository.mutationsPaused).to(beFalse);
+        });
       });
 
       context("when the creation results in an error not pertaining to validation", function() {

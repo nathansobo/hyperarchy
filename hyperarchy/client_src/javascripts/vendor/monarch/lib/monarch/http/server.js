@@ -29,6 +29,8 @@ _.constructor("Monarch.Http.Server", {
   create: function(record) {
     var promise = new Monarch.Promise();
 
+    Repository.pauseMutations();
+
     jQuery.ajax({
       url: this.sandboxUrl + '/' + record.table.globalName,
       type: 'post',
@@ -36,8 +38,14 @@ _.constructor("Monarch.Http.Server", {
       success: function(fieldValues) {
         record.remotelyCreated(fieldValues);
         promise.triggerSuccess(record);
+        Repository.resumeMutations();
       },
       error: function(jqXhr, textStatus, errorThrown) {
+        if (jqXhr.status === 422) {
+          record.assignValidationErrors(JSON.parse(jqXhr.responseText));
+          promise.triggerInvalid(record);
+        }
+        Repository.resumeMutations();
       }
     });
 

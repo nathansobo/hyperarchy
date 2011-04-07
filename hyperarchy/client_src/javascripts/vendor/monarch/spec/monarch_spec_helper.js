@@ -9,4 +9,8 @@ Screw.Unit(function(c) {
     c.useFakeServer();
     window.COMET_CLIENT_ID = "fake-comet-client-id-from-monarch-spec-helper";
   });
+
+  c.after(function() {
+    Repository.clear();
+  });
 });
