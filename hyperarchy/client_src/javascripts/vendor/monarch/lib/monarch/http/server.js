@@ -28,7 +28,6 @@ _.constructor("Monarch.Http.Server", {
 
   create: function(record) {
     var promise = new Monarch.Promise();
-
     Repository.pauseMutations();
 
     jQuery.ajax({
@@ -52,8 +51,34 @@ _.constructor("Monarch.Http.Server", {
     });
 
     return promise;
-  }
+  },
 
+  update: function(record) {
+    var promise = new Monarch.Promise();
+    Repository.pauseMutations();
+
+    jQuery.ajax({
+      url: this.sandboxUrl + '/' + record.table.globalName + '/' + record.id(),
+      type: 'put',
+      data: { field_values: record.dirtyWireRepresentation() },
+      success: function(fieldValues) {
+        var changeset = record.remotelyUpdated(fieldValues);
+        promise.triggerSuccess(record, changeset);
+        Repository.resumeMutations();
+      },
+      error: function(jqXhr, textStatus, errorThrown) {
+//        if (jqXhr.status === 422) {
+//          record.assignValidationErrors(JSON.parse(jqXhr.responseText));
+//          promise.triggerInvalid(record);
+//        } else {
+//          promise.triggerError(jqXhr, textStatus, errorThrown);
+//        }
+//        Repository.resumeMutations();
+      }
+    });
+
+    return promise;
+  }
 
 });
 

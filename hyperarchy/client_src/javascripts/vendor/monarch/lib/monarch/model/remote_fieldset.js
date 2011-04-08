@@ -24,6 +24,7 @@ _.constructor("Monarch.Model.RemoteFieldset", Monarch.Model.Fieldset, {
       if (this.record.onUpdateNode) this.record.onUpdateNode.publish(changeset);
       this.record.table.tupleUpdatedRemotely(this.record, changeset);
     }
+    return changeset;
   },
 
   fieldUpdated: function(field, newValue, oldValue) {

@@ -166,7 +166,7 @@
   },
 
   remotelyUpdated: function(fieldValues, version) {
-    this.remote.update(_.camelizeKeys(fieldValues), version);
+    return this.remote.update(_.camelizeKeys(fieldValues), version);
   },
 
   remotelyDestroyed: function() {

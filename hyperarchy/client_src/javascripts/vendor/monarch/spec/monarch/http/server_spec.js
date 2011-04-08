@@ -106,7 +106,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       context("when the creation is successful", function() {
-        it("updates the record with the server's field values and inserts it into the repository", function() {
+        it("updates the record with the field values returned by the server and inserts it into the repository", function() {
           server.create(record);
           requests[0].success({
             id: 22,
@@ -191,6 +191,122 @@ Screw.Unit(function(c) { with(c) {
 
           expect(errorCallback).to(haveBeenCalled, withArgs({ status: 403 }, 'error', 'errorThrown'));
           expect(Repository.mutationsPaused).to(beFalse);
+        });
+      });
+    });
+
+    describe("#update", function() {
+      var record, tableUpdateCallback, recordUpdateCallback, successCallback, invalidCallback, errorCallback;
+
+      before(function() {
+        record = User.createFromRemote({ id: 1, fullName: "Jesus Chang", age: 22, signedUpAt: 1302070303036 });
+
+        var expectUserUpdated = function() {
+          expect(record.fullName()).toNot(eq, "Jesus Chang");
+          expect(record.age()).toNot(eq, 22);
+        }
+
+        tableUpdateCallback = mockFunction('tableUpdateCallback', expectUserUpdated);
+        recordUpdateCallback = mockFunction('createCallback', expectUserUpdated);
+        successCallback = mockFunction('successCallback', expectUserUpdated);
+        invalidCallback = mockFunction('invalidCallback');
+        errorCallback = mockFunction('errorCallback');
+
+        User.onUpdate(tableUpdateCallback);
+        record.onUpdate(recordUpdateCallback);
+
+        record.localUpdate({
+          fullName: "Jesus H. Chang",
+          age: 33
+        });
+
+      });
+
+      it("sends a PUT request to the sandbox url corresponding to the given record's table with its id and dirty field values", function() {
+        record.localUpdate({
+          fullName: "Jesus H. Chang",
+          age: 33
+        });
+
+        server.update(record);
+        expect(requests.length).to(eq, 1);
+        var request = requests[0];
+
+        expect(request.type).to(eq, 'put');
+        expect(request.url).to(eq, '/sandbox/users/1');
+        expect(request.data).to(equal, {
+          field_values: record.dirtyWireRepresentation()
+        });
+      });
+
+      context("when the update is successful", function() {
+        it("updates the record with the field values returned by the server and clears any validation errors on the updated fields", function() {
+          record.assignValidationErrors({
+            fullName: ["Must have a middle name"]
+          });
+          expect(record.valid()).to(beFalse);
+
+          server.update(record);
+          requests[0].success({
+            full_name: "Jesus Hubert Chang",
+            age: 34
+          });
+
+          expect(record.valid()).to(beTrue);
+
+          expect(record.fullName()).to(eq, "Jesus Hubert Chang");
+          expect(record.age()).to(eq, 34);
+        });
+
+        it("fires update callbacks on the table/record, and success callbacks registered on the returned promise", function() {
+          var promise = server.update(record);
+          promise.onSuccess(successCallback);
+
+          requests[0].success({
+            full_name: "Jesus Hubert Chang",
+            age: 34
+          });
+
+          var expectedChangeset = {
+            fullName: {
+              column: User.fullName,
+              oldValue: "Jesus Chang",
+              newValue: "Jesus Hubert Chang"
+            },
+            age: {
+              column: User.age,
+              oldValue: 22,
+              newValue: 34
+            }
+          };
+
+          expect(tableUpdateCallback).to(haveBeenCalled);
+          expect(tableUpdateCallback.mostRecentArgs[0]).to(eq, record);
+          expect(tableUpdateCallback.mostRecentArgs[1]).to(equal, expectedChangeset); // other args relate to sort index and are tested elsewhere
+          expect(recordUpdateCallback).to(haveBeenCalled, withArgs(expectedChangeset));
+          expect(successCallback).to(haveBeenCalled, withArgs(record, expectedChangeset));
+        });
+
+        it("pauses all other events on the repository until the create request is completed and its callbacks are fired", function() {
+          var otherCallback = mockFunction('otherCallback', function() {
+            expect(recordUpdateCallback).to(haveBeenCalled);
+            expect(tableUpdateCallback).to(haveBeenCalled);
+            expect(successCallback).to(haveBeenCalled);
+          });
+          Blog.onInsert(otherCallback);
+
+          var promise = server.update(record);
+          promise.onSuccess(successCallback);
+
+          expect(Repository.mutationsPaused).to(beTrue);
+          Repository.mutate([['create', 'blogs', { id: 1}]]);
+          expect(otherCallback).toNot(haveBeenCalled);
+
+          requests[0].success({ fullName: "Jesus Hubert Chang", age: 33 });
+
+          expect(Repository.mutationsPaused).to(beFalse);
+
+          expect(otherCallback).to(haveBeenCalled);
         });
       });
     });
