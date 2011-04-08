@@ -72,7 +72,7 @@ Screw.Unit(function(c) { with(c) {
     });
 
     describe("#create", function() {
-      var record, insertCallback, createCallback, successCallback, invalidCallback;
+      var record, insertCallback, createCallback, successCallback, invalidCallback, errorCallback;
 
       before(function() {
         record = User.build({ fullName: "Jesus Chang", age: 22, signedUpAt: 1302070303036 });
@@ -87,6 +87,7 @@ Screw.Unit(function(c) { with(c) {
         invalidCallback = mockFunction('invalidCallback', function() {
           expect(User.find(22)).to(beNull);
         });
+        errorCallback = mockFunction('errorCallback');
 
         User.onInsert(insertCallback);
         record.onCreate(createCallback);
@@ -156,7 +157,7 @@ Screw.Unit(function(c) { with(c) {
       });
 
       context("when the creation results in a validation error", function() {
-        it("assigns validation errors to the record, fires onInvalid handlers, and resumes mutations", function() {
+        it("assigns validation errors to the record, fires onInvalid callbacks, and resumes mutations", function() {
           var promise = server.create(record);
           promise.onInvalid(invalidCallback);
 
@@ -174,12 +175,23 @@ Screw.Unit(function(c) { with(c) {
           expect(record.isRemotelyCreated).to(beFalse);
           expect(record.valid()).to(beFalse);
 
+          expect(record.field('fullName').validationErrors).to(equal, ["This name is very unlikely"]);
+          expect(record.field('age').validationErrors).to(equal, ["Much too young", "Must be a baby-boomer"]);
+
           expect(Repository.mutationsPaused).to(beFalse);
         });
       });
 
       context("when the creation results in an error not pertaining to validation", function() {
+        it("fires onError callbacks with the error arguments from jQuery and resumes mutations", function() {
+          var promise = server.create(record);
+          promise.onError(errorCallback);
 
+          requests[0].error({ status: 403 }, 'error', 'errorThrown');
+
+          expect(errorCallback).to(haveBeenCalled, withArgs({ status: 403 }, 'error', 'errorThrown'));
+          expect(Repository.mutationsPaused).to(beFalse);
+        });
       });
     });
   });

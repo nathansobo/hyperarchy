@@ -44,6 +44,8 @@ _.constructor("Monarch.Http.Server", {
         if (jqXhr.status === 422) {
           record.assignValidationErrors(JSON.parse(jqXhr.responseText));
           promise.triggerInvalid(record);
+        } else {
+          promise.triggerError(jqXhr, textStatus, errorThrown);
         }
         Repository.resumeMutations();
       }
