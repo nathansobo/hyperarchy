@@ -192,7 +192,7 @@ _.constructor("Monarch.Model.Relations.Relation", {
   },
 
   fetch: function() {
-    return Server.fetch([this]);
+    return Server.fetch(this);
   },
 
   subscribe: function() {

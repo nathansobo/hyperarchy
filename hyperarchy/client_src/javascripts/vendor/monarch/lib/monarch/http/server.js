@@ -4,7 +4,7 @@ _.constructor("Monarch.Http.Server", {
   sandboxUrl: '/sandbox',
 
   fetch: function() {
-    var relationWireRepresentations = _.map(arguments, function(arg) {
+    var relationWireRepresentations = _.map(_.flatten(arguments), function(arg) {
       return arg.wireRepresentation();
     });
 

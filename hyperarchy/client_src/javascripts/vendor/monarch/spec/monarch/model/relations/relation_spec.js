@@ -34,7 +34,7 @@ Screw.Unit(function(c) { with(c) {
         mock(Server, 'fetch', function() { return "mock future"; });
         expect(relation.fetch()).to(eq, "mock future");
         expect(Server.fetch).to(haveBeenCalled, once);
-        expect(Server.fetch).to(haveBeenCalled, withArgs([relation]));
+        expect(Server.fetch).to(haveBeenCalled, withArgs(relation));
       });
     });
 

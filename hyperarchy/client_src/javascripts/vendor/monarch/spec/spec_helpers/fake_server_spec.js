@@ -48,7 +48,7 @@ Screw.Unit(function(c) { with(c) {
         expect(User.find('sharon')).to(beNull);
         expect(Blog.find('guns')).to(beNull);
 
-        var future = fakeServer.fetch([Blog.table, User.table]);
+        var future = fakeServer.fetch(Blog.table, User.table);
 
         future.beforeEvents(beforeEventsCallback);
         future.afterEvents(afterEventsCallback);

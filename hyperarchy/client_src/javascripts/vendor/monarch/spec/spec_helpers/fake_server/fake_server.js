@@ -18,8 +18,8 @@ _.constructor("FakeServer", Monarch.Http.Server, {
     this.idCounter = 1;
   },
 
-  fetch: function(relations) {
-    var fakeFetch = new FakeServer.FakeFetch(Repository.sandboxUrl, relations, this);
+  fetch: function() {
+    var fakeFetch = new FakeServer.FakeFetch(Repository.sandboxUrl, _.flatten(arguments), this);
     if (this.auto) {
       fakeFetch.simulateSuccess();
     } else {

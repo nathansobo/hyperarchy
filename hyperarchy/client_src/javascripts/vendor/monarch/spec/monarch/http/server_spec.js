@@ -66,6 +66,18 @@ Screw.Unit(function(c) { with(c) {
         expect(errorCallback).to(haveBeenCalled, withArgs("jqXhr", "error", "errorThrown"));
         expect(successCallback).toNot(haveBeenCalled);
       });
+
+      it("allows an array to be passed instead of individual relation arguments", function() {
+        server.fetch([Blog, BlogPost]);
+        expect(requests.length).to(eq, 1);
+        var request = requests[0];
+
+        expect(request.url).to(eq, '/sandbox');
+        expect(request.type).to(eq, 'get');
+        expect(request.data).to(equal, {
+          relations: JSON.stringify([Blog.wireRepresentation(), BlogPost.wireRepresentation()])
+        });
+      });
     });
 
     describe("#create", function() {
