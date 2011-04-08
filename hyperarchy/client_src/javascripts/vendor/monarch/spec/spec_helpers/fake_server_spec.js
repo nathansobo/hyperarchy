@@ -125,7 +125,6 @@ Screw.Unit(function(c) { with(c) {
         expect(fakeServer.updates.length).to(eq, 1);
         expect(fakeServer.lastUpdate).to(eq, fakeServer.updates[0]);
 
-
         fakeServer.lastUpdate.simulateSuccess();
 
         expect(fakeServer.lastUpdate).to(beNull);
@@ -157,6 +156,48 @@ Screw.Unit(function(c) { with(c) {
         expect(updateCallback.mostRecentArgs[0]).to(eq, record);
         expect(updateCallback.mostRecentArgs[1]).to(equal, expectedChangeset);
         expect(successCallback).to(haveBeenCalled, withArgs(record, expectedChangeset));
+      });
+
+      it("allows multiple updates to be interleaved", function() {
+        var record = User.createFromRemote({id: 1, fullName: "John Doe", age: 34});
+        record.localUpdate({
+          fullName: "John 1",
+          age: 1
+        });
+        fakeServer.update(record);
+        expect(fakeServer.updates.length).to(eq, 1);
+
+        expect(record.remoteVersion).to(eq, 0);
+        expect(record.localVersion).to(eq, 1);
+        expect(record.pendingVersion).to(eq, 1);
+
+        record.localUpdate({
+          fullName: "John 2"
+        });
+
+        expect(record.remoteVersion).to(eq, 0);
+        expect(record.localVersion).to(eq, 2);
+        expect(record.pendingVersion).to(eq, 1);
+
+        fakeServer.update(record);
+        expect(fakeServer.updates.length).to(eq, 2);
+
+        expect(record.remoteVersion).to(eq, 0);
+        expect(record.localVersion).to(eq, 2);
+        expect(record.pendingVersion).to(eq, 2);
+
+        fakeServer.updates[0].simulateSuccess();
+
+        expect(record.remoteVersion).to(eq, 1);
+        expect(record.local.fullName()).to(eq, "John 2");
+        expect(record.remote.fullName()).to(eq, "John 1");
+
+        fakeServer.updates[0].simulateSuccess();
+
+        expect(record.remoteVersion).to(eq, 2);
+
+        expect(record.local.fullName()).to(eq, "John 2");
+        expect(record.remote.fullName()).to(eq, "John 2");
       });
 
       it("performs the update immediately if the server is in auto-mode", function() {
