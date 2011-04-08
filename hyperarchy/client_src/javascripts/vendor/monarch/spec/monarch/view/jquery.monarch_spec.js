@@ -1,6 +1,91 @@
 //= require "../../monarch_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
+  describe("custom ajax dataType converters", function() {
+    mockLowLevelXhr();
+    useExampleDomainModel();
+
+    describe("handling requests with the 'records' dataType", function() {
+      it("updates the repository with the returned records before invoking the success callback", function() {
+        var successCallback = mockFunction('successCallback', function() {
+          expect(User.find(1).fullName()).to(eq, "Adam Smith");
+          expect(Blog.find(1).name()).to(eq, "Blog 1");
+          expect(Blog.find(2).name()).to(eq, "Blog 2");
+        });
+
+        jQuery.ajax({
+          url: '/resource',
+          dataType: 'records',
+          success: successCallback
+        });
+
+        var recordsHash = {
+          'users': {
+            '1': {
+              id: 1,
+              fullName: "Adam Smith"
+            }
+          },
+          'blogs': {
+            '1': { id: 1, name: "Blog 1" },
+            '2': { id: 2, name: "Blog 2" }
+          }
+        };
+
+        requests[0].response({
+          status: 200,
+          contentType: 'application/json',
+          responseText: JSON.stringify(recordsHash)
+        });
+
+        expect(successCallback).to(haveBeenCalled);
+      });
+    });
+
+    describe("handling requests with the 'data+records' dataType", function() {
+      it("updates the repository with the records returned under the top-level 'records' key, then invokes callbacks with the 'data' key", function() {
+        var successCallback = mockFunction('successCallback', function() {
+          expect(User.find(1).fullName()).to(eq, "Adam Smith");
+          expect(Blog.find(1).name()).to(eq, "Blog 1");
+          expect(Blog.find(2).name()).to(eq, "Blog 2");
+        });
+
+        jQuery.ajax({
+          url: '/resource',
+          dataType: 'data+records',
+          success: successCallback
+        });
+
+        var data = {
+          foo: [1, 2],
+          bar: "baz"
+        };
+
+        var responseJson = {
+          data: data,
+          records: {
+            users: {
+              1: { id: 1, fullName: "Adam Smith" }
+            },
+            blogs: {
+              1: { id: 1, name: "Blog 1" },
+              2: { id: 2, name: "Blog 2" }
+            }
+          }
+        };
+
+        requests[0].response({
+          status: 200,
+          contentType: 'application/json',
+          responseText: JSON.stringify(responseJson)
+        });
+
+        expect(successCallback).to(haveBeenCalled);
+        expect(successCallback.mostRecentArgs[0]).to(equal, data);
+      });
+    });
+  });
+
   describe("jQuery.fn.appendView", function() {
     var view;
 
@@ -39,7 +124,6 @@ Screw.Unit(function(c) { with(c) {
       expect(newWrapper.view()).to(eq, view);
     });
   });
-
 
   describe("jQuery.fn.fieldValues()", function() {
     var view;

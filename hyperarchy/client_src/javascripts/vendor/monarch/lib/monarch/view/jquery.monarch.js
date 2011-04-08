@@ -1,5 +1,17 @@
 (function(Monarch, jQuery) {
 
+$.ajaxSetup({
+  converters: {
+    "json records": function(json) {
+      Repository.update(json);
+    },
+    "json data+records": function(json) {
+      Repository.update(json.records);
+      return json.data;
+    }
+  }
+});
+
 jQuery.fn.extend({
   appendView: function(contentFn) {
     this.append(Monarch.View.build(contentFn));

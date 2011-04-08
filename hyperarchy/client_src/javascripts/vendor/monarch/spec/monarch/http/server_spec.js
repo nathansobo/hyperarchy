@@ -2,15 +2,12 @@
 
 Screw.Unit(function(c) { with(c) {
   describe("Monarch.Http.Server", function() {
+    mockAjax();
     useExampleDomainModel();
-    var requests, server;
+    var server;
+
 
     before(function() {
-      requests = [];
-      mock(jQuery, 'ajax', function(request) {
-        requests.push(request)
-      });
-
       server = new Monarch.Http.Server();
       server.sandboxUrl = '/sandbox';
     });

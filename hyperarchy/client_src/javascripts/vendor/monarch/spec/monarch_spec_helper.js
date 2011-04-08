@@ -2,6 +2,7 @@
 //= require "spec_helpers/fake_server"
 //= require "spec_helpers/example_domain_model"
 //= require "spec_helpers/fixtures"
+//= require "spec_helpers/ajax_mocking"
 
 Screw.Unit(function(c) {
   c.init(function() {
