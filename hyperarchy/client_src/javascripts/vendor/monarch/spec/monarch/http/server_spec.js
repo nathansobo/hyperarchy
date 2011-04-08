@@ -350,6 +350,57 @@ Screw.Unit(function(c) { with(c) {
           expect(Repository.mutationsPaused).to(beFalse);
         });
       });
+
+      context("when another update to the same record is sent before the previous update returns", function() {
+        it("does not overwrite pending local changes when the first update returns and does not mark the record clean until all update operations have completed", function() {
+          expect(record.remoteVersion).to(eq, 0);
+          expect(record.localVersion).to(eq, 1);
+          expect(record.pendingVersion).to(eq, 0);
+
+          server.update(record);
+
+          expect(record.remoteVersion).to(eq, 0);
+          expect(record.localVersion).to(eq, 1);
+          expect(record.pendingVersion).to(eq, 1);
+
+          record.fullName("John Chang");
+
+          expect(record.remoteVersion).to(eq, 0);
+          expect(record.localVersion).to(eq, 2);
+          expect(record.pendingVersion).to(eq, 1);
+
+          server.update(record);
+
+          expect(record.remoteVersion).to(eq, 0);
+          expect(record.localVersion).to(eq, 2);
+          expect(record.pendingVersion).to(eq, 2);
+
+          requests[0].success({
+            full_name: "Jesus Hubert Chang",
+            age: 33
+          });
+
+          expect(record.remoteVersion).to(eq, 1);
+          expect(record.localVersion).to(eq, 2);
+          expect(record.pendingVersion).to(eq, 2);
+
+          expect(record.local.fullName()).to(eq, "John Chang");
+          expect(record.remote.fullName()).to(eq, "Jesus Hubert Chang");
+          expect(record.field('fullName').dirty()).to(beTrue);
+
+          expect(record.age()).to(eq, 33);
+          expect(record.field('age').dirty()).to(beFalse);
+
+          requests[1].success({ full_name: "John C. Chang" });
+
+          expect(record.remoteVersion).to(eq, 2);
+          expect(record.localVersion).to(eq, 2);
+          expect(record.pendingVersion).to(eq, 2);
+
+          expect(record.dirty()).to(beFalse);
+          expect(record.fullName()).to(eq, "John C. Chang");
+        });
+      });
     });
     
     describe("#destroy", function() {

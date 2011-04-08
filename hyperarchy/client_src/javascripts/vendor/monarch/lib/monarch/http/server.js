@@ -57,12 +57,14 @@ _.constructor("Monarch.Http.Server", {
     var promise = new Monarch.Promise();
     Repository.pauseMutations();
 
+    var pendingVersion = record.nextPendingVersion();
+
     jQuery.ajax({
       url: this.sandboxUrl + '/' + record.table.globalName + '/' + record.id(),
       type: 'put',
       data: { field_values: record.dirtyWireRepresentation() },
       success: function(fieldValues) {
-        var changeset = record.remotelyUpdated(fieldValues);
+        var changeset = record.remotelyUpdated(fieldValues, pendingVersion);
         promise.triggerSuccess(record, changeset);
         Repository.resumeMutations();
       },
