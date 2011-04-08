@@ -132,6 +132,11 @@ Screw.Unit(function(c) { with(c) {
         expect(fakeServer.updates).to(beEmpty);
 
         expect(record.dirty()).to(beFalse);
+
+        expect(record.localVersion).to(eq, 1);
+        expect(record.remoteVersion).to(eq, 1);
+        expect(record.pendingVersion).to(eq, 1);
+
         expect(record.fullName()).to(eq, "John Deere");
         expect(record.age()).to(eq, 56);
 
