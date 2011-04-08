@@ -11,6 +11,7 @@
 //= require "monarch/underscore_extensions"
 //= require "monarch/foundation"
 //= require "monarch/define_monarch"
+//= require "monarch/jquery.monarch"
 //= require "monarch/subscription_node"
 //= require "monarch/subscription"
 //= require "monarch/subscription_bundle"

@@ -2,7 +2,6 @@
 
 //= require "view/template"
 //= require "view/builder"
-//= require "view/jquery.monarch"
 //= require "view/templates"
 //= require "view/history"
 //= require "view/open_tag"

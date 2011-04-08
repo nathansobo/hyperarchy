@@ -1,4 +1,4 @@
-//= require "../../monarch_spec_helper"
+//= require "../monarch_spec_helper"
 
 Screw.Unit(function(c) { with(c) {
   describe("custom ajax dataType converters", function() {
