@@ -78,8 +78,28 @@ _.constructor("Monarch.Http.Server", {
     });
 
     return promise;
-  }
+  },
 
+  destroy: function(record) {
+    var promise = new Monarch.Promise();
+    Repository.pauseMutations();
+
+    jQuery.ajax({
+      url: this.sandboxUrl + '/' + record.table.globalName + '/' + record.id(),
+      type: 'delete',
+      success: function() {
+        var changeset = record.remotelyDestroyed();
+        promise.triggerSuccess(record);
+        Repository.resumeMutations();
+      },
+      error: function(jqXhr, textStatus, errorThrown) {
+        promise.triggerError(jqXhr, textStatus, errorThrown);
+        Repository.resumeMutations();
+      }
+    });
+
+    return promise;
+  }
 });
 
 })(Monarch, jQuery);

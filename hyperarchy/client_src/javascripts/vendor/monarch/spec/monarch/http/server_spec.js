@@ -351,5 +351,89 @@ Screw.Unit(function(c) { with(c) {
         });
       });
     });
+    
+    describe("#destroy", function() {
+      var record, removeCallback, destroyCallback, successCallback, errorCallback;
+
+      before(function() {
+        record = User.createFromRemote({ id: 1, fullName: "Jesus Chang", age: 22, signedUpAt: 1302070303036 });
+
+        var expectUserRemovedFromRepository = function() {
+          expect(User.find(1)).to(beNull);
+        }
+
+        removeCallback = mockFunction('removeCallback', expectUserRemovedFromRepository);
+        destroyCallback = mockFunction('destroyCallback', expectUserRemovedFromRepository);
+        successCallback = mockFunction('successCallback', expectUserRemovedFromRepository);
+        errorCallback = mockFunction('errorCallback');
+
+        User.onRemove(removeCallback);
+        record.onDestroy(destroyCallback);
+      });
+
+      it("sends a DELETE request to the sandbox url corresponding to the given record's table and id", function() {
+        server.destroy(record);
+        expect(requests.length).to(eq, 1);
+        var request = requests[0];
+
+        expect(request.type).to(eq, 'delete');
+        expect(request.url).to(eq, '/sandbox/users/1');
+      });
+
+      context("when the destruction is successful", function() {
+        it("removes the record from the repository", function() {
+          server.destroy(record);
+          requests[0].success();
+
+          expect(User.find(22)).to(beNull);
+        });
+
+        it("fires remove/destroy callbacks on the table/record, and success callbacks registered on the returned promise", function() {
+          var promise = server.destroy(record);
+          promise.onSuccess(successCallback);
+
+          requests[0].success();
+
+          expect(removeCallback).to(haveBeenCalled);
+          expect(removeCallback.mostRecentArgs[0]).to(eq, record); // other args relate to sort index and are tested elsewhere
+          expect(destroyCallback).to(haveBeenCalled);
+          expect(successCallback).to(haveBeenCalled, withArgs(record));
+        });
+
+        it("pauses all other events on the repository until the create request is completed and its callbacks are fired", function() {
+          var otherCallback = mockFunction('otherCallback', function() {
+            expect(removeCallback).to(haveBeenCalled);
+            expect(destroyCallback).to(haveBeenCalled);
+            expect(successCallback).to(haveBeenCalled);
+          });
+          Blog.onInsert(otherCallback);
+
+          var promise = server.destroy(record);
+          promise.onSuccess(successCallback);
+
+          expect(Repository.mutationsPaused).to(beTrue);
+          Repository.mutate([['create', 'blogs', { id: 1}]]);
+          expect(otherCallback).toNot(haveBeenCalled);
+
+          requests[0].success();
+
+          expect(Repository.mutationsPaused).to(beFalse);
+
+          expect(otherCallback).to(haveBeenCalled);
+        });
+      })
+
+      context("when the destruction results in an error", function() {
+        it("fires onError callbacks with the error arguments from jQuery and resumes mutations", function() {
+          var promise = server.destroy(record);
+          promise.onError(errorCallback);
+
+          requests[0].error({ status: 403 }, 'error', 'errorThrown');
+
+          expect(errorCallback).to(haveBeenCalled, withArgs({ status: 403 }, 'error', 'errorThrown'));
+          expect(Repository.mutationsPaused).to(beFalse);
+        });
+      });
+    });
   });
 }});
