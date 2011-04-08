@@ -52,19 +52,23 @@ _.constructor("Organization", Model.Record, {
       limit = 16;
     }
 
-    var future = Server.get("/elections", {
-      organization_id: this.id(),
-      offset: offset,
-      limit: limit
+    var promise = $.ajax({
+      url: "/elections",
+      data: {
+        organization_id: this.id(),
+        offset: offset,
+        limit: limit
+      },
+      dataType: 'records'
     });
 
-    this.fetchInProgressFuture = future;
-    future.onSuccess(function() {
+    this.fetchInProgressFuture = promise;
+    promise.success(_.bind(function() {
       delete this.fetchInProgressFuture;
       this.numElectionsFetched += 16;
-    }, this);
+    }, this));
 
-    return future;
+    return promise;
   },
 
   membershipForUser: function(user) {

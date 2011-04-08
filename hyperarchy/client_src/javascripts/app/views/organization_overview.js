@@ -99,7 +99,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.electionLisById = {};
 
       this.startLoading();
-      this.organization().fetchMoreElections(16).onSuccess(function() {
+      this.organization().fetchMoreElections(16).success(_.bind(function() {
         this.stopLoading();
         var elections = this.organization().elections();
         this.electionsList.relation(elections);
@@ -110,7 +110,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
             this.organization().fetchMoreElections();
           }
         }, this));
-      }, this);
+      }, this));
     },
 
     remainingScrollDistance: function() {
