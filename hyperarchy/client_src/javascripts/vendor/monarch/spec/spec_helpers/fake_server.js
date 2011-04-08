@@ -5,6 +5,9 @@
 //= require "fake_server/fake_subscribe"
 //= require "fake_server/fake_unsubscribe"
 //= require "fake_server/fake_mutation"
+//= require "fake_server/fake_creation"
+//= require "fake_server/fake_update"
+//= require "fake_server/fake_destruction"
 
 Screw.Unit(function(c) {
   c.useFakeServer = function(autoInteract) {

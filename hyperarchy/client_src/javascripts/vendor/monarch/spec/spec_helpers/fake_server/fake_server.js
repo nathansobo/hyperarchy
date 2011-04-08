@@ -29,6 +29,27 @@ _.constructor("FakeServer", Monarch.Http.Server, {
     return fakeFetch.future;
   },
 
+  create: function(record) {
+    var fakeCreation = new FakeServer.FakeCreation(this, record);
+    this.lastCreate = fakeCreation;
+    this.creates.push(fakeCreation);
+    return fakeCreation.promise;
+  },
+
+  update: function(record) {
+    var fakeUpdate = new FakeServer.FakeUpdate(this, record);
+    this.lastUpdate = fakeUpdate;
+    this.updates.push(fakeUpdate);
+    return fakeUpdate.promise;
+  },
+
+  destroy: function(record) {
+    var fakeDestruction = new FakeServer.FakeDestruction(this, record);
+    this.lastDestroy = fakeDestruction;
+    this.destroys.push(fakeDestruction);
+    return fakeDestruction.promise;
+  },
+
   autoFetch: function(relations) {
     var prevAutoValue = this.auto;
     this.auto = true;

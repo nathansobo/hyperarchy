@@ -69,62 +69,116 @@ Screw.Unit(function(c) { with(c) {
       });
     });
 
+    describe("#create", function() {
+      it("adds a request to the Server.creates array and assigns Server.lastCreate, which will perform the create when success is simulated", function() {
+        var insertCallback = mockFunction('insertCallback');
+        var successCallback = mockFunction('successCallback');
+
+        User.onInsert(insertCallback);
+
+        var record = User.build({fullName: "John Doe", age: 34});
+        fakeServer.create(record).onSuccess(successCallback);
+
+        expect(record.isRemotelyCreated).to(beFalse);
+        expect(fakeServer.creates.length).to(eq, 1);
+        expect(fakeServer.lastCreate).to(eq, fakeServer.creates[0]);
+
+
+        fakeServer.lastCreate.simulateSuccess();
+
+        expect(fakeServer.lastCreate).to(beNull);
+        expect(fakeServer.creates).to(beEmpty);
+
+        expect(record.isRemotelyCreated).to(beTrue);
+        expect(record.id()).toNot(beNull);
+
+        expect(insertCallback).to(haveBeenCalled);
+        expect(insertCallback.mostRecentArgs[0]).to(eq, record);
+        expect(successCallback).to(haveBeenCalled, withArgs(record));
+      });
+    });
+
+    describe("#update", function() {
+      it("adds a request to the Server.updates array and assigns Server.lastUpdate, which will perform the update when success is simulated", function() {
+        var updateCallback = mockFunction('updateCallback');
+        var successCallback = mockFunction('successCallback');
+
+        User.onUpdate(updateCallback);
+
+        var record = User.createFromRemote({id: 1, fullName: "John Doe", age: 34});
+        record.localUpdate({
+          fullName: "John Deere",
+          age: 56
+        });
+
+        fakeServer.update(record).onSuccess(successCallback);
+
+        expect(record.dirty()).to(beTrue);
+        expect(fakeServer.updates.length).to(eq, 1);
+        expect(fakeServer.lastUpdate).to(eq, fakeServer.updates[0]);
+
+
+        fakeServer.lastUpdate.simulateSuccess();
+
+        expect(fakeServer.lastUpdate).to(beNull);
+        expect(fakeServer.updates).to(beEmpty);
+
+        expect(record.dirty()).to(beFalse);
+        expect(record.fullName()).to(eq, "John Deere");
+        expect(record.age()).to(eq, 56);
+
+        var expectedChangeset = {
+          fullName: {
+            column: User.fullName,
+            oldValue: "John Doe",
+            newValue: "John Deere"
+          },
+          age: {
+            column: User.age,
+            oldValue: 34,
+            newValue: 56
+          }
+        };
+
+        expect(updateCallback).to(haveBeenCalled);
+        expect(updateCallback.mostRecentArgs[0]).to(eq, record);
+        expect(updateCallback.mostRecentArgs[1]).to(equal, expectedChangeset);
+        expect(successCallback).to(haveBeenCalled, withArgs(record, expectedChangeset));
+      });
+    });
+
+    describe("#destroy", function() {
+      it("adds a request to the Server.destroys array and assigns Server.lastDestroy, which will perform the destroy when success is simulated", function() {
+        var removeCallback = mockFunction('removeCallback');
+        var successCallback = mockFunction('successCallback');
+
+        User.onRemove(removeCallback);
+
+        var record = User.createFromRemote({id: 1, fullName: "John Doe", age: 34});
+        fakeServer.destroy(record).onSuccess(successCallback);
+        
+        expect(User.find(1)).toNot(beNull);
+        expect(fakeServer.destroys.length).to(eq, 1);
+        expect(fakeServer.lastDestroy).to(eq, fakeServer.destroys[0]);
+
+        fakeServer.lastDestroy.simulateSuccess();
+
+        expect(fakeServer.lastDestroy).to(beNull);
+        expect(fakeServer.destroys).to(beEmpty);
+
+        expect(User.find(1)).to(beNull);
+
+        expect(removeCallback).to(haveBeenCalled);
+        expect(removeCallback.mostRecentArgs[0]).to(eq, record);
+        expect(successCallback).to(haveBeenCalled, withArgs(record));
+      });
+    });
+
     describe("#autoFetch", function() {
       it("immediately fetches tuples from the FakeServer's repository to the local repository", function() {
         expect(Blog.tuples()).to(beEmpty);
         fakeServer.autoFetch([Blog.table]);
         expect(Blog.tuples()).toNot(beEmpty);
-      });
-    });
-
-    describe("#subscribe", function() {
-      it("adds a FakeSubscribe to the #subscribes array and triggers the returned future with synthetic subscription ids when #simulateSuccess is called on it", function() {
-        expect(fakeServer.subscribes).to(beEmpty);
-
-        var future = fakeServer.subscribe([Blog.table, User.table]);
-
-        expect(fakeServer.subscribes).to(haveLength, 1);
-        expect(fakeServer.lastSubscribe).to(eq, fakeServer.subscribes[0]);
-        expect(fakeServer.lastSubscribe.relations).to(equal, [Blog.table, User.table]);
-
-
-        var successCallback = mockFunction('successCallback');
-        future.onSuccess(successCallback);
-
-        fakeServer.lastSubscribe.simulateSuccess();
-
-        expect(fakeServer.subscribes.length).to(eq, 0);
-        expect(fakeServer.lastSubscribe).to(beNull);
-
-        expect(successCallback).to(haveBeenCalled, once);
-        expect(successCallback.mostRecentArgs[0][0].id).toNot(beNull);
-        expect(successCallback.mostRecentArgs[0][0].relation).to(eq, Blog.table);
-        expect(successCallback.mostRecentArgs[0][1].id).toNot(equal, successCallback.mostRecentArgs[0].id);
-        expect(successCallback.mostRecentArgs[0][1].relation).to(eq, User.table);
-      });
-    });
-
-    describe("#unsubscribe", function() {
-      it("adds a FakeUnsubscribe to the #unsubscribes array and triggers the returned future when #simulateSuccess is called on it", function() {
-        expect(fakeServer.unsubscribes).to(beEmpty);
-        
-        var remoteSubscription1 = new Monarch.Http.RemoteSubscription("1", Blog.table);
-        var remoteSubscription2 = new Monarch.Http.RemoteSubscription("2", User.table);
-
-        var future = fakeServer.unsubscribe([remoteSubscription1, remoteSubscription2]);
-
-        expect(fakeServer.unsubscribes).to(haveLength, 1);
-        expect(fakeServer.lastUnsubscribe).to(eq, fakeServer.unsubscribes[0]);
-        expect(fakeServer.lastUnsubscribe.remoteSubscriptions).to(equal, [remoteSubscription1, remoteSubscription2]);
-
-        var successCallback = mockFunction('successCallback');
-        future.onSuccess(successCallback);
-
-        fakeServer.lastUnsubscribe.simulateSuccess();
-
-        expect(fakeServer.unsubscribes.length).to(eq, 0);
-        expect(fakeServer.lastUnsubscribe).to(beNull);
-        expect(successCallback).to(haveBeenCalled, once);
       });
     });
 
