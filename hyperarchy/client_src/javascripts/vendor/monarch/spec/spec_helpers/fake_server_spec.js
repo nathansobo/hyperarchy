@@ -96,6 +96,14 @@ Screw.Unit(function(c) { with(c) {
         expect(insertCallback.mostRecentArgs[0]).to(eq, record);
         expect(successCallback).to(haveBeenCalled, withArgs(record));
       });
+
+      it("performs the create immediately if the server is in auto-mode", function() {
+        fakeServer.auto = true;
+        var record = User.build({fullName: "John Doe", age: 34});
+        expect(record.isRemotelyCreated).to(beFalse);
+        fakeServer.create(record);
+        expect(record.isRemotelyCreated).to(beTrue);
+      });
     });
 
     describe("#update", function() {
@@ -145,6 +153,20 @@ Screw.Unit(function(c) { with(c) {
         expect(updateCallback.mostRecentArgs[1]).to(equal, expectedChangeset);
         expect(successCallback).to(haveBeenCalled, withArgs(record, expectedChangeset));
       });
+
+      it("performs the update immediately if the server is in auto-mode", function() {
+        fakeServer.auto = true;
+
+        var record = User.createFromRemote({id: 1, fullName: "John Doe", age: 34});
+        record.localUpdate({
+          fullName: "John Deere",
+          age: 56
+        });
+        fakeServer.update(record);
+
+        expect(record.dirty()).to(beFalse);
+        expect(record.age()).to(eq, 56);
+      });
     });
 
     describe("#destroy", function() {
@@ -171,6 +193,13 @@ Screw.Unit(function(c) { with(c) {
         expect(removeCallback).to(haveBeenCalled);
         expect(removeCallback.mostRecentArgs[0]).to(eq, record);
         expect(successCallback).to(haveBeenCalled, withArgs(record));
+      });
+
+      it("performs the destruction immediately if the server is in auto mode", function() {
+        fakeServer.auto = true;
+        var record = User.createFromRemote({id: 1});
+        fakeServer.destroy(record);
+        expect(User.find(1)).to(beNull);
       });
     });
 

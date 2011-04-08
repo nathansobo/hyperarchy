@@ -9,8 +9,7 @@ _.constructor("FakeServer.FakeUpdate", {
 
   simulateSuccess: function() {
     this.fakeServer.removeRequest(this);
-    var fields = _.extend(this.record.dirtyWireRepresentation());
-    var changeset = this.record.remotelyUpdated(fields);
+    var changeset = this.record.remotelyUpdated(this.record.dirtyWireRepresentation());
     this.promise.triggerSuccess(this.record, changeset);
   }
 });

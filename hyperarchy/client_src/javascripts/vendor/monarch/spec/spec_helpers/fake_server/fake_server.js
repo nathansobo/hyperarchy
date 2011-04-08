@@ -31,22 +31,31 @@ _.constructor("FakeServer", Monarch.Http.Server, {
 
   create: function(record) {
     var fakeCreation = new FakeServer.FakeCreation(this, record);
-    this.lastCreate = fakeCreation;
-    this.creates.push(fakeCreation);
+    if (this.auto) {
+      fakeCreation.simulateSuccess();
+    } else {
+      this.addRequest(fakeCreation);
+    }
     return fakeCreation.promise;
   },
 
   update: function(record) {
     var fakeUpdate = new FakeServer.FakeUpdate(this, record);
-    this.lastUpdate = fakeUpdate;
-    this.updates.push(fakeUpdate);
+    if (this.auto) {
+      fakeUpdate.simulateSuccess();
+    } else {
+      this.addRequest(fakeUpdate);
+    }
     return fakeUpdate.promise;
   },
 
   destroy: function(record) {
     var fakeDestruction = new FakeServer.FakeDestruction(this, record);
-    this.lastDestroy = fakeDestruction;
-    this.destroys.push(fakeDestruction);
+    if (this.auto) {
+      fakeDestruction.simulateSuccess();
+    } else {
+      this.addRequest(fakeDestruction);
+    }
     return fakeDestruction.promise;
   },
 
@@ -81,12 +90,6 @@ _.constructor("FakeServer", Monarch.Http.Server, {
     }
   },
 
-  performCommand: function(command) {
-    Repository.pauseMutations();
-    var fakeMutation = new FakeServer.FakeMutation(Repository.sandboxUrl, command, this);
-    return fakeMutation.perform().onComplete(Repository.hitch('resumeMutations'));
-  },
-
   post: function(url, data) {
     return this.request('post', url, data);
   },
@@ -119,5 +122,5 @@ _.constructor("FakeServer", Monarch.Http.Server, {
     var requestsArray = this[_.pluralize(request.type)];
     _.remove(requestsArray, request);
     this["last" + _.capitalize(request.type)] = requestsArray[requestsArray.length - 1];
-  },
+  }
 });
