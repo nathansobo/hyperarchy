@@ -338,6 +338,18 @@ Screw.Unit(function(c) { with(c) {
           expect(Repository.mutationsPaused).to(beFalse);
         });
       });
+
+      context("when the update results in an error not pertaining to validation", function() {
+        it("fires onError callbacks with the error arguments from jQuery and resumes mutations", function() {
+          var promise = server.update(record);
+          promise.onError(errorCallback);
+
+          requests[0].error({ status: 403 }, 'error', 'errorThrown');
+
+          expect(errorCallback).to(haveBeenCalled, withArgs({ status: 403 }, 'error', 'errorThrown'));
+          expect(Repository.mutationsPaused).to(beFalse);
+        });
+      });
     });
   });
 }});
