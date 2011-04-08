@@ -39,7 +39,7 @@ Screw.Unit(function(c) { with(c) {
           expect(record.age()).to(eq, 31);
           expect(record.fullName()).to(eq, "John Lennon");
         });
-        createFuture.afterEvents(createCallback);
+        createFuture.onSuccess(createCallback);
 
         Server.creates.shift().simulateSuccess();
 
