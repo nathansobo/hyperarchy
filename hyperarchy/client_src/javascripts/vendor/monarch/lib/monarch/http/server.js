@@ -67,13 +67,13 @@ _.constructor("Monarch.Http.Server", {
         Repository.resumeMutations();
       },
       error: function(jqXhr, textStatus, errorThrown) {
-//        if (jqXhr.status === 422) {
-//          record.assignValidationErrors(JSON.parse(jqXhr.responseText));
-//          promise.triggerInvalid(record);
-//        } else {
-//          promise.triggerError(jqXhr, textStatus, errorThrown);
-//        }
-//        Repository.resumeMutations();
+        if (jqXhr.status === 422) {
+          record.assignValidationErrors(JSON.parse(jqXhr.responseText));
+          promise.triggerInvalid(record);
+        } else {
+          promise.triggerError(jqXhr, textStatus, errorThrown);
+        }
+        Repository.resumeMutations();
       }
     });
 

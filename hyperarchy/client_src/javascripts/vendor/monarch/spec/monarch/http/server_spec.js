@@ -309,6 +309,35 @@ Screw.Unit(function(c) { with(c) {
           expect(otherCallback).to(haveBeenCalled);
         });
       });
+
+      context("when the update results in a validation error", function() {
+        it("does not perform the update, assigns validation errors to the record, fires onInvalid callbacks, and resumes mutations", function() {
+          var promise = server.update(record);
+          promise.onInvalid(invalidCallback);
+
+          var validationErrors = {
+            full_name: ["This name is very unlikely"],
+            age: ["Much too young", "Must be a baby-boomer"]
+          };
+
+          requests[0].error({
+            status: 422,
+            responseText: JSON.stringify(validationErrors)
+          });
+
+          expect(invalidCallback).to(haveBeenCalled, withArgs(record));
+          expect(record.valid()).to(beFalse);
+
+          expect(record.fullName()).to(eq, "Jesus H. Chang");
+          expect(record.remote.fullName()).to(eq, "Jesus Chang");
+          expect(record.age()).to(eq, 33);
+          expect(record.remote.age()).to(eq, 22);
+          expect(record.field('fullName').validationErrors).to(equal, ["This name is very unlikely"]);
+          expect(record.field('age').validationErrors).to(equal, ["Much too young", "Must be a baby-boomer"]);
+
+          expect(Repository.mutationsPaused).to(beFalse);
+        });
+      });
     });
   });
 }});
