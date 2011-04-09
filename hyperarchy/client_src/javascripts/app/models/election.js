@@ -84,7 +84,7 @@ _.constructor("Election", Model.Record, {
   },
 
   fetchVotes: function() {
-    return Server.fetch([this.votes(), this.voters()]);
+    return Server.fetch(this.votes(), this.voters());
   },
 
   fetchCommentsAndCommentersIfNeeded: function() {
