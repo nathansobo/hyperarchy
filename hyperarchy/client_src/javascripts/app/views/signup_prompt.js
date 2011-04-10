@@ -101,9 +101,14 @@ _.constructor("Views.SignupPrompt", View.Template, {
 
     submitLoginForm: function() {
       this.errorsDiv.hide();
-      Server.post("/login", _.underscoreKeys(this.loginForm.fieldValues()))
-        .onSuccess(this.hitch('userEstablished'))
-        .onFailure(this.hitch('handleErrors'));
+      $.ajax({
+        type: 'post',
+        url: "/login",
+        data: { user: _.underscoreKeys(this.loginForm.fieldValues()) },
+        dataType: 'data+records',
+        success: this.hitch('userEstablished'),
+        error: this.hitch('handleErrors')
+      });
       return false;
     },
 
@@ -116,8 +121,8 @@ _.constructor("Views.SignupPrompt", View.Template, {
       this.hide();
     },
 
-    handleErrors: function(data) {
-      this.errorsDiv.html(data.errors.join("<br/>"));
+    handleErrors: function(jqXhr) {
+      this.errorsDiv.html($.parseJSON(jqXhr.responseText).errors.join("<br/>"));
       this.errorsDiv.show();
     }
   }

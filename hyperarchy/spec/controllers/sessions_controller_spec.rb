@@ -16,11 +16,11 @@ describe SessionsController do
         xhr :post, :create, :user => { :email_address => user.email_address, :password => "password" }
         current_user.should == user
 
-        response_json["successful"].should be_true
+        response.should be_success
         response_json["data"].should == { "current_user_id" => user.id }
-        response_json["dataset"]["users"].should have_key(user.to_param)
-        response_json["dataset"]["organizations"].should have_key(organization.to_param)
-        response_json["dataset"]["memberships"].should have_key(membership.to_param)
+        response_json["records"]["users"].should have_key(user.to_param)
+        response_json["records"]["organizations"].should have_key(organization.to_param)
+        response_json["records"]["memberships"].should have_key(membership.to_param)
       end
     end
 
@@ -30,8 +30,8 @@ describe SessionsController do
         xhr :post, :create, :user => { :email_address => "garbage", :password => "password" }
         current_user.should be_nil
 
-        response_json["successful"].should be_false
-        response_json["data"]["errors"].should_not be_nil
+        response.status.should == 422
+        response_json["errors"].should_not be_nil
       end
     end
 
@@ -41,8 +41,8 @@ describe SessionsController do
         xhr :post, :create, :user => { :email_address => user.email_address, :password => "garbage" }
         current_user.should be_nil
 
-        response_json["successful"].should be_false
-        response_json["data"]["errors"].should_not be_nil
+        response.status.should == 422
+        response_json["errors"].should_not be_nil
       end
     end
   end

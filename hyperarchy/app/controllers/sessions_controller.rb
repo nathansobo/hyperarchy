@@ -1,18 +1,18 @@
 class SessionsController < ApplicationController
   def create
     if authenticate
-      render_success_json(
-        { :current_user_id => current_user_id },
-        current_user.initial_repository_contents
-      )
+      render :json => {
+        :data => { :current_user_id => current_user_id },
+        :records => build_client_dataset(current_user.initial_repository_contents)
+      }
     else
-      render_failure_json(:errors => authentication_errors)
+      render :status => 422, :json => { :errors => authentication_errors }
     end
   end
 
   def destroy
     clear_current_user
-    render_success_json
+    head :ok
   end
 
   protected
