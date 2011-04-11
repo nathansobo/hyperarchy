@@ -9,6 +9,7 @@ Hyperarchy::Application.routes.draw do
   delete '/sandbox/:relation/:id' => 'sandbox#destroy'
 
   resources :elections
+  resources :rankings
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

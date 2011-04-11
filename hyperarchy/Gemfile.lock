@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/bigfix/erector.git
   revision: adac17b5c02e47c0ebb834684d2a759cf34b8796
-  ref: adac17b5c02e47c0ebb8
+  tag: rails3
   specs:
     erector (0.8.1)
       rake

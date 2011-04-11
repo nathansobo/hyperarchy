@@ -23,6 +23,7 @@ module Views
             link :rel => "stylesheet", :type => "text/css", :href => "/stylesheets/hyperarchy.css"
             link :rel => "shortcut icon", :href => "/images/icon.png"
 
+            csrf_meta_tag
             head_content
             google_analytics_javascript
           end
