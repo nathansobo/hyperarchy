@@ -551,6 +551,73 @@ module Prequel
         @blog = Blog.create({:title => "Saved Blog", :user_id => 1})
       end
 
+      describe "#set_field_value" do
+        attr_reader :post
+        before do
+          class ::Post < Prequel::Record
+            column :id, :integer
+            column :integer_field, :integer
+            column :float_field, :float
+            column :datetime_field, :datetime
+            column :boolean_field, :boolean
+            synthetic_column :datetime_synthetic_field, :datetime
+
+            attr_accessor :datetime_synthetic_field
+
+            create_table
+          end
+          @post = Post.create!
+        end
+
+        it "converts epoch milleseconds to times" do
+          freeze_time
+
+          # regular field
+          post.set_field_value(:datetime_field, Time.now.to_millis)
+          post.datetime_field.should be_a(Time)
+          post.datetime_field.to_i.should == Time.now.to_i
+
+          # synthetic field
+          post.set_field_value(:datetime_synthetic_field, Time.now.to_millis)
+          post.datetime_synthetic_field.should be_a(Time)
+          post.datetime_synthetic_field.to_i.should == Time.now.to_i
+        end
+
+        it "converts strings to integers" do
+          post.set_field_value(:integer_field, '-11')
+          post.integer_field.should == -11
+        end
+
+        it "converts strings to floats" do
+          post.set_field_value(:float_field, '-11.5')
+          post.float_field.should == -11.5
+        end
+
+        it "converts strings to booleans" do
+          post.set_field_value(:boolean_field, 'true')
+          post.boolean_field.should be_true
+
+          post.set_field_value(:boolean_field, 'false')
+          post.boolean_field.should be_false
+          
+          post.set_field_value(:boolean_field, '1')
+          post.boolean_field.should be_true
+
+          post.set_field_value(:boolean_field, '0')
+          post.boolean_field.should be_false
+
+          post.set_field_value(:boolean_field, 1)
+          post.boolean_field.should be_true
+
+          post.set_field_value(:boolean_field, 0)
+          post.boolean_field.should be_false
+
+          post.set_field_value(:boolean_field, nil)
+          post.boolean_field.should be_nil
+
+        end
+      end
+
       describe "#update(attributes)" do
         it "assigns all fields and synthetic fields and saves the record" do
           blog.update(:title => "Coding For Fun", :tricky_subtitle => "And Maybe Eventually Profit?", :user_id => 4)
@@ -594,36 +661,6 @@ module Prequel
             post.blog_id.should be_nil
           end
         end
-
-        describe "datetime conversion" do
-          attr_reader :post
-          before do
-            class ::Post < Prequel::Record
-              column :id, :integer
-              column :published_at, :datetime
-              synthetic_column :party_time, :datetime
-
-              attr_accessor :party_time
-
-              create_table
-            end
-            @post = Post.create!
-            freeze_time
-          end
-
-          it "when assigning fields of type :datetime, converts epoch milliseconds to time if necessary" do
-            post.update(:published_at => Time.now.to_millis)
-            post.published_at.should be_a(Time)
-            post.published_at.to_i.should == Time.now.to_i
-          end
-
-          it "when assigniing synthetic fields of type :datetime, converts epoch milliseconds to time if necessary" do
-            post.update(:party_time => Time.now.to_millis)
-            post.party_time.should be_a(Time)
-            post.party_time.to_i.should == Time.now.to_i
-          end
-        end
-
       end
 
       describe "#update!(attributes)" do

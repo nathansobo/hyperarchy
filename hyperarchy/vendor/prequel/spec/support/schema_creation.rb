@@ -48,6 +48,8 @@ module Prequel
             String
           when :integer
             Integer
+          when :float
+            Float
           when :datetime
             Time
           when :boolean

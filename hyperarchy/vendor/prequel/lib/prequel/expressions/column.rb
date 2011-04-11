@@ -41,14 +41,17 @@ module Prequel
       end
 
       def normalize_field_value(value)
-        return value unless type == :datetime
-        case value
-          when Time, NilClass
-            value
-          when Integer
-            Time.at(value / 1000)
+        case type
+          when :integer
+            value.nil?? nil : Integer(value)
+          when :float
+            value.nil?? nil : Float(value)
+          when :datetime
+            normalize_datetime_value(value)
+          when :boolean
+            normalize_boolean_value(value)
           else
-            raise "Can't convert value #{value.inspect} for storage as a :datetime"
+            value
         end
       end
 
@@ -66,6 +69,32 @@ module Prequel
           'table' => table.name.to_s,
           'name' => name.to_s
         }
+      end
+
+      protected
+
+      def normalize_datetime_value(value)
+        case value
+          when Time, NilClass
+            value
+          when Integer
+            Time.at(value / 1000)
+          else
+            raise "Can't convert value #{value.inspect} for storage as a :datetime"
+        end
+      end
+
+      def normalize_boolean_value(value)
+        case value
+          when true, 'true', 1, '1'
+            true
+          when false, 'false', 0, '0'
+            false
+          when NilClass
+            nil
+          else
+            raise "Can't convert value #{value.inspect} for storage as a :boolean"
+        end
       end
     end
   end
