@@ -1,8 +1,5 @@
 class RankingsController < ApplicationController
-
   def create
-    p current_user
-
     raise SecurityError if !current_user || current_user.guest?
 
     organization = Candidate.find(params[:candidate_id]).election.organization
