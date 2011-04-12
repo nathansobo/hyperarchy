@@ -159,7 +159,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       this.electionId(parseInt(state.electionId));
       this.rankingsUserId(state.rankingsUserId || Application.currentUserId);
 
-      if (!Application.currentUser().guest()) Server.post("/visited?election_id=" + state.electionId);
+      if (!Application.currentUser().guest()) $.post("/election_visits", {election_id: state.electionId});
       Application.layout.activateNavigationTab("questionsLink");
       Application.layout.showSubNavigationContent("elections");
     },
