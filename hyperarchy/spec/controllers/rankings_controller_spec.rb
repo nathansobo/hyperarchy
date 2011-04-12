@@ -87,7 +87,6 @@ describe RankingsController do
     end
   end
 
-
   context "when not authenticated" do
     it "returns a security error" do
       post :create

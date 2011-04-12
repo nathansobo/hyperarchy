@@ -10,6 +10,7 @@ Hyperarchy::Application.routes.draw do
 
   resources :elections
   resources :rankings
+  resources :election_visits
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
