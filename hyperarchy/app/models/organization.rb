@@ -48,7 +48,10 @@ class Organization < Prequel::Record
 
   def ensure_current_user_is_member
     raise SecurityError unless current_user
-    return if current_user_is_member?
+    if membership = memberships.find(:user => current_user)
+      membership.update(:pending => false) if membership.pending?
+      return
+    end
     raise SecurityError unless public?
     memberships.create!(:user => current_user, :pending => false)
   end
