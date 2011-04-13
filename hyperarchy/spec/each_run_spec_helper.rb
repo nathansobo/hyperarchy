@@ -4,6 +4,7 @@ RSpec.configure do |config|
   config.mock_with :rr
   config.include SpecMethods
   config.include ModelSpecMethods, :type => :model
+  config.include ModelSpecMethods, :type => :mailer
   config.include ControllerSpecMethods, :type => :controller
 
   config.before do
@@ -18,6 +19,7 @@ RSpec.configure do |config|
 
   config.after do
     Prequel.clear_session_in_test_mode
+    ActionMailer::Base.deliveries.clear
   end
 
   # TODO: Why doesn't a block taking a block work with RR?

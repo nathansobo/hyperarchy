@@ -112,11 +112,8 @@ class Membership < Prequel::Record
     return unless pending?
     return if suppress_invite_email
 
-    to = email_address
-    subject = invite_email_subject
-    body = invite_email_body
-    Hyperarchy.defer do
-      Mailer.send(:to => to, :subject => subject, :body => body)
+    if invitation
+      MembershipMailer.invitation(id).deliver
     end
   end
 

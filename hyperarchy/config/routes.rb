@@ -2,12 +2,14 @@ Hyperarchy::Application.routes.draw do
   root :to => 'home#show'
   match 'login' => 'sessions#create'
   match 'logout' => 'sessions#destroy'
+  match 'signup' => 'users#new'
 
   get '/sandbox' => 'sandbox#fetch'
   post '/sandbox/:relation' => 'sandbox#create'
   put '/sandbox/:relation/:id' => 'sandbox#update'
   delete '/sandbox/:relation/:id' => 'sandbox#destroy'
 
+  resources :users
   resources :elections
   resources :rankings
   resources :election_visits

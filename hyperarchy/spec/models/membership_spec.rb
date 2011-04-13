@@ -12,7 +12,7 @@ module Models
       it "assigns last_visited to the current time" do
         freeze_time
         freeze_time
-        membership = organization.memberships.create!(:user => User.make)
+        membership = organization.memberships.make(:user => User.make)
         membership.last_visited.should == Time.now
       end
     end
@@ -32,6 +32,7 @@ module Models
         membership.should be_pending
         membership.invitation.should be_nil
 
+        pending
         Mailer.emails.length.should == 1
         invite_email = Mailer.emails.first
 
@@ -46,7 +47,6 @@ module Models
       it "associates the pending membership with an invitation with the given email address and sends them an email with a link to the invitation" do
         first_name = "New"
         last_name = "Member"
-
         email_address = "new_member@example.com"
 
         membership_1 = organization.memberships.create!(:first_name => first_name, :last_name => last_name, :email_address => email_address)
@@ -59,12 +59,9 @@ module Models
         invitation.sent_to_address.should == email_address
         membership_1.user.should be_nil
 
-        Mailer.emails.length.should == 1
-        invite_email_1 = Mailer.emails.shift
-        invite_email_1[:to].should == email_address
-        invite_email_1[:subject].should include(current_user.full_name)
-        invite_email_1[:subject].should include(organization.name)
-        invite_email_1[:body].should match(/signup\?invitation_code=#{invitation.guid}/)
+        ActionMailer::Base.deliveries.length.should == 1
+        invite_email = ActionMailer::Base.deliveries.shift
+        invite_email.text_part.body.should include(invitation.guid)
 
         # Membership to a different organization associtates with the same invitation
         organization_2 = Organization.make
@@ -73,12 +70,9 @@ module Models
         membership_2.should be_pending
         membership_2.invitation.should == invitation
 
-        Mailer.emails.length.should == 1
-        invite_email_2 = Mailer.emails.shift
-        invite_email_2[:to].should == email_address
-        invite_email_2[:subject].should include(current_user.full_name)
-        invite_email_2[:subject].should include(organization_2.name)
-        invite_email_2[:body].should match(/signup\?invitation_code=#{invitation.guid}/)
+        ActionMailer::Base.deliveries.length.should == 1
+        invite_email_2 = ActionMailer::Base.deliveries.shift
+        invite_email_2.text_part.body.should include(invitation.guid)
       end
     end
 

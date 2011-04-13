@@ -17,6 +17,12 @@ Hyperarchy::Application.configure do
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
 
+  config.action_mailer.default_url_options = { :host => "local.hyperarchy.com" }
+  config.action_mailer.smtp_settings = {
+    :host => "localhost",
+    :port => 2525
+  }
+
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
 

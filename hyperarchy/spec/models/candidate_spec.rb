@@ -11,7 +11,7 @@ module Models
     describe "before create" do
       it "assigns the creator to the Model::Record.current_user" do
         set_current_user(User.make)
-        election.organization.memberships.create!(:user => current_user)
+        election.organization.memberships.make(:user => current_user)
 
         candidate = election.candidates.create(:body => "foo")
         candidate.creator.should == current_user
