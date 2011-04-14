@@ -48,10 +48,11 @@ describe ApplicationController do
       end
 
       context "for a normal request" do
-        it "logs the guest out, then redirects to the login_url" do
+        it "logs the guest out, sets the after_login_path in the session, then redirects to the login_url" do
           get :index
           current_user.should be_nil
-          response.should redirect_to(controller.login_url)
+          session[:after_login_path].should == request.path_info
+          response.should redirect_to(controller.login_path)
         end
       end
 
@@ -65,8 +66,9 @@ describe ApplicationController do
 
     context "when no one is logged in" do
       context "for a normal request" do
-        it "redirects to the login_url" do
+        it "sets the after_login_path in the session and redirects to the login_url" do
           get :index
+          session[:after_login_path].should == request.path_info
           response.should redirect_to(controller.login_url)
         end
       end

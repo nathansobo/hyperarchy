@@ -43,6 +43,7 @@ class ApplicationController < ActionController::Base
     else
       raise SecurityError if request.xhr?
       clear_current_user
+      session[:after_login_path] = request.path_info
       redirect_to login_url
       false
     end
