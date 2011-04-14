@@ -43,6 +43,7 @@ Organization.blueprint do
 end
 
 Membership.blueprint do
+  user { User.make }
   organization { Organization.make }
   suppress_invite_email { true }
 end

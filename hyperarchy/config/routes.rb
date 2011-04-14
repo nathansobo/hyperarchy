@@ -1,7 +1,8 @@
 Hyperarchy::Application.routes.draw do
   root :to => 'home#show'
-  match 'login' => 'sessions#create'
-  match 'logout' => 'sessions#destroy'
+  match 'login' => 'sessions#new', :via => 'get', :as => "login"
+  match 'login' => 'sessions#create', :via => 'post', :as => "login"
+  match 'logout' => 'sessions#destroy', :via => 'post'
   match 'signup' => 'users#new'
 
   get '/sandbox' => 'sandbox#fetch'
@@ -10,6 +11,9 @@ Hyperarchy::Application.routes.draw do
   delete '/sandbox/:relation/:id' => 'sandbox#destroy'
 
   resources :users
+  resources :memberships do
+    get :confirm, :on => :member
+  end
   resources :elections
   resources :rankings
   resources :election_visits

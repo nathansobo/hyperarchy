@@ -1,4 +1,5 @@
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+Rails.application.reload_routes!
 
 RSpec.configure do |config|
   config.mock_with :rr

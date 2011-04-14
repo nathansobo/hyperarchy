@@ -37,8 +37,19 @@ class ApplicationController < ActionController::Base
     current_user_id ? User.find(current_user_id) : nil
   end
 
-  def authentication_required
-    raise SecurityError unless current_user
+  def require_authentication
+    if current_user && !current_user.guest?
+      true
+    else
+      raise SecurityError if request.xhr?
+      clear_current_user
+      redirect_to login_url
+      false
+    end
+  end
+
+  def allow_guests
+    set_current_user(User.guest) unless current_user
   end
 
   def render_success_json(data=nil, dataset=[])
