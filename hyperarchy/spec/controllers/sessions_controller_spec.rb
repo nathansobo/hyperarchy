@@ -8,6 +8,13 @@ describe SessionsController do
     @membership = organization.memberships.make(:user => user)
   end
 
+  describe "#new" do
+    it "renders successfully" do
+      get :new
+      response.should be_success
+    end
+  end
+
   describe "#create" do
     describe "when the email address and password match an existing user" do
       it "logs the user in, and returns the current user id plus the user's initial dataset" do
