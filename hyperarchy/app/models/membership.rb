@@ -114,6 +114,8 @@ class Membership < Prequel::Record
 
     if invitation
       MembershipMailer.invitation(id).deliver
+    else
+      MembershipMailer.confirmation(current_user.id, id).deliver
     end
   end
 

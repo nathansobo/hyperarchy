@@ -35,7 +35,7 @@ describe MembershipMailer do
     end
   end
 
-  describe "#existing_user_notification" do
+  describe "#confirmation" do
     attr_reader :organization, :membership, :invitation, :email
 
     before do
@@ -49,7 +49,7 @@ describe MembershipMailer do
       )
       membership.user.should == user
 
-      @email = MembershipMailer.existing_user_notification(current_user.id, membership.id).deliver
+      @email = MembershipMailer.confirmation(current_user.id, membership.id).deliver
       ActionMailer::Base.deliveries.should_not be_empty
     end
 
@@ -64,9 +64,8 @@ describe MembershipMailer do
     end
 
     it "includes a link to the organization in the signup page" do
-      pending
-      email.text_part.body.should include(home_url)
-      email.html_part.body.should include(signup_url)
+      email.text_part.body.should include(confirm_membership_url(membership))
+      email.html_part.body.should include(confirm_membership_url(membership))
     end
   end
 end

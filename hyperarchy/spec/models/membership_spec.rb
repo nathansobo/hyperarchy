@@ -25,21 +25,19 @@ module Models
     end
 
     describe "when created with an email address of an existing user" do
-      it "associates the pending membership with the user that has that email address and sends them an email with a link to join the organization" do
+      it "associates the pending membership with the user that has that email address and sends them an email with a confirmation link" do
         user = User.make
         membership = organization.memberships.create!(:email_address => user.email_address)
         membership.user.should == user
         membership.should be_pending
         membership.invitation.should be_nil
 
-        pending
-        Mailer.emails.length.should == 1
-        invite_email = Mailer.emails.first
-
-        invite_email[:to].should == user.email_address
-        invite_email[:subject].should match(/#{current_user.full_name}/)
-        invite_email[:subject].should match(/#{organization.name}/)
-        invite_email[:body].should match(/confirm_membership\/#{membership.id}/)
+        ActionMailer::Base.deliveries.length.should == 1
+        email = ActionMailer::Base.deliveries.shift
+        email.to.should == [user.email_address]
+        email.subject.should match(/#{current_user.full_name}/)
+        email.subject.should match(/#{organization.name}/)
+        email.text_part.body.should match(membership.to_param)
       end
     end
 
