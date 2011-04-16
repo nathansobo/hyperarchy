@@ -19,11 +19,11 @@ module Hyperarchy
     get "/private/:organization_id/:invitation_code" do
       org_id, code = params[:organization_id], params[:invitation_code]
       if (url_invitation_code_is_valid(code, org_id))
-        if current_user
-          current_user.memberships.create(:organization_id => org_id)
-        else
+        if (! current_user || current_user.guest?)
           special_guest = Organization.find(org_id).guest
           warden.set_user(special_guest)
+        elsif (! current_user.memberships.find(:organization_id => org_id))
+          current_user.memberships.create(:organization_id => org_id, :pending => false)
         end
         redirect "/#view=organization&organizationId=#{org_id}"
       else

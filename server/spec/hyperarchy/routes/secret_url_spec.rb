@@ -51,7 +51,7 @@ describe "/private", :type => :rack do
         wrong_code = "#{org.invitation_code}blablablabla"
         get "/private/#{org.id}/#{wrong_code}"
         current_user.should be_guest
-        current_user.memberships.where(:organization_id => org.id).size.should == 0
+        current_user.memberships.where(:organization_id => org.id, :pending => false).size.should == 0
       end
     end
 
