@@ -38,5 +38,23 @@ describe Organization do
         organization.can_destroy?.should be_true
       end
     end
+
+    describe "#before_create" do
+      it "creates a secret code string for inviting new members" do
+        organization = Organization.make
+        organization.invitation_code.should_not be_nil
+        organization.invitation_code.length.should >= 4
+      end
+    end
+
+    describe "#after_create" do
+      it "creates a special user who can view the organization as a guest" do
+        organization = Organization.make
+        organization.memberships.size.should == 1
+        members_relation = organization.memberships.join_through(User)
+        members_relation.size.should == 1
+        members_relation.first.should be_guest
+      end
+    end
   end
 end

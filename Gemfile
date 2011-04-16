@@ -50,4 +50,5 @@ group :thor do
   gem "daemons", "1.0.10"
   gem "sequel", "3.16.0"
   gem "pg", "0.9.0"
+  gem "activesupport", "3.0.4"
 end

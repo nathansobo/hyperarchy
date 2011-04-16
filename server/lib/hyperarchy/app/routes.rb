@@ -16,6 +16,22 @@ module Hyperarchy
       render_page Views::App
     end
 
+    get "/private/:organization_id/:invitation_code" do
+      org_id, code = params[:organization_id], params[:invitation_code]
+      if (url_invitation_code_is_valid(code, org_id))
+        if current_user
+          current_user.memberships.create(:organization_id => org_id)
+        else
+          special_guest = Organization.find(org_id).guest
+          warden.set_user(special_guest)
+        end
+        redirect "/#view=organization&organizationId=#{org_id}"
+      else
+        warden.set_user(Organization.social.guest) unless current_user
+        redirect "/#view=organization&organizationId=#{Organization.social.id}"
+      end
+    end
+
     get "/learn_more" do
       redirect_if_logged_in
       render_page Views::LearnMore
