@@ -213,6 +213,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     populateOrganizations: function() {
+      this.organizationsMenu.find('li > a[organizationId]').remove();
       var organizations =
         this.currentUser().admin() ?
           Organization.orderBy('name')
