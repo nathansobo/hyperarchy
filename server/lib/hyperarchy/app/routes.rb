@@ -16,18 +16,16 @@ module Hyperarchy
       render_page Views::App
     end
 
-    get "/private/:organization_id/:invitation_code" do
-      org_id, code = params[:organization_id], params[:invitation_code]
-      if (url_invitation_code_is_valid(code, org_id))
-        if (! current_user || current_user.guest?)
-          special_guest = Organization.find(org_id).guest
-          warden.set_user(special_guest)
-        elsif (! current_user.memberships.find(:organization_id => org_id))
-          current_user.memberships.create(:organization_id => org_id, :pending => false)
+    get "/private/:invitation_code" do
+      if (organization = Organization.find(:invitation_code => params[:invitation_code]))
+        if (!current_user || current_user.guest?)
+          warden.set_user(organization.guest)
+        elsif (!current_user.memberships.find(:organization_id => organization.id))
+          current_user.memberships.create(:organization_id => organization.id, :pending => false)
         end
-        redirect "/#view=organization&organizationId=#{org_id}"
+        redirect "/#view=organization&organizationId=#{organization.id}"
       else
-        warden.set_user(Organization.social.guest) unless current_user
+        warden.set_user(Organization.social.guest)
         redirect "/#view=organization&organizationId=#{Organization.social.id}"
       end
     end

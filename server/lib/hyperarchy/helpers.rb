@@ -74,11 +74,6 @@ module Hyperarchy
       invitation
     end
 
-    def url_invitation_code_is_valid(invitation_code, organization_id)
-      organization = Organization.find(organization_id)
-      (organization && organization.invitation_code == invitation_code)
-    end
-
     def base_url
       scheme = request.scheme
       if (scheme == 'http' && request.port == 80 ||

@@ -14,8 +14,8 @@ describe "/private", :type => :rack do
     end
 
     context "if the invitation code is valid" do
-      it "makes the user a member of the organization" do
-        get "/private/#{org.id}/#{org.invitation_code}"
+      it "makes the user a member of the organization and redirects to the organization's page" do
+        get "/private/#{org.invitation_code}"
         last_response.should be_redirect
         last_response.location.should == "/#view=organization&organizationId=#{org.id}"
         user.memberships.where(:organization_id => org.id).size.should == 1
@@ -24,8 +24,8 @@ describe "/private", :type => :rack do
 
     context "if the invitation code is not valid" do
       it "redirects to the default organization" do
-        wrong_code = "#{org.invitation_code}blablablabla"
-        get "/private/#{org.id}/#{wrong_code}"
+        wrong_code = "this_is_not_a_code"
+        get "/private/#{wrong_code}"
         last_response.should be_redirect
         default_org_id = Organization.social.id
         last_response.location.should == "/#view=organization&organizationId=#{default_org_id}"
@@ -37,8 +37,8 @@ describe "/private", :type => :rack do
   context "if the user is not logged in" do
 
     context "if the invitation code is valid" do
-      it "logs them in as the guest of that organization" do
-        get "/private/#{org.id}/#{org.invitation_code}"
+      it "logs them in as the guest of that organization and redirects to that organization's page" do
+        get "/private/#{org.invitation_code}"
         last_response.should be_redirect
         last_response.location.should == "/#view=organization&organizationId=#{org.id}"
         current_user.should_not be_nil
@@ -48,9 +48,11 @@ describe "/private", :type => :rack do
 
     context "if the invitation code is not valid" do
       it "redirects to the default organization" do
-        wrong_code = "#{org.invitation_code}blablablabla"
-        get "/private/#{org.id}/#{wrong_code}"
+        wrong_code = "this_is_not_a_code"
+        get "/private/#{wrong_code}"
         current_user.should be_guest
+        default_org_id = Organization.social.id
+        last_response.location.should == "/#view=organization&organizationId=#{default_org_id}"
         current_user.memberships.where(:organization_id => org.id, :pending => false).size.should == 0
       end
     end
