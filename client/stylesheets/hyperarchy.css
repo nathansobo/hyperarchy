@@ -1376,7 +1376,7 @@ body.legal {
   z-index: 100;
   padding: 20px;
   font-size: 16px; }
-  #app #invite #instructions, #app #invite #errorMessage {
+  #app #invite .instructions, #app #invite #errorMessage {
     margin-bottom: 10px;
     font-size: 20px; }
   #app #invite #errorMessage {
@@ -1390,6 +1390,8 @@ body.legal {
     resize: none; }
     #app #invite textarea.error {
       border-color: red; }
+  #app #invite .invitationUrl {
+    height: auto; }
   #app #invite #whichOrganizations {
     margin-bottom: 5px; }
   #app #invite ol {

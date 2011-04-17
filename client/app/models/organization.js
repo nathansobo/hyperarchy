@@ -9,7 +9,8 @@ _.constructor("Organization", Model.Record, {
         electionCount: 'integer',
         useSsl: 'boolean',
         social: 'boolean',
-        privacy: 'string'
+        privacy: 'string',
+        invitationCode: 'string'
       });
 
       this.hasMany("elections");
