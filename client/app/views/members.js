@@ -73,8 +73,10 @@ _.constructor("Views.Members", View.Template, {
     },
 
     modelAssigned: function(organization) {
-      organization.memberships().fetch().onSuccess(function() {
-        this.membersTbody.relation(organization.memberships());
+      organization.memberships().joinTo(User).fetch().onSuccess(function() {
+        var nonGuestMemberships = organization.memberships().joinTo(User).
+                                  where({guest: false}).project(Membership);
+        this.membersTbody.relation(nonGuestMemberships);
       }, this);
     },
 

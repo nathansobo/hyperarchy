@@ -107,8 +107,6 @@ class User < Monarch::Model::Record
   def initial_repository_organizations
     if admin?
       Organization.all
-    elsif guest?
-      Organization.where(Organization[:privacy].neq('private')).all
     else
       Organization.where(Organization[:privacy].neq('private')).all +
         memberships.join_through(Organization.where(:privacy => 'private')).all

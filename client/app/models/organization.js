@@ -87,21 +87,14 @@ _.constructor("Organization", Model.Record, {
 
   ensureCurrentUserCanParticipate: function() {
     var future = new Monarch.Http.AjaxFuture();
-
-    if (this.isPublic()) {
-      if (Application.currentUser().guest()) {
-        Application.layout.signupPrompt.future = future;
-        Application.layout.signupPrompt.show()
-      } else {
-        future.triggerSuccess();
-      }
+    if (! Application.currentUser() || Application.currentUser().guest()) {
+      Application.layout.signupPrompt.future = future;
+      Application.layout.signupPrompt.show()
+    } else if (! this.isPublic() && ! this.currentUserIsMember()) {
+      Application.layout.mustBeMemberMessage.show();
+      future.triggerFailure();
     } else {
-      if (!this.currentUserIsMember()) {
-        Application.layout.mustBeMemberMessage.show();
-        future.triggerFailure();
-      } else {
-        future.triggerSuccess();
-      }
+      future.triggerSuccess();
     }
 
     return future;

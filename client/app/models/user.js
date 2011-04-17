@@ -43,10 +43,6 @@ _.constructor("User", Model.Record, {
   },
 
   defaultOrganization: function() {
-    if (this.guest()) {
-      return Organization.find({social: true});
-    } else {
-      return this.memberships().orderBy(Membership.lastVisited.desc()).first().organization();
-    }
+    return this.memberships().orderBy(Membership.lastVisited.desc()).first().organization();
   }
 });
