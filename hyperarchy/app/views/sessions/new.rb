@@ -8,12 +8,12 @@ module Views
           end
 
           label "Email Address", :for => "email_address"
-          input :name => "email_address", :value => flash[:entered_email_address], :tabindex => 1
+          input :name => "user[email_address]", :value => flash[:entered_email_address], :tabindex => 1
 
           a "forgot my password", :id => "forgotPassword", :href => "/request_password_reset", :tabindex => 4
           label "Password", :for => "password"
 
-          input :type => "password", :name => "password", :tabindex => 2
+          input :type => "password", :name => "user[password]", :tabindex => 2
           input :value => "Log In", :type => "submit", :class => "glossyBlack roundedButton", :tabindex => 3
 
           div :id => "signUp" do

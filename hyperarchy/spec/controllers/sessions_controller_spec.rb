@@ -16,40 +16,97 @@ describe SessionsController do
   end
 
   describe "#create" do
-    describe "when the email address and password match an existing user" do
-      it "logs the user in, and returns the current user id plus the user's initial dataset" do
-        mock(Prequel.session).current_user = user
-        current_user.should be_nil
-        xhr :post, :create, :user => { :email_address => user.email_address, :password => "password" }
-        current_user.should == user
+    describe "for a normal request" do
+      describe "when the email address and password match an existing user" do
+        context "when no after-login path is set in the session" do
+          it "logs the user in and redirects to their default organization" do
+            mock(Prequel.session).current_user = user
+            current_user.should be_nil
 
-        response.should be_success
-        response_json["data"].should == { "current_user_id" => user.id }
-        response_json["records"]["users"].should have_key(user.to_param)
-        response_json["records"]["organizations"].should have_key(organization.to_param)
-        response_json["records"]["memberships"].should have_key(membership.to_param)
+            post :create, :user => { :email_address => user.email_address, :password => "password" }
+
+            current_user.should == user
+            response.should be_redirect
+            response.should redirect_to(root_path(:anchor => "view=organization&organizationId=#{user.default_organization.id}"))
+          end
+        end
+
+        context "when an after-login path is set in the session" do
+          it "logs the user in and redirects to the after-login path, then clears the after-login path so it isn't set next time" do
+            mock(Prequel.session).current_user = user
+            current_user.should be_nil
+
+            session[:after_login_path] = "/foo/bar"
+            post :create, :user => { :email_address => user.email_address, :password => "password" }
+
+            current_user.should == user
+            response.should be_redirect
+            response.should redirect_to("/foo/bar")
+            
+            session.should_not have_key(:after_login_path)
+          end
+        end
+      end
+
+      describe "when the email address does not match an existing user" do
+        it "does not log the user in, sets a flash error message, and redirects to the login page" do
+          current_user.should be_nil
+          post :create, :user => { :email_address => "garbage", :password => "password" }
+          current_user.should be_nil
+
+          response.should redirect_to(login_path)
+          flash[:errors].should_not be_nil
+        end
+      end
+
+      describe "when the password does not match an existing user" do
+        it "does not log the user in, sets a flash error message, and redirects to the login page" do
+          current_user.should be_nil
+          post :create, :user => { :email_address => user.email_address, :password => "garbage" }
+          current_user.should be_nil
+
+          response.should redirect_to(login_path)
+          flash[:errors].should_not be_nil
+        end
       end
     end
 
-    describe "when the email address does not match an existing user" do
-      it "does not set a current user and returns error messages" do
-        current_user.should be_nil
-        xhr :post, :create, :user => { :email_address => "garbage", :password => "password" }
-        current_user.should be_nil
+    describe "for an XHR request" do
+      describe "when the email address and password match an existing user" do
+        it "logs the user in, and returns the current user id plus the user's initial dataset" do
+          mock(Prequel.session).current_user = user
+          current_user.should be_nil
+          xhr :post, :create, :user => { :email_address => user.email_address, :password => "password" }
+          current_user.should == user
 
-        response.status.should == 422
-        response_json["errors"].should_not be_nil
+          response.should be_success
+          response_json["data"].should == { "current_user_id" => user.id }
+          response_json["records"]["users"].should have_key(user.to_param)
+          response_json["records"]["organizations"].should have_key(organization.to_param)
+          response_json["records"]["memberships"].should have_key(membership.to_param)
+        end
       end
-    end
 
-    describe "when the password does not match an existing user" do
-      it "does not set a current user and returns error messages" do
-        current_user.should be_nil
-        xhr :post, :create, :user => { :email_address => user.email_address, :password => "garbage" }
-        current_user.should be_nil
+      describe "when the email address does not match an existing user" do
+        it "does not set a current user and returns error messages" do
+          current_user.should be_nil
+          xhr :post, :create, :user => { :email_address => "garbage", :password => "password" }
+          current_user.should be_nil
 
-        response.status.should == 422
-        response_json["errors"].should_not be_nil
+          response.status.should == 422
+          response_json["errors"].should_not be_nil
+        end
+      end
+
+      describe "when the password does not match an existing user" do
+        it "does not set a current user and returns error messages" do
+          current_user.should be_nil
+          xhr :post, :create, :user => { :email_address => user.email_address, :password => "garbage" }
+          current_user.should be_nil
+
+          response.status.should == 422
+          response_json["errors"].should_not be_nil
+        end
       end
     end
   end

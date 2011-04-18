@@ -1,12 +1,21 @@
 class SessionsController < ApplicationController
   def create
     if authenticate
-      render :json => {
-        :data => { :current_user_id => current_user_id },
-        :records => build_client_dataset(current_user.initial_repository_contents)
-      }
+      if request.xhr?
+        render :json => {
+          :data => { :current_user_id => current_user_id },
+          :records => build_client_dataset(current_user.initial_repository_contents)
+        }
+      else
+        redirect_to session.delete(:after_login_path) || root_url(:anchor => "view=organization&organizationId=#{current_user.default_organization.id}")
+      end
     else
-      render :status => 422, :json => { :errors => authentication_errors }
+      if request.xhr?
+        render :status => 422, :json => { :errors => authentication_errors }
+      else
+        flash[:errors] = authentication_errors
+        redirect_to login_path
+      end
     end
   end
 
