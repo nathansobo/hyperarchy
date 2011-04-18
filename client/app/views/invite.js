@@ -46,7 +46,7 @@ _.constructor("Views.Invite", View.Template, {
       this.instructions.show();
       this.errorMessage.hide();
       this.emailAddresses.val("");
-      var invitationUrl = "www.hyperarchy.com/private/" + Application.currentOrganization().invitationCode();
+      var invitationUrl = 'https://' + Application.HTTP_HOST + "/private/" + Application.currentOrganization().invitationCode();
       this.invitationUrl.val(invitationUrl);
       this.invitationUrl.focus();
       this.emailAddresses.removeClass("error");
