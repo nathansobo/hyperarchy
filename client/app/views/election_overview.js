@@ -461,7 +461,12 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     toggleGuestWelcome: function() {
       if (Application.currentUser().guest()) {
-        this.guestWelcomeCreatorName.html(htmlEscape(this.election().creator().fullName()));
+        if (!this.organization().social() && this.election().creator().admin()) {
+          this.guestWelcomeCreatorName.html(htmlEscape(this.organization().name()));
+        } else {
+          this.guestWelcomeCreatorName.html(htmlEscape(this.election().creator().fullName()));
+        }
+
         this.guestWelcome.show();
         this.adjustHeight();
         if (this.election().candidates().empty()) {
