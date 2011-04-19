@@ -50,7 +50,6 @@ _.constructor("Controllers.Application", {
         this.previousOrganizationSubscription = new Monarch.Http.RemoteSubscription(subscriptionId)
       }, this);
       this.layout.organization(this.currentOrganization());
-      this.welcomeGuide.organization(this.currentOrganization());
     }
   },
 

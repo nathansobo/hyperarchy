@@ -61,8 +61,6 @@ _.constructor("Views.Layout", View.Template, {
         div({'class': "clear"});
       });
 
-      subview("welcomeGuide", Views.WelcomeGuide);
-
       div({id: "mainContent"}, function() {
         div({id: "navigationBar"}, function() {
           div(function() {

@@ -5,7 +5,6 @@ _.constructor("Organization", Model.Record, {
         name: "string",
         description: "string",
         membersCanInvite: "boolean",
-        dismissedWelcomeGuide: 'boolean',
         electionCount: 'integer',
         useSsl: 'boolean',
         social: 'boolean',

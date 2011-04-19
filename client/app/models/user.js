@@ -6,8 +6,6 @@ _.constructor("User", Model.Record, {
       emailAddress: 'string',
       emailHash: 'string',
       admin: 'boolean',
-      dismissedWelcomeBlurb: 'boolean',
-      dismissedWelcomeGuide: 'boolean',
       guest: 'boolean'
     });
 
