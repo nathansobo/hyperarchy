@@ -63,8 +63,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);
 
-      this.toggleGuestWelcome();
-
       Application.layout.activateNavigationTab("questionsLink");
       Application.layout.hideSubNavigationContent();
     },
@@ -77,7 +75,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     organizationId: {
       afterChange: function(organizationId) {
-        this.toggleGuestWelcome();
         var membership = this.organization().membershipForCurrentUser();
         if (membership) membership.update({lastVisited: new Date()});
 
@@ -100,6 +97,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
       this.startLoading();
       this.organization().fetchMoreElections(16).onSuccess(function() {
+        this.toggleGuestWelcome();
         this.stopLoading();
         var elections = this.organization().elections();
         this.electionsList.relation(elections);
@@ -129,8 +127,15 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     toggleGuestWelcome: function() {
-      if (this.organization().social() && Application.currentUser().guest()) {
+      if (Application.currentUser().guest()) {
         this.userSwitchSubscription = Application.onUserSwitch(this.hitch('toggleGuestWelcome'));
+        if (!this.organization().social()) {
+          if (!this.organization().hasNonAdminQuestions()) {
+            this.guestWelcome.find('.right').html('We thought your team would find these questions interesting. Click on one that interests you to suggest and rank answers.');
+          } else {
+            this.guestWelcome.find('.right').html('Here are some questions your team is discussing. Click on one that interests you to chime in.');
+          }
+        }
         this.guestWelcome.show();
       } else {
         this.guestWelcome.hide();

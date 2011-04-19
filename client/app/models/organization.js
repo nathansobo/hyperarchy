@@ -109,5 +109,9 @@ _.constructor("Organization", Model.Record, {
 
   isReadOnly: function() {
     return this.privacy() == "read_only";
+  },
+
+  hasNonAdminQuestions: function() {
+    return !this.elections().where(Election.creatorId.neq(1)).empty();
   }
 });
