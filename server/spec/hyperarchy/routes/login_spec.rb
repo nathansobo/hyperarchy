@@ -35,6 +35,22 @@ describe "POST /login", :type => :rack do
         json["successful"].should be_false
         json["data"]["errors"].should_not be_empty
       end
+
+      context "if a guest is logged in and there is a login error" do
+        it "does not log the guest out" do
+          pending "workaround warden BS"
+          login_as(User.guest)
+          
+          xhr_post "/login", :email_address => user.email_address, :password => "garbage"
+
+          last_response.should be_ok
+          current_user.should == User.guest
+          
+          json = last_response.body_from_json
+          json["successful"].should be_false
+          json["data"]["errors"].should_not be_empty
+        end
+      end
     end
   end
 
