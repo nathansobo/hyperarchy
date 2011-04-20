@@ -10,6 +10,10 @@ Spork.prefork do
   require 'prequel/machinist_adaptor'
   require 'rr'
   require 'faker'
+
+  # required for spork + rubymine
+  $:.unshift(File.expand_path("/Applications/RubyMine 3.1.1.app") + "/rb/testing/patch/bdd")
+  $:.unshift(File.expand_path("/Applications/RubyMine 3.1.1.app") + "/rb/testing/patch/common")
 end
 
 Spork.each_run do
