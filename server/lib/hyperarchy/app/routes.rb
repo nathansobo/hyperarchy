@@ -193,9 +193,11 @@ module Hyperarchy
     end
 
     def xhr_signup
+      # guest_org_id = current_user.organization_ids.first if current_user
       user = User.secure_create(params[:user].from_json)
       if user.valid?
-        if (guest_org_id = current_user.organization_ids.first)
+        # if (guest_org_id)
+        if (guest_org_id = current_user.organization_ids.first if current_user)
           user.memberships.create(:organization_id => guest_org_id, :pending => false)
         end
         warden.set_user(user)

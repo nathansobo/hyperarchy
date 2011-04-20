@@ -86,8 +86,8 @@ _.constructor("Organization", Model.Record, {
   },
 
   ensureCurrentUserCanParticipate: function() {
+    var future = new Monarch.Http.AjaxFuture();
     if (this.isReadOnly() && !this.currentUserIsMember()) {
-      var future = new Monarch.Http.AjaxFuture();
       Application.layout.mustBeMemberMessage.show();
       future.triggerFailure();
     } else if (Application.currentUser().guest()) {
