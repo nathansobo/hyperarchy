@@ -20,7 +20,7 @@ module Views
       end
 
       def signup_form
-        form :id => "signupForm", :class => "floatingCard dropShadow", :action => "/signup", :method => "post" do
+        form :id => "signupForm", :class => "floatingCard dropShadow", :action => signup_path, :method => "post" do
           div :style => "border-bottom: 1px solid #ccc; margin-bottom: 20px;" do
             a :id => "smallLogo", :href => "/"
           end
