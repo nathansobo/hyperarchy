@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
 
   def destroy
     clear_current_user
-    head :ok
+    redirect_to root_path
   end
 
   protected

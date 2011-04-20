@@ -112,12 +112,13 @@ describe SessionsController do
   end
 
   describe "#destroy" do
-    it "logs the current user out" do
+    it "logs the current user out and redirects to the root" do
       login_as(user)
       mock(Prequel.session).current_user = user # this happens before the log out
       mock(Prequel.session).current_user = nil # this should happen upon log out
       current_user.should_not be_nil
-      xhr :post, :destroy
+      post :destroy
+      response.should redirect_to(root_path)
       current_user.should be_nil
     end
   end
