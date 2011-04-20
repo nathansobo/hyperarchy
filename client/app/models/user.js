@@ -6,8 +6,6 @@ _.constructor("User", Model.Record, {
       emailAddress: 'string',
       emailHash: 'string',
       admin: 'boolean',
-      dismissedWelcomeBlurb: 'boolean',
-      dismissedWelcomeGuide: 'boolean',
       guest: 'boolean'
     });
 
@@ -43,10 +41,6 @@ _.constructor("User", Model.Record, {
   },
 
   defaultOrganization: function() {
-    if (this.guest()) {
-      return Organization.find({social: true});
-    } else {
-      return this.memberships().orderBy(Membership.lastVisited.desc()).first().organization();
-    }
+    return this.memberships().orderBy(Membership.lastVisited.desc()).first().organization();
   }
 });

@@ -5,11 +5,11 @@ _.constructor("Organization", Model.Record, {
         name: "string",
         description: "string",
         membersCanInvite: "boolean",
-        dismissedWelcomeGuide: 'boolean',
         electionCount: 'integer',
         useSsl: 'boolean',
         social: 'boolean',
-        privacy: 'string'
+        privacy: 'string',
+        invitationCode: 'string'
       });
 
       this.hasMany("elections");
@@ -87,23 +87,15 @@ _.constructor("Organization", Model.Record, {
 
   ensureCurrentUserCanParticipate: function() {
     var future = new Monarch.Http.AjaxFuture();
-
-    if (this.isPublic()) {
-      if (Application.currentUser().guest()) {
-        Application.layout.signupPrompt.future = future;
-        Application.layout.signupPrompt.show()
-      } else {
-        future.triggerSuccess();
-      }
+    if (Application.currentUser().guest()) {
+      Application.layout.signupPrompt.future = future;
+      Application.layout.signupPrompt.show()
+    } else if (this.isReadOnly() && !this.currentUserIsMember()) {
+      Application.layout.mustBeMemberMessage.show();
+      future.triggerFailure();
     } else {
-      if (!this.currentUserIsMember()) {
-        Application.layout.mustBeMemberMessage.show();
-        future.triggerFailure();
-      } else {
-        future.triggerSuccess();
-      }
+      future.triggerSuccess();
     }
-
     return future;
   },
 
@@ -113,5 +105,13 @@ _.constructor("Organization", Model.Record, {
 
   isPublic: function() {
     return this.privacy() === "public";
+  },
+
+  isReadOnly: function() {
+    return this.privacy() == "read_only";
+  },
+
+  hasNonAdminQuestions: function() {
+    return !this.elections().where(Election.creatorId.neq(1)).empty();
   }
 });

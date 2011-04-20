@@ -249,7 +249,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     populateElectionDetails: function(election) {
       this.bodyTextarea.val(election.body());
-      this.bodyElement.bindHtml(election, 'body');
+      this.bodyElement.bindHtml(election, 'body', true);
       if (election.editableByCurrentUser()) {
         this.expandLink.show();
       } else {
@@ -311,7 +311,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     showCreateCandidateForm: function(instantly) {
-      this.showCreateCandidateFormButton.addClass('pressed');
+      this.showCreateCandidateFormButton.fadeOut();
       this.createCandidateDetailsTextarea.blur();
 
       var cancelResize = _.repeat(function() {
@@ -333,7 +333,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     hideCreateCandidateForm: function(instantly, whenDone, preserveText) {
-      this.showCreateCandidateFormButton.removeClass('pressed');
+      this.showCreateCandidateFormButton.fadeIn();
 
       if (!preserveText) {
         this.createCandidateBodyTextarea.val("");
@@ -461,7 +461,12 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     toggleGuestWelcome: function() {
       if (Application.currentUser().guest()) {
-        this.guestWelcomeCreatorName.html(htmlEscape(this.election().creator().fullName()));
+        if (!this.organization().social() && this.election().creator().admin()) {
+          this.guestWelcomeCreatorName.html(htmlEscape(this.organization().name()));
+        } else {
+          this.guestWelcomeCreatorName.html(htmlEscape(this.election().creator().fullName()));
+        }
+
         this.guestWelcome.show();
         this.adjustHeight();
         if (this.election().candidates().empty()) {

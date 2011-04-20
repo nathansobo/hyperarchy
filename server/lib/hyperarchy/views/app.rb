@@ -14,6 +14,7 @@ module Views
           #{store_in_repository(current_user.initial_repository_contents)}
           Server.realTimeClientId(#{Guid.new.to_s.inspect});
           window.Application = new Controllers.Application(#{(current_user ? current_user.id : nil).to_json});
+          Application.HTTP_HOST = #{HTTP_HOST.to_json};
           Application.environment = #{RACK_ENV.to_json};
           window.Application.initializeNavigation();
         });

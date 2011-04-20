@@ -1376,7 +1376,7 @@ body.legal {
   z-index: 100;
   padding: 20px;
   font-size: 16px; }
-  #app #invite #instructions, #app #invite #errorMessage {
+  #app #invite .instructions, #app #invite #errorMessage {
     margin-bottom: 10px;
     font-size: 20px; }
   #app #invite #errorMessage {
@@ -1390,6 +1390,8 @@ body.legal {
     resize: none; }
     #app #invite textarea.error {
       border-color: red; }
+  #app #invite .invitationUrl {
+    height: auto; }
   #app #invite #whichOrganizations {
     margin-bottom: 5px; }
   #app #invite ol {
@@ -1414,67 +1416,6 @@ body.legal {
   #app #disconnectDialog #refresh {
     float: right;
     margin-top: 20px; }
-
-#welcomeGuide {
-  width: 1000px;
-  margin: 10px auto 20px; }
-  #welcomeGuide #steps {
-    position: relative;
-    height: 42px; }
-    #welcomeGuide #steps li {
-      width: 271px;
-      height: 24;
-      background-image: url(/images/welcome_wizard_sprites.png);
-      position: absolute;
-      font-size: 20px;
-      padding: 9px 0;
-      text-align: center;
-      color: white;
-      letter-spacing: 1px; }
-      #welcomeGuide #steps li.pending {
-        background-position: 0px -50px; }
-      #welcomeGuide #steps li.done {
-        background-position: 0px -100px;
-        color: #343434; }
-      #welcomeGuide #steps li#gloss {
-        width: 996;
-        height: 20;
-        top: 2px;
-        left: 2px;
-        z-index: 5;
-        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(255, 255, 255, 0.44)), color-stop(0.5, rgba(255, 255, 255, 0.16)), color-stop(0.51, rgba(255, 255, 255, 0)), to(rgba(255, 255, 255, 0.05)));
-        background: -moz-linear-gradient(top, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 51%, rgba(255, 255, 255, 0.1) 100%); }
-      #welcomeGuide #steps li#step1 {
-        left: 0px;
-        z-index: 4;
-        padding-right: 12px;
-        width: 259; }
-      #welcomeGuide #steps li#step2 {
-        left: 250;
-        z-index: 3; }
-      #welcomeGuide #steps li#step3 {
-        left: 500;
-        z-index: 2; }
-      #welcomeGuide #steps li#step4 {
-        padding-left: 10px;
-        left: 750;
-        background-position: -300px 0;
-        z-index: 1;
-        width: 240; }
-        #welcomeGuide #steps li#step4.pending {
-          background-position: -300px -50px; }
-        #welcomeGuide #steps li#step4.done {
-          background-position: -300px -100px; }
-  #welcomeGuide #currentStep {
-    background: #343434;
-    padding: 0 2px 2px 2px; }
-    #welcomeGuide #currentStep .step {
-      padding: 30px;
-      background: white; }
-      #welcomeGuide #currentStep .step h2 {
-        margin-bottom: 10px; }
-      #welcomeGuide #currentStep .step div.stepDescription {
-        font-size: 20px; }
 
 #app #organizationOverview h2 {
   padding-left: 8px; }
@@ -1544,38 +1485,37 @@ body.legal {
     padding-top: 10px; }
   #app #electionOverview .headerContainer {
     margin-bottom: 20px; }
-    #app #electionOverview .headerContainer #electionBodyContainer .expandArrow {
-      float: left;
-      margin-right: 5px;
-      margin-top: 8px; }
-    #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight {
-      width: 595px;
-      display: inline-block; }
-      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight h2 {
-        display: inline;
-        margin-right: 5px; }
-      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight textarea.electionBody {
-        width: 100%;
-        resize: none;
-        font-size: 23px;
-        padding: 4px;
-        height: 50px;
-        margin-bottom: 10px; }
-      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight #expandedArea button {
-        float: right;
-        margin-left: 5px; }
-      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight #expandedArea .loading {
-        float: right;
-        top: 2px;
-        position: relative; }
+    #app #electionOverview .headerContainer #electionBodyContainer {
+      min-height: 40px; }
+      #app #electionOverview .headerContainer #electionBodyContainer .expandArrow {
+        float: left;
+        margin-right: 5px;
+        margin-top: 8px; }
+      #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight {
+        width: 595px;
+        display: inline-block; }
+        #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight h2 {
+          display: inline;
+          margin-right: 5px; }
+        #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight textarea.electionBody {
+          width: 100%;
+          resize: none;
+          font-size: 23px;
+          padding: 4px;
+          height: 50px;
+          margin-bottom: 10px; }
+        #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight #expandedArea button {
+          float: right;
+          margin-left: 5px; }
+        #app #electionOverview .headerContainer #electionBodyContainer #electionBodyContainerRight #expandedArea .loading {
+          float: right;
+          top: 2px;
+          position: relative; }
   #app #electionOverview #showCreateCandidateFormButton {
     padding: 6px 20px;
     float: right;
     display: inline-block;
     text-align: center; }
-    #app #electionOverview #showCreateCandidateFormButton.pressed {
-      -webkit-box-shadow: 0px 0px 4px black inset;
-      -moz-box-shadow: 0px 0px 4px black inset; }
   #app #electionOverview div#createCandidateForm {
     margin-bottom: 30px; }
     #app #electionOverview div#createCandidateForm .cancelX, #app #electionOverview div#createCandidateForm .rightCancelX {

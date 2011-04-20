@@ -16,6 +16,20 @@ module Hyperarchy
       render_page Views::App
     end
 
+    get "/private/:invitation_code" do
+      if (organization = Organization.find(:invitation_code => params[:invitation_code]))
+        if (!current_user || current_user.guest?)
+          warden.set_user(organization.guest)
+        elsif (!current_user.memberships.find(:organization_id => organization.id))
+          current_user.memberships.create(:organization_id => organization.id, :pending => false)
+        end
+        redirect "/#view=organization&organizationId=#{organization.id}"
+      else
+        warden.set_user(Organization.social.guest)
+        redirect "/#view=organization&organizationId=#{Organization.social.id}"
+      end
+    end
+
     get "/learn_more" do
       redirect_if_logged_in
       render_page Views::LearnMore
@@ -176,6 +190,9 @@ module Hyperarchy
     def xhr_signup
       user = User.secure_create(params[:user].from_json)
       if user.valid?
+        if (guest_org_id = current_user.organization_ids.first)
+          user.memberships.create(:organization_id => guest_org_id, :pending => false)
+        end
         warden.set_user(user)
         successful_json_response({"current_user_id" => user.id}, user)
       else

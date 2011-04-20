@@ -7,7 +7,7 @@
     padding: 20px;
     font-size: 16px;
 
-    #instructions, #errorMessage {
+    .instructions, #errorMessage {
       margin-bottom: 10px;
       font-size: 20px;
     }
@@ -27,6 +27,10 @@
       &.error {
         border-color: red;
       }
+    }
+
+    .invitationUrl {
+      height: auto;
     }
 
     #whichOrganizations {

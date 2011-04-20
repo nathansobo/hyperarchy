@@ -61,8 +61,6 @@ _.constructor("Views.Layout", View.Template, {
         div({'class': "clear"});
       });
 
-      subview("welcomeGuide", Views.WelcomeGuide);
-
       div({id: "mainContent"}, function() {
         div({id: "navigationBar"}, function() {
           div(function() {
@@ -213,6 +211,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     populateOrganizations: function() {
+      this.organizationsMenu.find('li > a[organizationId]').remove();
       var organizations =
         this.currentUser().admin() ?
           Organization.orderBy('name')

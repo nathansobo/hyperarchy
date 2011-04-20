@@ -3,8 +3,16 @@ _.constructor("Views.Invite", View.Template, {
     div({id: "invite", 'class': "dropShadow", style: "display: none;"}, function() {
       div({'class': "rightCancelX"}).click('hide');
 
-      div({id: "instructions", 'class': "largeFont"},
-        "Enter one or more email addresses, separated by commas:"
+      div({'class': "instructions largeFont"},
+        "Share this link to your team:"
+      );
+
+      div(function() {
+        textarea({'class': "invitationUrl", readonly: "readonly"}).ref('invitationUrl');
+      });
+
+      div({'class': "instructions largeFont"},
+        "Or enter one or more email addresses, separated by commas:"
       ).ref('instructions');
 
       div({id: "errorMessage"},
@@ -16,20 +24,6 @@ _.constructor("Views.Invite", View.Template, {
       });
 
       div({'class': "clear"});
-
-      div({id: "whichOrganizations"}, "Which organizations should we invite them to join?");
-
-      subview('organizations', Views.SortedList, {
-        buildElement: function(organization) {
-          return Monarch.View.build(function(b) {
-            var checkboxId = "inviteTo" + organization.id();
-            b.li(function() {
-              b.input({type: "checkbox", checked: true, value: organization.id(), id: checkboxId});
-              b.label({'for': checkboxId},  organization.name());
-            });
-          });
-        }
-      });
 
       a({'class': "glossyBlack roundedButton", href: "#"}, 'Send Invitations').ref('sendInvitationsButton').click('sendInvitations');
       div({'class': "loading", style: "display: none;"}).ref('loadingSpinner');
@@ -48,11 +42,13 @@ _.constructor("Views.Invite", View.Template, {
     },
 
     beforeShow: function() {
-      this.organizations.relation(Application.currentUser().organizationsPermittedToInvite());
       $("#darkenBackground").one('click', this.hitch('hide'));
       this.instructions.show();
       this.errorMessage.hide();
       this.emailAddresses.val("");
+      var invitationUrl = 'https://' + Application.HTTP_HOST + "/private/" + Application.currentOrganization().invitationCode();
+      this.invitationUrl.val(invitationUrl);
+      this.invitationUrl.focus();
       this.emailAddresses.removeClass("error");
     },
 
@@ -60,16 +56,11 @@ _.constructor("Views.Invite", View.Template, {
       $("#darkenBackground").hide();
     },
 
-    organizationIds: function() {
-      return this.organizations.find(":checked").map(function() {
-        return $(this).val();
-      }).toArray();
-    },
-
     sendInvitations: function(elt, e) {
       this.sendInvitationsButton.attr('disabled', true);
       this.loadingSpinner.show();
-      Server.post("/invite", { email_addresses: this.emailAddresses.val(), organization_ids: this.organizationIds() })
+      Server.post("/invite", {email_addresses: this.emailAddresses.val(),
+                              organization_ids: [Application.currentOrganizationId()]})
         .onSuccess(function() {
           this.sendInvitationsButton.attr('disabled', false);
           this.hide();

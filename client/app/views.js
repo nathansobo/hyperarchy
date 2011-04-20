@@ -10,7 +10,6 @@
 //= require "views/signup_prompt"
 //= require "views/disconnect_dialog"
 //= require "views/layout"
-//= require "views/welcome_guide"
 //= require "views/organization_overview"
 //= require "views/election_overview"
 //= require "views/votes_list"

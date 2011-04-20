@@ -38,8 +38,16 @@ class User < Monarch::Model::Record
     BCrypt::Password.create(unencrypted_password).to_s
   end
 
+  def self.create_guest(organization_id=nil)
+    self.create(:guest => true,
+                :first_name => "Guest",
+                :last_name  => "User#{organization_id}",
+                :email_address => "guest#{organization_id}@hyperarchy.com",
+                :password => "guest_password")
+  end
+
   def self.guest
-    find(:guest => true)
+    Organization.social.guest
   end
 
   def can_update_or_destroy?
@@ -99,8 +107,6 @@ class User < Monarch::Model::Record
   def initial_repository_organizations
     if admin?
       Organization.all
-    elsif guest?
-      Organization.where(Organization[:privacy].neq('private')).all
     else
       Organization.where(Organization[:privacy].neq('private')).all +
         memberships.join_through(Organization.where(:privacy => 'private')).all

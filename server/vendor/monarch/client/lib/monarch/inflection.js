@@ -114,8 +114,8 @@
       for (var i = 0; i < rules.irregular.length; i++) {
         var singular = rules.irregular[i][0];
         var plural   = rules.irregular[i][1];
-        if ((word.toLowerCase() == singular) || (word == plural)) {
-          return plural;
+        if ((word.toLowerCase() == singular) || (word.toLowerCase() == plural)) {
+          return (word[0] == word[0].toLowerCase()) ? singular : this.capitalize(singular);
         }
       }
       for (var i = 0; i < rules.singular.length; i++) {
@@ -125,6 +125,7 @@
           return word.replace(regex, replaceString);
         }
       }
+      return word;
     },
 
     underscore: function(word) {

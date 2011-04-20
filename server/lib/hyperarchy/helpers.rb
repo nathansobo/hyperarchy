@@ -23,7 +23,7 @@ module Hyperarchy
 
     def allow_guests
       return if current_user
-      warden.set_user(User.guest)
+      warden.set_user(Organization.social.guest)
     end
 
     def no_internet_explorer
