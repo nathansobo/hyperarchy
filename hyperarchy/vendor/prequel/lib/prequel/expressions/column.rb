@@ -77,6 +77,8 @@ module Prequel
         case value
           when Time, NilClass
             value
+          when String
+            normalize_datetime_value(Integer(value))
           when Integer
             Time.at(value / 1000)
           else

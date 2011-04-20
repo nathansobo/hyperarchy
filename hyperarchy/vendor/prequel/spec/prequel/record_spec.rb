@@ -569,16 +569,26 @@ module Prequel
           @post = Post.create!
         end
 
-        it "converts epoch milleseconds to times" do
+        it "converts epoch milleseconds to times whether they are integers or strings" do
           freeze_time
 
-          # regular field
+          # regular field, integer
           post.set_field_value(:datetime_field, Time.now.to_millis)
           post.datetime_field.should be_a(Time)
           post.datetime_field.to_i.should == Time.now.to_i
 
-          # synthetic field
+          # regular field, string
+          post.set_field_value(:datetime_field, Time.now.to_millis.to_s)
+          post.datetime_field.should be_a(Time)
+          post.datetime_field.to_i.should == Time.now.to_i
+
+          # synthetic field, integer
           post.set_field_value(:datetime_synthetic_field, Time.now.to_millis)
+          post.datetime_synthetic_field.should be_a(Time)
+          post.datetime_synthetic_field.to_i.should == Time.now.to_i
+
+          # synthetic field, string
+          post.set_field_value(:datetime_synthetic_field, Time.now.to_millis.to_s)
           post.datetime_synthetic_field.should be_a(Time)
           post.datetime_synthetic_field.to_i.should == Time.now.to_i
         end
