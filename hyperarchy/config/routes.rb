@@ -3,7 +3,8 @@ Hyperarchy::Application.routes.draw do
   match 'login' => 'sessions#new', :via => 'get', :as => "login"
   match 'login' => 'sessions#create', :via => 'post', :as => "login"
   match 'logout' => 'sessions#destroy', :via => 'post'
-  match 'signup' => 'users#new'
+  match 'signup' => 'users#new', :via => 'get', :as => "signup"
+  match 'signup' => 'users#new', :via => 'post', :as => "signup"
 
   get '/sandbox' => 'sandbox#fetch'
   post '/sandbox/:relation' => 'sandbox#create'
