@@ -41,7 +41,6 @@ module Hyperarchy
     end
 
     post "/login" do
-      warden.logout(:default)
       if request.xhr?
         xhr_login
       else
@@ -50,6 +49,7 @@ module Hyperarchy
     end
 
     def normal_login
+      warden.logout(:default)
       if warden.authenticate
         if params[:redirected_from]
           redirect params[:redirected_from]
@@ -65,7 +65,12 @@ module Hyperarchy
     end
 
     def xhr_login
+      guest_org_id = current_user.organization_ids.first if current_user
+      warden.logout(:default)
       if warden.authenticate
+        if (guest_org_id && !current_user.memberships.find(:organization_id => guest_org_id))
+          current_user.memberships.create(:organization_id => guest_org_id, :pending => false)
+        end
         successful_json_response({"current_user_id" => current_user.id}, current_user.initial_repository_contents)
       else
         unsuccessful_json_response("errors" => warden.errors.full_messages)
@@ -188,9 +193,11 @@ module Hyperarchy
     end
 
     def xhr_signup
+      # guest_org_id = current_user.organization_ids.first if current_user
       user = User.secure_create(params[:user].from_json)
       if user.valid?
-        if (guest_org_id = current_user.organization_ids.first)
+        # if (guest_org_id)
+        if (guest_org_id = current_user.organization_ids.first if current_user)
           user.memberships.create(:organization_id => guest_org_id, :pending => false)
         end
         warden.set_user(user)

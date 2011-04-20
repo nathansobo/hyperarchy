@@ -5,7 +5,7 @@ describe "/private", :type => :rack do
   attr_accessor :org, :user
   before do
     @org = Organization.make
-    @user = User.make
+    @user = User.make(:email_address => "billy@example.com", :password => "spectrum")
   end
 
   context "if the user is already logged in" do
@@ -35,14 +35,40 @@ describe "/private", :type => :rack do
   end
 
   context "if the user is not logged in" do
-
     context "if the invitation code is valid" do
-      it "logs them in as the guest of that organization and redirects to that organization's page" do
+      before do
         get "/private/#{org.invitation_code}"
+      end
+      
+      it "logs them in as the guest of that organization and redirects to that organization's page" do
         last_response.should be_redirect
         last_response.location.should == "/#view=organization&organizationId=#{org.id}"
         current_user.should_not be_nil
+        current_user.should be_guest
         current_user.memberships.where(:organization_id => org.id).size.should == 1
+      end
+
+      context "if the user then logs into their existing account" do
+        it "gives them a membership to the organization" do
+          current_user.should be_guest
+          xhr_post "/login", :email_address => user.email_address, :password => "spectrum"
+          current_user.should == user
+          current_user.should_not be_guest
+          current_user.memberships.where(:organization_id => org.id).size.should == 1
+        end
+      end
+      
+      context "if the user then signs up for a new account" do
+        it "gives the newly created user a membership to the organization" do
+          xhr_post "/signup", :user => {
+            :first_name => "Joe",
+            :last_name => "Camel",
+            :email_address => "joe@example.com",
+            :password => "nicotine"
+          }.to_json
+          current_user.should_not be_guest
+          current_user.memberships.where(:organization_id => org.id).size.should == 1
+        end
       end
     end
 
@@ -56,6 +82,5 @@ describe "/private", :type => :rack do
         current_user.memberships.where(:organization_id => org.id, :pending => false).size.should == 0
       end
     end
-
   end
 end
