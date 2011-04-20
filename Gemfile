@@ -1,8 +1,5 @@
 source :gemcutter
 
-# for child rails app
-gem 'rails', '3.0.3'
-
 # monarch
 gem "rack", "1.2.1"
 gem "sinatra", "1.0"
