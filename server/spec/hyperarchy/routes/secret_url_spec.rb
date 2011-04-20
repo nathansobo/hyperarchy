@@ -49,25 +49,46 @@ describe "/private", :type => :rack do
       end
 
       context "if the user then logs into their existing account" do
-        it "gives them a membership to the organization" do
-          current_user.should be_guest
-          xhr_post "/login", :email_address => user.email_address, :password => "spectrum"
-          current_user.should == user
-          current_user.should_not be_guest
-          current_user.memberships.where(:organization_id => org.id).size.should == 1
+        context "if they log in successfully" do
+          it "gives them a membership to the organization" do
+            xhr_post "/login", :email_address => user.email_address, :password => "spectrum"
+            current_user.should == user
+            current_user.should_not be_guest
+            current_user.memberships.where(:organization_id => org.id).size.should == 1
+          end
+        end
+
+        context "if they don't log in successfully" do
+          it "keeps them signed in as that organization's special guest" do
+            xhr_post "/login", :email_address => user.email_address, :password => "garbage"
+            current_user.should be_guest
+            current_user.memberships.where(:organization_id => org.id).size.should == 1
+          end
         end
       end
       
       context "if the user then signs up for a new account" do
-        it "gives the newly created user a membership to the organization" do
-          xhr_post "/signup", :user => {
-            :first_name => "Joe",
-            :last_name => "Camel",
-            :email_address => "joe@example.com",
-            :password => "nicotine"
-          }.to_json
-          current_user.should_not be_guest
-          current_user.memberships.where(:organization_id => org.id).size.should == 1
+        context "if they provide valid information" do
+          it "gives the newly created user a membership to the organization" do
+            xhr_post "/signup", :user => {
+              :first_name => "Joe",
+              :last_name => "Camel",
+              :email_address => "joe@example.com",
+              :password => "nicotine"
+            }.to_json
+            current_user.should_not be_guest
+            current_user.memberships.where(:organization_id => org.id).size.should == 1
+          end
+        end
+
+        context "if they provide invalid information" do
+          it "keeps them signed in as that organization's special guest" do
+            xhr_post "/signup", :user => {
+              :first_name => "Joe"
+            }.to_json
+            current_user.should be_guest
+            current_user.memberships.where(:organization_id => org.id).size.should == 1
+          end
         end
       end
     end

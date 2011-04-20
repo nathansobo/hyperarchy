@@ -38,9 +38,7 @@ describe "POST /login", :type => :rack do
 
       context "if a guest is logged in and there is a login error" do
         it "does not log the guest out" do
-          pending "workaround warden BS"
           login_as(User.guest)
-          
           xhr_post "/login", :email_address => user.email_address, :password => "garbage"
 
           last_response.should be_ok
@@ -81,7 +79,7 @@ describe "POST /login", :type => :rack do
         it "does not set the current_user and redirects back to /#logIn" do
           post "/login", :email_address => user.email_address, :password => "incorrectpassword"
 
-          current_user.should be_nil
+          current_user.should == Organization.social.guest
           last_response.should be_redirect
           last_response.location.should == "/login"
           flash[:errors].first.should include("password")
@@ -95,7 +93,7 @@ describe "POST /login", :type => :rack do
       it "does not set the current_user and returns an unsuccessful ajax response with errors on email_address" do
         post "/login", :email_address => "bogus@example.com", :password => "spectrum"
 
-        current_user.should be_nil
+        current_user.should == Organization.social.guest
         last_response.should be_redirect
         last_response.location.should == "/login"
         flash[:errors].first.should include("email")

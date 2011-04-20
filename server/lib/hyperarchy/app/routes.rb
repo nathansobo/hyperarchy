@@ -49,14 +49,20 @@ module Hyperarchy
     end
 
     def normal_login
+      previous_user = current_user || Organization.social.guest
       warden.logout(:default)
       if warden.authenticate
+        invited_org_id = previous_user.organization_ids.first
+        if (invited_org_id && !current_user.memberships.find(:organization_id => invited_org_id))
+          current_user.memberships.create(:organization_id => invited_org_id, :pending => false)
+        end
         if params[:redirected_from]
           redirect params[:redirected_from]
         else
           redirect "/#view=organization"
         end
       else
+        warden.set_user(previous_user)
         flash[:errors] = warden.errors.full_messages
         flash[:email_address_errors] = warden.errors[:email_address]
         flash[:entered_email_address] = params[:email_address]
@@ -65,14 +71,16 @@ module Hyperarchy
     end
 
     def xhr_login
-      guest_org_id = current_user.organization_ids.first if current_user
+      previous_user = current_user || Organization.social.guest
       warden.logout(:default)
       if warden.authenticate
-        if (guest_org_id && !current_user.memberships.find(:organization_id => guest_org_id))
-          current_user.memberships.create(:organization_id => guest_org_id, :pending => false)
+        invited_org_id = previous_user.organization_ids.first
+        if (invited_org_id && !current_user.memberships.find(:organization_id => invited_org_id))
+          current_user.memberships.create(:organization_id => invited_org_id, :pending => false)
         end
         successful_json_response({"current_user_id" => current_user.id}, current_user.initial_repository_contents)
       else
+        warden.set_user(previous_user)
         unsuccessful_json_response("errors" => warden.errors.full_messages)
       end
     end
@@ -193,16 +201,17 @@ module Hyperarchy
     end
 
     def xhr_signup
-      # guest_org_id = current_user.organization_ids.first if current_user
+      previous_user = current_user || Organization.social.guest
       user = User.secure_create(params[:user].from_json)
       if user.valid?
-        # if (guest_org_id)
-        if (guest_org_id = current_user.organization_ids.first if current_user)
-          user.memberships.create(:organization_id => guest_org_id, :pending => false)
-        end
         warden.set_user(user)
+        invited_org_id = previous_user.organization_ids.first
+        if (invited_org_id && !current_user.memberships.find(:organization_id => invited_org_id))
+          current_user.memberships.create(:organization_id => invited_org_id, :pending => false)
+        end
         successful_json_response({"current_user_id" => user.id}, user)
       else
+        warden.set_user(previous_user)
         unsuccessful_json_response({"errors" => user.validation_errors_by_column_name.values.flatten })
       end
     end
