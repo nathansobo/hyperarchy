@@ -30,6 +30,22 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 #createuser hyperarchy --createdb --no-superuser --no-createrole
 #exit
 
+## install nginx
+#yes | apt-get install libpcre3-dev build-essential libssl-dev
+#cd /opt/
+#wget http://nginx.org/download/nginx-0.8.54.tar.gz
+#tar -zxvf nginx-0.8.54.tar.gz
+#cd /opt/nginx-0.8.54/
+#./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_ssl_module
+#make
+#make install
+#adduser --system --no-create-home --disabled-login --disabled-password --group nginx
+#wget https://library.linode.com/web-servers/nginx/installation/reference/init-deb.sh
+#mv init-deb.sh /etc/init.d/nginx
+#chmod +x /etc/init.d/nginx
+#/usr/sbin/update-rc.d -f nginx defaults
+#/etc/init.d/nginx start
+
 ## install rvm
 #bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)
 #rvm get latest
@@ -42,6 +58,17 @@ yes | apt-get install \
   libxslt-dev autoconf libc6-dev ncurses-dev
 
 ## install ruby 1.9.2
-rvm install 1.9.2-p180
+#rvm install 1.9.2-p180
 
+ENDSSH
+
+## copy ssl certificate and key into place
+scp -i keys/id_rsa certs/hyperarchy.crt root@$HOST:/etc/ssl/certs/
+scp -i keys/id_rsa certs/hyperarchy.key root@$HOST:/etc/ssl/private/
+
+## copy nginx configuration into place
+scp -i keys/id_rsa nginx.conf root@$HOST:/opt/nginx/conf/nginx.conf
+
+ssh -i keys/id_rsa root@rails.hyperarchy.com <<'ENDSSH'
+/etc/init.d/nginx reload
 ENDSSH
