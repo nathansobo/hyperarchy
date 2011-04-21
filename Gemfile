@@ -12,11 +12,13 @@ gem 'uuidtools', '2.1.2'
 
 group :development, :test do
   gem 'thin'
-  gem 'haml'
+  gem 'capistrano', '2.5.21'
+  gem 'capistrano-ext', '1.2.1'
+  gem 'haml', '3.0.25'
   gem 'rspec', '~> 2.5.0'
   gem 'rspec-rails', '~> 2.5.0'
-  gem 'rr'
-  gem 'machinist'
-  gem 'faker'
+  gem 'rr', '1.0.2'
+  gem 'machinist', '1.0.6'
+  gem 'faker', '0.9.5'
   gem 'spork', '~> 0.9.0.rc'
 end

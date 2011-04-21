@@ -40,6 +40,14 @@ GEM
     arel (2.0.8)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
+    capistrano (2.5.21)
+      highline
+      net-scp (>= 1.0.0)
+      net-sftp (>= 2.0.0)
+      net-ssh (>= 2.0.14)
+      net-ssh-gateway (>= 1.0.0)
+    capistrano-ext (1.2.1)
+      capistrano (>= 1.0.0)
     daemons (1.1.0)
     diff-lcs (1.1.2)
     erubis (2.6.6)
@@ -48,6 +56,7 @@ GEM
     faker (0.9.5)
       i18n (~> 0.4)
     haml (3.0.25)
+    highline (1.6.1)
     i18n (0.5.0)
     machinist (1.0.6)
     mail (2.2.15)
@@ -56,6 +65,13 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
+    net-scp (1.0.4)
+      net-ssh (>= 1.99.1)
+    net-sftp (2.0.5)
+      net-ssh (>= 2.0.9)
+    net-ssh (2.1.4)
+    net-ssh-gateway (1.0.1)
+      net-ssh (>= 1.99.1)
     pg (0.9.0)
     polyglot (0.3.1)
     pony (1.1)
@@ -119,15 +135,17 @@ PLATFORMS
 
 DEPENDENCIES
   bcrypt-ruby
+  capistrano
+  capistrano-ext
   erector!
-  faker
-  haml
-  machinist
+  faker (= 0.9.5)
+  haml (= 3.0.25)
+  machinist (= 1.0.6)
   pg (= 0.9.0)
   pony (= 1.1)
   rails (= 3.0.4)
   rgl
-  rr
+  rr (= 1.0.2)
   rspec (~> 2.5.0)
   rspec-rails (~> 2.5.0)
   sequel (= 3.16.0)
