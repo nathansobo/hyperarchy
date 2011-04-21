@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.4'
+gem 'unicorn'
 gem 'pg', '0.9.0'
 gem 'sequel', '3.16.0'
 gem 'sequel-rails', '0.1.8'

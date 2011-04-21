@@ -49,26 +49,27 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ## install rvm
 #bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)
 #rvm get latest
-#source /usr/local/rvm/scripts/rvm
+source /usr/local/rvm/scripts/rvm
 
 ## install ruby mri dependencies
-yes | apt-get install \
-  build-essential bison openssl libreadline6 libreadline6-dev curl \
-  zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev \
-  libxslt-dev autoconf libc6-dev ncurses-dev
+#yes | apt-get install \
+#  build-essential bison openssl libreadline6 libreadline6-dev curl \
+#  zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev \
+#  libxslt-dev autoconf libc6-dev ncurses-dev
 
 ## install ruby 1.9.2
 #rvm install 1.9.2-p180
 
+# install bundler
+rvm use 1.9.2-p180 --default
+gem install bundler --version 1.0.12
+
 ENDSSH
 
 ## copy ssl certificate and key into place
-scp -i keys/id_rsa certs/hyperarchy.crt root@$HOST:/etc/ssl/certs/
-scp -i keys/id_rsa certs/hyperarchy.key root@$HOST:/etc/ssl/private/
+#scp -i keys/id_rsa certs/hyperarchy.crt root@$HOST:/etc/ssl/certs/
+#scp -i keys/id_rsa certs/hyperarchy.key root@$HOST:/etc/ssl/private/
 
 ## copy nginx configuration into place
-scp -i keys/id_rsa nginx.conf root@$HOST:/opt/nginx/conf/nginx.conf
-
-ssh -i keys/id_rsa root@rails.hyperarchy.com <<'ENDSSH'
-/etc/init.d/nginx reload
-ENDSSH
+#scp -i keys/id_rsa nginx.conf root@$HOST:/opt/nginx/conf/nginx.conf
+#ssh -i keys/id_rsa root@rails.hyperarchy.com "/etc/init.d/nginx reload"
