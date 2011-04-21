@@ -25,7 +25,7 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 #yes | apt-get install git-core
 
 ## install postgresql
-#yes | apt-get install postgresql
+yes | apt-get install postgresql libpq-dev
 #su - postgres
 #createuser hyperarchy --createdb --no-superuser --no-createrole
 #exit
