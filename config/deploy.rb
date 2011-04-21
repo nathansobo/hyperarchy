@@ -1,14 +1,23 @@
+$:.unshift(File.expand_path('./lib', ENV['rvm_path']))
+require "rvm/capistrano"
 require 'capistrano/ext/multistage'
 
 set :application, "hyperarchy"
 set :repository,  "git@github.com:nathansobo/hyperarchy.git"
 set :scm, :git
-set :branch, "master"
+set :branch, "rails3"
 set :deploy_via, :remote_cache
 set :user, :root
+set :rvm_ruby_string, '1.9.2-p180'
 
 ssh_options[:keys] = [File.expand_path('config/provision/keys/id_rsa')]
 ssh_options[:forward_agent] = true
+
+namespace :deploy do
+  task :restart, :roles => :app do
+    # restart unicorn here
+  end
+end
 
 namespace :bundler do
   task :create_symlink, :roles => :app do
@@ -18,11 +27,11 @@ namespace :bundler do
   end
 
   task :install, :roles => :app do
-    run "cd #{release_path} && bundle install"
+    run "cd #{release_path} && bundle install --deployment --without development test"
 
     on_rollback do
       if previous_release
-        run "cd #{previous_release} && bundle install"
+        run "cd #{previous_release} && bundle install --deployment --without development test"
       else
         logger.important "no previous release to rollback to, rollback of bundler:install skipped"
       end
