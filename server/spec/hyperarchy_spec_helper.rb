@@ -11,6 +11,8 @@ Spec::Runner.configure do |config|
 
   config.before do
     Monarch::Model::Repository.clear_tables
+    Sequel::DATABASES.first[:mailing_list_entries].delete
+
     Monarch::Model::Repository.initialize_local_identity_map
     SubscriptionManager.start
     Sham.reset
