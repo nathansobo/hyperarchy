@@ -168,7 +168,7 @@ describe "/signup", :type => :rack do
           last_response.should be_redirect
           last_response.location.should == "/signup"
 
-          current_user.should be_nil
+          current_user.should == Organization.social.guest
           flash[:errors].should_not be_nil
         end
       end
@@ -180,7 +180,7 @@ describe "/signup", :type => :rack do
           last_response.should be_redirect
           last_response.location.should == "/signup"
 
-          current_user.should be_nil
+          current_user.should == Organization.social.guest
           flash[:errors].should_not be_nil
         end
       end
@@ -230,7 +230,7 @@ describe "/signup", :type => :rack do
             last_response.location.should == "/signup"
             flash[:errors].should_not be_nil
 
-            current_user.should be_nil
+            current_user.should == Organization.social.guest
           end
         end
       end
@@ -244,7 +244,7 @@ describe "/signup", :type => :rack do
           last_response.should be_redirect
           last_response.location.should == "/login"
 
-          current_user.should be_nil
+          current_user.should == Organization.social.guest
         end
       end
     end
