@@ -1,0 +1,80 @@
+<html>
+<head>
+  <title>Hyperarchy - Beta Signup</title>
+
+  <style type="text/css">
+    body {
+      text-align: center;
+    }
+
+    body * {
+      font: 30px/1.3 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+    }
+
+    #logo {
+      margin: 150px 0 20px 0;
+    }
+
+    #mailing_list_signup {
+      margin-top: 50px;
+    }
+
+    #mailing_list_signup table {
+      display: inline-block;
+    }
+
+    #mailing_list_signup .label {
+      text-align: right;
+    }
+
+    #mailing_list_signup input, #sign_up {
+      font: 30px/1.3 'Helvetica Neue', Arial, 'Liberation Sans', FreeSans, sans-serif;
+    }
+
+    #sign_up {
+      width: 150px;
+      hegiht: 50px;
+    }
+
+    #mailing_list_signup input[type='text'] {
+      width: 400px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <img id="logo" src="http://maintenance.hyperarchy.com/logo_large.png"/>
+  <div style="line-height: 40px;">We're getting slashdotted.<br/>Please give us your email address, and we'll contact you soon.</div>
+
+  <form id="mailing_list_signup" action="/mailing_list_signup" method="post">
+
+    <table>
+      <tr>
+        <td class="label">
+          <label for="email_address">Email Address:</label>
+        </td>
+        <td>
+          <input type="text" name="email_address"/>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="label">
+          <label for="comments">Comments:</label>
+        </td>
+        <td>
+          <input type="text" name="comments"/>
+        </td>
+      </tr>
+
+
+      <tr>
+        <td colspan="2" class="label">
+          <input id="sign_up" type="submit" value="Sign Up">
+        </td>
+      </tr>
+    </table>
+  </form>
+</body>
+</html>

@@ -16,6 +16,12 @@ module Hyperarchy
       render_page Views::App
     end
 
+    post "/mailing_list_signup" do
+      db = Sequel::DATABASES.first
+      db[:mailing_list_entries] << params.merge(:created_at => Time.now)
+      "<h1>Thank you! We'll contact you soon :-)</h1>"
+    end
+
     get "/private/:invitation_code" do
       if (organization = Organization.find(:invitation_code => params[:invitation_code]))
         if (!current_user || current_user.guest?)
