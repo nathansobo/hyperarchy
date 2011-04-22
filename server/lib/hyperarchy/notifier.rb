@@ -24,13 +24,12 @@ module Hyperarchy
 
     def send_immediate_notifications(item)
       item.users_to_notify_immediately.each do |user|
-# TODO: get tests on this and put it in
-#        begin
+        begin
           send_notification_to_user(user, Emails::NotificationPresenter.new(user, "immediately", item))
-#        rescue Exception => e
-#          msg = ["#{e.class} - #{e.message}:", *e.backtrace].join("\n ")
-#          LOGGER.error(msg)
-#        end
+        rescue Exception => e
+          msg = ["#{e.class} - #{e.message}:", *e.backtrace].join("\n ")
+          LOGGER.error(msg)
+        end
       end
     end
 

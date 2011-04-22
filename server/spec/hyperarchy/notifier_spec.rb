@@ -2,14 +2,18 @@ require File.expand_path(File.dirname(__FILE__) + "/../hyperarchy_spec_helper")
 
 module Hyperarchy
   describe Notifier do
+    attr_reader :notifier
+    before do
+      @notifier = Notifier.new
+    end
+    
     describe "#send_periodic_notifications(period)" do
-      attr_reader :notifier, :social_org, :pro_org, :creator, :pro_user, :social_user
+      attr_reader :social_org, :pro_org, :creator, :pro_user, :social_user
 
       before do
         # move time backward. nothing should be reported until time advances into the reporting period (1 hour before report)
         Timecop.freeze(2.hours.ago)
 
-        @notifier = Notifier.new
         @social_org = Organization.find(:social => true)
         @pro_org = Organization.make
 
@@ -147,6 +151,47 @@ module Hyperarchy
         Timecop.freeze(1.5.hours.from_now)
 
         Mailer.emails.length.should == 1
+      end
+    end
+
+    describe "#send_immediate_notifications(item)" do
+      it "sends messages to all users that should be notified immediately" do
+        user_1 = User.make
+        user_2 = User.make
+
+        election = Election.make(:creator => User.make)
+
+        mock(election).users_to_notify_immediately do
+          [user_1, user_2]
+        end
+
+        notifier.send_immediate_notifications(election)
+
+        Mailer.emails.length.should == 2
+        Mailer.emails.map {|e| e[:to]}.should =~ [user_1.email_address, user_2.email_address]
+      end
+
+      it "does not stop if there is an exception while sending an email" do
+        user_1 = User.make
+        user_2 = User.make
+
+        election = Election.make(:creator => User.make)
+
+        mock(election).users_to_notify_immediately do
+          [user_1, user_2]
+        end
+
+        mock(Mailer).send(anything).ordered do
+          raise "Exception sending email"
+        end
+        mock(LOGGER).error(anything)
+        mock.proxy(Mailer).send(anything).ordered
+
+
+        notifier.send_immediate_notifications(election)
+
+        Mailer.emails.length.should == 1
+        Mailer.emails.map {|e| e[:to]}.should =~ [user_2.email_address]
       end
     end
   end
