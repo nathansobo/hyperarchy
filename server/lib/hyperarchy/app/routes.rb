@@ -2,6 +2,7 @@ module Hyperarchy
   class App < Sinatra::Base
     before do
       no_internet_explorer
+      allow_guests
     end
 
     error Monarch::Unauthorized do
@@ -12,7 +13,6 @@ module Hyperarchy
 
     get "/" do
       use_ssl
-      allow_guests
       render_page Views::App
     end
 
@@ -169,6 +169,7 @@ module Hyperarchy
     get "/signup" do
       redirect_if_logged_in
       use_ssl
+
       if invitation_code = params[:invitation_code] || session[:invitation_code]
         invitation = validate_invitation_code(invitation_code)
         session[:invitation_code] = invitation_code
