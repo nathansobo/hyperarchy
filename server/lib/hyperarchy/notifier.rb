@@ -13,13 +13,23 @@ module Hyperarchy
       period = period.to_s
 
       User.each do |user|
-        send_notification_to_user(user, Emails::NotificationPresenter.new(user, period))
+        begin
+          send_notification_to_user(user, Emails::NotificationPresenter.new(user, period))
+        rescue Exception => e
+          msg = ["#{e.class} - #{e.message}:", *e.backtrace].join("\n ")
+          LOGGER.error(msg)
+        end
       end
     end
 
     def send_immediate_notifications(item)
       item.users_to_notify_immediately.each do |user|
-        send_notification_to_user(user, Emails::NotificationPresenter.new(user, "immediately", item))
+        begin
+          send_notification_to_user(user, Emails::NotificationPresenter.new(user, "immediately", item))
+        rescue Exception => e
+          msg = ["#{e.class} - #{e.message}:", *e.backtrace].join("\n ")
+          LOGGER.error(msg)
+        end
       end
     end
 
