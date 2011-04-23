@@ -60,7 +60,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         return;
       }
       var organizationId = parseInt(state.organizationId);
-      Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);
 
       Application.layout.activateNavigationTab("questionsLink");
@@ -75,11 +74,16 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     organizationId: {
       afterChange: function(organizationId) {
-        var membership = this.organization().membershipForCurrentUser();
-        if (membership) membership.update({lastVisited: new Date()});
-
-        this.subscriptions.destroy();
-        this.displayElections();
+        if (this.organization()) {
+          Application.currentOrganizationId(organizationId);
+          var membership = this.organization().membershipForCurrentUser();
+          if (membership) membership.update({lastVisited: new Date()});
+          this.subscriptions.destroy();
+          this.displayElections();
+        } else {
+          var lastVisitedOrgId = Application.currentUser().defaultOrganization().id();
+          $.bbq.pushState({view: 'organization', organizationId: lastVisitedOrgId}, 2);
+        }
       }
     },
 
