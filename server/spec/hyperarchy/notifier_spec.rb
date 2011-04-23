@@ -171,6 +171,22 @@ module Hyperarchy
         Mailer.emails.map {|e| e[:to]}.should =~ [user_1.email_address, user_2.email_address]
       end
 
+      it "does not send email to users who have it disabled" do
+        user_1 = User.make
+        user_2 = User.make(:email_enabled => false)
+
+        election = Election.make(:creator => User.make)
+
+        mock(election).users_to_notify_immediately do
+          [user_1, user_2]
+        end
+
+        notifier.send_immediate_notifications(election)
+
+        Mailer.emails.length.should == 1
+        Mailer.emails.map {|e| e[:to]}.should == [user_1.email_address]
+      end
+
       it "does not stop if there is an exception while sending an email" do
         user_1 = User.make
         user_2 = User.make

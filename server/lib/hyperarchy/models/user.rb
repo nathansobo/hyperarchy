@@ -9,6 +9,7 @@ class User < Monarch::Model::Record
   column :password_reset_token, :string
   column :password_reset_token_generated_at, :datetime
   column :guest, :boolean, :default => false
+  column :email_enabled, :boolean, :default => true
   synthetic_column :email_hash, :string
 
   has_many :memberships
