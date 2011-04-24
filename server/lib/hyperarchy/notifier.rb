@@ -35,6 +35,7 @@ module Hyperarchy
 
     def send_notification_to_user(user, notification_presenter)
       return if notification_presenter.empty?
+      return unless user.email_enabled?
       Mailer.send(
         :to => user.email_address,
         :subject => notification_presenter.subject,
