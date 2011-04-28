@@ -32,9 +32,11 @@ Sequel.migration do
   end
 
   down do
+    require 'bcrypt'
+
     self[:users].filter(:guest => true).each do |guest_user|
       self[:memberships].filter(:user_id => guest_user[:id]).delete
-      self.delete
+      self[:users].filter(:id => guest_user[:id]).delete
     end
 
     self[:users].insert(
