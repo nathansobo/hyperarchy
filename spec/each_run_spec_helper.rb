@@ -1,4 +1,6 @@
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+require 'deploy'
+
 Rails.application.reload_routes!
 
 RSpec.configure do |config|

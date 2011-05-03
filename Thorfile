@@ -1,0 +1,1 @@
+load 'lib/deploy.thor'
