@@ -12,10 +12,8 @@ staging:
   adapter: postgres
   database: hyperarchy_staging
   username: hyperarchy
-  password: d3mocracy
 
 production:
   adapter: postgres
   database: hyperarchy_production
   username: hyperarchy
-  password: d3mocracy

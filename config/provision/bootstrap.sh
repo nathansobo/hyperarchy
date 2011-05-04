@@ -68,7 +68,6 @@ ssh -i keys/id_rsa root@$HOST <<'ENDSSH'
 #yes | apt-get install postgresql libpq-dev
 #su - postgres
 #createuser hyperarchy --createdb --no-superuser --no-createrole
-#psql -c "alter user hyperarchy with password 'd3mocracy'"
 #exit
 ENDSSH
 
