@@ -8,10 +8,12 @@ test:
   database: hyperarchy_test
   username: hyperarchy
 
-demo:
+staging:
   adapter: postgres
-  database: hyperarchy_demo
+  database: hyperarchy_staging
+  username: hyperarchy
 
 production:
   adapter: postgres
   database: hyperarchy_production
+  username: hyperarchy
