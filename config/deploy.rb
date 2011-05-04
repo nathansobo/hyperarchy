@@ -1,10 +1,10 @@
-set :application, "hyperarchy"
-set :deploy_to, "/app"
-set :repository,  "git@github.com:nathansobo/hyperarchy.git"
+set :application, 'hyperarchy'
+set :deploy_to, '/app'
+set :repository,  'git@github.com:nathansobo/hyperarchy.git'
 set :scm, :git
-set :branch, "rails3"
+set :branch, 'rails3'
 set :deploy_via, :remote_cache
-set :user, :root
+set :user, 'root'
 set :rvm_ruby_string, '1.9.2-p180'
 set :stage_dir, 'config/deploy/stages'
 
