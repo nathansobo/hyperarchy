@@ -7,13 +7,6 @@ GIT
       rake
       treetop (>= 1.2.3)
 
-GIT
-  remote: https://github.com/mitchellh/net-ssh-shell.git
-  revision: 17cb74315817c6085f03b1b5c70cb5fe0168c01f
-  specs:
-    net-ssh-shell (0.2.0)
-      net-ssh (~> 2.1.0)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -64,7 +57,11 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
+    net-sftp (2.0.5)
+      net-ssh (>= 2.0.9)
     net-ssh (2.1.0)
+    net-ssh-telnet (0.0.2)
+      net-ssh (>= 2.0.1)
     pg (0.9.0)
     polyglot (0.3.1)
     pony (1.1)
@@ -135,8 +132,9 @@ DEPENDENCIES
   faker (= 0.9.5)
   haml (= 3.0.25)
   machinist (= 1.0.6)
+  net-sftp
   net-ssh (= 2.1.0)
-  net-ssh-shell!
+  net-ssh-telnet
   pg (= 0.9.0)
   pony (= 1.1)
   rails (= 3.0.4)
