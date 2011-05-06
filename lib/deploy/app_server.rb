@@ -18,14 +18,15 @@ class AppServer
   end
 
   def provision
-#    update_packages
-#    create_hyperarchy_user
-#    create_log_directory
-#    install_package 'git'
-#    install_postgres
-#    install_nginx
-#    install_rvm
-#    install_ruby
+    update_packages
+    create_hyperarchy_user
+    create_log_directory
+    install_package 'git'
+    install_daemontools
+    install_postgres
+    install_nginx
+    install_rvm
+    install_ruby
     puts
   end
 
@@ -51,6 +52,36 @@ class AppServer
   def create_log_directory
     run "mkdir -p /log"
     run "chown hyperarchy /log"
+  end
+
+  def install_daemontools
+    make_daemontools_dirs
+    download_daemontools
+    run "cd /package"
+    run "tar -xzvpf /usr/local/djb/dist/daemontools-0.76.tar.gz"
+    run "cd admin/daemontools-0.76"
+    run "patch -p1 < /usr/local/djb/patches/daemontools-0.76.errno.patch"
+    run "patch -p1 < /usr/local/djb/patches/daemontools-0.76.sigq12.patch"
+    run "package/install"
+    upload! 'lib/deploy/resources/daemontools/svscanboot.conf', '/etc/init/svscanboot.conf'
+    run "start svscanboot"
+  end
+
+  def make_daemontools_dirs
+    run "mkdir -p /usr/local/djb/dist"
+    run "mkdir -p /usr/local/djb/patches"
+    run "mkdir -p /usr/local/package"
+    run "chmod 1755 /usr/local/package"
+    run "ln -s /usr/local/package /package"
+    run "mkdir /var/svc.d"
+  end
+
+  def download_daemontools
+    run "cd /usr/local/djb/dist"
+    run "wget http://cr.yp.to/daemontools/daemontools-0.76.tar.gz"
+    run "cd /usr/local/djb/patches"
+    run "wget http://www.qmail.org/moni.csi.hu/pub/glibc-2.3.1/daemontools-0.76.errno.patch"
+    run "wget http://thedjbway.b0llix.net/patches/daemontools-0.76.sigq12.patch"
   end
 
   def install_postgres
