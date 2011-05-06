@@ -7,14 +7,34 @@ class AppServer
     'rails.hyperarchy.com'
   end
 
+  def install_public_key
+    puts "enter root password for #{hostname}:"
+    password = $stdin.gets.chomp
+    ssh_session('root', password)
+    run 'mkdir -p ~/.ssh'
+    run "echo '#{File.read(public_key_path).chomp}' >> ~/.ssh/authorized_keys"
+    puts
+    system "ssh-add #{private_key_path}"
+  end
+
   def provision
-    update_packages
-    create_hyperarchy_user
-    install_package 'git'
-    install_postgres
-    install_nginx
-    install_rvm
-    install_ruby
+#    update_packages
+#    create_hyperarchy_user
+#    create_log_directory
+#    install_package 'git'
+#    install_postgres
+#    install_nginx
+#    install_rvm
+#    install_ruby
+    puts
+  end
+
+  def private_key_path
+    File.expand_path('keys/id_rsa')
+  end
+
+  def public_key_path
+    File.expand_path('keys/id_rsa.pub')
   end
 
   def update_packages
@@ -28,9 +48,16 @@ class AppServer
     run "cp -r /root/.ssh /home/hyperarchy/.ssh"
   end
 
+  def create_log_directory
+    run "mkdir -p /log"
+    run "chown hyperarchy /log"
+  end
+
   def install_postgres
     install_packages 'postgresql', 'libpq-dev'
-    run "sudo -u postgres createuser hyperarchy --createdb --no-superuser --no-createrole"
+    run "su - postgres"
+    run "createuser hyperarchy --createdb --no-superuser --no-createrole"
+    run "exit"
   end
 
   def install_nginx
@@ -40,13 +67,15 @@ class AppServer
     run "tar -zxvf nginx-0.8.54.tar.gz"
     run "cd /opt/nginx-0.8.54/"
     run "./configure --prefix=/opt/nginx --user=nginx --group=nginx --with-http_ssl_module"
-    run "make && make install"
+    run "make"
+    run "make install"
     run "adduser --system --no-create-home --disabled-login --disabled-password --group nginx"
-    run "wget https://library.linode.com/web-servers/nginx/installation/reference/init-deb.sh"
-    run "mv init-deb.sh /etc/init.d/nginx"
-    run "chmod +x /etc/init.d/nginx"
-    run "/usr/sbin/update-rc.d -f nginx defaults"
-    run "/etc/init.d/nginx start"
+    run "ln -s /opt/nginx/sbin/nginx /usr/local/sbin/nginx"
+    upload! 'lib/deploy/resources/nginx/nginx.conf', '/opt/nginx/conf/nginx.conf'
+    upload! 'lib/deploy/resources/nginx/nginx_upstart.conf', '/etc/init/nginx.conf'
+    upload! 'lib/deploy/resources/nginx/hyperarchy.crt', '/etc/ssl/certs/hyperarchy.crt'
+    upload! 'lib/deploy/resources/nginx/hyperarchy.key', '/etc/ssl/private/hyperarchy.key'
+    run "start nginx"
   end
 
   def install_rvm
@@ -67,31 +96,49 @@ class AppServer
     run "gem install bundler --version 1.0.12"
   end
 
+  protected
+
   def install_packages(*packages)
     run "yes | apt-get install", *packages
   end
   alias_method :install_package, :install_packages
 
-  protected
-  PROMPT_REGEX = /[$%#>] \z/n
-
+  PROMPT_REGEX = /[$%#>] (\z|\e)/n
   def run(*command)
     command = command.join(' ')
-    output = shell.cmd(command) {|data| print data}
+    output = shell.cmd(command) {|data| print data.gsub(/(\r|\r\n|\n\r)+/, "\n") }
     command_regex = /#{Regexp.escape(command)}/
     output.split("\n").reject {|l| l.match(command_regex) || l.match(PROMPT_REGEX)}.join("\n")
   end
 
+  class UploadProgressHandler
+    def on_open(uploader, file)
+      puts "starting upload: #{file.local} -> #{file.remote} (#{file.size} bytes)"
+    end
+
+    def on_put(uploader, file, offset, data)
+      puts "writing #{data.length} bytes to #{file.remote} starting at #{offset}"
+    end
+
+    def on_close(uploader, file)
+      puts "finished with #{file.remote}"
+    end
+
+    def on_mkdir(uploader, path)
+      puts "creating directory #{path}"
+    end
+  end
+
   def upload!(from, to)
-    sftp_session.upload!(from, to)
+    sftp_session.upload!(from, to, :progress => UploadProgressHandler.new)
   end
 
   def shell
-    @shell ||= Net::SSH::Telnet.new('Session' => ssh_session)
+    @shell ||= Net::SSH::Telnet.new('Session' => ssh_session, 'Prompt' => PROMPT_REGEX)
   end
 
-  def ssh_session
-    @ssh_session ||= Net::SSH.start(hostname, "root")
+  def ssh_session(user="root", password=nil)
+    @ssh_session ||= Net::SSH.start(hostname, user, :password => password)
   end
 
   def sftp_session

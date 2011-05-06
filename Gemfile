@@ -26,6 +26,6 @@ end
 group :deploy do
   gem 'net-ssh', '2.1.0'
   gem 'net-ssh-telnet', :require => 'net/ssh/telnet'
-  gem 'net-sftp'
+  gem 'net-sftp', :require => 'net/sftp'
   gem 'uuidtools', '2.1.2'
 end
