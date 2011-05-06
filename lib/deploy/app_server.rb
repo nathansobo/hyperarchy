@@ -1,10 +1,16 @@
 class AppServer
+  attr_reader :stage, :env
   def initialize(stage)
     @stage = stage
+    @env = stage
   end
 
   def hostname
     'rails.hyperarchy.com'
+  end
+
+  def repository
+    "git@github.com:nathansobo/hyperarchy.git"
   end
 
   def install_public_key
@@ -21,12 +27,14 @@ class AppServer
     update_packages
     create_hyperarchy_user
     create_log_directory
-    install_package 'git'
+    install_package 'git-core'
     install_daemontools
     install_postgres
     install_nginx
     install_rvm
     install_ruby
+    clone_repository
+    install_services
     puts
   end
 
@@ -113,7 +121,7 @@ class AppServer
     run "bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)"
     run "rvm get latest"
     run "source /usr/local/rvm/scripts/rvm"
-    upload 'resources/.bashrc', '/root/.bashrc'
+    upload! 'lib/deploy/resources/.bashrc', '/root/.bashrc'
     run 'cp /root/.bashrc /home/hyperarchy/.bashrc'
   end
 
@@ -125,6 +133,23 @@ class AppServer
     run "rvm install 1.9.2-p180"
     run "rvm use 1.9.2-p180 --default"
     run "gem install bundler --version 1.0.12"
+  end
+
+  def clone_repository
+    run "ssh -o StrictHostKeyChecking=no git@github.com"
+    run "yes | git clone", repository, "/app"
+  end
+
+  def install_services
+    install_unicorn
+  end
+
+  def install_unicorn
+    upload! 'lib/deploy/resources/services/unicorn', '/var/svc.d/unicorn'
+    run "mkdir -p /var/svc.d/unicorn/env"
+    run "echo", env, "> /var/svc.d/unicorn/env/RAILS_ENV"
+    run "touch /var/svc.d/unicorn/down"
+    run "ln -s /var/svc.d/unicorn /service/unicorn"
   end
 
   protected
@@ -169,7 +194,7 @@ class AppServer
   end
 
   def ssh_session(user="root", password=nil)
-    @ssh_session ||= Net::SSH.start(hostname, user, :password => password)
+    @ssh_session ||= Net::SSH.start(hostname, user, :password => password, :forward_agent => true)
   end
 
   def sftp_session
