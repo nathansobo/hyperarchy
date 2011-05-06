@@ -10,6 +10,7 @@ gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
 gem 'erector', :git => 'https://github.com/bigfix/erector.git', :tag => 'rails3'
 gem 'pony', '1.1'
 gem 'uuidtools', '2.1.2'
+gem 'haml', '3.0.25'
 
 group :development, :test do
   gem 'thin'

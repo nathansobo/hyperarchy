@@ -7,11 +7,11 @@ HOST=rails.hyperarchy.com
 #ssh root@$HOST "mkdir ~/.ssh && echo `cat id_rsa.pub` > ~/.ssh/authorized_keys"
 
 ## copy rvm-compatible .bashrc into place
-scp -i keys/id_rsa .bashrc root@$HOST:~
+#scp -i keys/id_rsa .bashrc root@$HOST:~
 
-ssh -i keys/id_rsa root@rails.hyperarchy.com <<'ENDSSH'
+ssh -i keys/id_rsa root@$HOST <<'ENDSSH'
 ## set the timezone to UTC
-ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+#ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 ## update packages
 #yes | apt-get update
@@ -20,15 +20,61 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ## create hyperarchy user
 #mkdir /home/hyperarchy
 #useradd hyperarchy -d /home/hyperarchy -s /bin/bash
+#cp /root/.bashrc /home/hyperarchy/.bashrc
+#cp -R /root/.ssh /home/hyperarchy/.ssh
+
+## install daemontools
+#mkdir -p /usr/local/djb/dist
+#mkdir /usr/local/djb/patches
+#mkdir -p /usr/local/package
+#chmod 1755 /usr/local/package
+#ln -s /usr/local/package /package
+#mkdir /var/svc.d
+#
+#cd /usr/local/djb/dist
+#wget http://cr.yp.to/daemontools/daemontools-0.76.tar.gz
+#cd /usr/local/djb/patches
+#wget http://www.qmail.org/moni.csi.hu/pub/glibc-2.3.1/daemontools-0.76.errno.patch
+#wget http://thedjbway.b0llix.net/patches/daemontools-0.76.sigq12.patch
+#
+#cd /package
+#tar -xzvpf /usr/local/djb/dist/daemontools-0.76.tar.gz
+#cd admin/daemontools-0.76
+#patch -p1 < /usr/local/djb/patches/daemontools-0.76.errno.patch
+#patch -p1 < /usr/local/djb/patches/daemontools-0.76.sigq12.patch
+#package/install
+
+#cat > /etc/init/svscanboot.conf <<EOF
+## svscan - DJB's daemontools
+##
+## This service starts daemontools (svscanboot) from the point the system is
+## started until it is shut down again.
+#
+#start on runlevel 2
+#start on runlevel 3
+#start on runlevel 4
+#start on runlevel 5
+#
+#stop on shutdown
+#
+#respawn
+#exec /command/svscanboot
+#EOF
 
 ## install git
 #yes | apt-get install git-core
 
 ## install postgresql
-yes | apt-get install postgresql libpq-dev
+#yes | apt-get install postgresql libpq-dev
 #su - postgres
 #createuser hyperarchy --createdb --no-superuser --no-createrole
 #exit
+ENDSSH
+
+scp -i keys/id_rsa pg_hba.conf root@$HOST:/etc/postgresql/8.4/main/pg_hba.conf
+ssh -i keys/id_rsa root@$HOST<<'ENDSSH'
+/etc/init.d/postgresql reload # reload the newly uploaded pg_hba.conf file
+
 
 ## install nginx
 #yes | apt-get install libpcre3-dev build-essential libssl-dev
@@ -49,7 +95,7 @@ yes | apt-get install postgresql libpq-dev
 ## install rvm
 #bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)
 #rvm get latest
-source /usr/local/rvm/scripts/rvm
+#source /usr/local/rvm/scripts/rvm
 
 ## install ruby mri dependencies
 #yes | apt-get install \
@@ -61,8 +107,8 @@ source /usr/local/rvm/scripts/rvm
 #rvm install 1.9.2-p180
 
 # install bundler
-rvm use 1.9.2-p180 --default
-gem install bundler --version 1.0.12
+#rvm use 1.9.2-p180 --default
+#gem install bundler --version 1.0.12
 
 ENDSSH
 
@@ -72,4 +118,4 @@ ENDSSH
 
 ## copy nginx configuration into place
 #scp -i keys/id_rsa nginx.conf root@$HOST:/opt/nginx/conf/nginx.conf
-#ssh -i keys/id_rsa root@rails.hyperarchy.com "/etc/init.d/nginx reload"
+#ssh -i keys/id_rsa root@$HOST "/etc/init.d/nginx reload"
