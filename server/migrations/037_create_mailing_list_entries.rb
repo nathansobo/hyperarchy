@@ -7,5 +7,9 @@ Sequel.migration do
       Time :created_at
     end
   end
+  
+  down do
+    drop_table :mailing_list_entries
+  end
 end
 
