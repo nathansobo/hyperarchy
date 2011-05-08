@@ -13,14 +13,12 @@ class AppServer
     "git@github.com:nathansobo/hyperarchy.git"
   end
 
-  def install_public_key
-    puts "enter root password for #{hostname}:"
-    password = $stdin.gets.chomp
-    ssh_session('root', password)
-    run 'mkdir -p ~/.ssh'
-    run "echo '#{File.read(public_key_path).chomp}' >> ~/.ssh/authorized_keys"
-    puts
-    system "ssh-add #{private_key_path}"
+  def deploy(ref)
+    run "cd /app"
+    run "git fetch origin"
+    run "git checkout --force", ref
+    run "bundle install --deployment --without development test deploy"
+    restart_unicorn
   end
 
   def provision
@@ -38,12 +36,31 @@ class AppServer
     puts
   end
 
+  def install_public_key
+    puts "enter root password for #{hostname}:"
+    password = $stdin.gets.chomp
+    ssh_session('root', password)
+    run 'mkdir -p ~/.ssh'
+    run "echo '#{File.read(public_key_path).chomp}' >> ~/.ssh/authorized_keys"
+    puts
+    system "ssh-add #{private_key_path}"
+  end
+
   def private_key_path
     File.expand_path('keys/id_rsa')
   end
 
   def public_key_path
     File.expand_path('keys/id_rsa.pub')
+  end
+
+  def restart_unicorn
+    run "rm /service/unicorn/down" if run?("test -e /service/unicorn/down")
+    if run("svstat /service/unicorn") =~ /down \d/
+      run "svc -u /service/unicorn"
+    else
+      puts "not up"
+    end
   end
 
   def update_packages
@@ -138,6 +155,8 @@ class AppServer
   def clone_repository
     run "ssh -o StrictHostKeyChecking=no git@github.com"
     run "yes | git clone", repository, "/app"
+    run "chown -R hyperarchy /app"
+    run "ln -s /log /app/log"
   end
 
   def install_services
@@ -145,7 +164,16 @@ class AppServer
   end
 
   def install_unicorn
+    run "rm /service/unicorn" if run?("test -e /service/unicorn")
+    if run?("test -e /var/svc.d/unicorn")
+      run "svc -dx /var/svc.d/unicorn"
+      run "rm -rf /var/svc.d/unicorn"
+    end
+    run "mkdir -p /log/unicorn"
     upload! 'lib/deploy/resources/services/unicorn', '/var/svc.d/unicorn'
+    run "chmod 755 /var/svc.d/unicorn/run"
+    run "chmod 755 /var/svc.d/unicorn/unicorn.sh"
+    run "chmod 755 /var/svc.d/unicorn/log/run"
     run "mkdir -p /var/svc.d/unicorn/env"
     run "echo", env, "> /var/svc.d/unicorn/env/RAILS_ENV"
     run "touch /var/svc.d/unicorn/down"
@@ -165,6 +193,11 @@ class AppServer
     output = shell.cmd(command) {|data| print data.gsub(/(\r|\r\n|\n\r)+/, "\n") }
     command_regex = /#{Regexp.escape(command)}/
     output.split("\n").reject {|l| l.match(command_regex) || l.match(PROMPT_REGEX)}.join("\n")
+  end
+
+  def run?(command)
+    run(command)
+    run("echo $?") == '0'
   end
 
   class UploadProgressHandler

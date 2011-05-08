@@ -16,7 +16,10 @@ class Provision < Thor
 end
 
 class Deploy < Thor
-  desc 'staging [rev=rails3]', 'deploy the specified revision to staging or rails3 by default'
-  def staging(rev='master')
+  default_task :deploy
+
+  desc 'deploy [env=staging] [ref=origin/rails3]', 'deploy the specified revision to the specified environment'
+  def deploy(env='staging', ref='origin/rails3')
+    AppServer.new(env).deploy(ref)
   end
 end
