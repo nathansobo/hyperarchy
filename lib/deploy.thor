@@ -22,4 +22,12 @@ class Deploy < Thor
   def deploy(env='staging', ref='origin/rails3')
     AppServer.new(env).deploy(ref)
   end
+
+  desc "minify_js [env=staging]", "minify javascript for upload."
+  def minify_js(env="staging")
+    ENV['RAILS_ENV'] = env
+    require File.expand_path('config/environment')
+    GiftWrapper.combine_js("underscore", "jquery-1.5.2")
+    GiftWrapper.combine_js('app')
+  end
 end
