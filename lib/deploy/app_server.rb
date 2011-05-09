@@ -63,7 +63,7 @@ class AppServer
     if run("svstat /service/unicorn") =~ /down \d/
       run "svc -u /service/unicorn"
     else
-      puts "not down already"
+      run "svc -q /service/unicorn"
     end
   end
 
