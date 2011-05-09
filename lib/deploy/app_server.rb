@@ -84,6 +84,7 @@ class AppServer
   end
 
   def install_daemontools
+    install_package 'build-essential'
     make_daemontools_dirs
     download_daemontools
     run "cd /package"
