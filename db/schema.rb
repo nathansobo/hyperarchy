@@ -20,15 +20,6 @@ Sequel.migration do
       DateTime :updated_at
     end
     
-    create_table(:election_comments) do
-      primary_key :id
-      String :body, :text=>true
-      Integer :election_id
-      Integer :creator_id
-      DateTime :created_at
-      DateTime :updated_at
-    end
-    
     create_table(:election_visits) do
       primary_key :id
       Integer :election_id
@@ -85,8 +76,6 @@ Sequel.migration do
       String :notify_of_new_candidates, :text=>true
       String :notify_of_new_comments_on_own_candidates, :text=>true
       String :notify_of_new_comments_on_ranked_candidates, :text=>true
-      String :notify_of_new_comments_on_own_elections, :text=>true
-      String :notify_of_new_comments_on_voted_elections, :text=>true
     end
     
     create_table(:organizations) do
@@ -144,6 +133,6 @@ Sequel.migration do
   end
   
   down do
-    drop_table(:candidate_comments, :candidates, :election_comments, :election_visits, :elections, :invitations, :majorities, :memberships, :organizations, :rankings, :schema_info, :users, :votes)
+    drop_table(:candidate_comments, :candidates, :election_visits, :elections, :invitations, :majorities, :memberships, :organizations, :rankings, :schema_info, :users, :votes)
   end
 end
