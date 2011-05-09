@@ -98,6 +98,7 @@ class AppServer
     run "mkdir -p /usr/local/package"
     run "chmod 1755 /usr/local/package"
     run "ln -s /usr/local/package /package"
+    run "mkdir /service"
     run "mkdir /var/svc.d"
   end
 
@@ -112,7 +113,10 @@ class AppServer
   def install_postgres
     install_packages 'postgresql', 'libpq-dev'
     run "su - postgres"
+    run "pg_dropcluster --stop 8.4 main"
+    run "pg_createcluster --start -e UTF-8 8.4 main"
     run "createuser hyperarchy --createdb --no-superuser --no-createrole"
+    run "createdb --encoding utf8 --owner hyperarchy hyperarchy_#{env}"
     run "exit"
   end
 
