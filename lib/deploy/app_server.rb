@@ -17,7 +17,11 @@ class AppServer
     run "cd /app"
     run "git fetch origin"
     run "git checkout --force", ref
+    run "source .rvmrc"
     run "bundle install --deployment --without development test deploy"
+    run "su - hyperarchy"
+    run "RAILS_ENV=#{env} rake db:migrate"
+    run "exit"
     restart_unicorn
   end
 
@@ -59,7 +63,7 @@ class AppServer
     if run("svstat /service/unicorn") =~ /down \d/
       run "svc -u /service/unicorn"
     else
-      puts "not up"
+      puts "not down already"
     end
   end
 
@@ -161,6 +165,7 @@ class AppServer
     run "yes | git clone", repository, "/app"
     run "chown -R hyperarchy /app"
     run "ln -s /log /app/log"
+    run "rvm rvmrc trust /app"
   end
 
   def install_services
