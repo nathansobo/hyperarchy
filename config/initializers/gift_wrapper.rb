@@ -5,7 +5,7 @@ javascripts_root = Rails.root.join('client_src', 'javascripts')
 javascripts_vendor_root = javascripts_root.join('vendor')
 monarch_root = javascripts_vendor_root.join('monarch')
 
-Rails.application.middleware.insert_before(ActionDispatch::Static, GiftWrapper)
+Rails.application.middleware.insert(0, ActionDispatch::Static, GiftWrapper)
 GiftWrapper.mount_package_dir(Rails.root.join('public', 'assets'), "assets")
 
 GiftWrapper.mount(javascripts_root.join('vendor', 'monarch', 'lib'), '/__monarch_lib__')

@@ -27,6 +27,7 @@ class Deploy < Thor
   def minify_js(env="staging")
     ENV['RAILS_ENV'] = env
     require File.expand_path('config/environment')
+    GiftWrapper.clear_package_dir
     GiftWrapper.combine_js("underscore", "jquery-1.5.2")
     GiftWrapper.combine_js('app')
   end
