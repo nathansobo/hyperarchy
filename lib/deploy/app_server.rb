@@ -14,13 +14,16 @@ class AppServer
   end
 
   def deploy(ref)
+    system "thor deploy:minify_js"
     run "su - hyperarchy"
     run "cd /app"
     run "git fetch origin"
     run "git checkout --force", ref
     run "source .rvmrc"
     run "bundle install --deployment --without development test deploy"
-    system "thor deploy:minify_js"
+    Dir["public/assets/*"].each do |path|
+      upload! path, "/app/public/assets/#{File.basename(path)}"
+    end
     run "RAILS_ENV=#{env} bundle exec rake db:migrate"
     run "exit"
     restart_unicorn
