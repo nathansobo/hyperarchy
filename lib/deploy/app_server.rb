@@ -14,13 +14,14 @@ class AppServer
   end
 
   def deploy(ref)
+    run "su - hyperarchy"
     run "cd /app"
     run "git fetch origin"
     run "git checkout --force", ref
     run "source .rvmrc"
     run "bundle install --deployment --without development test deploy"
-    run "su - hyperarchy"
-    run "RAILS_ENV=#{env} rake db:migrate"
+    system "thor deploy:minify_js"
+    run "RAILS_ENV=#{env} bundle exec rake db:migrate"
     run "exit"
     restart_unicorn
   end
@@ -35,6 +36,7 @@ class AppServer
     install_nginx
     install_rvm
     install_ruby
+    upload_deploy_keys
     clone_repository
     install_services
     puts
@@ -161,12 +163,22 @@ class AppServer
     run "gem install bundler --version 1.0.12"
   end
 
+  def upload_deploy_keys
+    upload! "keys/deploy", "/root/.ssh/id_rsa"
+    upload! "keys/deploy.pub", "/root/.ssh/id_rsa.pub"
+    run "chmod 600 /root/.ssh/id_rsa*"
+    run "cp /root/.ssh/id_rsa* /home/hyperarchy/.ssh"
+    run "chown -R hyperarchy /home/hyperarchy/.ssh"
+    run "chgrp -R hyperarchy /home/hyperarchy/.ssh"
+  end
+
   def clone_repository
+    run "su - hyperarchy"
     run "ssh -o StrictHostKeyChecking=no git@github.com"
     run "yes | git clone", repository, "/app"
-    run "chown -R hyperarchy /app"
     run "ln -s /log /app/log"
     run "rvm rvmrc trust /app"
+    run "exit"
   end
 
   def install_services
@@ -237,7 +249,7 @@ class AppServer
   end
 
   def ssh_session(user="root", password=nil)
-    @ssh_session ||= Net::SSH.start(hostname, user, :password => password, :forward_agent => true)
+    @ssh_session ||= Net::SSH.start(hostname, user, :password => password)
   end
 
   def sftp_session
