@@ -59,7 +59,7 @@ class GiftWrapper
         "Content-Length" => body.size.to_s,
         "X-Cascade" => "pass"
       }
-      [403, headers, body]
+      [403, headers, [body]]
     end
   end
 end

@@ -5,7 +5,7 @@ describe GiftWrapper do
   attr_reader :wrapper, :dir, :fdir, :package_dir, :proxied_app
 
   before do
-    @proxied_app = lambda { [200, {}, "proxied_app response"] }
+    @proxied_app = lambda {|env| [200, {}, ["proxied_app response"]] }
     GiftWrapper.app = proxied_app
     @dir = File.expand_path(File.dirname(__FILE__))
     @fdir = "#{dir}/fixtures"
@@ -159,9 +159,7 @@ describe GiftWrapper do
 
           last_response.should be_ok
           last_response.headers['Last-Modified'].should == ::File.mtime(physical_path).httpdate
-          last_response_body = ""
-          last_response.body.each { |chunk| last_response_body.concat(chunk) }
-          last_response_body.should == File.read(physical_path)
+          last_response.body.should == File.read(physical_path)
         end
       end
 

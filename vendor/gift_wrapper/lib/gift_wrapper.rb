@@ -7,6 +7,8 @@ require "#{dir}/gift_wrapper/js_file"
 require "#{dir}/gift_wrapper/require_context"
 
 class GiftWrapper
+  VERSION = '0.0.1'
+
   attr_reader :load_path, :package_dir
   attr_accessor :app, :development_mode
 
@@ -87,7 +89,6 @@ class GiftWrapper
     end
 
     minify(combined_path, minified_path)
-    FileUtils.rm(combined_path)
 
     metadata[paths] = digest
 
