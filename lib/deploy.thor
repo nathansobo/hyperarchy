@@ -31,4 +31,9 @@ class Deploy < Thor
     GiftWrapper.combine_js("underscore", "jquery-1.5.2")
     GiftWrapper.combine_js('app')
   end
+
+  desc "update_nginx_config [env=staging]", "upload the current nginx config and tell nginx to reload it"
+  def update_nginx_config(env="staging")
+    AppServer.new(env).update_nginx_config
+  end
 end

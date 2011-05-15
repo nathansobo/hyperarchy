@@ -148,6 +148,15 @@ class AppServer
     run "start nginx"
   end
 
+  def update_nginx_config
+    upload! 'lib/deploy/resources/nginx/nginx.conf', '/opt/nginx/conf/nginx.conf'
+    if run? "nginx -t"
+      run "nginx -s reload"
+    else
+      puts "nginx config is not syntactically valid. not reloading it."
+    end
+  end
+
   def install_rvm
     run "bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)"
     run "rvm get latest"
