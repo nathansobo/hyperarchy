@@ -37,6 +37,7 @@ class AppServer
     install_daemontools
     install_postgres
     install_nginx
+    install_redis
     install_rvm
     install_ruby
     upload_deploy_keys
@@ -146,6 +147,10 @@ class AppServer
     upload! 'lib/deploy/resources/nginx/hyperarchy.crt', '/etc/ssl/certs/hyperarchy.crt'
     upload! 'lib/deploy/resources/nginx/hyperarchy.key', '/etc/ssl/private/hyperarchy.key'
     run "start nginx"
+  end
+
+  def install_redis
+    run "apt-get install redis-server"
   end
 
   def update_nginx_config
