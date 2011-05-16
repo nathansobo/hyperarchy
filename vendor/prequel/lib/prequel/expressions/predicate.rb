@@ -12,6 +12,10 @@ module Prequel
         And.new(self, other)
       end
 
+      def |(other)
+        Or.new(self, other)
+      end
+
       def resolve_in_relations(relations)
         if new_left = convert_record_reference(relations)
           self.class.new(new_left, right.try(:id))
@@ -31,7 +35,19 @@ module Prequel
       derive_equality :type, :left, :right
 
       def to_sql
-        "#{left.to_sql} #{operator_sql} #{right.to_sql}"
+        maybe_parenthesize("#{left.to_sql} #{operator_sql} #{right.to_sql}")
+      end
+
+      def parenthesize?
+        false
+      end
+
+      def maybe_parenthesize(s)
+        if parenthesize?
+          "(#{s})"
+        else
+          s
+        end
       end
 
       def wire_representation

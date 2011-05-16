@@ -190,6 +190,15 @@ module Prequel
             }, :v1 => 2)
           end
         end
+
+
+        describe "with an or predicate" do
+          it "generates the appropriate sql" do
+            Blog.where(:user_id.eq(2) | :user_id.eq(3)).to_sql.should be_like_query(%{
+              select blogs.id, blogs.user_id, blogs.title from blogs where (blogs.user_id = :v1 or blogs.user_id = :v2)
+            }, :v1 => 2, :v2 => 3)
+          end
+        end
       end
 
       describe "#to_update_sql(attributes)" do

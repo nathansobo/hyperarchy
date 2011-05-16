@@ -14,6 +14,7 @@ module Prequel
     autoload :LessThanOrEqual
     autoload :NotEqual
     autoload :NumericExpression
+    autoload :Or
     autoload :OrderExpression
     autoload :Predicate
     autoload :SetFunction
