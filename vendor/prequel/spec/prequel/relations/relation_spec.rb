@@ -55,6 +55,12 @@ module Prequel
         end
       end
 
+      describe "#where_any" do
+        it "returns a selection based on the or predicate produced by the given hash" do
+          Post.where_any(:blog_id => 1, :title => "Title").should == Post.where(:blog_id.eq(1) | :title.eq("Title"))
+        end
+      end
+
       describe "#join_through(right)" do
         it "joins to the operand and then projects through its surface table" do
           Blog.where(:user_id => 1).join_through(Post).should ==

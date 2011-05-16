@@ -1,9 +1,16 @@
 module Prequel
   module HashExtensions
-    def to_predicate
+    def and_predicate
       map do |key, value|
         key.eq(value)
       end.inject(:&)
+    end
+    alias_method :to_predicate, :and_predicate
+
+    def or_predicate
+      map do |key, value|
+        key.eq(value)
+      end.inject(:|)
     end
 
     Hash.send(:include, self)

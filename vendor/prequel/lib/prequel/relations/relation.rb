@@ -51,6 +51,10 @@ module Prequel
         Selection.new(self, predicate)
       end
 
+      def where_any(hash)
+        where(hash.or_predicate)
+      end
+
       def join(right, predicate=nil)
         InnerJoin.new(self, right, predicate)
       end
