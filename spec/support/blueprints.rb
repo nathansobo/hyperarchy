@@ -37,7 +37,7 @@ CandidateComment.blueprint do
 end
 
 
-class Organization
+Organization.class_eval do
   blueprint do
     suppress_membership_creation { true }
     name { Sham.organization_name }
@@ -66,8 +66,21 @@ class Organization
   end
 end
 
-Membership.blueprint do
-  user { User.make }
-  organization { Organization.make }
-  suppress_invite_email { true }
+Membership.class_eval do
+  blueprint do
+    user { User.make }
+    organization { Organization.make }
+    suppress_invite_email { true }
+  end
+
+  attr_accessor :all_notifications
+
+  def before_save
+    return unless all_notifications
+    self.notify_of_new_elections = all_notifications
+    self.notify_of_new_candidates = all_notifications
+    self.notify_of_new_comments_on_own_candidates = all_notifications
+    self.notify_of_new_comments_on_ranked_candidates = all_notifications
+  end
 end
+
