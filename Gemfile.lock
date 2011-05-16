@@ -1,4 +1,12 @@
 GIT
+  remote: git@github.com:nathansobo/parallel_tests.git
+  revision: 1aacd508c932d360c015d98efcb9ced4ddcc7e33
+  ref: 1aacd508c932d360c015
+  specs:
+    parallel_tests (0.4.17)
+      parallel
+
+GIT
   remote: https://github.com/bigfix/erector.git
   revision: adac17b5c02e47c0ebb834684d2a759cf34b8796
   tag: rails3
@@ -64,6 +72,7 @@ GEM
     net-ssh (2.1.0)
     net-ssh-telnet (0.0.2)
       net-ssh (>= 2.0.1)
+    parallel (0.5.3)
     pg (0.9.0)
     polyglot (0.3.1)
     pony (1.1)
@@ -160,6 +169,7 @@ DEPENDENCIES
   net-sftp
   net-ssh (= 2.1.0)
   net-ssh-telnet
+  parallel_tests!
   pg (= 0.9.0)
   pony (= 1.1)
   rails (= 3.0.4)
