@@ -19,7 +19,7 @@ module Hyperarchy
 
     def send_immediate_notifications(item)
       item.users_to_notify_immediately.each do |user|
-        send_notification_to_user(user, Emails::NotificationPresenter.new(user, "immediately", item))
+        send_notification_to_user(user, Views::NotificationMailer::NotificationPresenter.new(user, "immediately", item))
       end
     end
 

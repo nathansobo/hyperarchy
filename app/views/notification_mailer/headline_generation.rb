@@ -1,11 +1,14 @@
 module Views
   module NotificationMailer
     module HeadlineGeneration
+      include ActionView::Helpers::TextHelper
+
       def item_counts
         items = []
-        items.push("#{new_election_count} new #{'question'.numberize(new_election_count)}") if new_election_count > 0
-        items.push("#{new_candidate_count} new #{'answer'.numberize(new_candidate_count)}") if new_candidate_count > 0
-        items.push("#{new_comment_count} new #{'comment'.numberize(new_comment_count)}") if new_comment_count > 0
+
+        items.push(pluralize(new_election_count, 'new question')) if new_election_count > 0
+        items.push(pluralize(new_candidate_count, 'new answer')) if new_candidate_count > 0
+        items.push(pluralize(new_comment_count, 'new comment')) if new_comment_count > 0
 
         case items.length
           when 3
