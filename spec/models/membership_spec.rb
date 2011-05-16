@@ -2,10 +2,10 @@ require 'spec_helper'
 
 module Models
   describe Membership do
-    attr_reader :organization
+    attr_reader :organization, :user
     before do
       @organization = Organization.make
-      set_current_user(User.make)
+      @user = set_current_user(User.make)
     end
 
     describe "before create" do
@@ -102,6 +102,57 @@ module Models
           new_membership.can_create?.should be_true
           membership.can_update?.should be_true
           membership.can_destroy?.should be_true
+        end
+      end
+    end
+
+    describe "methods supporting notifications" do
+      let(:membership) { organization.memberships.make(:user => user) }
+      let(:other_user) { organization.make_member }
+      let(:time_of_notification) { freeze_time }
+
+      describe "#new_elections_in_period(period)" do
+        context "when the user last visited before the beginning of the last period" do
+          before do
+            membership.update(:last_visited => time_of_notification - 2.hours)
+          end
+
+          it "returns elections not created by the membership's user that were created after the beginning of the last period" do
+            time_travel_to(time_of_notification - 70.minutes)
+            organization.elections.make(:creator => other_user)
+
+            time_travel_to(time_of_notification - 50.minutes)
+            organization.elections.make(:creator => user)
+            e1 = organization.elections.make(:creator => other_user)
+            e2 = organization.elections.make(:creator => other_user)
+            Election.make(:creator => other_user) # other org, should not show up
+
+            time_travel_to(time_of_notification)
+            membership.new_elections_in_period('hourly').all.should =~ [e1, e2]
+          end
+        end
+
+        context "when the user last visited before the beginning of the last period" do
+          before do
+            membership.update(:last_visited => time_of_notification - 40.minutes)
+          end
+
+          it "returns elections not created by the membership's user that were created after the time of the last visit" do
+            time_travel_to(time_of_notification - 70.minutes)
+            organization.elections.make(:creator => other_user)
+
+            time_travel_to(time_of_notification - 50.minutes)
+            organization.elections.make(:creator => other_user)
+
+            time_travel_to(time_of_notification - 30.minutes)
+            organization.elections.make(:creator => user)
+            e1 = organization.elections.make(:creator => other_user)
+            e2 = organization.elections.make(:creator => other_user)
+            Election.make(:creator => other_user) # other org, should not show up
+
+            time_travel_to(time_of_notification)
+            membership.new_elections_in_period('hourly').all.should =~ [e1, e2]
+          end
         end
       end
     end

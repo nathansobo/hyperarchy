@@ -145,7 +145,7 @@ class Membership < Prequel::Record
 
   def new_elections_in_period(period)
     organization.elections.
-      where(Election[:created_at] > last_alerted_or_visited_at(period)).
+      where(Election[:created_at].gt(last_alerted_or_visited_at(period))).
       where(Election[:creator_id].neq(user_id))
   end
 

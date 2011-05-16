@@ -131,6 +131,7 @@ module Prequel
       end
     end
 
+    include Comparable
     delegate :synthetic_columns, :to => 'self.class'
 
     def initialize(values={})
@@ -290,6 +291,10 @@ module Prequel
 
     def add_to_client_dataset(dataset)
       dataset[table.name.to_s][to_param] ||= wire_representation
+    end
+
+    def <=>(other)
+      id <=> other.id
     end
 
     class NotValid < Exception; end;
