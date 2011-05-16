@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.4'
+gem 'rails', '3.0.7'
 gem 'unicorn'
 gem 'pg', '0.9.0'
 gem 'sequel', '3.16.0'
@@ -23,7 +23,7 @@ group :development, :test do
   gem 'rr', '1.0.2'
   gem 'machinist', '1.0.6'
   gem 'faker', '0.9.5'
-  gem 'spork', '~> 0.9.0.rc'
+  gem 'spork', '~> 0.9.0.rc7'
   gem 'parallel_tests', :git => 'git@github.com:nathansobo/parallel_tests.git', :ref => '1aacd508c932d360c015'
 end
 
