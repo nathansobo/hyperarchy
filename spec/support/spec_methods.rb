@@ -1,6 +1,7 @@
 module SpecMethods
   def time_travel_to(time)
     stub(Time).now { time }
+    time
   end
 
   def freeze_time
