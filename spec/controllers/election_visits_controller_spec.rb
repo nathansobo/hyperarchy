@@ -7,7 +7,7 @@ describe ElectionVisitsController do
 
     context "for a normal user" do
       before do
-        login_as make_member(election.organization)
+        login_as election.organization.make_member
       end
 
       context "when the election has never been visited" do

@@ -6,10 +6,10 @@ describe Sandbox do
 
   before do
     org = Organization.make
-    current_user = make_member(org)
+    current_user = org.make_member
 
-    @user_1 = make_member(org)
-    @user_2 = make_member(org)
+    @user_1 = org.make_member
+    @user_2 = org.make_member
 
     @election = org.elections.make
     @candidate_1 = election.candidates.make(:creator => user_1)

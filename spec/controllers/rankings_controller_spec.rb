@@ -8,7 +8,7 @@ describe RankingsController do
     @election = organization.elections.make
     @c1 = election.candidates.make
     @c2 = election.candidates.make
-    @member = make_member(organization)
+    @member = organization.make_member
     @non_member = User.make
   end
 

@@ -198,8 +198,8 @@ module Models
       before do
         @election = Election.make
         @organization = election.organization
-        @member = make_member(election.organization)
-        @owner = make_owner(election.organization)
+        @member = election.organization.make_member
+        @owner = election.organization.make_owner
         @non_member = User.make
         @membership = election.organization.memberships.make(:user => member, :suppress_invite_email => true)
         @candidate = election.candidates.make(:body => "Hey you!")

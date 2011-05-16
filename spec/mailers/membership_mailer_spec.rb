@@ -7,7 +7,7 @@ describe MembershipMailer do
 
     before do
       @organization = Organization.make
-      set_current_user(make_member(organization))
+      set_current_user(organization.make_member)
       @membership = organization.memberships.make(
         :first_name => "John",
         :last_name => "Doe",
@@ -41,7 +41,7 @@ describe MembershipMailer do
     before do
       user = User.make
       @organization = Organization.make
-      set_current_user(make_member(organization))
+      set_current_user(organization.make_member)
       @membership = organization.memberships.make(
         :first_name => user.first_name,
         :last_name => user.last_name,

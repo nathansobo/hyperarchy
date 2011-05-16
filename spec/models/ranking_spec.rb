@@ -278,8 +278,8 @@ describe Ranking do
     before do
       election = Election.make
       @candidate = election.candidates.make
-      @creator = make_member(candidate.election.organization)
-      @other_member = make_member(candidate.election.organization)
+      @creator = candidate.election.organization.make_member
+      @other_member = candidate.election.organization.make_member
       @ranking = Ranking.create!(:user => creator, :candidate => candidate, :position => 64)
     end
 

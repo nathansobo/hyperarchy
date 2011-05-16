@@ -36,10 +36,34 @@ CandidateComment.blueprint do
   suppress_current_user_membership_check { true }
 end
 
-Organization.blueprint do
-  suppress_membership_creation { true }
-  name { Sham.organization_name }
-  description { Sham.organization_description }
+
+class Organization
+  blueprint do
+    suppress_membership_creation { true }
+    name { Sham.organization_name }
+    description { Sham.organization_description }
+  end
+
+  def make_member(attributes={})
+    User.make(attributes).tap do |user|
+      memberships.create!(
+        :user => user,
+        :pending => false,
+        :suppress_invite_email => true
+      )
+    end
+  end
+
+  def make_owner(attributes={})
+    User.make(attributes).tap do |user|
+      memberships.create!(
+        :user => user,
+        :role => "owner",
+        :pending => false,
+        :suppress_invite_email => true
+      )
+    end
+  end
 end
 
 Membership.blueprint do

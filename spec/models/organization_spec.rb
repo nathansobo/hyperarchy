@@ -18,8 +18,8 @@ describe Organization do
         organization = Organization.make
         non_member = User.make
         admin = User.make(:admin => true)
-        member = make_member(organization)
-        owner = make_owner(organization)
+        member = organization.make_member
+        owner = organization.make_owner
 
         set_current_user(non_member)
         organization.can_update?.should be_false
@@ -61,7 +61,7 @@ describe Organization do
 
         context "if the current user is a member" do
           before do
-            set_current_user(make_member(organization))
+            set_current_user(organization.make_member)
           end
 
           it "does not create another membership for them" do
@@ -79,7 +79,7 @@ describe Organization do
 
         context "if the current user is a confirmed member" do
           before do
-            set_current_user(make_member(organization))
+            set_current_user(organization.make_member)
           end
 
           it "does not raise an exception" do
@@ -91,7 +91,7 @@ describe Organization do
           attr_reader :membership
 
           before do
-            set_current_user(make_member(organization))
+            set_current_user(organization.make_member)
             @membership = current_user.memberships.first
             membership.update(:pending => true)
           end

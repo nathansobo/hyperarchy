@@ -17,10 +17,4 @@ module SpecMethods
   ensure
     Rails.env = previous
   end
-
-  def make_member(organization, attributes = {})
-    user = User.make(attributes)
-    organization.memberships.create!(:user => user, :pending => false, :suppress_invite_email => true)
-    user
-  end
 end

@@ -78,8 +78,8 @@ module Models
       describe "#can_create?, #can_update?, #can_destroy?" do
         it "only allows admins, organization owners to modify memberships. the members themselves can update only the last_visited and email preferences columns" do
           organization = Organization.make
-          member = make_member(organization)
-          owner = make_owner(organization)
+          member = organization.make_member
+          owner = organization.make_owner
           admin = User.make(:admin => true)
           other_user = User.make
 

@@ -91,8 +91,8 @@ module Models
     describe "before destroy" do
       it "destroys any candidates, candidate comments, votes and visits that belong to the election" do
         election = Election.make
-        user_1 = make_member(election.organization)
-        user_2 = make_member(election.organization)
+        user_1 = election.organization.make_member
+        user_2 = election.organization.make_member
         candidate_1 = election.candidates.make
         candidate_2 = election.candidates.make
         candidate_1.comments.make
@@ -177,8 +177,8 @@ module Models
 
       before do
         @organization = Organization.make
-        @member = make_member(organization)
-        @owner = make_owner(organization)
+        @member = organization.make_member
+        @owner = organization.make_owner
         @admin = User.make(:admin => true)
         @non_member = User.make
       end
