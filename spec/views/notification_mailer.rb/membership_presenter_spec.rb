@@ -62,6 +62,18 @@ module Views
           MembershipPresenter.new(membership, 'hourly', nil)
         end
       end
+
+      describe "when the user elects to receive all notifications" do
+        it "calls all the methods we expect on membership to report results (these methods are unit tested individually)" do
+          mock(membership) do |m|
+            m.new_elections_in_period('hourly') { [] }
+            m.new_candidates_in_period('hourly') { [] }
+            m.new_comments_on_ranked_candidates_in_period('hourly') { [] }
+            m.new_comments_on_own_candidates_in_period('hourly') { [] }
+          end
+          MembershipPresenter.new(membership, 'hourly', nil)
+        end
+      end
     end
   end
 end
