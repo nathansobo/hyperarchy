@@ -35,6 +35,18 @@ _.constructor("Controllers.Application", {
     return User.find(this.currentUserId);
   },
 
+  ensureCurrentUserIsMember: function() {
+    var future = new Monarch.Http.AjaxFuture();
+    if (this.currentUser().guest()) {
+      Application.layout.signupPrompt.future = future;
+      Application.layout.signupPrompt.showLoginForm();
+      Application.layout.signupPrompt.show()
+    } else {
+      future.triggerSuccess();
+    }
+    return future;
+  },
+
   currentOrganization: function() {
     return Organization.find(this.currentOrganizationId());
   },
