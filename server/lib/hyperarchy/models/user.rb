@@ -44,6 +44,7 @@ class User < Monarch::Model::Record
                 :first_name => "Guest",
                 :last_name  => "User#{organization_id}",
                 :email_address => "guest#{organization_id}@hyperarchy.com",
+                :email_enabled => false,
                 :password => "guest_password")
   end
 
