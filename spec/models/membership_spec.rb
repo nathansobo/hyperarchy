@@ -156,7 +156,6 @@ module Models
         end
       end
 
-
       describe "#new_candidates_in_period(period)" do
         attr_reader :election_with_vote, :election_without_vote
 
@@ -211,6 +210,65 @@ module Models
             time_travel_to(time_of_notification)
             membership.new_candidates_in_period('hourly').all.should =~ [c1, c2]
           end
+        end
+      end
+
+      describe "#new_comments_on_ranked_candidates_in_period(period)" do
+        attr_reader :ranked_candidate, :unranked_candidate
+
+        before do
+          time_travel_to(time_of_notification - 2.hours)
+          election = organization.elections.make(:creator => other_user)
+          @ranked_candidate =  election.candidates.make(:creator => other_user)
+          @unranked_candidate =  election.candidates.make(:creator => other_user)
+          election.rankings.create(:user => user, :candidate => ranked_candidate, :position => 64)
+        end
+
+        context "when the user last visited before the beginning of the last period" do
+          before do
+            membership.update(:last_visited => time_of_notification - 2.hours)
+          end
+
+          it "returns candidates not created by the membership's user that were created after the beginning of the last period" do
+            time_travel_to(time_of_notification - 70.minutes)
+            ranked_candidate.comments.make(:creator => other_user)
+
+            time_travel_to(time_of_notification - 50.minutes)
+
+            com1 = ranked_candidate.comments.make(:creator => other_user)
+            com2 = ranked_candidate.comments.make(:creator => other_user)
+            unranked_candidate.comments.make(:creator => other_user)
+            ranked_candidate.comments.make(:creator => user)
+            CandidateComment.make(:creator => other_user) # other org, should not show up
+
+            time_travel_to(time_of_notification)
+            membership.new_comments_on_ranked_candidates_in_period('hourly').all.should =~ [com1, com2]
+          end
+        end
+
+        context "when the user last visited before the beginning of the last period" do
+          before do
+            membership.update(:last_visited => time_of_notification - 40.minutes)
+          end
+
+          it "returns candidates not created by the membership's user that were created after the beginning of the last period" do
+            time_travel_to(time_of_notification - 70.minutes)
+            ranked_candidate.comments.make(:creator => other_user)
+
+            time_travel_to(time_of_notification - 50.minutes)
+            ranked_candidate.comments.make(:creator => other_user)
+
+            time_travel_to(time_of_notification - 30.minutes)
+            com1 = ranked_candidate.comments.make(:creator => other_user)
+            com2 = ranked_candidate.comments.make(:creator => other_user)
+            unranked_candidate.comments.make(:creator => other_user)
+            ranked_candidate.comments.make(:creator => user)
+            CandidateComment.make(:creator => other_user) # other org, should not show up
+
+            time_travel_to(time_of_notification)
+            membership.new_comments_on_ranked_candidates_in_period('hourly').all.should =~ [com1, com2]
+          end
+
         end
       end
     end

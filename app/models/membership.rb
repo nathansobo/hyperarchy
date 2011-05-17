@@ -158,12 +158,12 @@ class Membership < Prequel::Record
   end
 
   def new_comments_on_ranked_candidates_in_period(period)
-    user.votes.
-      join(organization.elections).
-      join(Candidate).
+    organization.elections.
+      join(user.rankings).
+      join(Candidate, Ranking[:candidate_id] => Candidate[:id]).
       where(Candidate[:creator_id].neq(user_id)).
       join_through(CandidateComment).
-      where(CandidateComment[:created_at] > (last_alerted_or_visited_at(period))).
+      where(CandidateComment[:created_at].gt(last_alerted_or_visited_at(period))).
       where(CandidateComment[:creator_id].neq(user_id))
   end
 
