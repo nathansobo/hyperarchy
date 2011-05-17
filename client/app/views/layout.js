@@ -198,6 +198,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     activateNavigationTab: function(link) {
+      this.showOrganizationNavigationBar();
       this.organizationNavigationBar.find("a").removeClass('active');
       $(this[link]).addClass('active');
     },
