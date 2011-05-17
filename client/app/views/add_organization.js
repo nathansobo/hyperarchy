@@ -1,7 +1,12 @@
-_.constructor("Views.AddOrganization", View.Template, {
-  content: function() { with(this.builder) {
-    div({id: "addOrganization"}, function() {
-      div({'class': "grid5"}, function() {
+_.constructor("Views.AddOrganization", Views.Lightbox, {
+  lightboxContent: function() { with(this.builder) {
+    div(function() {
+
+      h1("Add Your Organization")
+
+      div({'class': "clear"});
+
+      div({id: "addOrganizationForm"}, function() {
         label({'for': "name"}, "Organization Name");
         input({name: "name", 'class': "text"}).ref('organizationName');
         label({'for': "description"}, "Description (Optional)");
@@ -10,13 +15,17 @@ _.constructor("Views.AddOrganization", View.Template, {
           .ref('createOrganizationButton')
           .click('createOrganization');
       })
-      div({'class': "grid6 prefix1"}, template.descriptionText());
+
+      div({id: "addOrganizationDescription"}, template.descriptionText());
+
       div({'class': "clear"});
     });
   }},
 
+  id: "addOrganization",
+
   descriptionText: function() {
-    return "By adding your organization, you create a dedicated, private area where your members can raise questions, make suggestions, and vote on issues specific to them.";
+    return "By adding your organization, you create a private area where your team can raise questions, make suggestions, and vote on issues.";
   },
 
   viewProperties: {
@@ -24,11 +33,6 @@ _.constructor("Views.AddOrganization", View.Template, {
 
     initialize: function() {
       this.find('input').bind('keydown', 'return', this.hitch('createOrganization'));
-    },
-
-    navigate: function() {
-      Application.layout.showAlternateNavigationBar("Add A New Organization");
-      Application.layout.hideSubNavigationContent();
     },
 
     createOrganization: function() {

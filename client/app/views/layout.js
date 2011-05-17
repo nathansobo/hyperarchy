@@ -5,6 +5,7 @@ _.constructor("Views.Layout", View.Template, {
       div({id: "darkenBackground", style: "display: none"})
         .ref('darkenBackground');
       subview('signupPrompt', Views.SignupPrompt);
+      subview('addOrganization', Views.AddOrganization);
       subview('mustBeMemberMessage', Views.MustBeMemberMessage);
       subview('disconnectDialog', Views.DisconnectDialog);
       subview('inviteForm', Views.Invite);
@@ -34,7 +35,7 @@ _.constructor("Views.Layout", View.Template, {
       }).ref('accountMenu');
       ol({'class': "dropdownMenu"}, function() {
         li(function() {
-          a({href: "#"}, "Add Organization...").click('goToAddOrganization');
+          a({href: "#"}, "Add Organization...").click('showAddOrganizationForm');
         }).ref('addOrganizationLi')
       }).ref('organizationsMenu');
 
@@ -52,6 +53,9 @@ _.constructor("Views.Layout", View.Template, {
         a({'class': "globalHeaderItem dropdownLink"}, "Organizations")
           .ref("organizationsMenuLink")
           .click("toggleOrganizationsMenu");
+        a({'class': "globalHeaderItem"}, "Add Organization")
+          .ref("addOrganizationLink")
+          .click("showAddOrganizationForm");
         a({'class': "globalHeaderItem", href: "#"}, "Invite")
           .ref('inviteLink')
           .click('showInviteForm');
@@ -299,6 +303,11 @@ _.constructor("Views.Layout", View.Template, {
       e.preventDefault();
     },
 
+    showAddOrganizationForm: function(view, e) {
+      e.preventDefault();
+      this.addOrganization.show();
+    },
+
     showInviteForm: function(elt, e) {
       this.darkenBackground.fadeIn();
       this.inviteForm
@@ -359,15 +368,6 @@ _.constructor("Views.Layout", View.Template, {
     goToLastOrganization: function() {
       var organizationId = Application.currentUser().defaultOrganization().id();
       $.bbq.pushState({view: "organization", organizationId: organizationId }, 2);
-    },
-
-    goToAddOrganization: function(elt, e) {
-      e.preventDefault();
-      if (Application.currentUser().guest()) {
-        window.location = "/signup"
-      } else {
-        $.bbq.pushState({view: "addOrganization" }, 2);
-      }
     },
 
     showLoginForm: function() {

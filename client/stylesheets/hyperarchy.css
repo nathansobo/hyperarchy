@@ -1742,12 +1742,22 @@ body.legal {
       display: inline-block; }
 
 #app #addOrganization, #app #editOrganization, #app #members {
+  width: 580px;
   font-size: 21px;
   margin-bottom: 20px; }
-  #app #addOrganization input, #app #editOrganization input, #app #members input, #app #addOrganization textarea, #app #editOrganization textarea, #app #members textarea {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px; }
+  #app #addOrganization #addOrganizationDescription, #app #editOrganization #addOrganizationDescription, #app #members #addOrganizationDescription {
+    float: right;
+    margin-top: 30px;
+    font-size: 90%;
+    width: 300px;
+    color: #666; }
+  #app #addOrganization #addOrganizationForm, #app #editOrganization #addOrganizationForm, #app #members #addOrganizationForm {
+    width: 250px;
+    float: left; }
+    #app #addOrganization #addOrganizationForm input, #app #editOrganization #addOrganizationForm input, #app #members #addOrganizationForm input, #app #addOrganization #addOrganizationForm textarea, #app #editOrganization #addOrganizationForm textarea, #app #members #addOrganizationForm textarea {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px; }
   #app #addOrganization a.roundedButton, #app #editOrganization a.roundedButton, #app #members a.roundedButton {
     margin-top: 10px; }
 
