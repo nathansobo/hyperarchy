@@ -305,7 +305,13 @@ _.constructor("Views.Layout", View.Template, {
 
     showAddOrganizationForm: function(view, e) {
       e.preventDefault();
-      this.addOrganization.show();
+      if (Application.currentUser().guest()) {
+        this.signupPrompt.showSignupForm();
+        this.signupPrompt.includeOrganization();
+        this.signupPrompt.show();
+      } else {
+        this.addOrganization.show();
+      }
     },
 
     showInviteForm: function(elt, e) {

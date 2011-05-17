@@ -4,14 +4,11 @@ _.constructor("Views.SignupPrompt", View.Template, {
       div({'class': "cancelX"}).click('hide');
 
       div({'class': "errors", style: "display: none;"}).ref('errorsDiv');
-
+      
       form(function() {
-        h1("Sign up to participate:").ref('signupHeadline');
+        h1("Sign up to participate:");
 
-        div({style: "display: none;"}, function() {
-          label("Organization Name");
-          input({name: "organizationName"}).ref('organizationName');
-        }).ref("organizationNameRow");
+
         label("First Name");
         input({name: "firstName"}).ref('firstName');
         label("Last Name");
@@ -25,7 +22,7 @@ _.constructor("Views.SignupPrompt", View.Template, {
 
         div({id: "login"}, function() {
           div("Already a member?");
-          a("Click here to log in.", {href: '#'}).click('showLoginForm');
+          a("Click here to log in.", {href: '#'}).click('toggleForms');
         });
       }).ref('signupForm')
         .submit('submitSignupForm');
@@ -43,7 +40,7 @@ _.constructor("Views.SignupPrompt", View.Template, {
         input({type: "submit", value: "Log In", 'class': "glossyBlack roundedButton", tabindex: 103});
         div({id: "signup"}, function() {
           div("Not yet a member?");
-          a("Click here to sign up.", {href: '#', tabindex: 105}).click('showSignupForm');
+          a("Click here to sign up.", {href: '#', tabindex: 105}).click('toggleForms');
         });
       }).ref('loginForm')
         .submit('submitLoginForm');
@@ -57,12 +54,12 @@ _.constructor("Views.SignupPrompt", View.Template, {
     },
 
     afterShow: function() {
-      this.prepareForm();
       this.position({
         my: "center",
         at: "center",
         of: Application.layout.darkenBackground
       });
+      this.firstName.focus();
     },
 
     afterHide: function() {
@@ -74,34 +71,22 @@ _.constructor("Views.SignupPrompt", View.Template, {
       if (this.future) {
         this.future.triggerFailure();
         delete this.future;
-      }
+      } 
     },
 
-    showSignupForm: function(view, e) {
-      if (e) e.preventDefault();
-      this.signupHeadline.html("Sign up to participate:")
+    toggleForms: function() {
       this.errorsDiv.hide();
-      this.signupForm.show();
-      this.loginForm.hide();
-      this.organizationNameRow.hide();
-      this.prepareForm();
+      this.signupForm.toggle();
+      this.loginForm.toggle();
+      this.find('input[type="text"]').val("")
+      this.find("input:visible:first").focus();
+      return false;
     },
 
-    includeOrganization: function() {
-      this.signupHeadline.html("Sign up to add your organization:")
-      this.organizationNameRow.show();
-      this.prepareForm();
-    },
-
-    showLoginForm: function(view, e) {
-      if (e) e.preventDefault();
+    showLoginForm: function() {
       this.errorsDiv.hide();
       this.signupForm.hide();
       this.loginForm.show();
-      this.prepareForm();
-    },
-
-    prepareForm: function() {
       this.find('input[type="text"]').val("")
       this.find("input:visible:first").focus();
     },
