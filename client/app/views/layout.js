@@ -146,13 +146,7 @@ _.constructor("Views.Layout", View.Template, {
     organization: {
       afterChange: function(organization) {
         this.organizationName.bindHtml(organization, 'name');
-        if (organization.currentUserCanEdit()) {
-          this.editOrganizationLink.show();
-          this.membersLink.show();
-        } else {
-          this.editOrganizationLink.hide();
-          this.membersLink.hide();
-        }
+        this.showOrHideAdminLinks();
       }
     },
 
@@ -171,11 +165,22 @@ _.constructor("Views.Layout", View.Template, {
         }
 
         this.populateOrganizations();
-
         var organizationsPermitted = user.organizationsPermittedToInvite();
+
         this.currentUserSubscriptions.add(organizationsPermitted.onInsert(this.hitch('showOrHideInviteLink')));
         this.currentUserSubscriptions.add(organizationsPermitted.onRemove(this.hitch('showOrHideInviteLink')));
         this.showOrHideInviteLink();
+        if (this.organization()) this.showOrHideAdminLinks();
+      }
+    },
+
+    showOrHideAdminLinks: function() {
+      if (this.organization().currentUserCanEdit()) {
+        this.editOrganizationLink.show();
+        this.membersLink.show();
+      } else {
+        this.editOrganizationLink.hide();
+        this.membersLink.hide();
       }
     },
 
