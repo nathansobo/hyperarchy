@@ -6,10 +6,13 @@ _.constructor("Views.OrganizationOverview", View.Template, {
           div({'class': "left"}, function() {
             h1("Hyperarchy makes it easy to put anything to a vote.");
           });
-          div({'class': "right"},
-            "Here are the top-ranked answers to questions we're discussing right now. " +
-            "Click on a question that interests you to chime in."
-          );
+          div({'class': "right"}, function() {
+            text("Click on a question that interests you to chime in, or ");
+            a("start a private discussion area").click(function() {
+              Application.layout.showAddOrganizationForm();
+            });
+            text(" for your organization.");
+          });
           div({'class': "clear"});
         });
       }).ref('guestWelcome');

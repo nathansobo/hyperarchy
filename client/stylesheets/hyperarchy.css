@@ -605,7 +605,8 @@ textarea {
 
 a, a:visited {
   color: #0e40ac;
-  cursor: pointer; }
+  cursor: pointer;
+  text-decoration: underline; }
 
 strong {
   font-weight: bold; }
@@ -1253,7 +1254,8 @@ body.legal {
         margin-top: 5px;
         padding: 5px 12px;
         color: white;
-        font-size: 18px; }
+        font-size: 18px;
+        text-decoration: none; }
         #app #mainContent #navigationBar div a.active {
           padding-bottom: 10px;
           -webkit-border-top-left-radius: 4px;
@@ -1300,7 +1302,8 @@ body.legal {
         padding: 0 2px; }
       #app #mainContent #subnavigationBar div a {
         color: #ababab;
-        padding: 0 12px; }
+        padding: 0 12px;
+        text-decoration: none; }
         #app #mainContent #subnavigationBar div a#back {
           padding-left: 20px;
           background-repeat: no-repeat;

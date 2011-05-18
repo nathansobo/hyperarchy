@@ -35,7 +35,7 @@ _.constructor("Views.Layout", View.Template, {
       }).ref('accountMenu');
       ol({'class': "dropdownMenu"}, function() {
         li(function() {
-          a({href: "#"}, "Add Organization...").click('showAddOrganizationForm');
+          a("Add Organization...").click('showAddOrganizationForm');
         }).ref('addOrganizationLi')
       }).ref('organizationsMenu');
 
@@ -317,8 +317,7 @@ _.constructor("Views.Layout", View.Template, {
       e.preventDefault();
     },
 
-    showAddOrganizationForm: function(view, e) {
-      e.preventDefault();
+    showAddOrganizationForm: function() {
       if (Application.currentUser().guest()) {
         var future = new Monarch.Http.AjaxFuture();
         this.signupPrompt.showSignupForm();
