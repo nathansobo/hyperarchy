@@ -130,7 +130,7 @@ _.constructor("Views.SignupPrompt", View.Template, {
     userEstablished: function(data) {
       Application.currentUserIdEstablished(data.current_user_id)
       if (this.future) {
-        this.future.triggerSuccess();
+        this.future.triggerSuccess(data);
         delete this.future;
       }
       this.hide();

@@ -306,9 +306,14 @@ _.constructor("Views.Layout", View.Template, {
     showAddOrganizationForm: function(view, e) {
       e.preventDefault();
       if (Application.currentUser().guest()) {
+        var future = new Monarch.Http.AjaxFuture();
         this.signupPrompt.showSignupForm();
         this.signupPrompt.includeOrganization();
         this.signupPrompt.show();
+        this.signupPrompt.future = future;
+        future.onSuccess(function(data) {
+          $.bbq.pushState({view: "organization", organizationId: data.new_organization_id }, 2);
+        });
       } else {
         this.addOrganization.show();
       }
