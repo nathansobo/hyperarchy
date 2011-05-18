@@ -1419,6 +1419,15 @@ body.legal {
 
 #app #organizationOverview h2 {
   padding-left: 8px; }
+#app #organizationOverview .calloutBanner .right {
+  padding-top: 10px; }
+#app #organizationOverview .calloutBanner .right.firstUser {
+  padding: 0; }
+#app #organizationOverview .calloutBanner .secretUrl {
+  display: block;
+  margin-top: 10px;
+  width: 100%;
+  color: #666; }
 #app #organizationOverview .election {
   padding: 8px;
   margin-bottom: 20px;

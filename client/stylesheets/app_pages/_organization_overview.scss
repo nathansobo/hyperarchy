@@ -5,6 +5,23 @@
       padding-left: 8px;
     }
 
+    .calloutBanner {
+      .right {
+        padding-top: 10px;
+      }
+
+      .right.firstUser {
+        padding: 0;
+      }
+
+      .secretUrl {
+        display: block;
+        margin-top: 10px;
+        width: 100%;
+        color: #666;
+      }
+    }
+
     .election {
       padding: 8px;
       margin-bottom: 20px;

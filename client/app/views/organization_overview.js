@@ -14,6 +14,19 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         });
       }).ref('guestWelcome');
 
+      div({style: "display: none;", 'class': "grid12"}, function() {
+        div({'class': "calloutBanner dropShadow"}, function() {
+          div({'class': "left"}, function() {
+            h1("Invite your team to share their questions and ideas.");
+          });
+          div({'class': "right firstUser"}, function() {
+            span("Share this secret url with your colleagues to let them raise questions and suggest answers:");
+            input({'class': "secretUrl"}, "").ref('secretUrl');
+          });
+          div({'class': "clear"});
+        });
+      }).ref("firstUserExplanation");
+
       h2('Questions Under Discussion');
 
       subview('electionsList', Views.SortedList, {
@@ -61,6 +74,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       }
       var organizationId = parseInt(state.organizationId);
       this.organizationId(organizationId);
+      this.toggleFirstUserExplanation();
 
       Application.layout.activateNavigationTab("questionsLink");
       Application.layout.hideSubNavigationContent();
@@ -113,6 +127,15 @@ _.constructor("Views.OrganizationOverview", View.Template, {
           }
         }, this));
       }, this);
+    },
+
+    toggleFirstUserExplanation: function() {
+      if (this.organization().memberCount() <= 2) {
+        this.secretUrl.val(this.organization().invitationUrl());
+        this.firstUserExplanation.show();
+      } else {
+        this.firstUserExplanation.hide();
+      }
     },
 
     remainingScrollDistance: function() {

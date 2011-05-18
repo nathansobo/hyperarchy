@@ -21,7 +21,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
       div({style: "display: none;", 'class': "grid12"}, function() {
         div({'class': "calloutBanner dropShadow"}, function() {
           div({'class': "left"}, function() {
-            h1("Now you can discuss this question with your team.");
+            h1("Discuss this question\nwith your team.");
           });
           div({'class': "right firstUser"}, function() {
             span("Share this secret url with your colleagues to let them suggest and rank answers:");
@@ -230,6 +230,9 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.candidatesList.election(election);
         this.rankedCandidatesList.election(election);
         this.votesList.election(election);
+      },
+
+      afterWrite: function() {
         this.toggleFirstUserExplanation();
       }
     },
@@ -278,7 +281,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.creatorName.html(htmlEscape(creator.fullName()));
         this.createdAt.html(election.formattedCreatedAt());
         this.creatorAvatar.user(creator);
-        this.creatorDiv.show();
+        if (! this.firstUserExplanation.is(':visible')) this.creatorDiv.show();
       }, this);
     },
 
