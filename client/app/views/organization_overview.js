@@ -24,7 +24,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
           });
           div({'class': "right firstUser"}, function() {
             span("Share this secret url with your colleagues to let them raise questions and suggest answers:");
-            input({'class': "secretUrl"}, "").ref('secretUrl');
+            input({'class': "secretUrl", readonly: "readonly"}, "").ref('secretUrl');
           });
           div({'class': "clear"});
         });

@@ -25,7 +25,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
           });
           div({'class': "right firstUser"}, function() {
             span("Share this secret url with your colleagues to let them suggest and rank answers:");
-            input({'class': "secretUrl"}, "").ref('secretUrl');
+            input({'class': "secretUrl", readonly: "readonly"}, "").ref('secretUrl');
           });
           div({'class': "clear"});
         });
