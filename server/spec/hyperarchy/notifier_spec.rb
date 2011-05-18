@@ -22,8 +22,10 @@ module Hyperarchy
         @pro_user = User.make
         @social_user = User.make
 
-        social_org.memberships.make(:user => social_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "immediately", :notify_of_new_comments_on_ranked_candidates => "weekly", :notify_of_new_comments_on_own_candidates => "hourly")
-        social_org.memberships.make(:user => pro_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "hourly", :notify_of_new_comments_on_ranked_candidates => "hourly", :notify_of_new_comments_on_own_candidates => "hourly")
+        m1 = social_org.memberships.make(:user => social_user)
+        m1.update!(:notify_of_new_elections => "hourly", :notify_of_new_candidates => "immediately", :notify_of_new_comments_on_ranked_candidates => "weekly", :notify_of_new_comments_on_own_candidates => "hourly")
+        m2 = social_org.memberships.make(:user => pro_user)
+        m2.update!(:notify_of_new_elections => "hourly", :notify_of_new_candidates => "hourly", :notify_of_new_comments_on_ranked_candidates => "hourly", :notify_of_new_comments_on_own_candidates => "hourly")
         pro_org.memberships.make(:user => pro_user, :notify_of_new_elections => "hourly", :notify_of_new_candidates => "weekly", :notify_of_new_comments_on_ranked_candidates => "hourly", :notify_of_new_comments_on_own_candidates => "hourly")
 
         Timecop.freeze(1.minute.from_now) # move time past the "visited_at" date associated with these memberships

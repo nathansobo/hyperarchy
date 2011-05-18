@@ -95,12 +95,7 @@ class Membership < Monarch::Model::Record
 
   def before_create
     self.last_visited = Time.now
-    if organization.social?
-      self.notify_of_new_elections = 'never'
-      self.notify_of_new_candidates = 'never'
-      self.notify_of_new_comments_on_own_candidates = 'never'
-      self.notify_of_new_comments_on_ranked_candidates = 'never'
-    end
+    set_all_notification_preferences("never") if organization.social?
 
     if user = User.find(:email_address => email_address)
       self.user = user
@@ -125,6 +120,10 @@ class Membership < Monarch::Model::Record
     Hyperarchy.defer do
       Mailer.send(:to => to, :subject => subject, :body => body)
     end
+  end
+
+  def before_update(field_values)
+    set_all_notification_preferences("daily") if field_values[:has_participated]
   end
 
   def after_destroy
@@ -188,6 +187,14 @@ class Membership < Monarch::Model::Record
   end
 
   protected
+
+  def set_all_notification_preferences(period)
+    self.notify_of_new_elections = period
+    self.notify_of_new_candidates = period
+    self.notify_of_new_comments_on_own_candidates = period
+    self.notify_of_new_comments_on_ranked_candidates = period
+  end
+
   def invite_email_subject
     "#{current_user.full_name} has invited you to join #{organization.name} on Hyperarchy"
   end

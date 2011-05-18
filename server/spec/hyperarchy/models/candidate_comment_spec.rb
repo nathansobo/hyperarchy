@@ -52,11 +52,13 @@ module Models
         c2 = election.candidates.make
         c2.update!(:creator => opted_out_creator)
 
-        organization.memberships.make(:user => opted_in_creator, :notify_of_new_comments_on_own_candidates=> "immediately")
-        organization.memberships.make(:user => opted_out_creator, :notify_of_new_comments_on_ranked_candidates => "never")
+
+        organization.memberships.make(:user => opted_in_creator, :notify_of_new_comments_on_own_candidates => "immediately")
+        organization.memberships.make(:user => opted_out_creator, :notify_of_new_comments_on_own_candidates => "never")
         organization.memberships.make(:user => opted_in_ranker, :notify_of_new_comments_on_ranked_candidates => "immediately")
-        organization.memberships.make(:user => opted_in_non_ranker, :notify_of_new_candidates => "immediately")
-        organization.memberships.make(:user => opted_out_ranker, :notify_of_new_candidates => "never")
+        organization.memberships.make(:user => opted_in_non_ranker, :notify_of_new_candidates => "immediately", :notify_of_new_comments_on_ranked_candidates => "never")
+        organization.memberships.make(:user => opted_out_ranker, :notify_of_new_candidates => "never", :notify_of_new_comments_on_ranked_candidates => "never")
+
 
         Ranking.create!(:candidate => c1, :user => opted_in_ranker, :position => 64)
         Ranking.create!(:candidate => c1, :user => opted_out_ranker, :position => 64)

@@ -46,6 +46,30 @@ module Models
       end
     end
 
+    describe "before update" do
+      context "if the has_participated field is changing from false to true and the organization is social" do
+        attr_reader :membership
+        before do
+          organization.update(:social => true)
+          @membership = organization.memberships.make
+        end
+
+        it "sets the email preferences to 'daily'" do
+          membership.notify_of_new_elections.should == 'never'
+          membership.notify_of_new_candidates.should == 'never'
+          membership.notify_of_new_comments_on_own_candidates.should == 'never'
+          membership.notify_of_new_comments_on_ranked_candidates.should == 'never'
+
+          membership.update(:has_participated => true)
+
+          membership.notify_of_new_elections.should == 'daily'
+          membership.notify_of_new_candidates.should == 'daily'
+          membership.notify_of_new_comments_on_own_candidates.should == 'daily'
+          membership.notify_of_new_comments_on_ranked_candidates.should == 'daily'
+        end
+      end
+    end
+
     describe "when not pending" do
       it "does not send a confirmation email" do
         organization.memberships.create!(:user => User.make, :pending => false)
