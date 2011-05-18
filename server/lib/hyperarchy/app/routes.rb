@@ -227,15 +227,13 @@ module Hyperarchy
         end
 
         data = {"current_user_id" => user.id}
-        dataset = [user]
         if organization_name
           Monarch::Model::Repository.current_user = user
           org = Organization.create!(:name => organization_name)
           data['new_organization_id'] = org.id
-          dataset.push(org)
         end
 
-        successful_json_response(data, dataset)
+        successful_json_response(data, user.initial_repository_contents)
       else
         warden.set_user(previous_user)
         unsuccessful_json_response({"errors" => user.validation_errors_by_column_name.values.flatten })

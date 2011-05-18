@@ -140,12 +140,14 @@ describe "/signup", :type => :rack do
 
 
             current_user.default_organization.should == new_org
+            membership = new_org.memberships.where(:user => current_user).first
 
             response_json = last_response.body_from_json
             response_json["successful"].should be_true
             response_json["data"].should == {"current_user_id" => current_user.id, "new_organization_id" => new_org.id}
             response_json["dataset"]["users"][current_user.id.to_s].should == current_user.wire_representation
             response_json["dataset"]["organizations"][new_org.id.to_s].should == new_org.wire_representation
+            response_json["dataset"]["memberships"][membership.id.to_s].should == membership.wire_representation
           end
         end
       end

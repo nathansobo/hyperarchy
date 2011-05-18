@@ -79,6 +79,7 @@ _.constructor("Views.SignupPrompt", View.Template, {
 
     showSignupForm: function(view, e) {
       if (e) e.preventDefault();
+      this.retainOrganizationName = false;
       this.signupHeadline.html("Sign up to participate:")
       this.errorsDiv.hide();
       this.signupForm.show();
@@ -88,6 +89,7 @@ _.constructor("Views.SignupPrompt", View.Template, {
     },
 
     includeOrganization: function() {
+      this.retainOrganizationName = true;
       this.signupHeadline.html("Sign up to add your organization:")
       this.organizationNameRow.show();
       this.prepareForm();
@@ -108,7 +110,9 @@ _.constructor("Views.SignupPrompt", View.Template, {
 
     submitSignupForm: function() {
       this.errorsDiv.hide();
-      Server.post("/signup", { user: _.underscoreKeys(this.signupForm.fieldValues()) })
+      var fieldValues = _.underscoreKeys(this.signupForm.fieldValues());
+      if (!this.retainOrganizationName) delete fieldValues.organization_name;
+      Server.post("/signup", { user:  fieldValues })
         .onSuccess(this.hitch('userEstablished'))
         .onFailure(this.hitch('handleErrors'));
 
