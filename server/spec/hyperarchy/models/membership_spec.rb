@@ -68,6 +68,31 @@ module Models
           membership.notify_of_new_comments_on_ranked_candidates.should == 'daily'
         end
       end
+
+      context "if an email preference field is being changed" do
+        it "sets the has_participated field to true" do
+          m1 = organization.memberships.make(:has_participated => false)
+          m2 = organization.memberships.make(:has_participated => false)
+          m3 = organization.memberships.make(:has_participated => false)
+          m4 = organization.memberships.make(:has_participated => false)
+          m5 = organization.memberships.make(:has_participated => false)
+
+          m1.update(:notify_of_new_elections => 'daily')
+          m1.should have_participated
+
+          m2.update(:notify_of_new_candidates => 'daily')
+          m2.should have_participated
+
+          m3.update(:notify_of_new_comments_on_ranked_candidates => 'daily')
+          m3.should have_participated
+
+          m4.update(:notify_of_new_comments_on_own_candidates => 'daily')
+          m4.should have_participated
+
+          m5.update(:role => 'owner')
+          m5.should_not have_participated
+        end
+      end
     end
 
     describe "when not pending" do

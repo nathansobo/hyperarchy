@@ -1,14 +1,15 @@
 class Membership < Monarch::Model::Record
+  NOTIFICATION_PREFERENCE_COLUMNS = [:notify_of_new_elections, :notify_of_new_candidates, :notify_of_new_comments_on_own_candidates, :notify_of_new_comments_on_ranked_candidates]
+
   column :organization_id, :key
   column :user_id, :key
   column :invitation_id, :key
   column :role, :string, :default => "member"
   column :pending, :boolean, :default => true
   column :last_visited, :datetime
-  column :notify_of_new_elections, :string, :default => "immediately"
-  column :notify_of_new_candidates, :string, :default => "immediately"
-  column :notify_of_new_comments_on_own_candidates, :string, :default => "immediately"
-  column :notify_of_new_comments_on_ranked_candidates, :string, :default => "immediately"
+  NOTIFICATION_PREFERENCE_COLUMNS.each do |column_name|
+    column column_name, :string, :default => "immediately"
+  end
   column :created_at, :datetime
   column :updated_at, :datetime
   column :has_participated, :boolean, :default => false
@@ -36,22 +37,14 @@ class Membership < Monarch::Model::Record
   end
 
   def create_whitelist
-    [:organization_id, :user_id, :role, :first_name, :last_name, :email_address,
-     :notify_of_new_elections, :notify_of_new_candidates,
-     :notify_of_new_comments_on_ranked_candidates,
-     :notify_of_new_comments_on_own_candidates]
+    [:organization_id, :user_id, :role, :first_name, :last_name, :email_address, *NOTIFICATION_PREFERENCE_COLUMNS]
   end
 
   def update_whitelist
     if current_user_is_admin_or_organization_owner?
-      [:first_name, :last_name, :role, :last_visited,
-       :notify_of_new_elections, :notify_of_new_candidates,
-       :notify_of_new_comments_on_ranked_candidates,
-       :notify_of_new_comments_on_own_candidates]
+      [:first_name, :last_name, :role, :last_visited, *NOTIFICATION_PREFERENCE_COLUMNS]
     else
-      [:last_visited, :notify_of_new_elections, :notify_of_new_candidates,
-       :notify_of_new_comments_on_ranked_candidates,
-       :notify_of_new_comments_on_own_candidates]
+      [:last_visited, *NOTIFICATION_PREFERENCE_COLUMNS]
     end
   end
 
@@ -124,6 +117,10 @@ class Membership < Monarch::Model::Record
 
   def before_update(field_values)
     set_all_notification_preferences("daily") if field_values[:has_participated]
+
+    p NOTIFICATION_PREFERENCE_COLUMNS & field_values.keys
+
+    self.has_participated = true unless (NOTIFICATION_PREFERENCE_COLUMNS & field_values.keys).empty?
   end
 
   def after_destroy
@@ -189,10 +186,9 @@ class Membership < Monarch::Model::Record
   protected
 
   def set_all_notification_preferences(period)
-    self.notify_of_new_elections = period
-    self.notify_of_new_candidates = period
-    self.notify_of_new_comments_on_own_candidates = period
-    self.notify_of_new_comments_on_ranked_candidates = period
+    NOTIFICATION_PREFERENCE_COLUMNS.each do |column_name|
+      send("#{column_name}=", period)
+    end
   end
 
   def invite_email_subject
