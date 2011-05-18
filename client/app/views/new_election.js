@@ -8,7 +8,7 @@ _.constructor("Views.NewElection", View.Template, {
             div("In the next step, you'll invite your colleagues to suggest and vote on answers to this question.");
           });
           div({'class': "right"}, function() {
-            div("Here are some ideas:")
+            div({'class': "ideas"}, "Here are some ideas:");
             ul(function() {
               li("What should we discuss at our next meeting?");
               li("What should be our goals for the next quarter?");

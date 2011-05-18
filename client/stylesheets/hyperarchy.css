@@ -1862,6 +1862,8 @@ body.legal {
 
 #app #newElection .calloutBanner .left h1 {
   margin-bottom: 8px; }
+#app #newElection .calloutBanner .right .ideas {
+  font-weight: bold; }
 #app #newElection .calloutBanner ul {
   margin-top: 15px; }
   #app #newElection .calloutBanner ul li {

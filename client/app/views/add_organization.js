@@ -42,7 +42,7 @@ _.constructor("Views.AddOrganization", Views.Lightbox, {
         .onSuccess(function(organization) {
           Application.currentUser().memberships().where({organizationId: organization.id()}).fetch()
             .onSuccess(function() {
-              $.bbq.pushState({view: 'organization', organizationId: organization.id()});
+              $.bbq.pushState({view: 'newElection', organizationId: organization.id()});
             });
         });
     }
