@@ -53,7 +53,7 @@ _.constructor("Views.Layout", View.Template, {
         a({'class': "globalHeaderItem dropdownLink"}, "Organizations")
           .ref("organizationsMenuLink")
           .click("toggleOrganizationsMenu");
-        a({'class': "globalHeaderItem"}, "Add Organization")
+        a({'class': "globalHeaderItem"}, "Add Your Organization")
           .ref("addOrganizationLink")
           .click("showAddOrganizationForm");
         a({'class': "globalHeaderItem", href: "#"}, "Invite")
@@ -175,6 +175,10 @@ _.constructor("Views.Layout", View.Template, {
         this.currentUserSubscriptions.add(organizationsPermitted.onRemove(this.hitch('showOrHideInviteLink')));
         this.showOrHideInviteLink();
         if (this.organization()) this.showOrHideAdminLinks();
+
+        this.currentUserSubscriptions.add(user.memberships().onInsert(this.hitch('showAppropriateOrganizationsControls')));
+        this.currentUserSubscriptions.add(user.memberships().onRemove(this.hitch('showAppropriateOrganizationsControls')));
+        this.showAppropriateOrganizationsControls();
       }
     },
 
@@ -185,6 +189,16 @@ _.constructor("Views.Layout", View.Template, {
       } else {
         this.editOrganizationLink.hide();
         this.membersLink.hide();
+      }
+    },
+
+    showAppropriateOrganizationsControls: function() {
+      if (Application.currentUser().memberships().size() > 1) {
+        this.organizationsMenuLink.show();
+        this.addOrganizationLink.hide();
+      } else {
+        this.organizationsMenuLink.hide();
+        this.addOrganizationLink.show();
       }
     },
 
