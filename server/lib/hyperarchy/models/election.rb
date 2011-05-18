@@ -72,6 +72,10 @@ class Election < Monarch::Model::Record
       Hyperarchy.defer { Hyperarchy::Notifier.send_immediate_notifications(self) }
     end
     organization.increment(:election_count)
+
+    if creator
+      creator.memberships.find(:organization_id => organization_id).try(:update, :has_participated => true)
+    end
   end
 
   def users_to_notify_immediately

@@ -77,6 +77,12 @@ module Models
           organization.elections.create!(:body => "What should we eat for dinner?")
         end.should change { organization.election_count }.by(1)
       end
+
+      it "sets the has_participated field to true on its creator" do
+        organization.memberships.find(:user_id => creator.id).should_not have_participated
+        organization.elections.make
+        organization.memberships.find(:user_id => creator.id).should have_participated
+      end
     end
 
     describe "before update" do
