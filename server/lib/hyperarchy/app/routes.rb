@@ -209,14 +209,33 @@ module Hyperarchy
 
     def xhr_signup
       previous_user = current_user || Organization.social.guest
-      user = User.secure_create(params[:user].from_json)
+
+      user_params = params[:user].from_json
+      user = User.secure_create(user_params)
+      if organization_name = user_params['organization_name']
+        if organization_name.blank?
+          return unsuccessful_json_response({"errors" => ["Organization name cannot be blank."] })
+        end
+      end
+
       if user.valid?
         warden.set_user(user)
+
         invited_org_id = previous_user.organization_ids.first
         if (invited_org_id && !current_user.memberships.find(:organization_id => invited_org_id))
           current_user.memberships.create(:organization_id => invited_org_id, :pending => false)
         end
-        successful_json_response({"current_user_id" => user.id}, user)
+
+        data = {"current_user_id" => user.id}
+        dataset = [user]
+        if organization_name
+          Monarch::Model::Repository.current_user = user
+          org = Organization.create!(:name => organization_name)
+          data['new_organization_id'] = org.id
+          dataset.push(org)
+        end
+
+        successful_json_response(data, dataset)
       else
         warden.set_user(previous_user)
         unsuccessful_json_response({"errors" => user.validation_errors_by_column_name.values.flatten })

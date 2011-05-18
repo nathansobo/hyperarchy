@@ -100,22 +100,53 @@ describe "/signup", :type => :rack do
       end
 
       context "if all the params are valid" do
-        it "creates and authenticates a new user and returns its id and a dataset containing its record" do
-          xhr_post "/signup", :user => {
-            :first_name => "Joe",
-            :last_name => "Camel",
-            :email_address => "joe@example.com",
-            :password => "nicotine"
-          }.to_json
-          last_response.should be_ok
+        context "if no :organization_name param is given" do
+          it "creates and authenticates a new user and returns its id and a dataset containing its record" do
+            xhr_post "/signup", :user => {
+              :first_name => "Joe",
+              :last_name => "Camel",
+              :email_address => "joe@example.com",
+              :password => "nicotine"
+            }.to_json
+            last_response.should be_ok
 
-          current_user.should_not == guest
-          current_user.first_name.should == "Joe"
+            current_user.should_not == guest
+            current_user.first_name.should == "Joe"
 
-          response_json = last_response.body_from_json
-          response_json["successful"].should be_true
-          response_json["data"].should == {"current_user_id" => current_user.id}
-          response_json["dataset"]["users"][current_user.id.to_s].should == current_user.wire_representation
+            response_json = last_response.body_from_json
+            response_json["successful"].should be_true
+            response_json["data"].should == {"current_user_id" => current_user.id}
+            response_json["dataset"]["users"][current_user.id.to_s].should == current_user.wire_representation
+          end
+        end
+
+        context "if an :organization_name param is given" do
+          it "creates and authenticates a new user and makes them the owner of a new organization with the given name" do
+            xhr_post "/signup", :user => {
+              :first_name => "Joe",
+              :last_name => "Camel",
+              :email_address => "joe@example.com",
+              :password => "nicotine",
+              :organization_name => "joe's organization"
+            }.to_json
+            last_response.should be_ok
+
+            current_user.should_not == guest
+            current_user.first_name.should == "Joe"
+
+            current_user.organizations.size.should == 2
+            new_org = current_user.memberships.where(:role => "owner").join_through(Organization).first
+            new_org.name.should == "joe's organization"
+
+
+            current_user.default_organization.should == new_org
+
+            response_json = last_response.body_from_json
+            response_json["successful"].should be_true
+            response_json["data"].should == {"current_user_id" => current_user.id, "new_organization_id" => new_org.id}
+            response_json["dataset"]["users"][current_user.id.to_s].should == current_user.wire_representation
+            response_json["dataset"]["organizations"][new_org.id.to_s].should == new_org.wire_representation
+          end
         end
       end
 
@@ -135,6 +166,16 @@ describe "/signup", :type => :rack do
           response_json = last_response.body_from_json
           response_json["successful"].should be_false
           response_json["data"]["errors"].should == User.new(invalid_params).validation_errors_by_column_name.values.flatten
+        end
+      end
+
+      context "if the organization name param is supplied but blank" do
+        it "returns a validation error" do
+          xhr_post "/signup", :user => { :organization_name => "" }.to_json
+          current_user.should == guest
+          response_json = last_response.body_from_json
+          response_json["successful"].should be_false
+          response_json["data"]["errors"].first.should =~ /Organization/
         end
       end
     end
