@@ -108,6 +108,7 @@ class Membership < Monarch::Model::Record
   end
 
   def after_create
+    organization.increment(:member_count)
     return unless pending?
     return if suppress_invite_email
 
@@ -119,6 +120,10 @@ class Membership < Monarch::Model::Record
     end
   end
 
+  def after_destroy
+    organization.decrement(:member_count)
+  end
+  
   def wants_notifications?(period)
      wants_election_notifications?(period) ||
        wants_candidate_notifications?(period) ||

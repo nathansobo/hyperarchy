@@ -16,6 +16,19 @@ module Models
       end
     end
 
+    describe "after create" do
+      it "increments the member_count field of the organization" do
+        expect { organization.memberships.create!(:user => User.make) }.to change(organization, :member_count).by(1)
+      end
+    end
+
+    describe "after destroy" do
+      it "decrements the member_count field of the organization" do
+        membership = organization.memberships.make
+        expect { membership.destroy }.to change(organization, :member_count).by(-1)
+      end
+    end
+
     describe "when not pending" do
       it "does not send a confirmation email" do
         organization.memberships.create!(:user => User.make, :pending => false)
