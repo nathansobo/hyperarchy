@@ -14,6 +14,23 @@ module Models
         membership = organization.memberships.create!(:user => User.make)
         membership.last_visited.should == Time.now
       end
+
+      it "assigns email preferences for social memberships to never" do
+        organization.update(:social => true)
+        membership = organization.memberships.make(:user => User.make)
+        membership.notify_of_new_elections.should == 'never'
+        membership.notify_of_new_candidates.should == 'never'
+        membership.notify_of_new_comments_on_own_candidates.should == 'never'
+        membership.notify_of_new_comments_on_ranked_candidates.should == 'never'
+      end
+
+      it "assigns email preferences for non-social memberships to immediate" do
+        membership = organization.memberships.make(:user => User.make)
+        membership.notify_of_new_elections.should == 'immediately'
+        membership.notify_of_new_candidates.should == 'immediately'
+        membership.notify_of_new_comments_on_own_candidates.should == 'immediately'
+        membership.notify_of_new_comments_on_ranked_candidates.should == 'immediately'
+      end
     end
 
     describe "after create" do

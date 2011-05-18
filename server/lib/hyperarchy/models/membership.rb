@@ -5,12 +5,13 @@ class Membership < Monarch::Model::Record
   column :role, :string, :default => "member"
   column :pending, :boolean, :default => true
   column :last_visited, :datetime
-  column :notify_of_new_elections, :string, :default => "daily"
-  column :notify_of_new_candidates, :string, :default => "daily"
-  column :notify_of_new_comments_on_own_candidates, :string, :default => "hourly"
-  column :notify_of_new_comments_on_ranked_candidates, :string, :default => "hourly"
+  column :notify_of_new_elections, :string, :default => "immediately"
+  column :notify_of_new_candidates, :string, :default => "immediately"
+  column :notify_of_new_comments_on_own_candidates, :string, :default => "immediately"
+  column :notify_of_new_comments_on_ranked_candidates, :string, :default => "immediately"
   column :created_at, :datetime
   column :updated_at, :datetime
+  column :has_participated, :boolean, :default => false
 
   synthetic_column :first_name, :string
   synthetic_column :last_name, :string
@@ -94,6 +95,12 @@ class Membership < Monarch::Model::Record
 
   def before_create
     self.last_visited = Time.now
+    if organization.social?
+      self.notify_of_new_elections = 'never'
+      self.notify_of_new_candidates = 'never'
+      self.notify_of_new_comments_on_own_candidates = 'never'
+      self.notify_of_new_comments_on_ranked_candidates = 'never'
+    end
 
     if user = User.find(:email_address => email_address)
       self.user = user
