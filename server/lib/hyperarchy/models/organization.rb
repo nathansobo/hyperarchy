@@ -9,7 +9,7 @@ class Organization < Monarch::Model::Record
   column :created_at, :datetime
   column :updated_at, :datetime
   column :social, :boolean, :default => false
-  column :privacy, :string, :default => "read_only"
+  column :privacy, :string, :default => "private"
   column :invitation_code, :string
 
   has_many :elections, :order_by => "score desc"
