@@ -2,7 +2,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'id': "electionOverview"}, function() {
       div({style: "display: none;", 'class': "grid12"}, function() {
-        div({'class': "guestWelcome dropShadow"}, function() {
+        div({'class': "calloutBanner dropShadow"}, function() {
           div({'class': "left"}, function() {
             h1(function() {
               text("Help ");

@@ -1,6 +1,22 @@
 #app {
   #newElection {
 
+    .calloutBanner {
+
+      .left {
+        h1 { margin-bottom: 8px; }
+      }
+
+      ul {
+        margin-top: 15px;
+
+        li {
+          list-style: disc inside;
+          font-style: italic;
+        }
+      }
+    }
+
     h2 {
       margin-bottom: 20px;
     }

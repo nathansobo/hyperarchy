@@ -710,19 +710,19 @@ button {
   margin-bottom: 5px;
   font-size: 14px; }
 
-.guestWelcome {
+.calloutBanner {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   background: #EFFFB9;
   margin-bottom: 30px;
   padding: 20px;
   font-size: 18px; }
-  .guestWelcome .left {
+  .calloutBanner .left {
     float: left;
     width: 45%;
     margin-right: 5%;
     text-align: center; }
-  .guestWelcome .right {
+  .calloutBanner .right {
     float: right;
     width: 48%; }
 
@@ -1481,7 +1481,7 @@ body.legal {
   margin: 0;
   clear: both;
   overflow: hidden; }
-  #app #electionOverview .guestWelcome .right {
+  #app #electionOverview .calloutBanner .right {
     padding-top: 10px; }
   #app #electionOverview .headerContainer {
     margin-bottom: 20px; }
@@ -1741,54 +1741,65 @@ body.legal {
       height: 22px;
       display: inline-block; }
 
-#app #addOrganization, #app #editOrganization, #app #members {
+#app #addOrganization {
   width: 580px;
   font-size: 21px;
   margin-bottom: 20px; }
-  #app #addOrganization #addOrganizationDescription, #app #editOrganization #addOrganizationDescription, #app #members #addOrganizationDescription {
+  #app #addOrganization #addOrganizationDescription {
     float: right;
     margin-top: 30px;
     font-size: 90%;
     width: 300px;
     color: #666; }
-  #app #addOrganization #addOrganizationForm, #app #editOrganization #addOrganizationForm, #app #members #addOrganizationForm {
+  #app #addOrganization #addOrganizationForm {
     width: 250px;
     float: left; }
-    #app #addOrganization #addOrganizationForm input, #app #editOrganization #addOrganizationForm input, #app #members #addOrganizationForm input, #app #addOrganization #addOrganizationForm textarea, #app #editOrganization #addOrganizationForm textarea, #app #members #addOrganizationForm textarea {
+    #app #addOrganization #addOrganizationForm input, #app #addOrganization #addOrganizationForm textarea {
       display: block;
       width: 100%;
       margin-bottom: 10px; }
-  #app #addOrganization a.roundedButton, #app #editOrganization a.roundedButton, #app #members a.roundedButton {
+  #app #addOrganization a.roundedButton {
     margin-top: 10px; }
 
-#app #editOrganization label[for="privacy"] {
-  display: block; }
-#app #editOrganization input[name="name"] {
-  width: 300px; }
-#app #editOrganization textarea {
-  resize: none;
-  width: 500px; }
-#app #editOrganization #flags {
-  margin-top: 10px;
+#app #editOrganization {
+  font-size: 21px;
   margin-bottom: 20px; }
-  #app #editOrganization #flags input[type="checkbox"] {
-    margin-right: 10px;
-    display: inline;
-    width: auto; }
-  #app #editOrganization #flags label {
+  #app #editOrganization input, #app #editOrganization textarea {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px; }
+  #app #editOrganization a.roundedButton {
+    margin-top: 10px; }
+  #app #editOrganization label[for="privacy"] {
+    display: block; }
+  #app #editOrganization input[name="name"] {
+    width: 300px; }
+  #app #editOrganization textarea {
+    resize: none;
+    width: 500px; }
+  #app #editOrganization #flags {
+    margin-top: 10px;
+    margin-bottom: 20px; }
+    #app #editOrganization #flags input[type="checkbox"] {
+      margin-right: 10px;
+      display: inline;
+      width: auto; }
+    #app #editOrganization #flags label {
+      position: relative;
+      top: 2px; }
+  #app #editOrganization button {
+    display: inline-block; }
+  #app #editOrganization .loading {
+    display: inline-block;
     position: relative;
-    top: 2px; }
-#app #editOrganization button {
-  display: inline-block; }
-#app #editOrganization .loading {
-  display: inline-block;
-  position: relative;
-  top: 3px;
-  left: 5px; }
-#app #editOrganization #overviewLink {
-  float: right; }
+    top: 3px;
+    left: 5px; }
+  #app #editOrganization #overviewLink {
+    float: right; }
 
 #app #members {
+  font-size: 21px;
+  margin-bottom: 20px;
   overflow: hidden; }
   #app #members #content {
     position: relative;
@@ -1842,6 +1853,13 @@ body.legal {
     #app #account .emailPreferences .emailPreference label {
       font-size: 16px; }
 
+#app #newElection .calloutBanner .left h1 {
+  margin-bottom: 8px; }
+#app #newElection .calloutBanner ul {
+  margin-top: 15px; }
+  #app #newElection .calloutBanner ul li {
+    list-style: disc inside;
+    font-style: italic; }
 #app #newElection h2 {
   margin-bottom: 20px; }
 #app #newElection #createElectionLink {
