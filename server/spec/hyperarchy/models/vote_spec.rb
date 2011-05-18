@@ -43,7 +43,6 @@ module Models
         election.votes.create(:user_id => creator.id)
         organization.memberships.find(:user_id => creator.id).should have_participated
       end
-
     end
   end
 end

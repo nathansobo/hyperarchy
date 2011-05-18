@@ -45,6 +45,9 @@ class CandidateComment < Monarch::Model::Record
     unless suppress_notification_email
       Hyperarchy.defer { Hyperarchy::Notifier.send_immediate_notifications(self) }
     end
+    if creator
+      creator.memberships.find(:organization_id => election.organization_id).try(:update, :has_participated => true)
+    end
   end
 
   def users_to_notify_immediately

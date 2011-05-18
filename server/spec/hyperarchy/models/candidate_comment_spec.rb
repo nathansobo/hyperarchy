@@ -80,6 +80,17 @@ module Models
         ranker_email[:body].should include(c1_comment.body)
         ranker_email[:html_body].should include(c1_comment.body)
       end
+
+
+      it "marks the comment's creator as having participated" do
+        creator = User.make
+        organization.memberships.make(:user => creator, :has_participated => false)
+        set_current_user(creator)
+
+        organization.memberships.find(:user_id => creator.id).should_not have_participated
+        candidate.comments.make
+        organization.memberships.find(:user_id => creator.id).should have_participated
+      end
     end
 
     describe "security" do
