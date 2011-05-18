@@ -149,6 +149,16 @@ module Models
         email[:body].should include(c2.body)
         email[:html_body].should include(c2.body)
       end
+
+      it "marks the candidate's creator as having participated" do
+        creator = User.make
+        organization.memberships.make(:user => creator)
+        set_current_user(creator)
+
+        organization.memberships.find(:user_id => creator.id).should_not have_participated
+        election.candidates.make
+        organization.memberships.find(:user_id => creator.id).should have_participated
+      end
     end
 
     describe "#before_destroy" do

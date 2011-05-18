@@ -57,6 +57,10 @@ class Candidate < Monarch::Model::Record
     election.compute_global_ranking
     election.unlock
 
+    if creator
+      creator.memberships.find(:organization_id => election.organization_id).try(:update, :has_participated => true)
+    end
+
     send_notifications
   end
 
