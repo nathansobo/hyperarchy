@@ -45,4 +45,5 @@ end
 Membership.blueprint do
   organization { Organization.make }
   suppress_invite_email { true }
+  has_participated { true }
 end

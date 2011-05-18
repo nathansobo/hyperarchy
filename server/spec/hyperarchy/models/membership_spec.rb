@@ -51,7 +51,7 @@ module Models
         attr_reader :membership
         before do
           organization.update(:social => true)
-          @membership = organization.memberships.make
+          @membership = organization.memberships.make(:has_participated => false)
         end
 
         it "sets the email preferences to 'daily'" do

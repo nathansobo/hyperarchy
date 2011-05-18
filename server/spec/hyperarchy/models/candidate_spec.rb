@@ -152,7 +152,7 @@ module Models
 
       it "marks the candidate's creator as having participated" do
         creator = User.make
-        organization.memberships.make(:user => creator)
+        organization.memberships.make(:user => creator, :has_participated => false)
         set_current_user(creator)
 
         organization.memberships.find(:user_id => creator.id).should_not have_participated

@@ -24,6 +24,8 @@ class Vote < Monarch::Model::Record
   def after_create
     election.increment(:vote_count)
     election.save
+
+    user.memberships.find(:organization_id => election.organization_id).try(:update, :has_participated => true)
   end
 
   def after_destroy

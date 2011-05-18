@@ -53,7 +53,7 @@ module Models
         @opted_out = User.make
         @non_member = User.make
 
-        organization.memberships.make(:user => creator, :notify_of_new_elections => "immediately")
+        organization.memberships.make(:user => creator, :notify_of_new_elections => "immediately", :has_participated => false)
         organization.memberships.make(:user => opted_in, :notify_of_new_elections => "immediately")
         organization.memberships.make(:user => opted_out, :notify_of_new_elections => "never")
 
