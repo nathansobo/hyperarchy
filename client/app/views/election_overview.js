@@ -18,6 +18,18 @@ _.constructor("Views.ElectionOverview", View.Template, {
         });
       }).ref('guestWelcome');
 
+      div({style: "display: none;", 'class': "grid12"}, function() {
+        div({'class': "calloutBanner dropShadow"}, function() {
+          div({'class': "left"}, function() {
+            h1("Now you can discuss this question with your team.");
+          });
+          div({'class': "right firstUser"}, function() {
+            span("Share this secret url with your colleagues to let them suggest and rank answers:");
+            input({'class': "secretUrl"}, "").ref('secretUrl');
+          });
+          div({'class': "clear"});
+        });
+      }).ref('firstUserExplanation');
 
       div({'class': "headerContainer"}, function() {
         div({id: "electionBodyContainer", 'class': "grid8"}, function() {
@@ -218,6 +230,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.candidatesList.election(election);
         this.rankedCandidatesList.election(election);
         this.votesList.election(election);
+        this.toggleFirstUserExplanation();
       }
     },
 
@@ -311,7 +324,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     showCreateCandidateForm: function(instantly) {
-      this.showCreateCandidateFormButton.fadeOut();
       this.createCandidateDetailsTextarea.blur();
 
       var cancelResize = _.repeat(function() {
@@ -324,10 +336,12 @@ _.constructor("Views.ElectionOverview", View.Template, {
       });
 
       if (instantly) {
+        this.showCreateCandidateFormButton.hide();
         this.createCandidateForm.show();
         this.votesList.adjustHeight();
         afterFormIsShown();
       } else {
+        this.showCreateCandidateFormButton.fadeOut();
         this.createCandidateForm.slideDown('fast', afterFormIsShown);
       }
     },
@@ -457,6 +471,17 @@ _.constructor("Views.ElectionOverview", View.Template, {
         .onSuccess(function() {
           this.electionSpinner.hide();
         }, this);
+    },
+
+    toggleFirstUserExplanation: function() {
+      if (this.organization().memberCount() <= 2) {
+        this.secretUrl.val(this.organization().invitationUrl());
+        this.firstUserExplanation.show();
+        this.creatorDiv.hide();
+      } else {
+        this.creatorDiv.show();
+        this.firstUserExplanation.hide();
+      }
     },
 
     toggleGuestWelcome: function() {

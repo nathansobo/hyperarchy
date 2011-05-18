@@ -6,6 +6,7 @@ _.constructor("Organization", Model.Record, {
         description: "string",
         membersCanInvite: "boolean",
         electionCount: 'integer',
+        memberCount: 'integer',
         useSsl: 'boolean',
         social: 'boolean',
         privacy: 'string',
@@ -109,5 +110,9 @@ _.constructor("Organization", Model.Record, {
 
   hasNonAdminQuestions: function() {
     return !this.elections().where(Election.creatorId.neq(1)).empty();
+  },
+
+  invitationUrl: function() {
+    return 'https://' + Application.HTTP_HOST + "/private/" + this.invitationCode();
   }
 });

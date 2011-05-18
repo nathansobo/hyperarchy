@@ -1483,6 +1483,13 @@ body.legal {
   overflow: hidden; }
   #app #electionOverview .calloutBanner .right {
     padding-top: 10px; }
+  #app #electionOverview .calloutBanner .right.firstUser {
+    padding: 0; }
+  #app #electionOverview .calloutBanner .secretUrl {
+    display: block;
+    margin-top: 10px;
+    width: 100%;
+    color: #666; }
   #app #electionOverview .headerContainer {
     margin-bottom: 20px; }
     #app #electionOverview .headerContainer #electionBodyContainer {

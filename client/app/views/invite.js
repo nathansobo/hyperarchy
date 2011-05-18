@@ -46,7 +46,7 @@ _.constructor("Views.Invite", View.Template, {
       this.instructions.show();
       this.errorMessage.hide();
       this.emailAddresses.val("");
-      var invitationUrl = 'https://' + Application.HTTP_HOST + "/private/" + Application.currentOrganization().invitationCode();
+      var invitationUrl = Application.currentOrganization().invitationUrl();
       this.invitationUrl.val(invitationUrl);
       this.invitationUrl.focus();
       this.emailAddresses.removeClass("error");

@@ -9,6 +9,17 @@
       .right {
         padding-top: 10px;
       }
+
+      .right.firstUser {
+        padding: 0;
+      }
+
+      .secretUrl {
+        display: block;
+        margin-top: 10px;
+        width: 100%;
+        color: #666;
+      }
     }
 
     .headerContainer {
