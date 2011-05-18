@@ -327,7 +327,7 @@ _.constructor("Views.Layout", View.Template, {
         this.signupPrompt.future = future;
         future.onSuccess(function(data) {
           if (data.new_organization_id) {
-            $.bbq.pushState({view: "organization", organizationId: data.new_organization_id }, 2);
+            $.bbq.pushState({view: "newElection", organizationId: data.new_organization_id }, 2);
           }
         });
       } else {
