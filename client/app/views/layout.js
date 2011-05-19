@@ -150,6 +150,7 @@ _.constructor("Views.Layout", View.Template, {
     organization: {
       afterChange: function(organization) {
         this.organizationName.bindHtml(organization, 'name');
+        this.showOrHideInviteLink();
         this.showOrHideAdminLinks();
       }
     },
@@ -171,9 +172,7 @@ _.constructor("Views.Layout", View.Template, {
         this.populateOrganizations();
         var organizationsPermitted = user.organizationsPermittedToInvite();
 
-        this.currentUserSubscriptions.add(organizationsPermitted.onInsert(this.hitch('showOrHideInviteLink')));
-        this.currentUserSubscriptions.add(organizationsPermitted.onRemove(this.hitch('showOrHideInviteLink')));
-        this.showOrHideInviteLink();
+        if (this.organization()) this.showOrHideInviteLink();
         if (this.organization()) this.showOrHideAdminLinks();
 
         this.currentUserSubscriptions.add(user.memberships().onInsert(this.hitch('showAppropriateOrganizationsControls')));
@@ -262,10 +261,10 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     showOrHideInviteLink: function() {
-      if (this.currentUser().guest() || this.currentUser().organizationsPermittedToInvite().empty()) {
-        this.inviteLink.hide();
-      } else {
+      if (this.organization().currentUserCanInvite()) {
         this.inviteLink.show();
+      } else {
+        this.inviteLink.hide();
       }
     },
 
@@ -397,7 +396,10 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     showLoginForm: function() {
+      var future = new Monarch.Http.AjaxFuture();
       this.signupPrompt.show().showLoginForm();
+      this.signupPrompt.future = future;
+      future.onSuccess(this.hitch('goToLastOrganization'));
       return false;
     }
   }

@@ -104,6 +104,10 @@ _.constructor("Organization", Model.Record, {
     return Application.currentUser().admin() || this.currentUserIsOwner();
   },
 
+  currentUserCanInvite: function() {
+    return this.currentUserIsOwner() || (this.currentUserIsMember() && this.membersCanInvite());
+  },
+
   isPublic: function() {
     return this.privacy() === "public";
   },
