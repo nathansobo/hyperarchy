@@ -93,6 +93,7 @@ _.constructor("Organization", Model.Record, {
       future.triggerFailure();
     } else if (Application.currentUser().guest()) {
       Application.layout.signupPrompt.future = future;
+      Application.layout.signupPrompt.showSignupForm();
       Application.layout.signupPrompt.show()
     } else {
       future.triggerSuccess();
