@@ -117,9 +117,6 @@ class Membership < Monarch::Model::Record
 
   def before_update(field_values)
     set_all_notification_preferences("daily") if field_values[:has_participated]
-
-    p NOTIFICATION_PREFERENCE_COLUMNS & field_values.keys
-
     self.has_participated = true unless (NOTIFICATION_PREFERENCE_COLUMNS & field_values.keys).empty?
   end
 

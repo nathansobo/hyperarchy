@@ -30,6 +30,11 @@ module Models
           Mailer.emails.first[:to].should == "nathan@hyperarchy.com"
         end
       end
+
+      it "gives the new user a membership to hyperarchy social" do
+        social_membership = user.memberships.find(:organization_id => Organization.social.id)
+        social_membership.should_not be_pending
+      end
     end
 
     describe "#password and #password=" do
@@ -133,10 +138,9 @@ module Models
         end
       end
 
-      context "when the user has no memberships" do
+      context "when no extra memberships have been created for the user" do
         it "returns the social organization" do
           guest = User.make
-          guest.memberships.should be_empty
           guest.default_organization.should == Organization.find(:social => true)
         end
       end

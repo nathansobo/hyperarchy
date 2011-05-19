@@ -76,6 +76,8 @@ describe "/private", :type => :rack do
               :email_address => "joe@example.com",
               :password => "nicotine"
             }.to_json
+            last_response.should be_ok
+
             current_user.should_not be_guest
             current_user.memberships.where(:organization_id => org.id).size.should == 1
           end

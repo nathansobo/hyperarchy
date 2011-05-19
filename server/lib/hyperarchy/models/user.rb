@@ -96,6 +96,8 @@ class User < Monarch::Model::Record
         )
       end
     end
+
+    memberships.create!(:pending => false, :organization => Organization.social)
   end
 
   def organization_ids

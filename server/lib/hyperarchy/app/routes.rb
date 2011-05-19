@@ -58,9 +58,8 @@ module Hyperarchy
       previous_user = current_user || Organization.social.guest
       warden.logout(:default)
       if warden.authenticate
-        invited_org_id = previous_user.organization_ids.first
-        if (invited_org_id && !current_user.memberships.find(:organization_id => invited_org_id))
-          current_user.memberships.create(:organization_id => invited_org_id, :pending => false)
+        if invited_org = previous_user.organizations.find(:social => false)
+          current_user.memberships.find_or_create(:organization => invited_org, :pending => false)
         end
         if params[:redirected_from]
           redirect params[:redirected_from]
@@ -80,9 +79,8 @@ module Hyperarchy
       previous_user = current_user || Organization.social.guest
       warden.logout(:default)
       if warden.authenticate
-        invited_org_id = previous_user.organization_ids.first
-        if (invited_org_id && !current_user.memberships.find(:organization_id => invited_org_id))
-          current_user.memberships.create(:organization_id => invited_org_id, :pending => false)
+        if invited_org = previous_user.organizations.find(:social => false)
+          current_user.memberships.find_or_create(:organization => invited_org, :pending => false)
         end
         successful_json_response({"current_user_id" => current_user.id}, current_user.initial_repository_contents)
       else
@@ -221,9 +219,8 @@ module Hyperarchy
       if user.valid?
         warden.set_user(user)
 
-        invited_org_id = previous_user.organization_ids.first
-        if (invited_org_id && !current_user.memberships.find(:organization_id => invited_org_id))
-          current_user.memberships.create(:organization_id => invited_org_id, :pending => false)
+        if invited_org = previous_user.organizations.find(:social => false)
+          current_user.memberships.find_or_create(:organization => invited_org, :pending => false)
         end
 
         data = {"current_user_id" => user.id}

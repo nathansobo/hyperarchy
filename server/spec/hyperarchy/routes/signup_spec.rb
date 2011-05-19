@@ -193,10 +193,12 @@ describe "/signup", :type => :rack do
           current_user.email_address.should == user_attributes[:email_address]
           current_user.password.should == user_attributes[:password]
 
-          current_user.memberships.size.should == 1
-          current_user.memberships.first.role.should == "owner"
 
-          organization = current_user.organizations.first
+          current_user.memberships.size.should == 2
+          current_user.memberships.find(:organization_id => Organization.social.id).should_not be_nil
+
+          new_org_membership = current_user.memberships.find(:role => 'owner')
+          organization = new_org_membership.organization
           organization.name.should == "The Foo Bar"
 
           last_response.should be_redirect
