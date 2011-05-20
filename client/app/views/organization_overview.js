@@ -7,20 +7,25 @@ _.constructor("Views.OrganizationOverview", View.Template, {
             h1("Hyperarchy makes it easy to put anything to a vote.");
           });
           div({'class': "right"}, function() {
-            text("Click on a question that interests you to chime in, or ");
-            a("start a private discussion area").click(function() {
-              Application.layout.showAddOrganizationForm();
-            });
-            text(" for your organization. ");
+            div(function() {
+              text("Click on a question that interests you to chime in, or ");
+              a("start a private discussion area").click(function() {
+                Application.layout.showAddOrganizationForm();
+              });
+              text(" for your organization. ");
 
-            span({style: "display: none;"}, function() {
-              raw("If you're a <em>WorldBlu Live</em> participant, <a href='/worldblu'>click here to join the WorldBlu discussion</a>.");
-            }).ref('worldBluLink');
+              div({style: "margin-top: 15px;"}, function() {
+                raw("If you're a <em>WorldBlu Live</em> participant, <a href='/worldblu'>click here to join the WorldBlu discussion</a>.");
+              })
+
+            }).ref('socialGuestWelcome');
+            div(function() {
+              text('Here are some questions that ');
+              span('').ref('guestWelcomeOrganizationName');
+              text(' is discussing. Click on one that interests you to chime in.');
+            }).ref('nonSocialGuestWelcome');
           });
-
-
           div({'class': "clear"});
-
         });
       }).ref('guestWelcome');
 
@@ -168,14 +173,12 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         this.userSwitchSubscription = Application.onUserSwitch(this.hitch('toggleGuestWelcome'));
 
         if (this.organization().social()) {
-          this.worldBluLink.show();
+          this.nonSocialGuestWelcome.hide();
+          this.socialGuestWelcome.show();
         } else {
-          this.worldBluLink.hide();
-          if (!this.organization().hasNonAdminQuestions()) {
-            this.guestWelcome.find('.right').html('We thought your team would find these questions interesting. Click on one that interests you to suggest and rank answers.');
-          } else {
-            this.guestWelcome.find('.right').html('Here are some questions your team is discussing. Click on one that interests you to chime in.');
-          }
+          this.guestWelcomeOrganizationName.html(this.organization().name());
+          this.nonSocialGuestWelcome.show();
+          this.socialGuestWelcome.hide();
         }
         this.guestWelcome.show();
       } else {
