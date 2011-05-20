@@ -11,9 +11,16 @@ _.constructor("Views.OrganizationOverview", View.Template, {
             a("start a private discussion area").click(function() {
               Application.layout.showAddOrganizationForm();
             });
-            text(" for your organization.");
+            text(" for your organization. ");
+
+            span({style: "display: none;"}, function() {
+              raw("If you're a <em>WorldBlu Live</em> participant, <a href='/worldblu'>click here to join the WorldBlu discussion</a>.");
+            }).ref('worldBluLink');
           });
+
+
           div({'class': "clear"});
+
         });
       }).ref('guestWelcome');
 
@@ -159,7 +166,11 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     toggleGuestWelcome: function() {
       if (Application.currentUser().guest()) {
         this.userSwitchSubscription = Application.onUserSwitch(this.hitch('toggleGuestWelcome'));
-        if (!this.organization().social()) {
+
+        if (this.organization().social()) {
+          this.worldBluLink.show();
+        } else {
+          this.worldBluLink.hide();
           if (!this.organization().hasNonAdminQuestions()) {
             this.guestWelcome.find('.right').html('We thought your team would find these questions interesting. Click on one that interests you to suggest and rank answers.');
           } else {

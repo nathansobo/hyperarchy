@@ -16,6 +16,10 @@ module Hyperarchy
       render_page Views::App
     end
 
+    get "/worldblu" do
+      redirect "/#view=organization&organizationId=62"
+    end
+
     post "/mailing_list_signup" do
       db = Sequel::DATABASES.first
       db[:mailing_list_entries] << params.merge(:created_at => Time.now)
