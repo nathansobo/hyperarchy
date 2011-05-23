@@ -48,19 +48,31 @@ module Prequel
             blog.posts.should == Post.where(:blog_id => 1)
           end
 
-          it "accepts a class name" do
+          it "accepts a :class_name option" do
             Blog.has_many(:posts_with_another_name, :class_name => "Post")
             blog = Blog.new(:id => 1)
             blog.posts_with_another_name.should == Post.where(:blog_id => 1)
           end
 
-          it "accepts an order by option" do
+          it "accepts an :order_by option" do
             Blog.has_many(:posts, :order_by => :id)
             blog = Blog.new(:id => 1)
             blog.posts.should == Post.where(:blog_id => 1).order_by(:id)
 
             Blog.has_many(:posts, :order_by => [:id, :blog_id.desc])
             blog.posts.should == Post.where(:blog_id => 1).order_by(:id, :blog_id.desc)
+          end
+
+          it "accepts a :foreign_key option" do
+            Post.column :creator_id, :integer
+            class ::User < Record
+              column :id, :integer
+            end
+
+            User.has_many :posts, :foreign_key => :creator_id
+
+            user = User.new(:id => 1)
+            user.posts.should == Post.where(:creator_id => 1)
           end
         end
 

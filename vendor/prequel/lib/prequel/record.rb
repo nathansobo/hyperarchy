@@ -82,7 +82,7 @@ module Prequel
         class_name = options[:class_name] || name.to_s.singularize.camelize
         define_method name do
           klass = class_name.constantize
-          foreign_key = table.infer_join_columns(klass.columns)[1]
+          foreign_key = options[:foreign_key] || table.infer_join_columns(klass.columns)[1]
           relation = klass.where(foreign_key => id)
           if options[:order_by]
             relation.order_by(*options[:order_by])
