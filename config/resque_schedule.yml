@@ -10,3 +10,17 @@ hourly_notifications:
   class: Jobs::SendNotifications
   args: "hourly"
   description: "Sends hourly email notifications"
+
+# 5:30 am PST
+daily_notifications:
+  cron: "0 30 5 * * * America/Los_Angeles"
+  class: Jobs::SendNotifications
+  args: "daily"
+  description: "Sends daily email notifications"
+
+# 5:30 am on wednesday PST
+weekly_notifications:
+  cron: "0 30 5 * * 3 America/Los_Angeles"
+  class: Jobs::SendNotifications
+  args: "weekly"
+  description: "Sends weekly email notifications"
