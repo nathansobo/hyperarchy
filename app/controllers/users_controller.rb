@@ -5,12 +5,17 @@ class UsersController < ApplicationController
 
   def create
     user = User.secure_new(params[:user])
-    user.save
-    set_current_user(user)
+    if user.save
+      set_current_user(user)
 
-    organization = Organization.secure_new(params[:organization])
-    organization.save
-
-    redirect_to root_path(:anchor => "view=organization&organizationId=#{organization.id}")
+      render :json => {
+        'data' => { 'current_user_id' => user.id },
+        'records' => build_client_dataset(current_user.initial_repository_contents)
+      }
+    else
+      render :status => 422, :json => {
+        'errors' => user.errors.full_messages
+      }
+    end
   end
 end

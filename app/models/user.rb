@@ -90,6 +90,8 @@ class User < Prequel::Record
         )
       end
     end
+
+    memberships.create!(:organization => Organization.social, :pending => false)
   end
 
   def organization_ids

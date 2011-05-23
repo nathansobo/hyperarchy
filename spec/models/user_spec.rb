@@ -30,6 +30,15 @@ module Models
           Mailer.emails.first[:to].should == "nathan@hyperarchy.com"
         end
       end
+
+      it "makes the new user a member of social" do
+        user = User.make
+        user.organizations.all.should == [Organization.social]
+        user.memberships.first.tap do |m|
+          m.should_not be_pending
+          m.role.should == 'member'
+        end
+      end
     end
 
     describe "#password and #password=" do
