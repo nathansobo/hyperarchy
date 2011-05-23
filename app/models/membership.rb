@@ -171,7 +171,7 @@ class Membership < Prequel::Record
     organization.elections.
       join(user.candidates).
       join_through(CandidateComment).
-      where(CandidateComment[:created_at] > (last_alerted_or_visited_at(period))).
+      where(CandidateComment[:created_at].gt((last_alerted_or_visited_at(period)))).
       where(CandidateComment[:creator_id].neq(user_id))
   end
 

@@ -229,7 +229,7 @@ module Models
             membership.update(:last_visited => time_of_notification - 2.hours)
           end
 
-          it "returns candidates not created by the membership's user that were created after the beginning of the last period" do
+          it "returns comments (created after the beginning of the last period) on candidates that were ranked by the user being notified, but not created by them" do
             time_travel_to(time_of_notification - 70.minutes)
             ranked_candidate.comments.make(:creator => other_user)
 
@@ -246,12 +246,12 @@ module Models
           end
         end
 
-        context "when the user last visited before the beginning of the last period" do
+        context "when the user last visited after the beginning of the last period" do
           before do
             membership.update(:last_visited => time_of_notification - 40.minutes)
           end
 
-          it "returns candidates not created by the membership's user that were created after the beginning of the last period" do
+          it "returns comments (created after the beginning of the last period) on candidates that were ranked by the user being notified, but not created by them" do
             time_travel_to(time_of_notification - 70.minutes)
             ranked_candidate.comments.make(:creator => other_user)
 
@@ -268,7 +268,65 @@ module Models
             time_travel_to(time_of_notification)
             membership.new_comments_on_ranked_candidates_in_period('hourly').all.should =~ [com1, com2]
           end
+        end
+      end
 
+      describe "#new_comments_on_own_candidates_in_period(period)" do
+        attr_reader :own_candidate, :other_candidate
+
+        before do
+          time_travel_to(time_of_notification - 2.hours)
+          election = organization.elections.make(:creator => other_user)
+          @own_candidate =  election.candidates.make(:creator => user)
+          @other_candidate =  election.candidates.make(:creator => other_user)
+        end
+
+        context "when the user last visited before the beginning of the last period" do
+          before do
+            membership.update(:last_visited => time_of_notification - 2.hours)
+          end
+
+          it "returns comments (created by someone other than the notified user after the beginning of the last period) on candidates that were created by the user being notified" do
+            time_travel_to(time_of_notification - 70.minutes)
+            own_candidate.comments.make(:creator => other_user)
+
+            time_travel_to(time_of_notification - 50.minutes)
+
+            com1 = own_candidate.comments.make(:creator => other_user)
+            com2 = own_candidate.comments.make(:creator => other_user)
+            other_candidate.comments.make(:creator => other_user)
+            own_candidate.comments.make(:creator => user)
+            CandidateComment.make(:creator => other_user) # other org, should not show up
+
+            time_travel_to(time_of_notification)
+
+            membership.new_comments_on_own_candidates_in_period('hourly').all.should =~ [com1, com2]
+          end
+        end
+
+        context "when the user last visited after the beginning of the last period" do
+          before do
+            membership.update(:last_visited => time_of_notification - 40.minutes)
+          end
+
+          it "returns comments (created by someone other than the notified user after the beginning of the last visit) on candidates that were created by the user being notified" do
+            time_travel_to(time_of_notification - 70.minutes)
+            own_candidate.comments.make(:creator => other_user)
+
+            time_travel_to(time_of_notification - 50.minutes)
+            own_candidate.comments.make(:creator => other_user)
+
+            time_travel_to(time_of_notification - 30.minutes)
+            com1 = own_candidate.comments.make(:creator => other_user)
+            com2 = own_candidate.comments.make(:creator => other_user)
+            other_candidate.comments.make(:creator => other_user)
+            own_candidate.comments.make(:creator => user)
+            CandidateComment.make(:creator => other_user) # other org, should not show up
+
+            time_travel_to(time_of_notification)
+
+            membership.new_comments_on_own_candidates_in_period('hourly').all.should =~ [com1, com2]
+          end
         end
       end
     end

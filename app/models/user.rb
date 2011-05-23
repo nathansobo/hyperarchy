@@ -17,7 +17,7 @@ class User < Prequel::Record
   has_many :votes
   has_many :rankings
   has_many :elections
-  has_many :candidates
+  has_many :candidates, :foreign_key => :creator_id
 
   def organizations
     memberships.join_through(Organization)
