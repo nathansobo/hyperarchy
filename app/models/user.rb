@@ -33,6 +33,15 @@ class User < Prequel::Record
     BCrypt::Password.create(unencrypted_password).to_s
   end
 
+  def self.users_to_notify(period)
+    Membership.where_any(
+      :notify_of_new_elections => period,
+      :notify_of_new_candidates => period,
+      :notify_of_new_comments_on_own_candidates => period,
+      :notify_of_new_comments_on_ranked_candidates => period
+    ).join_through(User)
+  end
+
   def self.guest
     find(:guest => true)
   end
