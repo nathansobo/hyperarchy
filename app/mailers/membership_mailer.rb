@@ -18,5 +18,4 @@ class MembershipMailer < ActionMailer::Base
     mail :to => @membership.email_address,
          :subject => "#{inviter.full_name} has invited you to join #{@organization.name} on Hyperarchy"
   end
-
 end

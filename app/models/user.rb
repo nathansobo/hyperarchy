@@ -141,4 +141,13 @@ class User < Prequel::Record
       memberships.order_by(Membership[:last_visited].desc).first.organization
     end
   end
+
+  def memberships_to_notify(period)
+    memberships.
+      join_to(Organization).
+      order_by(:social).
+      project(Membership).
+      all.
+      select {|m| m.wants_notifications?(period)}
+  end
 end

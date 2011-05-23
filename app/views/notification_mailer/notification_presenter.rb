@@ -22,7 +22,7 @@ module Views
       end
 
       def build_periodic_notification
-        @membership_presenters = memberships_to_notify.map do |membership|
+        @membership_presenters = user.memberships_to_notify(period).map do |membership|
           presenter = MembershipPresenter.new(membership, period, nil)
           presenter unless presenter.empty?
         end.compact
@@ -38,15 +38,6 @@ module Views
           self.new_candidate_count += presenter.new_candidate_count
           self.new_comment_count += presenter.new_comment_count
         end
-      end
-
-      def memberships_to_notify
-        user.memberships.
-          join_to(Organization).
-          order_by(:social).
-          project(Membership).
-          all.
-          select {|m| m.wants_notifications?(period)}
       end
 
       def subject

@@ -27,6 +27,8 @@ module Views
           @membership1 = org1.memberships.make(:user => user, :all_notifications => 'hourly')
           @membership2 = org2.memberships.make(:user => user, :all_notifications => 'hourly')
 
+          mock(user).memberships_to_notify('hourly') { [membership1, membership2] }
+
           mock(membership1).new_elections_in_period('hourly') { [org1_e1] }
           mock(membership1).new_candidates_in_period('hourly') { [org1_e1_c1, org1_e2_c1] }
           mock(membership1).new_comments_on_ranked_candidates_in_period('hourly') { [org1_e1_c1_comment, org1_e2_c1_comment ] }
@@ -39,9 +41,7 @@ module Views
         end
 
         it "for each of the user's memberships appropriate for the notification period, hierarchically organizes the elections, candidates, and comments" do
-          presenter = NotificationPresenter.allocate
-          mock(presenter).memberships_to_notify { [membership1, membership2] }
-          presenter.send(:initialize, user, 'hourly')
+          presenter = NotificationPresenter.new(user, 'hourly')
 
           presenter.membership_presenters.size.should == 2
 
