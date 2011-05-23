@@ -6,6 +6,12 @@ module Jobs
       @params = params
     end
 
+    def perform
+      User.users_to_notify(period).each do |user|
+        NotificationMailer.notification(user, period).deliver
+      end
+    end
+
     def period
       params['period']
     end
