@@ -1,4 +1,4 @@
-$LOAD_PATH << File.dirname(__FILE__)
+$LOAD_PATH << File.expand_path('../..', __FILE__)
 require 'deploy'
 
 class Provision < Thor

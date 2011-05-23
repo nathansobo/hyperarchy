@@ -14,6 +14,9 @@ module Jobs
 
         mock(NotificationMailer).notification(user1, period).mock!.deliver
         mock(NotificationMailer).notification(user2, period).mock!.deliver
+
+        mock(job).at(1, 2)
+        mock(job).at(2, 2)
         
         job.perform
       end
