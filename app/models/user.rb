@@ -153,7 +153,7 @@ class User < Prequel::Record
 
   def memberships_to_notify(period)
     memberships.
-      join_to(Organization).
+      join(Organization).
       order_by(:social).
       project(Membership).
       all.

@@ -143,7 +143,7 @@ module Models
     end
 
     describe "methods supporting notifications" do
-      describe ".users_to_notify" do
+      describe ".users_to_notify(period)" do
         it "returns those users who have at least one membership with a notification preference matching the job's period" do
           m1 = make_membership('hourly', 'never', 'never', 'never')
           m2 = make_membership('never', 'hourly', 'never', 'never')
@@ -161,6 +161,27 @@ module Models
             :notify_of_new_comments_on_own_candidates => comments_on_ranked,
             :notify_of_new_comments_on_ranked_candidates => comments_on_own
           )
+        end
+
+        describe "#memberships_to_notify(period)" do
+          it "returns those memberships with at least one notification preference set to the given period, with social memberships first" do
+
+            m1 = make_membership('hourly', 'never', 'never', 'never')
+            m2 = make_membership('never', 'hourly', 'never', 'never')
+            m3 = make_membership('never', 'never', 'hourly', 'never')
+            m4 = make_membership('never', 'never', 'never', 'hourly')
+            m5 = make_membership('never', 'never', 'never', 'never')
+
+            m1.update!(:user => user)
+            m2.update!(:user => user)
+            m3.update!(:user => user, :organization => Organization.social)
+            m4.update!(:user => user)
+            m5.update!(:user => user)
+
+            memberships = user.memberships_to_notify("hourly")
+            memberships.first.should == m3
+            memberships.should =~ [m1, m2, m3, m4]
+          end
         end
       end
     end
