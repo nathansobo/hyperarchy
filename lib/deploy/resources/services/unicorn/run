@@ -1,2 +1,3 @@
 #!/bin/sh
-exec envdir ./env setuidgid hyperarchy ./unicorn.sh 2>&1
+exec 2>&1
+exec envdir ./env setuidgid hyperarchy ./unicorn.sh

@@ -29,21 +29,22 @@ class AppServer
     run "exit"
     restart_service 'unicorn'
     restart_service 'resque_worker'
+    restart_service 'resque_scheduler'
   end
 
   def provision
-    update_packages
-    create_hyperarchy_user
-    create_log_directory
-    install_package 'git-core'
-    install_daemontools
-    install_postgres
-    install_nginx
-    install_redis
-    install_rvm
-    install_ruby
-    upload_deploy_keys
-    clone_repository
+#    update_packages
+#    create_hyperarchy_user
+#    create_log_directory
+#    install_package 'git-core'
+#    install_daemontools
+#    install_postgres
+#    install_nginx
+#    install_redis
+#    install_rvm
+#    install_ruby
+#    upload_deploy_keys
+#    clone_repository
     install_services
     puts
   end
@@ -203,8 +204,9 @@ class AppServer
   end
 
   def install_services
-    install_service('unicorn')
-    install_service('resque_worker', :QUEUE => '*', :VVERBOSE => 1)
+    install_service 'unicorn'
+    install_service 'resque_worker', :QUEUE => '*', :VVERBOSE => 1
+    install_service 'resque_scheduler'
   end
 
   def install_service(service_name, env_vars={})
