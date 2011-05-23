@@ -111,6 +111,31 @@ module Models
       let(:other_user) { organization.make_member }
       let(:time_of_notification) { freeze_time }
 
+      describe "#last_notified_or_visited_at(period)" do
+        describe "when the last_visited time is later than 1 period ago" do
+          it "returns the time of the last visit" do
+            membership.last_visited = Time.now
+            membership.send(:last_notified_or_visited_at, "hourly").should == membership.last_visited
+          end
+        end
+
+        describe "when the last_visited time is earlier than 1 period ago" do
+          it "returns 1 period ago" do
+            freeze_time
+            membership.last_visited = 3.hours.ago
+            membership.send(:last_notified_or_visited_at, "hourly").should == 1.hour.ago
+          end
+        end
+
+        describe "when the last_visited time is nil" do
+          it "returns 1 period ago, without raising an execptio" do
+            freeze_time
+            membership.last_visited = nil
+            membership.send(:last_notified_or_visited_at, "hourly").should == 1.hour.ago
+          end
+        end
+      end
+
       describe "#new_elections_in_period(period)" do
         context "when the user last visited before the beginning of the last period" do
           before do

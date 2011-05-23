@@ -145,7 +145,7 @@ class Membership < Prequel::Record
 
   def new_elections_in_period(period)
     organization.elections.
-      where(Election[:created_at].gt(last_alerted_or_visited_at(period))).
+      where(Election[:created_at].gt(last_notified_or_visited_at(period))).
       where(Election[:creator_id].neq(user_id))
   end
 
@@ -153,7 +153,7 @@ class Membership < Prequel::Record
     user.votes.
       join(organization.elections).
       join_through(Candidate).
-      where(Candidate[:created_at].gt(last_alerted_or_visited_at(period))).
+      where(Candidate[:created_at].gt(last_notified_or_visited_at(period))).
       where(Candidate[:creator_id].neq(user_id))
   end
 
@@ -163,7 +163,7 @@ class Membership < Prequel::Record
       join(Candidate, Ranking[:candidate_id] => Candidate[:id]).
       where(Candidate[:creator_id].neq(user_id)).
       join_through(CandidateComment).
-      where(CandidateComment[:created_at].gt(last_alerted_or_visited_at(period))).
+      where(CandidateComment[:created_at].gt(last_notified_or_visited_at(period))).
       where(CandidateComment[:creator_id].neq(user_id))
   end
 
@@ -171,7 +171,7 @@ class Membership < Prequel::Record
     organization.elections.
       join(user.candidates).
       join_through(CandidateComment).
-      where(CandidateComment[:created_at].gt((last_alerted_or_visited_at(period)))).
+      where(CandidateComment[:created_at].gt((last_notified_or_visited_at(period)))).
       where(CandidateComment[:creator_id].neq(user_id))
   end
 
@@ -191,8 +191,8 @@ Visit #{invitation.signup_url} to join our private alpha test and start voting o
   end
 
   # returns the time of last visit or the 1 <period> ago, whichever is more recent
-  def last_alerted_or_visited_at(period)
-    [period_ago(period), last_visited].max
+  def last_notified_or_visited_at(period)
+    [period_ago(period), last_visited].compact.max
   end
 
   def period_ago(period)

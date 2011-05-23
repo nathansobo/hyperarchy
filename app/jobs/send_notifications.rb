@@ -1,10 +1,7 @@
 module Jobs
   class SendNotifications < Resque::JobWithStatus
-    attr_reader :params
-    
-    def initialize(params)
-      @params = params
-    end
+    @queue = 'send_notifications'
+
 
     def perform
       User.users_to_notify(period).each do |user|
@@ -13,7 +10,7 @@ module Jobs
     end
 
     def period
-      params['period']
+      options['period']
     end
   end
 end
