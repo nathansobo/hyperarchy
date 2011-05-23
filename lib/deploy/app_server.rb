@@ -1,8 +1,8 @@
 class AppServer
-  attr_reader :stage, :env
+  attr_reader :stage, :rails_env
   def initialize(stage)
     @stage = stage
-    @env = stage
+    @rails_env = stage
   end
 
   def hostname
@@ -21,12 +21,14 @@ class AppServer
     run "git checkout --force", ref
     run "source .rvmrc"
     run "bundle install --deployment --without development test deploy"
+    run "mkdir -p public/assets"
     Dir["public/assets/*"].each do |path|
       upload! path, "/app/public/assets/#{File.basename(path)}"
     end
-    run "RAILS_ENV=#{env} bundle exec rake db:migrate"
+    run "RAILS_ENV=#{rails_env} bundle exec rake db:migrate"
     run "exit"
-    restart_unicorn
+    restart_service 'unicorn'
+    restart_service 'resque_worker'
   end
 
   def provision
@@ -64,12 +66,12 @@ class AppServer
     File.expand_path('keys/id_rsa.pub')
   end
 
-  def restart_unicorn
-    run "rm /service/unicorn/down" if run?("test -e /service/unicorn/down")
-    if run("svstat /service/unicorn") =~ /down \d/
-      run "svc -u /service/unicorn"
+  def restart_service(service_name)
+    run "rm /service/#{service_name}/down" if run?("test -e /service/#{service_name}/down")
+    if run("svstat /service/#{service_name}") =~ /down \d/
+      run "svc -u /service/#{service_name}"
     else
-      run "svc -q /service/unicorn"
+      run "svc -q /service/#{service_name}"
     end
   end
 
@@ -127,7 +129,7 @@ class AppServer
     run "pg_dropcluster --stop 8.4 main"
     run "pg_createcluster --start -e UTF-8 8.4 main"
     run "createuser hyperarchy --createdb --no-superuser --no-createrole"
-    run "createdb --encoding utf8 --owner hyperarchy hyperarchy_#{env}"
+    run "createdb --encoding utf8 --owner hyperarchy hyperarchy_#{rails_env}"
     run "exit"
   end
 
@@ -190,6 +192,8 @@ class AppServer
   end
 
   def clone_repository
+    run "mkdir /app"
+    run "chown hyperarchy:hyperarchy /app"
     run "su - hyperarchy"
     run "ssh -o StrictHostKeyChecking=no git@github.com"
     run "yes | git clone", repository, "/app"
@@ -199,24 +203,28 @@ class AppServer
   end
 
   def install_services
-    install_unicorn
+    install_service('unicorn')
+    install_service('resque_worker', :QUEUE => '*', :VVERBOSE => 1)
   end
 
-  def install_unicorn
-    run "rm /service/unicorn" if run?("test -e /service/unicorn")
-    if run?("test -e /var/svc.d/unicorn")
-      run "svc -dx /var/svc.d/unicorn"
-      run "rm -rf /var/svc.d/unicorn"
+  def install_service(service_name, env_vars={})
+    env_vars = {:RAILS_ENV => rails_env}.merge(env_vars)
+    run "rm /service/#{service_name}" if run?("test -e /service/#{service_name}")
+    if run?("test -e /var/svc.d/#{service_name}")
+      run "svc -dx /var/svc.d/#{service_name} /var/svc.d/#{service_name}/log"
+      run "rm -rf /var/svc.d/#{service_name}"
     end
-    run "mkdir -p /log/unicorn"
-    upload! 'lib/deploy/resources/services/unicorn', '/var/svc.d/unicorn'
-    run "chmod 755 /var/svc.d/unicorn/run"
-    run "chmod 755 /var/svc.d/unicorn/unicorn.sh"
-    run "chmod 755 /var/svc.d/unicorn/log/run"
-    run "mkdir -p /var/svc.d/unicorn/env"
-    run "echo", env, "> /var/svc.d/unicorn/env/RAILS_ENV"
-    run "touch /var/svc.d/unicorn/down"
-    run "ln -s /var/svc.d/unicorn /service/unicorn"
+    run "mkdir -p /log/#{service_name}"
+    upload! "lib/deploy/resources/services/#{service_name}", "/var/svc.d/#{service_name}"
+    run "chmod 755 /var/svc.d/#{service_name}/run"
+    run "chmod 755 /var/svc.d/#{service_name}/#{service_name}.sh"
+    run "chmod 755 /var/svc.d/#{service_name}/log/run"
+    run "mkdir -p /var/svc.d/#{service_name}/env"
+    env_vars.each do |var_name, value|
+      run "echo", value, "> /var/svc.d/#{service_name}/env/#{var_name}"
+    end
+    run "touch /var/svc.d/#{service_name}/down"
+    run "ln -s /var/svc.d/#{service_name} /service/#{service_name}"
   end
 
   protected

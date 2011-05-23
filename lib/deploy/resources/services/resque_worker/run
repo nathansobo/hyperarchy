@@ -1,0 +1,2 @@
+#!/bin/sh
+exec envdir ./env setuidgid hyperarchy ./resque_worker.sh 2>&1
