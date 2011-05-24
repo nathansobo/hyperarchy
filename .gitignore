@@ -11,3 +11,4 @@ nginx_access.log
 offline
 public/assets
 public/stylesheets
+tmp
