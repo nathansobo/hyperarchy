@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
+require 'rubygems'
 require 'resque'
+require 'yaml'
 require 'resque_scheduler'
 
 Resque.schedule = YAML.load_file(File.expand_path('../../config/resque_schedule.yml', __FILE__))
