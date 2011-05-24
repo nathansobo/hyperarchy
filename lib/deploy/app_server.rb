@@ -33,18 +33,18 @@ class AppServer
   end
 
   def provision
-#    update_packages
-#    create_hyperarchy_user
-#    create_log_directory
-#    install_package 'git-core'
-#    install_daemontools
-#    install_postgres
-#    install_nginx
-#    install_redis
-#    install_rvm
-#    install_ruby
-#    upload_deploy_keys
-#    clone_repository
+    update_packages
+    create_hyperarchy_user
+    create_log_directory
+    install_package 'git-core'
+    install_daemontools
+    install_postgres
+    install_nginx
+    install_redis
+    install_rvm
+    install_ruby
+    upload_deploy_keys
+    clone_repository
     install_services
     puts
   end
