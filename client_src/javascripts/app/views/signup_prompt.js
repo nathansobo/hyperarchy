@@ -112,9 +112,14 @@ _.constructor("Views.SignupPrompt", View.Template, {
       this.errorsDiv.hide();
       var fieldValues = _.underscoreKeys(this.signupForm.fieldValues());
       if (!this.retainOrganizationName) delete fieldValues.organization_name;
-      Server.post("/signup", { user:  fieldValues })
-        .onSuccess(this.hitch('userEstablished'))
-        .onFailure(this.hitch('handleErrors'));
+      $.ajax({
+        type: 'post',
+        url: "/signup",
+        data: { user: _.underscoreKeys(this.signupForm.fieldValues()) },
+        dataType: 'data+records',
+        success: this.hitch('userEstablished'),
+        error: this.hitch('handleErrors')
+      });
 
       return false;
     },
