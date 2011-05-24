@@ -2,17 +2,45 @@ _.constructor("Views.OrganizationOverview", View.Template, {
   content: function() { with(this.builder) {
     div({id: "organizationOverview"}, function() {
       div({'class': "grid12", style: "display: none;"}, function() {
-        div({'class': "guestWelcome dropShadow"}, function() {
+        div({'class': "calloutBanner dropShadow"}, function() {
           div({'class': "left"}, function() {
             h1("Hyperarchy makes it easy to put anything to a vote.");
           });
-          div({'class': "right"},
-            "Here are the top-ranked answers to questions we're discussing right now. " +
-            "Click on a question that interests you to chime in."
-          );
+          div({'class': "right"}, function() {
+            div(function() {
+              text("Click on a question that interests you to chime in, or ");
+              a("start a private discussion area").click(function() {
+                Application.layout.showAddOrganizationForm();
+              });
+              text(" for your organization. ");
+
+              div({style: "margin-top: 15px;"}, function() {
+                raw("If you're a <em>WorldBlu Live</em> participant, <a href='/worldblu'>click here to join the WorldBlu discussion</a>.");
+              })
+
+            }).ref('socialGuestWelcome');
+            div(function() {
+              text('Here are some questions that ');
+              span('').ref('guestWelcomeOrganizationName');
+              text(' is discussing. Click on one that interests you to chime in.');
+            }).ref('nonSocialGuestWelcome');
+          });
           div({'class': "clear"});
         });
       }).ref('guestWelcome');
+
+      div({style: "display: none;", 'class': "grid12"}, function() {
+        div({'class': "calloutBanner dropShadow"}, function() {
+          div({'class': "left"}, function() {
+            h1("Invite your team to share their questions and ideas.");
+          });
+          div({'class': "right firstUser"}, function() {
+            span("Share this secret url with your colleagues to let them raise questions and suggest answers:");
+            input({'class': "secretUrl", readonly: "readonly"}, "").ref('secretUrl');
+          });
+          div({'class': "clear"});
+        });
+      }).ref("firstUserExplanation");
 
       h2('Questions Under Discussion');
 
@@ -60,10 +88,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
         return;
       }
       var organizationId = parseInt(state.organizationId);
-      Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);
-
-      this.toggleGuestWelcome();
+      this.toggleFirstUserExplanation();
 
       Application.layout.activateNavigationTab("questionsLink");
       Application.layout.hideSubNavigationContent();
@@ -77,12 +103,16 @@ _.constructor("Views.OrganizationOverview", View.Template, {
 
     organizationId: {
       afterChange: function(organizationId) {
-        this.toggleGuestWelcome();
-        var membership = this.organization().membershipForCurrentUser();
-        if (membership) membership.update({lastVisited: new Date()});
-
-        this.subscriptions.destroy();
-        this.displayElections();
+        if (this.organization()) {
+          Application.currentOrganizationId(organizationId);
+          var membership = this.organization().membershipForCurrentUser();
+          if (membership) membership.update({lastVisited: new Date()});
+          this.subscriptions.destroy();
+          this.displayElections();
+        } else {
+          var lastVisitedOrgId = Application.currentUser().defaultOrganization().id();
+          $.bbq.pushState({view: 'organization', organizationId: lastVisitedOrgId}, 2);
+        }
       }
     },
 
@@ -99,7 +129,8 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       this.electionLisById = {};
 
       this.startLoading();
-      this.organization().fetchMoreElections(16).success(_.bind(function() {
+      this.organization().fetchMoreElections(16).onSuccess(function() {
+        this.toggleGuestWelcome();
         this.stopLoading();
         var elections = this.organization().elections();
         this.electionsList.relation(elections);
@@ -110,7 +141,16 @@ _.constructor("Views.OrganizationOverview", View.Template, {
             this.organization().fetchMoreElections();
           }
         }, this));
-      }, this));
+      }, this);
+    },
+
+    toggleFirstUserExplanation: function() {
+      if (this.organization().memberCount() <= 2 && !Application.currentUser().guest()) {
+        this.secretUrl.val(this.organization().invitationUrl());
+        this.firstUserExplanation.show();
+      } else {
+        this.firstUserExplanation.hide();
+      }
     },
 
     remainingScrollDistance: function() {
@@ -129,8 +169,17 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     toggleGuestWelcome: function() {
-      if (this.organization().social() && Application.currentUser().guest()) {
+      if (Application.currentUser().guest()) {
         this.userSwitchSubscription = Application.onUserSwitch(this.hitch('toggleGuestWelcome'));
+
+        if (this.organization().social()) {
+          this.nonSocialGuestWelcome.hide();
+          this.socialGuestWelcome.show();
+        } else {
+          this.guestWelcomeOrganizationName.html(this.organization().name());
+          this.nonSocialGuestWelcome.show();
+          this.socialGuestWelcome.hide();
+        }
         this.guestWelcome.show();
       } else {
         this.guestWelcome.hide();

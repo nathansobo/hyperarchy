@@ -13,11 +13,16 @@ _.constructor("Views.Account", View.Template, {
 
   viewProperties: {
     viewName: 'account',
-
     navigate: function() {
       Application.layout.showAlternateNavigationBar("Account Preferences");
-      this.emailPreferences.relation(Application.currentUser().memberships().orderBy('id asc'));
-      Application.layout.hideSubNavigationContent();
+      Application.ensureCurrentUserIsMember()
+        .onSuccess(function() {
+          this.emailPreferences.relation(Application.currentUser().memberships().orderBy('id asc'));
+          Application.layout.hideSubNavigationContent();
+        }, this)
+        .onFailure(function() {
+          Application.layout.goToLastOrganization();
+        });
     }
   }
 });

@@ -268,16 +268,16 @@ _.constructor("Views.CandidateLi", View.Template, {
     },
 
     assignBody: function(body) {
-      this.body.html(htmlEscape(body));
+      this.body.html(htmlEscape(body, true));
       this.bodyTextarea.val(body);
       this.bodyTextarea.keyup();
-      this.nonEditableBody.html(htmlEscape(body));
+      this.nonEditableBody.html(htmlEscape(body, true));
     },
 
     assignDetails: function(details) {
       this.detailsTextarea.val(details);
       this.detailsTextarea.keyup(); // trigger the elastic resize
-      this.nonEditableDetails.html(htmlEscape(details));
+      this.nonEditableDetails.html(htmlEscape(details, true));
       this.tooltipDetails.html(htmlEscape(details));
       this.showOrHideDetailsOrComments();
 

@@ -73,8 +73,9 @@ _.constructor("Views.Members", View.Template, {
     },
 
     modelAssigned: function(organization) {
-      organization.memberships().fetch().onSuccess(function() {
-        this.membersTbody.relation(organization.memberships());
+      organization.memberships().joinTo(User).fetch().onSuccess(function() {
+        var nonGuestMemberships = organization.memberships().where(Membership.firstName.neq("Guest"));
+        this.membersTbody.relation(nonGuestMemberships);
       }, this);
     },
 

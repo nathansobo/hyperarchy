@@ -3,7 +3,6 @@ _.constructor("Controllers.Application", {
     this.currentUserId = currentUserId;
     this.body = body || $('body');
     this.views = {
-      addOrganization: Views.AddOrganization.toView(),
       editOrganization: Views.EditOrganization.toView(),
       organizations: Views.OrganizationOverview.toView(),
       elections: Views.ElectionOverview.toView(),
@@ -35,6 +34,18 @@ _.constructor("Controllers.Application", {
     return User.find(this.currentUserId);
   },
 
+  ensureCurrentUserIsMember: function() {
+    var future = new Monarch.Http.AjaxFuture();
+    if (this.currentUser().guest()) {
+      Application.layout.signupPrompt.future = future;
+      Application.layout.signupPrompt.showLoginForm();
+      Application.layout.signupPrompt.show()
+    } else {
+      future.triggerSuccess();
+    }
+    return future;
+  },
+
   currentOrganization: function() {
     return Organization.find(this.currentOrganizationId());
   },
@@ -50,7 +61,6 @@ _.constructor("Controllers.Application", {
 //        this.previousOrganizationSubscription = new Monarch.Http.RemoteSubscription(subscriptionId)
 //      }, this);
       this.layout.organization(this.currentOrganization());
-      this.welcomeGuide.organization(this.currentOrganization());
     }
   },
 

@@ -5,11 +5,12 @@ _.constructor("Organization", Model.Record, {
         name: "string",
         description: "string",
         membersCanInvite: "boolean",
-        dismissedWelcomeGuide: 'boolean',
         electionCount: 'integer',
+        memberCount: 'integer',
         useSsl: 'boolean',
         social: 'boolean',
-        privacy: 'string'
+        privacy: 'string',
+        invitationCode: 'string'
       });
 
       this.hasMany("elections");
@@ -52,23 +53,19 @@ _.constructor("Organization", Model.Record, {
       limit = 16;
     }
 
-    var promise = $.ajax({
-      url: "/elections",
-      data: {
-        organization_id: this.id(),
-        offset: offset,
-        limit: limit
-      },
-      dataType: 'records'
+    var future = Server.get("/fetch_election_data", {
+      organization_id: this.id(),
+      offset: offset,
+      limit: limit
     });
 
-    this.fetchInProgressFuture = promise;
-    promise.success(_.bind(function() {
+    this.fetchInProgressFuture = future;
+    future.onSuccess(function() {
       delete this.fetchInProgressFuture;
       this.numElectionsFetched += 16;
-    }, this));
+    }, this);
 
-    return promise;
+    return future;
   },
 
   membershipForUser: function(user) {
@@ -91,23 +88,16 @@ _.constructor("Organization", Model.Record, {
 
   ensureCurrentUserCanParticipate: function() {
     var future = new Monarch.Http.AjaxFuture();
-
-    if (this.isPublic()) {
-      if (Application.currentUser().guest()) {
-        Application.layout.signupPrompt.future = future;
-        Application.layout.signupPrompt.show()
-      } else {
-        future.triggerSuccess();
-      }
+    if (!this.isPublic() && !this.currentUserIsMember()) {
+      Application.layout.mustBeMemberMessage.show();
+      future.triggerFailure();
+    } else if (Application.currentUser().guest()) {
+      Application.layout.signupPrompt.future = future;
+      Application.layout.signupPrompt.showSignupForm();
+      Application.layout.signupPrompt.show()
     } else {
-      if (!this.currentUserIsMember()) {
-        Application.layout.mustBeMemberMessage.show();
-        future.triggerFailure();
-      } else {
-        future.triggerSuccess();
-      }
+      future.triggerSuccess();
     }
-
     return future;
   },
 
@@ -115,7 +105,19 @@ _.constructor("Organization", Model.Record, {
     return Application.currentUser().admin() || this.currentUserIsOwner();
   },
 
+  currentUserCanInvite: function() {
+    return this.currentUserIsOwner() || (this.currentUserIsMember() && this.membersCanInvite());
+  },
+
   isPublic: function() {
     return this.privacy() === "public";
+  },
+
+  hasNonAdminQuestions: function() {
+    return !this.elections().where(Election.creatorId.neq(1)).empty();
+  },
+
+  invitationUrl: function() {
+    return 'https://' + Application.HTTP_HOST + "/private/" + this.invitationCode();
   }
 });

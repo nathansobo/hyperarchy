@@ -2,7 +2,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
   content: function() { with(this.builder) {
     div({'id': "electionOverview"}, function() {
       div({style: "display: none;", 'class': "grid12"}, function() {
-        div({'class': "guestWelcome dropShadow"}, function() {
+        div({'class': "calloutBanner dropShadow"}, function() {
           div({'class': "left"}, function() {
             h1(function() {
               text("Help ");
@@ -18,6 +18,18 @@ _.constructor("Views.ElectionOverview", View.Template, {
         });
       }).ref('guestWelcome');
 
+      div({style: "display: none;", 'class': "grid12"}, function() {
+        div({'class': "calloutBanner dropShadow"}, function() {
+          div({'class': "left"}, function() {
+            h1("Discuss this question\nwith your team.");
+          });
+          div({'class': "right firstUser"}, function() {
+            span("Share this secret url with your colleagues to let them suggest and rank answers:");
+            input({'class': "secretUrl", readonly: "readonly"}, "").ref('secretUrl');
+          });
+          div({'class': "clear"});
+        });
+      }).ref('firstUserExplanation');
 
       div({'class': "headerContainer"}, function() {
         div({id: "electionBodyContainer", 'class': "grid8"}, function() {
@@ -225,6 +237,10 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.candidatesList.election(election);
         this.rankedCandidatesList.election(election);
         this.votesList.election(election);
+      },
+
+      afterWrite: function() {
+        this.toggleFirstUserExplanation();
       }
     },
 
@@ -256,7 +272,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     populateElectionDetails: function(election) {
       this.bodyTextarea.val(election.body());
-      this.bodyElement.bindHtml(election, 'body');
+      this.bodyElement.bindHtml(election, 'body', true);
       if (election.editableByCurrentUser()) {
         this.expandLink.show();
       } else {
@@ -272,7 +288,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.creatorName.html(htmlEscape(creator.fullName()));
         this.createdAt.html(election.formattedCreatedAt());
         this.creatorAvatar.user(creator);
-        this.creatorDiv.show();
+        if (! this.firstUserExplanation.is(':visible')) this.creatorDiv.show();
       }, this);
     },
 
@@ -318,7 +334,6 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     showCreateCandidateForm: function(instantly) {
-      this.showCreateCandidateFormButton.addClass('pressed');
       this.createCandidateDetailsTextarea.blur();
 
       var cancelResize = _.repeat(function() {
@@ -331,16 +346,18 @@ _.constructor("Views.ElectionOverview", View.Template, {
       });
 
       if (instantly) {
+        this.showCreateCandidateFormButton.hide();
         this.createCandidateForm.show();
         this.votesList.adjustHeight();
         afterFormIsShown();
       } else {
+        this.showCreateCandidateFormButton.fadeOut();
         this.createCandidateForm.slideDown('fast', afterFormIsShown);
       }
     },
 
     hideCreateCandidateForm: function(instantly, whenDone, preserveText) {
-      this.showCreateCandidateFormButton.removeClass('pressed');
+      this.showCreateCandidateFormButton.fadeIn();
 
       if (!preserveText) {
         this.createCandidateBodyTextarea.val("");
@@ -466,9 +483,25 @@ _.constructor("Views.ElectionOverview", View.Template, {
         }, this);
     },
 
+    toggleFirstUserExplanation: function() {
+      if (this.organization().memberCount() <= 2 && !Application.currentUser().guest()) {
+        this.secretUrl.val(this.organization().invitationUrl());
+        this.firstUserExplanation.show();
+        this.creatorDiv.hide();
+      } else {
+        this.creatorDiv.show();
+        this.firstUserExplanation.hide();
+      }
+    },
+
     toggleGuestWelcome: function() {
       if (Application.currentUser().guest()) {
-        this.guestWelcomeCreatorName.html(htmlEscape(this.election().creator().fullName()));
+        if (!this.organization().social() && this.election().creator().admin()) {
+          this.guestWelcomeCreatorName.html(htmlEscape(this.organization().name()));
+        } else {
+          this.guestWelcomeCreatorName.html(htmlEscape(this.election().creator().fullName()));
+        }
+
         this.guestWelcome.show();
         this.adjustHeight();
         if (this.election().candidates().empty()) {

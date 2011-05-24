@@ -1,7 +1,25 @@
 _.constructor("Views.NewElection", View.Template, {
   content: function() { with(this.builder) {
     div({id: "newElection"}, function() {
-      h2("Raise a New Question");
+      div({'class': "", style: "display: none;"}, function() {
+        div({'class': "calloutBanner dropShadow"}, function() {
+          div({'class': "left", style: "text-align: left;"}, function() {
+            h1({style: "text-align"}, "Ask your team a question.");
+            div("In the next step, you'll invite your colleagues to suggest and vote on answers to this question.");
+          });
+          div({'class': "right"}, function() {
+            div({'class': "ideas"}, "Here are some ideas:");
+            ul(function() {
+              li("What should we discuss at our next meeting?");
+              li("What should be our goals for the next quarter?");
+              li("What do we need to improve about our process?");
+            });
+          });
+          div({'class': "clear"});
+        });
+      }).ref('firstQuestionExplanationBanner');
+
+      h2("Raise a New Question").ref("header");
       textarea({placeholder: "Type your question here", tabindex: 1})
         .keypress(function(view, e) {
           if (e.keyCode === 13) {
@@ -38,17 +56,22 @@ _.constructor("Views.NewElection", View.Template, {
       Application.currentOrganizationId(organizationId);
       this.organizationId(organizationId);
 
+
       Application.layout.activateNavigationTab("newElectionLink");
       Application.layout.hideSubNavigationContent();
+
+
+      this.toggleFirstQuestionExplanation();
 
       this.createElectionTextarea.focus();
     },
 
     organizationId: {
       afterChange: function(organizationId) {
+        this.subscriptions.destroy();
         var membership = this.organization().membershipForCurrentUser();
         if (membership) membership.update({lastVisited: new Date()});
-        this.subscriptions.destroy();
+        this.toggleFirstQuestionExplanation();
       }
     },
 
@@ -76,6 +99,16 @@ _.constructor("Views.NewElection", View.Template, {
               $.bbq.pushState({view: "election", electionId: election.id()});
             }, this);
         }, this);
+    },
+
+    toggleFirstQuestionExplanation: function() {
+      if (this.organization().electionCount() > 0) {
+        this.firstQuestionExplanationBanner.hide();
+        this.header.show();
+      } else {
+        this.header.hide();
+        this.firstQuestionExplanationBanner.show();
+      }
     },
 
     startLoading: function() {

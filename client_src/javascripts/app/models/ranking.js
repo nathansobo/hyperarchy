@@ -30,7 +30,7 @@ _.constructor("Ranking", Model.Record, {
         success: function(data) {
           future.triggerSuccess(Ranking.find(data.ranking_id));
         }
-      })
+      });
 
       return future;
     }

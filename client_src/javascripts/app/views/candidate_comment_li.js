@@ -6,7 +6,9 @@ _.constructor("Views.CandidateCommentLi", View.Template, {
         div({'class': "commentCreator"}).ref('commentCreator');
         div({'class': "commentCreatedAt"}, candidateComment.formattedCreatedAt());
       });
-      div({'class': "commentBody"}, candidateComment.body());
+      div({'class': "commentBody"}, function() {
+        raw(htmlEscape(candidateComment.body(), true));
+      });
     });
   }},
 

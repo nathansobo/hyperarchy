@@ -4,10 +4,14 @@ _.constructor("Views.SignupPrompt", View.Template, {
       div({'class': "cancelX"}).click('hide');
 
       div({'class': "errors", style: "display: none;"}).ref('errorsDiv');
-      
-      form(function() {
-        h1("Sign up to participate:");
 
+      form(function() {
+        h1("Sign up to participate:").ref('signupHeadline');
+
+        div({style: "display: none;"}, function() {
+          label("Organization Name");
+          input({name: "organizationName"}).ref('organizationName');
+        }).ref("organizationNameRow");
         label("First Name");
         input({name: "firstName"}).ref('firstName');
         label("Last Name");
@@ -21,7 +25,7 @@ _.constructor("Views.SignupPrompt", View.Template, {
 
         div({id: "login"}, function() {
           div("Already a member?");
-          a("Click here to log in.", {href: '#'}).click('toggleForms');
+          a("Click here to log in.", {href: '#'}).click('showLoginForm');
         });
       }).ref('signupForm')
         .submit('submitSignupForm');
@@ -39,7 +43,7 @@ _.constructor("Views.SignupPrompt", View.Template, {
         input({type: "submit", value: "Log In", 'class': "glossyBlack roundedButton", tabindex: 103});
         div({id: "signup"}, function() {
           div("Not yet a member?");
-          a("Click here to sign up.", {href: '#', tabindex: 105}).click('toggleForms');
+          a("Click here to sign up.", {href: '#', tabindex: 105}).click('showSignupForm');
         });
       }).ref('loginForm')
         .submit('submitLoginForm');
@@ -53,12 +57,12 @@ _.constructor("Views.SignupPrompt", View.Template, {
     },
 
     afterShow: function() {
+      this.prepareForm();
       this.position({
         my: "center",
         at: "center",
         of: Application.layout.darkenBackground
       });
-      this.firstName.focus();
     },
 
     afterHide: function() {
@@ -70,29 +74,45 @@ _.constructor("Views.SignupPrompt", View.Template, {
       if (this.future) {
         this.future.triggerFailure();
         delete this.future;
-      } 
+      }
     },
 
-    toggleForms: function() {
+    showSignupForm: function(view, e) {
+      if (e) e.preventDefault();
+      this.retainOrganizationName = false;
+      this.signupHeadline.html("Sign up to participate:")
       this.errorsDiv.hide();
-      this.signupForm.toggle();
-      this.loginForm.toggle();
-      this.find('input[type="text"]').val("")
-      this.find("input:visible:first").focus();
-      return false;
+      this.signupForm.show();
+      this.loginForm.hide();
+      this.organizationNameRow.hide();
+      this.prepareForm();
     },
 
-    showLoginForm: function() {
+    includeOrganization: function() {
+      this.retainOrganizationName = true;
+      this.signupHeadline.html("Sign up to add your organization:")
+      this.organizationNameRow.show();
+      this.prepareForm();
+    },
+
+    showLoginForm: function(view, e) {
+      if (e) e.preventDefault();
       this.errorsDiv.hide();
       this.signupForm.hide();
       this.loginForm.show();
+      this.prepareForm();
+    },
+
+    prepareForm: function() {
       this.find('input[type="text"]').val("")
       this.find("input:visible:first").focus();
     },
 
     submitSignupForm: function() {
       this.errorsDiv.hide();
-      Server.post("/signup", { user: _.underscoreKeys(this.signupForm.fieldValues()) })
+      var fieldValues = _.underscoreKeys(this.signupForm.fieldValues());
+      if (!this.retainOrganizationName) delete fieldValues.organization_name;
+      Server.post("/signup", { user:  fieldValues })
         .onSuccess(this.hitch('userEstablished'))
         .onFailure(this.hitch('handleErrors'));
 
@@ -115,14 +135,14 @@ _.constructor("Views.SignupPrompt", View.Template, {
     userEstablished: function(data) {
       Application.currentUserIdEstablished(data.current_user_id)
       if (this.future) {
-        this.future.triggerSuccess();
+        this.future.triggerSuccess(data);
         delete this.future;
       }
       this.hide();
     },
 
-    handleErrors: function(jqXhr) {
-      this.errorsDiv.html($.parseJSON(jqXhr.responseText).errors.join("<br/>"));
+    handleErrors: function(data) {
+      this.errorsDiv.html(data.errors.join("<br/>"));
       this.errorsDiv.show();
     }
   }

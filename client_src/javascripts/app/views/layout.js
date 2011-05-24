@@ -5,6 +5,7 @@ _.constructor("Views.Layout", View.Template, {
       div({id: "darkenBackground", style: "display: none"})
         .ref('darkenBackground');
       subview('signupPrompt', Views.SignupPrompt);
+      subview('addOrganization', Views.AddOrganization);
       subview('mustBeMemberMessage', Views.MustBeMemberMessage);
       subview('disconnectDialog', Views.DisconnectDialog);
       subview('inviteForm', Views.Invite);
@@ -34,7 +35,7 @@ _.constructor("Views.Layout", View.Template, {
       }).ref('accountMenu');
       ol({'class': "dropdownMenu"}, function() {
         li(function() {
-          a({href: "#"}, "Add Organization...").click('goToAddOrganization');
+          a("Add Organization...").click('showAddOrganizationForm');
         }).ref('addOrganizationLi')
       }).ref('organizationsMenu');
 
@@ -52,6 +53,9 @@ _.constructor("Views.Layout", View.Template, {
         a({'class': "globalHeaderItem dropdownLink"}, "Organizations")
           .ref("organizationsMenuLink")
           .click("toggleOrganizationsMenu");
+        a({'class': "globalHeaderItem"}, "Add Your Organization")
+          .ref("addOrganizationLink")
+          .click("showAddOrganizationForm");
         a({'class': "globalHeaderItem", href: "#"}, "Invite")
           .ref('inviteLink')
           .click('showInviteForm');
@@ -60,8 +64,6 @@ _.constructor("Views.Layout", View.Template, {
 
         div({'class': "clear"});
       });
-
-      subview("welcomeGuide", Views.WelcomeGuide);
 
       div({id: "mainContent"}, function() {
         div({id: "navigationBar"}, function() {
@@ -148,13 +150,8 @@ _.constructor("Views.Layout", View.Template, {
     organization: {
       afterChange: function(organization) {
         this.organizationName.bindHtml(organization, 'name');
-        if (organization.currentUserCanEdit()) {
-          this.editOrganizationLink.show();
-          this.membersLink.show();
-        } else {
-          this.editOrganizationLink.hide();
-          this.membersLink.hide();
-        }
+        this.showOrHideInviteLink();
+        this.showOrHideAdminLinks();
       }
     },
 
@@ -173,11 +170,34 @@ _.constructor("Views.Layout", View.Template, {
         }
 
         this.populateOrganizations();
-
         var organizationsPermitted = user.organizationsPermittedToInvite();
-        this.currentUserSubscriptions.add(organizationsPermitted.onInsert(this.hitch('showOrHideInviteLink')));
-        this.currentUserSubscriptions.add(organizationsPermitted.onRemove(this.hitch('showOrHideInviteLink')));
-        this.showOrHideInviteLink();
+
+        if (this.organization()) this.showOrHideInviteLink();
+        if (this.organization()) this.showOrHideAdminLinks();
+
+        this.currentUserSubscriptions.add(user.memberships().onInsert(this.hitch('showAppropriateOrganizationsControls')));
+        this.currentUserSubscriptions.add(user.memberships().onRemove(this.hitch('showAppropriateOrganizationsControls')));
+        this.showAppropriateOrganizationsControls();
+      }
+    },
+
+    showOrHideAdminLinks: function() {
+      if (this.organization().currentUserCanEdit()) {
+        this.editOrganizationLink.show();
+        this.membersLink.show();
+      } else {
+        this.editOrganizationLink.hide();
+        this.membersLink.hide();
+      }
+    },
+
+    showAppropriateOrganizationsControls: function() {
+      if (Application.currentUser().memberships().size() > 1) {
+        this.organizationsMenuLink.show();
+        this.addOrganizationLink.hide();
+      } else {
+        this.organizationsMenuLink.hide();
+        this.addOrganizationLink.show();
       }
     },
 
@@ -195,6 +215,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     activateNavigationTab: function(link) {
+      this.showOrganizationNavigationBar();
       this.organizationNavigationBar.find("a").removeClass('active');
       $(this[link]).addClass('active');
     },
@@ -213,6 +234,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     populateOrganizations: function() {
+      this.organizationsMenu.find('li > a[organizationId]').remove();
       var organizations =
         this.currentUser().admin() ?
           Organization.orderBy('name')
@@ -239,10 +261,10 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     showOrHideInviteLink: function() {
-      if (this.currentUser().guest() || this.currentUser().organizationsPermittedToInvite().empty()) {
-        this.inviteLink.hide();
-      } else {
+      if (this.organization().currentUserCanInvite()) {
         this.inviteLink.show();
+      } else {
+        this.inviteLink.hide();
       }
     },
 
@@ -292,6 +314,23 @@ _.constructor("Views.Layout", View.Template, {
           of: this.darkenBackground
         });
       e.preventDefault();
+    },
+
+    showAddOrganizationForm: function() {
+      if (Application.currentUser().guest()) {
+        var future = new Monarch.Http.AjaxFuture();
+        this.signupPrompt.showSignupForm();
+        this.signupPrompt.includeOrganization();
+        this.signupPrompt.show();
+        this.signupPrompt.future = future;
+        future.onSuccess(function(data) {
+          if (data.new_organization_id) {
+            $.bbq.pushState({view: "newElection", organizationId: data.new_organization_id }, 2);
+          }
+        });
+      } else {
+        this.addOrganization.show();
+      }
     },
 
     showInviteForm: function(elt, e) {
@@ -356,17 +395,11 @@ _.constructor("Views.Layout", View.Template, {
       $.bbq.pushState({view: "organization", organizationId: organizationId }, 2);
     },
 
-    goToAddOrganization: function(elt, e) {
-      e.preventDefault();
-      if (Application.currentUser().guest()) {
-        window.location = "/signup"
-      } else {
-        $.bbq.pushState({view: "addOrganization" }, 2);
-      }
-    },
-
     showLoginForm: function() {
+      var future = new Monarch.Http.AjaxFuture();
       this.signupPrompt.show().showLoginForm();
+      this.signupPrompt.future = future;
+      future.onSuccess(this.hitch('goToLastOrganization'));
       return false;
     }
   }
