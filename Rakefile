@@ -4,7 +4,17 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
-Hyperarchy::Application.load_tasks
+module RakeFileUtils
+  extend Rake::FileUtilsExt
+end
+
+module Hyperarchy
+  class Application
+    include Rake::DSL
+
+    load_tasks
+  end
+end
 
 require 'resque/tasks'
 require 'resque_scheduler/tasks'
