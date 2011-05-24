@@ -3,11 +3,22 @@
     padding: 0;
     margin: 0;
     clear: both;
-    overflow-y: hidden;
+    overflow: hidden;
 
-    .guestWelcome {
+    .calloutBanner {
       .right {
         padding-top: 10px;
+      }
+
+      .right.firstUser {
+        padding: 0;
+      }
+
+      .secretUrl {
+        display: block;
+        margin-top: 10px;
+        width: 100%;
+        color: #666;
       }
     }
 
@@ -15,6 +26,8 @@
       margin-bottom: 20px;
 
       #electionBodyContainer {
+        min-height: 40px;
+
         .expandArrow {
           float: left;
           margin-right: 5px;
@@ -60,11 +73,6 @@
       float: right;
       display: inline-block;
       text-align: center;
-
-      &.pressed {
-        -webkit-box-shadow: 0px 0px 4px black inset;
-        -moz-box-shadow: 0px 0px 4px black inset;
-      }
     }
 
     div#createCandidateForm {

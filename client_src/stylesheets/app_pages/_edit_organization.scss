@@ -1,6 +1,15 @@
 .home.show {
   #editOrganization {
-    @extend #addOrganization;
+    font-size: $largeFont;
+    margin-bottom: 20px;
+
+    input, textarea {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    a.roundedButton { margin-top: 10px; }
 
     label[for="privacy"] {
       display: block;

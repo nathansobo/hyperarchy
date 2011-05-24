@@ -83,6 +83,7 @@ textarea {
 a, a:visited {
   color: $blue;
   cursor: pointer;
+  text-decoration: underline;
 }
 
 strong {
@@ -202,7 +203,7 @@ button {
   font-size: 14px;
 }
 
-.guestWelcome {
+.calloutBanner {
   @include borderRadius(3px);
   background: #EFFFB9;
   margin-bottom: 30px;

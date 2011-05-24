@@ -112,6 +112,7 @@
           padding: 5px 12px;
           color: white;
           font-size: 18px;
+          text-decoration: none;
 
           &.active {
             padding-bottom: 10px;
@@ -167,6 +168,7 @@
         a {
           color: lighten($gray, 25%);
           padding: 0 12px;
+          text-decoration: none;
 
           &#back {
             padding-left: 20px;

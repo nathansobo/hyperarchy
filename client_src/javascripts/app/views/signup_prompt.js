@@ -142,7 +142,8 @@ _.constructor("Views.SignupPrompt", View.Template, {
     },
 
     handleErrors: function(data) {
-      this.errorsDiv.html(data.errors.join("<br/>"));
+      var errors = JSON.parse(data.responseText).errors
+      this.errorsDiv.html(errors.join("<br/>"));
       this.errorsDiv.show();
     }
   }

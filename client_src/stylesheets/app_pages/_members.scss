@@ -1,6 +1,7 @@
 .home.show {
   #members {
-    @extend #addOrganization;
+    font-size: $largeFont;
+    margin-bottom: 20px;
     overflow: hidden;
 
     #content {
