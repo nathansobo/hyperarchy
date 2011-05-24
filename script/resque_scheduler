@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require 'resque'
+require 'resque_scheduler'
+
+Resque.schedule = YAML.load_file(File.expand_path('../../config/resque_schedule.yml', __FILE__))
+Resque::Scheduler.verbose = true if ENV['VERBOSE']
+Resque::Scheduler.run
