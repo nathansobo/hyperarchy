@@ -15,6 +15,7 @@ gem 'resque', '1.15.0'
 gem 'resque-status', '0.2.3', :require => ['resque/status', 'resque/job_with_status']
 gem 'resque-scheduler', '1.9.9', :require => ['resque_scheduler']
 gem 'uuidtools', '2.1.2'
+gem 'typhoeus', '0.2.4'
 
 group :development, :test do
   gem 'thin'

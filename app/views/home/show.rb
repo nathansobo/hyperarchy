@@ -7,6 +7,8 @@ module Views
 
       def below_body_content
         application_javascript_tags
+        script :type => "text/javascript", :language => "javascript", :src => "http://localhost:8080/socket.io/socket.io.js"
+
         javascript %[
         $(function() {
           Election.SCORE_EXTRA_VOTES = #{Election::SCORE_EXTRA_VOTES};

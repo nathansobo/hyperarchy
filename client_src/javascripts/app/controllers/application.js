@@ -11,7 +11,25 @@ _.constructor("Controllers.Application", {
       newElection: Views.NewElection.toView()
     };
 
+
+    window.WEB_SOCKET_SWF_LOCATION = 'http://localhost:8080/socket.io/lib/vendor/web-socket-js/WebSocketMain.swf';
+
     this.userSwitchNode = new Monarch.SubscriptionNode();
+    this.socket = new io.Socket("localhost", {rememberTransport: false, port: 8080 });
+    this.socket.connect();
+
+    var socket = this.socket;
+    this.socket.on('connect', function() {
+      console.debug("connected!! ");
+      console.debug(socket.transport.sessionid);
+
+    });
+    this.socket.on('message', function(m) {
+      console.debug("got message", m);
+    });
+    this.socket.on('disconnect', function() {
+      console.debug('disconnected!!');
+    });
   },
 
   initializeNavigation: function() {
@@ -57,9 +75,12 @@ _.constructor("Controllers.Application", {
 
     afterChange: function(organizationId, old) {
       if (this.previousOrganizationSubscription) this.previousOrganizationSubscription.destroy();
-//      Server.post("/subscribe_to_organization/" + organizationId, { real_time_client_id: Server.realTimeClientId() }).onSuccess(function(subscriptionId) {
-//        this.previousOrganizationSubscription = new Monarch.Http.RemoteSubscription(subscriptionId)
-//      }, this);
+
+      this.delay(function() {
+        console.log('posting', this.socket.transport.sessionid);
+        $.post('/channel_subscriptions/organizations/' + organizationId, { session_id: this.socket.transport.sessionid });
+      }, 4000);
+
       this.layout.organization(this.currentOrganization());
     }
   },

@@ -2,7 +2,6 @@
 
 //= require <jquery-1.5.2>
 //= require <jquery.ba-bbq>
-//= require <jquery.cookie>
 //= require <htmlescape>
 //= require <underscore>
 //= require <json>
