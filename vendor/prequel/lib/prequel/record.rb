@@ -322,7 +322,7 @@ module Prequel
 
     def default_field_values
       columns.inject({}) do |hash, column|
-        hash[column.name] = column.default_value if column.default_value
+        hash[column.name] = column.default_value if column.has_default?
         hash
       end
     end

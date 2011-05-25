@@ -293,6 +293,9 @@ module Prequel
         Blog.column :title, :string, :default => "New Blog"
         Blog.new.title.should == "New Blog"
         Blog.new(:title => "My Blog").title.should == "My Blog"
+
+        Blog.column :good, :boolean, :default => false
+        Blog.new.good.should == false
       end
     end
 

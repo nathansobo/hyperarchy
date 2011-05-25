@@ -16,6 +16,10 @@ module Prequel
         options[:default]
       end
 
+      def has_default?
+        options.has_key?(:default)
+      end
+
       def eq(other)
         Equal.new(self, other)
       end
