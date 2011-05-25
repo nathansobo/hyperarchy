@@ -8,8 +8,8 @@ class Membership < Prequel::Record
   column :last_visited, :datetime
   column :notify_of_new_elections, :string, :default => "daily"
   column :notify_of_new_candidates, :string, :default => "daily"
-  column :notify_of_new_comments_on_own_candidates, :string, :default => "hourly"
-  column :notify_of_new_comments_on_ranked_candidates, :string, :default => "hourly"
+  column :notify_of_new_comments_on_own_candidates, :string, :default => "daily"
+  column :notify_of_new_comments_on_ranked_candidates, :string, :default => "daily"
   column :created_at, :datetime
   column :updated_at, :datetime
 
@@ -198,7 +198,7 @@ Visit #{invitation.signup_url} to join our private alpha test and start voting o
   def period_ago(period)
     case period
       when "every5"
-        5.minutes.ago
+        1.minute.ago
       when "hourly"
         1.hour.ago
       when "daily"

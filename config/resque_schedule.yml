@@ -1,5 +1,5 @@
 every_5_mins_notifications:
-  cron: "*/5 * * * *"
+  cron: "*/1 * * * *"
   class: Jobs::SendNotifications
   args:
     - period: "every5"

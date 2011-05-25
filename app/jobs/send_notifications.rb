@@ -7,7 +7,8 @@ module Jobs
       total = users_to_notify.count
       users_to_notify.each_with_index do |user, i|
         at(i + 1, total)
-        NotificationMailer.notification(user, period).deliver
+        presenter = Views::NotificationMailer::NotificationPresenter.new(user, period)
+        NotificationMailer.notification(user, presenter).deliver unless presenter.empty?
       end
     end
 

@@ -53,7 +53,7 @@ describe Organization do
           end
 
           it "creates a membership for them" do
-            current_user.memberships.should be_empty
+            current_user.memberships.where(:organization => organization).should be_empty
             organization.ensure_current_user_is_member
             current_user.memberships.where(:organization => organization).count.should == 1
           end
@@ -84,22 +84,6 @@ describe Organization do
 
           it "does not raise an exception" do
             organization.ensure_current_user_is_member
-          end
-        end
-
-        context "if the current user is a pending member" do
-          attr_reader :membership
-
-          before do
-            set_current_user(organization.make_member)
-            @membership = current_user.memberships.first
-            membership.update(:pending => true)
-          end
-
-          it "confirms their membership and does not raise an exception" do
-            membership.should be_pending
-            organization.ensure_current_user_is_member
-            membership.should_not be_pending
           end
         end
 

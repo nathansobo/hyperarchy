@@ -38,7 +38,8 @@ describe NotificationMailer do
     mock(membership2).new_comments_on_ranked_candidates_in_period('hourly') { [] }
     mock(membership2).new_comments_on_own_candidates_in_period('hourly') { [org2_e1_c1_comment] }
 
-    @email = NotificationMailer.notification(user, 'hourly').deliver
+    presenter = Views::NotificationMailer::NotificationPresenter.new(user, 'hourly')
+    @email = NotificationMailer.notification(user, presenter).deliver
     ActionMailer::Base.deliveries.should == [email]
   end
 

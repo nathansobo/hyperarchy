@@ -141,23 +141,20 @@ module Models
           user.default_organization.should == organization_2
         end
       end
-
-      context "when the user has no memberships" do
-        it "returns the social organization" do
-          guest = User.make
-          guest.memberships.should be_empty
-          guest.default_organization.should == Organization.find(:social => true)
-        end
-      end
     end
 
     describe "methods supporting notifications" do
       describe ".users_to_notify(period)" do
-        it "returns those users who have at least one membership with a notification preference matching the job's period" do
+        it "returns those non-guest users who have at least one membership with a notification preference matching the job's period and who have emails enabled" do
           m1 = make_membership('hourly', 'never', 'never', 'never')
           m2 = make_membership('never', 'hourly', 'never', 'never')
           m3 = make_membership('never', 'never', 'hourly', 'never')
           m4 = make_membership('never', 'never', 'never', 'hourly')
+          guest_m = make_membership('hourly', 'never', 'never', 'never')
+          guest_m.user.update!(:guest => true)
+          disabled_m = make_membership('hourly', 'never', 'never', 'never')
+          disabled_m.user.update!(:email_enabled => false)
+          
           make_membership('never', 'never', 'never', 'never')
 
           User.users_to_notify('hourly').all.map(&:id).should == [m1, m2, m3, m4].map(&:user).map(&:id)
@@ -174,6 +171,8 @@ module Models
 
         describe "#memberships_to_notify(period)" do
           it "returns those memberships with at least one notification preference set to the given period, with social memberships first" do
+            social_membership = user.memberships.first
+            social_membership.update(:all_notifications => 'hourly')
 
             m1 = make_membership('hourly', 'never', 'never', 'never')
             m2 = make_membership('never', 'hourly', 'never', 'never')
@@ -183,13 +182,13 @@ module Models
 
             m1.update!(:user => user)
             m2.update!(:user => user)
-            m3.update!(:user => user, :organization => Organization.social)
+            m3.update!(:user => user)
             m4.update!(:user => user)
             m5.update!(:user => user)
 
             memberships = user.memberships_to_notify("hourly")
-            memberships.first.should == m3
-            memberships.should =~ [m1, m2, m3, m4]
+            memberships.should =~ [social_membership, m1, m2, m3, m4]
+            memberships.first.should == social_membership
           end
         end
       end

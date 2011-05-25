@@ -1,4 +1,4 @@
-require 'spec_helper'
+  require 'spec_helper'
 
 module Models
   describe CandidateComment do
@@ -18,7 +18,7 @@ module Models
 
       it "if the creator is not a member of the organization, makes them one (as long as the org is public)" do
         set_current_user(User.make)
-        current_user.memberships.should be_empty
+        current_user.memberships.where(:organization => organization).should be_empty
 
         organization.update(:privacy => "private")
         expect do

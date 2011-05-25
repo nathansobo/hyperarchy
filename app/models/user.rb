@@ -4,6 +4,7 @@ class User < Prequel::Record
   column :last_name, :string
   column :email_address, :string
   column :encrypted_password, :string
+  column :email_enabled, :boolean, :default => true
   column :admin, :boolean
   column :dismissed_welcome_blurb, :boolean, :default => false
   column :dismissed_welcome_guide, :boolean, :default => false
@@ -39,7 +40,7 @@ class User < Prequel::Record
       :notify_of_new_candidates => period,
       :notify_of_new_comments_on_own_candidates => period,
       :notify_of_new_comments_on_ranked_candidates => period
-    ).join_through(User)
+    ).join_through(User).where(:guest => false, :email_enabled => true)
   end
 
   def self.guest
@@ -156,7 +157,7 @@ class User < Prequel::Record
   def memberships_to_notify(period)
     memberships.
       join(Organization).
-      order_by(:social).
+      order_by(:social.desc).
       project(Membership).
       all.
       select {|m| m.wants_notifications?(period)}

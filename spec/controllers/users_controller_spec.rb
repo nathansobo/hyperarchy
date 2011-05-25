@@ -6,7 +6,8 @@ describe UsersController do
       it "creates the user, logs them in, and makes them a member of social" do
         current_user.should be_nil
 
-        xhr :post, :create, :user => User.plan
+        user_params = User.plan
+        xhr :post, :create, :user => user_params
         response.should be_success
 
         current_user.should_not be_nil

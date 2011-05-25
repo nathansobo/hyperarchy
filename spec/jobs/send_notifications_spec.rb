@@ -6,18 +6,30 @@ module Jobs
     let(:period) { 'hourly' }
 
     describe "#perform" do
-      it "sends a NotificationMailer.notification for every user to notify with the given period" do
+      it "sends a NotificationMailer.notification for every user to notify with the given period that has notifications" do
         user1 = User.make
         user2 = User.make
+        user3 = User.make
+        user1_membership = user1.memberships.first
+        user2_membership = user2.memberships.first
+        user3_membership = user3.memberships.first
+        user1_membership.update!(:notify_of_new_elections => period)
+        user2_membership.update!(:notify_of_new_elections => period)
+        user3_membership.update!(:notify_of_new_elections => 'never', :notify_of_new_candidates => period)
 
-        mock(User).users_to_notify(period) { [user1, user2] }
+        new_election = Organization.social.elections.make
 
-        mock(NotificationMailer).notification(user1, period).mock!.deliver
-        mock(NotificationMailer).notification(user2, period).mock!.deliver
+        mock(user1.memberships.first).new_elections_in_period(period) { [new_election] }
+        mock(user2.memberships.first).new_elections_in_period(period) { [new_election] }
 
-        mock(job).at(1, 2)
-        mock(job).at(2, 2)
-        
+        mock(NotificationMailer).notification(user1, is_a(Views::NotificationMailer::NotificationPresenter)).mock!.deliver
+        mock(NotificationMailer).notification(user2, is_a(Views::NotificationMailer::NotificationPresenter)).mock!.deliver
+        dont_allow(NotificationMailer).notification(user3, is_a(Views::NotificationMailer::NotificationPresenter))
+
+        mock(job).at(1, 3)
+        mock(job).at(2, 3)
+        mock(job).at(3, 3)
+
         job.perform
       end
     end
