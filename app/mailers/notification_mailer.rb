@@ -1,5 +1,5 @@
 class NotificationMailer < ActionMailer::Base
-  default :from => "admin@hyperarchy.com"
+  default :from => "Hyperarchy <admin@hyperarchy.com>"
 
   def notification(user, presenter)
     @presenter = presenter
