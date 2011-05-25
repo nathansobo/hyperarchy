@@ -28,6 +28,23 @@ module Prequel
         end
       end
 
+      describe "#each_with_index" do
+        it "iterates over records in the relation with an index" do
+          DB[:blogs] << { :id => 1, :title => "Blog 1" }
+          DB[:blogs] << { :id => 2, :title => "Blog 2" }
+
+          records = []
+          indices = []
+          Blog.order_by(:id).each_with_index do |record, index|
+            records.push(record)
+            indices.push(index)
+          end
+
+          records.should == [Blog.find(1), Blog.find(2)]
+          indices.should == [0, 1]
+        end
+      end
+
       describe "#find" do
         before do
           DB[:blogs] << { :id => 1, :title => "Blog 1" }

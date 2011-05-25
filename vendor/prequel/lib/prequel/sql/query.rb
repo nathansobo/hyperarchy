@@ -31,6 +31,12 @@ module Prequel
         end
       end
 
+      def each_with_index
+        dataset.each_with_index do |field_values, index|
+          yield tuple_builder.build_tuple(field_values), index
+        end
+      end
+
       def first
         r = dataset
         r.empty? ? nil : tuple_builder.build_tuple(r.first)
