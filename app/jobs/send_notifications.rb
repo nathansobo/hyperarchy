@@ -8,7 +8,12 @@ module Jobs
       users_to_notify.each_with_index do |user, i|
         at(i + 1, total)
         presenter = Views::NotificationMailer::NotificationPresenter.new(user, period)
-        NotificationMailer.notification(user, presenter).deliver unless presenter.empty?
+
+        unless presenter.empty?
+          puts "Sending notification to #{user.email_address} -- #{presenter.item_counts}"
+          NotificationMailer.notification(user, presenter).deliver
+        end
+
       end
     end
 
