@@ -6,10 +6,8 @@ GIT
     parallel_tests (0.4.17)
       parallel
 
-GIT
-  remote: https://github.com/bigfix/erector.git
-  revision: adac17b5c02e47c0ebb834684d2a759cf34b8796
-  tag: rails3
+PATH
+  remote: vendor/erector
   specs:
     erector (0.8.1)
       rake

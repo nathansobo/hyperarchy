@@ -8,7 +8,7 @@ gem 'sequel', '3.16.0'
 gem 'sequel-rails', '0.1.8'
 gem 'bcrypt-ruby', :require => 'bcrypt'
 gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
-gem 'erector', :git => 'https://github.com/bigfix/erector.git', :tag => 'rails3'
+gem 'erector', :path => 'vendor/erector'
 gem 'pony', '1.1'
 gem 'haml', '3.0.25'
 gem 'resque', '1.15.0'
