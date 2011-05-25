@@ -72,7 +72,7 @@ class AppServer
     if run("svstat /service/#{service_name}") =~ /down \d/
       run "svc -u /service/#{service_name}"
     else
-      run "svc -q /service/#{service_name}"
+      run "svc -cq /service/#{service_name}" # send a cont before quit to workaround signals being ignored on ubuntu
     end
   end
 
@@ -82,8 +82,10 @@ class AppServer
   end
 
   def create_hyperarchy_user
-    run "mkdir /home/hyperarchy"
-    run "useradd hyperarchy -d /home/hyperarchy -s /bin/bash"
+    run "mkdir -p /home/hyperarchy"
+    unless run?('id hyperarchy')
+      run "useradd hyperarchy -d /home/hyperarchy -s /bin/bash"
+    end
     run "cp -r /root/.ssh /home/hyperarchy/.ssh"
   end
 
@@ -167,6 +169,7 @@ class AppServer
 
   def install_rvm
     run "bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)"
+    run "source /usr/local/rvm/scripts/rvm"
     run "rvm get latest"
     run "source /usr/local/rvm/scripts/rvm"
     upload! 'lib/deploy/resources/.bashrc', '/root/.bashrc'
@@ -193,10 +196,10 @@ class AppServer
   end
 
   def clone_repository
-    run "mkdir /app"
+    run "mkdir -p /app"
     run "chown hyperarchy:hyperarchy /app"
     run "su - hyperarchy"
-    run "ssh -o StrictHostKeyChecking=no git@github.com"
+    run! "ssh -o StrictHostKeyChecking=no git@github.com"
     run "yes | git clone", repository, "/app"
     run "ln -s /log /app/log"
     run "rvm rvmrc trust /app"
@@ -237,17 +240,28 @@ class AppServer
   alias_method :install_package, :install_packages
 
   PROMPT_REGEX = /[$%#>] (\z|\e)/n
-  def run(*command)
-    command = command.join(' ')
-    output = shell.cmd(command) {|data| print data.gsub(/(\r|\r\n|\n\r)+/, "\n") }
+  def run(*command_fragments)
+    command = command_fragments.join(' ')
+    result = run_command(command)
+    raise "Command failed: #{command}" unless run_command('echo $?', true) == '0'
+    result
+  end
+
+  def run!(*command_fragments)
+    run_command(command_fragments.join(' '))
+  end
+
+  def run?(*command_fragments)
+    run_command(command_fragments.join(' '))
+    run_command("echo $?") == '0'
+  end
+
+  def run_command(command, silent=false)
+    output = shell.cmd(command) {|data| print data.gsub(/(\r|\r\n|\n\r)+/, "\n") unless silent }
     command_regex = /#{Regexp.escape(command)}/
     output.split("\n").reject {|l| l.match(command_regex) || l.match(PROMPT_REGEX)}.join("\n")
   end
 
-  def run?(command)
-    run(command)
-    run("echo $?") == '0'
-  end
 
   class UploadProgressHandler
     def on_open(uploader, file)
