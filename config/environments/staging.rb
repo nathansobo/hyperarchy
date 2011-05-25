@@ -41,7 +41,7 @@ Hyperarchy::Application.configure do
     :address              => "smtp.gmail.com",
     :port                 => 587,
     :domain               => 'hyperarchy.com',
-    :user_name            => 'admin',
+    :user_name            => 'admin@hyperarchy.com',
     :password             => 'eltortuga',
     :authentication       => 'plain',
     :enable_starttls_auto => true
