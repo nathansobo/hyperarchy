@@ -1,0 +1,625 @@
+<html>
+  <head>
+    <title>Erector - Release Notes</title>
+    <link href="erector.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div class="sidebar"><a href="index.html"><img class="logo" height="161" src="erector.jpg" width="143" /></a>
+      <h3>Documentation:</h3>
+      <ul class="clickable">
+        <li class="clickable" onclick="document.location='index.html'"><a href="index.html">README</a></li>
+        <li class="clickable" onclick="document.location='userguide.html'"><a href="userguide.html">User Guide</a></li>
+        <li class="clickable" onclick="document.location='faq.html'"><a href="faq.html">FAQ</a></li>
+        <li class="clickable" onclick="document.location='rdoc'"><a href="rdoc">RDoc API</a></li>
+        <li class="clickable" onclick="document.location='developers.html'"><a href="developers.html">For Developers</a></li>
+        <li class="clickable" onclick="document.location='release_notes.html'"><a href="release_notes.html">Release Notes</a></li>
+      </ul>
+      <h3>External Links:</h3>
+      <ul class="clickable">
+        <li class="clickable" onclick="document.location='http://rubyforge.org/frs/?group_id=4797'"><a href="http://rubyforge.org/frs/?group_id=4797">Download</a><br />
+          <span> (current version: 0.8.1)</span></li>
+        <li class="clickable" onclick="document.location='http://googlegroups.com/group/erector'"><a href="http://googlegroups.com/group/erector">Erector Mailing List</a></li>
+        <li class="clickable" onclick="document.location='http://rubyforge.org/projects/erector/'"><a href="http://rubyforge.org/projects/erector/">RubyForge Project</a></li>
+        <li class="clickable" onclick="document.location='http://github.com/pivotal/erector'"><a href="http://github.com/pivotal/erector">Github Repository</a></li>
+        <li class="clickable" onclick="document.location='http://www.pivotaltracker.com/projects/482'"><a href="http://www.pivotaltracker.com/projects/482">Tracker Project</a></li>
+        <li class="clickable" onclick="document.location='http://rubyforge.org/pipermail/erector-devel/'"><a href="http://rubyforge.org/pipermail/erector-devel/">erector-devel archive</a></li>
+      </ul>
+    </div>
+    <div class="main">
+      <h1 class="title">Erector - Release Notes</h1>
+      <div class="body"><p>
+Bugs:
+</p>
+<ul>
+<li>Dependency did not correctly work with uniq (reported by Daniel Barlow)
+
+</li>
+</ul>
+<h2>0.8.1 - 2010-07-17</h2>
+<p>
+Bugfix release to improve Ruby 1.9 compatibility
+</p>
+<h2>0.8.0 - 2010-07-07</h2>
+<p>
+Core:
+</p>
+<ul>
+<li>deprecated to_s in favor of to_html
+
+</li>
+<li>to_text does some formatting
+
+</li>
+<li>barebones Sass support
+
+</li>
+<li>&#8220;depends_on&#8221; is the new way to include JS and CSS files
+(replacing &#8220;external&#8221;). More flexible calling structure.
+
+</li>
+<li>line wrapping via the :max_length parameter to to_html
+
+</li>
+<li>line wrapping preserves leading and trailing spaces
+
+</li>
+<li>jquery method takes optional first parameter (:load or :ready)
+
+</li>
+<li>delegate method_missing to parent widget
+
+</li>
+<li>&#8216;embed&#8217; and &#8216;param&#8217; are now self-closing tags (as
+per browser warnings)
+
+</li>
+<li>Converted Widget#context to take a params hash.
+
+</li>
+<li>Exposed an Output object, with rather useful #placeholder method
+
+</li>
+<li>Defined Widget#output to delegate to #parent if @parent is not already set.
+
+</li>
+<li>Removed :parent param for Output#initialize in favor of a block.
+
+</li>
+<li>Page#extra_widgets
+
+</li>
+<li>Page only emits externals from widgets that have been rendered on it
+
+</li>
+<li>in-memory widget caching (still experimental)
+
+</li>
+</ul>
+<p>
+Rails:
+</p>
+<ul>
+<li>Compatibility with Rails 2.3.5 HTML safety
+
+</li>
+<li>Rails 2.3.8 compatibility
+
+</li>
+<li>To render from a Rails context, you must now go through
+Erector::Rails.render; do not call to_s(:parent => @view) directly
+
+</li>
+<li>rails_xss plugin support
+
+</li>
+<li>additional render :widget options passed to to_s. This means that you can
+do:
+
+<pre>
+    render :widget =&gt; MyWidget, :content_method_name =&gt; :my_content
+</pre>
+</li>
+<li>Widget#h is now idempotent
+
+</li>
+</ul>
+<p>
+Bugs:
+</p>
+<ul>
+<li>[bug] <a
+href="http://github.com/pivotal/erector/issues/#issue/5">github.com/pivotal/erector/issues/#issue/5</a>
+
+</li>
+<li>[bug] <a
+href="http://github.com/pivotal/erector/issues/closed#issue/3">github.com/pivotal/erector/issues/closed#issue/3</a>
+
+</li>
+<li>[bug] double-rendering
+
+</li>
+</ul>
+<h2>0.7.3 - 2009-12-01</h2>
+<ul>
+<li>fix bug in pass-block-to-new inline page rendering
+
+</li>
+<li>externals can accept a File (or any IO, actually)
+
+</li>
+</ul>
+<p>
+Rails:
+</p>
+<pre>
+ * Add Widget.controller_assigns_propagate_to_partials: lets you keep controller instance variables from propagating to partials, so that you don't have this giant &quot;global&quot; namespace that partials can pull from. Enforces encapsulation much better.
+ * Add Widget.ignore_extra_controller_assigns, which allows widgets to use #needs but silently ignore excess controller variables, rather than raising an exception instead. This can be very useful for transitioning large codebases to Erector.
+ * Factor out directly-delegated methods into an array; add url_for and image_path.
+ * Make Erector work with the Cells plugin for Rails (http://cells.rubyforge.org/).
+</pre>
+<p>
+Erector tool:
+</p>
+<pre>
+ * Make 'erector' ignore ERb trim markers (&quot;-%&gt;&quot;).
+ * Make 'erector' process ERb escapes in HTML attributes correctly.
+ * Make sure 'erector' adds parentheses to function calls when necessary.
+ * Don't add empty strings to the end of converted attributes.
+ * Don't omit empty attribute strings.
+ * Allow setting an alternate superclass for the new widget coming from the 'erector' tool.
+ * Add --method switch to 'erector', in case you don't want the base 'content' method overridden, but something it calls in your superclass, instead.
+</pre>
+<h2>0.7.2 - 2009-11-16</h2>
+<ul>
+<li>Widget#url and #css accept optional extra attributes (e.g.
+&#8216;media&#8217;)
+
+</li>
+<li>Externals accept optional extra attributes (e.g. &#8216;media&#8217;)
+
+</li>
+<li>Page:
+
+<ul>
+<li>body_attributes and html_attributes
+
+</li>
+<li>allow suppressing of basic styles (right/left/clear)
+
+</li>
+<li>now an InlineWidget
+
+</li>
+</ul>
+</li>
+<li>erector method passes in parameters to both to_s and the widget&#8217;s
+constructor
+
+</li>
+<li>Widget#dom_id method to generate a unique id
+
+</li>
+<li>Widget#to_text method to strip tags
+
+</li>
+<li>supports HTML5 element names
+
+</li>
+<li>Widget#text! and #element! which don&#8217;t escape their parameters
+
+</li>
+<li>Better Rails initialization
+
+</li>
+<li>Don&#8217;t emit an attribute with an empty array of values
+
+</li>
+<li>Enhanced support for comments, including IE conditional comments
+
+</li>
+<li>jQuery method now compatible with jQuery.noConflict()
+
+</li>
+</ul>
+<h2>0.7.1</h2>
+<ul>
+<li>externals mechanism
+
+</li>
+<li>Page widget
+
+</li>
+<li>FieldTable widget
+
+</li>
+<li>EnvironmentBadge widget - inspired by <a
+href="http://blog.labnotes.org/2009/10/08/using-a-badge-to-distinguish-development-and-production-environments">blog.labnotes.org/2009/10/08/using-a-badge-to-distinguish-development-and-production-environments</a>
+
+</li>
+<li>added &#8216;jquery&#8217; method to perform a script on $(document).ready
+
+</li>
+<li>removed the &#8220;alias_method :inspect, :to_s&#8221; since it made
+debugging inside widget constructors hard, and what was it for anyway?
+
+</li>
+<li>Instance variables may begin with a &#8217;@&#8217;
+
+</li>
+<li>Fixed Rails integration regressions
+
+</li>
+<li>Added *.ert templates (Erector Template, similar to Markaby)
+
+</li>
+<li>#comment method to emit HTML comments (naturally)
+
+</li>
+</ul>
+<h2>0.7.0 / 2009-09-27</h2>
+<ul>
+<li>Changed behavior of inline blocks. See Widget#new documentation.
+
+</li>
+<li>Introduced &#8220;Erector::Inline&#8221; and &#8220;Erector.inline&#8221;
+so people using the old inline semantics can upgrade more easily.
+
+</li>
+<li>Likewise for &#8220;Erector::InlineRailsWidget&#8221; and
+&#8220;Erector::RailsWidget.inline&#8221;.
+
+</li>
+<li>Due to popular demand, parameters no longer automatically create accessor
+methods, even if you declare them with &#8216;needs&#8217;. You&#8217;ll
+have to type out &#8220;attr_accessor :underpants&#8221; yourself.
+
+</li>
+</ul>
+<h2>0.6.8 / 2009-09</h2>
+<ul>
+<li>Added missing tag &#8216;embed&#8217;
+
+</li>
+</ul>
+<h2>0.6.7 / 2009-06-17</h2>
+<ul>
+<li>Fixed bug where needs did not get propagated when including modules.
+
+</li>
+</ul>
+<h2>0.6.6 / 2009-05-25</h2>
+<ul>
+<li>fix to_a bug that slipped in yesterday when I wasn&#8217;t looking
+
+</li>
+<li>attempting to assign a local variable that overlaps with an internal one
+raises error
+
+</li>
+<li>attempting to &#8216;needs&#8217; a variable that overlaps with an existing
+method raises error
+
+</li>
+</ul>
+<h2>0.6.4 / 2009-05-24</h2>
+<ul>
+<li>mixin: do &#8220;include Erector::Mixin&#8221; and now &#8220;erector {
+}&#8221; will instantiate and to_html a widget for you
+
+</li>
+<li>&#8220;erector&#8221; command-line tool improved:
+
+<ul>
+<li>if converting an HTML/ERB file under a &#8220;views&#8221; directory, uses
+&#8220;Erector::RailsWidget&#8221; as parent class
+
+</li>
+<li>no longer chokes on &#8220;if IE&#8221; directives
+
+</li>
+<li>changes &#8216;yield&#8217; in a scriptlet to use a missing
+&#8220;@content_for_layout&#8220;
+
+</li>
+<li>escapes single quotes inside text strings
+
+</li>
+</ul>
+</li>
+<li>requires treetop 1.2.5
+
+</li>
+<li>documentation overhaul, web site arguably prettier
+
+</li>
+</ul>
+<h2>0.6.3 / 2009-05-06</h2>
+<ul>
+<li>Major update to API. You <b>will</b> have to change your code. There are
+deprecation warnings/errors
+
+</li>
+</ul>
+<p>
+and there should be an upgrade guide up on the website soon.
+</p>
+<ul>
+<li>&#8216;render&#8217; renamed to &#8216;content&#8217;
+
+</li>
+<li>widget constructor only takes one parameter, an &#8216;assigns&#8217; hash
+(plus the optional default block)
+
+</li>
+<li>to render one widget from inside another, use the &#8216;widget&#8217;
+method (not &#8216;render_to&#8217;). This method
+
+</li>
+</ul>
+<p>
+accepts either a widget instance, or a widget class and an assigns hash.
+</p>
+<ul>
+<li>&#8216;needs&#8217; macro to declare the variables your widget accepts via
+the &#8216;assigns&#8217; constructor parameter
+
+</li>
+<li>Removed Widget#to_html caching, which fixed indentation issues.
+
+</li>
+<li>BUGFIX: Indentation level is now correctly propagated to nested widgets.
+
+</li>
+<li>Erector&#8217;s Rails support strategy has changed. The released version of
+Erector only supports the latest stable
+
+</li>
+</ul>
+<p>
+Rails version (currently 2.3.2). If you need support for earlier versions
+of Rails, there are separate Git branches for each one, but we will not be
+in the habit of keeping these up to date with the latest features and
+patches.
+</p>
+<ul>
+<li>Renamed the command line tool to &#8216;erector&#8217;
+
+</li>
+</ul>
+<h2>0.5.1</h2>
+<ul>
+<li>Added methods to easily render additional HTML elements (col, object, and
+about a dozen others). There are now methods for all non-deprecated
+elements from the HTML 4.0.1 spec. As before, if erector doesn&#8217;t have
+a method built-in, you can still call the element or empty_element method
+to output any tag.
+
+</li>
+<li>The method instruct!, which was a deprecated synonym for instruct, has been
+removed.
+
+</li>
+<li>Fixed bug in resolving view files for pluralized controllers
+
+</li>
+</ul>
+<h3>0.5.0 / 2008-12-13</h3>
+<ul>
+<li>install_dependencies refreshes the rails_versions directory
+
+</li>
+<li>Widget takes a string instead of an IO object to be more compatible with
+Rails.
+
+</li>
+<li>Removed Doc
+
+</li>
+<li>Widget writes directly to output string instead of to #doc
+
+</li>
+</ul>
+<h3>0.4.200 / 2008-10-11</h3>
+<ul>
+<li>Erector can now pretty-print the generated HTML to make it easier to read.
+
+</li>
+<li>Add join method to Erector::Widget.
+
+</li>
+</ul>
+<h3>0.4.191 / 2008-07-29</h3>
+<ul>
+<li>Renamed HtmlParts to Doc
+
+</li>
+<li>Widget#doc is now a HtmlParts which proxies to the passed in IO stream
+
+</li>
+<li>Better compatibility with standard Rails rendering because
+ActionController::Base#render and #render_widget now have the Widget write
+directly to _erbout.
+
+</li>
+<li>ActionView::Base objects run with Erector now receive all of the instance
+variables
+
+</li>
+<li>Erector works with erb layouts
+
+</li>
+<li>Deprecate fake_erbout
+
+</li>
+<li>Better handling for file with .html.rb extension.
+
+</li>
+<li>Fix overwriting issue when using Rails helpers
+
+</li>
+<li>New method Widget#character
+
+</li>
+<li>Widget#nbsp without arguments now outputs a single non-breaking space.
+
+</li>
+</ul>
+<h3>0.3.110 / 2008-05-29</h3>
+<ul>
+<li>support capture from rails helpers, allowing form_for/form_tag to work
+right
+
+</li>
+<li>fix bug in view_paths support (finding views was hosed)
+
+</li>
+</ul>
+<h3>0.3.105 / 2008-05-29</h3>
+<ul>
+<li>Lots of changes to support Rails integration better.
+
+</li>
+<li>Add partial support for render :partial.
+
+</li>
+<li>More Rails helpers proxies added to helpers.rb.
+
+</li>
+<li>Fake erbouts can now nest, allowing better support for Rails helpers like
+form_for (though they&#8217;re currently capped at 10 deep to head off
+infinite regress).
+
+</li>
+<li>Rails finds both .rb and .html.rb files inside the app/views directories.
+
+</li>
+<li>Use Rails view_paths instead of hardcoded RAILS_ROOT/app/views (patch by
+Rami Grossman)
+
+</li>
+<li>add &#8216;url&#8217; and &#8216;css&#8217; convenience methods to Widget
+
+</li>
+</ul>
+<h3>0.2.83 / 2008-04-23</h3>
+<ul>
+<li>&#8220;erect&#8221; supports command-line options
+
+</li>
+<li>&#8220;erect&#8221; now works backwards &#8212; you can output static html
+from a widget.rb file
+
+</li>
+<li>The web site is generated from erector classes (still pretty minimal
+though)
+
+</li>
+</ul>
+<h3>0.2.61 / 2008-04-18</h3>
+<ul>
+<li>Improvements to &#8220;erect&#8220;
+
+<ul>
+<li>works on HTML attributes (including namespaced attributes and hyphenated
+attributes)
+
+</li>
+<li>works on directories (recursively looking for .html and .html.erb and
+.rhtml files)
+
+</li>
+<li>converts DOCTYPE nodes
+
+</li>
+<li>deals with HTML entities inside text and attributes
+
+</li>
+</ul>
+</li>
+</ul>
+<h3>0.2.54 / 2008-04-15</h3>
+<ul>
+<li>New script &#8220;erect&#8221; to convert (some) .html.erb files into
+erector classes.
+
+</li>
+</ul>
+<h3>0.2.42 / 2008-04-11</h3>
+<ul>
+<li>Rails Controller now can render Erector widgets using #render
+
+</li>
+<li>Erector views can live inside Rails &#8220;app/views&#8221; directory, just
+like other views
+
+</li>
+</ul>
+<h3>0.1.25 / 2008-02-26</h3>
+<ul>
+<li>nbsp method
+
+</li>
+<li>:class => [&#8216;one&#8217;, &#8216;two&#8217;] (that is, passing an array
+rather than a string)
+
+</li>
+</ul>
+<p>
+&#8230; perhaps one or two I forgot.
+</p>
+<ul>
+<li>rename tag to element
+
+</li>
+<li>add empty_element feature
+
+</li>
+<li>for the built-in HTML tags, knows which ones should be empty and which
+shouldn&#8217;t be. For example, generates `<input />` rather than
+`<input></input>`
+
+</li>
+<li>text and attributes are quoted by default; call raw to avoid this
+
+</li>
+<li>h is rarely necessary now, but it returns a string rather than appending to
+the buffer
+
+</li>
+<li>nbsp method turns spaces into non-breaking spaces
+
+</li>
+<li>sending in an array for attribute values (typically CSS classes)
+concatenates them separated by spaces
+
+</li>
+<li>The column definition name can be a Proc that gets executed.
+
+</li>
+<li>Renamed instruct! to instruct (old one remains as a deprecated method for
+now), as it is no more side-effecting (or dangerous or whatever) than any
+other method in Widget.
+
+</li>
+</ul>
+<h3>0.1.0 / 2008-02-13</h3>
+<ul>
+<li>First public release
+
+</li>
+</ul>
+<h3>0.0.1</h3>
+<ul>
+<li>Was on pivotalrb.rubyforge.org
+
+</li>
+</ul>
+</div>
+    </div>
+    <div class="footer">
+      <center>Erector is an open source project released under the MIT license. Its initial development was sponsored by <a href="http://pivotallabs.com">Pivotal Labs</a>.<br />
+        <center><a href="http://www.pivotallabs.com"><img alt="Pivotal Labs" height="57" src="pivotal.gif" width="158" /></a></center>
+      </center>
+    </div>
+  </body>
+</html>
