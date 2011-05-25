@@ -50,4 +50,7 @@ Hyperarchy::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+
+  #todo: use better rails system
+  HTTP_HOST = "hyperarchy.com"
 end
