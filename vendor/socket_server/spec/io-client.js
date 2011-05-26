@@ -30,26 +30,15 @@ Socket.prototype.connect = function () {
   };
 
   this.conn.onmessage = function (event) {
-    var rawmsg = utils.decode(event.data)[0],
-        frame = rawmsg.substr(0, 3),
-        msg;
-    
+    var messages = utils.decode(event.data);
     if (!self.sessionId) {
-      self.sessionId = rawmsg;
+      self.sessionId = messages[0];
       self.emit('connect')
       return;
     }
 
-    switch (frame){
-      case '~h~':
-        return heartBeat();
-      case '~j~':
-        msg = JSON.parse(rawmsg.substr(3));
-        break;
-    }
-
-    if (msg !== undefined) {
-      self.emit('message', msg);
+    for (var i = 0; i < messages.length; i++) {
+      self.emit('message', messages[i]);
     }
   };
 
