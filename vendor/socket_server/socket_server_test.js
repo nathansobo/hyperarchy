@@ -1,7 +1,9 @@
 var vows = require('vows'),
     assert = require('assert'),
     io = require('socket.io'),
-    socketServer = require('./socket_server');
+    ioClient = require('./vendor/io-client').io,
+    socketServer = require('./socket_server'),
+    _ = require('./vendor/underscore');
 
 vows.describe('Socket server').addBatch({
   'after calling listen with a public and private port': {
@@ -11,13 +13,17 @@ vows.describe('Socket server').addBatch({
 
     'after connecting from a socket.io client': {
       topic: function() {
-        var socket = new io.Socket('localhost', { port: 8080 });
-        socket.connect();
-        socket.on('connect', this.callback);
+        var socketClient = new ioClient.Socket('localhost', { port: 8080 });
+        socketClient.connect();
+        socketClient.on('connect', _.bind(function() {
+          this.callback(null, socketClient);
+        }, this));
       },
 
-      "connects successfully": function() {
-        console.log("RAN");
+      "connects successfully": function(socketClient) {
+        console.log(socketClient.sessionId);
+        socketClient.disconnect();
+        socketServer.close();
       }
     }
   }
