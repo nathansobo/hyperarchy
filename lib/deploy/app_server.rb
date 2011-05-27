@@ -28,6 +28,7 @@ class AppServer
     run "RAILS_ENV=#{rails_env} bundle exec rake db:migrate"
     run "exit"
     restart_service 'unicorn'
+    restart_service 'socket_server'
     restart_service 'resque_worker'
     restart_service 'resque_scheduler'
   end
@@ -36,13 +37,17 @@ class AppServer
     update_packages
     create_hyperarchy_user
     create_log_directory
+    upload_bashrc
+    source_bashrc
     install_package 'git-core'
+    install_libcurl
     install_daemontools
     install_postgres
     install_nginx
     install_redis
     install_rvm
     install_ruby
+    install_node
     upload_deploy_keys
     clone_repository
     install_services
@@ -92,6 +97,19 @@ class AppServer
   def create_log_directory
     run "mkdir -p /log"
     run "chown hyperarchy /log"
+  end
+
+  def upload_bashrc
+    upload! 'lib/deploy/resources/.bashrc', '/root/.bashrc'
+    run 'cp /root/.bashrc /home/hyperarchy/.bashrc'
+  end
+
+  def source_bashrc
+    run! 'source /root/.bashrc'
+  end
+
+  def install_libcurl
+    install_packages 'libcurl3', 'libcurl3-dev'
   end
 
   def install_daemontools
@@ -172,8 +190,6 @@ class AppServer
     run "source /usr/local/rvm/scripts/rvm"
     run "rvm get latest"
     run "source /usr/local/rvm/scripts/rvm"
-    upload! 'lib/deploy/resources/.bashrc', '/root/.bashrc'
-    run 'cp /root/.bashrc /home/hyperarchy/.bashrc'
   end
 
   def install_ruby
@@ -184,6 +200,18 @@ class AppServer
     run "rvm install 1.9.2-p180"
     run "rvm use 1.9.2-p180 --default"
     run "gem install bundler --version 1.0.12"
+  end
+
+  def install_node
+    install_package 'libssl-dev'
+    run "cd /opt"
+    run "git clone -b v0.4.8 --depth 1 https://github.com/joyent/node.git"
+    run "cd node"
+    run "export JOBS=2" # optional, sets number of parallel commands.
+    run "./configure --prefix=/opt/node"
+    run "make"
+    run "make install"
+    run "curl http://npmjs.org/install.sh | clean=yes sh"
   end
 
   def upload_deploy_keys
@@ -208,6 +236,7 @@ class AppServer
 
   def install_services
     install_service 'unicorn'
+    install_service 'socket_server'
     install_service 'resque_worker', :QUEUE => '*', :VVERBOSE => 1
     install_service 'resque_scheduler'
   end

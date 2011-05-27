@@ -1,4 +1,3 @@
 #!/bin/bash
-source "/usr/local/rvm/scripts/rvm"
-cd /app
-exec bundle exec unicorn --env $RAILS_ENV
+cd /app/vendor/socket_server
+exec /opt/node/bin/node ./socket_server.js
