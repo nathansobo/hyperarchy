@@ -45,6 +45,15 @@ module Prequel
         end
       end
 
+      describe "#map" do
+        it "maps over the records in the relation" do
+          DB[:blogs] << { :id => 1, :title => "Blog 1" }
+          DB[:blogs] << { :id => 2, :title => "Blog 2" }
+
+          Blog.order_by(:id).map(&:id).should == [1, 2]
+        end
+      end
+
       describe "#find" do
         before do
           DB[:blogs] << { :id => 1, :title => "Blog 1" }

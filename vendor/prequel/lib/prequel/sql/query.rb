@@ -25,6 +25,12 @@ module Prequel
         end
       end
 
+      def map
+        dataset.map do |field_values|
+          yield tuple_builder.build_tuple(field_values)
+        end
+      end
+
       def each
         dataset.each do |field_values|
           yield tuple_builder.build_tuple(field_values)

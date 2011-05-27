@@ -16,5 +16,11 @@ module Prequel
         :new_value => new_value
       }
     end
+
+    def wire_representation
+      Hash[self.map do |key, values|
+        [key.to_s, values[:new_value]]
+      end]
+    end
   end
 end
