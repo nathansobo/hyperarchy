@@ -26,7 +26,7 @@ module Prequel
     DB.transaction do
       result = block.call
     end
-    Prequel.session.flush_deferred_events
+    Prequel.session.flush_deferred_events if Prequel.session.transaction_depth == 1
     result
   rescue Exception => e
     Prequel.session.clear_deferred_events if Prequel.session.transaction_depth == 1

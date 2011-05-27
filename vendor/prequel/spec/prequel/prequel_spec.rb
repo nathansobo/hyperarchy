@@ -41,6 +41,22 @@ describe Prequel do
       Prequel.transaction { 7 }.should == 7
     end
 
+    it "flushes deferred events when the top-level transaction completes" do
+      mock(Prequel.session).flush_deferred_events.once do
+        Prequel.session.transaction_depth.should == 1
+      end
+      
+      Prequel.session.transaction_depth.should == 0
+      Prequel.transaction do
+        Prequel.session.transaction_depth.should == 1
+        Prequel.transaction do
+          Prequel.session.transaction_depth.should == 2
+        end
+        Prequel.session.transaction_depth.should == 1
+      end
+      Prequel.session.transaction_depth.should == 0
+    end
+
     it "clears deferred events on the session once when the transaction is aborted, despite layers of transaction nesting" do
       dont_allow(Prequel.session).flush_deferred_events
       mock(Prequel.session).clear_deferred_events
