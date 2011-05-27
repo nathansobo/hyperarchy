@@ -492,6 +492,35 @@ module Prequel
             blog.save
           end
 
+          it "executes #after_update hook and #on_update callbacks with a changeset that includes additional changes made in the #before_update/save hooks" do
+            jump 1.minute
+
+            old_title = blog.title
+            old_user_id = blog.user_id
+            old_user_updated_at = blog.updated_at
+
+            changeset1 = Changeset.new
+            changeset1.changed(:title, old_title, "New Title")
+
+            changeset2 = Changeset.new
+            changeset2.changed(:title, old_title, "New Title")
+            changeset2.changed(:user_id, old_user_id, 99)
+            changeset2.changed(:updated_at, old_user_updated_at, Time.now)
+
+            mock(blog).before_update(changeset1) { blog.user_id = 99 }
+            mock(blog).after_update(changeset2)
+
+            events = []
+            Blog.on_update do |blog, changeset|
+              events.push([blog, changeset])
+            end
+
+            blog.title = "New Title"
+            blog.save
+
+            events.should == [[blog, changeset2]]
+          end
+
           it "executes before_save and after_save hooks" do
             mock(blog).before_save do
               Prequel.session.transaction_depth.should == 1

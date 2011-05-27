@@ -193,15 +193,16 @@ module Prequel
       return true unless dirty?
       Prequel.transaction do
         if persisted?
-          changeset = build_changeset
-          before_update(changeset)
+          initial_changeset = build_changeset
+          before_update(initial_changeset)
           before_save
           self.updated_at = Time.now if fields_by_name.has_key?(:updated_at)
           dirty_fields = dirty_field_values
+          final_changeset = build_changeset
           table.where(:id => id).update(dirty_fields) unless dirty_fields.empty?
-          after_update(changeset)
+          after_update(final_changeset)
           after_save
-          Prequel.session.handle_update_event(self, changeset)
+          Prequel.session.handle_update_event(self, final_changeset)
         else
           before_create
           before_save
