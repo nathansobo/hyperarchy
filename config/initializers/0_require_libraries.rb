@@ -9,4 +9,3 @@ module Hyperarchy
   autoload :Notifier, 'notifier'
   autoload :Emails, 'emails'
 end
-
