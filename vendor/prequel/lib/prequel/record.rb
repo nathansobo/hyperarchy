@@ -190,8 +190,9 @@ module Prequel
 
     def save
       return false unless valid?
+      return true unless dirty?
       Prequel.transaction do
-        if id
+        if persisted?
           changeset = build_changeset
           before_update(changeset)
           before_save
@@ -238,6 +239,10 @@ module Prequel
     def mark_clean
       @persisted = true
       super
+    end
+
+    def dirty?
+      unpersisted? || super
     end
 
     def persisted?

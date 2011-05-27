@@ -512,6 +512,19 @@ module Prequel
             blog.reload.title.should == old_title
           end
 
+          it "if the record is clean (has no dirty fields), returns true without executing any hooks or starting a transaction" do
+            dont_allow(blog) do |blog|
+              blog.before_save
+              blog.after_save
+              blog.before_update
+              blog.after_update
+            end
+            dont_allow(Prequel.session).transaction
+            
+            blog.should be_clean
+            blog.save.should be_true
+          end
+
           it "does not blow up if there are no dirty fields" do
             blog.save
           end
@@ -519,6 +532,7 @@ module Prequel
           it "assigns the current time to the updated_at field if it is present" do
             jump(1.minute)
 
+            blog.title = "New Title"
             blog.save
 
             blog.created_at.to_s.should == 1.minute.ago.to_s
@@ -919,6 +933,33 @@ module Prequel
         blog.should be_dirty
         blog.save
         blog.should be_clean
+      end
+
+      specify "a record that has not been saved is dirty, even if no attributes have been assigned" do
+        Blog.new.should be_dirty
+      end
+    end
+
+    describe "persisted vs. unpersisted state" do
+      before do
+        Blog.create_table
+      end
+
+      specify "a record is unpersisted before it has been saved for the first time, then persisted once it's been saved" do
+        blog = Blog.new
+        blog.should be_unpersisted
+        blog.save
+        blog.should be_persisted
+      end
+
+      specify "a record is persisted when pulled out of the database, and still persisted when modified and saved" do
+        DB[:blogs] << {:id => 1, :title => "Hi!"}
+        blog = Blog.find(1)
+        blog.should be_persisted
+        blog.title = "HO!"
+        blog.should be_persisted
+        blog.save
+        blog.should be_persisted
       end
     end
   end
