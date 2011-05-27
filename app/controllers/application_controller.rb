@@ -75,4 +75,8 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+
+  def post(url, options={})
+    Typhoeus::Request.post(url, options)
+  end
 end

@@ -11,7 +11,7 @@ Hyperarchy::Application.routes.draw do
   put '/sandbox/:relation/:id' => 'sandbox#update'
   delete '/sandbox/:relation/:id' => 'sandbox#destroy'
 
-  post '/channel_subscriptions/:type/:id' => 'channel_subscriptions#create'
+  post '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#create'
 
   resources :users
   resources :memberships do

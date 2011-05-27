@@ -80,6 +80,10 @@ class Organization < Prequel::Record
     end
   end
 
+  def subscribe_url
+    "http://#{SOCKET_SERVER_HOST}/channel_subscriptions/organizations/#{id}"
+  end
+
   def public?
     privacy == "public"
   end
