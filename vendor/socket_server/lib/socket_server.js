@@ -1,12 +1,16 @@
-var http = require('http'),
+var https = require('https'),
     io = require('socket.io'),
+    fs = require('fs'),
     express = require('express'),
     _ = require('./underscore.js');
 
 var private = express.createServer();
 private.use(express.bodyParser());
 
-var public = http.createServer();
+var public = https.createServer({
+  key: fs.readFileSync('/etc/ssl/private/hyperarchy.key'),
+  cert: fs.readFileSync('/etc/ssl/certs/hyperarchy.crt')
+});
 var socket = io.listen(public);
 
 exports.listen = function(publicPort, privatePort, callback) {

@@ -7,10 +7,11 @@ module Views
 
       def below_body_content
         application_javascript_tags
-        script :type => "text/javascript", :language => "javascript", :src => "http://#{request.host}:8081/socket.io/socket.io.js"
+        script :type => "text/javascript", :language => "javascript", :src => "https://#{request.host}:8081/socket.io/socket.io.js"
 
         javascript %[
         $(function() {
+          window.WEB_SOCKET_SWF_LOCATION = 'https://#{request.host}:8081/socket.io/lib/vendor/web-socket-js/WebSocketMain.swf';
           Election.SCORE_EXTRA_VOTES = #{Election::SCORE_EXTRA_VOTES};
           Election.SCORE_EXTRA_HOURS = #{Election::SCORE_EXTRA_HOURS};
           Election.SCORE_GRAVITY = #{Election::SCORE_GRAVITY};

@@ -11,8 +11,6 @@ _.constructor("Controllers.Application", {
       newElection: Views.NewElection.toView()
     };
 
-    window.WEB_SOCKET_SWF_LOCATION = 'http://localhost:8080/socket.io/lib/vendor/web-socket-js/WebSocketMain.swf';
-
     this.userSwitchNode = new Monarch.SubscriptionNode();
     this.connectSocketClient();
   },
@@ -29,7 +27,7 @@ _.constructor("Controllers.Application", {
   connectSocketClient: function() {
     this.socketConnectionFuture = new Monarch.Http.AjaxFuture();
     var socketServerHost = window.location.hostname;
-    var socket = new io.Socket(socketServerHost, {port: 8081});
+    var socket = new io.Socket(socketServerHost, {secure: true, port: 8081});
     socket.on('connect', this.bind(function() {
       this.socketConnectionFuture.triggerSuccess(socket.transport.sessionid);
     }));
