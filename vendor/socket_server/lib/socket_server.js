@@ -55,7 +55,6 @@ private.post('/channel_events/:type/:id', function(req, res) {
       message = req.param('message');
 
   _.each(getChannel(type, id), function(client) {
-    console.log("sending message", message, "to", client.sessionId);
     client.send(message);
   });
   res.send(200);
@@ -68,4 +67,3 @@ socket.on('connection', function(client) {
     });
   });
 });
-
