@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe ChannelSubscriptionsController do
+
+  let(:organization) { Organization.make }
+
   describe "#create" do
-
-    let(:organization) { Organization.make }
-
     context "when the user is a member of the organization being subscribed to" do
       it "posts a channel subscription to the websockets server with the given client session id" do
         organization.update!(:privacy => 'private')
@@ -40,6 +40,13 @@ describe ChannelSubscriptionsController do
           response.should be_success
         end
       end
+    end
+  end
+
+  describe "#destroy" do
+    it "deletes a channel subscription on the socket server" do
+      mock(controller).delete(organization.subscribe_url, :params => {:session_id => "fake_session_id"})
+      delete :destroy, :id => organization.id, :session_id => "fake_session_id"
     end
   end
 end

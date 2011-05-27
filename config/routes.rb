@@ -12,6 +12,7 @@ Hyperarchy::Application.routes.draw do
   delete '/sandbox/:relation/:id' => 'sandbox#destroy'
 
   post '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#create'
+  delete '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#destroy'
 
   resources :users
   resources :memberships do
