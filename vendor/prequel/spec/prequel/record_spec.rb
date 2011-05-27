@@ -464,15 +464,22 @@ module Prequel
           it "executes before_update and after_update hooks with a changeset" do
             old_title = blog.title
             old_user_id = blog.user_id
+            old_updated_at = blog.updated_at
+            jump 1.minute
 
-            expected_changeset = Changeset.new
-            expected_changeset.changed(:title, old_title, "New Title")
-            expected_changeset.changed(:user_id, old_user_id, 99)
+            initial_changeset = Changeset.new(blog)
+            initial_changeset.changed(:title, old_title, "New Title")
+            initial_changeset.changed(:user_id, old_user_id, 99)
 
-            mock(blog).before_update(expected_changeset) do
+            final_changeset = Changeset.new(blog)
+            final_changeset.changed(:title, old_title, "New Title")
+            final_changeset.changed(:user_id, old_user_id, 99)
+            final_changeset.changed(:updated_at, old_updated_at, Time.now)
+
+            mock(blog).before_update(initial_changeset) do
               Prequel.session.transaction_depth.should == 1
             end
-            mock(blog).after_update(expected_changeset) do
+            mock(blog).after_update(final_changeset) do
               Prequel.session.transaction_depth.should == 1
             end
 
@@ -480,12 +487,12 @@ module Prequel
             blog.user_id = 99
             blog.save
 
-            expected_changeset = Changeset.new
-            expected_changeset.changed(:title, "New Title", "Newer Title")
-            expected_changeset.changed(:user_id, 99, 100)
+            changeset = Changeset.new(blog)
+            changeset.changed(:title, "New Title", "Newer Title")
+            changeset.changed(:user_id, 99, 100)
 
-            mock(blog).before_update(expected_changeset)
-            mock(blog).after_update(expected_changeset)
+            mock(blog).before_update(changeset)
+            mock(blog).after_update(changeset)
 
             blog.title = "Newer Title"
             blog.user_id = 100
@@ -499,10 +506,10 @@ module Prequel
             old_user_id = blog.user_id
             old_user_updated_at = blog.updated_at
 
-            changeset1 = Changeset.new
+            changeset1 = Changeset.new(blog)
             changeset1.changed(:title, old_title, "New Title")
 
-            changeset2 = Changeset.new
+            changeset2 = Changeset.new(blog)
             changeset2.changed(:title, old_title, "New Title")
             changeset2.changed(:user_id, old_user_id, 99)
             changeset2.changed(:updated_at, old_user_updated_at, Time.now)

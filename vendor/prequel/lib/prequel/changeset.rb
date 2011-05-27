@@ -1,6 +1,11 @@
 module Prequel
   class Changeset < ::Hash
     alias_method :changed?, :has_key?
+    attr_reader :record
+
+    def initialize(record)
+      @record = record
+    end
 
     def old(field_name)
       self[field_name][:old_value]
@@ -19,7 +24,9 @@ module Prequel
 
     def wire_representation
       Hash[self.map do |key, values|
-        [key.to_s, values[:new_value]]
+        column = record.get_column(key)
+        new_value_wire_representation = column.convert_value_for_wire(values[:new_value])
+        [key.to_s, new_value_wire_representation]
       end]
     end
   end

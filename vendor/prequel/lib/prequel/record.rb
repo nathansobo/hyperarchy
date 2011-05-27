@@ -134,6 +134,7 @@ module Prequel
 
     include Comparable
     delegate :synthetic_columns, :to => 'self.class'
+    delegate :get_column, :to => :table
 
     def initialize(values={})
       super(default_field_values.merge(values))
@@ -339,7 +340,7 @@ module Prequel
     end
 
     def build_changeset
-      Changeset.new.tap do |changeset|
+      Changeset.new(self).tap do |changeset|
         fields.each do |field|
           field.update_changeset(changeset)
         end
