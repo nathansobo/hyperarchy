@@ -120,15 +120,15 @@ module Prequel
       end
 
       def on_create_node
-        @on_create_node ||= SubscriptionNode.new
+        Prequel.get_subscription_node(self, :on_create)
       end
 
       def on_update_node
-        @on_update_node ||= SubscriptionNode.new
+        Prequel.get_subscription_node(self, :on_update)
       end
 
       def on_destroy_node
-        @on_destroy_node ||= SubscriptionNode.new
+        Prequel.get_subscription_node(self, :on_destroy)
       end
     end
 

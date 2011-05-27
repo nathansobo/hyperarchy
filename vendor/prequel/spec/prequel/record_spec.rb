@@ -285,6 +285,38 @@ module Prequel
             destroy_events.should == [blog]
           end
         end
+
+        context "when the class is reloaded" do
+          it "continues to trigger events from subscriptions registered prior to the reload" do
+            blog1 = Blog.create!(:title => "New Blog")
+            blog1.update!(:title => "New Blog Prime")
+            blog1.destroy
+
+            create_events.should == [blog1]
+            update_events.should == [[blog1, {:title => {:old_value => "New Blog", :new_value => "New Blog Prime"}}]]
+            destroy_events.should == [blog1]
+
+
+            create_events.clear
+            update_events.clear
+            destroy_events.clear
+
+            Object.send(:remove_const, :Blog)
+
+            class ::Blog < Record
+              column :id, :integer
+              column :title, :string
+            end
+
+            blog2 = Blog.create!(:title => "Another Blog")
+            blog2.update!(:title => "Another Blog Prime")
+            blog2.destroy
+
+            create_events.should == [blog2]
+            update_events.should == [[blog2, {:title => {:old_value => "Another Blog", :new_value => "Another Blog Prime"}}]]
+            destroy_events.should == [blog2]
+          end
+        end
       end
     end
 

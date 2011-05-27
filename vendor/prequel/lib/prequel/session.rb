@@ -29,6 +29,7 @@ module Prequel
       destroy_events = deferred_destroy_events
       clear_deferred_events
 
+
       create_events.each do |klass, events|
         events.each do |event|
           klass.on_create_node.publish(event)

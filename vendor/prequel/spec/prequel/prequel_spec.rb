@@ -134,4 +134,27 @@ describe Prequel do
       end
     end
   end
+
+  describe ".get_subscription_node(klass, name)" do
+    it "lazily constructs a subscription node for each class-name, name pairing" do
+      class Foo
+      end
+
+      class Bar
+      end
+
+      foo_node = Prequel.get_subscription_node(Foo, :on_create)
+      Prequel.get_subscription_node(Foo, :on_create).should equal(foo_node)
+      Prequel.get_subscription_node(Foo, :on_destroy).should_not equal(foo_node)
+
+      bar_node = Prequel.get_subscription_node(Bar, :on_create)
+      bar_node.should_not == foo_node
+
+      Object.send(:remove_const, :Foo)
+      class Foo
+      end
+      
+      Prequel.get_subscription_node(Foo, :on_create).should equal(foo_node)
+    end
+  end
 end

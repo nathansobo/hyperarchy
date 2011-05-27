@@ -57,6 +57,14 @@ module Prequel
     record_classes.each(&:clear)
   end
 
+  def get_subscription_node(klass, name)
+    subscription_nodes[klass.name][name]
+  end
+
+  def subscription_nodes
+    @subscription_nodes ||= Hash.new {|h,k| h[k] = Hash.new {|h,k| h[k] = SubscriptionNode.new } }
+  end
+
   require 'prequel/core_extensions'
   autoload :Changeset
   autoload :CompositeTuple
