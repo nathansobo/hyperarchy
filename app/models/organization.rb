@@ -84,6 +84,10 @@ class Organization < Prequel::Record
     "http://#{SOCKET_SERVER_HOST}/channel_subscriptions/organizations/#{id}"
   end
 
+  def event_url
+    "http://#{SOCKET_SERVER_HOST}/channel_events/organizations/#{id}"
+  end
+
   def public?
     privacy == "public"
   end

@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include GuidGeneration
+  include HttpClient
 
   layout false
   protect_from_forgery
@@ -74,13 +75,5 @@ class ApplicationController < ActionController::Base
         r.add_to_client_dataset(dataset)
       end
     end
-  end
-
-  def post(url, options={})
-    Typhoeus::Request.post(url, options)
-  end
-
-  def delete(url, options={})
-    Typhoeus::Request.delete(url, options)
   end
 end
