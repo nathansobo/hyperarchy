@@ -174,11 +174,13 @@ module Prequel
     end
 
     def destroy
-      before_destroy
-      DB[table.name].filter(:id => id).delete
-      Prequel.session[table.name].delete(id)
-      after_destroy
-      Prequel.session.handle_destroy_event(self)
+      Prequel.transaction do
+        before_destroy
+        DB[table.name].filter(:id => id).delete
+        Prequel.session[table.name].delete(id)
+        after_destroy
+        Prequel.session.handle_destroy_event(self)
+      end
     end
 
     def secure_destroy
@@ -188,26 +190,28 @@ module Prequel
 
     def save
       return false unless valid?
-      if id
-        changeset = build_changeset
-        before_update(changeset)
-        before_save
-        self.updated_at = Time.now if fields_by_name.has_key?(:updated_at)
-        dirty_fields = dirty_field_values
-        table.where(:id => id).update(dirty_fields) unless dirty_fields.empty?
-        after_update(changeset)
-        after_save
-        Prequel.session.handle_update_event(self, changeset)
-      else
-        before_create
-        before_save
-        self.created_at = Time.now if fields_by_name.has_key?(:created_at)
-        self.updated_at = Time.now if fields_by_name.has_key?(:updated_at)
-        self.id = (DB[table.name] << field_values_without_id)
-        Prequel.session[table.name][id] = self
-        after_create
-        after_save
-        Prequel.session.handle_create_event(self)
+      Prequel.transaction do
+        if id
+          changeset = build_changeset
+          before_update(changeset)
+          before_save
+          self.updated_at = Time.now if fields_by_name.has_key?(:updated_at)
+          dirty_fields = dirty_field_values
+          table.where(:id => id).update(dirty_fields) unless dirty_fields.empty?
+          after_update(changeset)
+          after_save
+          Prequel.session.handle_update_event(self, changeset)
+        else
+          before_create
+          before_save
+          self.created_at = Time.now if fields_by_name.has_key?(:created_at)
+          self.updated_at = Time.now if fields_by_name.has_key?(:updated_at)
+          self.id = (DB[table.name] << field_values_without_id)
+          Prequel.session[table.name][id] = self
+          after_create
+          after_save
+          Prequel.session.handle_create_event(self)
+        end
       end
       mark_clean
       true

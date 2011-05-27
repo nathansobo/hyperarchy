@@ -331,7 +331,6 @@ module Prequel
       end
     end
 
-
     describe "#reload(columns = nil)" do
       attr_reader :blog
 
@@ -403,14 +402,26 @@ module Prequel
           end
 
           it "executes before_create and after_create hooks at the appropriate moments" do
-            mock(blog).before_create { blog.id.should be_nil }
-            mock(blog).after_create { blog.id.should_not be_nil }
+            mock(blog).before_create do
+              Prequel.session.transaction_depth.should == 1
+              blog.id.should be_nil
+            end
+            mock(blog).after_create do
+              Prequel.session.transaction_depth.should == 1
+              blog.id.should_not be_nil
+            end
             blog.save
           end
 
           it "executes before_save and after_save hooks at the appropriate moments" do
-            mock(blog).before_save { blog.id.should be_nil }
-            mock(blog).after_save { blog.id.should_not be_nil }
+            mock(blog).before_save do
+              Prequel.session.transaction_depth.should == 1
+              blog.id.should be_nil
+            end
+            mock(blog).after_save do
+              Prequel.session.transaction_depth.should == 1
+              blog.id.should_not be_nil
+            end
             blog.save
           end
 
@@ -458,8 +469,12 @@ module Prequel
             expected_changeset.changed(:title, old_title, "New Title")
             expected_changeset.changed(:user_id, old_user_id, 99)
 
-            mock(blog).before_update(expected_changeset)
-            mock(blog).after_update(expected_changeset)
+            mock(blog).before_update(expected_changeset) do
+              Prequel.session.transaction_depth.should == 1
+            end
+            mock(blog).after_update(expected_changeset) do
+              Prequel.session.transaction_depth.should == 1
+            end
 
             blog.title = "New Title"
             blog.user_id = 99
@@ -478,8 +493,12 @@ module Prequel
           end
 
           it "executes before_save and after_save hooks" do
-            mock(blog).before_save
-            mock(blog).after_save
+            mock(blog).before_save do
+              Prequel.session.transaction_depth.should == 1
+            end
+            mock(blog).after_save do
+              Prequel.session.transaction_depth.should == 1
+            end
 
             blog.title = "New Title"
             blog.save
@@ -782,8 +801,14 @@ module Prequel
         end
 
         it "executes before_destroy and after_destroy destroy hooks at the appropriate moment" do
-          mock(blog).before_destroy { Blog.find(blog.id).should be }
-          mock(blog).after_destroy { Blog.find(blog.id).should be_nil }
+          mock(blog).before_destroy do
+            Prequel.session.transaction_depth.should == 1
+            Blog.find(blog.id).should be
+          end
+          mock(blog).after_destroy do
+            Prequel.session.transaction_depth.should == 1
+            Blog.find(blog.id).should be_nil
+          end
 
           blog.destroy
         end
