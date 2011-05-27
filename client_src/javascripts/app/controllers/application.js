@@ -29,7 +29,7 @@ _.constructor("Controllers.Application", {
   connectSocketClient: function() {
     this.socketConnectionFuture = new Monarch.Http.AjaxFuture();
     var socketServerHost = window.location.hostname;
-    var socket = new io.Socket(socketServerHost, {port: 8080});
+    var socket = new io.Socket(socketServerHost, {port: 8081});
     socket.on('connect', this.bind(function() {
       this.socketConnectionFuture.triggerSuccess(socket.transport.sessionid);
     }));
