@@ -10,12 +10,6 @@ _.constructor("Views.DisconnectDialog", View.Template, {
   }},
 
   viewProperties: {
-    initialize: function() {
-//      Server.realTimeClient.onDisconnect(function() {
-//        this.show();
-//      }, this);
-    },
-
     beforeShow: function() {
       var background = $("#darkenBackground");
       background.one('click', this.hitch('refresh'));

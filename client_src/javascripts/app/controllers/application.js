@@ -11,25 +11,10 @@ _.constructor("Controllers.Application", {
       newElection: Views.NewElection.toView()
     };
 
-
     window.WEB_SOCKET_SWF_LOCATION = 'http://localhost:8080/socket.io/lib/vendor/web-socket-js/WebSocketMain.swf';
 
     this.userSwitchNode = new Monarch.SubscriptionNode();
-    this.socket = new io.Socket("localhost", {rememberTransport: false, port: 8080 });
-    this.socket.connect();
-
-    var socket = this.socket;
-    this.socket.on('connect', function() {
-      console.debug("connected!! ");
-      console.debug(socket.transport.sessionid);
-
-    });
-    this.socket.on('message', function(m) {
-      console.debug("got message", m);
-    });
-    this.socket.on('disconnect', function() {
-      console.debug('disconnected!!');
-    });
+    this.connectSocketClient();
   },
 
   initializeNavigation: function() {
@@ -39,6 +24,23 @@ _.constructor("Controllers.Application", {
     this.currentUserIdEstablished(this.currentUserId);
     $(window).trigger('hashchange');
     Election.updateScoresPeriodically();
+  },
+
+  connectSocketClient: function() {
+    this.socketConnectionFuture = new Monarch.Http.AjaxFuture();
+    var socketServerHost = window.location.hostname;
+    var socket = new io.Socket(socketServerHost, {port: 8080});
+    socket.on('connect', this.bind(function() {
+      this.socketConnectionFuture.triggerSuccess(socket.transport.sessionid);
+    }));
+    socket.on('message', function(m) {
+      Repository.mutate([JSON.parse(m)]);
+    });
+    socket.on('disconnect', this.bind(function() {
+      this.layout.disconnectDialog.show();
+    }));
+
+    socket.connect();
   },
 
   currentUserIdEstablished: function(currentUserId) {
@@ -75,12 +77,9 @@ _.constructor("Controllers.Application", {
 
     afterChange: function(organizationId, old) {
       if (this.previousOrganizationSubscription) this.previousOrganizationSubscription.destroy();
-
-      this.delay(function() {
-        console.log('posting', this.socket.transport.sessionid);
-        $.post('/channel_subscriptions/organizations/' + organizationId, { session_id: this.socket.transport.sessionid });
-      }, 4000);
-
+      this.socketConnectionFuture.onSuccess(function(sessionId) {
+        $.post('/channel_subscriptions/organizations/' + organizationId, { session_id: sessionId });
+      });
       this.layout.organization(this.currentOrganization());
     }
   },
