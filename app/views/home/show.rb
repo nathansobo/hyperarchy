@@ -10,7 +10,7 @@ module Views
 
         javascript %[
         $(function() {
-          window.WEB_SOCKET_SWF_LOCATION = 'https://#{request.host}:8081/socket.io/lib/vendor/web-socket-js/WebSocketMain.swf';
+          window.WEB_SOCKET_SWF_LOCATION = '/WebSocketMain.swf';
           Election.SCORE_EXTRA_VOTES = #{Election::SCORE_EXTRA_VOTES};
           Election.SCORE_EXTRA_HOURS = #{Election::SCORE_EXTRA_HOURS};
           Election.SCORE_GRAVITY = #{Election::SCORE_GRAVITY};
