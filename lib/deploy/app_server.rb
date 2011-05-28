@@ -89,7 +89,7 @@ class AppServer
   def create_hyperarchy_user
     run "mkdir -p /home/hyperarchy"
     unless run?('id hyperarchy')
-      run "useradd hyperarchy -d /home/hyperarchy -s /bin/bash"
+      run "useradd -G ssl-cert -d /home/hyperarchy -s /bin/bash hyperarchy"
     end
     run "cp -r /root/.ssh /home/hyperarchy/.ssh"
   end
@@ -121,9 +121,10 @@ class AppServer
     run "cd admin/daemontools-0.76"
     run "patch -p1 < /usr/local/djb/patches/daemontools-0.76.errno.patch"
     run "patch -p1 < /usr/local/djb/patches/daemontools-0.76.sigq12.patch"
+    run "patch -p3 < /usr/local/djb/patches/daemontools-0.76-setuidgid-initgroups.patch"
     run "package/install"
     upload! 'lib/deploy/resources/daemontools/svscanboot.conf', '/etc/init/svscanboot.conf'
-    run "start svscanboot"
+    run "start svscanboot" unless run? "status svscanboot"
   end
 
   def make_daemontools_dirs
@@ -131,17 +132,18 @@ class AppServer
     run "mkdir -p /usr/local/djb/patches"
     run "mkdir -p /usr/local/package"
     run "chmod 1755 /usr/local/package"
-    run "ln -s /usr/local/package /package"
-    run "mkdir /service"
-    run "mkdir /var/svc.d"
+    run! "ln -s /usr/local/package /package"
+    run "mkdir -p /service"
+    run "mkdir -p /var/svc.d"
   end
 
   def download_daemontools
     run "cd /usr/local/djb/dist"
     run "wget http://cr.yp.to/daemontools/daemontools-0.76.tar.gz"
     run "cd /usr/local/djb/patches"
-    run "wget http://www.qmail.org/moni.csi.hu/pub/glibc-2.3.1/daemontools-0.76.errno.patch"
-    run "wget http://thedjbway.b0llix.net/patches/daemontools-0.76.sigq12.patch"
+    upload! 'lib/deploy/resources/daemontools/daemontools-0.76.errno.patch', '/usr/local/djb/patches/daemontools-0.76.errno.patch'
+    upload! 'lib/deploy/resources/daemontools/daemontools-0.76.sigq12.patch', '/usr/local/djb/patches/daemontools-0.76.sigq12.patch'
+    upload! 'lib/deploy/resources/daemontools/daemontools-0.76-setuidgid-initgroups.patch', '/usr/local/djb/patches/daemontools-0.76-setuidgid-initgroups.patch'
   end
 
   def install_postgres
@@ -169,6 +171,8 @@ class AppServer
     upload! 'lib/deploy/resources/nginx/nginx_upstart.conf', '/etc/init/nginx.conf'
     upload! 'lib/deploy/resources/nginx/hyperarchy.crt', '/etc/ssl/certs/hyperarchy.crt'
     upload! 'lib/deploy/resources/nginx/hyperarchy.key', '/etc/ssl/private/hyperarchy.key'
+    run "chmod 640 /etc/ssl/private/hyperarchy.key"
+    run "chown root:ssl-cert /etc/ssl/private/hyperarchy.key"
     run "start nginx"
   end
 

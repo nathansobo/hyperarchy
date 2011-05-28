@@ -1,0 +1,18 @@
+This patch enables programs launched by setuidgid to access their supplementary groups.
+
+Public domain.
+
+Chase Venters <chase.venters@chaseventers.org>
+
+diff -Nru a/admin/daemontools-0.76/src/setuidgid.c b/admin/daemontools-0.76/src/setuidgid.c
+--- a/admin/daemontools-0.76/src/setuidgid.c	2001-07-12 11:49:49.000000000 -0500
++++ b/admin/daemontools-0.76/src/setuidgid.c	2010-06-22 16:06:05.000000000 -0500
+@@ -21,6 +21,8 @@
+ 
+   if (prot_gid(pw->pw_gid) == -1)
+     strerr_die2sys(111,FATAL,"unable to setgid: ");
++  if (initgroups(pw->pw_name, pw->pw_gid))
++    strerr_die2sys(111,FATAL,"unable to initgroup: ");
+   if (prot_uid(pw->pw_uid) == -1)
+     strerr_die2sys(111,FATAL,"unable to setuid: ");
+ 

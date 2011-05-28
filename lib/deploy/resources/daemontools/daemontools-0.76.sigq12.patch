@@ -1,0 +1,64 @@
+# daemontools-0.76.sigq12.patch
+#
+# This patch adds the following signal capabilities to the
+# daemontools-0.76 "svc"/"supervise" utilities:
+#
+#  option  signal
+#  ------  -------
+#  svc -q  SIGQUIT
+#  svc -1  SIGUSR1
+#  svc -2  SIGUSR2
+#
+# Apply the patch:
+#
+#   # cd /package/admin/daemontools-0.76
+#   # patch -p1 < /path/to/this/patch
+#
+# Then (re)compile/(re)install daemontools:
+#
+#   # package/install
+#
+# Notes:
+#
+# The SIGUSR1/SIGUSR2 patch originally by Scott Gifford:
+# http://www.suspectclass.com/~sgifford/daemontools/daemontools-0.76-usr12.README
+#
+# We added SIGQUIT for the mathopd web server:
+# http://thedjbway.org/services/mathopd.html
+#
+# wcm, 2004.03.17 - 2004.03.17
+# ===
+diff -ru daemontools-0.76/src/supervise.c daemontools-0.76.sigq12/src/supervise.c
+--- daemontools-0.76/src/supervise.c	Thu Jul 12 19:49:49 2001
++++ daemontools-0.76.sigq12/src/supervise.c	Wed Mar 17 10:30:25 2004
+@@ -187,6 +187,15 @@
+ 	case 'i':
+ 	  if (pid) kill(pid,SIGINT);
+ 	  break;
++	case 'q':
++	  if (pid) kill(pid,SIGQUIT);
++	  break;
++	case '1':
++	  if (pid) kill(pid,SIGUSR1);
++	  break;
++	case '2':
++	  if (pid) kill(pid,SIGUSR2);
++	  break;
+ 	case 'p':
+ 	  flagpaused = 1;
+ 	  announce();
+diff -ru daemontools-0.76/src/svc.c daemontools-0.76.sigq12/src/svc.c
+--- daemontools-0.76/src/svc.c	Thu Jul 12 19:49:49 2001
++++ daemontools-0.76.sigq12/src/svc.c	Wed Mar 17 10:31:47 2004
+@@ -27,9 +27,9 @@
+ 
+   sig_ignore(sig_pipe);
+ 
+-  while ((opt = getopt(argc,argv,"udopchaitkx")) != opteof)
++  while ((opt = getopt(argc,argv,"udopchaitkxq12")) != opteof)
+     if (opt == '?')
+-      strerr_die1x(100,"svc options: u up, d down, o once, x exit, p pause, c continue, h hup, a alarm, i interrupt, t term, k kill");
++      strerr_die1x(100,"svc options: u up, d down, o once, x exit, p pause, c continue, h hup, a alarm, i interrupt, t term, k kill, q quit, 1 SIGUSR1, 2 SIGUSR2");
+     else
+       if (datalen < sizeof data)
+         if (byte_chr(data,datalen,opt) == datalen)
