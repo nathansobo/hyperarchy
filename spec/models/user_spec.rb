@@ -172,7 +172,7 @@ module Models
         describe "#memberships_to_notify(period)" do
           it "returns those memberships with at least one notification preference set to the given period, with social memberships first" do
             social_membership = user.memberships.first
-            social_membership.update(:all_notifications => 'hourly')
+            social_membership.update(:notify_of_new_candidates => 'hourly')
 
             m1 = make_membership('hourly', 'never', 'never', 'never')
             m2 = make_membership('never', 'hourly', 'never', 'never')
