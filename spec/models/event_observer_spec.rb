@@ -11,12 +11,14 @@ describe EventObserver do
     it "causes all events on the given model classes to be sent to the appropriate channels on the socket server" do
       EventObserver.observe(User, Organization, Election)
 
+      freeze_time
       org1 = Organization.make
       org2 = Organization.make
+      jump 1.minute
 
       expect_event(org1)
       org1.update(:name => 'New Org Name', :description => 'New Org Description')
-      events.shift.should == ["update", "organizations", org1.id, {"name"=>"New Org Name", "description"=>"New Org Description"}]
+      events.shift.should == ["update", "organizations", org1.id, {"name"=>"New Org Name", "description"=>"New Org Description", 'updated_at' => Time.now.to_millis}]
 
       expect_event(org1)
       election = org1.elections.make
