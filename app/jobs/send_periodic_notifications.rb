@@ -1,5 +1,5 @@
 module Jobs
-  class SendNotifications < Resque::JobWithStatus
+  class SendPeriodicNotifications < Resque::JobWithStatus
     @queue = 'send_notifications'
 
     def perform

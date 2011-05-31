@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 module Jobs
-  describe SendNotifications do
-    let(:job) { SendNotifications.new('job_id', 'period' => period) }
+  describe SendPeriodicNotifications do
+    let(:job) { SendPeriodicNotifications.new('job_id', 'period' => period) }
     let(:period) { 'hourly' }
 
     describe "#perform" do

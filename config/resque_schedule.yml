@@ -1,26 +1,26 @@
 every_5_mins_notifications:
   cron: "*/1 * * * *"
-  custom_job_class: Jobs::SendNotifications
+  custom_job_class: Jobs::SendPeriodicNotifications
   args:
     - period: "every5"
   description: "Sends every-5-minute email notifications"
 
 hourly_notifications:
   cron: "0 0 * * * *"
-  custom_job_class: Jobs::SendNotifications
+  custom_job_class: Jobs::SendPeriodicNotifications
   args: "hourly"
   description: "Sends hourly email notifications"
 
 # 5:30 am PST
 daily_notifications:
   cron: "0 30 5 * * * America/Los_Angeles"
-  custom_job_class: Jobs::SendNotifications
+  custom_job_class: Jobs::SendPeriodicNotifications
   args: "daily"
   description: "Sends daily email notifications"
 
 # 5:30 am on wednesday PST
 weekly_notifications:
   cron: "0 30 5 * * 3 America/Los_Angeles"
-  custom_job_class: Jobs::SendNotifications
+  custom_job_class: Jobs::SendPeriodicNotifications
   args: "weekly"
   description: "Sends weekly email notifications"
