@@ -80,4 +80,5 @@ module Prequel
   autoload :Sql
   autoload :SyntheticField
   autoload :Tuple
+  autoload :Validations
 end

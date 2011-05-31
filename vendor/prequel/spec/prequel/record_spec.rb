@@ -131,6 +131,44 @@ module Prequel
         end
       end
 
+      describe ".secure_new(field_values)" do
+        before do
+          class ::Blog < Record
+            column :subtitle, :string
+            column :user_id, :integer
+
+            def create_whitelist
+              [:subtitle, :title, :user_id]
+            end
+
+            def create_blacklist
+              [:user_id]
+            end
+          end
+
+          Blog.create_table
+        end
+
+        it "only allows attributes that are on the create whitelist and not on the create blacklist to be assigned" do
+          blog = Blog.secure_new(:title => "The Chefanies", :subtitle => "Exploring Deliciousness", :user_id => 4)
+          blog.should_not be_persisted
+
+          blog.title.should == "The Chefanies"
+          blog.subtitle.should == "Exploring Deliciousness"
+          blog.user_id.should be_nil
+        end
+
+        it "if can_create? returns false, and does not create the record and returns false" do
+          class ::Blog
+            def can_create?
+              false
+            end
+          end
+
+          Blog.secure_new(:title => "Hola!").should be_false
+        end
+      end
+
       describe ".create and .create!" do
         before do
           Blog.create_table
@@ -655,6 +693,44 @@ module Prequel
         end
 
         blog.should_not be_valid
+      end
+    end
+
+    describe "standard validations" do
+      describe ".validates_uniqueness_of" do
+        it "ensures that the specified field is unique" do
+          Blog.create_table
+          Blog.validates_uniqueness_of :title, :message => "Title is duplicated!"
+          blog = Blog.create!(:title => "foo")
+          blog.should be_valid
+
+          blog2 = Blog.new(:title => "foo")
+          blog2.should_not be_valid
+          blog2.errors.should == { :title => ["Title is duplicated!"] }
+          Blog.new(:title => "bar").should be_valid
+        end
+
+        it "raises an exception if the column doesn't exist" do
+          expect do
+            Blog.validates_uniqueness_of :foo
+          end.to raise_error
+        end
+      end
+
+      describe ".validates_presence_of" do
+        it "ensures the specified field is present" do
+          Blog.validates_presence_of :title
+
+          Blog.new(:title => "").should_not be_valid
+          Blog.new.should_not be_valid
+          Blog.new(:title => "foo").should be_valid
+        end
+
+        it "raises an exception if the column doesn't exist" do
+          expect do
+            Blog.validates_presence_of :foo
+          end.to raise_error
+        end
       end
     end
 

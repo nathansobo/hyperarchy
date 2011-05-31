@@ -1,6 +1,7 @@
 module Prequel
   class Record < Tuple
     class << self
+      include Validations
       delegate :all, :update, :dataset, :count, :[], :to_update_sql, :to_sql, :get_column, :first, :empty?, :find,
                :clear, :where, :where_any, :join, :join_through, :left_join, :project, :group_by, :order_by, :limit,
                :offset, :tables, :synthetic_columns, :wire_representation, :each, :each_with_index, :map,
@@ -142,7 +143,8 @@ module Prequel
 
     def secure_initialize(values={})
       return false unless can_create?
-      initialize(values.slice(*create_whitelist - create_blacklist))
+      permitted_field_names = create_whitelist - create_blacklist
+      initialize(values.slice(*permitted_field_names))
       self
     end
 
