@@ -15,6 +15,7 @@ class Organization < Prequel::Record
   has_many :memberships
 
   attr_accessor :suppress_membership_creation
+  validates_presence_of :name
 
   def self.social
     find(:social => true)

@@ -8,8 +8,12 @@ module ControllerSpecMethods
     session[:current_user_id] = nil
   end
 
+  def current_user_id
+    session[:current_user_id]
+  end
+
   def current_user
-    session[:current_user_id] ? User.find(session[:current_user_id]) : nil
+    current_user_id ? User.find(session[:current_user_id]) : nil
   end
 
   def response_json

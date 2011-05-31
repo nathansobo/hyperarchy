@@ -61,7 +61,7 @@ describe UsersController do
           current_user.memberships.find(:organization => Organization.social).role.should == "member"
           current_user.memberships.find(:organization => new_org).role.should == "owner"
 
-          response_json["data"].should == { "current_user_id" => current_user.id }
+          response_json["data"].should == { "current_user_id" => current_user.id, "new_organization_id" => new_org.id }
           response_json["records"].tap do |records|
             records["organizations"][Organization.social.to_param].should == Organization.social.wire_representation
             records["organizations"][new_org.to_param].should == new_org.wire_representation
@@ -73,7 +73,21 @@ describe UsersController do
       end
 
       context "when the organization name is blank" do
-        it "does not sign up the user or create an organization, and responds with an error"
+        it "does not sign up the user or create an organization, and responds with an error" do
+
+          orig_user_count = User.count
+          orig_org_count = Organization.count
+
+          user_params = User.plan
+          xhr :post, :create, :user => user_params, :organization => { :name => "" }
+
+          response.status.should == 422
+          response_json['errors'].should_not be_empty
+          current_user_id.should be_nil
+
+          User.count.should == orig_user_count
+          Organization.count.should == orig_org_count
+        end
       end
     end
   end
