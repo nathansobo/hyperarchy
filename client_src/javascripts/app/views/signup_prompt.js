@@ -10,16 +10,16 @@ _.constructor("Views.SignupPrompt", View.Template, {
 
         div({style: "display: none;"}, function() {
           label("Organization Name");
-          input({name: "organizationName"}).ref('organizationName');
+          input({name: "organization[name]"}).ref('organizationName');
         }).ref("organizationNameRow");
         label("First Name");
-        input({name: "firstName"}).ref('firstName');
+        input({name: "user[first_name]"}).ref('firstName');
         label("Last Name");
-        input({name: "lastName"});
+        input({name: "user[last_name]"});
         label("Email Address");
-        input({name: "emailAddress"});
+        input({name: "user[email_address]"});
         label("Choose Your Password");
-        input({name: "password", type: "password"});
+        input({name: "user[password]", type: "password"});
 
         input({type: "submit", value: "Sign Up", 'class': "glossyBlack roundedButton"});
 
@@ -111,11 +111,11 @@ _.constructor("Views.SignupPrompt", View.Template, {
     submitSignupForm: function() {
       this.errorsDiv.hide();
       var fieldValues = _.underscoreKeys(this.signupForm.fieldValues());
-      if (!this.retainOrganizationName) delete fieldValues.organization_name;
+      if (!this.retainOrganizationName) delete fieldValues['organization[name]'];
       $.ajax({
         type: 'post',
         url: "/signup",
-        data: { user: _.underscoreKeys(this.signupForm.fieldValues()) },
+        data: fieldValues,
         dataType: 'data+records',
         success: this.hitch('userEstablished'),
         error: this.hitch('handleErrors')
