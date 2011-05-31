@@ -266,7 +266,7 @@ module Prequel
     end
 
     def errors
-      @errors ||= Sequel::Model::Errors.new
+      @errors ||= Prequel::Errors.new
     end
     
     def validate; end
