@@ -2,7 +2,8 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.7'
 gem 'rake', '0.8.7'
-gem 'unicorn'
+gem 'unicorn', '3.5.0'
+gem 'thin', '1.2.11' # for resque-web on prod
 gem 'pg', '0.9.0'
 gem 'sequel', '3.16.0'
 gem 'sequel-rails', '0.1.8'
@@ -20,7 +21,6 @@ gem 'redis', '2.2.0'
 gem 'redis-lock', '0.1.0'
 
 group :development, :test do
-  gem 'thin'
   gem 'thor'
   gem 'haml', '3.0.25'
   gem 'rspec', '~> 2.5.0'
