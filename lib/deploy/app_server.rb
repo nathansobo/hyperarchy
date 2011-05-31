@@ -31,6 +31,7 @@ class AppServer
     restart_service 'socket_server'
     restart_service 'resque_worker'
     restart_service 'resque_scheduler'
+    start_service 'resque_web'
   end
 
   def provision
@@ -79,6 +80,11 @@ class AppServer
     else
       run "svc -cq /service/#{service_name}" # send a cont before quit to workaround signals being ignored on ubuntu
     end
+  end
+
+  def start_service(service_name)
+    run "rm /service/#{service_name}/down" if run?("test -e /service/#{service_name}/down")
+    run "svc -u /service/#{service_name}"
   end
 
   def update_packages
@@ -243,6 +249,7 @@ class AppServer
     install_service 'socket_server'
     install_service 'resque_worker', :QUEUE => '*', :VVERBOSE => 1
     install_service 'resque_scheduler'
+    install_service 'resque_web', :HOME => '/home/hyperarchy'
   end
 
   def install_service(service_name, env_vars={})
