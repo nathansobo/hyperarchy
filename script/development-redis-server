@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+trap("SIGHUP") { Process.kill(:TERM, $pid) }
+
+$pid = fork
+
+if $pid == nil
+  exec "redis-server ./config/redis.development.conf"
+end
+
+Process.wait
