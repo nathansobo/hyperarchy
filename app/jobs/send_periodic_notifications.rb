@@ -1,6 +1,6 @@
 module Jobs
   class SendPeriodicNotifications < Resque::JobWithStatus
-    @queue = 'send_notifications'
+    @queue = 'send_periodic_notifications'
 
     def perform
       users_to_notify = User.users_to_notify(period)
