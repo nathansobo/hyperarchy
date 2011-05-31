@@ -2,10 +2,14 @@
 
 module Models
   describe CandidateComment do
-    attr_reader :candidate, :organization
+    attr_reader :candidate, :organization, :candidate_creator, :comment_creator, :comment
     before do
-      @candidate = Candidate.make
-      @organization = candidate.organization
+      @organization = Organization.make
+      election = organization.elections.make
+      @candidate_creator = organization.make_member
+      @comment_creator = organization.make_member
+      @candidate = election.candidates.make(:creator => candidate_creator)
+      @comment = candidate.comments.make(:creator => comment_creator)
     end
     
     describe "before create" do
@@ -77,6 +81,31 @@ module Models
         ranker_email[:subject].should == "1 new comment on Hyperarchy"
         ranker_email[:body].should include(c1_comment.body)
         ranker_email[:html_body].should include(c1_comment.body)
+      end
+    end
+
+    describe "#users_to_notify_immediately" do
+      it "returns the members of the candidate's organization who either" +
+          "- have voted on the candidate and have :notify_of_new_comments_on_ranked_candidates set to 'immediately'" +
+          "- created the candidate and have :notify_of_new_comments_on_own_candidates set to 'immediately'" do
+        notify1 = User.make
+        notify2 = User.make
+        dont_notify = User.make
+
+        notify1.rankings.create!(:candidate => candidate, :position => 64)
+        notify2.rankings.create!(:candidate => candidate, :position => 64)
+        dont_notify.rankings.create!(:candidate => candidate, :position => 64)
+        comment_creator.rankings.create!(:candidate => candidate, :position => 64)
+
+        organization.memberships.make(:user => notify1, :notify_of_new_comments_on_ranked_candidates => 'immediately')
+        organization.memberships.make(:user => notify2, :notify_of_new_comments_on_ranked_candidates => 'immediately')
+        organization.memberships.make(:user => dont_notify, :notify_of_new_comments_on_ranked_candidates => 'hourly')
+        organization.memberships.find(:user => candidate_creator).update!(:notify_of_new_comments_on_own_candidates => 'immediately')
+        organization.memberships.find(:user => comment_creator).update!(:notify_of_new_comments_on_ranked_candidates => 'immediately')
+        comment.users_to_notify_immediately.all.should =~ [notify1, notify2, candidate_creator]
+
+        organization.memberships.find(:user => candidate_creator).update!(:notify_of_new_comments_on_own_candidates => 'hourly')
+        comment.users_to_notify_immediately.all.should =~ [notify1, notify2]
       end
     end
 

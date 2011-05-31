@@ -67,6 +67,64 @@ module Views
           org2_e1_c1_presenter.new_comments.should == [org2_e1_c1_comment]
         end
       end
+
+      describe "when presenting an immediate notification" do
+        let(:organization) { Organization.make }
+        let(:user) { organization.make_member }
+        let(:presenter) { NotificationPresenter.new(user, 'immediately', item) }
+        let(:election) { organization.elections.make }
+        let(:candidate) { election.candidates.make }
+        let(:candidate_comment) { candidate.comments.make }
+
+
+        describe "when notifying of an election" do
+          let(:item) { election }
+
+          it "includes the comment in the election hierarchy of objects" do
+            presenter.membership_presenters.size.should == 1
+            membership_presenter = presenter.membership_presenters.first
+            membership_presenter.membership.organization.should == organization
+            membership_presenter.membership.user.should == user
+            membership_presenter.election_presenters.size.should == 1
+            membership_presenter.election_presenters.first.election.should == election
+          end
+        end
+
+        describe "when notifying of a candidate" do
+          let(:item) { candidate }
+
+          it "includes the comment in the candidate hierarchy of objects" do
+            presenter.membership_presenters.size.should == 1
+            membership_presenter = presenter.membership_presenters.first
+            membership_presenter.membership.organization.should == organization
+            membership_presenter.membership.user.should == user
+            membership_presenter.election_presenters.size.should == 1
+            election_presenter = membership_presenter.election_presenters.first
+            election_presenter.election.should == election
+            election_presenter.candidate_presenters.size.should == 1
+            election_presenter.candidate_presenters.first.candidate.should == candidate
+          end
+        end
+
+        describe "when notifying of a candidate comment" do
+          let(:item) { candidate_comment }
+
+          it "includes the comment in the correct hierarchy of objects" do
+            presenter.membership_presenters.size.should == 1
+            membership_presenter = presenter.membership_presenters.first
+            membership_presenter.membership.organization.should == organization
+            membership_presenter.membership.user.should == user
+            membership_presenter.election_presenters.size.should == 1
+            election_presenter = membership_presenter.election_presenters.first
+            election_presenter.election.should == election
+            election_presenter.candidate_presenters.size.should == 1
+            candidate_presenter = election_presenter.candidate_presenters.first
+            candidate_presenter.candidate.should == candidate
+            candidate_presenter.new_comments.size.should == 1
+            candidate_presenter.new_comments.first.should == candidate_comment
+          end
+        end
+      end
     end
   end
 end

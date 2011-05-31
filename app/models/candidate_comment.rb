@@ -49,19 +49,19 @@ class CandidateComment < Prequel::Record
   end
 
   def users_to_notify_immediately
-    notify_users = candidate.
+    users_who_ranked_my_candidate = candidate.
       rankings.
       join(User).
       join(organization.memberships).
       where(:notify_of_new_comments_on_ranked_candidates => "immediately").
       where(Membership[:user_id].neq(creator_id)).
-      project(User).
-      all
+      project(User)
 
-    candidate_creator_membership = organization.memberships.find(:user_id => candidate.creator_id)
-    if candidate_creator_membership && candidate_creator_membership.wants_own_candidate_comment_notifications?("immediately")
-      notify_users.push(candidate.creator)
-    end
-    notify_users
+    user_who_created_my_candidate = candidate.
+      organization.
+        memberships.where(:user_id => candidate.creator_id, :notify_of_new_comments_on_own_candidates => "immediately").
+        join_through(User)
+
+    users_who_ranked_my_candidate | user_who_created_my_candidate
   end
 end

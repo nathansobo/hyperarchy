@@ -2,13 +2,14 @@ require 'spec_helper'
 
 module Models
   describe Election do
-    attr_reader :election, :organization, :memphis, :knoxville, :chattanooga, :nashville, :unranked
+    attr_reader :election, :organization, :creator, :memphis, :knoxville, :chattanooga, :nashville, :unranked
 
     before do
       freeze_time
 
-      @election = Election.make(:body => "Where should the capital of Tennesee be?")
-      @organization = election.organization
+      @organization = Organization.make
+      @creator = organization.make_member
+      @election = organization.elections.make(:body => "Where should the capital of Tennesee be?", :creator => creator)
       @memphis = election.candidates.make(:body => "Memphis")
       @knoxville = election.candidates.make(:body => "Knoxville")
       @chattanooga = election.candidates.make(:body => "Chattanooga")
@@ -169,6 +170,21 @@ module Models
         unranked.position.should == 5
 
         election.updated_at.to_i.should == Time.now.to_i
+      end
+    end
+
+    describe "#users_to_notify_immediately" do
+      it "includes members of the organization that have their election notification preference set to immediately and are not the creator of the election" do
+        notify1 = User.make
+        notify2 = User.make
+        dont_notify = User.make
+
+        organization.memberships.make(:user => notify1, :notify_of_new_elections => 'immediately')
+        organization.memberships.make(:user => notify2, :notify_of_new_elections => 'immediately')
+        organization.memberships.make(:user => dont_notify, :notify_of_new_elections => 'hourly')
+        organization.memberships.find(:user => creator).update!(:notify_of_new_elections => 'immediately')
+
+        election.users_to_notify_immediately.all.should =~ [notify1, notify2]
       end
     end
 
