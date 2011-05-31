@@ -95,6 +95,8 @@ GEM
       thor (~> 0.14.4)
     rake (0.8.7)
     redis (2.2.0)
+    redis-lock (0.1.0)
+      redis
     redis-namespace (0.10.0)
       redis (< 3.0.0)
     redisk (0.2.2)
@@ -181,6 +183,8 @@ DEPENDENCIES
   pony (= 1.1)
   rails (= 3.0.7)
   rake (= 0.8.7)
+  redis (= 2.2.0)
+  redis-lock (= 0.1.0)
   resque (= 1.15.0)
   resque-scheduler (= 1.9.9)
   resque-status (= 0.2.3)

@@ -13,6 +13,8 @@ RSpec.configure do |config|
   config.before do
     Prequel.test_mode = true
     Prequel.clear_tables
+    stub($redis).lock
+    stub($redis).unlock
     Mailer.reset
     Sham.reset
 
