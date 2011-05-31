@@ -403,10 +403,14 @@ module Prequel
 
           it "executes before_create and after_create hooks at the appropriate moments" do
             mock(blog).before_create do
+              blog.should_not be_persisted
+              blog.should_not be_clean
               Prequel.session.transaction_depth.should == 1
               blog.id.should be_nil
             end
             mock(blog).after_create do
+              blog.should be_persisted
+              blog.should be_clean
               Prequel.session.transaction_depth.should == 1
               blog.id.should_not be_nil
             end
@@ -477,9 +481,11 @@ module Prequel
             final_changeset.changed(:updated_at, old_updated_at, Time.now)
 
             mock(blog).before_update(initial_changeset) do
+              blog.should be_dirty
               Prequel.session.transaction_depth.should == 1
             end
             mock(blog).after_update(final_changeset) do
+              blog.should be_clean
               Prequel.session.transaction_depth.should == 1
             end
 
@@ -530,9 +536,11 @@ module Prequel
 
           it "executes before_save and after_save hooks" do
             mock(blog).before_save do
+              blog.should be_dirty
               Prequel.session.transaction_depth.should == 1
             end
             mock(blog).after_save do
+              blog.should be_clean
               Prequel.session.transaction_depth.should == 1
             end
 

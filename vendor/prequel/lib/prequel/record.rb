@@ -201,6 +201,7 @@ module Prequel
           dirty_fields = dirty_field_values
           final_changeset = build_changeset
           table.where(:id => id).update(dirty_fields) unless dirty_fields.empty?
+          mark_clean
           after_update(final_changeset)
           after_save
           Prequel.session.handle_update_event(self, final_changeset)
@@ -211,12 +212,12 @@ module Prequel
           self.updated_at = Time.now if fields_by_name.has_key?(:updated_at)
           self.id = (DB[table.name] << field_values_without_id)
           Prequel.session[table.name][id] = self
+          mark_clean
           after_create
           after_save
           Prequel.session.handle_create_event(self)
         end
       end
-      mark_clean
       true
     end
 
