@@ -29,6 +29,7 @@ group :development, :test do
   gem 'machinist', '1.0.6'
   gem 'faker', '0.9.5'
   gem 'spork', '~> 0.9.0.rc7'
+  gem 'fuubar'
   gem 'parallel_tests', :git => 'git@github.com:nathansobo/parallel_tests.git', :ref => '1aacd508c932d360c015'
 end
 
