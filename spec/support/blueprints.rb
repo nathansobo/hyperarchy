@@ -18,21 +18,21 @@ end
 Election.blueprint do
   body { Sham.question }
   organization { Organization.make }
-  suppress_notification_email { true }
+  suppress_immediate_notifications { true }
   suppress_current_user_membership_check { true }
 end
 
 Candidate.blueprint do
   election { Election.make }
   body { Sham.answer }
-  suppress_notification_email { true }
+  suppress_immediate_notifications { true }
   suppress_current_user_membership_check { true }
 end
 
 CandidateComment.blueprint do
   candidate { Candidate.make }
   body { Faker::Lorem.sentence }
-  suppress_notification_email { true }
+  suppress_immediate_notifications { true }
   suppress_current_user_membership_check { true }
 end
 

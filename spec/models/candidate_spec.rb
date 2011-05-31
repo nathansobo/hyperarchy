@@ -7,7 +7,8 @@ module Models
       @election = Election.make
       @organization = election.organization
       @creator = organization.make_member
-      @candidate = election.candidates.make(:creator => creator)
+      set_current_user(creator)
+      @candidate = election.candidates.make
     end
 
     describe "life-cycle hooks" do
@@ -122,39 +123,14 @@ module Models
           find_majority(candidate, unranked).con_count.should == 0
         end
 
-        it "sends a notification email to every user that has voted in the answer's election" do
-          creator = User.make
-          opted_in_voter = User.make
-          opted_out_voter = User.make
-          opted_in_non_voter = User.make
-          set_current_user(creator)
-          election.update(:creator => creator)
+        it "enqueues a SendImmediateNotification job with the candidate" do
+          job_params = nil
+          mock(Jobs::SendImmediateNotifications).create(is_a(Hash)) do |params|
+            job_params = params
+          end
 
-          other_org = Organization.make
-
-          organization = election.organization
-          organization.memberships.make(:user => creator, :notify_of_new_candidates => "immediately")
-          organization.memberships.make(:user => opted_in_voter, :notify_of_new_candidates => "immediately")
-          organization.memberships.make(:user => opted_out_voter, :notify_of_new_candidates => "never")
-          other_org.memberships.make(:user => opted_out_voter, :notify_of_new_candidates => "never")
-          organization.memberships.make(:user => opted_in_non_voter, :notify_of_new_candidates => "immediately")
-
-          c1 = election.candidates.create!(:body => "A")
-          Mailer.emails.should be_empty
-
-          Ranking.create!(:candidate => c1, :user => creator, :position => 64)
-          Ranking.create!(:candidate => c1, :user => opted_in_voter, :position => 64)
-          Ranking.create!(:candidate => c1, :user => opted_out_voter, :position => 64)
-
-          c2 = election.candidates.create!(:body => "B")
-
-          Mailer.emails.length.should == 1
-          email = Mailer.emails.first
-
-          email[:to].should == opted_in_voter.email_address
-          email[:subject].should == "1 new answer on Hyperarchy"
-          email[:body].should include(c2.body)
-          email[:html_body].should include(c2.body)
+          candidate = election.candidates.create!(:body => "Turkey.")
+          job_params.should ==  { :class_name => "Candidate", :id => candidate.id }
         end
       end
 

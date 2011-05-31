@@ -8,8 +8,10 @@ class CandidateComment < Prequel::Record
 
   belongs_to :candidate
   belongs_to :creator, :class_name => "User"
-  attr_accessor :suppress_notification_email, :suppress_current_user_membership_check
+  attr_accessor :suppress_current_user_membership_check
   delegate :organization, :to => :candidate
+
+  include SupportsNotifications
 
   def organization_ids
     candidate ? candidate.organization_ids : []
@@ -43,9 +45,7 @@ class CandidateComment < Prequel::Record
   end
 
   def after_create
-    unless suppress_notification_email
-      Hyperarchy.defer { Hyperarchy::Notifier.send_immediate_notifications(self) }
-    end
+    send_immediate_notifications
   end
 
   def users_to_notify_immediately

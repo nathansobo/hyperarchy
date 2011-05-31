@@ -17,7 +17,9 @@ class Election < Prequel::Record
   belongs_to :creator, :class_name => "User"
   belongs_to :organization
 
-  attr_accessor :suppress_notification_email, :suppress_current_user_membership_check
+  attr_accessor :suppress_current_user_membership_check
+
+  include SupportsNotifications
 
   class << self
     def update_scores
@@ -69,10 +71,8 @@ class Election < Prequel::Record
   end
 
   def after_create
-    unless suppress_notification_email
-      Hyperarchy.defer { Hyperarchy::Notifier.send_immediate_notifications(self) }
-    end
     organization.increment(:election_count)
+    send_immediate_notifications
   end
 
   def users_to_notify_immediately

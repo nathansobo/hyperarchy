@@ -13,7 +13,9 @@ class Candidate < Prequel::Record
   has_many :rankings
   has_many :comments, :class_name => "CandidateComment"
 
-  attr_accessor :suppress_notification_email, :suppress_current_user_membership_check
+  include SupportsNotifications
+
+  attr_accessor :suppress_current_user_membership_check
   delegate :organization, :to => :election
 
   def organization_ids
@@ -58,7 +60,7 @@ class Candidate < Prequel::Record
     election.compute_global_ranking
     election.unlock
 
-    send_notifications
+    send_immediate_notifications
   end
 
   def before_destroy
@@ -104,12 +106,5 @@ class Candidate < Prequel::Record
       where(:notify_of_new_candidates => "immediately").
       where(Membership[:user_id].neq(creator_id)).
       join_through(User)
-  end
-
-  protected
-
-  def send_notifications
-    return if suppress_notification_email
-    Hyperarchy.defer { Hyperarchy::Notifier.send_immediate_notifications(self) }
   end
 end

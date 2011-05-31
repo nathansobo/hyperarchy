@@ -61,16 +61,14 @@ module Models
         set_current_user(creator)
       end
 
-      it "sends an email to any members of the organization who have opted to receive one immediately, except for the creator himself" do
-        organization.elections.create!(:body => "What should we eat for dinner?")
-        Mailer.emails.length.should == 1
-        Mailer.emails.first[:to].should == opted_in.email_address
-      end
-
-      it "does not try to send email if there are no people to notify" do
-        organization.memberships.update(:notify_of_new_elections => "never")
-        organization.elections.create!(:body => "What should we eat for dinner?")
-        Mailer.emails.should be_empty
+      it "enqueues a SendImmediateNotification job with the election" do
+        job_params = nil
+        mock(Jobs::SendImmediateNotifications).create(is_a(Hash)) do |params|
+          job_params = params
+        end
+        
+        election = organization.elections.create!(:body => "What should we eat for dinner?")
+        job_params.should ==  { :class_name => "Election", :id => election.id }
       end
 
       it "increments the election count on its organization" do
