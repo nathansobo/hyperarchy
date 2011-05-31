@@ -45,6 +45,10 @@ module Prequel
           tuples.map {|t| t[:blogs]}.should =~ [blog_1, blog_2, blog_3]
           tuples.map {|t| t[:posts]}.should =~ [blog_1_post, blog_2_post, blog_3_post]
         end
+
+        it "can return the results of the union of two table projections" do
+          (Blog.join_through(Post) | Blog.join_through(Post)).first.should be_an_instance_of(Post)
+        end
       end
 
       describe "#to_sql" do

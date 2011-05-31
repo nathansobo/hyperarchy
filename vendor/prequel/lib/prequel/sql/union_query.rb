@@ -3,9 +3,10 @@ module Prequel
     class UnionQuery < Query
       attr_accessor :parent, :left, :right
 
+      delegate :tuple_builder, :to => :left
+
       def build
         relation.visit(self)
-        @tuple_builder = left.table_ref
         self
       end
 
