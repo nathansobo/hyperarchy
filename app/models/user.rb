@@ -47,6 +47,15 @@ class User < Prequel::Record
     find(:guest => true)
   end
 
+  def self.create_guest(organization_id)
+    self.create!(:guest => true,
+                 :first_name => "Guest",
+                 :last_name  => "User#{organization_id}",
+                 :email_address => "guest#{organization_id}@hyperarchy.com",
+                 :email_enabled => false,
+                 :password => "guest_password")
+  end
+
   def can_update_or_destroy?
     current_user.admin? || current_user == self
   end

@@ -10,6 +10,7 @@ class Organization < Prequel::Record
   column :updated_at, :datetime
   column :social, :boolean, :default => false
   column :privacy, :string, :default => "read_only"
+  column :invitation_code, :string
 
   has_many :elections, :order_by => :score.desc
   has_many :memberships
@@ -19,6 +20,14 @@ class Organization < Prequel::Record
 
   def self.social
     find(:social => true)
+  end
+
+  def members
+    memberships.join_through(User)
+  end
+
+  def guest
+    members.find(:guest => true)
   end
 
   def can_create?
@@ -35,7 +44,13 @@ class Organization < Prequel::Record
     [:social]
   end
 
+  def before_create
+    self.invitation_code = SecureRandom.hex(8)
+  end
+
   def after_create
+    special_guest = User.create_guest(id)
+    memberships.create(:user => special_guest, :pending => false)
     memberships.create(:user => current_user, :role => "owner", :pending => false) unless suppress_membership_creation
   end
 

@@ -39,6 +39,22 @@ describe Organization do
       end
     end
 
+    describe "#before_create" do
+      it "populates the #invitation_code with a random string" do
+        organization = Organization.make
+        organization.invitation_code.should_not be_nil
+      end
+    end
+
+    describe "#after_create" do
+      it "creates a special guest with a membership to the organization and to hyperarchy social" do
+        organization = Organization.make
+        special_guest = organization.members.find(:guest => true)
+        special_guest.should_not be_nil
+        special_guest.organizations.all.should =~ [organization, Organization.social]
+      end
+    end
+
     describe "#ensure_current_user_is_member" do
       attr_reader :organization
 
