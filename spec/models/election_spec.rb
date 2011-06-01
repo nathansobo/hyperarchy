@@ -17,6 +17,27 @@ module Models
       @unranked = election.candidates.make(:body => "Unranked")
     end
 
+
+    describe ".update_scores" do
+      it "causes scores to go down as time passes" do
+        initial_score = election.score
+
+        election.update(:created_at => 1.hour.ago)
+        Election.update_scores
+        
+        election.reload.score.should be < initial_score
+      end
+
+      it "causes scores to go up as votes are added" do
+        initial_score = election.score
+
+        election.update(:vote_count => 10)
+        Election.update_scores
+        
+        election.reload.score.should be > initial_score
+      end
+    end
+
     describe "before create" do
       it "if the creator is not a member of the election's organization, makes them one (as long as the org is public)" do
         set_current_user(User.make)

@@ -23,7 +23,7 @@ class Election < Prequel::Record
 
   class << self
     def update_scores
-      Origin.connection.execute(%{
+      Prequel::DB.execute(%{
         update elections set score = ((vote_count + #{SCORE_EXTRA_HOURS}) / pow((extract(epoch from (now() - created_at)) / 3600) + 2, 1.8))
       })
     end
