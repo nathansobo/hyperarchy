@@ -96,7 +96,6 @@ describe RankingsController do
 
   context "when only authenticated as a guest" do
     it "returns a security error" do
-      login_as(User.guest)
       post :create
       response.status.should == 403
     end

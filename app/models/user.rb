@@ -43,8 +43,8 @@ class User < Prequel::Record
     ).join_through(User).where(:guest => false, :email_enabled => true)
   end
 
-  def self.guest
-    find(:guest => true)
+  def self.default_guest
+    Organization.social.guest
   end
 
   def self.create_guest(organization_id)

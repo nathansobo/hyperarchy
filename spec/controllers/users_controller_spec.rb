@@ -5,7 +5,7 @@ describe UsersController do
     context "when no organization name is provided" do
       context "when all the params are valid" do
         it "creates the user, logs them in, and makes them a member of social" do
-          current_user.should be_nil
+          current_user.should == User.default_guest
 
           user_params = User.plan
           xhr :post, :create, :user => user_params
@@ -32,9 +32,9 @@ describe UsersController do
 
       context "when the user params are invalid" do
         it "returns a 422 status with errors" do
-          current_user.should be_nil
+          current_user.should == User.default_guest
           xhr :post, :create, :user => User.plan(:first_name => '', :password => '')
-          current_user.should be_nil
+          current_user.should == User.default_guest
 
           response.status.should == 422
           response_json["errors"].should_not be_empty
@@ -45,7 +45,7 @@ describe UsersController do
     context "when an organization name is provided" do
       context "when all the params are valid" do
         it "signs the user up as normal, and then makes them the owner of an organization with the given name" do
-          current_user.should be_nil
+          current_user.should == User.default_guest
 
           user_params = User.plan
           xhr :post, :create, :user => user_params, :organization => { :name => "Acme Org" }
@@ -83,7 +83,7 @@ describe UsersController do
 
           response.status.should == 422
           response_json['errors'].should_not be_empty
-          current_user_id.should be_nil
+          current_user.should == User.default_guest
 
           User.count.should == orig_user_count
           Organization.count.should == orig_org_count

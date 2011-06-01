@@ -1,6 +1,4 @@
 class ElectionsController < ApplicationController
-  before_filter :allow_guests
-
   def index
     organization = Organization.find(params[:organization_id])
     raise SecurityError unless organization.current_user_can_read?

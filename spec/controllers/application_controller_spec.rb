@@ -44,13 +44,13 @@ describe ApplicationController do
 
     context "when a guest is logged in" do
       before do
-        login_as(User.guest)
+        login_as(User.default_guest)
       end
 
       context "for a normal request" do
         it "logs the guest out, sets the after_login_path in the session, then redirects to the login_url" do
           get :index
-          current_user.should be_nil
+          current_user.should == User.default_guest
           session[:after_login_path].should == request.path_info
           response.should redirect_to(controller.login_path)
         end
@@ -82,10 +82,8 @@ describe ApplicationController do
     end
   end
 
-  describe "the #allow_guests before filter" do
+  describe "#current_user" do
     controller do
-      before_filter :allow_guests
-
       def index
         render :text => "ok"
       end
@@ -97,30 +95,14 @@ describe ApplicationController do
         @user = login_as User.make
       end
 
-      it "allows the request to proceed" do
-        get :index
-        response.should be_success
-        current_user.should == user
-      end
-    end
-
-    context "when a guest is logged in" do
-      before do
-        login_as User.guest
-      end
-
-      it "allows the request to proceed" do
-        get :index
-        response.should be_success
-        current_user.should == User.guest
+      it "returns that user" do
+        controller.send(:current_user).should == user
       end
     end
 
     context "when no one is logged in" do
-      it "authenticates the guest user and allows the request to proceed" do
-        get :index
-        response.should be_success
-        current_user.should == User.guest
+      it "returns the guest user for Hyperarchy Social" do
+        controller.send(:current_user).should == Organization.social.guest
       end
     end
   end

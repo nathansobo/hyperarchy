@@ -87,7 +87,7 @@ module Models
           end
 
           it "returns true if the current user is not a guest" do
-            set_current_user(User.guest)
+            set_current_user(User.default_guest)
             comment.can_create?.should be_false
 
             set_current_user(User.make)

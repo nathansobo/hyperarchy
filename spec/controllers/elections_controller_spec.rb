@@ -16,19 +16,7 @@ describe ElectionsController do
       xhr :get, :index, :organization_id => organization.id, :offset => 0, :limit => 1
     end
 
-    context "if not authenticated" do
-      it "responds with forbidden" do
-        current_user.should be_nil
-        perform_get(Organization.make)
-        response.should be_forbidden
-      end
-    end
-
-    context "if authenticated as a guest" do
-      before do
-        login_as(User.guest)
-      end
-
+    context "if authenticated as a default guest" do
       it "only allows the user to read elections from publicly readable organizations" do
         perform_get(private_org)
         response.should be_forbidden

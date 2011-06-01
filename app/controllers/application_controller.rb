@@ -31,11 +31,11 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user_id
-    session[:current_user_id]
+    session[:current_user_id] || User.default_guest.id
   end
 
   def current_user
-    current_user_id ? User.find(current_user_id) : nil
+    User.find(current_user_id)
   end
 
   def require_authentication
@@ -48,10 +48,6 @@ class ApplicationController < ActionController::Base
       redirect_to login_url
       false
     end
-  end
-
-  def allow_guests
-    set_current_user(User.guest) unless current_user
   end
 
   def render_success_json(data=nil, dataset=[])

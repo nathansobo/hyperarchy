@@ -28,6 +28,7 @@ class SessionsController < ApplicationController
     organization = Organization.find(:id => params[:organization_id])
     if !organization || organization.invitation_code != params[:invitation_code]
       redirect_to(root_url(:anchor => "view=organization&organizationId=#{current_user.default_organization.id}"))
+      return
     end
     if current_user.guest?
       set_current_user(organization.guest)

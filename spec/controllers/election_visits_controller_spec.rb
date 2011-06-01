@@ -37,10 +37,6 @@ describe ElectionVisitsController do
     end
 
     context "for a guest user" do
-      before do
-        login_as User.guest
-      end
-
       it "does not create an election visit" do
         ElectionVisit.should be_empty
         post :create, :election_id => election.to_param

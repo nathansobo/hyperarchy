@@ -231,7 +231,7 @@ module Models
           end
 
           specify "non-guest users can create candidates" do
-            set_current_user(User.guest)
+            set_current_user(User.default_guest)
             election.candidates.make_unsaved.can_create?.should be_false
 
             set_current_user(non_member)

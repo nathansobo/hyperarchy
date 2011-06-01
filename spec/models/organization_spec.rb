@@ -5,7 +5,7 @@ describe Organization do
     describe "#can_create?" do
       it "does not allow guests to create" do
         organization = Organization.make_unsaved
-        set_current_user(User.guest)
+        set_current_user(User.default_guest)
         organization.can_create?.should be_false
 
         set_current_user(User.make)
@@ -49,7 +49,7 @@ describe Organization do
     describe "#after_create" do
       it "creates a special guest with a membership to the organization and to hyperarchy social" do
         organization = Organization.make
-        special_guest = organization.members.find(:guest => true)
+        special_guest = organization.guest
         special_guest.should_not be_nil
         special_guest.organizations.all.should =~ [organization, Organization.social]
       end
