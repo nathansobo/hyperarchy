@@ -4,28 +4,44 @@ describe UsersController do
   describe "#create" do
     context "when no organization name is provided" do
       context "when all the params are valid" do
-        it "creates the user, logs them in, and makes them a member of social" do
-          current_user.should == User.default_guest
+        context "when the user is logged in as the default guest" do
+          it "creates the user, logs them in, and makes them a member of social" do
+            current_user.should == User.default_guest
 
-          user_params = User.plan
-          xhr :post, :create, :user => user_params
-          response.should be_success
+            user_params = User.plan
+            xhr :post, :create, :user => user_params
+            response.should be_success
 
-          current_user.should_not be_nil
-          current_user.should be_persisted
-          current_user.first_name.should == user_params[:first_name]
-          current_user.last_name.should == user_params[:last_name]
-          current_user.email_address.should == user_params[:email_address]
-          current_user.password.should == user_params[:password]
+            current_user.should_not be_nil
+            current_user.should be_persisted
+            current_user.first_name.should == user_params[:first_name]
+            current_user.last_name.should == user_params[:last_name]
+            current_user.email_address.should == user_params[:email_address]
+            current_user.password.should == user_params[:password]
 
-          current_user.organizations.all.should == [Organization.social]
-          current_user.memberships.first.role.should == "member"
+            current_user.organizations.all.should == [Organization.social]
+            current_user.memberships.first.role.should == "member"
 
-          response_json["data"].should == { "current_user_id" => current_user.id }
-          response_json["records"].tap do |records|
-            records["organizations"][Organization.social.to_param].should == Organization.social.wire_representation
-            records["users"][current_user.to_param].should == current_user.wire_representation
-            records["memberships"][current_user.memberships.first.to_param].should == current_user.memberships.first.wire_representation
+            response_json["data"].should == { "current_user_id" => current_user.id }
+            response_json["records"].tap do |records|
+              records["organizations"][Organization.social.to_param].should == Organization.social.wire_representation
+              records["users"][current_user.to_param].should == current_user.wire_representation
+              records["memberships"][current_user.memberships.first.to_param].should == current_user.memberships.first.wire_representation
+            end
+          end
+        end
+
+        context "when the user is logged in as the special guest of an organization" do
+          it "creates the user, logs them in, and makes them a member of social and of the special guest's organization" do
+            organization = Organization.make
+            login_as organization.guest
+                        user_params = User.plan
+            xhr :post, :create, :user => user_params
+            response.should be_success
+            membership = current_user.memberships.find(:organization => organization)
+            current_user.organizations.all.should =~ [Organization.social, organization]
+            
+            response_json["records"]["memberships"][membership.to_param].should == membership.wire_representation
           end
         end
       end

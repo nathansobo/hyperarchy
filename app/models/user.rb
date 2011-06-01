@@ -163,6 +163,11 @@ class User < Prequel::Record
     end
   end
 
+  def guest_organization
+    return nil unless guest?
+    organizations.find(:social => false)
+  end
+
   def memberships_to_notify(period)
     memberships.
       join(Organization).
@@ -170,5 +175,9 @@ class User < Prequel::Record
       project(Membership).
       all.
       select {|m| m.wants_notifications?(period)}
+  end
+
+  def member_of?(organization)
+    !memberships.where(:organization => organization).empty?
   end
 end

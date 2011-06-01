@@ -29,7 +29,11 @@ class UsersController < ApplicationController
     user = User.secure_create(params[:user])
 
     if user.save
+      previous_user = current_user
       set_current_user(user)
+      if organization = previous_user.guest_organization
+        current_user.memberships.find_or_create!(:organization => organization, :pending => false)
+      end
       data['current_user_id'] = user.id
     else
       errors.push(*user.errors.full_messages)

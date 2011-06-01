@@ -92,6 +92,35 @@ module Prequel
             end
           end
         end
+
+        describe "#find_or_create!(attributes)" do
+          context "when there are validation errors" do
+            before do
+              class ::Blog
+                def valid?
+                  false
+                end
+              end
+            end
+
+            it "raises an exception" do
+              expect {
+                Blog.where(:user_id => 1).find_or_create!(:title => "My Blog")
+              }.to raise_error(Record::NotValid)
+            end
+          end
+
+          context "when there are no validation errors" do
+            it "works as normal" do
+              expect {
+                blog = Blog.where(:user_id => 1).find_or_create!(:title => "My Blog")
+                blog.id.should_not be_nil
+                blog.user_id.should == 1
+                blog.title.should == "My Blog"
+              }.should change(Blog, :count).by(1)
+            end
+          end
+        end
       end
 
       describe "#to_sql" do

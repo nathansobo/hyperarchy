@@ -143,6 +143,27 @@ module Models
       end
     end
 
+    describe "#guest_organization" do
+      context "if the user is a special guest" do
+        it "returns the organization they are a guest of" do
+          org = Organization.make
+          org.guest.guest_organization.should == org
+        end
+      end
+
+      context "if the user is the default guest" do
+        it "returns nil" do
+          User.default_guest.guest_organization.should be_nil
+        end
+      end
+
+      context "if the user is a normal user" do
+        it "returns nil" do
+          User.make.guest_organization.should be_nil
+        end
+      end
+    end
+
     describe "methods supporting notifications" do
       describe ".users_to_notify(period)" do
         it "returns those non-guest users who have at least one membership with a notification preference matching the job's period and who have emails enabled" do

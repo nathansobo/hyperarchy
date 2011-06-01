@@ -1,6 +1,11 @@
 class SessionsController < ApplicationController
   def create
+    previous_user = current_user
     if authenticate
+      if organization = previous_user.guest_organization
+        current_user.memberships.find_or_create!(:organization => organization, :pending => false)
+      end
+
       if request.xhr?
         render :json => {
           :data => { :current_user_id => current_user_id },

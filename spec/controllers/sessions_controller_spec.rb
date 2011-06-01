@@ -1,12 +1,8 @@
 require 'spec_helper'
 
 describe SessionsController do
-  attr_reader :organization, :user, :membership
-  before do
-    @organization = Organization.social
-    @user = User.make(:password => "password")
-    @membership = organization.memberships.make(:user => user)
-  end
+  let(:organization) { Organization.make }
+  let(:user) { User.make(:password => "password") }
 
   describe "#new" do
     it "renders successfully" do
@@ -16,18 +12,38 @@ describe SessionsController do
   end
 
   describe "#create" do
-    describe "when the email address and password match an existing user" do
-      it "logs the user in, and returns the current user id plus the user's initial dataset" do
-        current_user.should == User.default_guest
-        xhr :post, :create, :user => { :email_address => user.email_address, :password => "password" }
-        Prequel.session.current_user.should == user
-        current_user.should == user
+    context "when the email address and password match an existing user" do
+      context "when logged in as the default guest" do
+        attr_reader :membership
+        before { @membership = organization.memberships.make(:user => user) }
 
-        response.should be_success
-        response_json["data"].should == { "current_user_id" => user.id }
-        response_json["records"]["users"].should have_key(user.to_param)
-        response_json["records"]["organizations"].should have_key(organization.to_param)
-        response_json["records"]["memberships"].should have_key(membership.to_param)
+        it "logs the user in, and returns the current user id plus the user's initial dataset" do
+          current_user.should == User.default_guest
+          xhr :post, :create, :user => { :email_address => user.email_address, :password => "password" }
+          Prequel.session.current_user.should == user
+          current_user.should == user
+
+          response.should be_success
+          response_json["data"].should == { "current_user_id" => user.id }
+          response_json["records"]["users"].should have_key(user.to_param)
+          response_json["records"]["organizations"].should have_key(organization.to_param)
+          response_json["records"]["memberships"].should have_key(membership.to_param)
+        end
+      end
+
+
+      context "when logged in as a special guest" do
+        it "creates a membership on the guest's organization for the user who logs in" do
+          login_as organization.guest
+
+          user.should_not be_member_of(organization)
+          xhr :post, :create, :user => { :email_address => user.email_address, :password => "password" }
+          current_user.should == user
+
+          membership = user.memberships.find(:organization => organization)
+          membership.should be
+          response_json["records"]["memberships"].should have_key(membership.to_param)
+        end
       end
     end
 
