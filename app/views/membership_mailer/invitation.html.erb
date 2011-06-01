@@ -3,5 +3,5 @@
 </p>
 
 <p>
-<%= link_to "Click here to join #{@organization.name} on Hyperarchy", signup_url(:invitation_code => @invitation.guid) %>
+<%= link_to "Click here to join #{@organization.name} on Hyperarchy", signup_url(:membership_code => @invitation.guid) %>
 </p>

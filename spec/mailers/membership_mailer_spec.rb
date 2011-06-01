@@ -30,8 +30,8 @@ describe MembershipMailer do
     end
 
     it "includes a link to the signup page with an invitation parameter in both the html and plain-text portions of the email" do
-      email.text_part.body.should include(signup_url(:invitation_code => invitation.guid))
-      email.html_part.body.should include(signup_url(:invitation_code => invitation.guid))
+      email.text_part.body.should include(signup_url(:membership_code => invitation.guid))
+      email.html_part.body.should include(signup_url(:membership_code => invitation.guid))
     end
   end
 

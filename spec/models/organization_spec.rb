@@ -40,9 +40,9 @@ describe Organization do
     end
 
     describe "#before_create" do
-      it "populates the #invitation_code with a random string" do
+      it "populates the #membership_code with a random string" do
         organization = Organization.make
-        organization.invitation_code.should_not be_nil
+        organization.membership_code.should_not be_nil
       end
     end
 

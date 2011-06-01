@@ -31,7 +31,7 @@ Sequel.migration do
     create_table(:elections) do
       primary_key :id
       Integer :organization_id
-      String :body, :size=>255
+      String :body, :text=>true
       DateTime :updated_at
       DateTime :created_at
       Integer :creator_id
@@ -50,6 +50,13 @@ Sequel.migration do
       Integer :invitee_id
       DateTime :created_at
       DateTime :updated_at
+    end
+    
+    create_table(:mailing_list_entries) do
+      primary_key :id
+      String :email_address, :text=>true
+      String :comments, :text=>true
+      DateTime :created_at
     end
     
     create_table(:majorities) do
@@ -76,6 +83,7 @@ Sequel.migration do
       String :notify_of_new_candidates, :text=>true
       String :notify_of_new_comments_on_own_candidates, :text=>true
       String :notify_of_new_comments_on_ranked_candidates, :text=>true
+      TrueClass :has_participated, :default=>false
     end
     
     create_table(:organizations) do
@@ -89,7 +97,9 @@ Sequel.migration do
       DateTime :updated_at
       Integer :election_count, :default=>0
       TrueClass :social, :default=>false
-      String :privacy, :default=>"read_only", :text=>true
+      String :privacy, :default=>"private", :text=>true
+      String :membership_code, :text=>true
+      Integer :member_count, :default=>0
     end
     
     create_table(:rankings) do
@@ -121,6 +131,7 @@ Sequel.migration do
       String :password_reset_token, :text=>true
       DateTime :password_reset_token_generated_at
       TrueClass :guest, :default=>false
+      TrueClass :email_enabled, :default=>true
     end
     
     create_table(:votes) do
@@ -133,6 +144,6 @@ Sequel.migration do
   end
   
   down do
-    drop_table(:candidate_comments, :candidates, :election_visits, :elections, :invitations, :majorities, :memberships, :organizations, :rankings, :schema_info, :users, :votes)
+    drop_table(:candidate_comments, :candidates, :election_visits, :elections, :invitations, :mailing_list_entries, :majorities, :memberships, :organizations, :rankings, :schema_info, :users, :votes)
   end
 end

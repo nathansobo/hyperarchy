@@ -12,7 +12,7 @@ module Views
       end
 
       def show_invitation_info?
-        invitation || flash[:invalid_invitation_code] || flash[:already_redeemed]
+        invitation || flash[:invalid_membership_code] || flash[:already_redeemed]
       end
 
       def wrapper_class
@@ -103,7 +103,7 @@ module Views
             end
 
             a "Learn More", :id => "learnMore", :href => "/learn_more", :class => "glossyGray roundedButton"
-          elsif code = flash[:invalid_invitation_code]
+          elsif code = flash[:invalid_membership_code]
             div :id => "invitationError" do
               h1 "Make sure you copied and pasted the invitation URL completely!"
               div "You're welcome to create your own organization, but the invitation code  you entered is not valid. If you copied it from an email, make sure you copied the entire URL.", :id => "description"

@@ -10,7 +10,7 @@ class Organization < Prequel::Record
   column :updated_at, :datetime
   column :social, :boolean, :default => false
   column :privacy, :string, :default => "read_only"
-  column :invitation_code, :string
+  column :membership_code, :string
 
   has_many :elections, :order_by => :score.desc
   has_many :memberships
@@ -45,7 +45,7 @@ class Organization < Prequel::Record
   end
 
   def before_create
-    self.invitation_code = SecureRandom.hex(8)
+    self.membership_code = SecureRandom.hex(8)
   end
 
   def after_create

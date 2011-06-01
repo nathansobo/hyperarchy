@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
 
   def create_from_secret_url
     organization = Organization.find(:id => params[:organization_id])
-    if !organization || organization.invitation_code != params[:invitation_code]
+    if !organization || organization.membership_code != params[:membership_code]
       redirect_to(root_url(:anchor => "view=organization&organizationId=#{current_user.default_organization.id}"))
       return
     end
