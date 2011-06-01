@@ -351,12 +351,12 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     sendFeedback: function() {
-      Server.post("/feedback", {
+      $.post("/feedback", {
         feedback: this.feedbackTextarea.val()
-      }).onSuccess(function() {
+      }).success(this.bind(function() {
         this.hideFeedbackForm();
         this.notify("Thanks for the feedback!")
-      }, this);
+      }));
       return false;
     },
 
