@@ -174,12 +174,18 @@ class AppServer
     run "adduser --system --no-create-home --disabled-login --disabled-password --group nginx"
     run "ln -s /opt/nginx/sbin/nginx /usr/local/sbin/nginx"
     upload! 'lib/deploy/resources/nginx/nginx.conf', '/opt/nginx/conf/nginx.conf'
-    upload! 'lib/deploy/resources/nginx/nginx_upstart.conf', '/etc/init/nginx.conf'
+    upload! 'lib/deploy/resources/nginx/htpasswd', '/opt/nginx/conf/htpasswd'
     upload! 'lib/deploy/resources/nginx/hyperarchy.crt', '/etc/ssl/certs/hyperarchy.crt'
     upload! 'lib/deploy/resources/nginx/hyperarchy.key', '/etc/ssl/private/hyperarchy.key'
+    upload! 'lib/deploy/resources/nginx/nginx_upstart.conf', '/etc/init/nginx.conf'
     run "chmod 640 /etc/ssl/private/hyperarchy.key"
     run "chown root:ssl-cert /etc/ssl/private/hyperarchy.key"
     run "start nginx"
+  end
+
+  def reload_nginx_config
+    upload! 'lib/deploy/resources/nginx/nginx.conf', '/opt/nginx/conf/nginx.conf'
+    run "nginx -s reload" if run? "nginx -t"
   end
 
   def install_redis

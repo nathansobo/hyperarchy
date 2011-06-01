@@ -13,6 +13,11 @@ class Provision < Thor
   def install_public_key(env='staging')
     AppServer.new(env).install_public_key
   end
+
+  desc 'reload_nginx_config [env=staging]', 'upload, test, and reload the nginx.conf'
+  def reload_nginx_config(env='staging')
+    AppServer.new(env).reload_nginx_config
+  end
 end
 
 class Deploy < Thor
