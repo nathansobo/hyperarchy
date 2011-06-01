@@ -6,7 +6,7 @@ Hyperarchy::Application.routes.draw do
   match 'signup' => 'users#new', :via => 'get', :as => "signup"
   match 'signup' => 'users#create', :via => 'post', :as => "signup"
 
-  match '/organizations/:organization_id/membership' => 'memberships#create', :via => ['post', 'get']
+  match '/access/:organization_id/:code' => 'memberships#create', :via => ['post', 'get']
 
   get '/sandbox' => 'sandbox#fetch'
   post '/sandbox/:relation' => 'sandbox#create'

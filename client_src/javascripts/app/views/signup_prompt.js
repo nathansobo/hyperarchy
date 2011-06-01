@@ -131,7 +131,13 @@ _.constructor("Views.SignupPrompt", View.Template, {
         url: "/login",
         data: { user: _.underscoreKeys(this.loginForm.fieldValues()) },
         dataType: 'data+records',
-        success: this.hitch('userEstablished'),
+        success: this.bind(function(data) {
+          this.userEstablished(data);
+          if (this.loginFuture) {
+            this.loginFuture.triggerSuccess(data);
+            delete this.loginFuture;
+          }
+        }),
         error: this.hitch('handleErrors')
       });
       return false;

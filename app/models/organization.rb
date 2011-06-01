@@ -27,7 +27,11 @@ class Organization < Prequel::Record
   end
 
   def guest
-    members.find(:guest => true)
+    if social?
+      User.default_guest
+    else
+      members.find(:guest => true)
+    end
   end
 
   def can_create?

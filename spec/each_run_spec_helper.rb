@@ -21,7 +21,7 @@ RSpec.configure do |config|
     Sham.reset
 
     Organization.make(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
-    User.make(:first_name => "Guest", :last_name => "User", :guest => true)
+    User.make(:first_name => "Guest", :last_name => "User", :guest => true, :default_guest => true)
   end
 
   config.after do

@@ -11,6 +11,7 @@ class User < Prequel::Record
   column :password_reset_token, :string
   column :password_reset_token_generated_at, :datetime
   column :guest, :boolean, :default => false
+  column :default_guest, :boolean, :default => false
   synthetic_column :email_hash, :string
 
   has_many :memberships
@@ -44,7 +45,7 @@ class User < Prequel::Record
   end
 
   def self.default_guest
-    Organization.social.guest
+    find(:default_guest => true)
   end
 
   def self.create_guest(organization_id)
@@ -109,17 +110,14 @@ class User < Prequel::Record
   end
 
   def initial_repository_contents
-    [self] + memberships.all  + initial_repository_organizations
+    [self] + memberships.all  + initial_repository_organizations.all
   end
 
   def initial_repository_organizations
     if admin?
-      Organization.all
-    elsif guest?
-      Organization.where(Organization[:privacy].neq('private')).all
+      Organization.table
     else
-      Organization.where(Organization[:privacy].neq('private')).all +
-        memberships.join_through(Organization.where(:privacy => 'private')).all
+      organizations | Organization.where(Organization[:privacy].neq('private'))
     end
   end
 

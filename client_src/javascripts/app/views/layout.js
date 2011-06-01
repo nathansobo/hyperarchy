@@ -398,7 +398,7 @@ _.constructor("Views.Layout", View.Template, {
     showLoginForm: function() {
       var future = new Monarch.Http.AjaxFuture();
       this.signupPrompt.show().showLoginForm();
-      this.signupPrompt.future = future;
+      this.signupPrompt.loginFuture = future;
       future.onSuccess(this.hitch('goToLastOrganization'));
       return false;
     }

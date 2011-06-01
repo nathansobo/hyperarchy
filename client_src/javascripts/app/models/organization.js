@@ -10,7 +10,7 @@ _.constructor("Organization", Model.Record, {
         useSsl: 'boolean',
         social: 'boolean',
         privacy: 'string',
-        invitationCode: 'string'
+        membershipCode: 'string'
       });
 
       this.hasMany("elections");
@@ -122,6 +122,6 @@ _.constructor("Organization", Model.Record, {
   },
 
   invitationUrl: function() {
-    return 'https://' + Application.HTTP_HOST + "/private/" + this.invitationCode();
+    return 'https://' + Application.HTTP_HOST + "/access/" + this.id() + "/" + this.membershipCode();
   }
 });

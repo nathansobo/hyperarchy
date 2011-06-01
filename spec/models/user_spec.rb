@@ -7,6 +7,12 @@ module Models
       @user = User.make
     end
 
+    describe ".default_guest" do
+      it "returns the default guest" do
+        User.default_guest.should be_default_guest
+      end
+    end
+
     describe "#validate" do
       it "ensures first_name, last_name, email_address, and encrypted_password are present" do
         User.make_unsaved(:first_name => "").should_not be_valid
@@ -109,22 +115,6 @@ module Models
           contents.should include(org_1)
           contents.should include(org_2)
           contents.should include(org_3)
-        end
-      end
-
-      context "if the user is a guest" do
-        attr_reader :guest, :contents
-
-        before do
-          @guest = User.make(:guest => true)
-          @contents = guest.initial_repository_contents
-        end
-
-        it "includes the guest user model and all non-private organizations" do
-          contents.should include(guest)
-          contents.should include(org_1)
-          contents.should include(org_2)
-          contents.should_not include(org_3)
         end
       end
     end

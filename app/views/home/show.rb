@@ -17,6 +17,7 @@ module Views
           #{store_in_repository(current_user.initial_repository_contents)}
           window.Application = new Controllers.Application(#{(current_user ? current_user.id : nil).to_json});
           Application.environment = #{Rails.env.to_json};
+          Application.HTTP_HOST = #{request.host.to_json};
           window.Application.initializeNavigation();
         });
       ]

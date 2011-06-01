@@ -132,6 +132,7 @@ Sequel.migration do
       DateTime :password_reset_token_generated_at
       TrueClass :guest, :default=>false
       TrueClass :email_enabled, :default=>true
+      TrueClass :default_guest, :default=>false
     end
     
     create_table(:votes) do

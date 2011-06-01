@@ -116,5 +116,27 @@ describe Organization do
         end
       end
     end
+
+    describe "#guest" do
+      context "for Hyperarchy Social" do
+        it "returns the guest who is ONLY a member of Hyperarchy Social" do
+          org = Organization.make
+          guest = Organization.social.guest
+          guest.should_not == org.guest
+          guest.should be_guest
+          guest.memberships.find(:organization => Organization.social).should be
+        end
+      end
+
+      context "for another private org" do
+        it "returns that organization's guest" do
+          org = Organization.make
+          guest = org.guest
+          guest.should be_guest
+          guest.should_not == Organization.social.guest
+          guest.memberships.find(:organization => org).should be
+        end
+      end
+    end
   end
 end
