@@ -29,6 +29,7 @@ module Jobs
         mock(job).at(1, 3)
         mock(job).at(2, 3)
         mock(job).at(3, 3)
+        mock(job).completed
 
         job.perform
       end

@@ -11,6 +11,7 @@ module Jobs
         presenter = Views::NotificationMailer::NotificationPresenter.new(user, 'immediately', item)
         NotificationMailer.notification(user, presenter).deliver
       end
+      completed
     end
 
     def item

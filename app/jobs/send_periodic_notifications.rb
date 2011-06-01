@@ -12,6 +12,7 @@ module Jobs
           NotificationMailer.notification(user, presenter).deliver
         end
       end
+      completed
     end
 
     def period
