@@ -31,7 +31,7 @@ describe Invitation do
         email = Mailer.emails.first
         email[:to].should == "bob@example.com"
         email[:subject].should match(Regexp.new(inviter.full_name))
-        email[:body].should include("hyperarchy.com/signup?membership_code=#{invitation.guid}")
+        email[:body].should include("hyperarchy.com/signup?invitation_code=#{invitation.guid}")
       end
     end
 

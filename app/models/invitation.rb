@@ -59,7 +59,7 @@ class Invitation < Prequel::Record
   end
 
   def signup_url
-    "https://#{HTTP_HOST}/signup?membership_code=#{guid}"
+    "https://#{HTTP_HOST}/signup?invitation_code=#{guid}"
   end
 
   protected
