@@ -29,7 +29,7 @@ exports.listen = function(publicPort, privatePort, callback, nonSecure) {
     });
   });
 
-  private.listen(privatePort, function() {
+  private.listen(privatePort, '127.0.0.1', function() {
     public.listen(publicPort, callback);
   });
 };
