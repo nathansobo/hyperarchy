@@ -1,4 +1,5 @@
 var https = require('https'),
+    http = require('http')
     io = require('socket.io'),
     fs = require('fs'),
     express = require('express'),
@@ -7,13 +8,27 @@ var https = require('https'),
 var private = express.createServer();
 private.use(express.bodyParser());
 
-var public = https.createServer({
-  key: fs.readFileSync('/etc/ssl/private/hyperarchy.key'),
-  cert: fs.readFileSync('/etc/ssl/certs/hyperarchy.crt')
-});
-var socket = io.listen(public);
+var public, socket;
 
-exports.listen = function(publicPort, privatePort, callback) {
+exports.listen = function(publicPort, privatePort, callback, nonSecure) {
+  if (nonSecure) {
+    public = http.createServer();
+  } else {
+    public = https.createServer({
+      key: fs.readFileSync('/etc/ssl/private/hyperarchy.key'),
+      cert: fs.readFileSync('/etc/ssl/certs/hyperarchy.crt')
+    });
+  }
+  socket = io.listen(public);
+
+  socket.on('connection', function(client) {
+    client.on('disconnect', function() {
+      _.each(channels, function(channel) {
+        delete channel[client.sessionId];
+      });
+    });
+  });
+
   private.listen(privatePort, function() {
     public.listen(publicPort, callback);
   });
@@ -62,12 +77,4 @@ private.post('/channel_events/:type/:id', function(req, res) {
     client.send(message);
   });
   res.send(200);
-});
-
-socket.on('connection', function(client) {
-  client.on('disconnect', function() {
-    _.each(channels, function(channel) {
-      delete channel[client.sessionId];
-    });
-  });
 });

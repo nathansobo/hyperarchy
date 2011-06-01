@@ -22,7 +22,7 @@ describe("Socket server", function() {
 
   it("starts before running other specs", function() {
     waitsFor("socket server to start listening", function(listening) {
-      socketServer.listen(publicPort, privatePort, listening);
+      socketServer.listen(publicPort, privatePort, listening, true);
     });
   });
 
