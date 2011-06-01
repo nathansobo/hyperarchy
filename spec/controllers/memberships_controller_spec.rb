@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MembershipsController do
-  let(:organization) { Organization.social }
+  let(:organization) { Organization.make }
   let(:user) { User.make(:password => "password") }
   let(:membership) { organization.memberships.make(:user => user) }
 
@@ -9,12 +9,11 @@ describe MembershipsController do
     context "if the membership_code is valid" do
       context "when logged in as a normal user who isn't a member of the organization" do
         it "gives the user a membership to the organization, if they don't already have one" do
-          organization = Organization.make
           login_as(user)
           current_user.memberships.where(:organization => organization).should be_empty
           get :create, :organization_id => organization.id, :code => organization.membership_code
           current_user.memberships.where(:organization => organization, :pending => false, :role => "member").size.should == 1
-          response.should be_success
+          response.should redirect_to(root_url(:anchor => "view=organization&organizationId=#{organization.id}"))
 
           # a subsequent request does not create a duplicate membership
           expect do
@@ -28,7 +27,8 @@ describe MembershipsController do
           login_as Organization.social.guest
           get :create, :organization_id => organization.id, :code => organization.membership_code
           current_user.should == organization.guest
-          response.should be_success
+
+          response.should redirect_to(root_url(:anchor => "view=organization&organizationId=#{organization.id}"))
         end
       end
 
@@ -37,7 +37,7 @@ describe MembershipsController do
           current_user.should == User.default_guest
           get :create, :organization_id => organization.id, :code => organization.membership_code
           current_user.should == organization.guest
-          response.should be_success
+          response.should redirect_to(root_url(:anchor => "view=organization&organizationId=#{organization.id}"))
         end
       end
     end
