@@ -6,6 +6,8 @@ Hyperarchy::Application.routes.draw do
   match 'signup' => 'users#new', :via => 'get', :as => "signup"
   match 'signup' => 'users#create', :via => 'post', :as => "signup"
 
+  get '/invitation/:organization_id/:invitation_code' => 'sessions#create_from_secret_url'
+
   get '/sandbox' => 'sandbox#fetch'
   post '/sandbox/:relation' => 'sandbox#create'
   put '/sandbox/:relation/:id' => 'sandbox#update'
@@ -13,6 +15,7 @@ Hyperarchy::Application.routes.draw do
 
   post '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#create'
   delete '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#destroy'
+
 
   resources :users
   resources :memberships do

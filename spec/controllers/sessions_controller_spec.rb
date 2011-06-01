@@ -65,4 +65,56 @@ describe SessionsController do
       current_user.should be_nil
     end
   end
+
+  describe "#create_from_secret_url" do
+    context "if the invitation_code is valid" do
+      context "if the user is logged in" do
+        it "gives the user a membership to the organization, if they don't already have one" do
+          login_as(user)
+          get :create_from_secret_url, :organization_id => organization.id, :invitation_code => organization.invitation_code
+          membership = current_user.memberships.find(:organization => organization)
+          membership.should_not be_nil
+          membership.should_not be_pending
+          response.should be_success
+
+          expect do
+            get :create_from_secret_url, :organization_id => organization.id, :invitation_code => organization.invitation_code
+          end.not_to change(current_user.memberships, :size)
+        end
+      end
+
+      context "if the user is not logged in" do
+        it "logs the user in as the organization's special guest" do
+          logout
+          get :create_from_secret_url, :organization_id => organization.id, :invitation_code => organization.invitation_code
+          current_user.should be_guest
+          membership = current_user.memberships.find(:organization => organization)
+          membership.should_not be_nil
+          membership.should_not be_pending
+          response.should be_success
+        end
+      end
+    end
+
+    context "if the invitation_code is not valid" do
+      context "if the user is logged in and has a default_organization other than hyperarchy social" do
+        it "redirects the user to their default organization" do
+          login_as(user)
+          default_organization = Organization.make
+          stub(user).default_organization(default_organization)
+          get :create_from_secret_url, :organization_id => organization.id, :invitation_code => "garbage"
+          response.should redirect_to(root_url(:anchor => "view=organization&organizationId=#{default_organization.id}"))
+        end
+      end
+
+      context "if the user is not logged in" do
+        it "redirects the user to hyperarchy social" do
+          logout
+          get :create_from_secret_url, :organization_id => organization.id, :invitation_code => "garbage"
+          default_organization = Organization.social
+          response.should redirect_to(root_url(:anchor => "view=organization&organizationId=1"))
+        end
+      end
+    end
+  end
 end
