@@ -1,4 +1,4 @@
-class AppServer
+  class AppServer
   attr_reader :stage, :rails_env
   def initialize(stage)
     @stage = stage
@@ -272,7 +272,7 @@ class AppServer
     run "chmod 755 /var/svc.d/#{service_name}/log/run"
     run "mkdir -p /var/svc.d/#{service_name}/env"
     env_vars.each do |var_name, value|
-      run "echo", value, "> /var/svc.d/#{service_name}/env/#{var_name}"
+      run "echo #{value.inspect} > /var/svc.d/#{service_name}/env/#{var_name}"
     end
     run "touch /var/svc.d/#{service_name}/down"
     run "ln -s /var/svc.d/#{service_name} /service/#{service_name}"
