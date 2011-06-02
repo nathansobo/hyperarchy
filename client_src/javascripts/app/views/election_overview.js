@@ -485,7 +485,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     toggleFirstUserExplanation: function() {
       if (this.organization().memberCount() <= 2 && !Application.currentUser().guest()) {
-        this.secretUrl.val(this.organization().invitationUrl());
+        this.secretUrl.val(this.organization().membershipUrl());
         this.firstUserExplanation.show();
         this.creatorDiv.hide();
       } else {

@@ -3,6 +3,11 @@ _.constructor("Views.Members", View.Template, {
     div({id: "members", 'class': "grid12"}, function() {
 
       h2("Current Members");
+
+      div(function() {
+        textarea({'class': "membershipUrl", readonly: "readonly"}).ref('membershipUrl');
+      });
+
       table({'class': "members"}, function() {
         thead(function() {
           tr(function() {

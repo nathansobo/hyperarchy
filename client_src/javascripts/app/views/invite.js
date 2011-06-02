@@ -8,7 +8,7 @@ _.constructor("Views.Invite", View.Template, {
       );
 
       div(function() {
-        textarea({'class': "invitationUrl", readonly: "readonly"}).ref('invitationUrl');
+        textarea({'class': "membershipUrl", readonly: "readonly"}).ref('membershipUrl');
       });
 
       div({'class': "instructions largeFont"},
@@ -46,9 +46,9 @@ _.constructor("Views.Invite", View.Template, {
       this.instructions.show();
       this.errorMessage.hide();
       this.emailAddresses.val("");
-      var invitationUrl = Application.currentOrganization().invitationUrl();
-      this.invitationUrl.val(invitationUrl);
-      this.invitationUrl.focus();
+      var membershipUrl = Application.currentOrganization().membershipUrl();
+      this.membershipUrl.val(membershipUrl);
+      this.membershipUrl.focus();
       this.emailAddresses.removeClass("error");
     },
 
