@@ -1,4 +1,4 @@
-  class AppServer
+class AppServer
   attr_reader :stage, :rails_env
   def initialize(stage)
     @stage = stage
@@ -6,7 +6,12 @@
   end
 
   def hostname
-    'rails.hyperarchy.com'
+    case stage.to_sym
+      when :production
+        'hyperarchy.com'
+      when :demo
+        'rails.hyperarchy.com'
+    end
   end
 
   def repository
@@ -18,7 +23,7 @@
     as('hyperarchy', '/app') { run "git fetch origin" }
 
     stop_service "socket_server"
-    run "touch /app/offline"
+    maintenance_page_up
 
     as 'hyperarchy', '/app' do
       run "git checkout --force", ref
@@ -37,7 +42,7 @@
     restart_service 'resque_scheduler'
     start_service 'resque_web'
     sleep 1 until port_listening?(8080)
-    run "rm /app/offline"
+    maintenance_page_down
   end
 
   def provision
@@ -101,7 +106,7 @@
     run "su - #{username}"
     run "cd #{dir}" if dir
     yield
-    run "exit"
+    run! "exit"
   end
 
   def port_listening?(port)
@@ -112,12 +117,22 @@
     run("svstat /service/#{name}") =~ /: down/
   end
 
+  def maintenance_page_up
+    run "touch /app/offline"
+  end
+
+  def maintenance_page_down
+    run! "rm /app/offline"
+  end
+
   def update_packages
     run "yes | apt-get update"
     run "yes | apt-get upgrade"
   end
 
   def create_hyperarchy_user
+    run "groupadd ssl-cert"
+    run "chown root:ssl-cert /etc/ssl/private"
     run "mkdir -p /home/hyperarchy"
     unless run?('id hyperarchy')
       run "useradd -G ssl-cert -d /home/hyperarchy -s /bin/bash hyperarchy"
@@ -155,7 +170,7 @@
     run "patch -p3 < /usr/local/djb/patches/daemontools-0.76-setuidgid-initgroups.patch"
     run "package/install"
     upload! 'lib/deploy/resources/daemontools/svscanboot.conf', '/etc/init/svscanboot.conf'
-    run "start svscanboot" unless run? "status svscanboot"
+    run "start svscanboot" unless run "status svscanboot" =~ /start\/running/
   end
 
   def make_daemontools_dirs
@@ -301,6 +316,30 @@
     end
     run "touch /var/svc.d/#{service_name}/down"
     run "ln -s /var/svc.d/#{service_name} /service/#{service_name}"
+  end
+
+  def dump_database
+    db_name = "hyperarchy_#{rails_env}"
+    dump_file_path = "/tmp/#{db_name}_#{Time.now.to_i}.tar"
+    as 'hyperarchy' do
+      run "pg_dump #{db_name} --file=#{dump_file_path} --format=tar"
+    end
+    dump_file_path
+  end
+
+  def download_database(source_server)
+    dump_file_path = source_server.dump_database
+    run "scp #{source_server.hostname}:#{dump_file_path} #{dump_file_path}"
+
+    stop_service 'unicorn'
+    sleep 1 while port_listening?(8080) 
+
+    as 'hyperarchy' do
+      run! "pg_restore #{dump_file_path} --dbname=hyperarchy_#{rails_env} --clean"
+    end
+
+    start_service 'unicorn'
+    sleep 1 until port_listening?(8080)
   end
 
   protected

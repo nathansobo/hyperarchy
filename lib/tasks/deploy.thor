@@ -1,5 +1,4 @@
-$LOAD_PATH << File.expand_path('../..', __FILE__)
-require 'deploy'
+require File.expand_path('../thor_helper', __FILE__)
 
 class Provision < Thor
   default_task :provision
