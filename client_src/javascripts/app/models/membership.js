@@ -4,7 +4,6 @@ _.constructor("Membership", Model.Record, {
       organizationId: "key",
       userId: "key",
       role: "string",
-      pending: "boolean",
       firstName: "string",
       lastName: "string",
       emailAddress: "string",

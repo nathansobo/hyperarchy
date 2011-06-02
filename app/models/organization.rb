@@ -54,8 +54,8 @@ class Organization < Prequel::Record
 
   def after_create
     special_guest = User.create_guest(id)
-    memberships.create(:user => special_guest, :pending => false)
-    memberships.create(:user => current_user, :role => "owner", :pending => false) unless suppress_membership_creation
+    memberships.create(:user => special_guest)
+    memberships.create(:user => current_user, :role => "owner") unless suppress_membership_creation
   end
 
   def has_member?(user)
@@ -67,13 +67,9 @@ class Organization < Prequel::Record
   end
 
   def ensure_current_user_is_member
-    raise SecurityError unless current_user
-    if membership = memberships.find(:user => current_user)
-      membership.update(:pending => false) if membership.pending?
-      return
-    end
+    return if memberships.find(:user => current_user)
     raise SecurityError unless public?
-    memberships.create!(:user => current_user, :pending => false)
+    memberships.create!(:user => current_user)
   end
 
   def current_user_can_read?

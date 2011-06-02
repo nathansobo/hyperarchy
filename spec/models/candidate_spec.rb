@@ -206,7 +206,7 @@ module Models
         @member = election.organization.make_member
         @owner = election.organization.make_owner
         @non_member = User.make
-        @membership = election.organization.memberships.make(:user => member, :suppress_invite_email => true)
+        @membership = election.organization.memberships.make(:user => member)
         @candidate = election.candidates.make(:body => "Hey you!")
       end
 

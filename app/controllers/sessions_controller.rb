@@ -3,7 +3,7 @@ class SessionsController < ApplicationController
     previous_user = current_user
     if authenticate
       if organization = previous_user.guest_organization
-        current_user.memberships.find_or_create!(:organization => organization, :pending => false)
+        current_user.memberships.find_or_create!(:organization => organization)
       end
 
       if request.xhr?

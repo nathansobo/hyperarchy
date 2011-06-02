@@ -13,11 +13,8 @@ _.constructor("User", Model.Record, {
     this.hasMany('memberships');
     this.hasMany('electionVisits');
 
-    this.relatesToMany('confirmedMemberships', function() {
-      return this.memberships().where({pending: false});
-    });
     this.relatesToMany('organizations', function() {
-      return this.confirmedMemberships().joinThrough(Organization);
+      return this.memberships().joinThrough(Organization);
     });
 
     this.relatesToMany('organizationsPermittedToInvite', function() {

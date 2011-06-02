@@ -39,19 +39,6 @@ Sequel.migration do
       Float :score
     end
     
-    create_table(:invitations) do
-      primary_key :id
-      String :guid, :size=>255
-      String :sent_to_address, :size=>255
-      String :first_name, :size=>255
-      String :last_name, :size=>255
-      TrueClass :redeemed
-      Integer :inviter_id
-      Integer :invitee_id
-      DateTime :created_at
-      DateTime :updated_at
-    end
-    
     create_table(:mailing_list_entries) do
       primary_key :id
       String :email_address, :text=>true
@@ -73,9 +60,7 @@ Sequel.migration do
       primary_key :id
       Integer :organization_id
       Integer :user_id
-      Integer :invitation_id
       String :role, :size=>255
-      TrueClass :pending
       DateTime :last_visited
       DateTime :created_at
       DateTime :updated_at
@@ -145,6 +130,6 @@ Sequel.migration do
   end
   
   down do
-    drop_table(:candidate_comments, :candidates, :election_visits, :elections, :invitations, :mailing_list_entries, :majorities, :memberships, :organizations, :rankings, :schema_info, :users, :votes)
+    drop_table(:candidate_comments, :candidates, :election_visits, :elections, :mailing_list_entries, :majorities, :memberships, :organizations, :rankings, :schema_info, :users, :votes)
   end
 end

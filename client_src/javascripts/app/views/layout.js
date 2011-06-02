@@ -238,7 +238,7 @@ _.constructor("Views.Layout", View.Template, {
       var organizations =
         this.currentUser().admin() ?
           Organization.orderBy('name')
-          : Application.currentUser().confirmedMemberships().joinThrough(Organization).orderBy('name');
+          : Application.currentUser().organizations().orderBy('name');
 
       this.currentUserSubscriptions.add(organizations.onEach(this.hitch('populateOrganization')));
       this.currentUserSubscriptions.add(Organization.onUpdate(function(organization, changes) {

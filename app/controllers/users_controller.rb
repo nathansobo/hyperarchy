@@ -32,7 +32,7 @@ class UsersController < ApplicationController
       previous_user = current_user
       set_current_user(user)
       if organization = previous_user.guest_organization
-        current_user.memberships.find_or_create!(:organization => organization, :pending => false)
+        current_user.memberships.find_or_create!(:organization => organization)
       end
       data['current_user_id'] = user.id
     else

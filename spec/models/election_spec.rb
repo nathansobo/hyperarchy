@@ -255,7 +255,7 @@ module Models
       describe "#can_update? and #can_destroy?" do
         it "only allows admins, organization owners, and the creator of the election itself to update or destroy it" do
           other_member = set_current_user(User.make)
-          organization.memberships.create!(:user => other_member, :suppress_invite_email => true)
+          organization.memberships.create!(:user => other_member)
           election = organization.elections.create!(:body => "What should we do?")
 
           set_current_user(member)

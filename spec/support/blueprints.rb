@@ -45,11 +45,7 @@ Organization.class_eval do
 
   def make_member(attributes={})
     User.make(attributes).tap do |user|
-      memberships.create!(
-        :user => user,
-        :pending => false,
-        :suppress_invite_email => true
-      )
+      memberships.create!(:user => user)
     end
   end
 
@@ -58,8 +54,6 @@ Organization.class_eval do
       memberships.create!(
         :user => user,
         :role => "owner",
-        :pending => false,
-        :suppress_invite_email => true
       )
     end
   end
@@ -69,7 +63,6 @@ Membership.class_eval do
   blueprint do
     user { User.make }
     organization { Organization.make }
-    suppress_invite_email { true }
   end
 
   attr_accessor :all_notifications

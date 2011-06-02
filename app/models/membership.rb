@@ -2,9 +2,7 @@ class Membership < Prequel::Record
   column :id, :integer
   column :organization_id, :integer
   column :user_id, :integer
-  column :invitation_id, :integer
   column :role, :string, :default => "member"
-  column :pending, :boolean, :default => true
   column :last_visited, :datetime
   column :notify_of_new_elections, :string, :default => "daily"
   column :notify_of_new_candidates, :string, :default => "daily"
@@ -19,11 +17,9 @@ class Membership < Prequel::Record
 
   belongs_to :organization
   belongs_to :user
-  belongs_to :invitation
 
   attr_writer :email_address, :first_name, :last_name
-  attr_accessor :suppress_invite_email
-  delegate :email_address, :first_name, :last_name, :to => :user_details_delegate
+  delegate :email_address, :first_name, :last_name, :to => :user
 
   def current_user_is_admin_or_organization_owner?
     current_user.admin? || organization.has_owner?(current_user)
@@ -74,23 +70,15 @@ class Membership < Prequel::Record
   end
 
   def email_address
-    @email_address || (user_details_delegate ? user_details_delegate.email_address : nil)
+    @email_address || (user ? user.email_address : nil)
   end
 
   def first_name
-    @first_name || (user_details_delegate ? user_details_delegate.first_name : nil)
+    @first_name || (user ? user.first_name : nil)
   end
 
   def last_name
-    @last_name || (user_details_delegate ? user_details_delegate.last_name : nil)
-  end
-
-  def user_details_delegate
-    if user
-      user
-    else
-      invitation
-    end
+    @last_name || (user ? user.last_name : nil)
   end
 
   def before_create
@@ -98,24 +86,6 @@ class Membership < Prequel::Record
 
     if user = User.find(:email_address => email_address)
       self.user = user
-    else
-      self.invitation =
-        Invitation.find(:sent_to_address => email_address) ||
-          Invitation.create!(:sent_to_address => email_address,
-                             :first_name => first_name,
-                             :last_name => last_name,
-                             :inviter => current_user)
-    end
-  end
-
-  def after_create
-    return unless pending?
-    return if suppress_invite_email
-
-    if invitation
-      MembershipMailer.invitation(id).deliver
-    else
-      MembershipMailer.confirmation(current_user.id, id).deliver
     end
   end
 
@@ -176,19 +146,6 @@ class Membership < Prequel::Record
   end
 
   protected
-  def invite_email_subject
-    "#{current_user.full_name} has invited you to join #{organization.name} on Hyperarchy"
-  end
-
-  def invite_email_body
-    if invitation
-      %[#{HYPERARCHY_BLURB}
-
-Visit #{invitation.signup_url} to join our private alpha test and start voting on issues for #{organization.name}.]
-    else
-      %[Visit http://#{HTTP_HOST}/confirm_membership/#{id} to become a member of #{organization.name}.]
-    end
-  end
 
   # returns the time of last visit or the 1 <period> ago, whichever is more recent
   def last_notified_or_visited_at(period)

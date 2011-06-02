@@ -20,7 +20,6 @@ _.constructor("Views.MembershipTr", View.Template, {
           text(_.capitalize(membership.role()));
         }
       });
-      td(membership.pending() ? "Pending" : "Accepted");
       td({'class': "remove"}, function() {
         if (membership.user() !== Application.currentUser()) {
           a({href: "#"}, "Remove").click(function(view) {

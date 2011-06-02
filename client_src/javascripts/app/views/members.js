@@ -1,22 +1,6 @@
 _.constructor("Views.Members", View.Template, {
   content: function() { with(this.builder) {
     div({id: "members", 'class': "grid12"}, function() {
-      div({'class': "addMember"}, function() {
-        h2("Add a Member");
-        input({'class': "name", type: "text", placeholder: "First Name"}).ref('createMembershipFirstName');
-        input({'class': "name", type: "text", placeholder: "Last Name"}).ref('createMembershipLastName');
-        input({'class': "emailAddress", type: "text", placeholder: "Email Address"})
-          .keyup('enableOrDisableCreateMembership')
-          .ref('createMembershipEmail');
-        select(function() {
-          option({value: "member"}, "Member");
-          option({value: "owner"}, "Owner");
-        }).ref("createMembershipRole");
-        button({disabled: true}, "Add")
-          .ref('createMembershipButton')
-            .click('createMembership');
-        div({'class': "loading", style: "display: none"}).ref('creatingMembership');
-      }).ref('addMemberSection');
 
       h2("Current Members");
       table({'class': "members"}, function() {
@@ -25,7 +9,6 @@ _.constructor("Views.Members", View.Template, {
             th("Name");
             th("Email Address");
             th("Role");
-            th("Invitation");
             th("");
           })
         });
@@ -47,21 +30,7 @@ _.constructor("Views.Members", View.Template, {
   viewProperties: {
     viewName: 'members',
 
-    initialize: function() {
-      this.createMembershipFirstName.holdPlace();
-      this.createMembershipLastName.holdPlace();
-      this.createMembershipEmail.holdPlace();
-      this.defer(function() {
-        this.find('textarea').elastic();
-      });
-
-      this.addMemberSection.find('input,select').keyup(this.bind(function(e) {
-        if (e.keyCode === 13) {
-          if (this.createMembershipButton.is(":enabled")) this.createMembership();
-          e.preventDefault();
-        }
-      }));
-    },
+    initialize: function() {},
 
     navigate: function(state) {
       var organizationId = parseInt(state.organizationId);
