@@ -35,7 +35,10 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-    User.find(current_user_id)
+    User.find(current_user_id) || begin
+      clear_current_user
+      User.default_guest
+    end
   end
 
   def require_authentication
