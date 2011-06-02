@@ -1,6 +1,6 @@
-web: bundle exec rails server thin -p 8080
+web: bundle exec thin start --rackup config.ru -p 8080
 redis: script/development-redis-server
 resque_worker: QUEUE=* bundle exec rake resque:work
-resque_web: bundle exec resque-web config/resqueweb_conf.rb --foreground --no-launch --log-file /dev/stdout --server thin
+resque_web: bundle exec thin start --rackup config/resque_web.ru -p 5678
 mailtrap: bundle exec mailtrap run
 socket_server: node vendor/socket_server/socket_server.js
