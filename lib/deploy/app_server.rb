@@ -15,23 +15,29 @@
 
   def deploy(ref)
     system "thor deploy:minify_js"
-    run "su - hyperarchy"
-    run "cd /app"
-    run "git fetch origin"
-    run "git checkout --force", ref
-    run "source .rvmrc"
-    run "bundle install --deployment --without development test deploy"
-    run "mkdir -p public/assets"
-    Dir["public/assets/*"].each do |path|
-      upload! path, "/app/public/assets/#{File.basename(path)}"
+    as('hyperarchy', '/app') { run "git fetch origin" }
+
+    stop_service "socket_server"
+    run "touch /app/offline"
+
+    as 'hyperarchy', '/app' do
+      run "git checkout --force", ref
+      run "source .rvmrc"
+      run "bundle install --deployment --without development test deploy"
+      run "mkdir -p public/assets"
+      Dir["public/assets/*"].each do |path|
+        upload! path, "/app/public/assets/#{File.basename(path)}"
+      end
+      run "RAILS_ENV=#{rails_env} bundle exec rake db:migrate"
     end
-    run "RAILS_ENV=#{rails_env} bundle exec rake db:migrate"
-    run "exit"
+
     restart_service 'unicorn'
-    restart_service 'socket_server'
+    start_service 'socket_server'
     restart_service 'resque_worker'
     restart_service 'resque_scheduler'
     start_service 'resque_web'
+    sleep 1 until port_listening?(8080)
+    run "rm /app/offline"
   end
 
   def provision
@@ -75,16 +81,35 @@
 
   def restart_service(service_name)
     run "rm /service/#{service_name}/down" if run?("test -e /service/#{service_name}/down")
-    if run("svstat /service/#{service_name}") =~ /down \d/
+    if service_down?(service_name)
       run "svc -u /service/#{service_name}"
     else
       run "svc -cq /service/#{service_name}" # send a cont before quit to workaround signals being ignored on ubuntu
     end
   end
 
+  def stop_service(service_name)
+    run "svc -d /service/#{service_name}"
+  end
+
   def start_service(service_name)
     run "rm /service/#{service_name}/down" if run?("test -e /service/#{service_name}/down")
     run "svc -u /service/#{service_name}"
+  end
+
+  def as(username, dir=nil)
+    run "su - #{username}"
+    run "cd #{dir}" if dir
+    yield
+    run "exit"
+  end
+
+  def port_listening?(port)
+    run?("netstat -ln | grep :#{port}")
+  end
+
+  def service_down?(name)
+    run("svstat /service/#{name}") =~ /: down/
   end
 
   def update_packages
