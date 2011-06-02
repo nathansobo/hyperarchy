@@ -8,9 +8,9 @@ test:
   database: hyperarchy_test<%= ENV['TEST_ENV_NUMBER'] %>
   username: hyperarchy
 
-staging:
+demo:
   adapter: postgres
-  database: hyperarchy_staging
+  database: hyperarchy_demo
   username: hyperarchy
 
 production:
