@@ -4,33 +4,34 @@
     margin-bottom: 20px;
     overflow: hidden;
 
+    .newMembers {
+      margin-bottom: 30px;
+
+      #secretUrlExplanation {
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      .secretUrl {
+        display: block;
+        margin-top: 10px;
+        width: 400px;
+        font-size: 16px;
+        padding: 5px;
+        color: #666;
+      }
+
+    }
+
     #content {
       position: relative;
       z-index: 4;
       padding: 30px;
     }
 
-    div.addMember {
-      font-size: medium;
-      margin-bottom: 20px;
-
-      input, select {
-        display: inline;
-        margin-right: 10px;
-      }
-
-      input.name { width: 150px; }
-      input.emailAddress { width: 250px; }
-      div.loading {
-        display: inline-block;
-        position: relative;
-        top: 5px;
-        left: 5px;
-      }
-    }
-
     table.members {
       width: 100%;
+      font-size: 16px;
 
       th {
         font-weight: bold;

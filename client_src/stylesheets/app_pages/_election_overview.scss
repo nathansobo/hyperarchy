@@ -6,7 +6,11 @@
     overflow: hidden;
 
     .calloutBanner {
+      .left {
+        width: 43%;
+      }
       .right {
+        width: 51%;
         padding-top: 10px;
       }
 
@@ -19,6 +23,7 @@
         margin-top: 10px;
         width: 100%;
         color: #666;
+        padding: 5px;
       }
     }
 

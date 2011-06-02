@@ -13,6 +13,7 @@
 //= require <jquery.elastic.source>
 //= require <jquery.holdplace>
 //= require <jquery.phpdate>
+//= require <jquery.caret>
 //= require <jquery.tooltip.v.1.1>
 //= require <jquery.hotkeys>
 //= require <socket.io>

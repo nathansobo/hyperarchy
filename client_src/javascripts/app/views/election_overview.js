@@ -25,7 +25,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
           });
           div({'class': "right firstUser"}, function() {
             span("Share this secret url with your colleagues to let them suggest and rank answers:");
-            input({'class': "secretUrl", readonly: "readonly"}, "").ref('secretUrl');
+            input({'class': "secretUrl", readonlyx: "readonly"}, "").ref('secretUrl').mouseup('selectSecretUrl');
           });
           div({'class': "clear"});
         });
@@ -485,7 +485,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     toggleFirstUserExplanation: function() {
       if (this.organization().memberCount() <= 2 && !Application.currentUser().guest()) {
-        this.secretUrl.val(this.organization().membershipUrl());
+        this.secretUrl.val(this.organization().secretUrl());
         this.firstUserExplanation.show();
         this.creatorDiv.hide();
       } else {
@@ -525,6 +525,11 @@ _.constructor("Views.ElectionOverview", View.Template, {
 
     stopLoading: function() {
       
+    },
+
+    selectSecretUrl: function(v, e) {
+      if (e) e.preventDefault();
+      this.secretUrl.caret(0, this.secretUrl.val().length);
     },
 
     adjustHeight: function() {

@@ -1,34 +1,35 @@
 _.constructor("Views.Members", View.Template, {
   content: function() { with(this.builder) {
     div({id: "members", 'class': "grid12"}, function() {
-
-      h2("Current Members");
-
-      div(function() {
-        textarea({'class': "membershipUrl", readonly: "readonly"}).ref('membershipUrl');
+      div({'class': 'newMembers'}, function() {
+        h2("Invite New Members");
+        div({id: "secretUrlExplanation"}, "Share this private link with your team to invite more members:");
+        input({'class': "secretUrl", readonly: "readonly"}, "").ref('secretUrl');
       });
 
-      table({'class': "members"}, function() {
-        thead(function() {
-          tr(function() {
-            th("Name");
-            th("Email Address");
-            th("Role");
-            th("");
-          })
-        });
+      div({'class': 'currentMembers'}, function() {
+        h2("Current Members");
+        table({'class': "members"}, function() {
+          thead(function() {
+            tr(function() {
+              th("Name");
+              th("Email Address");
+              th("Role");
+              th("");
+            })
+          });
 
-        subview('membersTbody', Views.SortedList, {
-          rootTag: 'tbody',
-          placeholderTag: 'tbody',
-          buildElement: function(membership) {
-            return Views.MembershipTr.toView({membership: membership});
-          }
+          subview('membersTbody', Views.SortedList, {
+            rootTag: 'tbody',
+            placeholderTag: 'tbody',
+            buildElement: function(membership) {
+              return Views.MembershipTr.toView({membership: membership});
+            }
+          });
         });
       });
 
       div({'class': "clear"});
-
     });
   }},
 
@@ -44,6 +45,10 @@ _.constructor("Views.Members", View.Template, {
 
       Application.layout.activateNavigationTab("membersLink");
       Application.layout.hideSubNavigationContent();
+      this.secretUrl.val(Application.currentOrganization().secretUrl());
+      console.log(this.secretUrl.caret());
+      this.selectSecretUrl();
+      this.secretUrl.mouseup(this.hitch('selectSecretUrl'));
     },
 
     modelAssigned: function(organization) {
@@ -77,6 +82,11 @@ _.constructor("Views.Members", View.Template, {
       } else {
         this.createMembershipButton.attr('disabled', true);
       }
+    },
+
+    selectSecretUrl: function(e) {
+      if (e) e.preventDefault();
+      this.secretUrl.caret(0, this.secretUrl.val().length);
     }
   }
 });
