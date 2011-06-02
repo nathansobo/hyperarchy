@@ -92,15 +92,15 @@ class User < Prequel::Record
   end
 
   def after_create
-    if Rails.env =~ /production|demo/
-      Hyperarchy.defer do
-        Mailer.send(
-          :to => "nathan@hyperarchy.com",
-          :subject => "New Hyperarchy User On #{Rails.env.capitalize}",
-          :body => "Name: #{full_name}\nEmail Address: #{email_address}\n"
-        )
-      end
-    end
+#    if Rails.env =~ /production|demo/
+#      Hyperarchy.defer do
+#        Mailer.send(
+#          :to => "nathan@hyperarchy.com",
+#          :subject => "New Hyperarchy User On #{Rails.env.capitalize}",
+#          :body => "Name: #{full_name}\nEmail Address: #{email_address}\n"
+#        )
+#      end
+#    end
 
     memberships.create!(:organization => Organization.social)
   end
