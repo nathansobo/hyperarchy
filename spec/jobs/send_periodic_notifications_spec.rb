@@ -33,6 +33,21 @@ module Jobs
 
         job.perform
       end
+
+      it "doesn't send notifications to users with email disabled" do
+        user1 = User.make
+        user1_membership = user1.memberships.first
+        user1_membership.update!(:notify_of_new_elections => period)
+
+        new_election = Organization.social.elections.make
+        user1.update!(:email_enabled => false)
+
+        stub(user1.memberships.first).new_elections_in_period(period) { [new_election] }
+        dont_allow(NotificationMailer).notification
+
+        mock(job).completed
+        job.perform
+      end
     end
   end
 end
