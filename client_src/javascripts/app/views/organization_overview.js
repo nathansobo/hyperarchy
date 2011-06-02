@@ -13,16 +13,12 @@ _.constructor("Views.OrganizationOverview", View.Template, {
                 Application.layout.showAddOrganizationForm();
               });
               text(" for your organization. ");
-
-              div({style: "margin-top: 15px;"}, function() {
-                raw("If you're a <em>WorldBlu Live</em> participant, <a href='/worldblu'>click here to join the WorldBlu discussion</a>.");
-              })
-
             }).ref('socialGuestWelcome');
+
             div(function() {
               text('Here are some questions that ');
               span('').ref('guestWelcomeOrganizationName');
-              text(' is discussing. Click on one that interests you to chime in.');
+              text(' is discussing. Click on one that interests you to suggest and vote on answers.');
             }).ref('nonSocialGuestWelcome');
           });
           div({'class': "clear"});
