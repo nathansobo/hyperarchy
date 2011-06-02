@@ -2,7 +2,7 @@ module Prequel
   module Relations
     class Union < Relation
       attr_reader :left, :right
-      delegate :infer_join_columns, :to => :left
+      delegate :new, :infer_join_columns, :to => :left
 
       def initialize(left, right)
         @left, @right= left, right
@@ -18,9 +18,13 @@ module Prequel
         end
       end
 
-      def visit(union_query)
-        union_query.left = left.query(union_query)
-        union_query.right = right.query(union_query)
+      def visit(query)
+        if query.instance_of?(Sql::UnionQuery)
+          query.left = left.query(query)
+          query.right = right.query(query)
+        else
+          query.table_ref = query.add_subquery(self)
+        end
       end
 
       def get_table(name)

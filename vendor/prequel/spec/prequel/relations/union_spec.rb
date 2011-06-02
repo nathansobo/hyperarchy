@@ -140,6 +140,28 @@ module Prequel
             }, :v1 => 1, :v2 => true)
           end
         end
+
+        describe "when a selection is directly above a union" do
+          it "returns the appropriate SQL" do
+            (Blog.where(:user_id => 1) | Blog.where(:public => true)).where(:id => 1).to_sql.should be_like_query(%{
+              select t1.id,
+                     t1.user_id,
+                     t1.public
+              from   ((select blogs.id,
+                              blogs.user_id,
+                              blogs.public
+                       from   blogs
+                       where  blogs.user_id = :v1)
+                      union
+                      (select blogs.id,
+                              blogs.user_id,
+                              blogs.public
+                       from   blogs
+                       where  blogs.public = :v2)) as t1
+              where  t1.id = :v3
+            }, :v1=>1, :v2=>true, :v3=>1)
+          end
+        end
       end
     end
   end

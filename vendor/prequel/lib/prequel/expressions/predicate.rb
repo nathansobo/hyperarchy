@@ -20,7 +20,13 @@ module Prequel
         if new_left = convert_record_reference(relations)
           self.class.new(new_left, right.try(:id))
         else
-          self.class.new(left.resolve_in_relations(relations), right.resolve_in_relations(relations))
+          self.class.new(resolve_operand_in_relations(left, relations), resolve_operand_in_relations(right, relations))
+        end
+      end
+
+      def resolve_operand_in_relations(operand, relations)
+        operand.resolve_in_relations(relations).tap do |resolved|
+          raise "Column #{operand.inspect} could not be found" if !operand.nil? && resolved.nil?
         end
       end
 

@@ -32,6 +32,12 @@ module Prequel
           selection.predicate.left.should == Blog.table.get_column(:user_id)
           selection.predicate.right.should == nil
         end
+
+        it "raises an exception if predicates make reference to a non-existent column" do
+          expect {
+            Blog.where(:crap => true)
+          }.to raise_error("Column :crap could not be found")
+        end
       end
 
       describe "#new(attributes)" do

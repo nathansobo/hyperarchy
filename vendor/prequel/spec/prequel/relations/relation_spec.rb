@@ -89,13 +89,13 @@ module Prequel
 
       describe "#join_through(right)" do
         it "joins to the operand and then projects through its surface table" do
-          Blog.where(:user_id => 1).join_through(Post).should ==
-            Blog.where(:user_id => 1).join(Post).project(Post)
+          Blog.where(:title => "Hello").join_through(Post).should ==
+            Blog.where(:title => "Hello").join(Post).project(Post)
         end
 
         it "handles selections on the right side" do
-          Blog.where(:user_id => 1).join_through(Post.where(:title => "Hi!")).should ==
-            Blog.where(:user_id => 1).join(Post.where(:title => "Hi!")).project(Post)
+          Blog.where(:title => "Hello").join_through(Post.where(:title => "Hi!")).should ==
+            Blog.where(:title => "Hello").join(Post.where(:title => "Hi!")).project(Post)
         end
       end
 
