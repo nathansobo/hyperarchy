@@ -28,7 +28,7 @@ class UsersController < ApplicationController
   def create_user(data, errors)
     user = User.secure_create(params[:user])
 
-    if user.save
+    if user.valid?
       previous_user = current_user
       set_current_user(user)
       if organization = previous_user.guest_organization
@@ -42,8 +42,8 @@ class UsersController < ApplicationController
   end
 
   def create_organization(data, errors)
-    organization = Organization.secure_new(params[:organization])
-    if organization.save
+    organization = Organization.secure_create(params[:organization])
+    if organization.valid?
       data['new_organization_id'] = organization.id
     else
       errors.push(*organization.errors.full_messages)
