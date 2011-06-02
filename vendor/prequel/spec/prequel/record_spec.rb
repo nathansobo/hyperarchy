@@ -484,6 +484,7 @@ module Prequel
 
         describe "when the record has already been inserted into the database" do
           before do
+            freeze_time
             blog.save
             blog.id.should_not be_nil
           end
@@ -594,17 +595,22 @@ module Prequel
             blog.reload.title.should == old_title
           end
 
-          it "if the record is clean (has no dirty fields), returns true without executing any hooks or starting a transaction" do
-            dont_allow(blog) do |blog|
+          it "if the record is clean (has no dirty fields), executes before hooks but does not update the database or change updated_at unless the before hooks make it dirty" do
+            jump 1.minute
+
+            mock(blog) do |blog|
+              blog.before_update({})
               blog.before_save
-              blog.after_save
-              blog.before_update
-              blog.after_update
             end
-            dont_allow(Prequel.session).transaction
+
+            dont_allow(blog) do |blog|
+              blog.after_update
+              blog.after_save
+            end
             
             blog.should be_clean
             blog.save.should be_true
+            blog.updated_at.should == 1.minute.ago
           end
 
           it "does not blow up if there are no dirty fields" do
