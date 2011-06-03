@@ -25,8 +25,8 @@ end
 class Deploy < Thor
   default_task :deploy
 
-  desc 'deploy [env=demo] [ref=origin/rails3]', 'deploy the specified revision to the specified environment'
-  def deploy(env='demo', ref='origin/rails3')
+  desc 'deploy [env=demo] [ref=origin/master]', 'deploy the specified revision to the specified environment'
+  def deploy(env='demo', ref='origin/master')
     require 'deploy'
     AppServer.new(env).deploy(ref)
   end

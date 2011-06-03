@@ -7,9 +7,9 @@ class AppServer
 
   def hostname
     case stage.to_sym
-      when :production
+      when :old_production
         'hyperarchy.com'
-      when :demo
+      when :production
         'rails.hyperarchy.com'
     end
   end
