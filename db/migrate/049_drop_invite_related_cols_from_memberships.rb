@@ -7,8 +7,8 @@ Sequel.migration do
   end
 
   down do
-    alter_table(:invitations) do
-      add_column :pending, Boolean, :default => true
+    alter_table(:memberships) do
+      add_column :pending, TrueClass, :default => true
       add_column :invitation_id, Integer
     end
   end

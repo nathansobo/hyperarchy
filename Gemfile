@@ -6,7 +6,6 @@ gem 'unicorn', '3.5.0'
 gem 'thin', '1.2.11' # for resque-web on prod
 gem 'pg', '0.9.0'
 gem 'sequel', '3.16.0'
-gem 'sequel-rails', '0.1.8'
 gem 'bcrypt-ruby', :require => 'bcrypt'
 gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
 gem 'erector', :path => 'vendor/erector'
@@ -32,7 +31,6 @@ group :development, :test do
   gem 'fuubar', '0.0.5'
   gem 'foreman', '0.16.0'
   gem 'mailtrap', '0.2.1'
-  gem 'parallel_tests', :git => 'git@github.com:nathansobo/parallel_tests.git', :ref => '1aacd508c932d360c015'
 end
 
 group :deploy do

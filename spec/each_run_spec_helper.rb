@@ -16,6 +16,7 @@ RSpec.configure do |config|
     stub($redis).lock
     stub($redis).unlock
     stub(Resque::Status).create
+    stub(Resque::Status).set
     stub(Resque).enqueue
     Mailer.reset
     Sham.reset

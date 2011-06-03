@@ -5,7 +5,7 @@ development:
 
 test:
   adapter: postgres
-  database: hyperarchy_test<%= ENV['TEST_ENV_NUMBER'] %>
+  database: hyperarchy_test
   username: hyperarchy
 
 demo:
