@@ -33,7 +33,7 @@ class AppServer
       Dir["public/assets/*"].each do |path|
         upload! path, "/app/public/assets/#{File.basename(path)}"
       end
-      run "RAILS_ENV=#{rails_env} bundle exec rake db:migrate"
+      run "bundle exec thor db:migrate #{rails_env}"
     end
 
     restart_service 'unicorn'

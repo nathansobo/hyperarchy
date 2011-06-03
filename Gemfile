@@ -2,6 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.7'
 gem 'rake', '0.8.7'
+gem 'thor', '0.14.6'
 gem 'unicorn', '3.5.0'
 gem 'thin', '1.2.11' # for resque-web on prod
 gem 'pg', '0.9.0'
@@ -20,7 +21,6 @@ gem 'redis-lock', '0.1.0'
 gem 'uuidtools', '2.1.2'
 
 group :development, :test do
-  gem 'thor'
   gem 'haml', '3.0.25'
   gem 'rspec', '~> 2.5.0'
   gem 'rspec-rails', '~> 2.5.0'

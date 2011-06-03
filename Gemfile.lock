@@ -200,7 +200,7 @@ DEPENDENCIES
   sequel (= 3.16.0)
   spork (~> 0.9.0.rc7)
   thin (= 1.2.11)
-  thor
+  thor (= 0.14.6)
   typhoeus (= 0.2.4)
   unicorn (= 3.5.0)
   uuidtools (= 2.1.2)
