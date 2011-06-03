@@ -15,14 +15,18 @@ RSpec.configure do |config|
     Prequel.clear_tables
     stub($redis).lock
     stub($redis).unlock
-    stub(Resque::Status).create
-    stub(Resque::Status).set
+    stub(Resque::Status) do |stub|
+      stub.get
+      stub.set
+      stub.should_kill?
+      stub.create
+    end
     stub(Resque).enqueue
-    Mailer.reset
     Sham.reset
 
     Organization.make(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
     User.make(:first_name => "Guest", :last_name => "User", :guest => true, :default_guest => true)
+    ActionMailer::Base.deliveries.clear
   end
 
   config.after do
@@ -34,6 +38,4 @@ RSpec.configure do |config|
   def Hyperarchy.defer
     yield
   end
-
-  Mailer.use_fake
 end

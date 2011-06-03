@@ -13,6 +13,7 @@ gem 'erector', :path => 'vendor/erector'
 gem 'pony', '1.1'
 gem 'haml', '3.0.25'
 gem 'resque', '1.15.0'
+gem 'resque_mailer', '1.0.1'
 gem 'resque-status', '0.2.3', :require => ['resque/status', 'resque/job_with_status']
 gem 'resque-scheduler', '1.9.9', :require => ['resque_scheduler']
 gem 'typhoeus', '0.2.4'

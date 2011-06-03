@@ -2,10 +2,7 @@ require 'spec_helper'
 
 module Models
   describe User do
-    attr_reader :user
-    before do
-      @user = User.make
-    end
+    let(:user) { User.make }
 
     describe ".default_guest" do
       it "returns the default guest" do
@@ -29,12 +26,13 @@ module Models
 
     describe "#after_create" do
       it "if on production, sends admin an email about the new user" do
-        with_rails_env("production") do
-          Mailer.emails.clear
-          User.create!(:first_name => "Steph", :last_name => "Wamby", :email_address => "wamby@example.com", :password => "password")
-          Mailer.emails.length.should == 1
-          Mailer.emails.first[:to].should == "nathan@hyperarchy.com"
-        end
+        user = User.make
+
+        ActionMailer::Base.deliveries.length.should == 1
+        email = ActionMailer::Base.deliveries.shift
+        email.to.map(&:to_s).should =~ ["max@hyperarchy.com", "nathan@hyperarchy.com"]
+        email.body.should include(user.full_name)
+        email.body.should include(user.email_address)
       end
 
       it "makes the new user a member of social" do
