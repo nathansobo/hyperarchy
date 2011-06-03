@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.7'
+gem 'rails', '3.1.0.rc1'
 gem 'rake', '0.8.7'
 gem 'thor', '0.14.6'
 gem 'unicorn', '3.5.0'
@@ -24,8 +24,8 @@ gem 'run_later', :path => 'vendor/run_later'
 
 group :development, :test do
   gem 'haml', '3.0.25'
-  gem 'rspec', '~> 2.5.0'
-  gem 'rspec-rails', '~> 2.5.0'
+  gem 'rspec', '2.6.0'
+  gem 'rspec-rails', '2.6.1'
   gem 'rr', '1.0.2'
   gem 'machinist', '1.0.6'
   gem 'faker', '0.9.5'
