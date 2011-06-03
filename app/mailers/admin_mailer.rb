@@ -1,6 +1,4 @@
 class AdminMailer < ActionMailer::Base
-  include Resque::Mailer
-
   default :from => "Hyperarchy Admin <admin@hyperarchy.com>"
 
   def notify_addresses
