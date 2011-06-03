@@ -25,6 +25,8 @@ Hyperarchy::Application.routes.draw do
   resources :elections
   resources :rankings
   resources :election_visits
+  resources :password_reset_requests
+  resources :password_resets
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

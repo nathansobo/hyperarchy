@@ -8,16 +8,16 @@ describe FeedbacksController do
   describe "#create" do
     it "sends an email to max and nathan with the feedback and the user's name" do
       login_as(User.make)
-      post :create, :feedback => "hi. this is feedback."
+
+      expect_delivery {
+        post :create, :feedback => "hi. this is feedback."
+      }
       response.should be_success
 
-      ActionMailer::Base.deliveries.length.should == 1
-      email = ActionMailer::Base.deliveries.shift
-
-      email.to.should == ["max@hyperarchy.com", "nathan@hyperarchy.com"]
-      email.body.should include("hi. this is feedback.")
-      email.body.should include(current_user.full_name)
-      email.body.should include(current_user.email_address)
+      last_delivery.to.should == ["max@hyperarchy.com", "nathan@hyperarchy.com"]
+      last_delivery.body.should include("hi. this is feedback.")
+      last_delivery.body.should include(current_user.full_name)
+      last_delivery.body.should include(current_user.email_address)
     end
   end
 end

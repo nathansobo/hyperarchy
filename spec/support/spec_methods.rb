@@ -18,4 +18,20 @@ module SpecMethods
   ensure
     Rails.env = previous
   end
+
+  def clear_deliveries
+    ActionMailer::Base.deliveries.clear
+  end
+
+  def last_delivery
+    ActionMailer::Base.deliveries.first
+  end
+
+  def expect_delivery(&block)
+    result = nil
+    expect do
+      result = block.call
+    end.to change(ActionMailer::Base.deliveries, :length).by(1)
+    result
+  end
 end

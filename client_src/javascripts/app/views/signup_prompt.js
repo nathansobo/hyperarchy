@@ -36,7 +36,7 @@ _.constructor("Views.SignupPrompt", View.Template, {
         label("Email Address");
         input({name: "emailAddress", tabindex: 101});
 
-        a({id: "forgotPassword", href: "/request_password_reset", tabindex: 104 }, "forgot my password")
+        a({id: "forgotPassword", href: "/password_reset_requests/new", tabindex: 104 }, "forgot my password")
         label("Password");
         input({name: "password", type: "password", tabindex: 102});
 

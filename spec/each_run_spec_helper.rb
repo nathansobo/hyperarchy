@@ -26,12 +26,11 @@ RSpec.configure do |config|
 
     Organization.make(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
     User.make(:first_name => "Guest", :last_name => "User", :guest => true, :default_guest => true)
-    ActionMailer::Base.deliveries.clear
+    clear_deliveries
   end
 
   config.after do
     Prequel.clear_session_in_test_mode
-    ActionMailer::Base.deliveries.clear
   end
 
   # TODO: Why doesn't a block taking a block work with RR?
