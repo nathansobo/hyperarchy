@@ -85,7 +85,6 @@ _.constructor("Views.OrganizationOverview", View.Template, {
       }
       var organizationId = parseInt(state.organizationId);
       this.organizationId(organizationId);
-      this.toggleFirstUserExplanation();
 
       Application.layout.activateNavigationTab("questionsLink");
       Application.layout.hideSubNavigationContent();
@@ -104,6 +103,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
           var membership = this.organization().membershipForCurrentUser();
           if (membership) membership.update({lastVisited: new Date()});
           this.subscriptions.destroy();
+          this.toggleFirstUserExplanation();
           this.displayElections();
         } else {
           var lastVisitedOrgId = Application.currentUser().defaultOrganization().id();
