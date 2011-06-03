@@ -1,8 +1,6 @@
 module Views
   module Layouts
     class Application < Erector::Widget
-#      include Monarch::Util::BuildRelationalDataset
-
       GOOGLE_ANALYTICS_CODES = {
         "production" => 'UA-19678731-1',
         "demo" => 'UA-19678731-2',
@@ -18,7 +16,6 @@ module Views
       def content
         html :class => "#{controller_name} #{action_name}", :xmlns => "http://www.w3.org/1999/xhtml", "xml:lang" => "en" do
           head do
-            meta "http-equiv" => "X-UA-Compatible", :content => "chrome=1"
             title "Hyperarchy"
             link :rel => "stylesheet", :type => "text/css", :href => "/stylesheets/hyperarchy.css"
             link :rel => "shortcut icon", :href => "/images/icon.png"
@@ -52,7 +49,6 @@ module Views
 
       def google_analytics_javascript
         return unless analytics_enabled?
-    #      return unless RACK_ENV == "production"
 
         javascript %[
           var trackPageviewManually = #{track_pageview_manually?.inspect};
@@ -79,10 +75,6 @@ module Views
 
       def mixpanel_javascript
         return unless analytics_enabled?
-    #      unless RACK_ENV == "production"
-    #        javascript %[ var mpq = []; ]
-    #        return
-    #      end
 
         javascript %[
           var mpq = [];

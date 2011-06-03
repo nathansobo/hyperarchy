@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   layout false
   protect_from_forgery
   helper_method :current_user, :build_client_dataset, :make_guid
+  before_filter :no_internet_explorer
   around_filter :manage_session
 
   protected
@@ -74,5 +75,18 @@ class ApplicationController < ActionController::Base
         r.add_to_client_dataset(dataset)
       end
     end
+  end
+
+  def no_internet_explorer
+    if user_agent =~ /MSIE/ && user_agent !~ /chromeframe/
+      render :template => '/home/no_internet_explorer'
+      false
+    else
+      true
+    end
+  end
+
+  def user_agent
+    request.env["HTTP_USER_AGENT"]
   end
 end

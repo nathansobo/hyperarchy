@@ -19,6 +19,7 @@ gem 'typhoeus', '0.2.4'
 gem 'redis', '2.2.0'
 gem 'redis-lock', '0.1.0'
 gem 'uuidtools', '2.1.2'
+gem 'rack-chromeframe', '1.0.0', :require => 'rack/chrome_frame'
 
 group :development, :test do
   gem 'haml', '3.0.25'

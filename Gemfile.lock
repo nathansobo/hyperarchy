@@ -80,6 +80,7 @@ GEM
     pony (1.1)
       mail (> 2.0)
     rack (1.2.2)
+    rack-chromeframe (1.0.0)
     rack-mount (0.6.14)
       rack (>= 1.0.0)
     rack-test (0.5.7)
@@ -186,6 +187,7 @@ DEPENDENCIES
   net-ssh-telnet
   pg (= 0.9.0)
   pony (= 1.1)
+  rack-chromeframe (= 1.0.0)
   rails (= 3.0.7)
   rake (= 0.8.7)
   redis (= 2.2.0)

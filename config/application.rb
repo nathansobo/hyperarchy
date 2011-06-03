@@ -49,6 +49,8 @@ module Hyperarchy
     config.generators do |g|
       g.helper false
     end
+
+    config.middleware.use Rack::ChromeFrame
   end
 end
 
