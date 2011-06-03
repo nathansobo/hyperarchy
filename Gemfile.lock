@@ -5,6 +5,11 @@ PATH
       rake
       treetop (>= 1.2.3)
 
+PATH
+  remote: vendor/run_later
+  specs:
+    run_later (0.0.1)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -199,6 +204,7 @@ DEPENDENCIES
   rr (= 1.0.2)
   rspec (~> 2.5.0)
   rspec-rails (~> 2.5.0)
+  run_later!
   sequel (= 3.16.0)
   spork (~> 0.9.0.rc7)
   thin (= 1.2.11)

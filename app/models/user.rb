@@ -92,7 +92,9 @@ class User < Prequel::Record
   end
 
   def after_create
-    AdminMailer.new_user(self).deliver
+    run_later do
+      AdminMailer.new_user(self).deliver
+    end
     memberships.create!(:organization => Organization.social)
   end
 

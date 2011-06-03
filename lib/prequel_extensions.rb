@@ -4,6 +4,8 @@ module Prequel
   end
 
   class Record
+    include RunLater::InstanceMethods
+
     def current_user
       Prequel.session.current_user
     end

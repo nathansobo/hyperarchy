@@ -24,7 +24,7 @@ module SpecMethods
   end
 
   def last_delivery
-    ActionMailer::Base.deliveries.first
+    ActionMailer::Base.deliveries.last
   end
 
   def expect_delivery(&block)

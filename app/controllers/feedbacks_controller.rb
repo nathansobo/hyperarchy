@@ -1,6 +1,9 @@
 class FeedbacksController < ApplicationController
   def create
-    AdminMailer.feedback(current_user, params[:feedback]).deliver
+    feedback = params[:feedback]
+    run_later do
+      AdminMailer.feedback(current_user, feedback).deliver
+    end
     head :ok
   end
 end
