@@ -7,10 +7,10 @@ class AppServer
 
   def hostname
     case stage.to_sym
-      when :old_production
-        'hyperarchy.com'
+      when :demo
+        'demo.hyperarchy.com'
       when :production
-        'rails.hyperarchy.com'
+        'hyperarchy.com'
     end
   end
 
@@ -67,6 +67,7 @@ class AppServer
   end
 
   def install_public_key
+    system "chmod 0600 #{private_key_path}"
     puts "enter root password for #{hostname}:"
     password = $stdin.gets.chomp
     ssh_session('root', password)
@@ -170,7 +171,7 @@ class AppServer
     run "patch -p3 < /usr/local/djb/patches/daemontools-0.76-setuidgid-initgroups.patch"
     run "package/install"
     upload! 'lib/deploy/resources/daemontools/svscanboot.conf', '/etc/init/svscanboot.conf'
-    run "start svscanboot" unless run "status svscanboot" =~ /start\/running/
+    run "start svscanboot" unless run("status svscanboot") =~ /start\/running/
   end
 
   def make_daemontools_dirs

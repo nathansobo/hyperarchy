@@ -1,12 +1,18 @@
 require File.expand_path('../thor_helper', __FILE__)
 
 class Provision < Thor
-  default_task :provision
+  default_task :demo
 
-  desc 'provision [env=demo]', 'provision a new server'
-  def provision(env='demo')
+  desc 'production', 'provision the production server'
+  def production
     require 'deploy'
-    AppServer.new(env).provision
+    AppServer.new('production').provision
+  end
+
+  desc 'demo', 'provision the demo server'
+  def demo
+    require 'deploy'
+    AppServer.new('demo').provision
   end
 
   desc 'install_public_key [env=demo]', 'install the public ssh key after entering the root password'
@@ -23,12 +29,18 @@ class Provision < Thor
 end
 
 class Deploy < Thor
-  default_task :deploy
+  default_task :demo
 
-  desc 'deploy [env=demo] [ref=origin/master]', 'deploy the specified revision to the specified environment'
-  def deploy(env='demo', ref='origin/master')
+  desc 'production [ref=origin/master]', 'deploy the specified revision to production'
+  def production(ref='origin/master')
     require 'deploy'
-    AppServer.new(env).deploy(ref)
+    AppServer.new('production').deploy(ref)
+  end
+
+  desc 'production [ref=origin/master]', 'deploy the specified revision to demo'
+  def demo(ref='origin/master')
+    require 'deploy'
+    AppServer.new('demo').deploy(ref)
   end
 
   desc "minify_js [env=demo]", "minify javascript for upload."
