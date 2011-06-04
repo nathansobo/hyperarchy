@@ -31,4 +31,3 @@ Hyperarchy::Application.configure do
   # TODO: This should use a more Rails-approved mechanism
   HTTP_HOST = "local.hyperarchy.com"
 end
-

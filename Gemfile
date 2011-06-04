@@ -22,6 +22,13 @@ gem 'uuidtools', '2.1.2'
 gem 'rack-chromeframe', '1.0.0', :require => 'rack/chrome_frame'
 gem 'run_later', :path => 'vendor/run_later'
 
+# Asset template engines
+gem 'sass'
+gem 'uglifier'
+
+gem 'jquery-rails'
+
+
 group :development, :test do
   gem 'haml', '3.0.25'
   gem 'rspec', '2.6.0'
