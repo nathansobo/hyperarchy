@@ -94,9 +94,11 @@ module Views
         end
       end
 
-      def javascript_include(*paths)
-        GiftWrapper.require_js(*paths).each do |path|
-          script :type => "text/javascript", :language => "javascript", :src => path
+      def javascript_include_tag(source, options={})
+        super unless Rails.env.development?
+        asset = Rails.application.assets.find_asset(source + '.js')
+        asset.dependencies.each do |dependency|
+          super(dependency.logical_path.gsub(/\.js$/, ''), options)
         end
       end
     end

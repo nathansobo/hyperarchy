@@ -6,7 +6,7 @@ module Views
       end
 
       def below_body_content
-        application_javascript_tags
+        javascript_include_tag("application")
 
         javascript %[
         $(function() {
@@ -28,10 +28,6 @@ module Views
           div :id => "mediumLogo"
           div :class => "bigLoading matchesBodyBackground"
         end
-      end
-
-      def application_javascript_tags
-        javascript_include_tag("application")
       end
     end
   end
