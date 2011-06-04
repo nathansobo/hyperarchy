@@ -21,13 +21,10 @@ gem 'redis-lock', '0.1.0'
 gem 'uuidtools', '2.1.2'
 gem 'rack-chromeframe', '1.0.0', :require => 'rack/chrome_frame'
 gem 'run_later', :path => 'vendor/run_later'
-
-# Asset template engines
 gem 'sass'
 gem 'uglifier'
-
 gem 'jquery-rails'
-
+gem 'monarch', :path => 'vendor/monarch'
 
 group :development, :test do
   gem 'haml', '3.0.25'

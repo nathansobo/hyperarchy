@@ -6,6 +6,11 @@ PATH
       treetop (>= 1.2.3)
 
 PATH
+  remote: vendor/monarch
+  specs:
+    monarch (0.0.1)
+
+PATH
   remote: vendor/run_later
   specs:
     run_later (0.0.1)
@@ -209,6 +214,7 @@ DEPENDENCIES
   jquery-rails
   machinist (= 1.0.6)
   mailtrap (= 0.2.1)
+  monarch!
   net-sftp
   net-ssh (= 2.1.0)
   net-ssh-telnet

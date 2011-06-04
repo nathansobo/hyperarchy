@@ -1,6 +1,0 @@
-ScrewUnit.configure do
-  port 8989
-  add_js_location "/vendor", "vendor"
-  add_js_location "/lib", "lib"
-  add_js_location "/specs", "spec"
-end

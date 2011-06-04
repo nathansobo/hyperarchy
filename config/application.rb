@@ -53,6 +53,8 @@ module Hyperarchy
     # Enable the asset pipeline
     config.assets.enabled = true
 
+    config.assets.prepend_path(config.root)
+
     # Make IE use ChromeFrame
     config.middleware.use Rack::ChromeFrame
   end
