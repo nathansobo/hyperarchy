@@ -404,7 +404,7 @@ class AppServer
   end
 
   def ssh_session(user="root", password=nil)
-    @ssh_session ||= Net::SSH.start(hostname, user, :password => password)
+    @ssh_session ||= Net::SSH.start(hostname, user, :password => password, :forward_agent => true)
   end
 
   def sftp_session

@@ -55,6 +55,8 @@ class Db < Thor
   desc "transfer source_stage target_stage", "dump the contents of source's database and load them into target's database"
   def transfer(source_stage, target_stage)
     require 'deploy'
+    raise "Don't transfer data to production." if target_stage.to_sym == :production
+    
     source = AppServer.new(source_stage)
     target = AppServer.new(target_stage)
     target.download_database(source)
