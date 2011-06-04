@@ -60,6 +60,17 @@ class Db < Thor
     target.download_database(source)
   end
 
+  desc "download [source_stage=production]", "dump the contents of source's database and load them into the local development database"
+  def download(source_stage='production')
+    require 'deploy'
+    source_server = AppServer.new(source_stage)
+    dump_file_path = source_server.dump_database
+    system "scp root@#{source_server.hostname}:#{dump_file_path} #{dump_file_path}"
+    system "gunzip #{dump_file_path}"
+    dump_file_path = dump_file_path.gsub(/\.gz$/, '')
+    system "pg_restore #{dump_file_path} --dbname=hyperarchy_development --clean"
+  end
+
   protected
 
   def configuration(env)

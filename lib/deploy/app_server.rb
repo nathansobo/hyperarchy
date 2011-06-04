@@ -324,13 +324,16 @@ class AppServer
     dump_file_path = "/tmp/#{db_name}_#{Time.now.to_i}.tar"
     as 'hyperarchy' do
       run "pg_dump #{db_name} --file=#{dump_file_path} --format=tar"
+      run "gzip #{dump_file_path}"
     end
-    dump_file_path
+    "#{dump_file_path}.gz"
   end
 
   def download_database(source_server)
     dump_file_path = source_server.dump_database
     run "scp #{source_server.hostname}:#{dump_file_path} #{dump_file_path}"
+    run "gunzip #{dump_file_path}"
+    dump_file_path = dump_file_path.gsub(/\.gz$/, '')
 
     stop_service 'unicorn'
     sleep 1 while port_listening?(8080) 
