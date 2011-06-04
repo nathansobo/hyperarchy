@@ -64,10 +64,10 @@ _.constructor("Organization", Model.Record, {
     });
 
     this.fetchInProgressFuture = promise;
-    promise.success(function() {
+    promise.success(this.bind(function() {
       delete this.fetchInProgressFuture;
       this.numElectionsFetched += 16;
-    }, this);
+    }));
 
     return promise;
   },
