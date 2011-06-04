@@ -1,6 +1,6 @@
 module Erector
   module Rails
-    class TemplateHandler < ActionView::Template::Handler
+    class TemplateHandler
       def self.call(template)
         require_dependency template.identifier
         widget_class_name = "views/#{template.identifier =~ %r(views/([^.]*)(\..*)?\.rb) && $1}".camelize
