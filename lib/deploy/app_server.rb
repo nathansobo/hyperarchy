@@ -19,7 +19,7 @@ class AppServer
   end
 
   def deploy(ref)
-    system "RAILS_ENV=#{rails_env} rake assets:precompile"
+    run_locally "RAILS_ENV=#{rails_env} rake assets:precompile"
 
     as('hyperarchy', '/app') do
       run "git fetch origin"
