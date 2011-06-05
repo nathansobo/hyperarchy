@@ -19,7 +19,8 @@ class AppServer
   end
 
   def deploy(ref)
-    run_locally "RAILS_ENV=#{rails_env} rake assets:precompile"
+    run_locally "rm -rf public/assets"
+    run_locally "env RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
 
     as('hyperarchy', '/app') do
       run "git fetch origin"
@@ -369,8 +370,8 @@ class AppServer
 
 
   def run_locally(cmd)
-    puts cmd
-    system cmd
+    puts(cmd)
+    raise "Local command failed: #{cmd}" unless system(cmd)
   end
 
   PROMPT_REGEX = /[$%#>] (\z|\e)/n
