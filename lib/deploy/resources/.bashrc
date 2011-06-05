@@ -96,5 +96,5 @@ if [[ -n "$PS1" ]]; then
   #fi
 fi
 
-export PATH=/opt/node/bin:$PATH
 [[ -s "/usr/local/lib/rvm" ]] && . "/usr/local/lib/rvm"  # This loads RVM into a shell session.
+export PATH=/opt/node/bin:$PATH

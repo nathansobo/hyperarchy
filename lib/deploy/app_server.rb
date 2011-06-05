@@ -19,8 +19,15 @@ class AppServer
   end
 
   def deploy(ref)
-    system "thor deploy:minify_js"
-    as('hyperarchy', '/app') { run "git fetch origin" }
+    system "RAILS_ENV=#{rails_env} rake assets:precompile"
+
+    as('hyperarchy', '/app') do
+      run "git fetch origin"
+      run "mkdir -p public/assets"
+      Dir["public/assets/*"].each do |path|
+        upload! path, "/app/public/assets/#{File.basename(path)}"
+      end
+    end
 
     stop_service "socket_server"
     maintenance_page_up
@@ -29,10 +36,6 @@ class AppServer
       run "git checkout --force", ref
       run "source .rvmrc"
       run "bundle install --deployment --without development test deploy"
-      run "mkdir -p public/assets"
-      Dir["public/assets/*"].each do |path|
-        upload! path, "/app/public/assets/#{File.basename(path)}"
-      end
       run "bundle exec thor db:migrate #{rails_env}"
     end
 
@@ -148,7 +151,9 @@ class AppServer
 
   def upload_bashrc
     upload! 'lib/deploy/resources/.bashrc', '/root/.bashrc'
-    run 'cp /root/.bashrc /home/hyperarchy/.bashrc'
+    run 'cp /root/.bashrc /home/hyperarchy/'
+    run 'cp /root/.profile /home/hyperarchy/'
+    run 'chown -R hyperarchy:hyperarchy /home/hyperarchy'
   end
 
   def source_bashrc
@@ -299,6 +304,15 @@ class AppServer
     install_service 'resque_web', :HOME => '/home/hyperarchy'
   end
 
+  def reinstall_services
+    maintenance_page_up
+    install_services
+    run "svc -u /service/*"
+    run "rm /service/*/down"
+    sleep 1 until port_listening?(8080)
+    maintenance_page_down
+  end
+
   def install_service(service_name, env_vars={})
     env_vars = {:RAILS_ENV => rails_env}.merge(env_vars)
     run "rm /service/#{service_name}" if run?("test -e /service/#{service_name}")
@@ -313,7 +327,7 @@ class AppServer
     run "chmod 755 /var/svc.d/#{service_name}/log/run"
     run "mkdir -p /var/svc.d/#{service_name}/env"
     env_vars.each do |var_name, value|
-      run "echo #{value.inspect} > /var/svc.d/#{service_name}/env/#{var_name}"
+      run! "echo #{value.inspect} > /var/svc.d/#{service_name}/env/#{var_name}"
     end
     run "touch /var/svc.d/#{service_name}/down"
     run "ln -s /var/svc.d/#{service_name} /service/#{service_name}"
@@ -352,6 +366,12 @@ class AppServer
     run "yes | apt-get install", *packages
   end
   alias_method :install_package, :install_packages
+
+
+  def run_locally(cmd)
+    puts cmd
+    system cmd
+  end
 
   PROMPT_REGEX = /[$%#>] (\z|\e)/n
   def run(*command_fragments)

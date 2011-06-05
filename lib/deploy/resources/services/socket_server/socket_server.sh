@@ -1,3 +1,4 @@
 #!/bin/bash
+export PATH=/opt/node/bin:$PATH
 cd /app/vendor/socket_server
-exec /opt/node/bin/node ./socket_server.js
+exec node ./socket_server.js

@@ -26,6 +26,12 @@ class Provision < Thor
     require 'deploy'
     AppServer.new(env).reload_nginx_config
   end
+
+  desc 'reinstall_services [env=demo]', 'reinstall all services with the maintenance page up, then start them'
+  def reinstall_services(env='demo')
+    require 'deploy'
+    AppServer.new(env).reinstall_services
+  end
 end
 
 class Deploy < Thor
