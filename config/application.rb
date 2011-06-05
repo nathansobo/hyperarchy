@@ -10,10 +10,6 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 require 'erector/rails/railtie'
 
 module Hyperarchy
-  def self.defer
-    yield
-  end
-
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -52,8 +48,7 @@ module Hyperarchy
 
     # Enable the asset pipeline
     config.assets.enabled = true
-
-    config.assets.prepend_path(config.root)
+    config.assets.precompile = ['application.js']
 
     # Make IE use ChromeFrame
     config.middleware.use Rack::ChromeFrame
