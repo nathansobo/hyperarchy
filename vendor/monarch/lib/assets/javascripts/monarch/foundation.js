@@ -113,7 +113,7 @@ _.mixin({
   }
 });
 
-var permittedPropertyAccessorDefinitionKeys = ["reader", "writer", "afterWrite", "afterChange"];
+var permittedPropertyAccessorDefinitionKeys = ["reader", "writer", "write", "change"];
 
 function definePropertyAccessors(module) {
   if (module.propertyAccessors) {
@@ -125,7 +125,7 @@ function definePropertyAccessors(module) {
   }
   _.each(module, function(value, key) {
     if (isPropertyAccessorDefinition(value)) {
-      module[key] = buildPropertyAccessor(key, value.reader, value.writer, value.afterWrite, value.afterChange);
+      module[key] = buildPropertyAccessor(key, value.reader, value.writer, value.write, value.change);
     }
   });
 }
@@ -138,7 +138,7 @@ function isPropertyAccessorDefinition(value) {
   });
 }
 
-function buildPropertyAccessor(name, reader, writer, afterWriteHook, afterChangeHook) {
+function buildPropertyAccessor(name, reader, writer, writeHook, changeHook) {
   var fieldName = "_" + name;
   if (!reader) reader = function() { return this[fieldName]; };
   if (!writer) writer = function(value) { this[fieldName] = value; };
@@ -153,11 +153,11 @@ function buildPropertyAccessor(name, reader, writer, afterWriteHook, afterChange
       var newValue = writer.apply(this, arguments) || this[fieldName];
 
       var writeHookReturnVal, changeHookReturnVal;
-      if (afterWriteHook) writeHookReturnVal = afterWriteHook.call(this, newValue, oldValue);
+      if (writeHook) writeHookReturnVal = writeHook.call(this, newValue, oldValue);
       if (writeNode) writeNode.publish(newValue, oldValue);
 
       if (newValue !== oldValue) {
-        if (afterChangeHook) changeHookReturnVal = afterChangeHook.call(this, newValue, oldValue);
+        if (changeHook) changeHookReturnVal = changeHook.call(this, newValue, oldValue);
         if (changeNode) changeNode.publish(newValue, oldValue);
       }
 

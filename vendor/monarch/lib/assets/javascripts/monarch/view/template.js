@@ -112,7 +112,7 @@ _.constructor("Monarch.View.Template", {
     },
 
     model: {
-      afterWrite: function(model) {
+      write: function(model) {
         this.populateFormFields();
         if (this.updateSubscription) {
           this.updateSubscription.destroy();

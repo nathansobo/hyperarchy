@@ -608,8 +608,8 @@ Screw.Unit(function(c) { with(c) {
 
         context("when custom readers, writers or hooks are requested", function() {
           it("defines jQuery style reader/writer functions in the target module that dispatch to the custom handlers and call the appropriate hooks", function() {
-            var quuxAfterWriteHook = mockFunction("quuxAfterWriteHook");
-            var quuxAfterChangeHook = mockFunction("quuxAfterChangeHook");
+            var quuxwriteHook = mockFunction("quuxwriteHook");
+            var quuxchangeHook = mockFunction("quuxchangeHook");
             var definedTwiceWriteHook = mockFunction("doubleDefinedWriteHook");
             var a = {};
             var b = {
@@ -639,15 +639,15 @@ Screw.Unit(function(c) { with(c) {
               },
 
               quux: {
-                afterWrite: quuxAfterWriteHook,
-                afterChange: quuxAfterChangeHook
+                write: quuxwriteHook,
+                change: quuxchangeHook
               },
 
               emptyHash: {},
               emptyArray: [],
 
               definedTwice: {
-                afterWrite: definedTwiceWriteHook
+                write: definedTwiceWriteHook
               }
             };
 
@@ -667,16 +667,16 @@ Screw.Unit(function(c) { with(c) {
 
             expect(a.quux._accessor_).to(beTrue);
             a.quux("d");
-            expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("d", undefined));
-            expect(quuxAfterChangeHook).to(haveBeenCalled, withArgs("d", undefined));
+            expect(quuxwriteHook).to(haveBeenCalled, withArgs("d", undefined));
+            expect(quuxchangeHook).to(haveBeenCalled, withArgs("d", undefined));
             a.quux("e");
-            expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("e", "d"));
-            expect(quuxAfterChangeHook).to(haveBeenCalled, withArgs("e", "d"));
-            quuxAfterChangeHook.clear();
+            expect(quuxwriteHook).to(haveBeenCalled, withArgs("e", "d"));
+            expect(quuxchangeHook).to(haveBeenCalled, withArgs("e", "d"));
+            quuxchangeHook.clear();
             
             a.quux("e");
-            expect(quuxAfterWriteHook).to(haveBeenCalled, withArgs("e", "e"));
-            expect(quuxAfterChangeHook).toNot(haveBeenCalled);
+            expect(quuxwriteHook).to(haveBeenCalled, withArgs("e", "e"));
+            expect(quuxchangeHook).toNot(haveBeenCalled);
 
             expect(a.emptyHash).to(equal, {});
             expect(a.emptyArray).to(equal, []);
