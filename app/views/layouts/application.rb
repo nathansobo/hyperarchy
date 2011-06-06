@@ -17,7 +17,8 @@ module Views
         html :class => "#{controller_name} #{action_name}", :xmlns => "http://www.w3.org/1999/xhtml", "xml:lang" => "en" do
           head do
             title "Hyperarchy"
-            link :rel => "stylesheet", :type => "text/css", :href => "/stylesheets/hyperarchy.css"
+
+            stylesheet_link_tag 'hyperarchy'
             link :rel => "shortcut icon", :href => "/images/icon.png"
 
             csrf_meta_tag
