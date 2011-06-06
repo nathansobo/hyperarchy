@@ -21,7 +21,6 @@
 //= require socket.io
 //= require models
 //= require views
-//= require controllers
 //= require routes
 
 
