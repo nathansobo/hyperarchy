@@ -6,7 +6,7 @@ module Views
       end
 
       def below_body_content
-        javascript_include_tag("application")
+        javascript_include_tag("application", :debug => false)
 
         javascript %[
         $(function() {

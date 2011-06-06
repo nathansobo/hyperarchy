@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.1.0.rc1'
+gem 'rails', :path => '~/workspace/rails'
 gem 'rake', '0.8.7'
 gem 'thor', '0.14.6'
 gem 'unicorn', '3.5.0'
@@ -11,7 +11,6 @@ gem 'bcrypt-ruby', :require => 'bcrypt'
 gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
 gem 'erector', :path => 'vendor/erector'
 gem 'pony', '1.1'
-gem 'haml', '3.0.25'
 gem 'resque', '1.15.0'
 gem 'resque-status', '0.2.3', :require => ['resque/status', 'resque/job_with_status']
 gem 'resque-scheduler', '1.9.9', :require => ['resque_scheduler']
@@ -27,7 +26,6 @@ gem 'jquery-rails'
 gem 'monarch', :path => 'vendor/monarch'
 
 group :development, :test do
-  gem 'haml', '3.0.25'
   gem 'rspec', '2.6.0'
   gem 'rspec-rails', '2.6.1'
   gem 'rr', '1.0.2'

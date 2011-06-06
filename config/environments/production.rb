@@ -27,8 +27,7 @@ Hyperarchy::Application.configure do
   config.serve_static_assets = false
 
   # Compress both stylesheets and JavaScripts
-  config.assets.js_compressor  = :uglifier
-  config.assets.css_compressor = :scss
+  config.assets.compress = true
 
   # Disable Rails's static asset server
   # In production, Apache or nginx will already do this

@@ -49,6 +49,9 @@ module Hyperarchy
     # Enable the asset pipeline
     config.assets.enabled = true
     config.assets.precompile = ['application.js']
+    config.assets.js_compressor = :uglifier
+    config.assets.js_compressor_options = { :except => ['$super'] }
+    config.assets.css_compressor = :scss
 
     # Make IE use ChromeFrame
     config.middleware.use Rack::ChromeFrame
