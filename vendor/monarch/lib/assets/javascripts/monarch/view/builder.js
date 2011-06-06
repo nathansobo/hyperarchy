@@ -68,6 +68,8 @@ _.constructor("Monarch.View.Builder", {
       } else {
         view[args.name] = subview;
       }
+      if (!view.subviews) view.subviews = [];
+      view.subviews.push(subview);
       element.replaceWith(subview);
     });
   },

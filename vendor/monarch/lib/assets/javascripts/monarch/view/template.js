@@ -105,6 +105,12 @@ _.constructor("Monarch.View.Template", {
       return result;
     },
 
+    attach: function() {
+      _.each(this.subviews, function(subview) {
+        subview.attach();
+      });
+    },
+
     cleanUpBindHtmlSubscriptions: function() {
       this.find("*[htmlIsBound=true]").each(function() {
         $(this).data('bindHtmlSubscription').destroy();

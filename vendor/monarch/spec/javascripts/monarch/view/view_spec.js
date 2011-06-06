@@ -230,5 +230,49 @@ Screw.Unit(function(c) { with(c) {
         });
       });
     });
+
+    describe("#attach", function() {
+      it("calls #attach on all subviews by default", function() {
+        var parentTemplate = _.constructor(Monarch.View.Template, {
+          content: function() { with(this.builder) {
+            div(function() {
+              subview('subview1', subviewTemplate)
+              subview('subview2', subviewTemplate)
+            });
+          }},
+
+          viewProperties: {
+            attach: function($super) {
+              this.attachCalled = true;
+              $super();
+            }
+          }
+        });
+
+        var subviewTemplate = _.constructor(Monarch.View.Template, {
+          content: function() { with(this.builder) {
+            div("I am a subview");
+          }},
+
+          viewProperties: {
+            attach: function() {
+              this.attachCalled = true;
+            }
+          }
+        });
+
+        var view = parentTemplate.toView();
+
+        expect(view.attachCalled).to(beFalse);
+        expect(view.subview1.attachCalled).to(beFalse);
+        expect(view.subview2.attachCalled).to(beFalse);
+
+        view.attach();
+
+        expect(view.attachCalled).to(beTrue);
+        expect(view.subview1.attachCalled).to(beTrue);
+        expect(view.subview2.attachCalled).to(beTrue);
+      });
+    });
   });
 }});
