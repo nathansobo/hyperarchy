@@ -143,6 +143,8 @@ function buildPropertyAccessor(name, reader, writer, afterWriteHook, afterChange
   if (!reader) reader = function() { return this[fieldName]; };
   if (!writer) writer = function(value) { this[fieldName] = value; };
 
+  var writeNode, changeNode;
+
   var accessor = function() {
     if (arguments.length == 0) {
       return reader.call(this);
@@ -152,10 +154,27 @@ function buildPropertyAccessor(name, reader, writer, afterWriteHook, afterChange
 
       var writeHookReturnVal, changeHookReturnVal;
       if (afterWriteHook) writeHookReturnVal = afterWriteHook.call(this, newValue, oldValue);
-      if (afterChangeHook && newValue !== oldValue) changeHookReturnVal = afterChangeHook.call(this, newValue, oldValue);
+      if (writeNode) writeNode.publish(newValue, oldValue);
+
+      if (newValue !== oldValue) {
+        if (afterChangeHook) changeHookReturnVal = afterChangeHook.call(this, newValue, oldValue);
+        if (changeNode) changeNode.publish(newValue, oldValue);
+      }
+
       return changeHookReturnVal || writeHookReturnVal || newValue;
     }
   };
+  
+  accessor.write = function(callback, context) {
+    if (!writeNode) writeNode = new Monarch.SubscriptionNode();
+    writeNode.subscribe(callback, context);
+  };
+
+  accessor.change = function(callback, context) {
+    if (!changeNode) changeNode = new Monarch.SubscriptionNode();
+    changeNode.subscribe(callback, context);
+  };
+
   accessor._accessor_ = true;
   return accessor;
 }

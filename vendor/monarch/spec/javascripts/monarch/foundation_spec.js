@@ -573,6 +573,37 @@ Screw.Unit(function(c) { with(c) {
             expect(a.bar()).to(eq, "bar1");
             expect(a._bar).to(eq, "bar1");
           });
+
+          it("allows change / write handlers to be bound to the property accessor functions", function() {
+            var a = {};
+            _.addMethods(a, {
+              propertyAccessors: ["foo"]
+            });
+
+            var writeCallback = mockFunction('writeCallback');
+            var changeCallback = mockFunction('changeCallback');
+            var context = {};
+
+            a.foo.write(writeCallback, context);
+            a.foo.change(changeCallback, context);
+
+            a.foo("hello");
+
+            expect(writeCallback).to(haveBeenCalled, withArgs("hello", undefined));
+            expect(changeCallback).to(haveBeenCalled, withArgs("hello", undefined));
+
+            writeCallback.clear();
+            changeCallback.clear();
+            
+            a.foo("hello");
+
+            expect(writeCallback).to(haveBeenCalled, withArgs("hello", "hello"));
+            expect(changeCallback).toNot(haveBeenCalled);
+
+            a.foo("goodbye");
+            
+            expect(changeCallback).to(haveBeenCalled, withArgs("goodbye", "hello"));
+          });
         });
 
         context("when custom readers, writers or hooks are requested", function() {
