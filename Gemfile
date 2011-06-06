@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', :path => '~/workspace/rails'
+gem 'rails', :path => 'vendor/rails'
 gem 'rake', '0.8.7'
 gem 'thor', '0.14.6'
 gem 'unicorn', '3.5.0'
@@ -21,7 +21,7 @@ gem 'uuidtools', '2.1.2'
 gem 'rack-chromeframe', '1.0.0', :require => 'rack/chrome_frame'
 gem 'run_later', :path => 'vendor/run_later'
 gem 'sass'
-gem 'uglifier'
+gem 'uglifier', :path => 'vendor/uglifier'
 gem 'jquery-rails'
 gem 'monarch', :path => 'vendor/monarch'
 
