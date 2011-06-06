@@ -78,6 +78,15 @@ PATH
     run_later (0.0.1)
 
 PATH
+  remote: vendor/sass-rails
+  specs:
+    sass-rails (3.1.0.rc.2)
+      actionpack (~> 3.1.0.rc1)
+      railties (~> 3.1.0.rc1)
+      sass (>= 3.1.2)
+      sprockets (>= 2.0.0.beta.9)
+
+PATH
   remote: vendor/uglifier
   specs:
     uglifier (0.5.4)
@@ -258,6 +267,7 @@ DEPENDENCIES
   rspec-rails (= 2.6.1)
   run_later!
   sass
+  sass-rails!
   sequel (= 3.16.0)
   spork (~> 0.9.0.rc7)
   thin (= 1.2.11)

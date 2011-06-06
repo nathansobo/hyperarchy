@@ -18,7 +18,7 @@ module Views
           head do
             title "Hyperarchy"
 
-            stylesheet_link_tag 'hyperarchy'
+            stylesheet_link_tag 'application'
             link :rel => "shortcut icon", :href => "/images/icon.png"
 
             csrf_meta_tag

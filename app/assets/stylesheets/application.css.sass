@@ -1,1 +1,21 @@
 @import "compass/reset"
+@import "compass/css3/box"
+
+body
+  font-family: Helvetica, Arial, sans-serif
+  font-size: 150%
+
+#layout
+  #header
+    background-color: #aaa
+    #header-content
+      @include display-box
+      margin: 0 auto
+      max-width: 1200px
+      #menu-items
+        @include box-flex(1)
+        text-align: right
+
+#account-menu
+  > *
+    display: none

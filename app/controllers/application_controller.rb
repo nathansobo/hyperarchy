@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
 
   layout false
   protect_from_forgery
-  helper_method :current_user, :build_client_dataset, :make_guid
+  helper_method :current_user, :current_user_id, :build_client_dataset, :make_guid
   before_filter :no_internet_explorer
   around_filter :manage_session
 

@@ -155,6 +155,7 @@ body {
 
 #jasmine_content {
   position:fixed;
+  width: 960px;
   right: 100%;
 }
 
