@@ -69,11 +69,11 @@ _.constructor("Controllers.Application", {
   },
 
   currentOrganizationId: {
-    afterWrite: function() {
+    write: function() {
       this.layout.showOrganizationNavigationBar();
     },
 
-    afterChange: function(organizationId, old) {
+    change: function(organizationId, old) {
       if (this.previousOrganizationSubscription) this.previousOrganizationSubscription.destroy();
       this.socketConnectionFuture.onSuccess(function(sessionId) {
         $.post('/channel_subscriptions/organizations/' + organizationId, { session_id: sessionId });

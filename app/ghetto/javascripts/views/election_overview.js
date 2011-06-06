@@ -190,7 +190,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     electionId: {
-      afterChange: function(electionId, previousElectionId) {
+      change: function(electionId, previousElectionId) {
         this.hideElementsWhileLoading();
         var additionalRelations = [
           Election.where({id: electionId}),
@@ -214,7 +214,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     rankingsUserId: {
-      afterChange: function(rankingsUserId) {
+      change: function(rankingsUserId) {
         var rankingsUser = User.find(rankingsUserId);
         if (!rankingsUser) {
           this.rankedCandidatesList.startLoading();
@@ -228,7 +228,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
     },
 
     election: {
-      afterChange: function(election) {
+      change: function(election) {
         Application.currentOrganizationId(election.organizationId());
 
         this.populateElectionDetails(election);
@@ -239,7 +239,7 @@ _.constructor("Views.ElectionOverview", View.Template, {
         this.votesList.election(election);
       },
 
-      afterWrite: function() {
+      write: function() {
         this.toggleFirstUserExplanation();
       }
     },

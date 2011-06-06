@@ -10,7 +10,7 @@ _.constructor("Views.Avatar", View.Template, {
     },
 
     user: {
-      afterChange: function(user) {
+      change: function(user) {
         this.removeClass("validGravatar");
         this.empty();
         var img = new Image();

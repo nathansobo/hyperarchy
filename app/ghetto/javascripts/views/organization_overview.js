@@ -97,7 +97,7 @@ _.constructor("Views.OrganizationOverview", View.Template, {
     },
 
     organizationId: {
-      afterChange: function(organizationId) {
+      change: function(organizationId) {
         if (this.organization()) {
           Application.currentOrganizationId(organizationId);
           var membership = this.organization().membershipForCurrentUser();

@@ -22,7 +22,7 @@ _.constructor("Views.CandidatesList", View.Template, {
     },
 
     election: {
-      afterChange: function(election) {
+      change: function(election) {
         this.candidatesList.relation(election.candidates());
       }
     },

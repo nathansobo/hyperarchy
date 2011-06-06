@@ -12,7 +12,7 @@ _.constructor("Views.SortedList", View.Template, {
     },
 
     relation: {
-      afterChange: function(relation) {
+      change: function(relation) {
         if (this.subscriptions) this.subscriptions.destroy();
 
         this.empty();

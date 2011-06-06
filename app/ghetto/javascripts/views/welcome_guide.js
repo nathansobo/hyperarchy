@@ -65,7 +65,7 @@ _.constructor("Views.WelcomeGuide", View.Template, {
     },
 
     organization: {
-      afterChange: function(organization) {
+      change: function(organization) {
         if (organization.dismissedWelcomeGuide() || Application.currentUser().dismissedWelcomeGuide()) {
           this.hide();
           return;

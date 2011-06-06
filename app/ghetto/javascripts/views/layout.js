@@ -148,7 +148,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     organization: {
-      afterChange: function(organization) {
+      change: function(organization) {
         this.organizationName.bindHtml(organization, 'name');
         this.showOrHideInviteLink();
         this.showOrHideAdminLinks();
@@ -156,7 +156,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     currentUser: {
-      afterChange: function(user) {
+      change: function(user) {
         this.currentUserSubscriptions.destroy();
 
         if (user.guest()) {

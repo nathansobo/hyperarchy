@@ -67,7 +67,7 @@ _.constructor("Views.NewElection", View.Template, {
     },
 
     organizationId: {
-      afterChange: function(organizationId) {
+      change: function(organizationId) {
         this.subscriptions.destroy();
         var membership = this.organization().membershipForCurrentUser();
         if (membership) membership.update({lastVisited: new Date()});

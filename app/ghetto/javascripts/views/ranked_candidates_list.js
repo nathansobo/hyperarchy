@@ -54,7 +54,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     election: {
-      afterChange: function(election) {
+      change: function(election) {
         if (this.rankingsUser()) {
           this.assignRankingsRelation();
         } else {
@@ -68,7 +68,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     rankingsUser: {
-      afterChange: function(rankingsUser) {
+      change: function(rankingsUser) {
         if (this.election()) {
           this.assignRankingsRelation();
         } else {
@@ -95,7 +95,7 @@ _.constructor("Views.RankedCandidatesList", View.Template, {
     },
 
     rankingsRelation: {
-      afterChange: function(rankingsRelation) {
+      change: function(rankingsRelation) {
         this.startLoading();
         this.subscriptions.destroy();
         rankingsRelation.fetch().onSuccess(function() {

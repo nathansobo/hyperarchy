@@ -30,7 +30,7 @@ _.constructor("Views.VotesList", View.Template, {
     },
 
     election: {
-      afterChange: function(election) {
+      change: function(election) {
         this.startLoading();
         election.fetchVotes()
           .onSuccess(function() {
