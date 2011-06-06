@@ -1,0 +1,25 @@
+source 'http://rubygems.org'
+
+<%= rails_gemfile_entry -%>
+
+<%= database_gemfile_entry -%>
+
+<%= "gem 'jruby-openssl'\n" if defined?(JRUBY_VERSION) -%>
+# Asset template engines
+<%= "gem 'json'\n" if RUBY_VERSION < "1.9.2" -%>
+gem 'sass-rails'
+gem 'coffee-script'
+gem 'uglifier'
+
+<%= gem_for_javascript %>
+
+# Use unicorn as the web server
+# gem 'unicorn'
+
+# Deploy with Capistrano
+# gem 'capistrano'
+
+# To use debugger
+# <%= gem_for_ruby_debugger %>
+
+<%= gem_for_turn -%>
