@@ -11,6 +11,11 @@ PATH
     monarch (0.0.1)
 
 PATH
+  remote: vendor/princess
+  specs:
+    princess (0.0.1)
+
+PATH
   remote: vendor/rails
   specs:
     actionmailer (3.1.0.rc1)
@@ -227,6 +232,7 @@ DEPENDENCIES
   net-ssh-telnet
   pg (= 0.9.0)
   pony (= 1.1)
+  princess!
   rack-chromeframe (= 1.0.0)
   rails!
   rake (= 0.8.7)

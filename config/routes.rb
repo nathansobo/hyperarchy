@@ -28,6 +28,8 @@ Hyperarchy::Application.routes.draw do
   resources :password_reset_requests
   resources :password_resets
 
+  mount Princess::Engine => '/' if Rails.env.jasmine?
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

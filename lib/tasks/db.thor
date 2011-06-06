@@ -6,6 +6,7 @@ class Db < Thor
     if env.nil?
       create('development')
       create('test')
+      create('jasmine')
       return
     end
 
@@ -17,6 +18,7 @@ class Db < Thor
     if env.nil?
       drop('development')
       drop('test')
+      drop('jasmine')
       return
     end
 
@@ -28,6 +30,7 @@ class Db < Thor
     if env.nil?
       reset('development')
       reset('test')
+      reset('jasmine')
       return
     end
 
@@ -42,6 +45,7 @@ class Db < Thor
     if env.nil?
       migrate('development')
       migrate('test')
+      migrate('jasmine')
       return
     end
 

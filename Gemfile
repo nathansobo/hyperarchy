@@ -25,7 +25,7 @@ gem 'uglifier', :path => 'vendor/uglifier'
 gem 'jquery-rails'
 gem 'monarch', :path => 'vendor/monarch'
 
-group :development, :test do
+group :development, :test, :jasmine do
   gem 'rspec', '2.6.0'
   gem 'rspec-rails', '2.6.1'
   gem 'rr', '1.0.2'
@@ -33,6 +33,7 @@ group :development, :test do
   gem 'faker', '0.9.5'
   gem 'spork', '~> 0.9.0.rc7'
   gem 'fuubar', '0.0.5'
+  gem 'princess', :path => 'vendor/princess'
   gem 'foreman', '0.16.0'
   gem 'mailtrap', '0.2.1'
 end

@@ -1,6 +1,6 @@
 Sequel.migration do
   up do
-    require "active_support/secure_random"
+    require "securerandom"
 
     add_column :organizations, :invitation_code, String
     self[:organizations].each do |organization|

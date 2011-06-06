@@ -8,6 +8,11 @@ test:
   database: hyperarchy_test
   username: hyperarchy
 
+jasmine:
+  adapter: postgres
+  database: hyperarchy_jasmine
+  username: hyperarchy
+
 demo:
   adapter: postgres
   database: hyperarchy_demo

@@ -4,13 +4,6 @@ describe SessionsController do
   let(:organization) { Organization.make }
   let(:user) { User.make(:password => "password") }
 
-  describe "#new" do
-    it "renders successfully" do
-      get :new
-      response.should be_success
-    end
-  end
-
   describe "#create" do
     context "when the email address and password match an existing user" do
       context "when logged in as the default guest" do

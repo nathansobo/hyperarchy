@@ -126,7 +126,7 @@ class User < Prequel::Record
 
   def generate_password_reset_token
     update!(
-      :password_reset_token => ActiveSupport::SecureRandom.hex(8),
+      :password_reset_token => SecureRandom.hex(8),
       :password_reset_token_generated_at => Time.now
     )
   end
