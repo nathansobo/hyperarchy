@@ -58,7 +58,11 @@ describe("LoginForm", function() {
     });
 
     describe("when the fields are invalid and the form is submitted", function() {
-      
+      it("displays an error message", function() {
+        loginForm.emailAddress.val("dick@hell.de");
+        loginForm.password.val("garbage");
+        // signupForm.form.submit();
+      });
     });
   });
 });
