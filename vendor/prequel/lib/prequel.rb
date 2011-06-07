@@ -66,10 +66,12 @@ module Prequel
   end
 
   require 'prequel/core_extensions'
+  autoload :Backdoor
   autoload :Changeset
   autoload :CompositeTuple
-  autoload :Expressions
+  autoload :Errors
   autoload :EqualityDerivation
+  autoload :Expressions
   autoload :Field
   autoload :Record
   autoload :Relations
@@ -81,5 +83,4 @@ module Prequel
   autoload :SyntheticField
   autoload :Tuple
   autoload :Validations
-  autoload :Errors
 end
