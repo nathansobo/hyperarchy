@@ -21,6 +21,7 @@ $darkened-background-z-index: 100
       #menu-items
         @include box-flex(1)
         text-align: right
+
   #overlays
     > *
       display: none
@@ -42,5 +43,11 @@ $darkened-background-z-index: 100
   > *
     display: none
 
-#login-form
+.lightbox
+  position: relative
+  margin: auto
+  background: white
+  width: 200
+  height: 600
   z-index: $darkened-background-z-index + 1
+

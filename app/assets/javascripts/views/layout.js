@@ -1,6 +1,9 @@
+//= require_directory ./lightboxes
+
 _.constructor("Views.Layout", View.Template, {
   content: function() { with(this.builder) {
     div({id: "layout"}, function() {
+
       div({id: "header"}, function() {
         div({id: "header-content"}, function() {
           h1("HYPERARCHY");
@@ -10,12 +13,11 @@ _.constructor("Views.Layout", View.Template, {
         });
       });
 
-      div({id: "body"}, function() {
-
-      });
+      div({id: "body"});
 
       div({id: "overlays"}, function() {
-        subview("loginForm", Views.Layout.LoginForm);
+        subview("loginForm", Views.Lightboxes.LoginForm);
+        subview("signupForm", Views.Lightboxes.SignupForm);
       });
 
       div({id: "darkened-background"}).ref("darkenedBackground");
