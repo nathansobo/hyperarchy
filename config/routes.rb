@@ -17,7 +17,6 @@ Hyperarchy::Application.routes.draw do
   post '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#create'
   delete '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#destroy'
 
-
   resources :users
   resources :memberships do
     get :confirm, :on => :member
@@ -28,7 +27,13 @@ Hyperarchy::Application.routes.draw do
   resources :password_reset_requests
   resources :password_resets
 
-  mount Princess::Engine => '/' if Rails.env.jasmine?
+  if Rails.env.jasmine?
+    mount Princess::Engine => '/'
+    get '/backdoor' => 'backdoor#fetch'
+    post '/backdoor/:relation' => 'backdoor#create'
+    put '/backdoor/:relation/:id' => 'backdoor#update'
+    delete '/backdoor/:relation/:id' => 'backdoor#destroy'
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
