@@ -1,4 +1,9 @@
 PATH
+  remote: lib/monarch
+  specs:
+    monarch (0.0.1)
+
+PATH
   remote: vendor/compass
   specs:
     compass (0.11.1)
@@ -12,11 +17,6 @@ PATH
     erector (0.8.1)
       rake
       treetop (>= 1.2.3)
-
-PATH
-  remote: vendor/monarch
-  specs:
-    monarch (0.0.1)
 
 PATH
   remote: vendor/prequel
