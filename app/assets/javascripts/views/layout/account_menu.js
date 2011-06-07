@@ -41,9 +41,6 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
 
     showDropdown: function() {
       this.dropdown.show();
-      this.defer(function() {
-        $(window).one('click', this.hitch('hideDropdown'));
-      });
     },
 
     hideDropdown: function() {

@@ -33,17 +33,19 @@ describe("LoginForm", function() {
   describe("form submission", function() {
     describe("when the fields are valid and the form is submitted", function() {
       it("logs the user in according to the information entered", function() {
-        var signupForm = Application.signupForm;
-        signupForm.firstName.val("Richard");
-        signupForm.lastName.val("Nixon");
-        signupForm.emailAddress.val("dick@hell.de");
-        signupForm.password.val("integrity");
-        // signupForm.form.submit();
+        // make user
+        loginForm.emailAddress.val("dick@hell.de");
+        loginForm.password.val("integrity");
+        // loginForm.form.submit();
       });
     });
 
     describe("when the fields are invalid and the form is submitted", function() {
-      
+      it("displays an error message", function() {
+        loginForm.emailAddress.val("dick@hell.de");
+        loginForm.password.val("garbage");
+        // signupForm.form.submit();
+      });
     });
   });
 });
