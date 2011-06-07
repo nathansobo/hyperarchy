@@ -9,9 +9,16 @@ _.constructor("Views.Layout", View.Template, {
           });
         });
       });
+
       div({id: "body"}, function() {
 
       });
+
+      div({id: "overlays"}, function() {
+        subview("loginForm", Views.Layout.LoginForm);
+      });
+
+      div({id: "darkened-background"}).ref("darkenedBackground");
     });
   }},
 

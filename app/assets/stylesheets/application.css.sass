@@ -1,9 +1,15 @@
 @import "compass/reset"
 @import "compass/css3/box"
+@import "compass/css3/transition"
 
 body
   font-family: Helvetica, Arial, sans-serif
   font-size: 150%
+
+a
+  cursor: pointer
+
+$darkened-background-z-index: 100
 
 #layout
   #header
@@ -15,7 +21,26 @@ body
       #menu-items
         @include box-flex(1)
         text-align: right
+  #overlays
+    > *
+      display: none
+  #darkened-background
+    visibility: hidden
+    position: fixed
+    width: 100%
+    height: 100%
+    top: 0
+    opacity: 0
+    background: black
+    z-index: $darkened-background-z-index
+    @include transition('opacity', 150ms, 'ease-in')
+    &.visible
+      visibility: visible
+      opacity: 0.3
 
 #account-menu
   > *
     display: none
+
+#login-form
+  z-index: $darkened-background-z-index + 1

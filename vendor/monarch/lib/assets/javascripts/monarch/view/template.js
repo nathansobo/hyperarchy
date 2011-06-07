@@ -106,6 +106,7 @@ _.constructor("Monarch.View.Template", {
     },
 
     attach: function() {
+      if (!this.subviews) return;
       _.each(this.subviews, function(subview) {
         subview.attach();
       });

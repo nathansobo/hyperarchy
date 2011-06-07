@@ -31,4 +31,13 @@ describe("Views.Layout.AccountMenu", function() {
       expect(view.name.html()).toEqual(user.fullName());
     });
   });
+
+  describe("when the login link is clicked", function() {
+    it("shows the the login form", function() {
+      var user = User.createFromRemote({id: 1, guest: true})
+      Application.currentUser(user);
+      view.loginLink.click();
+      expect(Application.loginForm).toBeVisible();
+    });
+  });
 });

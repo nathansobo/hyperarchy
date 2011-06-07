@@ -1,7 +1,7 @@
 _.constructor('Views.Layout.AccountMenu', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "account-menu"}, function() {
-      a({id: "login-link"}, "Login").ref('loginLink');
+      a({id: "login-link"}, "Login").ref('loginLink').click("showLoginForm");
       div({id: "user-info"}, function() {
         img({id: "avatar"}).ref("avatar");
         span({id: "name"}).ref("name");
@@ -23,6 +23,10 @@ _.constructor('Views.Layout.AccountMenu', Monarch.View.Template, {
           this.userInfo.show();
         }
       }, this);
+    },
+
+    showLoginForm: function() {
+      Application.loginForm.show();
     }
   }
 });
