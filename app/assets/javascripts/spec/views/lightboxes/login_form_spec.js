@@ -20,7 +20,7 @@ describe("LoginForm", function() {
     });
   });
 
-  describe("signupFormLink", function() {
+  describe("with the signupFormLink is clicked", function() {
     it("shows the signup form when clicked", function() {
       var signupForm = Application.signupForm;
       expect(signupForm).toBeHidden();
@@ -32,12 +32,27 @@ describe("LoginForm", function() {
 
   describe("form submission", function() {
     describe("when the fields are valid and the form is submitted", function() {
+      var user;
+
       it("logs the user in according to the information entered", function() {
-        var signupForm = Application.signupForm;
-        signupForm.firstName.val("Richard");
-        signupForm.lastName.val("Nixon");
-        signupForm.emailAddress.val("dick@hell.de");
-        signupForm.password.val("integrity");
+        clearServerTables();
+        
+        usingBackdoor(function() {
+          var promise = User.create();
+
+          debugger;
+
+            promise.onSuccess(function(newUser) {
+              debugger;
+              console.log("assigning user");
+              user = newUser;
+            });
+        });
+
+
+        var loginForm = Application.loginForm;
+        loginForm.emailAddress.val("foo");
+        loginForm.password.val("password");
         // signupForm.form.submit();
       });
     });

@@ -27,8 +27,9 @@ Hyperarchy::Application.routes.draw do
   resources :password_reset_requests
   resources :password_resets
 
-  if Rails.env.jasmine?
+  if Rails.env.jasmine? || Rails.env.test?
     mount Princess::Engine => '/'
+    post '/backdoor/clear_tables' => 'backdoor#clear_tables'
     get '/backdoor' => 'backdoor#fetch'
     post '/backdoor/:relation' => 'backdoor#create'
     put '/backdoor/:relation/:id' => 'backdoor#update'

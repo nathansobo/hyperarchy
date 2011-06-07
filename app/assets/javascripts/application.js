@@ -23,10 +23,7 @@
 //= require views
 //= require routes
 
-
-//
-
-Repository.sandboxUrl = "/sandbox";
+Server.sandboxUrl = "/sandbox";
 //window.debugEvents = true;
 
 $.ajaxSetup({

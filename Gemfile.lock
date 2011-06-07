@@ -19,6 +19,14 @@ PATH
     monarch (0.0.1)
 
 PATH
+  remote: vendor/prequel
+  specs:
+    prequel (0.0.1)
+      activesupport (>= 3.0.4)
+      i18n (>= 0.5.0)
+      sequel (>= 3.20.0)
+
+PATH
   remote: vendor/princess
   specs:
     princess (0.0.1)
@@ -200,7 +208,7 @@ GEM
     rufus-scheduler (2.0.9)
       tzinfo (>= 0.3.23)
     sass (3.1.2)
-    sequel (3.16.0)
+    sequel (3.24.1)
     sinatra (1.2.6)
       rack (~> 1.1)
       tilt (< 2.0, >= 1.2.2)
@@ -252,6 +260,7 @@ DEPENDENCIES
   net-ssh-telnet
   pg (= 0.9.0)
   pony (= 1.1)
+  prequel!
   princess!
   rack-chromeframe (= 1.0.0)
   rails!
@@ -268,7 +277,6 @@ DEPENDENCIES
   run_later!
   sass
   sass-rails!
-  sequel (= 3.16.0)
   spork (~> 0.9.0.rc7)
   thin (= 1.2.11)
   thor (= 0.14.6)

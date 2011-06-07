@@ -82,6 +82,7 @@ _.constructor("Monarch.Http.AjaxFuture", {
   },
 
   onSuccess: function(callback, context) {
+    debugger;
     if (this.triggered) {
       if (this.successful) callback.apply(context, this.data);
     } else {

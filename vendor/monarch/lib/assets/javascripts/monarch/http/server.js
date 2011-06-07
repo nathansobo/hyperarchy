@@ -35,6 +35,7 @@ _.constructor("Monarch.Http.Server", {
       type: 'post',
       data: { field_values: record.wireRepresentation() },
       success: function(fieldValues) {
+        debugger;
         record.remotelyCreated(fieldValues);
         promise.triggerSuccess(record);
         Repository.resumeMutations();

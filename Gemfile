@@ -5,8 +5,8 @@ gem 'rake', '0.8.7'
 gem 'thor', '0.14.6'
 gem 'unicorn', '3.5.0'
 gem 'thin', '1.2.11' # for resque-web on prod
+gem 'prequel', :path => 'vendor/prequel'
 gem 'pg', '0.9.0'
-gem 'sequel', '3.16.0'
 gem 'bcrypt-ruby', :require => 'bcrypt'
 gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
 gem 'erector', :path => 'vendor/erector'

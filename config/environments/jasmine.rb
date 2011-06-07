@@ -30,4 +30,7 @@ Hyperarchy::Application.configure do
 
   # TODO: This should use a more Rails-approved mechanism
   HTTP_HOST = "local.hyperarchy.com"
+
+  require 'machinist'
+  require 'prequel/machinist_adaptor'
 end

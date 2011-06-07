@@ -1,2 +1,2 @@
-//= require_directory ./support
 //= require application
+//= require_directory ./support
