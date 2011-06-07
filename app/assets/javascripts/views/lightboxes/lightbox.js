@@ -7,8 +7,8 @@ _.constructor("Views.Lightbox", View.Template, {
   }},
 
   viewProperties: {
-
-    afterShow: function() {
+    beforeShow: function() {
+      Application.lightboxes.children().hide();
       Application.darkenedBackground.addClass('visible');
       Application.darkenedBackground.one('click', this.hitch('close'));
     },

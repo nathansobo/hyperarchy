@@ -20,12 +20,11 @@ describe("SignupForm", function() {
     });
   });
 
-  describe("content", function() {
-    it("contains a link to the login form", function() {
-      var loginFormLink = signupForm.find('a.login-form-link');
-      expect(loginFormLink).toExist();
-      loginFormLink.click();
+  describe("loginFormLink", function() {
+    it("shows the login form when clicked", function() {
       var loginForm = Application.loginForm;
+      expect(loginForm).toBeHidden();
+      signupForm.loginFormLink.click();
       expect(signupForm).toBeHidden();
       expect(loginForm).toBeVisible();
     });

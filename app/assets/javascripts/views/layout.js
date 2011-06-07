@@ -1,5 +1,3 @@
-//= require_directory ./lightboxes
-
 _.constructor("Views.Layout", View.Template, {
   content: function() { with(this.builder) {
     div({id: "layout"}, function() {
@@ -15,10 +13,10 @@ _.constructor("Views.Layout", View.Template, {
 
       div({id: "body"});
 
-      div({id: "overlays"}, function() {
+      div({id: "lightboxes"}, function() {
         subview("loginForm", Views.Lightboxes.LoginForm);
         subview("signupForm", Views.Lightboxes.SignupForm);
-      });
+      }).ref("lightboxes");
 
       div({id: "darkened-background"}).ref("darkenedBackground");
     });

@@ -1,21 +1,28 @@
-//= require spec/spec_helper
-
 describe("Views.Layout.AccountMenu", function() {
 
-  var view;
+  var accountMenu;
   beforeEach(function() {
     $("#jasmine_content").html(window.Application = Views.Layout.toView());
     Application.attach();
-    view = Application.accountMenu;
-    expect(view).toExist();
+    accountMenu = Application.accountMenu;
+    expect(accountMenu).toExist();
   });
 
   describe("when the current user is assigned as a guest", function() {
     it("shows the login link", function() {
-      expect(view.loginLink).toBeHidden();
+      expect(accountMenu.loginLink).toBeHidden();
       Application.currentUser(User.createFromRemote({id: 1, guest: true}));
-      expect(view.userInfo).toBeHidden();
-      expect(view.loginLink).toBeVisible();
+      expect(accountMenu.userLink).toBeHidden();
+      expect(accountMenu.loginLink).toBeVisible();
+    });
+
+    describe("when the login link is clicked", function() {
+      it("shows the the login form", function() {
+        var user = User.createFromRemote({id: 1, guest: true})
+        Application.currentUser(user);
+        accountMenu.loginLink.click();
+        expect(Application.loginForm).toBeVisible();
+      });
     });
   });
 
@@ -23,21 +30,21 @@ describe("Views.Layout.AccountMenu", function() {
     it("shows the current user's name and avatar", function() {
       var user = User.createFromRemote({id: 1, guest: false, firstName: "Joe", lastName: "Blo"});
 
-      expect(view.userInfo).toBeHidden();
+      expect(accountMenu.userLink).toBeHidden();
       Application.currentUser(user);
-      expect(view.loginLink).toBeHidden();
-      expect(view.userInfo).toBeVisible();
-      expect(view.avatar.attr('src')).toEqual(user.gravatarUrl(25));
-      expect(view.name.html()).toEqual(user.fullName());
+      expect(accountMenu.loginLink).toBeHidden();
+      expect(accountMenu.userLink).toBeVisible();
+      expect(accountMenu.avatar.attr('src')).toEqual(user.gravatarUrl(25));
+      expect(accountMenu.name.html()).toEqual(user.fullName());
     });
-  });
 
-  describe("when the login link is clicked", function() {
-    it("shows the the login form", function() {
-      var user = User.createFromRemote({id: 1, guest: true})
-      Application.currentUser(user);
-      view.loginLink.click();
-      expect(Application.loginForm).toBeVisible();
+    describe("when the link is clicked", function() {
+      it("shows the the dropdown account menu", function() {
+        var user = User.createFromRemote({id: 1, guest: false})
+        Application.currentUser(user);
+        accountMenu.userLink.click();
+        expect(accountMenu.dropdown).toBeVisible();
+      });
     });
   });
 });
