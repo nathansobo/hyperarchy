@@ -190,7 +190,7 @@ jasmine.JQuery.matchersClass = {};
       return hasProperty(this.actual.data(key), expectedValue);
     },
 
-    toBe: function(selector) {
+    toMatchSelector: function(selector) {
       return this.actual.is(selector);
     },
 
