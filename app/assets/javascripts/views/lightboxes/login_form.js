@@ -30,10 +30,14 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightbox, {
         type: 'post',
         url: "/login",
         data: fieldValues,
-        dataType: 'data+records'
-//        success: this.hitch('userEstablished'),
+        dataType: 'data+records',
+        success: this.hitch('userEstablished')
 //        error: this.hitch('handleErrors')
       });
+    },
+
+    userEstablished: function(data) {
+      Application.currentUserId(data.current_user_id);
     }
   }
 });

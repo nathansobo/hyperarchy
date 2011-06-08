@@ -35,21 +35,25 @@ describe("LoginForm", function() {
       var user;
 
       it("logs the user in according to the information entered", function() {
-        clearServerTables();
-        usingBackdoor(function() {
-          user = User.create();
-          console.log(user.emailAddress());
-        });
+        runs(function() {
+          clearServerTables();
+          usingBackdoor(function() {
+            user = User.create();
+          });
 
-        loginForm.emailAddress.val(user.emailAddress());
-        loginForm.password.val("password");
+          loginForm.emailAddress.val(user.emailAddress());
+          loginForm.password.val("password");
+        });
 
         waitsFor("successful login", function(requestComplete) {
           loginForm.form.trigger('submit', function(data) {
-            console.log(data);
             requestComplete();
           });
-        }, 100);
+        });
+
+        runs(function() {
+          expect(Application.currentUser()).toEqual(user);
+        });
       });
     });
 
