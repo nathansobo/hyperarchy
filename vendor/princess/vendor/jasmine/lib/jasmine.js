@@ -991,7 +991,7 @@ jasmine.Block = function(env, func, spec) {
   this.spec = spec;
 };
 
-jasmine.Block.prototype.execute = function(onComplete) {  
+jasmine.Block.prototype.execute = function(onComplete) {
   try {
     this.func.apply(this.spec);
   } catch (e) {
@@ -1031,7 +1031,7 @@ jasmine.JsApiReporter.prototype.summarize_ = function(suiteOrSpec) {
     type: isSuite ? 'suite' : 'spec',
     children: []
   };
-  
+
   if (isSuite) {
     var children = suiteOrSpec.children();
     for (var i = 0; i < children.length; i++) {
@@ -1647,7 +1647,7 @@ jasmine.PrettyPrinter.prototype.format = function(value) {
 jasmine.PrettyPrinter.prototype.iterateObject = function(obj, fn) {
   for (var property in obj) {
     if (property == '__Jasmine_been_here_before__') continue;
-    fn(property, obj.__lookupGetter__ ? (obj.__lookupGetter__(property) !== jasmine.undefined && 
+    fn(property, obj.__lookupGetter__ ? (obj.__lookupGetter__(property) !== jasmine.undefined &&
                                          obj.__lookupGetter__(property) !== null) : false);
   }
 };
@@ -1750,7 +1750,7 @@ jasmine.Queue.prototype.next_ = function() {
 
   while (goAgain) {
     goAgain = false;
-    
+
     if (self.index < self.blocks.length && !this.abort) {
       var calledSynchronously = true;
       var completedSynchronously = false;
@@ -1788,7 +1788,7 @@ jasmine.Queue.prototype.next_ = function() {
       if (completedSynchronously) {
         onComplete();
       }
-      
+
     } else {
       self.running = false;
       if (self.onComplete) {
@@ -2252,6 +2252,8 @@ jasmine.WaitsForBlock.prototype.execute = function(onComplete) {
   if (jasmine.VERBOSE) {
     this.env.reporter.log('>> Jasmine waiting for ' + (this.message || 'something to happen'));
   }
+  if (this.latchFunction.length > 0) return this.waitForExplicitCompletion(onComplete);
+
   var latchFunctionResult;
   try {
     latchFunctionResult = this.latchFunction.apply(this.spec);
@@ -2280,6 +2282,48 @@ jasmine.WaitsForBlock.prototype.execute = function(onComplete) {
     }, jasmine.WaitsForBlock.TIMEOUT_INCREMENT);
   }
 };
+
+jasmine.WaitsForBlock.prototype.waitForExplicitCompletion = function(onComplete) {
+  var self = this;
+  var timeout = this.env.setTimeout(function() {
+    var message = 'timed out after ' + self.timeout + ' msec waiting for ' + (self.message || 'something to happen');
+    self.spec.fail({
+      name: 'timeout',
+      message: message
+    });
+    self.abort = true;
+    onComplete();
+  }, this.timeout);
+
+  this.latchFunction.apply(this.spec, this.buildCompletionFunctions(timeout, onComplete));
+};
+
+jasmine.WaitsForBlock.prototype.buildCompletionFunctions = function(timeout, onComplete) {
+  var latchFunctionArity = this.latchFunction.length;
+  var completionStatuses = [];
+  var completionFunctions = [];
+  for (var i = 0; i < latchFunctionArity; i++) {
+    completionStatuses.push(false);
+    completionFunctions.push(this.buildCompletionFunction(i, completionStatuses, timeout, onComplete));
+  }
+  return completionFunctions;
+};
+
+jasmine.WaitsForBlock.prototype.buildCompletionFunction = function(i, completionStatuses, timeout, onComplete) {
+  var self = this;
+  return function() {
+    completionStatuses[i] = true;
+
+    // have all completion callbacks been called?
+    for (var j = 0; j < completionStatuses.length; j++) {
+      if (!completionStatuses[j]) return;
+    }
+    self.env.clearTimeout(timeout);
+    onComplete();
+  }
+};
+
+
 // Mock setTimeout, clearTimeout
 // Contributed by Pivotal Computer Systems, www.pivotalsf.com
 
