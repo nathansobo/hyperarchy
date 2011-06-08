@@ -38,6 +38,7 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightbox, {
 
     userEstablished: function(data) {
       Application.currentUserId(data.current_user_id);
+      History.pushState(null, null, Application.currentUser().defaultOrganization().url());
     }
   }
 });

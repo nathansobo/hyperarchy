@@ -25,6 +25,10 @@ _.constructor("Views.Layout", View.Template, {
   viewProperties: {
     propertyAccessors: ['currentUser'],
 
+    initialize: function() {
+      Path.listen();
+    },
+
     currentUserId: {
       change: function(id) {
         this.currentUser(User.find(id));

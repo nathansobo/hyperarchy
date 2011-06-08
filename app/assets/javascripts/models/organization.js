@@ -121,6 +121,10 @@ _.constructor("Organization", Model.Record, {
     return !this.elections().where(Election.creatorId.neq(1)).empty();
   },
 
+  url: function() {
+    return "/organizations/" + this.id();
+  },
+
   secretUrl: function() {
     return 'https://' + Application.HTTP_HOST + "/access/" + this.id() + "/" + this.membershipCode();
   }
