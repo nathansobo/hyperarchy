@@ -25,3 +25,7 @@ jasmine.StringPrettyPrinter.prototype.emitObject = function(obj) {
 
   this.append(' }');
 };
+
+jasmine.Env.prototype.equals_ = function(a, b, mismatchKeys, mismatchValues) {
+  return _.isEqual(a, b);
+};
