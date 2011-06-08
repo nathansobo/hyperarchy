@@ -2252,7 +2252,8 @@ jasmine.WaitsForBlock.prototype.execute = function(onComplete) {
   if (jasmine.VERBOSE) {
     this.env.reporter.log('>> Jasmine waiting for ' + (this.message || 'something to happen'));
   }
-  if (this.latchFunction.length > 0) return this.waitForExplicitCompletion(onComplete);
+
+  if (this.latchFunction.length > 0) {this.waitForExplicitCompletion(onComplete); return;}
 
   var latchFunctionResult;
   try {
@@ -2285,44 +2286,51 @@ jasmine.WaitsForBlock.prototype.execute = function(onComplete) {
 
 jasmine.WaitsForBlock.prototype.waitForExplicitCompletion = function(onComplete) {
   var self = this;
-  var timeout = this.env.setTimeout(function() {
+  var timeoutHandle = this.env.setTimeout(function() {
     var message = 'timed out after ' + self.timeout + ' msec waiting for ' + (self.message || 'something to happen');
     self.spec.fail({
       name: 'timeout',
       message: message
     });
+    multiCompletion.cancelled = true;
     self.abort = true;
     onComplete();
   }, this.timeout);
-
-  this.latchFunction.apply(this.spec, this.buildCompletionFunctions(timeout, onComplete));
+  
+  var multiCompletion = new jasmine.WaitsForBlock.MultiCompletion(this.latchFunction.length, this.env, onComplete, timeoutHandle);
+  this.latchFunction.apply(this.spec, multiCompletion.completionFunctions);
 };
 
-jasmine.WaitsForBlock.prototype.buildCompletionFunctions = function(timeout, onComplete) {
-  var latchFunctionArity = this.latchFunction.length;
-  var completionStatuses = [];
-  var completionFunctions = [];
-  for (var i = 0; i < latchFunctionArity; i++) {
-    completionStatuses.push(false);
-    completionFunctions.push(this.buildCompletionFunction(i, completionStatuses, timeout, onComplete));
+jasmine.WaitsForBlock.MultiCompletion = function(count, env, onComplete, timeoutHandle) {
+  this.count = count;
+  this.env = env;
+  this.onComplete = onComplete;
+  this.timeoutHandle = timeoutHandle;
+  this.completionStatuses = [];
+  this.completionFunctions = [];
+
+  for (var i = 0; i < count; i++) {
+    this.completionStatuses.push(false);
+    this.completionFunctions.push(this.buildCompletionFunction(i));
   }
-  return completionFunctions;
 };
 
-jasmine.WaitsForBlock.prototype.buildCompletionFunction = function(i, completionStatuses, timeout, onComplete) {
+jasmine.WaitsForBlock.MultiCompletion.prototype.attemptCompletion = function() {
+  if (this.cancelled) return;
+  for (var j = 0; j < this.count; j++) {
+    if (!this.completionStatuses[j]) return;
+  }
+  this.env.clearTimeout(this.timeoutHandle);
+  this.onComplete();
+};
+
+jasmine.WaitsForBlock.MultiCompletion.prototype.buildCompletionFunction = function(i) {
   var self = this;
   return function() {
-    completionStatuses[i] = true;
-
-    // have all completion callbacks been called?
-    for (var j = 0; j < completionStatuses.length; j++) {
-      if (!completionStatuses[j]) return;
-    }
-    self.env.clearTimeout(timeout);
-    onComplete();
-  }
+    self.completionStatuses[i] = true;
+    self.attemptCompletion();
+  };
 };
-
 
 // Mock setTimeout, clearTimeout
 // Contributed by Pivotal Computer Systems, www.pivotalsf.com
