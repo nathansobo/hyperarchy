@@ -58,7 +58,7 @@ module Prequel
         record.soft_update(field_values)
         if record.save
           if relation.find(id)
-            response = [200, record.wire_representation]
+            response = [200, record.wire_representation(ignore_security?)]
           else
             response = [403, "Update operation forbidden."]
             raise Prequel::Rollback
@@ -82,7 +82,7 @@ module Prequel
     def fetch(*wire_reps)
       (Hash.new {|h,k| h[k] = {}}).tap do |dataset|
         wire_reps.each do |wire_rep|
-          evaluate(wire_rep).add_to_client_dataset(dataset)
+          evaluate(wire_rep).add_to_client_dataset(dataset, ignore_security?)
         end
       end
     end
@@ -114,6 +114,12 @@ module Prequel
       else
         raise "Can't evaluate #{wire_rep.inspect}"
       end
+    end
+
+    protected
+
+    def ignore_security?
+      false
     end
   end
 end

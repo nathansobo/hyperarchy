@@ -19,6 +19,7 @@ RSpec.configure do |config|
     Prequel::Record.subclasses.each do |subclass|
       subclass.remove_class
     end
+    Prequel.clear_subscription_nodes
     Prequel.clear_session
   end
 end

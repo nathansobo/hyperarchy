@@ -49,6 +49,10 @@ module Prequel
     Thread.current[:prequel_session] = nil if Thread.current[:prequel_session]
   end
 
+  def clear_subscription_nodes
+    @subscription_nodes = nil
+  end
+
   def record_classes
     @record_classes ||= []
   end
