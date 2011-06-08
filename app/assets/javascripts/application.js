@@ -19,6 +19,9 @@
 //= require jquery.tooltip.v.1.1
 //= require jquery.hotkeys
 //= require socket.io
+//= require history
+//= require history.adaptor.jquery
+//= require path
 //= require models
 //= require views
 //= require routes
