@@ -34,9 +34,9 @@ module Prequel
       [left.field_values, right.field_values]
     end
 
-    def add_to_client_dataset(dataset)
-      left.add_to_client_dataset(dataset)
-      right.add_to_client_dataset(dataset)
+    def add_to_client_dataset(dataset, ignore_security = false)
+      left.add_to_client_dataset(dataset, ignore_security)
+      right.add_to_client_dataset(dataset, ignore_security)
     end
 
     delegate :inspect, :to => :field_values

@@ -35,9 +35,9 @@ module Prequel
         update(column_name => column_name - count)
       end
 
-      def add_to_client_dataset(dataset)
+      def add_to_client_dataset(dataset, ignore_security = false)
         each do |record|
-          record.add_to_client_dataset(dataset)
+          record.add_to_client_dataset(dataset, ignore_security)
         end
       end
 

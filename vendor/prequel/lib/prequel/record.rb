@@ -299,14 +299,16 @@ module Prequel
       id.to_s
     end
 
-    def wire_representation
-      Hash[all_fields.slice(*read_whitelist - read_blacklist).map do |name, field|
+    def wire_representation(ignore_security = false)
+      fields = all_fields
+      fields.slice!(*read_whitelist - read_blacklist) unless ignore_security
+      Hash[fields.map do |name, field|
         [name.to_s, field.wire_representation]
       end]
     end
 
-    def add_to_client_dataset(dataset)
-      dataset[table.name.to_s][to_param] ||= wire_representation
+    def add_to_client_dataset(dataset, ignore_security = false)
+      dataset[table.name.to_s][to_param] ||= wire_representation(ignore_security)
     end
 
     def <=>(other)
