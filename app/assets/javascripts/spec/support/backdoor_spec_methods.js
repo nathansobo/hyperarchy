@@ -11,6 +11,7 @@ function usingBackdoor(callback) {
     callback();
     Server.sandboxUrl = previousSandboxUrl;
   });
+  Repository.clear();
 }
 
 function synchronously(callback) {

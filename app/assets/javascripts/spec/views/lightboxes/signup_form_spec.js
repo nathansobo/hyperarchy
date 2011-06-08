@@ -51,4 +51,5 @@ describe("SignupForm", function() {
         // signupForm.form.submit();
       });
     });
+  });
 });

@@ -36,34 +36,30 @@ describe("LoginForm", function() {
 
       it("logs the user in according to the information entered", function() {
         clearServerTables();
-        
         usingBackdoor(function() {
-          var promise = User.create();
-
-          debugger;
-
-            promise.onSuccess(function(newUser) {
-              debugger;
-              console.log("assigning user");
-              user = newUser;
-            });
+          user = User.create();
+          console.log(user.emailAddress());
         });
 
-
-        var loginForm = Application.loginForm;
-        loginForm.emailAddress.val("foo");
+        loginForm.emailAddress.val(user.emailAddress());
         loginForm.password.val("password");
-        // signupForm.form.submit();
+
+        waitsFor("successful login", function(requestComplete) {
+          loginForm.form.trigger('submit', function(data) {
+            console.log(data);
+            requestComplete();
+          });
+        }, 100);
       });
     });
 
-    describe("when the fields are invalid and the form is submitted", function() {
-      it("displays an error message", function() {
-        loginForm.emailAddress.val("dick@hell.de");
-        loginForm.password.val("garbage");
-        // signupForm.form.submit();
-      });
-    });
+//    describe("when the fields are invalid and the form is submitted", function() {
+//      it("displays an error message", function() {
+//        loginForm.emailAddress.val(user.emailAddress());
+//        loginForm.password.val(user.);
+////        signupForm.form.trigger('submit');
+//      });
+//    });
   });
 });
 

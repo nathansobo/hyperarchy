@@ -6,10 +6,10 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightbox, {
       h1("Log in to participate:");
 
       label("Email Address");
-      input({name: "emailAddress", tabindex: 101}).ref('emailAddress');
+      input({name: "user[emailAddress]", tabindex: 101}).ref('emailAddress');
 
       label("Password");
-      input({name: "password", type: "password", tabindex: 102}).ref('password');
+      input({name: "user[password]", type: "password", tabindex: 102}).ref('password');
 
       input({type: "submit", value: "Log In", tabindex: 103}).ref('submit');
 
@@ -23,8 +23,17 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightbox, {
       Application.signupForm.show();
     },
 
-    submitForm: function() {
-      
+    submitForm: function(e) {
+      e.preventDefault();
+      var fieldValues = _.underscoreKeys(this.fieldValues());
+      return $.ajax({
+        type: 'post',
+        url: "/login",
+        data: fieldValues,
+        dataType: 'data+records'
+//        success: this.hitch('userEstablished'),
+//        error: this.hitch('handleErrors')
+      });
     }
   }
 });
