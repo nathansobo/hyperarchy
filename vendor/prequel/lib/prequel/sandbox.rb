@@ -30,7 +30,7 @@ module Prequel
         record = relation.new(field_values)
         if record.save
           if relation.find(record.id)
-            response = [200, record.wire_representation]
+            response = [200, record.wire_representation(ignore_security?)]
           else
             response = [403, "Create operation forbidden."]
             raise Prequel::Rollback

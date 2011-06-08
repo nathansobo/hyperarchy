@@ -101,7 +101,7 @@ module Prequel
             Post.should be_empty
             status, response = backdoor.create('posts', { 'blog_id' => 1, 'title' => 'Post Title' })
             status.should == 200
-            response.should == Post.first.wire_representation
+            response.should == Post.first.wire_representation(:ignore_security)
           end
         end
 
