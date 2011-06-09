@@ -4,6 +4,20 @@ function clearServerTables() {
   });
 }
 
+function login() {
+  return synchronously(function() {
+    var currentUser;
+    $.ajax({
+      type: 'post',
+      url: "/backdoor/login",
+      dataType: 'data+records'
+    }).success(function(data) {
+      Application.currentUserId(data.current_user_id)
+    });
+    return Application.currentUser();
+  });
+}
+
 function usingBackdoor(callback) {
   synchronously(function() {
     var previousSandboxUrl = Server.sandboxUrl;
@@ -11,12 +25,12 @@ function usingBackdoor(callback) {
     callback();
     Server.sandboxUrl = previousSandboxUrl;
   });
-  Repository.clear();
 }
 
 function synchronously(callback) {
   var previousAsyncSetting = jQuery.ajaxSettings.async;
   jQuery.ajaxSettings.async = false;
-  callback();
+  var result = callback();
   jQuery.ajaxSettings.async = previousAsyncSetting;
+  return result;
 }

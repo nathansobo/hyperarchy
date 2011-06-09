@@ -8,6 +8,14 @@ class BackdoorController < SandboxController
     super
   end
 
+  def login
+    user = set_current_user(User.make)
+    render :json => {
+      :data => { :current_user_id => user.id },
+      :records => build_client_dataset(user.initial_repository_contents)
+    }
+  end
+
   def clear_tables
     Prequel.clear_tables
     Organization.make(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
