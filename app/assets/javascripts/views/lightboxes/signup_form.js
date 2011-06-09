@@ -4,6 +4,7 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightbox, {
   lightboxContent: function() { with(this.builder) {
     form(function() {
       h1("Sign up to participate:");
+      div().ref("errors");
 
       label("First Name");
       input({name: "user[first_name]"}).ref('firstName');
@@ -25,8 +26,30 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightbox, {
       Application.loginForm.show();
     },
 
-    submitForm: function() {
-      
+    submitForm: function(e) {
+      e.preventDefault();
+      var fieldValues = _.underscoreKeys(this.fieldValues());
+      return $.ajax({
+        type: 'post',
+        url: "/signup",
+        data: fieldValues,
+        dataType: 'data+records',
+        success: this.hitch('handleSuccess'),
+        error: this.hitch('handleError')
+      });
+    },
+
+    handleSuccess: function(data) {
+      Application.currentUserId(data.current_user_id);
+      this.hide();
+    },
+
+    handleError: function(xhr) {
+      var errors = this.getValidationErrors(xhr);
+      this.errors.empty();
+      _.each(errors, function(error) {
+        this.errors.append(error);
+      }, this);
     }
   }
 });

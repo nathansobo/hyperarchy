@@ -53,15 +53,13 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightbox, {
       History.pushState(null, null, Application.currentUser().defaultOrganization().url());
       this.hide();
     },
-
-    handleErrors: function(event) {
-      if (event.status == 422) {
-        var errors = JSON.parse(event.responseText);
-        this.errors.empty();
-        _.each(errors, function(error) {
-          this.errors.append(error);
-        }, this);
-      }
+        
+    handleErrors: function(xhr) {
+      var errors = this.getValidationErrors(xhr);
+      this.errors.empty();
+      _.each(errors, function(error) {
+        this.errors.append(error);
+      }, this);
     }
   }
 });

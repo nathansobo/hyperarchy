@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   include HttpClient
 
   layout false
-  protect_from_forgery
+  protect_from_forgery unless Rails.env.jasmine?
   helper_method :current_user, :current_user_id, :build_client_dataset, :make_guid
   before_filter :no_internet_explorer
   around_filter :manage_session

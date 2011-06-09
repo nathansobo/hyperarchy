@@ -18,6 +18,16 @@ function login() {
   });
 }
 
+function fetchInitialRepositoryContents() {
+  synchronously(function() {
+    $.ajax({
+      type: 'get',
+      url: "/backdoor/initial_repository_contents",
+      dataType: 'records!'
+    });
+  });
+}
+
 function usingBackdoor(callback) {
   synchronously(function() {
     var previousSandboxUrl = Server.sandboxUrl;

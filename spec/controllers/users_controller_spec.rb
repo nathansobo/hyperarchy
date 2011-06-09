@@ -53,7 +53,7 @@ describe UsersController do
           current_user.should == User.default_guest
 
           response.status.should == 422
-          response_json["errors"].should_not be_empty
+          response_json.should_not be_empty
         end
       end
     end
@@ -98,7 +98,7 @@ describe UsersController do
           xhr :post, :create, :user => user_params, :organization => { :name => "" }
 
           response.status.should == 422
-          response_json['errors'].should_not be_empty
+          response_json.should_not be_empty
           current_user.should == User.default_guest
 
           User.count.should == orig_user_count

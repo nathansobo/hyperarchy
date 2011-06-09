@@ -18,9 +18,7 @@ class UsersController < ApplicationController
       return
     end
 
-    render :status => 422, :json => {
-      'errors' => errors,
-    }
+    render :status => 422, :json => errors
   end
 
   protected

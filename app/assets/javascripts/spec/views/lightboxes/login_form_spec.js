@@ -1,7 +1,6 @@
 //= require spec/spec_helper
 
 describe("LoginForm", function() {
-
   var loginForm, darkenedBackground;
   beforeEach(function() {
     $("#jasmine_content").html(window.Application = Views.Layout.toView());

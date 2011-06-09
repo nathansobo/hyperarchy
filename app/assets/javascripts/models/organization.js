@@ -27,7 +27,7 @@ _.constructor("Organization", Model.Record, {
       });
     },
 
-    global: function() {
+    findSocial: function() {
       return this.find({social: true});
     }
   },
