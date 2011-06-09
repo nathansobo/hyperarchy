@@ -29,6 +29,12 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightbox, {
       $(window).one('popstate', this.hitch('hide'));
     },
 
+    afterHide: function($super) {
+      $super();
+      this.emailAddress.val("")
+      this.password.val("")
+    },
+
     submitForm: function(e) {
       e.preventDefault();
       var fieldValues = _.underscoreKeys(this.fieldValues());

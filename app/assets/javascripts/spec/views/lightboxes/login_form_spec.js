@@ -68,6 +68,8 @@ describe("LoginForm", function() {
         runs(function() {
           expect(Application.currentUser()).toEqual(user);
           expect(Path.routes.current).toEqual(user.defaultOrganization().url());
+          expect(loginForm.emailAddress.val()).toEqual("");
+          expect(loginForm.password.val()).toEqual("");
           expect(loginForm).toBeHidden();
           expect(darkenedBackground).toBeHidden();
         });
