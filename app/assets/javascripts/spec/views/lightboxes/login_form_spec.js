@@ -18,6 +18,18 @@ describe("LoginForm", function() {
       expect(loginForm).toBeVisible();
       expect(darkenedBackground).toBeVisible();
     });
+    
+    it("causes the form to be hidden if the url changes", function() {
+      loginForm.show();
+      $(window).trigger('popstate');
+      expect(loginForm).toBeHidden();
+    });
+    
+    it("causes the form to be hidden if the darkened background is clicked", function() {
+      loginForm.show();
+      darkenedBackground.click();
+      expect(loginForm).toBeHidden();
+    });
   });
 
   describe("with the signupFormLink is clicked", function() {
@@ -31,40 +43,52 @@ describe("LoginForm", function() {
   });
 
   describe("form submission", function() {
+    var user;
+
+    beforeEach(function() {
+      clearServerTables();
+      usingBackdoor(function() {
+        user = User.create();
+        user.memberships().joinTo(Organization).fetch();
+        History.pushState(null, null, user.defaultOrganization().url());
+        Repository.clear();
+      });
+      loginForm.show();
+    });
+
     describe("when the fields are valid and the form is submitted", function() {
-      var user;
-
-      it("logs the user in according to the information entered", function() {
-        runs(function() {
-          clearServerTables();
-          usingBackdoor(function() {
-            user = User.create();
-          });
-
-          loginForm.emailAddress.val(user.emailAddress());
-          loginForm.password.val("password");
-        });
+      it("logs the user in according to the information entered and hides the form", function() {
+        loginForm.emailAddress.val(user.emailAddress());
+        loginForm.password.val("password");
 
         waitsFor("successful login", function(requestComplete) {
-          loginForm.form.trigger('submit', function(data) {
-            requestComplete();
-          });
+          loginForm.form.trigger('submit', requestComplete);
         });
 
         runs(function() {
           expect(Application.currentUser()).toEqual(user);
           expect(Path.routes.current).toEqual(user.defaultOrganization().url());
+          expect(loginForm).toBeHidden();
+          expect(darkenedBackground).toBeHidden();
         });
       });
     });
 
-//    describe("when the fields are invalid and the form is submitted", function() {
-//      it("displays an error message", function() {
-//        loginForm.emailAddress.val(user.emailAddress());
-//        loginForm.password.val(user.);
-////        signupForm.form.trigger('submit');
-//      });
-//    });
+    describe("when the fields are invalid and the form is submitted", function() {
+      it("displays an error message", function() {
+        loginForm.emailAddress.val(user.emailAddress());
+        loginForm.password.val("wrong password");
+
+        waitsFor("errors from server", function(complete) {
+          loginForm.form.trigger('submit', {error: complete});
+        });
+
+        runs(function() {
+          expect(loginForm.errors.text()).toContain("password");
+          expect(loginForm).toBeVisible();
+        });
+      });
+    });
   });
 });
 

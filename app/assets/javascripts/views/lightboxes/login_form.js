@@ -4,6 +4,7 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightbox, {
   lightboxContent: function() { with(this.builder) {
     form(function() {
       h1("Log in to participate:");
+      div().ref("errors");
 
       label("Email Address");
       input({name: "user[emailAddress]", tabindex: 101}).ref('emailAddress');
@@ -23,6 +24,11 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightbox, {
       Application.signupForm.show();
     },
 
+    beforeShow: function($super) {
+      $super();
+      $(window).one('popstate', this.hitch('hide'));
+    },
+
     submitForm: function(e) {
       e.preventDefault();
       var fieldValues = _.underscoreKeys(this.fieldValues());
@@ -31,14 +37,25 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightbox, {
         url: "/login",
         data: fieldValues,
         dataType: 'data+records',
-        success: this.hitch('userEstablished')
-//        error: this.hitch('handleErrors')
+        success: this.hitch('userEstablished'),
+        error: this.hitch('handleErrors')
       });
     },
 
     userEstablished: function(data) {
       Application.currentUserId(data.current_user_id);
       History.pushState(null, null, Application.currentUser().defaultOrganization().url());
+      this.hide();
+    },
+
+    handleErrors: function(event) {
+      if (event.status == 422) {
+        var errors = JSON.parse(event.responseText);
+        this.errors.empty();
+        _.each(errors, function(error) {
+          this.errors.append(error);
+        }, this);
+      }
     }
   }
 });

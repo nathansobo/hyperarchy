@@ -15,6 +15,9 @@ _.constructor("Views.Lightbox", View.Template, {
 
     close: function() {
       this.hide();
+    },
+
+    afterHide: function() {
       Application.darkenedBackground.removeClass('visible');
     }
   }
