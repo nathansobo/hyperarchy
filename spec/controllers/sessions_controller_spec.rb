@@ -18,9 +18,8 @@ describe SessionsController do
 
           response.should be_success
           response_json["data"].should == { "current_user_id" => user.id }
-          response_json["records"]["users"].should have_key(user.to_param)
-          response_json["records"]["organizations"].should have_key(organization.to_param)
-          response_json["records"]["memberships"].should have_key(membership.to_param)
+
+          response_records.should include(user.initial_repository_contents)
         end
       end
 
@@ -35,7 +34,8 @@ describe SessionsController do
 
           membership = user.memberships.find(:organization => organization)
           membership.should be
-          response_json["records"]["memberships"].should have_key(membership.to_param)
+
+          response_records.should include(membership)
         end
       end
     end
@@ -47,7 +47,7 @@ describe SessionsController do
         current_user.should == User.default_guest
 
         response.status.should == 422
-        response_json["errors"].should_not be_empty
+        response_json.should_not be_empty
       end
     end
 
@@ -58,20 +58,23 @@ describe SessionsController do
         current_user.should == User.default_guest
 
         response.status.should == 422
-        response_json["errors"].should_not be_empty
+        response_json.should_not be_empty
       end
     end
   end
 
   describe "#destroy" do
-    it "logs the current user out and redirects to the root" do
+    it "logs the current user out and returns the initial repository contents of the default guest" do
       login_as(user)
       mock(Prequel.session).current_user = user # this happens before the log out
       mock(Prequel.session).current_user = nil # this should happen upon log out
       current_user.should_not be_nil
       post :destroy
-      response.should redirect_to(root_path)
+      response.should be_success
       current_user.should == User.default_guest
+
+      response_json['data'].should == { 'current_user_id' => User.default_guest.id }
+      response_records.should include(current_user.initial_repository_contents)
     end
   end
 end
