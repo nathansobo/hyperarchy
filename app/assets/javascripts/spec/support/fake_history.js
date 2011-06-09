@@ -4,7 +4,8 @@ window.History = {
       state: state,
       url: this.getRootUrl() + url.replace(/^\//, '')
     };
-    this.states.push(event)
+    if (this.getState().url == event.url) return;
+    this.states.push(event);
     $(window).trigger('popstate', event);
   },
 
