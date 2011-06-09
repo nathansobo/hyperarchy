@@ -6,27 +6,22 @@ class SessionsController < ApplicationController
         current_user.memberships.find_or_create!(:organization => organization)
       end
 
-      if request.xhr?
-        render :json => {
-          :data => { :current_user_id => current_user_id },
-          :records => build_client_dataset(current_user.initial_repository_contents)
-        }
-      else
-        redirect_to session.delete(:after_login_path) || root_url(:anchor => "view=organization&organizationId=#{current_user.default_organization.id}")
-      end
+      render :json => {
+        :data => { :current_user_id => current_user_id },
+        :records => build_client_dataset(current_user.initial_repository_contents)
+      }
     else
-      if request.xhr?
-        render :status => 422, :json => { :errors => authentication_errors }
-      else
-        flash[:errors] = authentication_errors
-        redirect_to login_path
-      end
+      render :status => 422, :json => authentication_errors
     end
   end
 
   def destroy
     clear_current_user
-    redirect_to root_path
+
+    render :json => {
+      :data => { :current_user_id => current_user_id },
+      :records => build_client_dataset(current_user.initial_repository_contents)
+    }
   end
 
   protected

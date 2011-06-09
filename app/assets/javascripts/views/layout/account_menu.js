@@ -2,10 +2,10 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
   content: function() { with(this.builder) {
     div({id: "account-menu", 'class': "menu"}, function() {
       a({id: "login-link"}, "Login").ref('loginLink').click("showLoginForm");
-      div({id: "user-link"}, function() {
+      a({id: "user-link"}, function() {
         img({id: "avatar"}).ref("avatar");
         span({id: "name"}).ref("name");
-      }).ref('userLink').click("showDropdown");
+      }).ref('dropdownLink').click("showDropdown");
 
       ul({'class': "dropdown"}, function() {
         li(function() {
@@ -27,10 +27,12 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
       Application.currentUser.change(function(user) {
         if (user.guest()) {
           this.loginLink.show();
+          this.dropdownLink.hide();
         } else {
           this.avatar.attr('src', user.gravatarUrl(25));
           this.name.html(user.fullName());
-          this.userLink.show();
+          this.loginLink.hide();
+          this.dropdownLink.show();
         }
       }, this);
     },
@@ -40,11 +42,28 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
     },
 
     showDropdown: function() {
+      if (this.dropdown.is(':visible')) return;
+
       this.dropdown.show();
+      this.defer(function() {
+        $(window).one('click', this.hitch('hideDropdown'));
+      });
     },
 
     hideDropdown: function() {
       this.dropdown.hide();
+    },
+
+    logout: function(e) {
+      e.preventDefault();
+      return $.ajax({
+        type: 'post',
+        url: "/logout",
+        dataType: 'data+records!',
+        success: function(data) {
+          Application.currentUserId(data.current_user_id);
+        }
+      });
     }
   }
 });
