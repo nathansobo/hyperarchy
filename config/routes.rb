@@ -1,5 +1,7 @@
 Hyperarchy::Application.routes.draw do
   root :to => 'home#show'
+  match 'organizations(/:id)' => 'home#show'
+
   match 'login' => 'sessions#new', :via => 'get', :as => "login"
   match 'login' => 'sessions#create', :via => 'post', :as => "login"
   match 'logout' => 'sessions#destroy', :via => 'post'
@@ -27,9 +29,11 @@ Hyperarchy::Application.routes.draw do
   resources :password_reset_requests
   resources :password_resets
 
+
   if Rails.env.jasmine? || Rails.env.test?
     mount Princess::Engine => '/'
     post '/backdoor/clear_tables' => 'backdoor#clear_tables'
+    post '/backdoor/login' => 'backdoor#login'
     get '/backdoor' => 'backdoor#fetch'
     post '/backdoor/:relation' => 'backdoor#create'
     put '/backdoor/:relation/:id' => 'backdoor#update'

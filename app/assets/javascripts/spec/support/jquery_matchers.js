@@ -139,11 +139,11 @@ jasmine.JQuery.matchersClass = {};
     },
 
     toBeVisible: function() {
-      return this.actual.is(':visible');
+      return this.actual.is(':visible') && this.actual.css('visibility') !== 'hidden';
     },
 
     toBeHidden: function() {
-      return this.actual.is(':hidden');
+      return this.actual.is(':hidden') || this.actual.css('visibility') === 'hidden';
     },
 
     toBeSelected: function() {
