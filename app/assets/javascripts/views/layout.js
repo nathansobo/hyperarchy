@@ -6,6 +6,7 @@ _.constructor("Views.Layout", View.Template, {
         div({id: "header-content"}, function() {
           h1("HYPERARCHY");
           div({id: "menu-items"}, function() {
+            subview('organizationsMenu', Views.Layout.OrganizationsMenu);
             subview('accountMenu', Views.Layout.AccountMenu);
           });
         });
@@ -23,10 +24,14 @@ _.constructor("Views.Layout", View.Template, {
   }},
 
   viewProperties: {
-    propertyAccessors: ['currentUser'],
-
     initialize: function() {
       Path.listen();
+    },
+    
+    currentUser: {
+      change: function(user) {
+        this.currentUserId(user.id());
+      }
     },
 
     currentUserId: {

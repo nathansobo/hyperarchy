@@ -1,8 +1,8 @@
 _.constructor('Views.Layout.AccountMenu', View.Template, {
   content: function() { with(this.builder) {
-    div({id: "account-menu", 'class': "menu"}, function() {
+    div({'class': "dropdown-menu"}, function() {
       a({id: "login-link"}, "Login").ref('loginLink').click("showLoginForm");
-      a({id: "user-link"}, function() {
+      a({id: "dropdown-link"}, function() {
         img({id: "avatar"}).ref("avatar");
         span({id: "name"}).ref("name");
       }).ref('dropdownLink').click("showDropdown");
@@ -24,7 +24,7 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
 
   viewProperties: {
     attach: function() {
-      Application.currentUser.change(function(user) {
+      Application.signal('currentUser').change(function(user) {
         if (user.guest()) {
           this.loginLink.show();
           this.dropdownLink.hide();

@@ -20,6 +20,9 @@ $darkened-background-z-index: 100
       margin: 0 auto
       max-width: 1200px
       #menu-items
+        > div
+          display: inline-block
+          margin: 4px
         @include box-flex(1)
         text-align: right
 
@@ -47,7 +50,8 @@ $darkened-background-z-index: 100
       height: 400
       z-index: $darkened-background-z-index + 1
 
-#account-menu
+
+.dropdown-menu
   @include unselectable
   position: relative
   > *
@@ -56,5 +60,4 @@ $darkened-background-z-index: 100
     position: absolute
     top: 100%
     right: 0
-
 
