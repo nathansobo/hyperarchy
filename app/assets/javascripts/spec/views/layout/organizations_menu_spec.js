@@ -60,4 +60,14 @@ describe("Views.Layout.OrganizationsMenu", function() {
       expect(organizationsMenu.userSubscriptions.size()).toEqual(2);
     });
   });
+
+  describe("when the Add Organization link is clicked", function() {
+    it("shows the signup form with the organization name field visible and a relevant title", function() {
+      organizationsMenu.addOrganizationLink.click();
+      expect(Application.signupForm).toBeVisible();
+      expect(Application.signupForm.organizationSection).toBeVisible();
+      expect(Application.signupForm.participateHeader).toBeHidden();
+      expect(Application.signupForm.addOrganizationHeader).toBeVisible();
+    });
+  });
 });

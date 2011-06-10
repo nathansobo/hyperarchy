@@ -8,7 +8,7 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
         },
 
         menuContent: function() {
-
+          
         }
       });
     });
@@ -36,6 +36,11 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
         this.dropdownMenu.hide();
         this.addOrganizationLink.show();
       }
+    },
+
+    showAddOrganizationForm: function() {
+      Application.signupForm.show();
+      Application.signupForm.showOrganizationSection();
     }
   }
 });

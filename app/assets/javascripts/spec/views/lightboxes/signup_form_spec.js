@@ -1,7 +1,6 @@
 //= require spec/spec_helper
 
-describe("SignupForm", function() {
-
+describe("Views.Lightboxes.SignupForm", function() {
   var signupForm, darkenedBackground;
   beforeEach(function() {
     $("#jasmine_content").html(window.Application = Views.Layout.toView());
@@ -13,9 +12,10 @@ describe("SignupForm", function() {
   });
 
   describe("#afterShow / #afterHide", function() {
-    it("shows / hides the darkened background", function() {
+    it("shows / hides the darkened background and hides the organization section", function() {
       expect(signupForm).toBeVisible();
       expect(darkenedBackground).toBeVisible();
+      signupForm.showOrganizationSection();
 
       signupForm.hide();
 
@@ -24,6 +24,9 @@ describe("SignupForm", function() {
       
       signupForm.show();
 
+      expect(signupForm.addOrganizationHeader).toBeHidden();
+      expect(signupForm.organizationSection).toBeHidden();
+      expect(signupForm.participateHeader).toBeVisible();
       expect(darkenedBackground).toBeVisible();
     });
   });
@@ -88,6 +91,41 @@ describe("SignupForm", function() {
           expect(signupForm.errors.text()).toContain("email address");
           expect(signupForm).toBeVisible();
         });
+      });
+    });
+
+    describe("when the organization section is visible and the organization name is specified", function() {
+      it("signs them up and directs them to the main page of their new organization", function() {
+        clearServerTables();
+        fetchInitialRepositoryContents();
+        History.pushState(null, null, Organization.findSocial().url());
+
+        var signupForm = Application.signupForm;
+        signupForm.organizationSection.show();
+        signupForm.firstName.val("Richard");
+        signupForm.lastName.val("Nixon");
+        signupForm.emailAddress.val("dick@hell.de");
+        signupForm.organizationName.val("dick's group");
+        signupForm.password.val("integrity");
+
+        waitsFor("successful signup", function(complete) {
+          signupForm.form.trigger('submit', complete);
+        });
+
+        runs(function() {
+          var user = Application.currentUser();
+          expect(user.guest()).toBeFalsy();
+          expect(user.firstName()).toEqual("Richard");
+          expect(user.lastName()).toEqual("Nixon");
+          expect(user.emailAddress()).toEqual("dick@hell.de");
+          expect(user.organizations().size()).toBe(2);
+
+          var org = user.organizations().find({name: "dick's group"});
+          expect(Path.routes.current).toEqual(org.url());
+          expect(signupForm).toBeHidden();
+          expect(Application.darkenedBackground).toBeHidden();
+        });
+
       });
     });
   });

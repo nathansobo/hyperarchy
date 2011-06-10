@@ -3,9 +3,14 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightbox, {
 
   lightboxContent: function() { with(this.builder) {
     form(function() {
-      h1("Sign up to participate:");
+      h1("Sign up to participate:").ref('participateHeader');
+      h1("Add your organization:").ref('addOrganizationHeader');
       div().ref("errors");
 
+      div(function() {
+        label("Organization Name");
+        input({name: "organization[name]"}).ref('organizationName');
+      }).ref("organizationSection");
       label("First Name");
       input({name: "user[first_name]"}).ref('firstName');
       label("Last Name");
@@ -26,6 +31,10 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightbox, {
       Application.loginForm.show();
     },
 
+    afterShow: function() {
+      this.hideOrganizationSection();
+    },
+
     submitForm: function(e) {
       e.preventDefault();
       var fieldValues = _.underscoreKeys(this.fieldValues());
@@ -41,6 +50,8 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightbox, {
 
     handleSuccess: function(data) {
       Application.currentUserId(data.current_user_id);
+      var id = data.new_organization_id;
+      if (id) History.pushState(null, null, Organization.find(id).url());
       this.hide();
     },
 
@@ -50,6 +61,18 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightbox, {
       _.each(errors, function(error) {
         this.errors.append(error);
       }, this);
+    },
+
+    showOrganizationSection: function() {
+      this.organizationSection.show();
+      this.addOrganizationHeader.show();
+      this.participateHeader.hide();
+    },
+
+    hideOrganizationSection: function() {
+      this.organizationSection.hide();
+      this.addOrganizationHeader.hide();
+      this.participateHeader.show();
     }
   }
 });
