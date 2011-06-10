@@ -8,7 +8,7 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
         },
 
         menuContent: function() {
-          
+          this.builder.a({id: "add-organization-link"}, "Add Your Organization").ref('addOrganizationLink').click("showAddOrganizationForm");
         }
       });
     });
@@ -17,6 +17,7 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
   viewProperties: {
     initialize: function() {
       this.userSubscriptions = new Monarch.SubscriptionBundle();
+      this.dropdownMenu.showAddOrganizationForm = this.hitch('showAddOrganizationForm');
     },
 
     attach: function() {

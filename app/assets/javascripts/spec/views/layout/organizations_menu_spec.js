@@ -70,4 +70,16 @@ describe("Views.Layout.OrganizationsMenu", function() {
       expect(Application.signupForm.addOrganizationHeader).toBeVisible();
     });
   });
+
+  describe("when the dropdown link is clicked", function() {
+    describe("when the add organization link is clicked inside the dropdown", function() {
+      it("shows the signup form with the organization name field visible and a relevant title", function() {
+        organizationsMenu.dropdownMenu.addOrganizationLink.click();
+        expect(Application.signupForm).toBeVisible();
+        expect(Application.signupForm.organizationSection).toBeVisible();
+        expect(Application.signupForm.participateHeader).toBeHidden();
+        expect(Application.signupForm.addOrganizationHeader).toBeVisible();
+      });
+    });
+  });
 });
