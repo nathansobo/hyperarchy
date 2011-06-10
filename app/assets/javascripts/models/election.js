@@ -114,5 +114,9 @@ _.constructor("Election", Model.Record, {
 
   ageInHours: function() {
     return (new Date().getTime() - this.createdAt().getTime()) / 3600000
+  },
+
+  url: function() {
+    return "/elections/" + this.id();
   }
 });

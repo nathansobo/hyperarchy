@@ -31,7 +31,7 @@ describe("Views.Pages.Organization", function() {
 
   describe("when the organization is assigned", function() {
     beforeEach(function() {
-      Application = Views.Layout.toView();
+      attachLayout();
     });
 
     it("fetches the organization's elections", function() {
@@ -57,6 +57,14 @@ describe("Views.Pages.Organization", function() {
 
       runs(function() {
         expect(organization.elections().size()).toBe(16);
+        var electionsList = organizationPage.electionsList;
+        organization.elections().each(function(election) {
+          expect(electionsList).toContain("li:contains('" + election.body() + "')");
+        });
+
+        var election = organization.elections().first();
+        electionsList.find("li:contains('" + election.body() + "')").click();
+        expect(Path.routes.current).toBe("/elections/" + election.id());
       });
     });
   });

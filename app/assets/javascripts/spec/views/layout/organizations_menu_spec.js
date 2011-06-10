@@ -1,7 +1,7 @@
 describe("Views.Layout.OrganizationsMenu", function() {
   var organizationsMenu;
   beforeEach(function() {
-    organizationsMenu = attachLayout().organizationsMenu;
+    organizationsMenu = renderLayout().organizationsMenu;
     expect(organizationsMenu).toExist();
   });
 

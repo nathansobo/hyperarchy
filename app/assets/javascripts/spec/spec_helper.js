@@ -13,6 +13,12 @@ afterEach(function() {
 });
 
 function attachLayout() {
+  window.Application = Views.Layout.toView();
+  Application.attach();
+  return Application;
+}
+
+function renderLayout() {
   $("#jasmine_content").html(window.Application = Views.Layout.toView());
   Application.attach();
   return Application;
