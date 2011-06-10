@@ -71,15 +71,45 @@ describe("Views.Layout.OrganizationsMenu", function() {
     });
   });
 
-  describe("when the dropdown link is clicked", function() {
-    describe("when the add organization link is clicked inside the dropdown", function() {
-      it("shows the signup form with the organization name field visible and a relevant title", function() {
-        organizationsMenu.dropdownMenu.addOrganizationLink.click();
-        expect(Application.signupForm).toBeVisible();
-        expect(Application.signupForm.organizationSection).toBeVisible();
-        expect(Application.signupForm.participateHeader).toBeHidden();
-        expect(Application.signupForm.addOrganizationHeader).toBeVisible();
-      });
+  describe("when the add organization link is clicked inside the dropdown", function() {
+    it("shows the signup form with the organization name field visible and a relevant title", function() {
+      organizationsMenu.dropdownMenu.addOrganizationLink.click();
+      expect(Application.signupForm).toBeVisible();
+      expect(Application.signupForm.organizationSection).toBeVisible();
+      expect(Application.signupForm.participateHeader).toBeHidden();
+      expect(Application.signupForm.addOrganizationHeader).toBeVisible();
+    });
+  });
+
+  describe("the organizations list in the dropdown menu", function() {
+    var u1m1, u2m1, u2m2;
+
+    beforeEach(function() {
+      user1 = User.createFromRemote({id: 1});
+      user2 = User.createFromRemote({id: 2});
+      org1 = Organization.createFromRemote({id: 1, name: "org1"});
+      org2 = Organization.createFromRemote({id: 2, name: "org2"});
+      u1m1 = user1.memberships().createFromRemote({organizationId: 1});
+      u2m1 = user2.memberships().createFromRemote({organizationId: 1});
+      u2m2 = user2.memberships().createFromRemote({organizationId: 2});
+    });
+
+    it("always contains the current user's organizations", function() {
+      Application.currentUser(user1);
+      expect(organizationsMenu.dropdownMenu).toContain(":contains('org1')");
+      expect(organizationsMenu.dropdownMenu).not.toContain(":contains('org2')");
+
+      Application.currentUser(user2);
+      expect(organizationsMenu.dropdownMenu).toContain(":contains('org1')");
+      expect(organizationsMenu.dropdownMenu).toContain(":contains('org2')");
+
+      u2m2.remotelyDestroyed();
+
+      expect(organizationsMenu.dropdownMenu).not.toContain(":contains('org2')");
+
+      user2.memberships().createFromRemote({organizationId: 2});
+
+      expect(organizationsMenu.dropdownMenu).toContain(":contains('org2')");
     });
   });
 });
