@@ -26,35 +26,35 @@ describe("Views.Layout.OrganizationsMenu", function() {
       Application.currentUser(singleMembershipUser);
 
       expect(organizationsMenu.addOrganizationLink).toBeVisible();
-      expect(organizationsMenu.dropdownLink).toBeHidden();
+      expect(organizationsMenu.dropdownMenu).toBeHidden();
       
       Application.currentUser(multiMembershipUser);
 
       expect(organizationsMenu.addOrganizationLink).toBeHidden();
-      expect(organizationsMenu.dropdownLink).toBeVisible();
+      expect(organizationsMenu.dropdownMenu).toBeVisible();
 
       Application.currentUser(singleMembershipUser);
 
       expect(organizationsMenu.addOrganizationLink).toBeVisible();
-      expect(organizationsMenu.dropdownLink).toBeHidden();
+      expect(organizationsMenu.dropdownMenu).toBeHidden();
     });
 
-    it("shows the dropdown link when the user first becomes a member of multiple organizaitons and hides it if they revert back to one", function() {
+    it("shows the dropdown menu when the user first becomes a member of multiple organizaitons and hides it if they revert back to one", function() {
       expect(singleMembershipUser.organizations().size()).toEqual(1);
       Application.currentUser(singleMembershipUser);
 
       expect(organizationsMenu.addOrganizationLink).toBeVisible();
-      expect(organizationsMenu.dropdownLink).toBeHidden();
+      expect(organizationsMenu.dropdownMenu).toBeHidden();
 
       var membership2 = singleMembershipUser.memberships().createFromRemote({organizationId: org2.id()});
 
       expect(organizationsMenu.addOrganizationLink).toBeHidden();
-      expect(organizationsMenu.dropdownLink).toBeVisible();
+      expect(organizationsMenu.dropdownMenu).toBeVisible();
 
       membership2.remotelyDestroyed();
 
       expect(organizationsMenu.addOrganizationLink).toBeVisible();
-      expect(organizationsMenu.dropdownLink).toBeHidden();
+      expect(organizationsMenu.dropdownMenu).toBeHidden();
 
       Application.currentUser(multiMembershipUser);
       expect(organizationsMenu.userSubscriptions.size()).toEqual(2);

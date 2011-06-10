@@ -2,9 +2,15 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
   content: function() { with(this.builder) {
     div({'class': "dropdown-menu"}, function() {
       a({id: "add-organization-link"}, "Add Your Organization").ref('addOrganizationLink').click("showAddOrganizationForm");
-      a({id: "dropdown-link"}, "Organizations").ref('dropdownLink').click("showDropdown");
-      ul({'class': "dropdown"}, function() {
-      }).ref("dropdown");
+      subview("dropdownMenu", Views.Layout.DropdownMenu, {
+        linkContent: function() {
+          this.builder.text("Organizations");
+        },
+
+        menuContent: function() {
+
+        }
+      });
     });
   }},
 
@@ -24,10 +30,10 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
 
     showOrHideDropdownLink: function() {
       if (Application.currentUser().organizations().size() > 1) {
-        this.dropdownLink.show();
+        this.dropdownMenu.show();
         this.addOrganizationLink.hide();
       } else {
-        this.dropdownLink.hide();
+        this.dropdownMenu.hide();
         this.addOrganizationLink.show();
       }
     }
