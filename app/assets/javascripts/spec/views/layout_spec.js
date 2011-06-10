@@ -1,28 +1,35 @@
 //= require spec/spec_helper
 
 describe("Views.Layout", function() {
-  var layout;
   beforeEach(function() {
-    layout = Views.Layout.toView();
+    $('#jasmine_content').html(window.Application = Views.Layout.toView());
+    Application.attach();
   });
-
 
   describe("#currentUser and #currentUserId", function() {
     it("ensures consistent results regardless of which is used to assign", function() {
       var user1 = User.createFromRemote({id: 1});
       var user2 = User.createFromRemote({id: 2});
 
-      layout.currentUserId(user1.id());
-      expect(layout.currentUserId()).toEqual(user1.id());
-      expect(layout.currentUser()).toEqual(user1);
+      Application.currentUserId(user1.id());
+      expect(Application.currentUserId()).toEqual(user1.id());
+      expect(Application.currentUser()).toEqual(user1);
 
-      layout.currentUser(user2);
-      expect(layout.currentUserId()).toEqual(user2.id());
-      expect(layout.currentUser()).toEqual(user2);
+      Application.currentUser(user2);
+      expect(Application.currentUserId()).toEqual(user2.id());
+      expect(Application.currentUser()).toEqual(user2);
 
-      layout.currentUser(user2);
-      expect(layout.currentUserId()).toEqual(user2.id());
-      expect(layout.currentUser()).toEqual(user2);
+      Application.currentUser(user2);
+      expect(Application.currentUserId()).toEqual(user2.id());
+      expect(Application.currentUser()).toEqual(user2);
+    });
+  });
+
+  describe("when the user navigates to /organizations/:id", function() {
+    it("shows the organizationPage and assigns the organizationId on it", function() {
+      History.pushState(null, null, '/organizations/23');
+      expect(Application.organizationPage).toBeVisible();
+      expect(Application.organizationPage.organizationId()).toBe(23);
     });
   });
 });

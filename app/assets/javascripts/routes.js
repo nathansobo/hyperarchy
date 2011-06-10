@@ -1,5 +1,3 @@
-_.module("Routes", {
-  electionPath: function(election) {
-    return "organizations/" + election.organizationId() + "/elections/" + election.id();
-  }
+Path.map('/organizations/:id').to(function() {
+  Application.organizationPage.show().organizationId(parseInt(this.params.id));
 });

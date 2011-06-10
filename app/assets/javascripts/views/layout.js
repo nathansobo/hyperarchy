@@ -12,7 +12,9 @@ _.constructor("Views.Layout", View.Template, {
         });
       });
 
-      div({id: "body"});
+      div({id: "body"}, function() {
+        subview('organizationPage', Views.Pages.Organization);
+      });
 
       div({id: "lightboxes"}, function() {
         subview("loginForm", Views.Lightboxes.LoginForm);
@@ -24,7 +26,8 @@ _.constructor("Views.Layout", View.Template, {
   }},
 
   viewProperties: {
-    initialize: function() {
+    attach: function($super) {
+      $super();
       Path.listen();
     },
     
