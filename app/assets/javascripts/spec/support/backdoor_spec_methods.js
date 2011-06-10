@@ -37,6 +37,20 @@ function usingBackdoor(callback) {
   });
 }
 
+function createMultiple(options) {
+  synchronously(function() {
+    $.ajax({
+      type: 'post',
+      url: '/backdoor/' + options.tableName + '/multiple',
+      data: {
+        count: options.count,
+        field_values: _.underscoreKeys(options.fieldValues)
+      },
+      dataType: 'records'
+    });
+  });
+}
+
 function synchronously(callback) {
   var previousAsyncSetting = jQuery.ajaxSettings.async;
   jQuery.ajaxSettings.async = false;

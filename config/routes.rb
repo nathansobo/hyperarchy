@@ -34,6 +34,7 @@ Hyperarchy::Application.routes.draw do
     mount Princess::Engine => '/'
     post '/backdoor/clear_tables' => 'backdoor#clear_tables'
     post '/backdoor/login' => 'backdoor#login'
+    post '/backdoor/:relation/multiple' => 'backdoor#create_multiple'
     get '/backdoor/initial_repository_contents' => 'backdoor#initial_repository_contents'
     get '/backdoor' => 'backdoor#fetch'
     post '/backdoor/:relation' => 'backdoor#create'

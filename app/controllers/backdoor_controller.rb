@@ -20,6 +20,18 @@ class BackdoorController < SandboxController
     render :json => build_client_dataset(current_user.initial_repository_contents)
   end
 
+  def create_multiple
+    field_values = params[:field_values].blank?? {} : params[:field_values]
+    record_class = sandbox.get_relation(params[:relation]).tuple_class
+
+    records = []
+    params[:count].to_i.times do |n|
+      records.push(record_class.make(field_values))
+    end
+
+    render :json => build_client_dataset(records)
+  end
+
   def clear_tables
     Prequel.clear_tables
     Organization.make(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
