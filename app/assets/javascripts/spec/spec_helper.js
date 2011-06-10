@@ -5,6 +5,7 @@
 beforeEach(function() {
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
   window.History.reset();
+  Repository.clear();
 });
 
 afterEach(function() {

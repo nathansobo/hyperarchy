@@ -9,16 +9,27 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
   }},
 
   viewProperties: {
+    initialize: function() {
+      this.userSubscriptions = new Monarch.SubscriptionBundle();
+    },
+
     attach: function() {
       Application.signal('currentUser').change(function(user) {
-        if (user.organizations().size() > 1) {
-          this.dropdownLink.show();
-          this.addOrganizationLink.hide();
-        } else {
-          this.dropdownLink.hide();
-          this.addOrganizationLink.show();
-        }
+        this.showOrHideDropdownLink();
+        this.userSubscriptions.destroy();
+        this.userSubscriptions.add(user.organizations().onInsert(this.hitch('showOrHideDropdownLink')));
+        this.userSubscriptions.add(user.organizations().onRemove(this.hitch('showOrHideDropdownLink')));
       }, this);
+    },
+
+    showOrHideDropdownLink: function() {
+      if (Application.currentUser().organizations().size() > 1) {
+        this.dropdownLink.show();
+        this.addOrganizationLink.hide();
+      } else {
+        this.dropdownLink.hide();
+        this.addOrganizationLink.show();
+      }
     }
   }
 });
