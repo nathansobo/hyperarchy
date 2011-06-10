@@ -8,6 +8,10 @@ describe("Views.Pages.Organization", function() {
   });
 
   describe("when the organizationId is assigned", function() {
+    beforeEach(function() {
+      stubAjax();
+    });
+
     describe("when the organization exists in the local repository", function() {
       it("assigns the organization", function() {
         var org1 = Organization.createFromRemote({id: 1, name: "Watergate"});

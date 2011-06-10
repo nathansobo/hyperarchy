@@ -17,3 +17,11 @@ function attachLayout() {
   Application.attach();
   return Application;
 }
+
+function stubAjax() {
+  spyOn(jQuery, 'ajax').andCallFake(function() {
+    var promise = jQuery.Deferred().promise();
+    promise.success = promise.done;
+    return promise;
+  });
+}
