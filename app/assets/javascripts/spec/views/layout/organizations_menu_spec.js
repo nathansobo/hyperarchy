@@ -5,7 +5,7 @@ describe("Views.Layout.OrganizationsMenu", function() {
     expect(organizationsMenu).toExist();
   });
 
-  describe("showing and hiding the Add Organization Link and the dropdown link", function() {
+  describe("showing and hiding the Add Organization link and the dropdown link", function() {
     var singleMembershipUser, multiMembershipUser, org1, org2;
 
     beforeEach(function() {
@@ -23,9 +23,6 @@ describe("Views.Layout.OrganizationsMenu", function() {
     });
 
     it("shows the Add Organizations links when the user is a member of one organization, and shows the dropdown menu link if they have more than one", function() {
-      expect(organizationsMenu.addOrganizationLink).toBeHidden();
-      expect(organizationsMenu.dropdownLink).toBeHidden();
-
       Application.currentUser(singleMembershipUser);
 
       expect(organizationsMenu.addOrganizationLink).toBeVisible();

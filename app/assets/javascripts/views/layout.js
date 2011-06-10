@@ -3,7 +3,7 @@ _.constructor("Views.Layout", View.Template, {
     div({id: "layout"}, function() {
 
       div({id: "header"}, function() {
-        div({id: "header-content"}, function() {
+        div(function() {
           h1("HYPERARCHY");
           div({id: "menu-items"}, function() {
             subview('organizationsMenu', Views.Layout.OrganizationsMenu);

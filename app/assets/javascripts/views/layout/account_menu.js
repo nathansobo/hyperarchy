@@ -1,38 +1,41 @@
 _.constructor('Views.Layout.AccountMenu', View.Template, {
   content: function() { with(this.builder) {
-    div({'class': "dropdown-menu"}, function() {
+    div({'id': "account-menu"}, function() {
       a({id: "login-link"}, "Login").ref('loginLink').click("showLoginForm");
-      a({id: "dropdown-link"}, function() {
-        img({id: "avatar"}).ref("avatar");
-        span({id: "name"}).ref("name");
-      }).ref('dropdownLink').click("showDropdown");
-
-      ul({'class': "dropdown"}, function() {
-        li(function() {
-          a("Logout").
-            ref("logoutLink").
-            click("logout");
-        });
-        li(function() {
-          a("Account Preferences").
-            ref("logoutLink").
-            click("logout");
-        });
-      }).ref("dropdown");
+      subview('dropdownMenu', Views.Layout.DropdownMenu, {
+        linkContent: function() { with(this.builder) {
+          img({id: "avatar"}).ref("avatar");
+          span({id: "name"}).ref("name");
+        }},
+        menuContent: function() { with(this.builder) {
+          li(function() {
+            a("Logout").
+              ref("logoutLink").
+              click('logout');
+          });
+          li(function() {
+            a("Account Preferences")
+          });
+        }}
+      });
     });
   }},
 
   viewProperties: {
+    initialize: function() {
+      this.dropdownMenu.logout = this.hitch('logout');
+    },
+
     attach: function() {
       Application.signal('currentUser').change(function(user) {
         if (user.guest()) {
           this.loginLink.show();
-          this.dropdownLink.hide();
+          this.dropdownMenu.hide();
         } else {
-          this.avatar.attr('src', user.gravatarUrl(25));
-          this.name.html(user.fullName());
+          this.dropdownMenu.avatar.attr('src', user.gravatarUrl(25));
+          this.dropdownMenu.name.html(user.fullName());
           this.loginLink.hide();
-          this.dropdownLink.show();
+          this.dropdownMenu.show();
         }
       }, this);
     },
