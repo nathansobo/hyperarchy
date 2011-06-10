@@ -14,7 +14,8 @@ _.constructor("Views.Layout", View.Template, {
 
       div({id: "body"}, function() {
         subview('organizationPage', Views.Pages.Organization);
-      });
+        subview('electionPage', Views.Pages.Election);
+      }).ref("body");
 
       div({id: "lightboxes"}, function() {
         subview("loginForm", Views.Lightboxes.LoginForm);
@@ -41,6 +42,11 @@ _.constructor("Views.Layout", View.Template, {
       change: function(id) {
         this.currentUser(User.find(id));
       }
+    },
+
+    showPage: function(name, id) {
+      this.body.children().hide();
+      this[name + 'Page'].show().id(id);
     }
   }
 });

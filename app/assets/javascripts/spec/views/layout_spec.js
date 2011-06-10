@@ -26,7 +26,18 @@ describe("Views.Layout", function() {
   });
 
   describe("when the user navigates to /organizations/:id", function() {
-    it("shows the organizationPage and assigns the organizationId on it", function() {
+    it("shows only the organizationPage and assigns the organizationId on it", function() {
+      Application.electionPage.show();
+
+      History.pushState(null, null, '/organizations/23');
+      expect(Application.electionPage).toBeHidden();
+      expect(Application.organizationPage).toBeVisible();
+      expect(Application.organizationPage.organizationId()).toBe(23);
+    });
+  });
+
+  describe("when the user navigates to /elections/:id", function() {
+    it("shows only the electionsPage and assigns the organizationId on it", function() {
       History.pushState(null, null, '/organizations/23');
       expect(Application.organizationPage).toBeVisible();
       expect(Application.organizationPage.organizationId()).toBe(23);

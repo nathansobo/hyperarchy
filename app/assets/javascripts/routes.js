@@ -1,3 +1,7 @@
 Path.map('/organizations/:id').to(function() {
-  Application.organizationPage.show().organizationId(parseInt(this.params.id));
+  Application.showPage('organization', this.params.id);
+});
+
+Path.map('/elections/:id').to(function() {
+  Application.showPage('election', this.params.id);
 });

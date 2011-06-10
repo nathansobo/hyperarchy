@@ -12,9 +12,7 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
   }},
 
   viewProperties: {
-    propertyAccessors: ['organization'],
-
-    organizationId: {
+    id: {
       change: function(id) {
         var organization = Organization.find(id) || Organization.findSocial();
         this.organization(organization);
@@ -23,6 +21,7 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
 
     organization: {
       change: function(organization) {
+        this.id(organization.id());
         return organization.fetchMoreElections(16)
           .success(this.bind(function() {
             this.electionsList.relation(organization.elections());

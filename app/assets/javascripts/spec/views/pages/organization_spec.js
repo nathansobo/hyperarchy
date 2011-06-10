@@ -7,7 +7,7 @@ describe("Views.Pages.Organization", function() {
     organizationPage = Views.Pages.Organization.toView();
   });
 
-  describe("when the organizationId is assigned", function() {
+  describe("when the id is assigned", function() {
     beforeEach(function() {
       stubAjax();
     });
@@ -15,7 +15,7 @@ describe("Views.Pages.Organization", function() {
     describe("when the organization exists in the local repository", function() {
       it("assigns the organization", function() {
         var org1 = Organization.createFromRemote({id: 1, name: "Watergate"});
-        organizationPage.organizationId(org1.id());
+        organizationPage.id(org1.id());
         expect(organizationPage.organization()).toBe(org1);
       });
     });
@@ -23,7 +23,7 @@ describe("Views.Pages.Organization", function() {
     describe("when the organization does not exist in the local repository", function() {
       it("navigates to the organization page for Hyperarchy Social", function() {
         var socialOrg = Organization.createFromRemote({id: 1, social: true});
-        organizationPage.organizationId(99);
+        organizationPage.id(99);
         expect(organizationPage.organization()).toBe(socialOrg);
       });
     });
@@ -34,7 +34,7 @@ describe("Views.Pages.Organization", function() {
       attachLayout();
     });
 
-    it("fetches the organization's elections", function() {
+    it("assigns the id and fetches the organization's elections", function() {
       var user, organization, election1, election2;
 
       clearServerTables();
@@ -52,6 +52,7 @@ describe("Views.Pages.Organization", function() {
 
       waitsFor("elections to be fetched", function(complete) {
         organizationPage.organization(organization).success(complete);
+        expect(organizationPage.id()).toBe(organization.id());
         expect(organization.elections().size()).toBe(0);
       });
 
