@@ -82,12 +82,12 @@ describe("Views.Layout.OrganizationsMenu", function() {
   });
 
   describe("the organizations list in the dropdown menu", function() {
-    var u1m1, u2m1, u2m2;
+    var u1m1, u2m1, u2m2, org1, org2, user1, user2;
 
     beforeEach(function() {
+      org1 = Organization.createFromRemote({id: 1, name: "org1"});
       user1 = User.createFromRemote({id: 1});
       user2 = User.createFromRemote({id: 2});
-      org1 = Organization.createFromRemote({id: 1, name: "org1"});
       org2 = Organization.createFromRemote({id: 2, name: "org2"});
       u1m1 = user1.memberships().createFromRemote({organizationId: 1});
       u2m1 = user2.memberships().createFromRemote({organizationId: 1});
@@ -110,6 +110,14 @@ describe("Views.Layout.OrganizationsMenu", function() {
       user2.memberships().createFromRemote({organizationId: 2});
 
       expect(organizationsMenu.dropdownMenu).toContain(":contains('org2')");
+    });
+
+    it("navigates to an organization's url when that organization's name is clicked in the dropdown menu", function() {
+      Application.currentUser(user1);
+      var orgLink = organizationsMenu.dropdownMenu.organizationsList.find("li:contains('org1')");
+      expect(orgLink).toExist();
+      orgLink.click();
+      expect(Path.routes.current).toBe(org1.url());
     });
   });
 });

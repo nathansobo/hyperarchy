@@ -25,7 +25,7 @@ describe("Views.Layout.AccountMenu", function() {
 
       expect(accountMenu.loginLink).toBeHidden();
       expect(accountMenu.dropdownMenu).toBeVisible();
-      expect(accountMenu.dropdownMenu.avatar.attr('src')).toEqual(member.gravatarUrl(25));
+      expect(accountMenu.dropdownMenu.avatar.user()).toEqual(member);
       expect(accountMenu.dropdownMenu.name.html()).toEqual(member.fullName());
 
       Application.currentUser(guest);

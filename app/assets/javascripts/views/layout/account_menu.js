@@ -4,7 +4,7 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
       a({id: "login-link"}, "Login").ref('loginLink').click("showLoginForm");
       subview('dropdownMenu', Views.Layout.DropdownMenu, {
         linkContent: function() { with(this.builder) {
-          img({id: "avatar"}).ref("avatar");
+          subview('avatar', Views.Components.Avatar, {size: 30});
           span({id: "name"}).ref("name");
         }},
         menuContent: function() { with(this.builder) {
@@ -32,7 +32,7 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
           this.loginLink.show();
           this.dropdownMenu.hide();
         } else {
-          this.dropdownMenu.avatar.attr('src', user.gravatarUrl(25));
+          this.dropdownMenu.avatar.user(user);
           this.dropdownMenu.name.html(user.fullName());
           this.loginLink.hide();
           this.dropdownMenu.show();

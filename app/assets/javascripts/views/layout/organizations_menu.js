@@ -11,7 +11,9 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
           this.builder.a({id: "add-organization-link"}, "Add Your Organization").ref('addOrganizationLink').click("showAddOrganizationForm");
           this.builder.subview('organizationsList', Views.Components.SortedList, {
             buildElement: function(organization) {
-              return $("<li>" + organization.name() +"</li>");
+              return $("<li><a>" + organization.name() +"</a></li>").click(function() {
+                History.pushState(null, null, organization.url());
+              });
             }
           });
         }
