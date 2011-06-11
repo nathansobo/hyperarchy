@@ -2298,7 +2298,15 @@ jasmine.WaitsForBlock.prototype.waitForExplicitCompletion = function(onComplete)
   }, this.timeout);
   
   var multiCompletion = new jasmine.WaitsForBlock.MultiCompletion(this.latchFunction.length, this.env, onComplete, timeoutHandle);
-  this.latchFunction.apply(this.spec, multiCompletion.completionFunctions);
+
+
+  try {
+    this.latchFunction.apply(this.spec, multiCompletion.completionFunctions);
+  } catch (e) {
+    this.spec.fail(e);
+    onComplete();
+    return;
+  }
 };
 
 jasmine.WaitsForBlock.MultiCompletion = function(count, env, onComplete, timeoutHandle) {

@@ -32,7 +32,7 @@ describe("Views.Layout", function() {
       History.pushState(null, null, '/organizations/23');
       expect(Application.electionPage).toBeHidden();
       expect(Application.organizationPage).toBeVisible();
-      expect(Application.organizationPage.organizationId()).toBe(23);
+      expect(Application.organizationPage.id()).toBe(23);
     });
   });
 
@@ -40,7 +40,7 @@ describe("Views.Layout", function() {
     it("shows only the electionsPage and assigns the organizationId on it", function() {
       History.pushState(null, null, '/organizations/23');
       expect(Application.organizationPage).toBeVisible();
-      expect(Application.organizationPage.organizationId()).toBe(23);
+      expect(Application.organizationPage.id()).toBe(23);
     });
   });
 });
