@@ -58,4 +58,12 @@ describe("Views.Pages.Election", function() {
       });
     });
   });
+
+  describe("when the election is assigned", function() {
+    it("assigns the election id", function() {
+      var election = Election.createFromRemote({id: 1});
+      electionPage.election(election);
+      expect(electionPage.id()).toBe(election.id());
+    });
+  });
 });

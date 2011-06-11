@@ -16,7 +16,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     },
 
     election: {
-      change: function(organization) {
+      change: function(election) {
+        this.id(election.id());
       }
     }
   }
