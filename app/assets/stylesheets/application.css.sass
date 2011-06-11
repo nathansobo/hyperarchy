@@ -1,7 +1,10 @@
 @import "compass/reset"
 @import "compass/css3/box"
 @import "compass/css3/transition"
+@import "compass/css3/box-sizing"
 @import "mixins"
+@import "layout"
+@import "pages/election"
 
 body
   font-family: Helvetica, Arial, sans-serif
@@ -10,48 +13,8 @@ body
 a
   cursor: pointer
 
-$darkened-background-z-index: 100
-
-#layout
-  #header
-    background-color: #aaa
-    > div
-      @include display-box
-      margin: 0 auto
-      max-width: 1200px
-      > #menu-items
-        > div
-          display: inline-block
-          margin: 4px
-        @include box-flex(1)
-        text-align: right
-
-#darkened-background
-  visibility: hidden
-  position: fixed
-  width: 100%
-  height: 100%
-  top: 0
-  opacity: 0
-  background: black
-  z-index: $darkened-background-z-index
-  @include transition('opacity', 150ms, 'ease-in')
-  &.visible
-    visibility: visible
-    opacity: 0.3
-
-.lightbox
-  display: none
-  position: relative
-  margin: auto
-  background: white
-  width: 300
-  height: 400
-  z-index: $darkened-background-z-index + 1
-
-#account-menu
-  .dropdown-menu
-    display: none
+.avatar
+  display: inline-block
 
 .dropdown-menu
   @include unselectable
@@ -62,5 +25,3 @@ $darkened-background-z-index: 100
     top: 100%
     right: 0
 
-.avatar
-  display: inline-block

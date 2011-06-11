@@ -1,6 +1,10 @@
 _.constructor('Views.Pages.Election', Monarch.View.Template, {
   content: function() { with(this.builder) {
-    div(function() {
+    div({id: "election"}, function() {
+      div().ref("col1");
+      div().ref("col2");
+      div().ref("col3");
+      div().ref("col4");
     });
   }},
 
