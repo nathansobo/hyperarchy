@@ -28,8 +28,8 @@ gem 'jquery-rails'
 gem 'monarch', :path => 'lib/monarch'
 
 group :development, :test, :jasmine do
-  gem 'rspec', '2.5.0'
-  gem 'rspec-rails', '2.5.0'
+  gem 'rspec', '2.6.0'
+  gem 'rspec-rails', '2.6.1'
   gem 'rr', '1.0.2'
   gem 'machinist', '1.0.6'
   gem 'faker', '0.9.5'
