@@ -1,34 +1,36 @@
 $darkened-background-z-index: 100
+$padding-x: 20px
+$header-height: 40px
 
 #layout
-  height: 100%
-  @include display-box
-  @include box-orient('vertical')
-  @include box-align('center')
-
-  #header
+  #header-wrapper
+    height: $header-height
     background-color: #aaa
-    width: 100%
-    > div
+    > #header
       margin: 0 auto
-      max-width: 1200px
       @include box-sizing('border-box')
-      padding: 0 20px
-      @include display-box
+      max-width: 1200px
+      padding: 5px $padding-x
+
+      > h1
+        float: left
+
       > #menu-items
+        float: right
         > div
           display: inline-block
-          margin: 4px
-        @include box-flex(1)
-        text-align: right
+          margin-left: 1em
 
-  #body
-    @include box-flex(1)
+  #body-wrapper
+    position: absolute
     width: 100%
-    max-width: 1200px
-    @include box-sizing('border-box')
-    padding: 0 20px
-    position: relative
+    top: $header-height
+    bottom: 0
+    > #body
+      @include box-sizing('border-box')
+      height: 100%
+      max-width: 1200px
+      margin: 0 auto
 
 #darkened-background
   visibility: hidden

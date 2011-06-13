@@ -2,8 +2,8 @@ _.constructor("Views.Layout", View.Template, {
   content: function() { with(this.builder) {
     div({id: "layout"}, function() {
 
-      div({id: "header"}, function() {
-        div(function() {
+      div({id: "header-wrapper"}, function() {
+        div({id: "header"}, function() {
           h1("HYPERARCHY");
           div({id: "menu-items"}, function() {
             subview('organizationsMenu', Views.Layout.OrganizationsMenu);
@@ -12,10 +12,12 @@ _.constructor("Views.Layout", View.Template, {
         });
       });
 
-      div({id: "body"}, function() {
-        subview('organizationPage', Views.Pages.Organization);
-        subview('electionPage', Views.Pages.Election);
-      }).ref("body");
+      div({id: "body-wrapper"}, function() {
+        div({id: "body"}, function() {
+          subview('organizationPage', Views.Pages.Organization);
+          subview('electionPage', Views.Pages.Election);
+        }).ref("body");
+      });
 
       div({id: "lightboxes"}, function() {
         subview("loginForm", Views.Lightboxes.LoginForm);

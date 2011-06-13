@@ -1,10 +1,14 @@
 _.constructor('Views.Pages.Election', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "election"}, function() {
-      div().ref("col1");
-      div().ref("col2");
-      div().ref("col3");
-      div().ref("col4");
+      div(function() {
+        div({'class': 'body'}).ref('body');
+      });
+      div(function() {
+        subview('currentConsensus', Views.Pages.Election.CurrentConsensus)
+      });
+      div();
+      div();
     });
   }},
 
@@ -22,6 +26,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     election: {
       change: function(election) {
         this.id(election.id());
+        this.body.bindText(election, 'body');
+        this.currentConsensus.candidates(election.candidates());
       }
     }
   }

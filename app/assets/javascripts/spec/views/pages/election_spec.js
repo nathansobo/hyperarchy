@@ -60,10 +60,32 @@ describe("Views.Pages.Election", function() {
   });
 
   describe("when the election is assigned", function() {
-    it("assigns the election id", function() {
-      var election = Election.createFromRemote({id: 1});
+    var election;
+
+    beforeEach(function() {
+      election = Election.createFromRemote({id: 1, body: 'What would jesus & <mary> do?'});
       electionPage.election(election);
+    });
+
+    it("assigns the election id", function() {
       expect(electionPage.id()).toBe(election.id());
+    });
+
+    it("assigns the election's body and keeps it up to date when it changes", function() {
+      expect(electionPage.body.text()).toEqual(election.body());
+      election.remotelyUpdated({body: "what would satan & <damien> do?"});
+      expect(electionPage.body.text()).toEqual(election.body());
+
+      var election2 = Election.createFromRemote({id: 2, body: 'Are you my mother?'});
+      electionPage.election(election2);
+      expect(electionPage.body.text()).toEqual(election2.body());
+
+      election.remotelyUpdated({body: "what would you do for a klondike bar?"});
+      expect(electionPage.body.text()).toEqual(election2.body());
+    });
+
+    it("assigns the candidates relation to the currentConsensus subview", function() {
+      expect(electionPage.currentConsensus.candidates()).toBe(election.candidates());
     });
   });
 });
