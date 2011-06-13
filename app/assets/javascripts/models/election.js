@@ -13,7 +13,7 @@ _.constructor("Election", Model.Record, {
 
       this.defaultOrderBy('score desc');
 
-      this.hasMany('candidates', {orderBy: 'position asc'});
+      this.hasMany('candidates');
       this.hasMany('votes', {orderBy: 'updatedAt desc'});
       this.hasMany('electionVisits');
       this.relatesToMany('voters', function() {

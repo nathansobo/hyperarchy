@@ -15,6 +15,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
   viewProperties: {
     id: {
       change: function(id) {
+        this.currentConsensus.electionId(id);
         return Election.findOrFetch(id)
           .success(this.hitch('election'))
           .invalid(function() {
@@ -27,7 +28,6 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       change: function(election) {
         this.id(election.id());
         this.body.bindText(election, 'body');
-        this.currentConsensus.candidates(election.candidates());
       }
     }
   }

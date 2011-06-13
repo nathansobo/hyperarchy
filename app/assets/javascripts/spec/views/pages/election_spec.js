@@ -83,8 +83,8 @@ describe("Views.Pages.Election", function() {
       expect(electionPage.body.text()).toEqual(election2.body());
     });
 
-    it("assigns the candidates relation to the currentConsensus subview", function() {
-      expect(electionPage.currentConsensus.candidates()).toBe(election.candidates());
+    it("assigns the election id on the currentConsensus subview", function() {
+      expect(electionPage.currentConsensus.electionId()).toBe(election.id());
     });
   });
 });

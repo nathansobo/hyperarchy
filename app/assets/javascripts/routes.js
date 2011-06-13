@@ -6,6 +6,7 @@ Path.map('/elections/:id').to(function() {
   Application.showPage('election', parseInt(this.params.id));
 });
 
-Path.map('/elections/:election_id/candidates/:candidate_id').to(function() {
-  Application.showPage('election', parseInt(this.params.election_id));
+Path.map('/elections/:electionId/candidates/:selectedCandidateId').to(function() {
+  Application.showPage('election', parseInt(this.params.electionId));
+  Application.electionPage.currentConsensus.selectedCandidateId(parseInt(this.params.selectedCandidateId));
 });

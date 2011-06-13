@@ -9,6 +9,8 @@ _.constructor("Candidate", Model.Record, {
       createdAt: 'datetime'
     });
 
+    this.defaultOrderBy('position asc');
+
     this.hasMany('rankings');
     this.hasMany('comments', {constructorName: "CandidateComment"});
     this.belongsTo('election');

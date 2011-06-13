@@ -11,10 +11,22 @@ _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
   }},
 
   viewProperties: {
-    candidates: {
-      change: function(candidates) {
-        return candidates.fetch().success(function() {
+    electionId: {
+      change: function(electionId) {
+        var candidates = Candidate.where({electionId: electionId});
+        this.candidatesPromise = candidates.fetch();
+        this.candidatesPromise.success(function() {
           this.list.relation(candidates);
+        }, this);
+        return this.candidatesPromise;
+      }
+    },
+
+    selectedCandidateId: {
+      change: function(selectedCandidateId) {
+        this.candidatesPromise.success(function() {
+          this.list.find('li').removeClass('selected');
+          this.list.elementsById[selectedCandidateId].addClass('selected');
         }, this);
       }
     }
