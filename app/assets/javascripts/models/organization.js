@@ -52,7 +52,6 @@ _.constructor("Organization", Model.Record, {
       offset = 0;
       limit = 16;
     }
-
     var promise = $.ajax({
       url: "/elections",
       data: {

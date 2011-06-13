@@ -8,10 +8,6 @@ describe("Views.Pages.Organization", function() {
   });
 
   describe("when the id is assigned", function() {
-    beforeEach(function() {
-      stubAjax();
-    });
-
     describe("when the organization exists in the local repository", function() {
       it("assigns the organization", function() {
         var org1 = Organization.createFromRemote({id: 1, name: "Watergate"});
@@ -37,7 +33,7 @@ describe("Views.Pages.Organization", function() {
     it("assigns the id and fetches the organization's elections", function() {
       var user, organization, election1, election2;
 
-      clearServerTables();
+      enableAjax();
       user = login();
       usingBackdoor(function() {
         organization = Organization.create();

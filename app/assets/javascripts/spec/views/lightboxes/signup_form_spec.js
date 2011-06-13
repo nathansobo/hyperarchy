@@ -42,9 +42,12 @@ describe("Views.Lightboxes.SignupForm", function() {
   });
 
   describe("form submission", function() {
+    beforeEach(function() {
+      enableAjax();
+    });
+
     describe("when the fields are valid and the form is submitted", function() {
       it("creates a user and logs them in according to the information entered and hides the form", function() {
-        clearServerTables();
         fetchInitialRepositoryContents();
         History.pushState(null, null, Organization.findSocial().url());
 
@@ -96,7 +99,6 @@ describe("Views.Lightboxes.SignupForm", function() {
 
     describe("when the organization section is visible and the organization name is specified", function() {
       it("signs them up and directs them to the main page of their new organization", function() {
-        clearServerTables();
         fetchInitialRepositoryContents();
         History.pushState(null, null, Organization.findSocial().url());
 

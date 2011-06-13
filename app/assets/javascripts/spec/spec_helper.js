@@ -6,6 +6,7 @@ beforeEach(function() {
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
   window.History.reset();
   Repository.clear();
+  stubAjax();
 });
 
 afterEach(function() {
@@ -30,4 +31,9 @@ function stubAjax() {
     promise.success = promise.done;
     return promise;
   });
+}
+
+function enableAjax() {
+  jQuery.ajax = jQuery.ajax.originalValue;
+  clearServerTables();
 }

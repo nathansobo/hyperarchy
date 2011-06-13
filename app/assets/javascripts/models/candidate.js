@@ -44,5 +44,9 @@ _.constructor("Candidate", Model.Record, {
 
   formattedCreatedAt: function() {
     return $.PHPDate("M j, Y @ g:ia", this.createdAt());
+  },
+
+  url: function() {
+    return "/elections/" + this.electionId() + "/candidates/" + this.id();
   }
 });

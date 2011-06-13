@@ -46,7 +46,7 @@ describe("Views.Layout.AccountMenu", function() {
     var user;
 
     beforeEach(function() {
-      clearServerTables();
+      enableAjax();
       user = login();
       expect(user.guest()).toBeFalsy();
     });

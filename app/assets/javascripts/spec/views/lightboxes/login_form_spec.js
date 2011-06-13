@@ -45,7 +45,7 @@ describe("Views.Lightboxes.LoginForm", function() {
     var user;
 
     beforeEach(function() {
-      clearServerTables();
+      enableAjax();
       usingBackdoor(function() {
         user = User.create();
         user.memberships().joinTo(Organization).fetch();

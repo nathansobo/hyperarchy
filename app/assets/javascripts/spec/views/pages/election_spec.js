@@ -10,7 +10,6 @@ describe("Views.Pages.Election", function() {
   describe("when the id is assigned", function() {
     describe("when the election exists in the local repository", function() {
       it("assigns the election", function() {
-        stubAjax();
         var election1 = Election.createFromRemote({id: 1});
         electionPage.id(election1.id());
         expect(electionPage.election()).toBe(election1);
@@ -21,7 +20,7 @@ describe("Views.Pages.Election", function() {
       var election;
 
       beforeEach(function() {
-        clearServerTables();
+        enableAjax();
         login();
         usingBackdoor(function() {
           election = Organization.findSocial().elections().create()
@@ -44,7 +43,7 @@ describe("Views.Pages.Election", function() {
     describe("when the election does not exist in the local repository but does not exist on the server", function() {
       var user;
       beforeEach(function() {
-        clearServerTables();
+        enableAjax();
         user = login();
       });
 

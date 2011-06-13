@@ -13,6 +13,7 @@ describe("Views.Pages.Election.CurrentConsensus", function() {
     var election;
 
     beforeEach(function() {
+      enableAjax();
       login();
       usingBackdoor(function() {
         election = Election.create();
