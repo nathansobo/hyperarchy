@@ -196,6 +196,7 @@ module Prequel
     def secure_destroy
       return false unless can_destroy?
       destroy
+      true
     end
 
     def save
@@ -367,6 +368,10 @@ module Prequel
     end
 
     def can_update?
+      can_mutate?
+    end
+
+    def can_destroy?
       can_mutate?
     end
 

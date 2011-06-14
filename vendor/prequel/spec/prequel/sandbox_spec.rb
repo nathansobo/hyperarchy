@@ -310,6 +310,15 @@ module Prequel
             status.should == 404
           end
         end
+
+        context "when #can_destroy? on the record returns false" do
+          it "does not destroy the record and returns 403" do
+            mock(blog).can_destroy? { false }
+            status, response = sandbox.destroy('blogs', blog.id)
+            status.should == 403
+            Blog.find(blog.id).should == blog
+          end
+        end
       end
     end
   end

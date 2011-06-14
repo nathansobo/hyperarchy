@@ -82,7 +82,7 @@ module Prequel
       return [404, "No relation #{relation_name} found"] unless relation
       record = relation.find(id)
       return [404, "No record #{id} found in #{relation_name}"] unless record
-      record.destroy
+      return [403, "Destroy operation forbidden"] unless record.secure_destroy
       200
     end
 
