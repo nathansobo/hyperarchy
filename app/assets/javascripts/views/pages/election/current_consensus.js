@@ -1,6 +1,6 @@
 _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
   content: function() { with(this.builder) {
-    div(function() {
+    div({id: "current-consensus"}, function() {
       h2("Current Consensus");
       subview('list', Views.Components.SortedList, {
         buildElement: function(candidate) {
@@ -27,6 +27,8 @@ _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
         this.candidatesPromise.success(function() {
           this.list.find('li').removeClass('selected');
           this.list.elementsById[selectedCandidateId].addClass('selected');
+          this.candidateDetails.candidate(Candidate.find(selectedCandidateId));
+          this.candidateDetails.show();
         }, this);
       }
     }

@@ -6,7 +6,8 @@ describe("Views.Pages.Election.CurrentConsensus", function() {
   beforeEach(function() {
     attachLayout();
     currentConsensusView = Views.Pages.Election.CurrentConsensus.toView();
-    $('#jasmine_content').html(currentConsensusView);
+    currentConsensusView.candidateDetails = Views.Pages.Election.CandidateDetails.toView();
+    $('#jasmine_content').append(currentConsensusView).append(currentConsensusView.candidateDetails);
 
     enableAjax();
     login();
@@ -71,6 +72,13 @@ describe("Views.Pages.Election.CurrentConsensus", function() {
 
         expect(currentConsensusView).toContain('li.selected:contains("' + candidate2.body() + '")');
         expect(currentConsensusView).not.toContain('li.selected:contains("' + candidate1.body() + '")');
+      });
+
+      it("shows the candidate details view and assigns the candidate on it", function() {
+        expect(currentConsensusView.candidateDetails).toBeHidden();
+        currentConsensusView.selectedCandidateId(candidate1.id());
+        expect(currentConsensusView.candidateDetails).toBeVisible();
+        expect(currentConsensusView.candidateDetails.candidate()).toEqual(candidate1);
       });
     });
   });
