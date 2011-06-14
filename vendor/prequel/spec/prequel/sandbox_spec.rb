@@ -175,6 +175,24 @@ module Prequel
               :title => ["Title must be in Spanish."],
               :user_id => ["User must be from Spain."]
             }
+            Blog.should be_empty
+          end
+        end
+
+        context "when the #can_create? method on the created object returns false" do
+          before do
+            class ::Blog
+              def can_create?
+                false
+              end
+            end
+          end
+
+          it "returns '403 forbidden' as its status" do
+            Blog.should be_empty
+            status, response = sandbox.create('blogs', { 'user_id' => 1, 'title' => 'Blog Title' })
+            status.should == 403
+            Blog.should be_empty
           end
         end
 

@@ -27,8 +27,11 @@ module Prequel
           response = [404, "Relation #{relation_name} not found."]
           raise Prequel::Rollback
         end
-        record = relation.new(field_values)
-        if record.save
+
+        record = relation.secure_create(field_values)
+        return [403, "Create operation forbidden."] unless record
+
+        if record.valid?
           if relation.find(record.id)
             response = [200, record.wire_representation]
           else
