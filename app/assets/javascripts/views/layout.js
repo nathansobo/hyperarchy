@@ -1,7 +1,6 @@
 _.constructor("Views.Layout", View.Template, {
   content: function() { with(this.builder) {
     div({id: "layout"}, function() {
-
       div({id: "header-wrapper"}, function() {
         div({id: "header"}, function() {
           h1("HYPERARCHY");
@@ -46,9 +45,13 @@ _.constructor("Views.Layout", View.Template, {
       }
     },
 
-    showPage: function(name, id) {
+    showPage: function(name, params) {
       this.body.children().hide();
-      this[name + 'Page'].show().id(id);
+      var parsedParams = {};
+      _.each(params, function(value, key) {
+        parsedParams[key] = parseInt(value);
+      })
+      this[name + 'Page'].show().params(parsedParams);
     }
   }
 });

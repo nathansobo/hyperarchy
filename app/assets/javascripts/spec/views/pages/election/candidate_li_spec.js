@@ -1,6 +1,6 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election.CurrentConsensus", function() {
+describe("Views.Pages.Election.CandidateLi", function() {
   var candidate, candidateLi;
 
   beforeEach(function() {

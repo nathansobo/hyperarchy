@@ -39,5 +39,9 @@ _.constructor("User", Model.Record, {
 
   defaultOrganization: function() {
     return this.memberships().orderBy(Membership.lastVisited.desc()).first().organization();
-  }
+  },
+
+  rankingsForElection: function(election) {
+    return this.rankings().where({electionId: election.id()});
+  },
 });

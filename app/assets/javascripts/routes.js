@@ -1,12 +1,15 @@
-Path.map('/organizations/:id').to(function() {
-  Application.showPage('organization', parseInt(this.params.id));
+Path.map('/organizations/:organizationId').to(function() {
+  Application.showPage('organization', this.params);
 });
 
-Path.map('/elections/:id').to(function() {
-  Application.showPage('election', parseInt(this.params.id));
+Path.map('/elections/:electionId').to(function() {
+  Application.showPage('election', this.params);
 });
 
-Path.map('/elections/:electionId/candidates/:selectedCandidateId').to(function() {
-  Application.showPage('election', parseInt(this.params.electionId));
-  Application.electionPage.currentConsensus.selectedCandidateId(parseInt(this.params.selectedCandidateId));
+Path.map('/elections/:electionId/candidates/:candidateId').to(function() {
+  Application.showPage('election', this.params);
+});
+
+Path.map('/elections/:electionId/votes/:voterId').to(function() {
+  Application.showPage('election', this.params);
 });

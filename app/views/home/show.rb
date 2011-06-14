@@ -18,8 +18,8 @@ module Views
           window.Application = Views.Layout.toView();
           Application.environment = #{Rails.env.to_json};
           $('body').html(Application);
-          Application.attach();
           Application.currentUserId(#{current_user_id});
+          Application.attach();
         });
       ]
       end

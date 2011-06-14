@@ -27,17 +27,21 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
     },
 
     attach: function() {
-      Application.signal('currentUser').change(function(user) {
-        if (user.guest()) {
-          this.loginLink.show();
-          this.dropdownMenu.hide();
-        } else {
-          this.dropdownMenu.avatar.user(user);
-          this.dropdownMenu.name.html(user.fullName());
-          this.loginLink.hide();
-          this.dropdownMenu.show();
-        }
-      }, this);
+      Application.signal('currentUser').change(this.hitch('handleCurrentUserChange'));
+      this.handleCurrentUserChange();
+    },
+
+    handleCurrentUserChange: function() {
+      var user = Application.currentUser();
+      if (user.guest()) {
+        this.loginLink.show();
+        this.dropdownMenu.hide();
+      } else {
+        this.dropdownMenu.avatar.user(user);
+        this.dropdownMenu.name.html(user.fullName());
+        this.loginLink.hide();
+        this.dropdownMenu.show();
+      }
     },
 
     showLoginForm: function() {

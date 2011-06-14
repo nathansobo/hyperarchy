@@ -1,9 +1,1 @@
-//= require models/user
-//= require models/organization
-//= require models/membership
-//= require models/election
-//= require models/candidate
-//= require models/vote
-//= require models/election_visit
-//= require models/ranking
-//= require models/candidate_comment
+//= require_directory ./models

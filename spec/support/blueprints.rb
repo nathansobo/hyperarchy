@@ -36,6 +36,9 @@ CandidateComment.blueprint do
   suppress_current_user_membership_check { true }
 end
 
+Ranking.blueprint do
+end
+
 Organization.class_eval do
   blueprint do
     suppress_membership_creation { true }

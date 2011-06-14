@@ -35,6 +35,7 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
         this.userSubscriptions.add(user.organizations().onRemove(this.hitch('showOrHideDropdownLink')));
         this.dropdownMenu.organizationsList.relation(user.organizations());
       }, this);
+      this.showOrHideDropdownLink();
     },
 
     showOrHideDropdownLink: function() {

@@ -9,6 +9,8 @@ _.constructor("Ranking", Model.Record, {
         position: 'float'
       });
 
+      this.defaultOrderBy('position desc');
+
       this.belongsTo('candidate');
       this.belongsTo('election');
       this.belongsTo('user');

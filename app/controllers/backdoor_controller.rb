@@ -3,7 +3,7 @@ class BackdoorController < SandboxController
 
   def create
     field_values = params[:field_values].blank?? {} : params[:field_values]
-    blueprint_field_values = sandbox.get_relation(params[:relation]).tuple_class.plan(field_values)
+    blueprint_field_values = sandbox.get_relation(params[:relation]).tuple_class.plan(field_values).merge(field_values) # hack to keep foreign keys from being ignored by machinist
     params[:field_values] = blueprint_field_values
     super
   end

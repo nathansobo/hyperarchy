@@ -7,11 +7,11 @@ describe("Views.Pages.Organization", function() {
     organizationPage = Views.Pages.Organization.toView();
   });
 
-  describe("when the id is assigned", function() {
+  describe("when the params are assigned", function() {
     describe("when the organization exists in the local repository", function() {
       it("assigns the organization", function() {
         var org1 = Organization.createFromRemote({id: 1, name: "Watergate"});
-        organizationPage.id(org1.id());
+        organizationPage.params({organizationId: org1.id()});
         expect(organizationPage.organization()).toBe(org1);
       });
     });
@@ -19,7 +19,7 @@ describe("Views.Pages.Organization", function() {
     describe("when the organization does not exist in the local repository", function() {
       it("navigates to the organization page for Hyperarchy Social", function() {
         var socialOrg = Organization.createFromRemote({id: 1, social: true});
-        organizationPage.id(99);
+        organizationPage.params({organizationId: -1});
         expect(organizationPage.organization()).toBe(socialOrg);
       });
     });
@@ -30,7 +30,7 @@ describe("Views.Pages.Organization", function() {
       attachLayout();
     });
 
-    it("assigns the id and fetches the organization's elections", function() {
+    it("fetches the organization's elections", function() {
       var user, organization, election1, election2;
 
       enableAjax();
@@ -48,7 +48,6 @@ describe("Views.Pages.Organization", function() {
 
       waitsFor("elections to be fetched", function(complete) {
         organizationPage.organization(organization).success(complete);
-        expect(organizationPage.id()).toBe(organization.id());
         expect(organization.elections().size()).toBe(0);
       });
 

@@ -18,5 +18,4 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.details.text()).toEqual(candidate.details());
     });
   });
-
 });

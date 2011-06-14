@@ -12,20 +12,19 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
   }},
 
   viewProperties: {
-    id: {
-      change: function(id) {
-        var organization = Organization.find(id) || Organization.findSocial();
-        this.organization(organization);
-      }
-    },
-
     organization: {
       change: function(organization) {
-        this.id(organization.id());
         return organization.fetchMoreElections(16)
           .success(this.bind(function() {
             this.electionsList.relation(organization.elections());
           }));
+      }
+    },
+    
+    params: {
+      change: function(params) {
+        var organization = Organization.find(params.organizationId) || Organization.findSocial();
+        this.organization(organization);
       }
     }
   }
