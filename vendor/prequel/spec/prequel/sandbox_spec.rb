@@ -103,9 +103,18 @@ module Prequel
       end
 
       context "when given a selection wire representation" do
-        it "translates it to a selection with its table replaced by the exposed relation by that name" do
-          relation = sandbox.evaluate(Post.where(:title => "Fun").wire_representation)
-          relation.should == sandbox.posts.where(:title => "Fun")
+        context "with a simple predicate" do
+          it "translates it to a selection with its table replaced by the exposed relation by that name" do
+            relation = sandbox.evaluate(Post.where(:title => "Fun").wire_representation)
+            relation.should == sandbox.posts.where(:title => "Fun")
+          end
+        end
+
+        context "with an 'and' predicate" do
+          it "translates it to a selection with an And predicate with its table replaced by the exposed relation by that name" do
+            relation = sandbox.evaluate(Post.where(:title => "Fun", :blog_id => 2, :id => 1).wire_representation)
+            relation.should == sandbox.posts.where(:title => "Fun", :blog_id => 2, :id => 1)
+          end
         end
       end
 

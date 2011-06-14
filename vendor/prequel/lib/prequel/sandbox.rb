@@ -107,6 +107,8 @@ module Prequel
         Relations::Projection.new(evaluate(wire_rep[:operand]), wire_rep[:projected_table].to_sym)
       when 'eq'
         Expressions::Equal.new(evaluate(wire_rep[:left_operand]), evaluate(wire_rep[:right_operand]))
+      when 'and'
+        Expressions::And.new(evaluate(wire_rep[:left_operand]), evaluate(wire_rep[:right_operand]))
       when 'column'
         "#{wire_rep[:table]}__#{wire_rep[:name]}".to_sym
       when 'scalar'
