@@ -14,8 +14,9 @@ var Path = {
     Path.routes.rescue = fn;
   },
   'match': function (path, parameterize) {
-    var params = {}, route = null, possible_routes, slice, i, j, compare;
+    var route = null, possible_routes, slice, i, j, compare;
     for (route in Path.routes.defined) {
+      var params = {};
       if (route !== null && route !== undefined) {
         route = Path.routes.defined[route];
         possible_routes = route.partition();
