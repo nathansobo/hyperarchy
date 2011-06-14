@@ -7,6 +7,13 @@ describe("Views.Pages.Election", function() {
     electionPage = Views.Pages.Election.toView();
   });
 
+  describe("#initialize", function() {
+    it("wires the currentConsensus to the candidateDetails", function() {
+      expect(electionPage.candidateDetails).toBeDefined();
+      expect(electionPage.currentConsensus.candidateDetails).toBe(electionPage.candidateDetails);
+    });
+  });
+
   describe("when the id is assigned", function() {
     describe("when the election exists in the local repository", function() {
       it("assigns the election", function() {

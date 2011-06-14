@@ -5,14 +5,21 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         div({'class': 'body'}).ref('body');
       });
       div(function() {
-        subview('currentConsensus', Views.Pages.Election.CurrentConsensus)
+        subview('currentConsensus', Views.Pages.Election.CurrentConsensus);
       });
-      div();
+      div(function() {
+        subview('candidateDetails', Views.Pages.Election.CandidateDetails);
+      });
       div();
     });
   }},
 
   viewProperties: {
+
+    initialize: function() {
+      this.currentConsensus.candidateDetails = this.candidateDetails;
+    },
+
     id: {
       change: function(id) {
         this.currentConsensus.electionId(id);
