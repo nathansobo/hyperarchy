@@ -58,7 +58,11 @@ module Prequel
           response = [404, "No record with id #{id} found in #{relation_name}"]
           raise Prequel::Rollback
         end
-        record.soft_update(field_values)
+
+        unless record.secure_soft_update(field_values)
+          return [403, "Update operation forbidden."]
+        end
+
         if record.save
           if relation.find(id)
             response = [200, record.wire_representation]

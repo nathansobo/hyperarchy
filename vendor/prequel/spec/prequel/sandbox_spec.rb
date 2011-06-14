@@ -250,6 +250,15 @@ module Prequel
             end
           end
 
+          context "when #can_update? on the record returns false" do
+            it "returns '403 forbidden' as its status and does not update the record" do
+              mock(blog).can_update? { false }
+              status, response = sandbox.update('blogs', blog.id, { 'title' => "New Title" })
+              status.should == 403
+              blog.reload.title.should == "Blog Title"
+            end
+          end
+
           context "when the update causes the record to no longer be a member of the exposed relation" do
             it "returns '403 forbidden' as its status and does not commit the transaction to update the record" do
               status, response = sandbox.update('blogs', blog.id, { 'user_id' => 90, 'title' => "New Title" })

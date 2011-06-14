@@ -920,8 +920,31 @@ module Prequel
             :user_id => 1
           }
           
-
           stub(blog).can_update? { true }
+        end
+      end
+
+      describe "#secure_soft_update(attributes)" do
+        it "only allows whitelisted attributes to be assigned and does not save the record" do
+          stub(blog).update_whitelist { [:title, :subtitle] }
+          stub(blog).update_blacklist { [:title] }
+
+          blog.secure_soft_update(:title => "Coding For Fun", :subtitle => "And Maybe Eventually Profit?", :user_id => 4)
+          blog.should be_dirty
+
+          blog.subtitle.should == "And Maybe Eventually Profit?"
+          blog.user_id.should == 1
+          blog.title.should == "Saved Blog"
+        end
+
+        it "if can_update? returns false does not modify fields and returns false" do
+          stub(blog).can_update? { false }
+          blog.secure_soft_update(:title => "Coding For Fun", :subtitle => "And Maybe Eventually Profit?").should be_false
+
+          blog.should_not be_dirty
+          blog.title.should == "Saved Blog"
+          blog.subtitle.should be_nil
+          blog.user_id.should == 1
         end
       end
     end
