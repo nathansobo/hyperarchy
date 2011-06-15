@@ -28,6 +28,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       this.positiveRankings().onUpdate(this.hitch('insertAtIndex'));
       this.negativeRankings().onInsert(this.hitch('insertAtIndex'));
       this.negativeRankings().onUpdate(this.hitch('insertAtIndex'));
+      this.rankings().onRemove(this.hitch('removeRanking'));
     },
 
     insertAtIndex: function(ranking, changesetOrIndex, index) {
@@ -37,10 +38,14 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       var lis = ranking.position() > 0 ? this.positiveLis() : this.negativeLis();
       var followingLi = lis.eq(index);
       if (followingLi.size() > 0) {
-        followingLi.before(li);
+        li.insertBefore(followingLi);
       } else {
         lis.append(li);
       }
+    },
+
+    removeRanking: function(ranking) {
+      this.lisByRankingId[ranking.id()].remove();
     },
 
     positiveRankings: function() {
@@ -70,6 +75,5 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
         this.list.append(this.findOrCreateLi(ranking));
       }, this);
     }
-
   }
 });

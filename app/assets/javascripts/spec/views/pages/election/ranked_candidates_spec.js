@@ -104,11 +104,73 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     });
 
     describe("when a ranking is inserted", function() {
+      it("responds to a ranking inserted in the last positive position", function() {
+        rankedCandidates.rankings(rankingsRelation);
+        candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3"});
+        ranking3 = user.rankings().createFromRemote({id: 3, electionId: election.id(), candidateId: candidate3.id(), position: 8});
 
+        expect(rankedCandidates.list.find('li').size()).toBe(4);
+        expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
+        expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking3);
+        expect(rankedCandidates.list.find('li').eq(2)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking2);
+      });
+
+      it("responds to a ranking inserted in a positive position other than the last", function() {
+        rankedCandidates.rankings(rankingsRelation);
+        candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3"});
+        ranking3 = user.rankings().createFromRemote({id: 3, electionId: election.id(), candidateId: candidate3.id(), position: 128});
+
+        expect(rankedCandidates.list.find('li').size()).toBe(4);
+        expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking3);
+        expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking1);
+        expect(rankedCandidates.list.find('li').eq(2)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking2);
+      });
+
+      it("responds to a ranking inserted in the last negative position", function() {
+        rankedCandidates.rankings(rankingsRelation);
+        candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3"});
+        ranking3 = user.rankings().createFromRemote({id: 3, electionId: election.id(), candidateId: candidate3.id(), position: -128});
+
+        expect(rankedCandidates.list.find('li').size()).toBe(4);
+        expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
+        expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
+        expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking3);
+      });
+
+      it("responds to a ranking inserted in a negative position other than the last", function() {
+        rankedCandidates.rankings(rankingsRelation);
+        candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3"});
+        ranking3 = user.rankings().createFromRemote({id: 3, electionId: election.id(), candidateId: candidate3.id(), position: -32});
+
+        expect(rankedCandidates.list.find('li').size()).toBe(4);
+        expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
+        expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking3);
+        expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking2);
+      });
     });
 
     describe("when a ranking is removed", function() {
+      it("removes positive rankings from the list", function() {
+        rankedCandidates.rankings(rankingsRelation);
+        ranking1.remotelyDestroyed();
 
+        expect(rankedCandidates.list.find('li').size()).toBe(2);
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking2);
+      });
+
+      it("removes negative rankings from the list", function() {
+        rankedCandidates.rankings(rankingsRelation);
+        ranking2.remotelyDestroyed();
+
+        expect(rankedCandidates.list.find('li').size()).toBe(2);
+        expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
+        expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+      });
     });
   });
 });
