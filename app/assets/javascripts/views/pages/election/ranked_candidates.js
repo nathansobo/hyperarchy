@@ -11,6 +11,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
     initialize: function() {
       this.separator.data('position', 0);
+      this.rankingsSubscriptions = new Monarch.SubscriptionBundle();
     },
 
     attach: function($super) {
@@ -47,17 +48,20 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
     populateList: function() {
       this.separator.detach();
+      this.list.empty();
       this.appendRankings(this.positiveRankings());
       this.list.append(this.separator);
       this.appendRankings(this.negativeRankings());
     },
 
     monitorListUpdates: function() {
-      this.positiveRankings().onInsert(this.hitch('insertAtIndex'));
-      this.positiveRankings().onUpdate(this.hitch('insertAtIndex'));
-      this.negativeRankings().onInsert(this.hitch('insertAtIndex'));
-      this.negativeRankings().onUpdate(this.hitch('insertAtIndex'));
-      this.rankings().onRemove(this.hitch('removeRanking'));
+      this.rankingsSubscriptions.destroy();
+
+      this.rankingsSubscriptions.add(this.positiveRankings().onInsert(this.hitch('insertAtIndex')));
+      this.rankingsSubscriptions.add(this.positiveRankings().onUpdate(this.hitch('insertAtIndex')));
+      this.rankingsSubscriptions.add(this.negativeRankings().onInsert(this.hitch('insertAtIndex')));
+      this.rankingsSubscriptions.add(this.negativeRankings().onUpdate(this.hitch('insertAtIndex')));
+      this.rankingsSubscriptions.add(this.rankings().onRemove(this.hitch('removeRanking')));
     },
 
     insertAtIndex: function(ranking, changesetOrIndex, index) {
@@ -66,10 +70,15 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       var li = this.findOrCreateLi(ranking).detach();
       var lis = ranking.position() > 0 ? this.positiveLis() : this.negativeLis();
       var followingLi = lis.eq(index);
+
       if (followingLi.size() > 0) {
         li.insertBefore(followingLi);
       } else {
-        lis.append(li);
+        if (ranking.position() > 0) {
+          li.insertBefore(this.separator);
+        } else {
+          this.list.append(li);
+        }
       }
     },
 

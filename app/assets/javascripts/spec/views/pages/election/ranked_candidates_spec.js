@@ -1,13 +1,14 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Election.RankedCandidates", function() {
-  var rankedCandidates, currentUser, election, candidate1, candidate2, ranking1, ranking2, rankingsRelation;
+  var rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation;
 
   beforeEach(function() {
     currentUser = User.createFromRemote({id: 1});
     election = Election.createFromRemote({id: 1});
     candidate1 = election.candidates().createFromRemote({id: 1, body: "Candidate 1"});
     candidate2 = election.candidates().createFromRemote({id: 2, body: "Candidate 2"});
+    candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3"});
     ranking1 = currentUser.rankings().createFromRemote({id: 1, electionId: election.id(), candidateId: candidate1.id(), position: 64});
     ranking2 = currentUser.rankings().createFromRemote({id: 2, electionId: election.id(), candidateId: candidate2.id(), position: -64});
     rankingsRelation = currentUser.rankingsForElection(election);
@@ -23,15 +24,34 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
       expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
     });
+
+    it("clears the list when a new relation is assigned", function() {
+      rankedCandidates.rankings(rankingsRelation);
+      expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
+      expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+      expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
+
+      electionB = Election.createFromRemote({id: 100});
+      var candidateB = election.candidates().createFromRemote({id: 100, body: "Candidate B"});
+      var otherRankingsRelation = currentUser.rankingsForElection(electionB);
+      var rankingB = otherRankingsRelation.createFromRemote({id: 1, candidateId: candidateB.id(), position: 64});
+
+      rankedCandidates.rankings(otherRankingsRelation);
+      expect(rankedCandidates.list.find('li').size()).toBe(2)
+      expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(rankingB);
+
+      rankingsRelation.createFromRemote({candidateId: candidate3.id(), position: 128});
+
+      expect(rankedCandidates.list.find('li').size()).toBe(2)
+    });
   });
 
   describe("handling of sorting by user", function() {
     describe("rearranging lis that are already present in the list", function() {
-      var candidate3, ranking3, ranking3Li, createOrUpdatePromise;
+      var ranking3, ranking3Li, createOrUpdatePromise;
 
       beforeEach(function() {
         ranking2.remotelyUpdated({position: 32});
-        candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3"});
         ranking3 = currentUser.rankings().createFromRemote({id: 3, electionId: election.id(), candidateId: candidate3.id(), position: -64});
         rankedCandidates.rankings(rankingsRelation);
 
@@ -136,6 +156,16 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking1);
       });
 
+      it("responds to a positive ranking becoming the only negative ranking", function() {
+        ranking2.remotelyDestroyed();
+
+        rankedCandidates.rankings(rankingsRelation);
+        ranking1.remotelyUpdated({position: -64});
+        expect(rankedCandidates.list.find('li').size()).toBe(2);
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking1);
+      });
+
       it("responds to a positive ranking a negative ranking other than the last", function() {
         rankedCandidates.rankings(rankingsRelation);
         ranking1.remotelyUpdated({position: -32});
@@ -161,6 +191,16 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
         expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking2);
         expect(rankedCandidates.list.find('li').eq(2)).toMatchSelector('#separator');
+      });
+
+      it("responds to a negative ranking becoming the only positive ranking", function() {
+        ranking1.remotelyDestroyed();
+
+        rankedCandidates.rankings(rankingsRelation);
+        ranking2.remotelyUpdated({position: 64});
+        expect(rankedCandidates.list.find('li').size()).toBe(2);
+        expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking2);
+        expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
       });
     });
 
