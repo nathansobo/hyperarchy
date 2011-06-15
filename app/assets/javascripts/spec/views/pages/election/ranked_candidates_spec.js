@@ -46,8 +46,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     });
   });
 
-  describe("handling of sorting by user", function() {
-    describe("rearranging lis that are already present in the list", function() {
+  describe("drag and drop of rankings", function() {
+    describe("sorting existing rankings", function() {
       var ranking3, ranking3Li, createOrUpdatePromise;
 
       beforeEach(function() {
@@ -142,7 +142,50 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           });
         });
       });
-   });
+    });
+
+    describe("receiving new rankings from the current consensus", function() {
+      var electionPage, createOrUpdatePromise;
+      beforeEach(function() {
+        electionPage = Application.electionPage;
+        $("#jasmine_content").html(electionPage);
+        electionPage.populateContent({electionId: election.id()});
+
+        createOrUpdatePromise = new Monarch.Promise();
+        spyOn(Ranking, 'createOrUpdate').andReturn(createOrUpdatePromise);
+      });
+
+      describe("when receiving a candidate that has not yet been ranked", function() {
+        it("adds a new RankingLi for the candidate and associates it with a position", function() {
+          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+          var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
+          candidate3Li.dragAbove(ranking1Li);
+
+          expect(rankedCandidates.list.find('li').size()).toBe(4);
+          expect(rankedCandidates.list.find('li').eq(0).data('position')).toBe(128);
+
+          expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 128);
+
+          // simulate creation of ranking on server
+          Ranking.createFromRemote({userId: currentUser.id(), candidateId: candidate3.id(), electionId: election.id(), position: 128});
+
+          expect(rankedCandidates.list.find('li').size()).toBe(4);
+        });
+      });
+
+      describe("when receiving a candidate that has already been ranked", function() {
+        it("removes the previous RankingLi for the candidate and adds a new one, associating it with a position", function() {
+          var candidate2Li = electionPage.currentConsensus.find('li:contains("Candidate 2")');
+          var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
+          candidate2Li.dragAbove(ranking1Li);
+
+          expect(rankedCandidates.list.find('li').size()).toBe(3);
+          expect(rankedCandidates.list.find('li').eq(0).data('position')).toBe(128);
+
+          expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate2, 128);
+        });
+      });
+    });
   });
 
   describe("handling of remote events on rankings", function() {

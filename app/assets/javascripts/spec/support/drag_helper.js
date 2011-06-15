@@ -3,13 +3,14 @@ jQuery.fn.dragAbove = function(target) {
   var myMidline = this.offset().top + (this.height() / 2);
 
   // this distance puts our middle at the top of what we're dragging above
-  var distance = targetTop - myMidline;
-
+  var yDistance = targetTop - myMidline;
+  var xDistance = target.offset().left - this.offset().left
+  
   // if dragging down, our middle must be just above the top of the target
   // if dragging up, our middle must be just below the top of the target. we don't know why
-  var fudgeFactor = (distance > 0) ? -1 : 1;
+  var yFudgeFactor = (yDistance > 0) ? -1 : 1;
 
-  this.simulate('drag', {dx: 0, dy: distance + fudgeFactor});
+  this.simulate('drag', {dx: xDistance, dy: yDistance + yFudgeFactor});
 }
 
 jQuery.fn.dragBelow = function(target) {

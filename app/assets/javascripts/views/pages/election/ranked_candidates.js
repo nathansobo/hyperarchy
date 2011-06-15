@@ -1,6 +1,6 @@
 _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
   content: function() { with(this.builder) {
-    div(function() {
+    div({id: "ranked-candidates"}, function() {
       ol(function() {
         li({id: 'separator'}, "Separator").ref('separator');
       }).ref('list')
@@ -18,29 +18,52 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       $super();
 
       var list = this.list;
-
+      var self = this;
       this.list.sortable({
         update: function(event, ui) {
-          var ranking = ui.item.view().ranking;
-          var nextPosition, prevPosition;
-
-          var nextLi = ui.item.next('li');
-          nextPosition = nextLi.data('position');
-
-          var prevLi = ui.item.prev('li');
-          prevPosition = prevLi.data('position');
-
-          if (prevPosition === undefined) prevPosition = nextPosition + 128;
-          if (nextPosition === undefined) nextPosition = prevPosition - 128;
-
-          Ranking.createOrUpdate(Application.currentUser(), ranking.candidate(), (nextPosition + prevPosition) / 2);
+          if (ui.item.hasClass('ui-draggable')) return;
+          self.handleItemDrop(ui.item);
         },
+
+        receive: function(event, ui) {
+          var candidate = ui.item.view().candidate;
+          var clonedLi = self.list.find('li.ui-draggable');
+
+          var existingRankingLi = self.lisByCandidateId[candidate.id()];
+          if (existingRankingLi) {
+            existingRankingLi.remove();
+            delete self.lisByCandidateId[candidate.id()];
+          }
+
+          var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
+          self.lisByCandidateId[candidate.id()] = rankingLi;
+
+          clonedLi.replaceWith(rankingLi);
+          self.handleItemDrop(rankingLi);
+        }
       });
+    },
+
+    handleItemDrop: function(item) {
+      var candidate = item.view().candidate;
+
+      var nextLi = item.next('li');
+      var nextPosition = nextLi.data('position');
+
+      var prevLi = item.prev('li');
+      var prevPosition = prevLi.data('position');
+
+      if (prevPosition === undefined) prevPosition = nextPosition + 128;
+      if (nextPosition === undefined) nextPosition = prevPosition - 128;
+
+      var position = (nextPosition + prevPosition) / 2;
+      item.data('position', position);
+      Ranking.createOrUpdate(Application.currentUser(), candidate, position);
     },
 
     rankings: {
       change: function(rankingsRelation) {
-        this.lisByRankingId = {};
+        this.lisByCandidateId = {};
         this.populateList();
         this.monitorListUpdates();
       }
@@ -83,8 +106,8 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     },
 
     removeRanking: function(ranking) {
-      this.lisByRankingId[ranking.id()].remove();
-      delete this.lisByRankingId[ranking.id()];
+      this.lisByCandidateId[ranking.candidateId()].remove();
+      delete this.lisByCandidateId[ranking.candidateId()];
     },
 
     positiveRankings: function() {
@@ -104,9 +127,9 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     },
 
     findOrCreateLi: function(ranking) {
-      var id = ranking.id();
-      if (!this.lisByRankingId[id]) this.lisByRankingId[id] = Views.Pages.Election.RankingLi.toView({ranking: ranking});
-      return this.lisByRankingId[id];
+      var id = ranking.candidateId();
+      if (!this.lisByCandidateId[id]) this.lisByCandidateId[id] = Views.Pages.Election.RankingLi.toView({ranking: ranking});
+      return this.lisByCandidateId[id];
     },
 
     appendRankings: function(rankings) {
