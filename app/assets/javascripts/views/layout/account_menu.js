@@ -28,7 +28,6 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
 
     attach: function() {
       Application.signal('currentUser').change(this.hitch('handleCurrentUserChange'));
-      this.handleCurrentUserChange();
     },
 
     handleCurrentUserChange: function() {

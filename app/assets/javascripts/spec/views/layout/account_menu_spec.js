@@ -1,6 +1,8 @@
 describe("Views.Layout.AccountMenu", function() {
   var accountMenu;
   beforeEach(function() {
+    renderLayout();
+
     $("#jasmine_content").html(window.Application = Views.Layout.toView());
     Application.attach();
     accountMenu = Application.accountMenu;

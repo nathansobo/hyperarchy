@@ -1,6 +1,6 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election.RankedCandidateLi", function() {
+describe("Views.Pages.Election.RankingLi", function() {
   var candidate, ranking, rankedCandidateLi;
 
   beforeEach(function() {

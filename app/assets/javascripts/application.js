@@ -29,6 +29,8 @@
 Server.sandboxUrl = "/sandbox";
 //window.debugEvents = true;
 
+$.fn.reverse = Array.prototype.reverse;
+
 $.ajaxSetup({
   beforeSend: function(xhr) {
     xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));

@@ -20,6 +20,7 @@ module Views
           $('body').html(Application);
           Application.currentUserId(#{current_user_id});
           Application.attach();
+          Path.listen();
         });
       ]
       end
