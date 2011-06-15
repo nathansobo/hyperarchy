@@ -36,6 +36,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
           }
 
           var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
+
           self.lisByCandidateId[candidate.id()] = rankingLi;
 
           clonedLi.replaceWith(rankingLi);
