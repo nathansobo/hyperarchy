@@ -22,51 +22,31 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       this.list.sortable({
         update: function(event, ui) {
           if (ui.item.hasClass('ui-draggable')) return;
-          self.handleItemDrop(ui.item);
+          ui.item.view().handleListDrop();
         },
 
         receive: function(event, ui) {
           var candidate = ui.item.view().candidate;
-          var clonedLi = self.list.find('li.ui-draggable');
 
           var existingRankingLi = self.lisByCandidateId[candidate.id()];
-          if (existingRankingLi) {
-            existingRankingLi.remove();
-            delete self.lisByCandidateId[candidate.id()];
-          }
+          if (existingRankingLi) existingRankingLi.remove();
 
           var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
-
           self.lisByCandidateId[candidate.id()] = rankingLi;
 
+          var clonedLi = self.list.find('li.ui-draggable');
           clonedLi.replaceWith(rankingLi);
-          self.handleItemDrop(rankingLi);
+          rankingLi.handleListDrop();
         }
       });
     },
 
-    handleItemDrop: function(item) {
-      var candidate = item.view().candidate;
-
-      var nextLi = item.next('li');
-      var nextPosition = nextLi.data('position');
-
-      var prevLi = item.prev('li');
-      var prevPosition = prevLi.data('position');
-
-      if (prevPosition === undefined) prevPosition = nextPosition + 128;
-      if (nextPosition === undefined) nextPosition = prevPosition - 128;
-
-      var position = (nextPosition + prevPosition) / 2;
-      item.data('position', position);
-      Ranking.createOrUpdate(Application.currentUser(), candidate, position);
-    },
 
     rankings: {
       change: function(rankingsRelation) {
         this.lisByCandidateId = {};
         this.populateList();
-        this.monitorListUpdates();
+        this.observeListUpdates();
       }
     },
 
@@ -78,7 +58,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       this.appendRankings(this.negativeRankings());
     },
 
-    monitorListUpdates: function() {
+    observeListUpdates: function() {
       this.rankingsSubscriptions.destroy();
 
       this.rankingsSubscriptions.add(this.positiveRankings().onInsert(this.hitch('insertAtIndex')));

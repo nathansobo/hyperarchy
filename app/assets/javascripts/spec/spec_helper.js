@@ -1,8 +1,16 @@
 //= require application
 //= require_directory ./support
 
+var ajaxRequests;
+var originalAjax = jQuery.ajax;
+jQuery.ajax = function() {
+  var jqXhr = originalAjax.apply(this, arguments);
+  ajaxRequests.push(jqXhr);
+  return jqXhr;
+};
 
 beforeEach(function() {
+  ajaxRequests = [];
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
   window.History.reset();
   Repository.clear();
@@ -10,7 +18,13 @@ beforeEach(function() {
 });
 
 afterEach(function() {
-//  $('#jasmine_content').empty();
+  _.each(ajaxRequests, function(xhr) {
+    xhr.abort();
+  });
+  ajaxRequests = [];
+
+  delete window.Application;
+  $('#jasmine_content').empty();
 });
 
 function attachLayout() {

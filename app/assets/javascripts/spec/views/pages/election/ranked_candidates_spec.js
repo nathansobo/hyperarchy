@@ -167,9 +167,15 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 128);
 
           // simulate creation of ranking on server
-          Ranking.createFromRemote({userId: currentUser.id(), candidateId: candidate3.id(), electionId: election.id(), position: 128});
+          var ranking3 = Ranking.createFromRemote({id: 3, userId: currentUser.id(), candidateId: candidate3.id(), electionId: election.id(), position: 128});
+          createOrUpdatePromise.triggerSuccess(ranking3);
 
           expect(rankedCandidates.list.find('li').size()).toBe(4);
+
+          ranking3.remotelyUpdated({position: -128});
+
+          expect(rankedCandidates.list.find('li').eq(3).data('position')).toBe(-128);
+          expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking3);
         });
       });
 
@@ -177,12 +183,21 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         it("removes the previous RankingLi for the candidate and adds a new one, associating it with a position", function() {
           var candidate2Li = electionPage.currentConsensus.find('li:contains("Candidate 2")');
           var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
+          var numUpdateSubscriptionsBefore = ranking2.onUpdateNode.size();
+
           candidate2Li.dragAbove(ranking1Li);
 
           expect(rankedCandidates.list.find('li').size()).toBe(3);
           expect(rankedCandidates.list.find('li').eq(0).data('position')).toBe(128);
 
           expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate2, 128);
+
+
+          // simulate creation of ranking on server
+          ranking2.remotelyUpdated({position: 128});
+          createOrUpdatePromise.triggerSuccess(ranking2);
+
+          expect(ranking2.onUpdateNode.subscriptions.length).toBe(numUpdateSubscriptionsBefore);
         });
       });
     });

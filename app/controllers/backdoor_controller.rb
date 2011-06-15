@@ -34,6 +34,7 @@ class BackdoorController < SandboxController
 
   def clear_tables
     Prequel.clear_tables
+    Sham.reset
     Organization.make(:name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
     User.make(:first_name => "Guest", :last_name => "User", :guest => true, :default_guest => true)
     head :ok
