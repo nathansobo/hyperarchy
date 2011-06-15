@@ -161,6 +161,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         expect(rankedCandidates.list.find('li').size()).toBe(2);
         expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#separator');
         expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking2);
+
+        expect(rankedCandidates.lisByRankingId[ranking1.id()]).toBeUndefined();
       });
 
       it("removes negative rankings from the list", function() {
@@ -170,6 +172,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         expect(rankedCandidates.list.find('li').size()).toBe(2);
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
         expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+
+        expect(rankedCandidates.lisByRankingId[ranking2.id()]).toBeUndefined();
       });
     });
   });

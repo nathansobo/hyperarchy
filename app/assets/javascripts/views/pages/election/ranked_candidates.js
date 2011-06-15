@@ -46,6 +46,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
     removeRanking: function(ranking) {
       this.lisByRankingId[ranking.id()].remove();
+      delete this.lisByRankingId[ranking.id()];
     },
 
     positiveRankings: function() {
