@@ -8,6 +8,35 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
   }},
 
   viewProperties: {
+
+    initialize: function() {
+      this.separator.data('position', 0);
+    },
+
+    attach: function($super) {
+      $super();
+
+      var list = this.list;
+
+      this.list.sortable({
+        update: function(event, ui) {
+          var ranking = ui.item.view().ranking;
+          var nextPosition, prevPosition;
+
+          var nextLi = ui.item.next('li');
+          nextPosition = nextLi.data('position');
+
+          var prevLi = ui.item.prev('li');
+          prevPosition = prevLi.data('position');
+
+          if (prevPosition === undefined) prevPosition = nextPosition + 128;
+          if (nextPosition === undefined) nextPosition = prevPosition - 128;
+
+          Ranking.createOrUpdate(Application.currentUser(), ranking.candidate(), (nextPosition + prevPosition) / 2);
+        },
+      });
+    },
+
     rankings: {
       change: function(rankingsRelation) {
         this.lisByRankingId = {};

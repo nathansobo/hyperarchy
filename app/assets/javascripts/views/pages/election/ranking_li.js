@@ -7,6 +7,10 @@ _.constructor('Views.Pages.Election.RankingLi', Monarch.View.Template, {
     propertyAccessors: ['candidate'],
 
     initialize: function() {
+      this.data('position', this.ranking.position());
+      this.ranking.onUpdate(function() {
+        this.data('position', this.ranking.position());
+      }, this);
       this.candidate(this.ranking.candidate());
     }
   }

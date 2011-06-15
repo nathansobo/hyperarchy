@@ -10,7 +10,7 @@ beforeEach(function() {
 });
 
 afterEach(function() {
-  $('#jasmine_content').empty();
+//  $('#jasmine_content').empty();
 });
 
 function attachLayout() {
