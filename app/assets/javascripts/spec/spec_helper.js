@@ -22,8 +22,6 @@ afterEach(function() {
     xhr.abort();
   });
   ajaxRequests = [];
-
-  delete window.Application;
   $('#jasmine_content').empty();
 });
 

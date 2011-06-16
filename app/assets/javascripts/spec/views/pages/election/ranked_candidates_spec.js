@@ -1,7 +1,7 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Election.RankedCandidates", function() {
-  var rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation;
+  var electionPage, rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation;
 
   beforeEach(function() {
     currentUser = User.createFromRemote({id: 1});
@@ -14,7 +14,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     rankingsRelation = currentUser.rankingsForElection(election);
     attachLayout();
     Application.currentUser(currentUser);
-    rankedCandidates = Application.electionPage.rankedCandidates;
+    electionPage = Application.electionPage;
+    rankedCandidates = electionPage.rankedCandidates;
   });
 
   describe("#rankings", function() {
@@ -145,9 +146,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     });
 
     describe("receiving new rankings from the current consensus", function() {
-      var electionPage, createOrUpdatePromise;
+      var createOrUpdatePromise;
       beforeEach(function() {
-        electionPage = Application.electionPage;
         $("#jasmine_content").html(electionPage);
         electionPage.populateContent({electionId: election.id()});
 
@@ -380,16 +380,77 @@ describe("Views.Pages.Election.RankedCandidates", function() {
   });
 
   describe("showing and hiding of drag targets", function() {
-    var electionPage;
+    describe("when the rankings relation is initially assigned", function() {
+      beforeEach(function() {
+        $("#jasmine_content").html(rankedCandidates);
+      });
 
-    beforeEach(function() {
-      electionPage = Application.electionPage;
-      $("#jasmine_content").html(electionPage);
-      electionPage.populateContent({electionId: election.id()});
-      rankedCandidates.show();
+      describe("when there are no rankings", function() {
+        it("shows both the positive and negative explanations", function() {
+          ranking1.remotelyDestroyed();
+          ranking2.remotelyDestroyed();
+
+          rankedCandidates.rankings(rankingsRelation);
+
+          expect(rankedCandidates.positiveDragTarget).toBeVisible();
+          expect(rankedCandidates.negativeDragTarget).toBeVisible();
+
+          expect(rankedCandidates.list.children().eq(0)).toMatchSelector("#good-ideas-explanation");
+          expect(rankedCandidates.list.children().eq(1)).toMatchSelector("#separator");
+          expect(rankedCandidates.list.children().eq(2)).toMatchSelector("#bad-ideas-explanation");
+        });
+      });
+
+      describe("when there are no positive rankings, but there are negative ones", function() {
+        it("shows only the positive explanation", function() {
+          ranking1.remotelyDestroyed();
+
+          rankedCandidates.rankings(rankingsRelation);
+
+          expect(rankedCandidates.positiveDragTarget).toBeVisible();
+          expect(rankedCandidates.negativeDragTarget).toBeHidden();
+
+          expect(rankedCandidates.list.children().eq(0)).toMatchSelector("#good-ideas-explanation");
+          expect(rankedCandidates.list.children().eq(1)).toMatchSelector("#separator");
+          expect(rankedCandidates.list.children().eq(2).view().ranking).toBe(ranking2);
+        });
+      });
+
+      describe("when there are no negative rankings, but there are positive ones", function() {
+        it("shows only the negative explanation", function() {
+          ranking2.remotelyDestroyed();
+
+          rankedCandidates.rankings(rankingsRelation);
+
+          expect(rankedCandidates.positiveDragTarget).toBeHidden();
+          expect(rankedCandidates.negativeDragTarget).toBeVisible();
+
+          expect(rankedCandidates.list.children().eq(0).view().ranking).toBe(ranking1);
+          expect(rankedCandidates.list.children().eq(1)).toMatchSelector("#separator");
+          expect(rankedCandidates.list.children().eq(2)).toMatchSelector("#bad-ideas-explanation");
+        });
+      });
+
+      describe("when there are both positive and negative rankings", function() {
+        it("hides both explanations", function() {
+          rankedCandidates.rankings(rankingsRelation);
+
+          expect(rankedCandidates.positiveDragTarget).toBeHidden();
+          expect(rankedCandidates.negativeDragTarget).toBeHidden();
+
+          expect(rankedCandidates.list.children().eq(0).view().ranking).toBe(ranking1);
+          expect(rankedCandidates.list.children().eq(1)).toMatchSelector("#separator");
+          expect(rankedCandidates.list.children().eq(2).view().ranking).toBe(ranking2);
+        });
+      });
     });
 
     describe("when the rankings relation is mutated remotely", function() {
+      beforeEach(function() {
+        $("#jasmine_content").html(rankedCandidates);
+        rankedCandidates.rankings(rankingsRelation);
+      });
+
       it("shows the positive and negative drag targets when there are positive and negative rankings, and hides them otherwise", function() {
         expect(rankedCandidates.positiveDragTarget).toBeHidden();
         expect(rankedCandidates.negativeDragTarget).toBeHidden();
@@ -427,42 +488,60 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     });
 
     describe("when rankings are dragged and dropped", function() {
-      describe("when positive ranking lis are received from the current consensus", function() {
-        it("shows the positive targets when there are positive and negative rankings, and hides them otherwise", function() {
-          ranking1.remotelyDestroyed();
-          expect(rankedCandidates.positiveDragTarget).toBeVisible();
-
-          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
-          candidate3Li.dragAbove(rankedCandidates.separator);
-          expect(rankedCandidates.positiveDragTarget).toBeHidden();
+      describe("when candidates are dragged in from the consensus", function() {
+        beforeEach(function() {
+          $("#jasmine_content").html(electionPage);
+          electionPage.attach();
+          electionPage.show();
+          electionPage.populateContent({electionId: election.id()});
         });
-      });
 
-      describe("when negative ranking lis are received from the current consensus", function() {
-        it("shows negative drag targets when there are positive and negative rankings, and hides them otherwise", function() {
-          ranking2.remotelyDestroyed();
-          expect(rankedCandidates.positiveDragTarget).toBeVisible();
+        describe("when positive ranking lis are received from the current consensus", function() {
+          it("shows the positive targets when there are positive and negative rankings, and hides them otherwise", function() {
+            ranking1.remotelyDestroyed();
+            expect(rankedCandidates.positiveDragTarget).toBeVisible();
 
-          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
-          candidate3Li.dragBelow(rankedCandidates.separator);
-          expect(rankedCandidates.negativeDragTarget).toBeHidden();
+            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+
+            candidate3Li.dragAbove(rankedCandidates.separator);
+            expect(rankedCandidates.positiveDragTarget).toBeHidden();
+          });
+        });
+
+        describe("when negative ranking lis are received from the current consensus", function() {
+          it("shows negative drag targets when there are positive and negative rankings, and hides them otherwise", function() {
+            ranking2.remotelyDestroyed();
+            expect(rankedCandidates.negativeDragTarget).toBeVisible();
+
+            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+            
+            candidate3Li.dragAbove(rankedCandidates.negativeDragTarget);
+            expect(rankedCandidates.negativeDragTarget).toBeHidden();
+          });
         });
       });
 
       describe("when lis are moved within the ranked list", function() {
+        beforeEach(function() {
+          $("#jasmine_content").html(rankedCandidates);
+          rankedCandidates.attach();
+          rankedCandidates.rankings(rankingsRelation);
+        });
+
         it("shows the positive and negative drag targets when there are positive and negative rankings, and hides them otherwise", function() {
           var ranking1Li = rankedCandidates.list.find('li:eq(0)');
-          var ranking2Li = rankedCandidates.list.find('li:eq(1)');
+          var ranking2Li = rankedCandidates.list.find('li:eq(2)');
+
           expect(rankedCandidates.positiveDragTarget).toBeHidden();
           expect(rankedCandidates.negativeDragTarget).toBeHidden();
 
-          // ranking1Li.dragBelow(rankedCandidates.separator);
+          ranking1Li.dragBelow(ranking2Li);
           expect(rankedCandidates.positiveDragTarget).toBeVisible();
 
-          // ranking1Li.dragAbove(rankedCandidates.separator);
+          ranking1Li.dragAbove(rankedCandidates.separator);
           expect(rankedCandidates.positiveDragTarget).toBeHidden();
 
-          // ranking2Li.dragAbove(rankedCandidates.separator);
+          ranking2Li.dragAbove(rankedCandidates.separator);
           expect(rankedCandidates.negativeDragTarget).toBeVisible();
         });
       });

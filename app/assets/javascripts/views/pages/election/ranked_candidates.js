@@ -2,9 +2,9 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "ranked-candidates"}, function() {
       ol(function() {
-        div().ref('positiveDragTarget');
+        div({id: "good-ideas-explanation"},"Drag ideas you like here").ref('positiveDragTarget');
         li({id: 'separator'}, "Separator").ref('separator');
-        div().ref('negativeDragTarget');
+        div({id: "bad-ideas-explanation"}, "Drag ideas you dislike here").ref('negativeDragTarget');
       }).ref('list')
     });
   }},
@@ -21,6 +21,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
       var list = this.list;
       var self = this;
+
       this.list.sortable({
         items: "li",
 
@@ -59,10 +60,9 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     populateList: function() {
       this.separator.detach();
       this.list.find('li').remove();
-      this.appendRankings(this.positiveRankings());
+      this.appendRankings(this.positiveRankings(), this.positiveDragTarget.detach());
       this.list.append(this.separator);
-      this.appendRankings(this.negativeRankings());
-      this.showOrHideDragTargets();
+      this.appendRankings(this.negativeRankings(), this.negativeDragTarget.detach());
     },
 
     observeListUpdates: function() {
@@ -97,14 +97,14 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
     showOrHideDragTargets: function() {
       if (this.positiveLis().size() > 0) {
-        this.positiveDragTarget.hide();
+        this.positiveDragTarget.detach();
       } else {
-        this.positiveDragTarget.show();
+        this.positiveDragTarget.prependTo(this.list);
       }
       if (this.negativeLis().size() > 0) {
-        this.negativeDragTarget.hide();
+        this.negativeDragTarget.detach();
       } else {
-        this.negativeDragTarget.show();
+        this.negativeDragTarget.appendTo(this.list);
       }
     },
 
@@ -136,7 +136,9 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       return this.lisByCandidateId[id];
     },
 
-    appendRankings: function(rankings) {
+    appendRankings: function(rankings, dragTargetIfEmpty) {
+      if (rankings.empty()) this.list.append(dragTargetIfEmpty);
+
       rankings.each(function(ranking) {
         this.list.append(this.findOrCreateLi(ranking));
       }, this);
