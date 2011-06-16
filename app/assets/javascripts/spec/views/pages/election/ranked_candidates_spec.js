@@ -378,4 +378,94 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       });
     });
   });
+
+  describe("showing and hiding of drag targets", function() {
+    var electionPage;
+
+    beforeEach(function() {
+      electionPage = Application.electionPage;
+      $("#jasmine_content").html(electionPage);
+      electionPage.populateContent({electionId: election.id()});
+      rankedCandidates.show();
+    });
+
+    describe("when the rankings relation is mutated remotely", function() {
+      it("shows the positive and negative drag targets when there are positive and negative rankings, and hides them otherwise", function() {
+        expect(rankedCandidates.positiveDragTarget).toBeHidden();
+        expect(rankedCandidates.negativeDragTarget).toBeHidden();
+
+        ranking1.remotelyUpdated({position: -128});
+        expect(rankedCandidates.positiveDragTarget).toBeVisible();
+        expect(rankedCandidates.negativeDragTarget).toBeHidden();
+
+        ranking1.remotelyUpdated({position: 64});
+        expect(rankedCandidates.positiveDragTarget).toBeHidden();
+        expect(rankedCandidates.negativeDragTarget).toBeHidden();
+
+        ranking2.remotelyUpdated({position: 128});
+        expect(rankedCandidates.positiveDragTarget).toBeHidden();
+        expect(rankedCandidates.negativeDragTarget).toBeVisible();
+
+        ranking2.remotelyUpdated({position: -64});
+        expect(rankedCandidates.positiveDragTarget).toBeHidden();
+        expect(rankedCandidates.negativeDragTarget).toBeHidden();
+
+        ranking1.remotelyDestroyed();
+        expect(rankedCandidates.positiveDragTarget).toBeVisible();
+        expect(rankedCandidates.negativeDragTarget).toBeHidden();
+
+        ranking2.remotelyDestroyed();
+        expect(rankedCandidates.positiveDragTarget).toBeVisible();
+        expect(rankedCandidates.negativeDragTarget).toBeVisible();
+
+        rankingsRelation.createFromRemote({candidateId: 1, position: 64});
+        expect(rankedCandidates.positiveDragTarget).toBeHidden();
+
+        rankingsRelation.createFromRemote({candidateId: 2, position: -64});
+        expect(rankedCandidates.negativeDragTarget).toBeHidden();
+      });
+    });
+
+    describe("when rankings are dragged and dropped", function() {
+      describe("when positive ranking lis are received from the current consensus", function() {
+        it("shows the positive targets when there are positive and negative rankings, and hides them otherwise", function() {
+          ranking1.remotelyDestroyed();
+          expect(rankedCandidates.positiveDragTarget).toBeVisible();
+
+          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+          candidate3Li.dragAbove(rankedCandidates.separator);
+          expect(rankedCandidates.positiveDragTarget).toBeHidden();
+        });
+      });
+
+      describe("when negative ranking lis are received from the current consensus", function() {
+        it("shows negative drag targets when there are positive and negative rankings, and hides them otherwise", function() {
+          ranking2.remotelyDestroyed();
+          expect(rankedCandidates.positiveDragTarget).toBeVisible();
+
+          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+          candidate3Li.dragBelow(rankedCandidates.separator);
+          expect(rankedCandidates.negativeDragTarget).toBeHidden();
+        });
+      });
+
+      describe("when lis are moved within the ranked list", function() {
+        it("shows the positive and negative drag targets when there are positive and negative rankings, and hides them otherwise", function() {
+          var ranking1Li = rankedCandidates.list.find('li:eq(0)');
+          var ranking2Li = rankedCandidates.list.find('li:eq(1)');
+          expect(rankedCandidates.positiveDragTarget).toBeHidden();
+          expect(rankedCandidates.negativeDragTarget).toBeHidden();
+
+          // ranking1Li.dragBelow(rankedCandidates.separator);
+          expect(rankedCandidates.positiveDragTarget).toBeVisible();
+
+          // ranking1Li.dragAbove(rankedCandidates.separator);
+          expect(rankedCandidates.positiveDragTarget).toBeHidden();
+
+          // ranking2Li.dragAbove(rankedCandidates.separator);
+          expect(rankedCandidates.negativeDragTarget).toBeVisible();
+        });
+      });
+    });
+  });
 });
