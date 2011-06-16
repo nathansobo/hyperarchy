@@ -143,6 +143,14 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           });
         });
       });
+
+      describe("the separator", function() {
+        it("is not draggable", function() {
+          expect(rankedCandidates.find('li').eq(2)).toMatchSelector('#separator');
+          rankedCandidates.separator.dragAbove(ranking1Li);
+          expect(rankedCandidates.find('li').eq(2)).toMatchSelector('#separator');
+        });
+      });
     });
 
     describe("receiving new rankings from the current consensus", function() {

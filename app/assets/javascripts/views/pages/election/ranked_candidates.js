@@ -23,7 +23,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       var self = this;
 
       this.list.sortable({
-        items: "li",
+        items: "li:not(#separator)",
 
         update: function(event, ui) {
           if (ui.item.hasClass('ui-draggable')) return;
