@@ -3,7 +3,9 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     div({id: "ranked-candidates"}, function() {
       ol(function() {
         div({id: "good-ideas-explanation"},"Drag ideas you like here").ref('positiveDragTarget');
-        li({id: 'separator'}, "Separator").ref('separator');
+        li({id: 'separator'}, "Separator").ref('separator').mousedown(function() {
+          return false;
+        });
         div({id: "bad-ideas-explanation"}, "Drag ideas you dislike here").ref('negativeDragTarget');
       }).ref('list')
     });
@@ -23,7 +25,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       var self = this;
 
       this.list.sortable({
-        items: "li:not(#separator)",
+        items: "li",
 
         update: function(event, ui) {
           if (ui.item.hasClass('ui-draggable')) return;

@@ -110,7 +110,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
         describe("when an li is dragged between existing negatively ranked lis", function() {
           it("calls Ranking.createOrUpdate with the appropriate candidate and position", function() {
-            ranking1Li.dragAbove(ranking3Li);
+            ranking1Li.dragBelow(ranking2Li);
 
             expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate1, -48);
           });
@@ -126,7 +126,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
         describe("when an li is dragged to the first negative position", function() {
           it("calls Ranking.createOrUpdate with the appropriate candidate and position", function() {
-            ranking1Li.dragAbove(ranking2Li);
+            ranking1Li.dragBelow(rankedCandidates.separator);
 
             expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate1, -16);
           });

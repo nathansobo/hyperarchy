@@ -1,6 +1,6 @@
 $darkened-background-z-index: 100
-$padding-x: 20px
-$header-height: 40px
+$padding-x: $s1
+$header-height: $s3
 
 #layout
   #header-wrapper
@@ -10,10 +10,12 @@ $header-height: 40px
       margin: 0 auto
       @include box-sizing('border-box')
       max-width: 1200px
-      padding: 5px $padding-x
+      padding: (($header-height - $s1) / 2) $padding-x
 
       > h1
+        font-weight: 600
         float: left
+        letter-spacing: $s-9
 
       > #menu-items
         float: right
