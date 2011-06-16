@@ -24,6 +24,8 @@ module Views
             csrf_meta_tag
             head_content
             google_analytics_javascript
+            script :type => "text/javascript", :src => "http://use.typekit.com/tzv2czk.js"
+            script "try{Typekit.load();}catch(e){}", :type => "text/javascript"
           end
 
           body :class => "#{controller_name} #{action_name}" do
