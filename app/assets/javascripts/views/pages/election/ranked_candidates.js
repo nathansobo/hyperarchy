@@ -28,58 +28,16 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     attach: function($super) {
       $super();
 
-      var list = this.list;
-      var self = this;
-
       this.list.sortable({
         items: "li",
 
-        update: function(event, ui) {
-          if (ui.item.hasClass('ui-draggable')) return;
-          ui.item.view().handleListDrop();
-          self.showOrHideDragTargets();
-        },
-
-        receive: function(event, ui) {
-          var candidate = ui.item.view().candidate;
-
-          var existingRankingLi = self.lisByCandidateId[candidate.id()];
-          if (existingRankingLi) existingRankingLi.remove();
-
-          var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
-          self.lisByCandidateId[candidate.id()] = rankingLi;
-
-          var clonedLi = self.list.find('li.ui-draggable');
-          clonedLi.replaceWith(rankingLi);
-          rankingLi.handleListDrop();
-          self.showOrHideDragTargets();
-        },
+        update: this.hitch('handleListUpdate'),
+        receive: this.hitch('handleListReceive'),
+        sort: this.hitch('handleListSort'),
 
         appendTo: "#election",
-        helper: 'clone',
-        sort: this.hitch('handleSort')
+        helper: 'clone'
       });
-    },
-
-    handleSort:  function(event, ui) {
-      var placeholder = ui.placeholder;
-      var beforeSeparator = placeholder.nextAll("#separator").length === 1;
-
-      if (beforeSeparator && this.positiveDragTarget.is(":visible")) {
-        placeholder.hide();
-      } else if (!beforeSeparator && this.negativeDragTarget.is(":visible")) {
-        placeholder.hide();
-      } else {
-        placeholder.show();
-      }
-    },
-
-    rankings: {
-      change: function(rankingsRelation) {
-        this.lisByCandidateId = {};
-        this.populateList();
-        this.observeListUpdates();
-      }
     },
 
     populateList: function() {
@@ -101,6 +59,48 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       this.rankingsSubscriptions.add(this.negativeRankings().onInsert(this.hitch('insertAtIndex')));
       this.rankingsSubscriptions.add(this.negativeRankings().onUpdate(this.hitch('insertAtIndex')));
       this.rankingsSubscriptions.add(this.rankings().onRemove(this.hitch('removeRanking')));
+    },
+
+    handleListUpdate: function(event, ui) {
+      if (ui.item.hasClass('ui-draggable')) return;
+      ui.item.view().handleListDrop();
+      this.showOrHideDragTargets();
+    },
+
+    handleListSort:  function(event, ui) {
+      var placeholder = ui.placeholder;
+      var beforeSeparator = placeholder.nextAll("#separator").length === 1;
+
+      if (beforeSeparator && this.positiveDragTarget.is(":visible")) {
+        placeholder.hide();
+      } else if (!beforeSeparator && this.negativeDragTarget.is(":visible")) {
+        placeholder.hide();
+      } else {
+        placeholder.show();
+      }
+    },
+
+    handleListReceive: function(event, ui) {
+      var candidate = ui.item.view().candidate;
+
+      var existingRankingLi = this.lisByCandidateId[candidate.id()];
+      if (existingRankingLi) existingRankingLi.remove();
+
+      var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
+      this.lisByCandidateId[candidate.id()] = rankingLi;
+
+      var clonedLi = this.list.find('li.ui-draggable');
+      clonedLi.replaceWith(rankingLi);
+      rankingLi.handleListDrop();
+      this.showOrHideDragTargets();
+    },
+
+    rankings: {
+      change: function(rankingsRelation) {
+        this.lisByCandidateId = {};
+        this.populateList();
+        this.observeListUpdates();
+      }
     },
 
     insertAtIndex: function(ranking, changesetOrIndex, index) {
