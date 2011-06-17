@@ -31,9 +31,11 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       this.list.sortable({
         items: "li",
 
+        tolerance: 'pointer',
         update: this.hitch('handleListUpdate'),
         receive: this.hitch('handleListReceive'),
         sort: this.hitch('handleListSort'),
+        beforeStop: this.hitch('handleListBeforeStop'),
 
         appendTo: "#election",
         helper: 'clone'
@@ -42,13 +44,17 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
     populateList: function() {
       this.separator.detach();
-      this.positiveDragTarget.detach();
-      this.negativeDragTarget.detach();
+      this.detachDragTargets();
 
       this.list.find('li').remove();
       this.appendRankings(this.positiveRankings(), this.positiveDragTarget);
       this.list.append(this.separator);
       this.appendRankings(this.negativeRankings(), this.negativeDragTarget);
+    },
+
+    detachDragTargets: function() {
+      this.positiveDragTarget.detach();
+      this.negativeDragTarget.detach();
     },
 
     observeListUpdates: function() {
@@ -62,9 +68,33 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     },
 
     handleListUpdate: function(event, ui) {
-      if (ui.item.hasClass('ui-draggable')) return;
+      if (ui.item.hasClass('ui-draggable')) return; // received from other list, handle there
+      if (!ui.item.view()) return;
+
+      this.detachDragTargets();
       ui.item.view().handleListDrop();
       this.showOrHideDragTargets();
+    },
+
+    handleListBeforeStop: function(event, ui) {
+      if (!ui.item.hasClass('ranking')) return;
+      var helper = ui.helper, rankingLi = ui.item.view()
+
+      if (!rankingLi.ranking) return;
+      var ranking = rankingLi.ranking;
+
+      if (Math.abs(ui.originalPosition.left - ui.position.left) < helper.width() * .33) return;
+
+      var clone = helper.clone();
+      helper.replaceWith(clone);
+      clone
+        .addClass('highlight')
+        .hide('puff', function() {
+          clone.remove();
+        });
+
+      this.removeRanking(ranking)
+      ranking.destroy();
     },
 
     handleListSort:  function(event, ui) {
@@ -91,6 +121,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
       var clonedLi = this.list.find('li.ui-draggable');
       clonedLi.replaceWith(rankingLi);
+      this.detachDragTargets();
       rankingLi.handleListDrop();
       this.showOrHideDragTargets();
     },
@@ -137,8 +168,10 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     },
 
     removeRanking: function(ranking) {
-      this.lisByCandidateId[ranking.candidateId()].remove();
-      delete this.lisByCandidateId[ranking.candidateId()];
+      var candidateId = ranking.candidateId();
+      var rankingLi = this.lisByCandidateId[candidateId];
+      if (rankingLi) rankingLi.remove();
+      delete this.lisByCandidateId[candidateId];
       this.showOrHideDragTargets();
     },
 
@@ -151,11 +184,11 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     },
 
     positiveLis: function() {
-      return this.separator.prevAll('li.ranking').reverse();
+      return this.separator.prevAll('li.ranking:not(.ui-sortable-placeholder)').reverse();
     },
 
     negativeLis: function() {
-      return this.separator.nextAll('li.ranking');
+      return this.separator.nextAll('li.ranking:not(.ui-sortable-placeholder)');
     },
 
     findOrCreateLi: function(ranking) {

@@ -1,8 +1,8 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Election.RankedCandidates", function() {
-  var electionPage, rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation;
-
+  var electionPage, rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation, createOrUpdatePromise;
+  
   beforeEach(function() {
     currentUser = User.createFromRemote({id: 1});
     election = Election.createFromRemote({id: 1});
@@ -17,6 +17,9 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     electionPage = Application.electionPage;
     rankedCandidates = electionPage.rankedCandidates;
     $('#jasmine_content').html(electionPage);
+
+    createOrUpdatePromise = new Monarch.Promise();
+    spyOn(Ranking, 'createOrUpdate').andReturn(createOrUpdatePromise);
   });
 
   describe("#rankings", function() {
@@ -60,10 +63,6 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         ranking1Li = rankedCandidates.list.find('li:eq(0)');
         ranking2Li = rankedCandidates.list.find('li:eq(1)');
         ranking3Li = rankedCandidates.list.find('li:eq(3)');
-
-
-        createOrUpdatePromise = new Monarch.Promise();
-        spyOn(Ranking, 'createOrUpdate').andReturn(createOrUpdatePromise);
       });
 
       describe("dragging into the positive ranking region", function() {
@@ -97,7 +96,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             ranking1.remotelyDestroyed();
             ranking2.remotelyDestroyed();
 
-            ranking3Li.dragAbove(rankedCandidates.separator);
+            ranking3Li.dragAbove(rankedCandidates.positiveDragTarget);
 
             expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 64);
           });
@@ -138,7 +137,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             ranking2.remotelyDestroyed();
             ranking3.remotelyDestroyed();
 
-            ranking1Li.dragBelow(rankedCandidates.separator);
+            ranking1Li.dragBelow(rankedCandidates.negativeDragTarget);
 
             expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate1, -64);
           });
@@ -172,12 +171,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     });
 
     describe("receiving new rankings from the current consensus", function() {
-      var createOrUpdatePromise;
       beforeEach(function() {
         electionPage.populateContent({electionId: election.id()});
-
-        createOrUpdatePromise = new Monarch.Promise();
-        spyOn(Ranking, 'createOrUpdate').andReturn(createOrUpdatePromise);
       });
 
       describe("when receiving a candidate that has not yet been ranked", function() {
@@ -223,6 +218,73 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           createOrUpdatePromise.triggerSuccess(ranking2);
 
           expect(ranking2.onUpdateNode.subscriptions.length).toBe(numUpdateSubscriptionsBefore);
+        });
+      });
+
+      describe("when receiving a candidate in the positive region above the drag target", function() {
+        it("computes the position correctly", function() {
+          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+          ranking1.remotelyDestroyed();
+          candidate3Li.dragAbove(rankedCandidates.positiveDragTarget);
+          expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 64);
+        });
+      });
+    });
+
+    describe("removal of rankings by dragging out of the list", function() {
+      var ranking1Li, ranking2Li;
+
+      beforeEach(function() {
+        electionPage.populateContent({electionId: election.id()});
+        ranking1Li = rankedCandidates.list.find('li:eq(0)');
+        ranking2Li = rankedCandidates.list.find('li:eq(1)');
+      });
+
+      describe("when dragging a ranking li whose ranking has been assigned", function() {
+        it("removes the li, destroys the ranking, and displays the drag target if needed", function() {
+          spyOn(ranking1, 'destroy');
+
+          ranking1Li.simulate('drag', {dx: ranking1Li.width(), dy: 0});
+
+          expect(rankedCandidates.separator.prevAll('.ranking')).not.toExist();
+          expect(rankedCandidates.list).toContain('#positive-drag-target:visible');
+          expect(ranking1.destroy).toHaveBeenCalled();
+
+          expect(electionPage.find('.ui-sortable-helper')).toHaveClass('highlight');
+          waits(500);
+
+          runs(function() {
+            expect(electionPage.find('.ui-sortable-helper')).not.toExist();
+          });
+        });
+      });
+
+      describe("when attempting to remove a ranking li whose ranking has not yet been assigned (because the initial ranking request is incomplete)", function() {
+        it("does not remove the li and instead reverts it to its original location", function() {
+          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+          
+          candidate3Li.dragAbove(ranking1Li);
+
+          expect(rankedCandidates.separator.prevAll('.ranking').size()).toBe(2);
+
+          expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 128);
+          // but we don't simulate a response yet, so dragging away should not remove it
+
+          var ranking3Li = rankedCandidates.list.find('li').eq(0);
+          ranking3Li.simulate('drag', {dx: ranking3Li.width(), dy: 0});
+          expect(rankedCandidates.separator.prevAll('.ranking').size()).toBe(2);
+
+          // now the simulate creation of a ranking on server
+          var ranking3 = Ranking.createFromRemote({id: 3, userId: currentUser.id(), candidateId: candidate3.id(), electionId: election.id(), position: 128});
+          createOrUpdatePromise.triggerSuccess(ranking3);
+
+          expect(rankedCandidates.list.find('li').size()).toBe(4);
+
+          // still responds to remote events
+          ranking3.remotelyUpdated({position: -128});
+
+          expect(rankedCandidates.list.find('li').eq(3).data('position')).toBe(-128);
+          expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking3);
         });
       });
     });

@@ -12,6 +12,7 @@
 //= require jquery-ui/jquery.ui.autocomplete
 //= require jquery-ui/jquery.effects.core
 //= require jquery-ui/jquery.effects.highlight
+//= require jquery-ui/jquery.effects.scale
 //= require jquery.elastic.source
 //= require jquery.holdplace
 //= require jquery.phpdate
