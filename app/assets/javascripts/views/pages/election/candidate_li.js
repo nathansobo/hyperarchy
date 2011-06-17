@@ -1,6 +1,6 @@
 _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
-    li(params.candidate.body()).click(function() {
+    li({'class': "candidate"}, params.candidate.body()).click(function() {
       History.pushState(null, null, params.candidate.url());
     });
   }},
@@ -11,12 +11,17 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
 
       this.draggable({
         connectToSortable: '#ranked-candidates ol',
+        appendTo: '#election',
         revert: 'invalid',
         revertDuration: 100,
-        helper: 'clone',
+        helper: this.hitch('createFixedWidthClone'),
         zIndex: 99,
         cancel: '.expandArrow, .tooltipIcon, .noDrag'
       });
+    },
+
+    createFixedWidthClone: function() {
+      return this.clone().width(this.width());
     }
   }
 });

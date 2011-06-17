@@ -1,17 +1,19 @@
 _.constructor('Views.Pages.Election', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "election"}, function() {
-      div(function() {
-        div({'class': 'body'}).ref('body');
-      });
-      div(function() {
-        subview('currentConsensus', Views.Pages.Election.CurrentConsensus);
-      });
-      div(function() {
-        subview('candidateDetails', Views.Pages.Election.CandidateDetails);
-        subview('rankedCandidates', Views.Pages.Election.RankedCandidates);
-      });
-      div();
+      div({id: "columns"}, function() {
+        div(function() {
+          div({'class': 'body'}).ref('body');
+        });
+        div(function() {
+          subview('currentConsensus', Views.Pages.Election.CurrentConsensus);
+        });
+        div(function() {
+          subview('candidateDetails', Views.Pages.Election.CandidateDetails);
+          subview('rankedCandidates', Views.Pages.Election.RankedCandidates);
+        });
+        div({id: "column-4"});
+      }).ref('columns');
     });
   }},
 

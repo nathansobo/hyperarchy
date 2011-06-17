@@ -22,7 +22,7 @@ afterEach(function() {
     xhr.abort();
   });
   ajaxRequests = [];
-//  $('#jasmine_content').empty();
+  $('#jasmine_content').empty();
 });
 
 function attachLayout() {

@@ -1,6 +1,6 @@
 _.constructor('Views.Pages.Election.RankingLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
-    li();
+    li({'class': "ranking"});
   }},
 
   viewProperties: {

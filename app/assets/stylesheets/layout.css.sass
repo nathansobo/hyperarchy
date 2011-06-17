@@ -13,7 +13,7 @@ $header-height: $s3
       padding: (($header-height - $s1) / 2) $padding-x
 
       > h1
-        font-weight: 600
+        font-weight: $semibold
         float: left
         letter-spacing: $s-9
 
@@ -26,9 +26,10 @@ $header-height: $s3
   #body-wrapper
     position: absolute
     width: 100%
-    top: $header-height
-    bottom: 0
+    top: $header-height + $s1
+    bottom: $s1
     > #body
+      //@include baseline-grid-background($s1, transparentize(blue, .5))
       @include box-sizing('border-box')
       height: 100%
       max-width: 1200px

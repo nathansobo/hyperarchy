@@ -16,6 +16,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     Application.currentUser(currentUser);
     electionPage = Application.electionPage;
     rankedCandidates = electionPage.rankedCandidates;
+    $('#jasmine_content').html(electionPage);
   });
 
   describe("#rankings", function() {
@@ -38,12 +39,12 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       var rankingB = otherRankingsRelation.createFromRemote({id: 1, candidateId: candidateB.id(), position: 64});
 
       rankedCandidates.rankings(otherRankingsRelation);
-      expect(rankedCandidates.list.find('li').size()).toBe(2)
-      expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(rankingB);
+      expect(rankedCandidates.list.find('.ranking').size()).toBe(1);
+      expect(rankedCandidates.list.find('.ranking').eq(0).view().ranking).toBe(rankingB);
 
       rankingsRelation.createFromRemote({candidateId: candidate3.id(), position: 128});
 
-      expect(rankedCandidates.list.find('li').size()).toBe(2)
+      expect(rankedCandidates.list.find('.ranking').size()).toBe(1);
     });
   });
 
@@ -60,7 +61,6 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         ranking2Li = rankedCandidates.list.find('li:eq(1)');
         ranking3Li = rankedCandidates.list.find('li:eq(3)');
 
-        $('#jasmine_content').html(rankedCandidates);
 
         createOrUpdatePromise = new Monarch.Promise();
         spyOn(Ranking, 'createOrUpdate').andReturn(createOrUpdatePromise);
@@ -72,6 +72,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             ranking3Li.dragAbove(ranking2Li);
 
             expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 48);
+            console.debug();
           });
         });
 
@@ -156,7 +157,6 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     describe("receiving new rankings from the current consensus", function() {
       var createOrUpdatePromise;
       beforeEach(function() {
-        $("#jasmine_content").html(electionPage);
         electionPage.populateContent({electionId: election.id()});
 
         createOrUpdatePromise = new Monarch.Promise();
@@ -195,8 +195,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
           candidate2Li.dragAbove(ranking1Li);
 
-          expect(rankedCandidates.list.find('li').size()).toBe(3);
-          expect(rankedCandidates.list.find('li').eq(0).data('position')).toBe(128);
+          expect(rankedCandidates.list.find('li.ranking').size()).toBe(2);
+          expect(rankedCandidates.list.find('li.ranking').eq(0).data('position')).toBe(128);
 
           expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate2, 128);
 
@@ -216,10 +216,11 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       it("responds to a positive ranking becoming the last negative ranking", function() {
         rankedCandidates.rankings(rankingsRelation);
         ranking1.remotelyUpdated({position: -128});
-        expect(rankedCandidates.list.find('li').size()).toBe(3);
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#separator');
-        expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking2);
-        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking1);
+        expect(rankedCandidates.list.find('li.ranking').size()).toBe(2);
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
+        expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking1);
       });
 
       it("responds to a positive ranking becoming the only negative ranking", function() {
@@ -227,36 +228,40 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
         rankedCandidates.rankings(rankingsRelation);
         ranking1.remotelyUpdated({position: -64});
-        expect(rankedCandidates.list.find('li').size()).toBe(2);
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#separator');
-        expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking1);
+        expect(rankedCandidates.list.find('li.ranking').size()).toBe(1);
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking1);
       });
 
       it("responds to a positive ranking a negative ranking other than the last", function() {
         rankedCandidates.rankings(rankingsRelation);
         ranking1.remotelyUpdated({position: -32});
-        expect(rankedCandidates.list.find('li').size()).toBe(3);
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#separator');
-        expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking1);
-        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
+        expect(rankedCandidates.list.find('li.ranking').size()).toBe(2);
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking1);
+        expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking2);
       });
 
       it("responds to a negative ranking becoming a positive ranking other than the last", function() {
         rankedCandidates.rankings(rankingsRelation);
         ranking2.remotelyUpdated({position: 128});
-        expect(rankedCandidates.list.find('li').size()).toBe(3);
+        expect(rankedCandidates.list.find('li.ranking').size()).toBe(2);
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking2);
         expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking1);
         expect(rankedCandidates.list.find('li').eq(2)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(3)).toMatchSelector('#bad-ideas-explanation');
       });
 
       it("responds to a negative ranking becoming the last positive ranking", function() {
         rankedCandidates.rankings(rankingsRelation);
         ranking2.remotelyUpdated({position: 32});
-        expect(rankedCandidates.list.find('li').size()).toBe(3);
+        expect(rankedCandidates.list.find('li.ranking').size()).toBe(2);
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
         expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking2);
         expect(rankedCandidates.list.find('li').eq(2)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(3)).toMatchSelector('#bad-ideas-explanation');
       });
 
       it("responds to a negative ranking becoming the only positive ranking", function() {
@@ -264,9 +269,10 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
         rankedCandidates.rankings(rankingsRelation);
         ranking2.remotelyUpdated({position: 64});
-        expect(rankedCandidates.list.find('li').size()).toBe(2);
+        expect(rankedCandidates.list.find('li.ranking').size()).toBe(1);
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking2);
         expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(2)).toMatchSelector('#bad-ideas-explanation');
       });
     });
 
@@ -296,9 +302,10 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         rankedCandidates.rankings(rankingsRelation);
 
         ranking1.remotelyUpdated({position: -128});
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#separator');
-        expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking2);
-        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking1);
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
+        expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking1);
       });
 
       it("responds to a negative ranking moving to a position other than the last", function() {
@@ -306,9 +313,10 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         rankedCandidates.rankings(rankingsRelation);
 
         ranking2.remotelyUpdated({position: -16});
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#separator');
-        expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking2);
-        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking1);
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
+        expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking1);
       });
     });
 
@@ -367,9 +375,10 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         rankedCandidates.rankings(rankingsRelation);
         ranking1.remotelyDestroyed();
 
-        expect(rankedCandidates.list.find('li').size()).toBe(2);
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#separator');
-        expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking2);
+        expect(rankedCandidates.list.find('li.ranking').size()).toBe(1);
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
+        expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
 
         expect(rankedCandidates.lisByCandidateId[ranking1.candidateId()]).toBeUndefined();
       });
@@ -378,7 +387,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         rankedCandidates.rankings(rankingsRelation);
         ranking2.remotelyDestroyed();
 
-        expect(rankedCandidates.list.find('li').size()).toBe(2);
+        expect(rankedCandidates.list.find('li.ranking').size()).toBe(1);
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
         expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
 
@@ -389,10 +398,6 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
   describe("showing and hiding of drag targets", function() {
     describe("when the rankings relation is initially assigned", function() {
-      beforeEach(function() {
-        $("#jasmine_content").html(rankedCandidates);
-      });
-
       describe("when there are no rankings", function() {
         it("shows both the positive and negative explanations", function() {
           ranking1.remotelyDestroyed();
@@ -455,7 +460,6 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
     describe("when the rankings relation is mutated remotely", function() {
       beforeEach(function() {
-        $("#jasmine_content").html(rankedCandidates);
         rankedCandidates.rankings(rankingsRelation);
       });
 
@@ -498,9 +502,6 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     describe("when rankings are dragged and dropped", function() {
       describe("when candidates are dragged in from the consensus", function() {
         beforeEach(function() {
-          $("#jasmine_content").html(electionPage);
-          electionPage.attach();
-          electionPage.show();
           electionPage.populateContent({electionId: election.id()});
         });
 
@@ -531,8 +532,6 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
       describe("when lis are moved within the ranked list", function() {
         beforeEach(function() {
-          $("#jasmine_content").html(rankedCandidates);
-          rankedCandidates.attach();
           rankedCandidates.rankings(rankingsRelation);
         });
 

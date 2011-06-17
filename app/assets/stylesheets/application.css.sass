@@ -2,7 +2,9 @@
 @import "compass/css3/box"
 @import "compass/css3/transition"
 @import "compass/css3/box-sizing"
+@import "compass/layout/grid-background"
 @import "scale"
+@import "fonts"
 @import "mixins"
 @import "layout"
 @import "pages/election"
@@ -10,6 +12,8 @@
 
 #jasmine_content
   right: 0
+  width: 50%
+  height: 100%
 
 body
   font-family: "proxima-nova-1", Helvetica, Arial, sans-serif
@@ -18,6 +22,9 @@ body
 
 a
   cursor: pointer
+
+li
+  list-style: none
 
 .avatar
   display: inline-block
@@ -31,3 +38,6 @@ a
     top: 100%
     right: 0
 
+h2
+  margin-bottom: $s1/2
+  font-weight: $semibold

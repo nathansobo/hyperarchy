@@ -1,12 +1,17 @@
 _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "ranked-candidates"}, function() {
+      h2("Your Ranking");
       ol(function() {
-        div({id: "good-ideas-explanation"},"Drag ideas you like here").ref('positiveDragTarget');
+        li({id: "good-ideas-explanation"}, function() {
+          span("Drag ideas you like here");
+        }).ref('positiveDragTarget');
         li({id: 'separator'}, "Separator").ref('separator').mousedown(function() {
           return false;
         });
-        div({id: "bad-ideas-explanation"}, "Drag ideas you dislike here").ref('negativeDragTarget');
+        li({id: "bad-ideas-explanation"},function() {
+          span("Drag ideas you dislike here");
+        }).ref('negativeDragTarget');
       }).ref('list')
     });
   }},
@@ -46,10 +51,26 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
           clonedLi.replaceWith(rankingLi);
           rankingLi.handleListDrop();
           self.showOrHideDragTargets();
-        }
+        },
+
+        appendTo: "#election",
+        helper: 'clone',
+        sort: this.hitch('handleSort')
       });
     },
 
+    handleSort:  function(event, ui) {
+      var placeholder = ui.placeholder;
+      var beforeSeparator = placeholder.nextAll("#separator").length === 1;
+
+      if (beforeSeparator && this.positiveDragTarget.is(":visible")) {
+        placeholder.hide();
+      } else if (!beforeSeparator && this.negativeDragTarget.is(":visible")) {
+        placeholder.hide();
+      } else {
+        placeholder.show();
+      }
+    },
 
     rankings: {
       change: function(rankingsRelation) {
@@ -125,11 +146,11 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     },
 
     positiveLis: function() {
-      return this.separator.prevAll('li').reverse();
+      return this.separator.prevAll('li.ranking').reverse();
     },
 
     negativeLis: function() {
-      return this.separator.nextAll('li');
+      return this.separator.nextAll('li.ranking');
     },
 
     findOrCreateLi: function(ranking) {
