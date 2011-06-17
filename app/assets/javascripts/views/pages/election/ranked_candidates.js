@@ -3,13 +3,11 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     div({id: "ranked-candidates"}, function() {
       h2("Your Ranking");
       ol(function() {
-        li({id: "good-ideas-explanation"}, function() {
+        li({id: "positive-drag-target"}, function() {
           span("Drag ideas you like here");
         }).ref('positiveDragTarget');
-        li({id: 'separator'}, "Separator").ref('separator').mousedown(function() {
-          return false;
-        });
-        li({id: "bad-ideas-explanation"},function() {
+        li({id: 'separator'}, "Separator").ref('separator');
+        li({id: "negative-drag-target"},function() {
           span("Drag ideas you dislike here");
         }).ref('negativeDragTarget');
       }).ref('list')
@@ -17,10 +15,14 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
   }},
 
   viewProperties: {
-
     initialize: function() {
       this.separator.data('position', 0);
       this.rankingsSubscriptions = new Monarch.SubscriptionBundle();
+
+      var returnFalse = function() { return false; }
+      this.positiveDragTarget.mousedown(returnFalse);
+      this.negativeDragTarget.mousedown(returnFalse);
+      this.separator.mousedown(returnFalse);
     },
 
     attach: function($super) {
@@ -82,10 +84,13 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
     populateList: function() {
       this.separator.detach();
+      this.positiveDragTarget.detach();
+      this.negativeDragTarget.detach();
+
       this.list.find('li').remove();
-      this.appendRankings(this.positiveRankings(), this.positiveDragTarget.detach());
+      this.appendRankings(this.positiveRankings(), this.positiveDragTarget);
       this.list.append(this.separator);
-      this.appendRankings(this.negativeRankings(), this.negativeDragTarget.detach());
+      this.appendRankings(this.negativeRankings(), this.negativeDragTarget);
     },
 
     observeListUpdates: function() {
@@ -122,12 +127,12 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       if (this.positiveLis().size() > 0) {
         this.positiveDragTarget.detach();
       } else {
-        this.positiveDragTarget.prependTo(this.list);
+        this.positiveDragTarget.detach().prependTo(this.list);
       }
       if (this.negativeLis().size() > 0) {
         this.negativeDragTarget.detach();
       } else {
-        this.negativeDragTarget.appendTo(this.list);
+        this.negativeDragTarget.detach().appendTo(this.list);
       }
     },
 

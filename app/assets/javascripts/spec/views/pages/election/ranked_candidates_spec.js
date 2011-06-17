@@ -152,6 +152,23 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           expect(rankedCandidates.find('li').eq(2)).toMatchSelector('#separator');
         });
       });
+
+      describe("the drag target explanations", function() {
+        it("does not allow them to be dragged", function() {
+          ranking1.remotelyDestroyed();
+          ranking2.remotelyDestroyed();
+          ranking3.remotelyDestroyed();
+
+          expect(rankedCandidates.positiveDragTarget).toBeVisible();
+          expect(rankedCandidates.negativeDragTarget).toBeVisible();
+
+          rankedCandidates.positiveDragTarget.dragAbove(rankedCandidates.negativeDragTarget);
+          expect(rankedCandidates.find('li').eq(0)).toMatchSelector('#positive-drag-target');
+
+          rankedCandidates.negativeDragTarget.dragAbove(rankedCandidates.positiveDragTarget);
+          expect(rankedCandidates.find('li').eq(2)).toMatchSelector('#negative-drag-target');
+        });
+      });
     });
 
     describe("receiving new rankings from the current consensus", function() {
@@ -217,7 +234,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         rankedCandidates.rankings(rankingsRelation);
         ranking1.remotelyUpdated({position: -128});
         expect(rankedCandidates.list.find('li.ranking').size()).toBe(2);
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#positive-drag-target');
         expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
         expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
         expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking1);
@@ -229,7 +246,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         rankedCandidates.rankings(rankingsRelation);
         ranking1.remotelyUpdated({position: -64});
         expect(rankedCandidates.list.find('li.ranking').size()).toBe(1);
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#positive-drag-target');
         expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
         expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking1);
       });
@@ -238,7 +255,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         rankedCandidates.rankings(rankingsRelation);
         ranking1.remotelyUpdated({position: -32});
         expect(rankedCandidates.list.find('li.ranking').size()).toBe(2);
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#positive-drag-target');
         expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
         expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking1);
         expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking2);
@@ -251,7 +268,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking2);
         expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking1);
         expect(rankedCandidates.list.find('li').eq(2)).toMatchSelector('#separator');
-        expect(rankedCandidates.list.find('li').eq(3)).toMatchSelector('#bad-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(3)).toMatchSelector('#negative-drag-target');
       });
 
       it("responds to a negative ranking becoming the last positive ranking", function() {
@@ -261,7 +278,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
         expect(rankedCandidates.list.find('li').eq(1).view().ranking).toBe(ranking2);
         expect(rankedCandidates.list.find('li').eq(2)).toMatchSelector('#separator');
-        expect(rankedCandidates.list.find('li').eq(3)).toMatchSelector('#bad-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(3)).toMatchSelector('#negative-drag-target');
       });
 
       it("responds to a negative ranking becoming the only positive ranking", function() {
@@ -272,7 +289,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         expect(rankedCandidates.list.find('li.ranking').size()).toBe(1);
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking2);
         expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
-        expect(rankedCandidates.list.find('li').eq(2)).toMatchSelector('#bad-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(2)).toMatchSelector('#negative-drag-target');
       });
     });
 
@@ -302,7 +319,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         rankedCandidates.rankings(rankingsRelation);
 
         ranking1.remotelyUpdated({position: -128});
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#positive-drag-target');
         expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
         expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
         expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking1);
@@ -313,7 +330,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         rankedCandidates.rankings(rankingsRelation);
 
         ranking2.remotelyUpdated({position: -16});
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#positive-drag-target');
         expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
         expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
         expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking1);
@@ -376,7 +393,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         ranking1.remotelyDestroyed();
 
         expect(rankedCandidates.list.find('li.ranking').size()).toBe(1);
-        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#good-ideas-explanation');
+        expect(rankedCandidates.list.find('li').eq(0)).toMatchSelector('#positive-drag-target');
         expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
         expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
 
@@ -408,9 +425,9 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           expect(rankedCandidates.positiveDragTarget).toBeVisible();
           expect(rankedCandidates.negativeDragTarget).toBeVisible();
 
-          expect(rankedCandidates.list.children().eq(0)).toMatchSelector("#good-ideas-explanation");
+          expect(rankedCandidates.list.children().eq(0)).toMatchSelector("#positive-drag-target");
           expect(rankedCandidates.list.children().eq(1)).toMatchSelector("#separator");
-          expect(rankedCandidates.list.children().eq(2)).toMatchSelector("#bad-ideas-explanation");
+          expect(rankedCandidates.list.children().eq(2)).toMatchSelector("#negative-drag-target");
         });
       });
 
@@ -423,7 +440,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           expect(rankedCandidates.positiveDragTarget).toBeVisible();
           expect(rankedCandidates.negativeDragTarget).toBeHidden();
 
-          expect(rankedCandidates.list.children().eq(0)).toMatchSelector("#good-ideas-explanation");
+          expect(rankedCandidates.list.children().eq(0)).toMatchSelector("#positive-drag-target");
           expect(rankedCandidates.list.children().eq(1)).toMatchSelector("#separator");
           expect(rankedCandidates.list.children().eq(2).view().ranking).toBe(ranking2);
         });
@@ -440,7 +457,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
           expect(rankedCandidates.list.children().eq(0).view().ranking).toBe(ranking1);
           expect(rankedCandidates.list.children().eq(1)).toMatchSelector("#separator");
-          expect(rankedCandidates.list.children().eq(2)).toMatchSelector("#bad-ideas-explanation");
+          expect(rankedCandidates.list.children().eq(2)).toMatchSelector("#negative-drag-target");
         });
       });
 
