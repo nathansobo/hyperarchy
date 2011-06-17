@@ -20,6 +20,7 @@ body {
 
 .jasmine_reporter {
   margin: 0 5px;
+  width: 50%;
 }
 
 .banner {
@@ -155,8 +156,9 @@ body {
 
 #jasmine_content {
   position:fixed;
-  width: 960px;
-  right: 100%;
+  width: 50%;
+  height: 100%;
+  right: 0;
 }
 
 .runner {
