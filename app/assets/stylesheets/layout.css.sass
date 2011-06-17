@@ -1,16 +1,18 @@
 $darkened-background-z-index: 100
 $padding-x: $s1
-$header-height: $s3
+$header-height: 2 * $s1
 
 #layout
   #header-wrapper
     height: $header-height
-    background-color: #aaa
+    background-color: transparentize(#aaa, 0.5)
+
     > #header
       margin: 0 auto
       @include box-sizing('border-box')
       max-width: 1200px
       padding: (($header-height - $s1) / 2) $padding-x
+      height: 100%
 
       > h1
         font-weight: $semibold
@@ -21,15 +23,21 @@ $header-height: $s3
         float: right
         > div
           display: inline-block
-          margin-left: 1em
+          margin-left: $s2
+
+          .avatar
+            float: left
+            position: relative
+            top: -($s2 - $s1)/2 - 1
+            margin-right: $s-8
+
 
   #body-wrapper
     position: absolute
     width: 100%
-    top: $header-height + $s1
-    bottom: $s1
+    top: $header-height + 3/2 * $s1
+    bottom: 3/2 * $s1
     > #body
-      //@include baseline-grid-background($s1, transparentize(blue, .5))
       @include box-sizing('border-box')
       height: 100%
       max-width: 1200px
