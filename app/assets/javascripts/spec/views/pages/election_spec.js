@@ -17,7 +17,7 @@ describe("Views.Pages.Election", function() {
 
   describe("when the params hash is assigned", function() {
     var currentUser, election, candidate1, candidate2, currentUserRanking1, currentUserRanking2;
-    var otherUser, otherUser2, otherUserRanking1, otherUserRanking2, otherUserVote, currentUserVote;
+    var otherUser, otherUser2, otherUserRanking1, otherUserRanking2;
 
     beforeEach(function() {
       enableAjax();
@@ -32,8 +32,6 @@ describe("Views.Pages.Election", function() {
         currentUserRanking2 = election.rankings().create({userId: currentUser.id(), position: -64, candidateId: candidate2.id()});
         otherUserRanking1 = election.rankings().create({userId: otherUser.id(), position: 64, candidateId: candidate1.id()});
         otherUserRanking2 = election.rankings().create({userId: otherUser.id(), position: -64, candidateId: candidate2.id()});
-        otherUserVote = election.votes().create({userId: otherUser.id()});
-        currentUserVote = election.votes().create({userId: currentUser.id()});
       });
       fetchInitialRepositoryContents();
     });
@@ -50,6 +48,7 @@ describe("Views.Pages.Election", function() {
             expect(election.candidates().size()).toBe(2);
             expect(election.rankings().size()).toBeGreaterThan(0);
             expect(election.votes().size()).toBeGreaterThan(0);
+            expect(election.voters().size()).toBe(election.votes().size());
 
             expect(electionPage.election()).toEqual(election);
             expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());

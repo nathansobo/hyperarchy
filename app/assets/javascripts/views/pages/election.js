@@ -36,7 +36,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
             relationsToFetch.push(Election.where({id: params.electionId}));
           }
           relationsToFetch.push(Candidate.where({electionId: params.electionId}));
-          relationsToFetch.push(Vote.where({electionId: params.electionId}));
+          relationsToFetch.push(Vote.where({electionId: params.electionId}).joinTo(User));
         }
 
         if (!params.candidateId) {
