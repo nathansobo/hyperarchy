@@ -1,0 +1,43 @@
+_.constructor('Views.Pages.Election.Votes', Monarch.View.Template, {
+  content: function() { with(this.builder) {
+    div({id: "votes"}, function() {
+      h2(function() {
+        raw('&nbsp;')
+      }).ref('header');
+      subview("list", Views.Components.SortedList, {
+        buildElement: function(vote) {
+          return Views.Pages.Election.VoteLi.toView({vote: vote});
+        },
+      });
+    });
+  }},
+
+  viewProperties: {
+
+    initialize: function() {
+      this.list.onInsert = this.hitch('adjustVoteCount');
+      this.list.onRemove = this.hitch('adjustVoteCount');
+    },
+
+    votes: {
+      change: function(votes) {
+        this.list.relation(votes);
+        this.adjustVoteCount();
+      }
+    },
+
+    adjustVoteCount: function() {
+      var voteCount = this.votes().size();
+      switch(voteCount) {
+        case 0:
+          this.header.text('No Votes Yet');
+          break;
+        case 1:
+          this.header.text('1 Vote');
+          break;
+        default:
+          this.header.text(voteCount + ' Votes');
+      }
+    }
+  }
+});

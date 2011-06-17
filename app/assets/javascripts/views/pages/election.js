@@ -12,7 +12,9 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
           subview('candidateDetails', Views.Pages.Election.CandidateDetails);
           subview('rankedCandidates', Views.Pages.Election.RankedCandidates);
         });
-        div({id: "column-4"});
+        div({id: "votes-column"}, function() {
+          subview('votes', Views.Pages.Election.Votes);
+        });
       }).ref('columns');
     });
   }},

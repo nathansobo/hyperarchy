@@ -9,6 +9,7 @@ _.constructor("User", Model.Record, {
       guest: 'boolean'
     });
 
+    this.hasMany('votes');
     this.hasMany('rankings');
     this.hasMany('memberships');
     this.hasMany('electionVisits');

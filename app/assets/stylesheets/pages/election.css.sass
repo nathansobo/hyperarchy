@@ -18,9 +18,8 @@ $thin-column: 1/(3.0 * $phi + 1) * 100%
       backround: #eee
       width: $wide-column
       @include box-sizing('border-box')
-      &#column-4
+      &#votes-column
         width: $thin-column
-        background: blue
 
   .candidate, .ranking
     padding: (($s1/2) - 1) ($s1/2) ($s1/2) ($s1/2)
@@ -66,3 +65,15 @@ $thin-column: 1/(3.0 * $phi + 1) * 100%
       background: #aaa
       padding: (($s1/2) - 1) ($s1/2) ($s1/2) ($s1/2)
       border: 1px solid #ccc
+
+#votes
+  height: 100%
+  position: relative
+  
+  ol
+    background: green
+    overflow-y: auto
+    position: absolute
+    top: 1.5 * $s1
+    bottom: 0
+    width: 100%
