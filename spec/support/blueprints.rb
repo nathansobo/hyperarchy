@@ -39,6 +39,9 @@ end
 Ranking.blueprint do
 end
 
+Vote.blueprint do
+end
+
 Organization.class_eval do
   blueprint do
     suppress_membership_creation { true }

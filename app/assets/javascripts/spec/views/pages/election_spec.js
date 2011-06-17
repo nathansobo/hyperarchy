@@ -17,7 +17,7 @@ describe("Views.Pages.Election", function() {
 
   describe("when the params hash is assigned", function() {
     var currentUser, election, candidate1, candidate2, currentUserRanking1, currentUserRanking2;
-    var otherUser, otherUser2, otherUserRanking1, otherUserRanking2;
+    var otherUser, otherUser2, otherUserRanking1, otherUserRanking2, otherUserVote, currentUserVote;
 
     beforeEach(function() {
       enableAjax();
@@ -32,13 +32,15 @@ describe("Views.Pages.Election", function() {
         currentUserRanking2 = election.rankings().create({userId: currentUser.id(), position: -64, candidateId: candidate2.id()});
         otherUserRanking1 = election.rankings().create({userId: otherUser.id(), position: 64, candidateId: candidate1.id()});
         otherUserRanking2 = election.rankings().create({userId: otherUser.id(), position: -64, candidateId: candidate2.id()});
+        otherUserVote = election.votes().create({userId: otherUser.id()});
+        currentUserVote = election.votes().create({userId: currentUser.id()});
       });
       fetchInitialRepositoryContents();
     });
 
     describe("if the electionId changes", function() {
       describe("if no voterId or candidateId is specified", function() {
-        it("fetches the election, candidates, and the the current user's rankings before assigning relations to the subviews", function() {
+        it("fetches the election, candidates, votes, and the the current user's rankings before assigning relations to the subviews", function() {
           waitsFor("fetch to complete", function(complete) {
             electionPage.params({ electionId: election.id() }).success(complete);
           });
@@ -47,12 +49,14 @@ describe("Views.Pages.Election", function() {
             expect(Election.find(election.id())).toEqual(election);
             expect(election.candidates().size()).toBe(2);
             expect(election.rankings().size()).toBeGreaterThan(0);
+            expect(election.votes().size()).toBeGreaterThan(0);
 
             expect(electionPage.election()).toEqual(election);
             expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(election.rankings().where({userId: currentUser.id()}).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).toBeHidden();
+            expect(electionPage.votes.votes().tuples()).toEqual(election.votes().tuples());
           });
         });
       });

@@ -35,7 +35,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
           } else {
             relationsToFetch.push(Election.where({id: params.electionId}));
           }
-          relationsToFetch.push(Candidate.where({electionId: params.electionId}))
+          relationsToFetch.push(Candidate.where({electionId: params.electionId}));
+          relationsToFetch.push(Vote.where({electionId: params.electionId}));
         }
 
         if (!params.candidateId) {
@@ -57,6 +58,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
       this.election(election);
       this.currentConsensus.candidates(election.candidates());
+      this.votes.votes(election.votes());
 
       if (params.candidateId) {
         var candidate = Candidate.find(params.candidateId)
