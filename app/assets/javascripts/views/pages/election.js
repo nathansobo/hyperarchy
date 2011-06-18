@@ -8,9 +8,14 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         div(function() {
           subview('currentConsensus', Views.Pages.Election.CurrentConsensus);
         });
-        div(function() {
-          subview('candidateDetails', Views.Pages.Election.CandidateDetails);
-          subview('rankedCandidates', Views.Pages.Election.RankedCandidates);
+        div({id: 'column-3'}, function() {
+          h2("Your Ranking").ref('rankedCandidatesHeader');
+          h2("Answer Details").ref('candidateDetailsHeader');
+
+          div({'class': "inset"}, function() {
+            subview('candidateDetails', Views.Pages.Election.CandidateDetails);
+            subview('rankedCandidates', Views.Pages.Election.RankedCandidates);
+          });
         });
         div({id: "votes-column"}, function() {
           subview('votes', Views.Pages.Election.Votes);
@@ -20,9 +25,6 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
   }},
 
   viewProperties: {
-    initialize: function() {
-      this.currentConsensus.candidateDetails = this.candidateDetails;
-    },
 
     params: {
       change: function(params, oldParams) {
@@ -62,14 +64,12 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
       if (params.candidateId) {
         var candidate = Candidate.find(params.candidateId)
-        this.rankedCandidates.hide();
-        this.candidateDetails.show();
         this.currentConsensus.selectedCandidate(candidate);
+        this.showCandidateDetails();
         this.candidateDetails.candidate(candidate);
       } else {
         var rankings = Ranking.where({electionId: params.electionId, userId: params.voterId || Application.currentUserId()});
-        this.rankedCandidates.show();
-        this.candidateDetails.hide();
+        this.showRankedCandidates();
         this.rankedCandidates.rankings(rankings);
       }
     },
@@ -78,6 +78,18 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       change: function(election) {
         this.body.bindText(election, 'body');
       }
+    },
+
+    showRankedCandidates: function() {
+      this.candidateDetailsHeader.hide();
+      this.rankedCandidatesHeader.show();
+      this.candidateDetails.removeClass('active');
+    },
+
+    showCandidateDetails: function() {
+      this.rankedCandidatesHeader.hide();
+      this.candidateDetailsHeader.show();
+      this.candidateDetails.addClass('active');
     }
   }
 });

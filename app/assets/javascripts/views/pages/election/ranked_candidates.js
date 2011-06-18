@@ -1,7 +1,6 @@
 _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "ranked-candidates"}, function() {
-      h2("Your Ranking");
       ol(function() {
         li({id: "positive-drag-target"}, function() {
           span("Drag ideas you like here");

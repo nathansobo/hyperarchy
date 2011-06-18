@@ -8,13 +8,6 @@ describe("Views.Pages.Election", function() {
     $('#jasmine_content').html(electionPage);
   });
 
-  describe("#initialize", function() {
-    it("wires the currentConsensus to the candidateDetails", function() {
-      expect(electionPage.candidateDetails).toBeDefined();
-      expect(electionPage.currentConsensus.candidateDetails).toBe(electionPage.candidateDetails);
-    });
-  });
-
   describe("when the params hash is assigned", function() {
     var currentUser, election, candidate1, candidate2, currentUserRanking1, currentUserRanking2;
     var otherUser, otherUser2, otherUserRanking1, otherUserRanking2;
@@ -54,7 +47,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(election.rankings().where({userId: currentUser.id()}).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
-            expect(electionPage.candidateDetails).toBeHidden();
+            expect(electionPage.candidateDetails).not.toHaveClass('active');
             expect(electionPage.votes.votes().tuples()).toEqual(election.votes().tuples());
           });
         });
@@ -75,7 +68,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(election.rankings().where({userId: otherUser.id()}).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
-            expect(electionPage.candidateDetails).toBeHidden();
+            expect(electionPage.candidateDetails).not.toHaveClass('active');
           });
         });
       });
@@ -94,7 +87,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
             expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
             expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
-            expect(electionPage.rankedCandidates).toBeHidden();
+            expect(electionPage.rankedCandidates).not.toHaveClass('active');
             expect(electionPage.candidateDetails).toBeVisible();
           });
         });
@@ -141,7 +134,7 @@ describe("Views.Pages.Election", function() {
           runs(function() {
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(currentUser.rankingsForElection(election).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
-            expect(electionPage.candidateDetails).toBeHidden();
+            expect(electionPage.candidateDetails).not.toHaveClass('active');
           });
         });
       });
@@ -155,7 +148,7 @@ describe("Views.Pages.Election", function() {
           runs(function() {
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(otherUser.rankingsForElection(election).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
-            expect(electionPage.candidateDetails).toBeHidden();
+            expect(electionPage.candidateDetails).not.toHaveClass('active');
           });
         });
       });
@@ -163,7 +156,7 @@ describe("Views.Pages.Election", function() {
       describe("if the candidateId is specified", function() {
         it("assigns the selectedCandidate to the currentConsensus and candidateDetails without fetching", function() {
           electionPage.params({ electionId: election.id(), candidateId: candidate1.id() });
-          expect(electionPage.rankedCandidates).toBeHidden();
+          expect(electionPage.rankedCandidates).not.toHaveClass('active');
           expect(electionPage.candidateDetails).toBeVisible();
           expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
           expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);

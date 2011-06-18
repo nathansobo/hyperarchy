@@ -30,45 +30,49 @@ $thin-column: 19%
     //background: transparentize(white, 0.5)
     background: white
     border: 1px solid #ccc
+    @include box-shadow(#aaa 0 0 3px)
 
 #current-consensus
-  .selected
-    background: gold
-
-#candidate-details
-  display: none
-  position: relative
-  height: 100%
-  > div
-    border: 1px solid #ccc
-    border-left: none
-    margin-left: -$padding-x
-    padding-left: $padding-x
-    position: absolute
-    top: 1.5 * $s1 + $s-7
-    bottom: $s-7
-    width: 100%
-
-#current-consensus, #ranked-candidates
   height: 100%
   position: relative
   ol
-    //border-top: 1px solid #ccc
-    border: 1px solid #ccc
-
-    overflow-y: auto
     position: absolute
     top: 1.5 * $s1
     bottom: 0
     width: 100%
+    overflow-y: auto
     background: transparentize(#f0f0f0, 0.5)
+    border: 1px solid #ccc
+    @include box-shadow(#aaa 0 0 3px inset)
     li.candidate, li.ranking
       border-left: none
       border-top: none
       border-right: none
+      &.selected
+        @include background-image(linear-gradient(left, rgb(255,235,113), rgb(255, 247, 203)))
+
+
+#column-3
+  height: 100%
+  position: relative
+  .inset
+    overflow: hidden
+    @include box-sizing('border-box')
+    position: absolute
+    top: 1.5 * $s1
+    bottom: 0
+    right: 0
+    left: 0
+    border: 1px solid #ccc
+    background: transparentize(#f0f0f0, 0.5)
+    @include box-shadow(#aaa 0 0 3px inset)
 
 #ranked-candidates
+  height: 100%
   ol
+    height: 100%
+    overflow-y: auto
+    //border-top: 1px solid #ccc
     #positive-drag-target, #negative-drag-target
       height: 42%
       width: 100%
@@ -78,10 +82,25 @@ $thin-column: 19%
         vertical-align: middle
         text-align: center
     #separator
-      @include box-flex(0)
+      @include box-shadow(#aaa 0 0 3px)
       background: #aaa
       padding: (($s1/2) - 1) ($s1/2) ($s1/2) ($s1/2)
-      border: 1px solid #ccc
+    li.ranking
+      border-left: none
+      border-top: none
+      border-right: none
+
+#candidate-details
+  width: 100%
+  height: 100%
+  position: absolute
+  z-index: 100
+  background-color: white
+  right: 100%
+  @include transition('right', 150ms, 'ease-in')
+  //@include background-image(linear-gradient(left, rgb(255, 247, 203), white 30%))
+  &.active
+    right: 0
 
 #votes
   height: 100%
