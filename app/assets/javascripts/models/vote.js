@@ -6,12 +6,14 @@ _.constructor("Vote", Model.Record, {
       updatedAt: 'datetime'
     });
 
+    this.syntheticColumn('formattedUpdatedAt', function() {
+      return this.signal('updatedAt', function(updatedAt) {
+        return $.PHPDate("M j, Y @ g:ia", updatedAt);
+      });
+    });
+
     this.belongsTo('election');
     this.belongsTo('user');
     this.hasMany('rankings');
-  },
-
-  formattedUpdatedAt: function() {
-    return $.PHPDate("M j, Y @ g:ia", this.updatedAt());
   }
 });

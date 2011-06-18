@@ -9,6 +9,12 @@ _.constructor("User", Model.Record, {
       guest: 'boolean'
     });
 
+    this.syntheticColumn('fullName', function() {
+      return this.signal('firstName').combine(this.signal('lastName'), function(firstName, lastName) {
+        return firstName + " " + lastName;
+      });
+    });
+
     this.hasMany('votes');
     this.hasMany('rankings');
     this.hasMany('memberships');
@@ -28,9 +34,9 @@ _.constructor("User", Model.Record, {
     return Application.currentUserId == this.id();
   },
 
-  fullName: function() {
-    return this.firstName() + " " + this.lastName();
-  },
+//  fullName: function() {
+//    return this.firstName() + " " + this.lastName();
+//  },
 
   gravatarUrl: function(size) {
     if (!size) size = 40;
