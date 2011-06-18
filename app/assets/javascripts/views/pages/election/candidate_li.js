@@ -13,9 +13,10 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
         connectToSortable: '#ranked-candidates ol',
         appendTo: '#election',
         revert: 'invalid',
+        delay: 100,
         revertDuration: 100,
         helper: this.hitch('createFixedWidthClone'),
-        zIndex: 99,
+        zIndex: 2,
         cancel: '.expandArrow, .tooltipIcon, .noDrag'
       });
     },
