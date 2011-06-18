@@ -34,6 +34,7 @@ describe("Views.Pages.Election", function() {
         it("fetches the election, candidates, votes, and the the current user's rankings before assigning relations to the subviews", function() {
           waitsFor("fetch to complete", function(complete) {
             electionPage.params({ electionId: election.id() }).success(complete);
+            expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
           });
 
           runs(function() {
@@ -49,7 +50,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).not.toHaveClass('active');
             expect(electionPage.votes.votes().tuples()).toEqual(election.votes().tuples());
-            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+            expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
           });
         });
       });
@@ -58,6 +59,7 @@ describe("Views.Pages.Election", function() {
         it("fetches the election, candidates, and the the specified voter's rankings before assigning relations to the subviews", function() {
           waitsFor("fetch to complete", function(complete) {
             electionPage.params({ electionId: election.id(), voterId: otherUser.id() }).success(complete);
+            expect(electionPage.votes.selectedVoterId()).toEqual(otherUser.id());
           });
 
           runs(function() {
@@ -71,7 +73,6 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).not.toHaveClass('active');
             expect(electionPage.votes.votes().tuples()).toEqual(election.votes().tuples());
-            expect(electionPage.votes.selectedVoterId()).toEqual(otherUser.id());
           });
         });
       });
@@ -80,6 +81,7 @@ describe("Views.Pages.Election", function() {
         it("fetches the election, and candidates before assigning relations to the subviews and the selectedCandidate to the currentConsensus and candidateDetails", function() {
           waitsFor("fetch to complete", function(complete) {
             electionPage.params({ electionId: election.id(), candidateId: candidate1.id() }).success(complete);
+            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
           });
 
           runs(function() {
@@ -133,13 +135,14 @@ describe("Views.Pages.Election", function() {
         it("fetches the current user's rankings before assigning relations to the subviews and showing the candidate rankings", function() {
           waitsFor("fetch to complete after no longer assigning a voter id", function(complete) {
             electionPage.params({ electionId: election.id() }).success(complete);
+            expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
           });
 
           runs(function() {
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(currentUser.rankingsForElection(election).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).not.toHaveClass('active');
-            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+            expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
           });
         });
       });

@@ -41,10 +41,12 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
           relationsToFetch.push(Vote.where({electionId: params.electionId}).joinTo(User));
         }
 
+        var voterId;
         if (!params.candidateId) {
-          var voterId = params.voterId || Application.currentUserId();
+          voterId = params.voterId || Application.currentUserId();
           relationsToFetch.push(Ranking.where({electionId: params.electionId, userId: voterId}));
         }
+        this.votes.selectedVoterId(voterId);
 
         return Server.fetch(relationsToFetch).success(this.hitch('populateContent', params));
       }
@@ -61,7 +63,6 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.election(election);
       this.currentConsensus.candidates(election.candidates());
       this.votes.votes(election.votes());
-      this.votes.selectedVoterId(params.voterId);
 
       if (params.candidateId) {
         var candidate = Candidate.find(params.candidateId)

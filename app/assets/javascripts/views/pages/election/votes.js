@@ -23,15 +23,20 @@ _.constructor('Views.Pages.Election.Votes', Monarch.View.Template, {
       change: function(votes) {
         this.list.relation(votes);
         this.adjustVoteCount();
+        this.highlightSelectedVote();
       }
     },
 
     selectedVoterId: {
       change: function(voterId) {
-        this.list.children().removeClass('selected');
-        var vote = this.votes().find({userId: voterId});
-        if (vote) this.list.elementForRecord(vote).addClass('selected');
+        if (this.votes()) this.highlightSelectedVote();
       }
+    },
+
+    highlightSelectedVote: function() {
+      this.list.children().removeClass('selected');
+      var vote = this.votes().find({userId: this.selectedVoterId()});
+      if (vote) this.list.elementForRecord(vote).addClass('selected');
     },
 
     adjustVoteCount: function() {

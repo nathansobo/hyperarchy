@@ -28,11 +28,6 @@ _.constructor("Views.Layout", View.Template, {
   }},
 
   viewProperties: {
-    attach: function($super) {
-      $super();
-      Path.listen();
-    },
-    
     currentUser: {
       change: function(user) {
         this.currentUserId(user.id());

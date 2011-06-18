@@ -51,22 +51,34 @@ describe("Views.Pages.Election.Votes", function() {
   });
 
   describe("#selectedVoterId", function() {
-    it("adds the .selected class to the li for the given vote", function() {
-      thirdUser = User.createFromRemote({id: 3});
-      votesRelation.createFromRemote({userId: thirdUser.id(), updatedAt: 1308353647262});
-      votesView.votes(votesRelation);
+    describe("when the votes relation has been assigned", function() {
+      it("adds the .selected class to the li for the given voter", function() {
+        var thirdUser = User.createFromRemote({id: 3});
+        votesRelation.createFromRemote({userId: thirdUser.id(), updatedAt: 1308353647262});
+        votesView.votes(votesRelation);
 
-      votesView.selectedVoterId(otherUser.id());
-      var otherUserVoteLi = votesView.list.find('li:contains(' + otherUser.fullName() + ')');
-      expect(otherUserVoteLi).toExist();
-      expect(otherUserVoteLi).toHaveClass('selected');
-      expect(votesView.list.find('.selected').size()).toBe(1);
+        votesView.selectedVoterId(otherUser.id());
+        var otherUserVoteLi = votesView.list.find('li:contains(' + otherUser.fullName() + ')');
+        expect(otherUserVoteLi).toExist();
+        expect(otherUserVoteLi).toHaveClass('selected');
+        expect(votesView.list.find('.selected').size()).toBe(1);
 
-      votesView.selectedVoterId(thirdUser.id());
-      var thirdUserVoteLi = votesView.list.find('li:contains(' + thirdUser.fullName() + ')');
-      expect(thirdUserVoteLi).toExist();
-      expect(thirdUserVoteLi).toHaveClass('selected');
-      expect(votesView.list.find('.selected').size()).toBe(1);
+        votesView.selectedVoterId(thirdUser.id());
+        var thirdUserVoteLi = votesView.list.find('li:contains(' + thirdUser.fullName() + ')');
+        expect(thirdUserVoteLi).toExist();
+        expect(thirdUserVoteLi).toHaveClass('selected');
+        expect(votesView.list.find('.selected').size()).toBe(1);
+      });
+    });
+
+    describe("when the votes relation has not yet been assigned", function() {
+      it("adds the .selected class to the li once the votes relation has been assigned", function() {
+        votesView.selectedVoterId(otherUser.id());
+        votesView.votes(votesRelation);
+        var otherUserVoteLi = votesView.list.find('li:contains(' + otherUser.fullName() + ')');
+        expect(otherUserVoteLi).toHaveClass('selected');
+        expect(votesView.list.find('.selected').size()).toBe(1);
+      });
     });
   });
 });
