@@ -212,7 +212,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
     describe("receiving new rankings from the current consensus", function() {
       beforeEach(function() {
-        electionPage.populateContent({electionId: election.id()});
+        electionPage.populateContentAfterFetch({electionId: election.id()});
       });
 
       describe("when receiving a candidate that has not yet been ranked", function() {
@@ -275,7 +275,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       var ranking1Li, ranking2Li;
 
       beforeEach(function() {
-        electionPage.populateContent({electionId: election.id()});
+        electionPage.populateContentAfterFetch({electionId: election.id()});
         ranking1Li = rankedCandidates.list.find('li:eq(0)');
         ranking2Li = rankedCandidates.list.find('li:eq(1)');
       });
@@ -621,7 +621,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     describe("when rankings are dragged and dropped", function() {
       describe("when candidates are dragged in from the consensus", function() {
         beforeEach(function() {
-          electionPage.populateContent({electionId: election.id()});
+          electionPage.populateContentAfterFetch({electionId: election.id()});
         });
 
         describe("when positive ranking lis are received from the current consensus", function() {

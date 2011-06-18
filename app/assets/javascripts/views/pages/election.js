@@ -28,38 +28,46 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
     params: {
       change: function(params, oldParams) {
-        var relationsToFetch = [];
-
-        if (!oldParams || params.electionId !== oldParams.electionId) {
-          var election = Election.find(params.electionId);
-          if (election) {
-            this.election(election);
-          } else {
-            relationsToFetch.push(Election.where({id: params.electionId}));
-          }
-          relationsToFetch.push(Candidate.where({electionId: params.electionId}));
-          relationsToFetch.push(Vote.where({electionId: params.electionId}).joinTo(User));
-        }
-
-        var voterId;
-        if (!params.candidateId) {
-          this.candidateDetails.removeClass('active');
-          this.currentConsensus.selectedCandidate(null);
-          voterId = params.voterId || Application.currentUserId();
-          relationsToFetch.push(Ranking.where({electionId: params.electionId, userId: voterId}));
-
-          this.rankedCandidates.sortingEnabled(!voterId || voterId === Application.currentUserId());
-          var voter = User.find(voterId);
-          this.populateRankedCandidatesHeader(voterId);
-        }
-
-        this.votes.selectedVoterId(voterId);
-
-        return Server.fetch(relationsToFetch).success(this.hitch('populateContent', params));
+        this.populateContentBeforeFetch(params);
+        return this.fetchData(params, oldParams)
+          .success(this.hitch('populateContentAfterFetch', params));
       }
     },
 
-    populateContent: function(params) {
+    populateContentBeforeFetch: function(params) {
+      var election = Election.find(params.electionId);
+      if (election) this.election(election);
+
+      var voterId;
+      if (!params.candidateId) {
+        this.candidateDetails.removeClass('active');
+        this.currentConsensus.selectedCandidate(null);
+        voterId = params.voterId || Application.currentUserId();
+        this.rankedCandidates.sortingEnabled(!voterId || voterId === Application.currentUserId());
+        this.populateRankedCandidatesHeader(voterId);
+      }
+
+      this.votes.selectedVoterId(voterId);
+    },
+
+    fetchData: function(params, oldParams) {
+      var relationsToFetch = [];
+
+      if (!oldParams || params.electionId !== oldParams.electionId) {
+        if (!Election.find(params.electionId)) relationsToFetch.push(Election.where({id: params.electionId})); // election
+        relationsToFetch.push(Candidate.where({electionId: params.electionId})); // candidates
+        relationsToFetch.push(Vote.where({electionId: params.electionId}).joinTo(User)); // votes
+      }
+
+      if (!params.candidateId) {
+        var voterId = params.voterId || Application.currentUserId();
+        relationsToFetch.push(Ranking.where({electionId: params.electionId, userId: voterId})); // rankings
+      }
+
+      return Server.fetch(relationsToFetch);
+    },
+
+    populateContentAfterFetch: function(params) {
       var election = Election.find(params.electionId);
 
       if (!election) {
