@@ -11,4 +11,11 @@ describe("Vote", function() {
       expect(vote.formattedUpdatedAt()).toEqual("Jun 17, 2011 @ 4:34pm");
     });
   });
+
+  describe("#url", function() {
+    it("returns the correct url", function() {
+      vote.remotelyUpdated({electionId: 33, userId: 44});
+      expect(vote.url()).toEqual('/elections/33/votes/44');
+    });
+  });
 });
