@@ -13,13 +13,15 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
         connectToSortable: '#ranked-candidates ol',
         appendTo: '#election',
         revert: 'invalid',
-        delay: 100,
+        delay: this.dragDelay,
         revertDuration: 100,
         helper: this.hitch('createFixedWidthClone'),
         zIndex: 2,
         cancel: '.expandArrow, .tooltipIcon, .noDrag'
       });
     },
+
+    dragDelay: 100,
 
     createFixedWidthClone: function() {
       return this.clone().width(this.width());

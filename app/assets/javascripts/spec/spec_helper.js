@@ -12,6 +12,8 @@ jQuery.ajax = function() {
 
 var originalServer = window.Server;
 
+Views.Pages.Election.CandidateLi.prototype.viewProperties.dragDelay = null;
+
 beforeEach(function() {
   ajaxRequests = [];
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
