@@ -69,6 +69,25 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         ranking1Li.dragAbove(rankedCandidates.separator);
         expect(Ranking.createOrUpdate).toHaveBeenCalled();
       });
+
+      it("shows and hides the drag target explanation", function() {
+        rankedCandidates.rankings(rankingsRelation);
+        ranking1.remotelyDestroyed();
+        ranking2.remotelyDestroyed();
+
+        expect(rankedCandidates.positiveDragExplanation).toBeVisible();
+        expect(rankedCandidates.negativeDragExplanation).toBeVisible();
+
+        rankedCandidates.sortingEnabled(false);
+
+        expect(rankedCandidates.positiveDragExplanation).toBeHidden();
+        expect(rankedCandidates.negativeDragExplanation).toBeHidden();
+
+        rankedCandidates.sortingEnabled(true);
+
+        expect(rankedCandidates.positiveDragExplanation).toBeVisible();
+        expect(rankedCandidates.negativeDragExplanation).toBeVisible();
+      });
     });
   });
 

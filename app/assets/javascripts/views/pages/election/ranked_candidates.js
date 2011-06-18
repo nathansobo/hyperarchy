@@ -3,11 +3,11 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     div({id: "ranked-candidates"}, function() {
       ol(function() {
         li({id: "positive-drag-target"}, function() {
-          span("Drag ideas you like here");
+          span("Drag ideas you like here").ref('positiveDragExplanation');
         }).ref('positiveDragTarget');
         li({id: 'separator'}, "Separator").ref('separator');
         li({id: "negative-drag-target"},function() {
-          span("Drag ideas you dislike here");
+          span("Drag ideas you dislike here").ref('negativeDragExplanation');
         }).ref('negativeDragTarget');
       }).ref('list')
     });
@@ -136,6 +136,13 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     sortingEnabled: {
       change: function(enabled) {
         this.list.sortable(enabled ? 'enable' : 'disable');
+        if (enabled) {
+          this.positiveDragExplanation.css('visibility', 'visible');
+          this.negativeDragExplanation.css('visibility', 'visible');
+        } else {
+          this.positiveDragExplanation.css('visibility', 'hidden');
+          this.negativeDragExplanation.css('visibility', 'hidden');
+        }
       }
     },
 
