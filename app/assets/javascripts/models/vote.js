@@ -15,5 +15,9 @@ _.constructor("Vote", Model.Record, {
     this.belongsTo('election');
     this.belongsTo('user');
     this.hasMany('rankings');
+  },
+
+  url: function() {
+    return "/elections/" + this.electionId() + "/votes/" + this.userId();
   }
 });

@@ -49,6 +49,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).not.toHaveClass('active');
             expect(electionPage.votes.votes().tuples()).toEqual(election.votes().tuples());
+            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
           });
         });
       });
@@ -69,6 +70,8 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(election.rankings().where({userId: otherUser.id()}).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).not.toHaveClass('active');
+            expect(electionPage.votes.votes().tuples()).toEqual(election.votes().tuples());
+            expect(electionPage.votes.selectedVoterId()).toEqual(otherUser.id());
           });
         });
       });
@@ -89,6 +92,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
             expect(electionPage.rankedCandidates).not.toHaveClass('active');
             expect(electionPage.candidateDetails).toBeVisible();
+            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
           });
         });
       });
@@ -135,6 +139,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(currentUser.rankingsForElection(election).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).not.toHaveClass('active');
+            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
           });
         });
       });
@@ -149,6 +154,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(otherUser.rankingsForElection(election).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).not.toHaveClass('active');
+            expect(electionPage.votes.selectedVoterId()).toEqual(otherUser.id());
           });
         });
       });
@@ -160,6 +166,7 @@ describe("Views.Pages.Election", function() {
           expect(electionPage.candidateDetails).toBeVisible();
           expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
           expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
+          expect(electionPage.votes.selectedVoterId()).toBeFalsy();
         });
       });
     });
