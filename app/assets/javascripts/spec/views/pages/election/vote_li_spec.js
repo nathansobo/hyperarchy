@@ -65,7 +65,7 @@ describe("Views.Pages.Election.VoteLi", function() {
   describe("when clicked", function() {
     it("navigates to the url for the given vote", function() {
       attachLayout();
-      voteLi.click();
+      voteLi.find('a').click();
       expect(Path.routes.current).toBe(vote.url());
     });
   });
