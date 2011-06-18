@@ -135,7 +135,6 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
     sortingEnabled: {
       change: function(enabled) {
-        this.list.sortable(enabled ? 'enable' : 'disable');
         if (enabled) {
           this.positiveDragExplanation.css('visibility', 'visible');
           this.negativeDragExplanation.css('visibility', 'visible');
