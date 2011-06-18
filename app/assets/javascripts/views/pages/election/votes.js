@@ -26,6 +26,14 @@ _.constructor('Views.Pages.Election.Votes', Monarch.View.Template, {
       }
     },
 
+    selectedVoterId: {
+      change: function(voterId) {
+        this.list.children().removeClass('selected');
+        var vote = this.votes().find({userId: voterId});
+        if (vote) this.list.elementForRecord(vote).addClass('selected');
+      }
+    },
+
     adjustVoteCount: function() {
       var voteCount = this.votes().size();
       switch(voteCount) {

@@ -4,6 +4,8 @@ _.constructor('Views.Pages.Election.VoteLi', Monarch.View.Template, {
       subview('avatar', Views.Components.Avatar, {size: 33});
       div({'class': "name"}).ref('name');
       div({'class': "date"}).ref('date');
+    }).click(function() {
+      History.pushState(null, null, params.vote.url());
     });
   }},
 

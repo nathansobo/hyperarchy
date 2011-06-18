@@ -1,17 +1,17 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Election.VoteLi", function() {
-  describe("when the vote is assigned", function() {
-    var voteLi, vote, user, election;
+  var voteLi, vote, user, election;
+  beforeEach(function() {
+    election = Election.createFromRemote({id: 1});
+    user = User.createFromRemote({id: 1, firstName: 'joe', lastName: 'henderson'});
+    vote = user.votes().createFromRemote({electionId: election.id(), updatedAt: 1308352736162});
+    voteLi = Views.Pages.Election.VoteLi.toView({vote: vote});
+  });
 
+  describe("when the vote is assigned", function() {
     beforeEach(function() {
       useFakeServer();
-      
-      election = Election.createFromRemote({id: 1});
-      user = User.createFromRemote({id: 1, firstName: 'joe', lastName: 'henderson'});
-      vote = user.votes().createFromRemote({electionId: election.id(), updatedAt: 1308352736162});
-
-      voteLi = Views.Pages.Election.VoteLi.toView({vote: vote});
       $('#jasmine_content').html(voteLi);
     });
 
@@ -59,6 +59,14 @@ describe("Views.Pages.Election.VoteLi", function() {
         vote.remotelyUpdated({updatedAt: vote.updatedAt().getTime() + 20000});
         expect(voteLi.date.text()).toBe(vote.formattedUpdatedAt());
       });
+    });
+  });
+
+  describe("when clicked", function() {
+    it("navigates to the url for the given vote", function() {
+      attachLayout();
+      voteLi.click();
+      expect(Path.routes.current).toBe(vote.url());
     });
   });
 });

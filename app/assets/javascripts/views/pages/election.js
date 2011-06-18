@@ -61,6 +61,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.election(election);
       this.currentConsensus.candidates(election.candidates());
       this.votes.votes(election.votes());
+      this.votes.selectedVoterId(params.voterId);
 
       if (params.candidateId) {
         var candidate = Candidate.find(params.candidateId)
