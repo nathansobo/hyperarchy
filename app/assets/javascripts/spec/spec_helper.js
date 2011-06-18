@@ -1,5 +1,6 @@
 //= require application
 //= require_directory ./support
+//= require monarch/http/fake_server
 
 var ajaxRequests;
 var originalAjax = jQuery.ajax;
@@ -8,6 +9,8 @@ jQuery.ajax = function() {
   ajaxRequests.push(jqXhr);
   return jqXhr;
 };
+
+var originalServer = window.Server;
 
 beforeEach(function() {
   ajaxRequests = [];
@@ -22,6 +25,7 @@ afterEach(function() {
     xhr.abort();
   });
   ajaxRequests = [];
+  window.Server = originalServer;
 //  $('#jasmine_content').empty();
 });
 
@@ -50,4 +54,9 @@ function stubAjax() {
 function enableAjax() {
   jQuery.ajax = jQuery.ajax.originalValue;
   clearServerTables();
+}
+
+function useFakeServer() {
+  window.Server = new Monarch.Http.FakeServer();
+  window.Server.auto = false;
 }

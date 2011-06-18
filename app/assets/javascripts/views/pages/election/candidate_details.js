@@ -1,8 +1,12 @@
 _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "candidate-details"}, function() {
-      div().ref("body");
-      div().ref("details");
+      h2("Answer Details")
+
+      div(function() {
+        div().ref("body");
+        div().ref("details");
+      });
     });
   }},
 
