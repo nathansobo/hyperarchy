@@ -1,6 +1,7 @@
 $darkened-background-z-index: 100
 $padding-x: $s1
 $header-height: 2 * $s1
+$max-width: 1200px
 
 #layout
   #header-wrapper
@@ -10,7 +11,7 @@ $header-height: 2 * $s1
     > #header
       margin: 0 auto
       @include box-sizing('border-box')
-      max-width: 1200px
+      max-width: $max-width
       padding: (($header-height - $s1) / 2) $padding-x
       height: 100%
 
@@ -26,10 +27,11 @@ $header-height: 2 * $s1
           margin-left: $s2
 
           .avatar
+            background-image: url(/images/mystery_man_27.jpeg)
             float: left
             position: relative
             top: -($s2 - $s1)/2 - 1
-            margin-right: $s-8
+            margin-right: $s-6
 
 
   #body-wrapper
@@ -40,7 +42,7 @@ $header-height: 2 * $s1
     > #body
       @include box-sizing('border-box')
       height: 100%
-      max-width: 1200px
+      max-width: $max-width
       margin: 0 auto
 
 #darkened-background

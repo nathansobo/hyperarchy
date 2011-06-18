@@ -25,6 +25,9 @@ li
 
 .avatar
   display: inline-block
+  background: #999 no-repeat top left
+  &.valid-gravatar
+    background: none
 
 .dropdown-menu
   @include unselectable
@@ -41,3 +44,17 @@ h2
 
 .highlight
   background: #F5F6CE !important
+
+
+
+::-webkit-scrollbar
+  width: $s-2
+
+::-webkit-scrollbar-track
+  background: #eee
+
+::-webkit-scrollbar-thumb
+  -webkit-border-radius: 3px
+  //border-radius: 10px
+  background: #999
+  @include background-image(linear-gradient(left, #ddd, #bbb))
