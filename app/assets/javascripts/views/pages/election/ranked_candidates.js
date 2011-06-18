@@ -133,6 +133,12 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       }
     },
 
+    sortingEnabled: {
+      change: function(enabled) {
+        this.list.sortable(enabled ? 'enable' : 'disable');
+      }
+    },
+
     insertAtIndex: function(ranking, changesetOrIndex, index) {
       if (_.isNumber(changesetOrIndex)) index = changesetOrIndex;
 

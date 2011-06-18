@@ -59,6 +59,7 @@ describe("Views.Pages.Election", function() {
         it("fetches the election, candidates, and the the specified voter's rankings before assigning relations to the subviews", function() {
           waitsFor("fetch to complete", function(complete) {
             electionPage.params({ electionId: election.id(), voterId: otherUser.id() }).success(complete);
+            expect(electionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
             expect(electionPage.votes.selectedVoterId()).toEqual(otherUser.id());
           });
 
@@ -132,11 +133,12 @@ describe("Views.Pages.Election", function() {
       });
 
       describe("if no voterId or candidateId is specified", function() {
-        it("fetches the current user's rankings before assigning relations to the subviews and showing the candidate rankings", function() {
+        it("fetches the current user's rankings before assigning relations to the subviews and showing the candidate rankings and enables sorting", function() {
           waitsFor("fetch to complete after no longer assigning a voter id", function(complete) {
             electionPage.params({ electionId: election.id() }).success(complete);
             expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
             expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
+            expect(electionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
           });
 
           runs(function() {
@@ -149,10 +151,11 @@ describe("Views.Pages.Election", function() {
       });
 
       describe("if the voterId is specified", function() {
-        it("fetches the specified voter's rankings before assigning relations to the subviews", function() {
+        it("fetches the specified voter's rankings before assigning relations to the subviews and disables sorting because they won't be the current user", function() {
           waitsFor("fetch to complete", function(complete) {
             electionPage.params({ electionId: election.id(), voterId: otherUser.id() }).success(complete);
             expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
+            expect(electionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
           });
 
           runs(function() {
@@ -162,16 +165,31 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.votes.selectedVoterId()).toEqual(otherUser.id());
           });
         });
+
+        it("still enables sorting on the votes list if the voter id matches the current user id", function() {
+          stubAjax();
+          electionPage.params({ electionId: election.id(), voterId: currentUser.id() });
+          expect(electionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
+        });
       });
 
       describe("if the candidateId is specified", function() {
         it("assigns the selectedCandidate to the currentConsensus and candidateDetails without fetching", function() {
           electionPage.params({ electionId: election.id(), candidateId: candidate1.id() });
-          expect(electionPage.rankedCandidates).not.toHaveClass('active');
-          expect(electionPage.candidateDetails).toBeVisible();
+          expect(electionPage.candidateDetails).toHaveClass('active');
           expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
           expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
+          expect(electionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
           expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+        });
+      });
+
+      describe("if the candidate details are showing (meaning the candidateId was _previously_ specified) and no candidateId is specified now", function() {
+        it("hides the candidate details view immediately", function() {
+          electionPage.params({ electionId: election.id(), candidateId: candidate1.id() });
+          expect(electionPage.candidateDetails).toHaveClass('active');
+          electionPage.params({ electionId: election.id() });
+          expect(electionPage.candidateDetails).not.toHaveClass('active');
         });
       });
     });

@@ -49,6 +49,27 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
       expect(rankedCandidates.list.find('.ranking').size()).toBe(1);
     });
+
+    describe("#sortingEnabled(boolean)", function() {
+      it("enables or disables sorting of the list", function() {
+        rankedCandidates.rankings(rankingsRelation);
+        ranking1Li = rankedCandidates.list.find('li:eq(0)');
+
+        ranking1Li.dragBelow(rankedCandidates.separator);
+        expect(Ranking.createOrUpdate).toHaveBeenCalled();
+        Ranking.createOrUpdate.reset();
+
+        rankedCandidates.sortingEnabled(false);
+
+        ranking1Li.dragAbove(rankedCandidates.separator);
+        expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+
+        rankedCandidates.sortingEnabled(true);
+        
+        ranking1Li.dragAbove(rankedCandidates.separator);
+        expect(Ranking.createOrUpdate).toHaveBeenCalled();
+      });
+    });
   });
 
   describe("drag and drop of rankings", function() {

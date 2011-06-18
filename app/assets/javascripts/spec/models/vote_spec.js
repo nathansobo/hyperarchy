@@ -1,9 +1,10 @@
 //= require spec/spec_helper
 
 describe("Vote", function() {
-  var vote;
+  var vote, user;
   beforeEach(function() {
-    vote = Vote.createFromRemote({id: 1, updatedAt: 1308353647242});
+    user = User.createFromRemote({id: 1});
+    vote = user.votes().createFromRemote({id: 1, electionId: 33, updatedAt: 1308353647242});
   });
 
   describe("#formattedUpdatedAt", function() {
@@ -14,8 +15,12 @@ describe("Vote", function() {
 
   describe("#url", function() {
     it("returns the correct url", function() {
-      vote.remotelyUpdated({electionId: 33, userId: 44});
-      expect(vote.url()).toEqual('/elections/33/votes/44');
+      attachLayout();
+      expect(vote.url()).toEqual('/elections/33/votes/1');
+
+      Application.currentUser(user);
+
+      expect(vote.url()).toEqual('/elections/33');
     });
   });
 });

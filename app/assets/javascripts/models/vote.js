@@ -18,6 +18,8 @@ _.constructor("Vote", Model.Record, {
   },
 
   url: function() {
-    return "/elections/" + this.electionId() + "/votes/" + this.userId();
+    var url = "/elections/" + this.electionId();
+    if (this.userId() !== Application.currentUserId()) url += '/votes/' + this.userId();
+    return url;
   }
 });

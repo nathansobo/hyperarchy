@@ -43,10 +43,13 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
         var voterId;
         if (!params.candidateId) {
+          this.candidateDetails.removeClass('active');
           this.currentConsensus.selectedCandidate(null);
           voterId = params.voterId || Application.currentUserId();
           relationsToFetch.push(Ranking.where({electionId: params.electionId, userId: voterId}));
         }
+        
+        this.rankedCandidates.sortingEnabled(!params.voterId || params.voterId === Application.currentUserId());
         this.votes.selectedVoterId(voterId);
 
         return Server.fetch(relationsToFetch).success(this.hitch('populateContent', params));
