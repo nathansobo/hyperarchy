@@ -47,9 +47,12 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
           this.currentConsensus.selectedCandidate(null);
           voterId = params.voterId || Application.currentUserId();
           relationsToFetch.push(Ranking.where({electionId: params.electionId, userId: voterId}));
+
+          this.rankedCandidates.sortingEnabled(!voterId || voterId === Application.currentUserId());
+          var voter = User.find(voterId);
+          this.populateRankedCandidatesHeader(voterId);
         }
-        
-        this.rankedCandidates.sortingEnabled(!params.voterId || params.voterId === Application.currentUserId());
+
         this.votes.selectedVoterId(voterId);
 
         return Server.fetch(relationsToFetch).success(this.hitch('populateContent', params));
@@ -76,8 +79,19 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       } else {
         var rankings = Ranking.where({electionId: params.electionId, userId: params.voterId || Application.currentUserId()});
         this.showRankedCandidates();
+        this.populateRankedCandidatesHeader(params.voterId);
         this.rankedCandidates.rankings(rankings);
       }
+    },
+
+    populateRankedCandidatesHeader: function(voterId) {
+      if (!voterId || voterId === Application.currentUserId()) {
+        this.rankedCandidatesHeader.text('Your Ranking');
+        return;
+      }
+
+      var voter = User.find(voterId);
+      if (voter) this.rankedCandidatesHeader.text(voter.fullName() + "'s Ranking");
     },
 
     election: {

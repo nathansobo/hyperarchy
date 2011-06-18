@@ -51,6 +51,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.candidateDetails).not.toHaveClass('active');
             expect(electionPage.votes.votes().tuples()).toEqual(election.votes().tuples());
             expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
+            expect(electionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
           });
         });
       });
@@ -71,6 +72,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.election()).toEqual(election);
             expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(election.rankings().where({userId: otherUser.id()}).tuples());
+            expect(electionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).not.toHaveClass('active');
             expect(electionPage.votes.votes().tuples()).toEqual(election.votes().tuples());
@@ -101,7 +103,7 @@ describe("Views.Pages.Election", function() {
       });
 
       describe("if the election is already present in the repository", function() {
-        it("assign the election before fetching additional data", function() {
+        it("assigns the election before fetching additional data", function() {
           synchronously(function() {
             Election.fetch(election.id());
           });
@@ -139,6 +141,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
             expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
             expect(electionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
+            expect(electionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
           });
 
           runs(function() {
@@ -146,6 +149,7 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).not.toHaveClass('active');
             expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
+            expect(electionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
           });
         });
       });
@@ -156,6 +160,7 @@ describe("Views.Pages.Election", function() {
             electionPage.params({ electionId: election.id(), voterId: otherUser.id() }).success(complete);
             expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
             expect(electionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
+            expect(electionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
           });
 
           runs(function() {
@@ -163,13 +168,15 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).not.toHaveClass('active');
             expect(electionPage.votes.selectedVoterId()).toEqual(otherUser.id());
+            expect(electionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
           });
         });
 
-        it("still enables sorting on the votes list if the voter id matches the current user id", function() {
+        it("still enables sorting on the votes list and sets the correct header if the voter id matches the current user id", function() {
           stubAjax();
           electionPage.params({ electionId: election.id(), voterId: currentUser.id() });
           expect(electionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
+          expect(electionPage.rankedCandidatesHeader.text()).toBe('Your Ranking');
         });
       });
 
@@ -179,7 +186,6 @@ describe("Views.Pages.Election", function() {
           expect(electionPage.candidateDetails).toHaveClass('active');
           expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
           expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
-          expect(electionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
           expect(electionPage.votes.selectedVoterId()).toBeFalsy();
         });
       });
