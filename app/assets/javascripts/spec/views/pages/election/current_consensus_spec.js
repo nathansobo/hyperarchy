@@ -14,7 +14,7 @@ describe("Views.Pages.Election.CurrentConsensus", function() {
     currentConsensusView.candidates(election.candidates());
   });
 
-  describe("when the selectedCandidateId is changed", function() {
+  describe("when the selectedCandidate is changed", function() {
     it("adds the .selected class on the selected candidate's li and removes it from any others", function() {
       currentConsensusView.selectedCandidate(candidate1);
       expect(currentConsensusView).toContain('li.selected:contains("' + candidate1.body() + '")');
@@ -23,6 +23,9 @@ describe("Views.Pages.Election.CurrentConsensus", function() {
 
       expect(currentConsensusView).toContain('li.selected:contains("' + candidate2.body() + '")');
       expect(currentConsensusView).not.toContain('li.selected:contains("' + candidate1.body() + '")');
+
+      currentConsensusView.selectedCandidate(null);
+      expect(currentConsensusView).not.toContain('li.selected');
     });
   });
 });

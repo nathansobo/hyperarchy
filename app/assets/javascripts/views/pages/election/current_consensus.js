@@ -20,7 +20,7 @@ _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
     selectedCandidate: {
       change: function(selectedCandidate) {
         this.list.find('li').removeClass('selected');
-        this.list.elementForRecord(selectedCandidate).addClass('selected');
+        if (selectedCandidate) this.list.elementForRecord(selectedCandidate).addClass('selected');
       }
     }
   }

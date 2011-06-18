@@ -43,6 +43,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
         var voterId;
         if (!params.candidateId) {
+          this.currentConsensus.selectedCandidate(null);
           voterId = params.voterId || Application.currentUserId();
           relationsToFetch.push(Ranking.where({electionId: params.electionId, userId: voterId}));
         }

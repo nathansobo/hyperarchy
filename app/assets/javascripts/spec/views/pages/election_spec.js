@@ -136,6 +136,7 @@ describe("Views.Pages.Election", function() {
           waitsFor("fetch to complete after no longer assigning a voter id", function(complete) {
             electionPage.params({ electionId: election.id() }).success(complete);
             expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
+            expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
           });
 
           runs(function() {
@@ -151,6 +152,7 @@ describe("Views.Pages.Election", function() {
         it("fetches the specified voter's rankings before assigning relations to the subviews", function() {
           waitsFor("fetch to complete", function(complete) {
             electionPage.params({ electionId: election.id(), voterId: otherUser.id() }).success(complete);
+            expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
           });
 
           runs(function() {
