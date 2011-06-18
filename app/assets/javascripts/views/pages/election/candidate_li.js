@@ -1,6 +1,7 @@
 _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
     li({'class': "candidate"}, params.candidate.body()).click(function() {
+      console.debug("clocki");
       History.pushState(null, null, params.candidate.url());
     });
   }},
@@ -17,6 +18,7 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
         revertDuration: 100,
         helper: this.hitch('createFixedWidthClone'),
         zIndex: 2,
+        start: this.hitch('handleDragStart'),
         cancel: '.expandArrow, .tooltipIcon, .noDrag'
       });
     },
@@ -25,6 +27,11 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
 
     createFixedWidthClone: function() {
       return this.clone().width(this.width());
+    },
+
+    handleDragStart: function() {
+      console.debug("HEIIII");
+      History.pushState(null, null, this.candidate.election().url());
     }
   }
 });
