@@ -1,6 +1,6 @@
 _.constructor('Views.Pages.Election.RankingLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
-    li({'class': "ranking"});
+    li({'class': "ranking"}).mousedown('handleMousedown');
   }},
 
   viewProperties: {
@@ -44,6 +44,10 @@ _.constructor('Views.Pages.Election.RankingLi', Monarch.View.Template, {
             this.observeRankingPosition();
           }
         }, this);
+    },
+
+    handleMousedown: function() {
+      if (this.ranking && this.ranking.userId() !== Application.currentUserId()) return false;
     }
   }
 });

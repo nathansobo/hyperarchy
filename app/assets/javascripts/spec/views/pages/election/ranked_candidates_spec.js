@@ -208,6 +208,21 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           expect(rankedCandidates.find('li').eq(2)).toMatchSelector('#negative-drag-target');
         });
       });
+
+      describe("when displaying another user's ranking", function() {
+        beforeEach(function() {
+          var otherUser = User.createFromRemote({id: 2});
+          otherUser.rankings().createFromRemote({electionId: election.id(), candidateId: candidate1.id(), position: 64});
+          rankedCandidates.rankings(otherUser.rankings());
+        });
+
+        it("does not allow the ranking lis to be dragged", function() {
+          var otherUserRankingLi = rankedCandidates.find('li').eq(0);
+          expect(otherUserRankingLi).toExist();
+          otherUserRankingLi.dragBelow(rankedCandidates.separator);
+          expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+        });
+      });
     });
 
     describe("receiving new rankings from the current consensus", function() {
@@ -236,6 +251,19 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
           expect(rankedCandidates.list.find('li').eq(3).data('position')).toBe(-128);
           expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking3);
+        });
+
+        it("allows the li to be dragged again before the ranking is created", function() {
+          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+          var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
+          candidate3Li.dragAbove(ranking1Li);
+
+          expect(Ranking.createOrUpdate).toHaveBeenCalled();
+          Ranking.createOrUpdate.reset();
+
+          var ranking3Li = rankedCandidates.find('li:contains("Candidate 3")');
+          ranking3Li.dragBelow(rankedCandidates.separator);
+          expect(Ranking.createOrUpdate).toHaveBeenCalled();
         });
       });
 
