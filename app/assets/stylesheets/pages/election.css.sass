@@ -27,10 +27,10 @@ $thin-column: 19%
 
   .candidate, .ranking
     padding: (($s1/2) - 1) ($s1/2) ($s1/2) ($s1/2)
-    //background: transparentize(white, 0.5)
     background: white
     border: 1px solid #ccc
     @include box-shadow(#aaa 0 0 3px)
+    cursor: default
 
 #current-consensus
   height: 100%
@@ -41,7 +41,7 @@ $thin-column: 19%
     bottom: 0
     width: 100%
     overflow-y: auto
-    background: transparentize(#f0f0f0, 0.5)
+    background: #f0f0f0
     border: 1px solid #ccc
     @include box-shadow(#aaa 0 0 3px inset)
     li.candidate, li.ranking
@@ -64,7 +64,7 @@ $thin-column: 19%
     right: 0
     left: 0
     border: 1px solid #ccc
-    background: transparentize(#f0f0f0, 0.5)
+    background: #f0f0f0
     @include box-shadow(#aaa 0 0 3px inset)
 
 #ranked-candidates
@@ -93,6 +93,11 @@ $thin-column: 19%
 #candidate-details
   width: 100%
   height: 100%
+  overflow-x: hidden
+  overflow-y: auto
+  @include box-sizing('border-box')
+  padding: (($s1/2) - 1) ($s1/2) ($s1/2) ($s1/2)
+
   position: absolute
   z-index: 1
   background-color: white
@@ -101,6 +106,11 @@ $thin-column: 19%
   //@include background-image(linear-gradient(left, rgb(255, 247, 203), white 30%))
   &.active
     right: 0
+
+  .body
+    margin-bottom: $s1
+  .details
+    font-size: 15px
 
 #votes
   height: 100%
