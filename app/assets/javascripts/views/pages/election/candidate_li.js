@@ -1,7 +1,6 @@
 _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
     li({'class': "candidate"}, params.candidate.body()).click(function() {
-      console.debug("clocki");
       History.pushState(null, null, params.candidate.url());
     });
   }},
@@ -30,7 +29,6 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
     },
 
     handleDragStart: function() {
-      console.debug("HEIIII");
       History.pushState(null, null, this.candidate.election().url());
     }
   }
