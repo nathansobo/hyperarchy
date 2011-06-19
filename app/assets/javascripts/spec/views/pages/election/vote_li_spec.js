@@ -3,8 +3,8 @@
 describe("Views.Pages.Election.VoteLi", function() {
   var voteLi, vote, user, election;
   beforeEach(function() {
-    election = Election.createFromRemote({id: 1});
     user = User.createFromRemote({id: 1, firstName: 'joe', lastName: 'henderson'});
+    election = Election.createFromRemote({id: 1});
     vote = user.votes().createFromRemote({electionId: election.id(), updatedAt: 1308352736162});
     voteLi = Views.Pages.Election.VoteLi.toView({vote: vote});
   });
@@ -65,6 +65,7 @@ describe("Views.Pages.Election.VoteLi", function() {
   describe("when clicked", function() {
     it("navigates to the url for the given vote", function() {
       attachLayout();
+      Application.currentUser(user);
       voteLi.find('a').click();
       expect(Path.routes.current).toBe(vote.url());
     });

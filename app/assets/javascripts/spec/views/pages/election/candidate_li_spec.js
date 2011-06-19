@@ -5,6 +5,7 @@ describe("Views.Pages.Election.CandidateLi", function() {
 
   beforeEach(function() {
     attachLayout();
+    Application.currentUser(User.createFromRemote({id: 1}));
 
     election = Election.createFromRemote({id: 22});
     candidate = election.candidates().createFromRemote({id: 11, body: "Fruitloops"});
