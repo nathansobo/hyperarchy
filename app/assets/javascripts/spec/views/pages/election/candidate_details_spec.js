@@ -14,7 +14,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
   });
 
   describe("when the candidate is assigned", function() {
-    it("populates the body and details divs and keeps them updated", function() {
+    it("populates the body, details, and avatar", function() {
       expect(candidateDetails.body.text()).toEqual(candidate.body());
       expect(candidateDetails.details.text()).toEqual(candidate.details());
       candidate.remotelyUpdated({body: "Catsup", details: "37 flavors"});
