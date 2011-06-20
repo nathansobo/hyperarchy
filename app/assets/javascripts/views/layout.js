@@ -28,6 +28,10 @@ _.constructor("Views.Layout", View.Template, {
   }},
 
   viewProperties: {
+    initialize: function() {
+      this.connectToSocketServer();
+    },
+
     currentUser: {
       change: function(user) {
         this.currentUserId(user.id());
@@ -35,8 +39,16 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     currentUserId: {
-      change: function(id) {
-        this.currentUser(User.find(id));
+      change: function(currentUserId) {
+        this.currentUser(User.find(currentUserId));
+      }
+    },
+
+    currentOrganizationId: {
+      change: function(currentOrganizationId) {
+        this.socketConnectionFuture.success(function(sessionId) {
+          $.post('/channel_subscriptions/organizations/' + currentOrganizationId, { session_id: sessionId });
+        });
       }
     },
 
@@ -47,6 +59,23 @@ _.constructor("Views.Layout", View.Template, {
         parsedParams[key] = parseInt(value);
       })
       this[name + 'Page'].show().params(parsedParams);
+    },
+
+    connectToSocketServer: function() {
+      this.socketConnectionFuture = new Monarch.Http.AjaxFuture();
+      var socketServerHost = window.location.hostname;
+      var socket = new io.Socket(socketServerHost, {rememberTransport: false, secure: true, port: 8081});
+      socket.on('connect', this.bind(function() {
+        this.socketConnectionFuture.triggerSuccess(socket.transport.sessionid);
+      }));
+      socket.on('message', function(m) {
+        Repository.mutate([JSON.parse(m)]);
+      });
+      socket.on('disconnect', this.bind(function() {
+        this.layout.disconnectDialog.show();
+      }));
+
+      socket.connect();
     }
   }
 });

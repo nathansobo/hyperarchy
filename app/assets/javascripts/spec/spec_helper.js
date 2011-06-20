@@ -31,7 +31,12 @@ afterEach(function() {
 //  $('#jasmine_content').empty();
 });
 
+var socketClient;
+
 function attachLayout() {
+  spyOn(io.Socket.prototype, 'connect').andCallFake(function() {
+    socketClient = this;
+  });
   window.Application = Views.Layout.toView();
   Application.attach();
   Path.listen();
@@ -39,6 +44,9 @@ function attachLayout() {
 }
 
 function renderLayout() {
+  spyOn(io.Socket.prototype, 'connect').andCallFake(function() {
+    socketClient = this;
+  });
   $("#jasmine_content").html(window.Application = Views.Layout.toView());
   Application.attach();
   Path.listen();

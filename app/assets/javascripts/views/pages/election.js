@@ -106,6 +106,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
     election: {
       change: function(election) {
+        Application.currentOrganizationId(election.organizationId());
         this.body.bindText(election, 'body');
       }
     },

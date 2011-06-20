@@ -4,32 +4,38 @@ describe("Views.Pages.Organization", function() {
 
   var organizationPage;
   beforeEach(function() {
-    organizationPage = Views.Pages.Organization.toView();
+    attachLayout();
+    organizationPage = Application.organizationPage;
   });
 
   describe("when the params are assigned", function() {
+    var organization;
+    beforeEach(function() {
+      Organization.createFromRemote({id: 1, social: true, name: "Hyperarchy Social"});
+      organization = Organization.createFromRemote({id: 100, name: "Watergate"});
+    });
+
     describe("when the organization exists in the local repository", function() {
       it("assigns the organization", function() {
-        var org1 = Organization.createFromRemote({id: 1, name: "Watergate"});
-        organizationPage.params({organizationId: org1.id()});
-        expect(organizationPage.organization()).toBe(org1);
+        organizationPage.params({organizationId: organization.id()});
+        expect(organizationPage.organization()).toBe(organization);
       });
     });
 
     describe("when the organization does not exist in the local repository", function() {
       it("navigates to the organization page for Hyperarchy Social", function() {
-        var socialOrg = Organization.createFromRemote({id: 1, social: true});
         organizationPage.params({organizationId: -1});
-        expect(organizationPage.organization()).toBe(socialOrg);
+        expect(organizationPage.organization()).toBe(Organization.findSocial());
       });
+    });
+
+    it("assigns the currentOrganizationId on the layout", function() {
+      organizationPage.params({organizationId: organization.id()});
+      expect(Application.currentOrganizationId()).toBe(organization.id());
     });
   });
 
   describe("when the organization is assigned", function() {
-    beforeEach(function() {
-      attachLayout();
-    });
-
     it("fetches the organization's elections", function() {
       var user, organization, election1, election2;
 

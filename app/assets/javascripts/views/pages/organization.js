@@ -14,6 +14,7 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
   viewProperties: {
     organization: {
       change: function(organization) {
+        Application.currentOrganizationId(organization.id());
         return organization.fetchMoreElections(16)
           .success(this.bind(function() {
             this.electionsList.relation(organization.elections());

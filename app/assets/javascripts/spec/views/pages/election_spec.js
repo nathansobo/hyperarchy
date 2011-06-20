@@ -201,7 +201,7 @@ describe("Views.Pages.Election", function() {
     var election;
 
     beforeEach(function() {
-      election = Election.createFromRemote({id: 1, body: 'What would jesus & <mary> do?'});
+      election = Election.createFromRemote({id: 1, body: 'What would jesus & <mary> do?', organizationId: 98});
       electionPage.election(election);
     });
 
@@ -216,6 +216,10 @@ describe("Views.Pages.Election", function() {
 
       election.remotelyUpdated({body: "what would you do for a klondike bar?"});
       expect(electionPage.body.text()).toEqual(election2.body());
+    });
+
+    it("assigns the currentOrganizationId on the layout", function() {
+      expect(Application.currentOrganizationId()).toBe(election.organizationId());
     });
   });
 });
