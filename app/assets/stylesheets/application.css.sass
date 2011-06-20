@@ -21,6 +21,16 @@ body
 #body
   //opacity: 0.5
 
+  ::-webkit-scrollbar
+    width: $s-2
+  ::-webkit-scrollbar-track
+    background: #eee
+  ::-webkit-scrollbar-thumb
+    -webkit-border-radius: 3px
+    //border-radius: 10px
+    background: #999
+    @include background-image(linear-gradient(left, #ddd, #bbb))
+
 a
   cursor: pointer
 
@@ -51,14 +61,3 @@ h2
 
 
 
-::-webkit-scrollbar
-  width: $s-2
-
-::-webkit-scrollbar-track
-  background: #eee
-
-::-webkit-scrollbar-thumb
-  -webkit-border-radius: 3px
-  //border-radius: 10px
-  background: #999
-  @include background-image(linear-gradient(left, #ddd, #bbb))
