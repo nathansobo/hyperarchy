@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include GuidGeneration
   include HttpClient
+  include BuildClientDataset
 
   layout false
   protect_from_forgery unless Rails.env.jasmine?
@@ -67,14 +68,6 @@ class ApplicationController < ActionController::Base
       :successful => false,
       :data => data,
     }
-  end
-
-  def build_client_dataset(*records_or_relations)
-    (Hash.new {|h,k| h[k] = {}}).tap do |dataset|
-      Array(records_or_relations).flatten.each do |r|
-        r.add_to_client_dataset(dataset)
-      end
-    end
   end
 
   def no_internet_explorer

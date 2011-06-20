@@ -10,6 +10,10 @@ module Prequel
       Prequel.session.current_user
     end
 
+    def extra_records_for_events
+      []
+    end
+
     def lock_name
       @lock_name ||= "/#{table.name}/#{id}"
     end
