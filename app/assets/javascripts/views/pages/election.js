@@ -3,7 +3,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     div({id: "election"}, function() {
       div({id: "columns"}, function() {
         div(function() {
-          div({'class': 'body'}).ref('body');
+          h2({'class': 'body'}).ref('body');
         });
         div(function() {
           subview('currentConsensus', Views.Pages.Election.CurrentConsensus);
