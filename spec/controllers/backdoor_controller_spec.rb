@@ -12,17 +12,19 @@ describe BackdoorController do
 
       user.first_name.should == "Joe"
       user.last_name.should_not be_blank
-      response_json.should == user.wire_representation
+      response_json.should == user.wire_representation(:ignore_security)
     end
   end
 
   describe "#clear_tables" do
     it "clears all tables in the database" do
       User.make
+      Organization.make
       User.should_not be_empty
       post :clear_tables
       response.should be_success
-      User.should be_empty
+      Organization.all.should == [Organization.social]
+      User.all.should == [User.default_guest]
     end
   end
 end

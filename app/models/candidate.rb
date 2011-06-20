@@ -107,4 +107,8 @@ class Candidate < Prequel::Record
       where(Membership[:user_id].neq(creator_id)).
       join_through(User)
   end
+
+  def extra_records_for_create_events
+    [creator]
+  end
 end

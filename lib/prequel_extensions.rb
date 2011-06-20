@@ -10,7 +10,7 @@ module Prequel
       Prequel.session.current_user
     end
 
-    def extra_records_for_events
+    def extra_records_for_create_events
       []
     end
 

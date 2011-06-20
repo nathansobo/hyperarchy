@@ -199,6 +199,12 @@ module Models
       end
     end
 
+    describe "#extra_records_for_create_events" do
+      it "contains the candidate's creator" do
+        candidate.extra_records_for_create_events.should == [creator]
+      end
+    end
+
     describe "security" do
       attr_reader :member, :owner, :non_member, :membership, :candidate
 
