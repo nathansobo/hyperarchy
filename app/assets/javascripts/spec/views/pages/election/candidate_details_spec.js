@@ -21,6 +21,20 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.body.text()).toEqual(candidate.body());
       expect(candidateDetails.details.text()).toEqual(candidate.details());
     });
+
+    it("hides the form if it is showing, even if the candidate does not change", function() {
+      candidateDetails.candidate(candidate);
+
+      candidateDetails.editLink.click();
+
+      expect(candidateDetails.form).toBeVisible();
+      expect(candidateDetails.nonEditableContent).toBeHidden();
+
+      candidateDetails.candidate(candidate);
+
+      expect(candidateDetails.form).toBeHidden();
+      expect(candidateDetails.nonEditableContent).toBeVisible();
+    });
   });
   
   describe("showing and hiding of the edit form", function() {

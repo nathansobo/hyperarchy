@@ -2,8 +2,10 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "election"}, function() {
       div({id: "columns"}, function() {
-        div(function() {
+        div({id: "election-details"}, function() {
           h2({'class': 'body'}).ref('body');
+
+          a({'class': "edit button"}, "Edit");
         });
         div(function() {
           subview('currentConsensus', Views.Pages.Election.CurrentConsensus);

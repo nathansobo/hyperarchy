@@ -1,6 +1,6 @@
 $darkened-background-z-index: 100
-$padding-x: $s1
-$header-height: 2 * $s1
+$padding-x: $line-height
+$header-height: 2 * $line-height
 $max-width: 1200px
 
 #layout
@@ -12,7 +12,7 @@ $max-width: 1200px
       margin: 0 auto
       @include box-sizing('border-box')
       max-width: $max-width
-      padding: (($header-height - $s1) / 2) $padding-x
+      padding: (($header-height - $line-height) / 2) $padding-x
       height: 100%
 
       > h1
@@ -30,15 +30,15 @@ $max-width: 1200px
             background-image: url(/images/mystery_man_27.jpeg)
             float: left
             position: relative
-            top: -($s2 - $s1)/2 - 1
+            top: -($s2 - $line-height)/2 - 1
             margin-right: $s-6
 
 
   #body-wrapper
     position: absolute
     width: 100%
-    top: $header-height + 3/2 * $s1
-    bottom: 3/2 * $s1
+    top: $header-height + 3/2 * $line-height
+    bottom: 3/2 * $line-height
     > #body
       @include box-sizing('border-box')
       height: 100%

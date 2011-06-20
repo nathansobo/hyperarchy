@@ -2,27 +2,51 @@
 @import "compass/css3/box"
 @import "compass/css3/transition"
 @import "compass/css3/box-sizing"
+@import "compass/css3/border-radius"
 @import "compass/layout/grid-background"
 @import "compass/css3/box-shadow"
 @import "scale"
 @import "fonts"
+@import "colors"
 @import "mixins"
 @import "layout"
 @import "pages/election"
 
 
+//body
+//  @include baseline-grid-background($line-height, transparentize(blue, .5))
+//  background-position: 0 ($line-height / 2)
+//  #body
+//    opacity: 0.5
+
 body, textarea
   font-family: "proxima-nova-1", Helvetica, Arial, sans-serif
   font-size: $s0
-  line-height: $s1
-  //@include baseline-grid-background($s1, transparentize(blue, .5))
-  //background-position: 0 ($s1 / 2)
-
-#body
-  //opacity: 0.5
+  line-height: $line-height
 
 a
   cursor: pointer
+  &.link
+    color: #0101DF
+    &:hover
+      text-decoration: underline
+  &.button
+    text-align: center
+    display: inline-block
+    margin-top: -$s-8
+    padding: $s-8 $s-4
+    min-width: 35px
+    @include border-radius(2)
+    background: #eee
+    font-size: $s-1
+    &.cancel:hover
+      background: $pale-red
+    &.save:hover
+      background: $pale-green
+    &.edit:hover
+      background: $pale-blue
+
+
 
 li
   list-style: none
@@ -43,13 +67,11 @@ li
     right: 0
 
 h2
-  margin-bottom: $s1/2
+  margin-bottom: $line-height/2
   font-weight: $semibold
 
 .highlight
   background: #F5F6CE !important
-
-
 
 ::-webkit-scrollbar
   width: $s-2

@@ -6,7 +6,7 @@ module Views
       end
 
       def below_body_content
-        javascript_include_tag("application", :debug => Rails.env.development?)
+        javascript_include_tag("application", :debug => false )#Rails.env.development?)
         javascript %[
         $(function() {
           window.WEB_SOCKET_SWF_LOCATION = '/WebSocketMain.swf';
