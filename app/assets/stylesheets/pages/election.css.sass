@@ -20,7 +20,8 @@ $thin-column: 17.5%
       width: $wide-column
       @include box-sizing('border-box')
       &#votes-column
-        width: $thin-column
+        //width: $thin-column
+        width: $s10 + 10
 
 .candidate
   position: relative
@@ -47,9 +48,11 @@ $thin-column: 17.5%
   cursor: default
 
 #election-details
-  .body
+  padding-right: $line-height
+  .body, .details
     margin-bottom: $line-height
-
+  .details
+    font-size: $s-1
   .edit.button
     font-size: $s-1
     float: right

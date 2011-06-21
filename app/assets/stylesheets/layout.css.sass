@@ -1,7 +1,8 @@
 $darkened-background-z-index: 100
 $padding-x: $line-height
 $header-height: 2 * $line-height
-$max-width: 1200px
+$min-width: 1200px
+$max-width: 1443px
 
 #layout
   #header-wrapper
@@ -11,6 +12,7 @@ $max-width: 1200px
     > #header
       margin: 0 auto
       @include box-sizing('border-box')
+      min-width: $min-width
       max-width: $max-width
       padding: (($header-height - $line-height) / 2) $padding-x
       height: 100%
@@ -42,6 +44,7 @@ $max-width: 1200px
     > #body
       @include box-sizing('border-box')
       height: 100%
+      min-width: $min-width
       max-width: $max-width
       margin: 0 auto
 
@@ -67,3 +70,11 @@ $max-width: 1200px
   width: 300
   height: 400
   z-index: $darkened-background-z-index + 1
+
+@media all and (min-width: 1220px)
+  #layout #header
+    padding-right: 29 !important
+    padding-left: 29 !important
+  #layout #body
+    padding-right: 10 !important
+    padding-left: 10 !important

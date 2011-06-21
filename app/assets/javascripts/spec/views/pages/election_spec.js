@@ -201,24 +201,29 @@ describe("Views.Pages.Election", function() {
   });
 
   describe("when the election is assigned", function() {
-    var election;
+    var election, creator;
 
     beforeEach(function() {
-      election = Election.createFromRemote({id: 1, body: 'What would jesus & <mary> do?', organizationId: 98});
+      creator = User.createFromRemote({id: 1, firstName: "animal", lastName: "eater"});
+      election = creator.elections().createFromRemote({id: 1, body: 'What would jesus & <mary> do?', details: "wlk on wtr.", organizationId: 98});
       electionPage.election(election);
     });
 
-    it("assigns the election's body and keeps it up to date when it changes", function() {
+    it("assigns the election's body, details and avatar, and keeps the body and details up to date when they change", function() {
       expect(electionPage.body.text()).toEqual(election.body());
-      election.remotelyUpdated({body: "what would satan & <damien> do?"});
+      expect(electionPage.details.text()).toEqual(election.details());
+      election.remotelyUpdated({body: "what would satan & <damien> do?", details: "Isdf"});
       expect(electionPage.body.text()).toEqual(election.body());
+      expect(electionPage.details.text()).toEqual(election.details());
 
-      var election2 = Election.createFromRemote({id: 2, body: 'Are you my mother?'});
+      var election2 = Election.createFromRemote({id: 2, body: 'Are you my mother?', details: "I hope so."});
       electionPage.election(election2);
       expect(electionPage.body.text()).toEqual(election2.body());
+      expect(electionPage.details.text()).toEqual(election2.details());
 
-      election.remotelyUpdated({body: "what would you do for a klondike bar?"});
+      election.remotelyUpdated({body: "what would you do for a klondike bar?", details: "jhjyg"});
       expect(electionPage.body.text()).toEqual(election2.body());
+      expect(electionPage.details.text()).toEqual(election2.details());
     });
 
     it("assigns the currentOrganizationId on the layout", function() {

@@ -3,6 +3,7 @@ class Election < Prequel::Record
   column :organization_id, :integer
   column :creator_id, :integer
   column :body, :string
+  column :details, :string
   column :vote_count, :integer, :default => 0
   column :score, :float
   column :created_at, :datetime
@@ -53,7 +54,7 @@ class Election < Prequel::Record
   end
 
   def update_whitelist
-    [:body]
+    [:body, :details]
   end
 
   def organization_ids

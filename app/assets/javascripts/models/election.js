@@ -5,6 +5,7 @@ _.constructor("Election", Model.Record, {
         organizationId: 'key',
         creatorId: 'key',
         body: 'string',
+        details: 'string',
         voteCount: 'integer',
         score: 'float',
         updatedAt: 'datetime',

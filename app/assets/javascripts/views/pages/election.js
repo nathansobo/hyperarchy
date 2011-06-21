@@ -4,6 +4,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       div({id: "columns"}, function() {
         div({id: "election-details"}, function() {
           h2({'class': 'body'}).ref('body');
+          div({'class': 'details'}).ref('details');
 
           a({'class': "edit button"}, "Edit");
         });
@@ -108,6 +109,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       change: function(election) {
         Application.currentOrganizationId(election.organizationId());
         this.body.bindText(election, 'body');
+        this.details.bindText(election, 'details');
       }
     },
 
