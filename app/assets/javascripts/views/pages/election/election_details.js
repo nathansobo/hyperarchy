@@ -14,7 +14,7 @@ _.constructor('Views.Pages.Election.ElectionDetails', Monarch.View.Template, {
       }).submit('save')
         .ref('form');
 
-      a({'class': 'save button'}, "Save").ref('saveLink').click('save');
+      a({'class': 'update button'}, "Save").ref('updateLink').click('save');
       a({'class': 'cancel button'}, "Cancel").ref('cancelEditLink').click('hideForm');
       a({'class': "edit button"}, "Edit").ref('editLink').click('showForm');
 
@@ -57,7 +57,7 @@ _.constructor('Views.Pages.Election.ElectionDetails', Monarch.View.Template, {
       this.form.show();
       this.formBody.val(this.election().body()).elastic();
       this.formDetails.val(this.election().details()).elastic();
-      this.saveLink.show();
+      this.updateLink.show();
       this.cancelEditLink.show();
     },
 
@@ -65,7 +65,7 @@ _.constructor('Views.Pages.Election.ElectionDetails', Monarch.View.Template, {
       this.nonEditableContent.show();
       this.editLink.show();
       this.form.hide();
-      this.saveLink.hide();
+      this.updateLink.hide();
       this.cancelEditLink.hide();
     }
   }

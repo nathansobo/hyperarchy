@@ -5,6 +5,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         div({'class': "body"}).ref("body");
         div({'class': "details"}).ref("details");
         a({'class': "edit button"}, "Edit").ref('editLink').click('showForm');
+        a({'class': "destroy button"}, "Delete").ref('destroyLink').click('destroy');
       }).ref('nonEditableContent');
 
 
@@ -15,9 +16,9 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         textarea({name: 'details', 'class': "details"}).ref("formDetails");
 
 
-      }).submit('save')
+      }).submit('update')
         .ref('form');
-      a({'class': 'save button'}, "Save").ref('saveLink').click('save');
+      a({'class': 'update button'}, "Save").ref('updateLink').click('update');
       a({'class': 'cancel button'}, "Cancel").ref('cancelEditLink').click('hideForm');
       a({'class': 'create button'}, "Add Answer").ref('createLink').click('create');
 
@@ -32,7 +33,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
 
   viewProperties: {
     attach: function() {
-      Application.signal('currentUser').change(this.hitch('showOrHideEditLink'));
+      Application.signal('currentUser').change(this.hitch('showOrHideMutateLinks'));
     },
 
     candidate: {
@@ -43,18 +44,12 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         this.avatar.user(candidate.creator());
         this.creatorName.bindText(candidate.creator(), 'fullName');
         this.createdAt.text(candidate.formattedCreatedAt());
-        this.showOrHideEditLink();
+        this.showOrHideMutateLinks();
       },
 
       write: function() {
         this.hideForm();
       }
-    },
-
-    save: function(e) {
-      e.preventDefault();
-      if ($.trim(this.formBody.val()) === '') return;
-      this.candidate().update(this.form.fieldValues()).success(this.hitch('hideForm'));
     },
 
     create: function(e) {
@@ -64,10 +59,22 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       History.pushState(null, null, this.parentView.election().url());
     },
 
+    update: function(e) {
+      e.preventDefault();
+      if ($.trim(this.formBody.val()) === '') return;
+      this.candidate().update(this.form.fieldValues()).success(this.hitch('hideForm'));
+    },
+
+    destroy: function() {
+      if (window.confirm("Are you sure you want to delete this answer?")) {
+        this.candidate().destroy();
+      }
+    },
+
     showForm: function() {
       this.nonEditableContent.hide();
       this.form.show();
-      this.saveLink.show();
+      this.updateLink.show();
       this.cancelEditLink.show();
       if (this.candidate()) {
         this.formBody.val(this.candidate().body()).elastic();
@@ -82,7 +89,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       this.formBody.val('');
       this.formDetails.val('');
       this.cancelEditLink.hide();
-      this.saveLink.hide();
+      this.updateLink.hide();
       this.createLink.show();
       this.avatar.user(Application.currentUser());
       this.creatorName.text(Application.currentUser().fullName());
@@ -92,16 +99,18 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
     hideForm: function() {
       this.nonEditableContent.show();
       this.form.hide();
-      this.saveLink.hide();
+      this.updateLink.hide();
       this.cancelEditLink.hide();
       this.createLink.hide();
     },
 
-    showOrHideEditLink: function() {
+    showOrHideMutateLinks: function() {
       if (this.candidate() && this.candidate().editableByCurrentUser()) {
         this.editLink.show();
+        this.destroyLink.show();
       } else {
         this.editLink.hide();
+        this.destroyLink.hide();
       }
     }
   }

@@ -39,34 +39,34 @@ describe("Views.Pages.Election.ElectionDetails", function() {
   describe("showing and hiding of the edit form", function() {
     it("shows the form when the edit button is clicked and hides it when the cancel button is clicked", function() {
       expect(electionDetails.form).toBeHidden();
-      expect(electionDetails.saveLink).toBeHidden();
+      expect(electionDetails.updateLink).toBeHidden();
       expect(electionDetails.cancelEditLink).toBeHidden();
 
       electionDetails.editLink.click();
       expect(electionDetails.form).toBeVisible();
       expect(electionDetails.cancelEditLink).toBeVisible();
-      expect(electionDetails.saveLink).toBeVisible();
+      expect(electionDetails.updateLink).toBeVisible();
       expect(electionDetails.editLink).toBeHidden();
       expect(electionDetails.nonEditableContent).toBeHidden();
 
       electionDetails.cancelEditLink.click();
       expect(electionDetails.form).toBeHidden();
       expect(electionDetails.cancelEditLink).toBeHidden();
-      expect(electionDetails.saveLink).toBeHidden();
+      expect(electionDetails.updateLink).toBeHidden();
       expect(electionDetails.editLink).toBeVisible();
       expect(electionDetails.nonEditableContent).toBeVisible();
     });
 
     it("hides the form when the election changes", function() {
       electionDetails.form.show();
-      electionDetails.saveLink.show();
+      electionDetails.updateLink.show();
       electionDetails.cancelEditLink.show();
 
       var election2 = creator.elections().createFromRemote({id: 2, body: 'MEUAUOEU?!', details: "aonetuhaoeu??!?!!?", organizationId: 98, createdAt: 91234});
       electionDetails.election(election2);
 
       expect(electionDetails.form).toBeHidden();
-      expect(electionDetails.saveLink).toBeHidden();
+      expect(electionDetails.updateLink).toBeHidden();
       expect(electionDetails.cancelEditLink).toBeHidden();
     });
   });
@@ -87,7 +87,7 @@ describe("Views.Pages.Election.ElectionDetails", function() {
     });
 
     it("updates the record's body and details on the server and hides the form", function() {
-      electionDetails.saveLink.click();
+      electionDetails.updateLink.click();
 
       expect(Server.updates.length).toBe(1);
 

@@ -48,13 +48,14 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     });
   });
 
-  describe("showing and hiding of the edit button", function() {
+  describe("showing and hiding of the edit and destroy buttons", function() {
     var currentUserCanEdit;
     beforeEach(function() {
       spyOn(Candidate.prototype, 'editableByCurrentUser').andCallFake(function() {
         return currentUserCanEdit;
       });
       candidateDetails.editLink.hide();
+      candidateDetails.destroyLink.hide();
       expect(candidateDetails.editLink).toBeHidden();
     });
 
@@ -63,13 +64,16 @@ describe("Views.Pages.Election.CandidateDetails", function() {
         var otherCandidate = Candidate.createFromRemote({id: 100, creatorId: creator.id(), createdAt: 234234});
 
         expect(candidateDetails.editLink).toBeHidden();
+        expect(candidateDetails.destroyLink).toBeHidden();
         currentUserCanEdit = true;
         candidateDetails.candidate(otherCandidate);
         expect(candidateDetails.editLink).toBeVisible();
+        expect(candidateDetails.destroyLink).toBeVisible();
 
         currentUserCanEdit = false;
         candidateDetails.candidate(candidate);
         expect(candidateDetails.editLink).toBeHidden();
+        expect(candidateDetails.destroyLink).toBeHidden();
       });
     });
 
@@ -78,13 +82,16 @@ describe("Views.Pages.Election.CandidateDetails", function() {
         var otherUser = User.createFromRemote({id: 123});
 
         expect(candidateDetails.editLink).toBeHidden();
+        expect(candidateDetails.destroyLink).toBeHidden();
         currentUserCanEdit = true;
         Application.currentUser(otherUser);
         expect(candidateDetails.editLink).toBeVisible();
+        expect(candidateDetails.destroyLink).toBeVisible();
 
         currentUserCanEdit = false;
         Application.currentUser(creator);
         expect(candidateDetails.editLink).toBeHidden();
+        expect(candidateDetails.destroyLink).toBeHidden();
       });
     });
   });
@@ -105,7 +112,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.formDetails.val()).toBe('');
       expect(candidateDetails.createLink).toBeVisible();
       expect(candidateDetails.cancelEditLink).toBeHidden();
-      expect(candidateDetails.saveLink).toBeHidden();
+      expect(candidateDetails.updateLink).toBeHidden();
 
       expect(candidateDetails.avatar.user()).toBe(Application.currentUser());
       expect(candidateDetails.creatorName.text()).toBe(Application.currentUser().fullName());
@@ -116,7 +123,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.form).toBeHidden();
       expect(candidateDetails.createLink).toBeHidden();
       expect(candidateDetails.cancelEditLink).toBeHidden();
-      expect(candidateDetails.saveLink).toBeHidden();
+      expect(candidateDetails.updateLink).toBeHidden();
     });
   });
 
@@ -176,7 +183,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       candidateDetails.editLink.click();
 
       expect(candidateDetails.form).toBeVisible();
-      expect(candidateDetails.saveLink).toBeVisible();
+      expect(candidateDetails.updateLink).toBeVisible();
       expect(candidateDetails.cancelEditLink).toBeVisible();
       expect(candidateDetails.nonEditableContent).toBeHidden();
 
@@ -187,13 +194,13 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       candidateDetails.cancelEditLink.click();
 
       expect(candidateDetails.form).toBeHidden();
-      expect(candidateDetails.saveLink).toBeHidden();
+      expect(candidateDetails.updateLink).toBeHidden();
       expect(candidateDetails.cancelEditLink).toBeHidden();
       expect(candidateDetails.nonEditableContent).toBeVisible();
     });
   });
 
-  describe("when the save button is clicked", function() {
+  describe("when the update button is clicked", function() {
     var fieldValues;
 
     beforeEach(function() {
@@ -209,7 +216,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     });
 
     it("updates the record's body and details on the server and hides the form", function() {
-      candidateDetails.saveLink.click();
+      candidateDetails.updateLink.click();
   
       expect(Server.updates.length).toBe(1);
 
@@ -231,9 +238,36 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     it("does not allow a blank body", function() {
       spyOn(History, 'pushState');
       candidateDetails.formBody.val('  ');
-      candidateDetails.saveLink.click();
+      candidateDetails.updateLink.click();
       expect(Server.updates.length).toBe(0);
       expect(History.pushState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("when the destroy button is clicked", function() {
+    beforeEach(function() {
+      useFakeServer();
+    });
+
+    describe("if the user accepts the confirmation", function() {
+      it("deletes the candidate", function() {
+        spyOn(window, 'confirm').andReturn(true);
+
+        candidateDetails.destroyLink.click();
+
+        expect(Server.destroys.length).toBe(1);
+        expect(Server.lastDestroy.record).toBe(candidate);
+      });
+    });
+
+    describe("if the user rejects the confirmation", function() {
+      it("does not delete the candidate", function() {
+        spyOn(window, 'confirm').andReturn(false);
+
+        candidateDetails.destroyLink.click();
+
+        expect(Server.destroys.length).toBe(0);
+      });
     });
   });
 });
