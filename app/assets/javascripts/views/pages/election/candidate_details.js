@@ -27,6 +27,10 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
   }},
 
   viewProperties: {
+    attach: function() {
+      Application.signal('currentUser').change(this.hitch('showOrHideEditLink'));
+    },
+
     candidate: {
       change: function(candidate) {
         this.body.bindText(candidate, 'body');
@@ -34,6 +38,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         this.avatar.user(candidate.creator());
         this.creatorName.bindText(candidate.creator(), 'fullName');
         this.createdAt.text(candidate.formattedCreatedAt());
+        this.showOrHideEditLink();
       },
 
       write: function() {
@@ -56,6 +61,14 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
     hideForm: function() {
       this.nonEditableContent.show();
       this.form.hide();
+    },
+
+    showOrHideEditLink: function() {
+      if (this.candidate() && this.candidate().editableByCurrentUser()) {
+        this.editLink.show();
+      } else {
+        this.editLink.hide();
+      }
     }
   }
 });

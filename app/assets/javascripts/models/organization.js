@@ -84,7 +84,7 @@ _.constructor("Organization", Model.Record, {
   },
 
   currentUserIsOwner: function() {
-    var currentUserMembership = this.memberships().find({userId: Application.currentUserId});
+    var currentUserMembership = this.memberships().find({userId: Application.currentUserId()});
     if (!currentUserMembership) return false;
     return currentUserMembership.role() === "owner";
   },

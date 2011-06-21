@@ -1,12 +1,13 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Election.CandidateDetails", function() {
+  var candidateDetails, candidate, creator;
 
-  var candidateDetails, candidate;
   beforeEach(function() {
     attachLayout();
     candidateDetails = Application.electionPage.candidateDetails;
     creator = User.createFromRemote({id: 999, emailHash: 'blas', firstName: "Mr.", lastName: "Creator"});
+    Application.currentUser(creator);
     candidate = creator.candidates().createFromRemote({id: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?", createdAt: 1308352736162});
 
     $('#jasmine_content').html(Application.electionPage);
@@ -41,7 +42,48 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.nonEditableContent).toBeVisible();
     });
   });
-  
+
+  describe("showing and hiding of the edit button", function() {
+    var currentUserCanEdit;
+    beforeEach(function() {
+      spyOn(Candidate.prototype, 'editableByCurrentUser').andCallFake(function() {
+        return currentUserCanEdit;
+      });
+      candidateDetails.editLink.hide();
+      expect(candidateDetails.editLink).toBeHidden();
+    });
+
+    describe("on candidate assignment", function() {
+      it("shows the edit link only if the current user can edit", function() {
+        var otherCandidate = Candidate.createFromRemote({id: 100, creatorId: creator.id(), createdAt: 234234});
+
+        expect(candidateDetails.editLink).toBeHidden();
+        currentUserCanEdit = true;
+        candidateDetails.candidate(otherCandidate);
+        expect(candidateDetails.editLink).toBeVisible();
+
+        currentUserCanEdit = false;
+        candidateDetails.candidate(candidate);
+        expect(candidateDetails.editLink).toBeHidden();
+      });
+    });
+
+    describe("on user switch", function() {
+      it("shows the edit button only when the current user is the creator of the candidate, an owner of the organization, or an admin", function() {
+        var otherUser = User.createFromRemote({id: 123});
+
+        expect(candidateDetails.editLink).toBeHidden();
+        currentUserCanEdit = true;
+        Application.currentUser(otherUser);
+        expect(candidateDetails.editLink).toBeVisible();
+
+        currentUserCanEdit = false;
+        Application.currentUser(creator);
+        expect(candidateDetails.editLink).toBeHidden();
+      });
+    });
+  });
+
   describe("showing and hiding of the edit form", function() {
     it("shows and populates the form fields when edit is clicked and hides them when cancel is clicked", function() {
       expect(candidateDetails.form).toBeHidden();
