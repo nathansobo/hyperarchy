@@ -14,37 +14,13 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     });
   }},
 
-  column1: function() { with(this.builder) {
-    div({id: "election-details"}, function() {
-      div(function() {
-        h2({'class': 'body'}).ref('body');
-        div({'class': 'details'}).ref('details');
-      }).ref('nonEditableContent');
+  column1: function() {
+    this.builder.subview('electionDetails', Views.Pages.Election.ElectionDetails);
+  },
 
-      form(function() {
-        textarea({name: "body", 'class': "body"}).ref("formBody");
-        label({'for': "body", 'class': "chars-remaining"}, "67 characters remaining");
-        label({'for': "details"}, "Further Details");
-        textarea({name: 'details', 'class': "details"}).ref("formDetails");
-      }).submit('save')
-        .ref('form');
-
-      a({'class': 'save button'}, "Save").ref('saveLink').click('save');
-      a({'class': 'cancel button'}, "Cancel").ref('cancelEditLink').click('hideForm');
-      a({'class': "edit button"}, "Edit").ref('editLink').click('showForm');
-
-      div({'class': 'creator'}, function() {
-        subview('avatar', Views.Components.Avatar, {imageSize: 34});
-        div({'class': 'name'}).ref('creatorName');
-        div({'class': 'date'}).ref('createdAt');
-      });
-
-    })
-  }},
-
-  column2: function() { with(this.builder) {
-    subview('currentConsensus', Views.Pages.Election.CurrentConsensus);
-  }},
+  column2: function() {
+    this.builder.subview('currentConsensus', Views.Pages.Election.CurrentConsensus);
+  },
 
   column3: function() { with(this.builder) {
     h2("Your Ranking").ref('rankedCandidatesHeader');
@@ -56,9 +32,9 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     });
   }},
 
-  column4: function() { with(this.builder) {
-    subview('votes', Views.Pages.Election.Votes);
-  }},
+  column4: function() {
+    this.builder.subview('votes', Views.Pages.Election.Votes);
+  },
 
   viewProperties: {
     params: {
@@ -71,7 +47,10 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
     populateContentBeforeFetch: function(params) {
       var election = Election.find(params.electionId);
-      if (election) this.election(election);
+      if (election) {
+        Application.currentOrganizationId(election.organizationId());
+        this.electionDetails.election(election);
+      }
 
       var voterId;
       if (!params.candidateId) {
@@ -110,7 +89,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         return;
       }
 
-      this.election(election);
+      Application.currentOrganizationId(election.organizationId());
+      this.electionDetails.election(election);
       this.currentConsensus.candidates(election.candidates());
       this.votes.votes(election.votes());
 
@@ -137,25 +117,6 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       if (voter) this.rankedCandidatesHeader.text(voter.fullName() + "'s Ranking");
     },
 
-    election: {
-      change: function(election) {
-        Application.currentOrganizationId(election.organizationId());
-        this.body.bindText(election, 'body');
-        this.details.bindText(election, 'details');
-
-        if (election.details()) {
-          this.details.show()
-        } else {
-          this.details.hide()
-        }
-
-        this.avatar.user(election.creator());
-        this.creatorName.bindText(election.creator(), 'fullName');
-        this.createdAt.text(election.formattedCreatedAt());
-        this.hideForm();
-      }
-    },
-
     showRankedCandidates: function() {
       this.candidateDetailsHeader.hide();
       this.rankedCandidatesHeader.show();
@@ -166,24 +127,6 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.rankedCandidatesHeader.hide();
       this.candidateDetailsHeader.show();
       this.candidateDetails.addClass('active');
-    },
-
-    showForm: function() {
-      this.nonEditableContent.hide();
-      this.editLink.hide();
-      this.form.show();
-      this.formBody.val(this.election().body()).elastic();
-      this.formDetails.val(this.election().details()).elastic();
-      this.saveLink.show();
-      this.cancelEditLink.show();
-    },
-
-    hideForm: function() {
-      this.nonEditableContent.show();
-      this.editLink.show();
-      this.form.hide();
-      this.saveLink.hide();
-      this.cancelEditLink.hide();
     }
   }
 });

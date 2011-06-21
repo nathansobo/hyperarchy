@@ -1,0 +1,73 @@
+//= require spec/spec_helper
+
+describe("Views.Pages.Election.ElectionDetails", function() {
+  var election, creator, electionDetails;
+
+  beforeEach(function() {
+    creator = User.createFromRemote({id: 1, firstName: "animal", lastName: "eater"});
+    election = creator.elections().createFromRemote({id: 1, body: 'What would jesus & <mary> do?', details: "wlk on wtr.", organizationId: 98, createdAt: 91234});
+
+    attachLayout();
+
+    electionDetails = Application.electionPage.electionDetails;
+    $('#jasmine_content').html(electionDetails);
+    electionDetails.election(election);
+  });
+
+  describe("#election", function() {
+    it("assigns the election's body, details and avatar, and keeps the body and details up to date when they change", function() {
+      expect(electionDetails.body.text()).toEqual(election.body());
+      expect(electionDetails.details.text()).toEqual(election.details());
+      election.remotelyUpdated({body: "what would satan & <damien> do?", details: "Isdf"});
+      expect(electionDetails.body.text()).toEqual(election.body());
+      expect(electionDetails.details.text()).toEqual(election.details());
+      expect(electionDetails.avatar.user()).toBe(election.creator());
+      expect(electionDetails.creatorName.text()).toBe(election.creator().fullName());
+      expect(electionDetails.createdAt.text()).toBe(election.formattedCreatedAt());
+
+      var election2 = Election.createFromRemote({id: 2, body: 'Are you my mother?', details: "I hope so.", createdAt: 2345, creatorId: creator.id()});
+      electionDetails.election(election2);
+      expect(electionDetails.body.text()).toEqual(election2.body());
+      expect(electionDetails.details.text()).toEqual(election2.details());
+
+      election.remotelyUpdated({body: "what would you do for a klondike bar?", details: "jhjyg"});
+      expect(electionDetails.body.text()).toEqual(election2.body());
+      expect(electionDetails.details.text()).toEqual(election2.details());
+    });
+  });
+
+  describe("showing and hiding of the edit form", function() {
+    it("shows the form when the edit button is clicked and hides it when the cancel button is clicked", function() {
+      expect(electionDetails.form).toBeHidden();
+      expect(electionDetails.saveLink).toBeHidden();
+      expect(electionDetails.cancelEditLink).toBeHidden();
+
+      electionDetails.editLink.click();
+      expect(electionDetails.form).toBeVisible();
+      expect(electionDetails.cancelEditLink).toBeVisible();
+      expect(electionDetails.saveLink).toBeVisible();
+      expect(electionDetails.editLink).toBeHidden();
+      expect(electionDetails.nonEditableContent).toBeHidden();
+
+      electionDetails.cancelEditLink.click();
+      expect(electionDetails.form).toBeHidden();
+      expect(electionDetails.cancelEditLink).toBeHidden();
+      expect(electionDetails.saveLink).toBeHidden();
+      expect(electionDetails.editLink).toBeVisible();
+      expect(electionDetails.nonEditableContent).toBeVisible();
+    });
+
+    it("hides the form when the election changes", function() {
+      electionDetails.form.show();
+      electionDetails.saveLink.show();
+      electionDetails.cancelEditLink.show();
+
+      var election2 = creator.elections().createFromRemote({id: 2, body: 'MEUAUOEU?!', details: "aonetuhaoeu??!?!!?", organizationId: 98, createdAt: 91234});
+      electionDetails.election(election2);
+
+      expect(electionDetails.form).toBeHidden();
+      expect(electionDetails.saveLink).toBeHidden();
+      expect(electionDetails.cancelEditLink).toBeHidden();
+    });
+  });
+});

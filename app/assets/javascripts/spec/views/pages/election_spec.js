@@ -32,7 +32,7 @@ describe("Views.Pages.Election", function() {
 
     describe("if the electionId changes", function() {
       describe("if no voterId or candidateId is specified", function() {
-        it("fetches the election, candidates, candidate creators, votes, and the the current user's rankings before assigning relations to the subviews", function() {
+        it("fetches the election, candidates, candidate creators, votes, and the the current user's rankings before assigning relations to the subviews and the current org id", function() {
           waitsFor("fetch to complete", function(complete) {
             electionPage.params({ electionId: election.id() }).success(complete);
             expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
@@ -46,7 +46,8 @@ describe("Views.Pages.Election", function() {
             expect(election.votes().size()).toBeGreaterThan(0);
             expect(election.voters().size()).toBe(election.votes().size());
 
-            expect(electionPage.election()).toEqual(election);
+            expect(Application.currentOrganizationId()).toBe(election.organizationId());
+            expect(electionPage.electionDetails.election()).toEqual(election);
             expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(election.rankings().where({userId: currentUser.id()}).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
@@ -71,7 +72,8 @@ describe("Views.Pages.Election", function() {
             expect(election.candidates().size()).toBe(2);
             expect(election.rankings().size()).toBeGreaterThan(0);
 
-            expect(electionPage.election()).toEqual(election);
+            expect(Application.currentOrganizationId()).toBe(election.organizationId());
+            expect(electionPage.electionDetails.election()).toEqual(election);
             expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
             expect(election.candidates().join(User).on(User.id.eq(Candidate.creatorId)).size()).toBe(2);
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(election.rankings().where({userId: otherUser.id()}).tuples());
@@ -94,7 +96,8 @@ describe("Views.Pages.Election", function() {
             expect(Election.find(election.id())).toEqual(election);
             expect(election.candidates().size()).toBe(2);
 
-            expect(electionPage.election()).toEqual(election);
+            expect(Application.currentOrganizationId()).toBe(election.organizationId());
+            expect(electionPage.electionDetails.election()).toEqual(election);
             expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
             expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
             expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
@@ -113,7 +116,8 @@ describe("Views.Pages.Election", function() {
 
           stubAjax(); // we still fetch, but we're not testing that in this spec
           electionPage.params({electionId: election.id()});
-          expect(electionPage.election()).toEqual(election);
+          expect(Application.currentOrganizationId()).toBe(election.organizationId());
+          expect(electionPage.electionDetails.election()).toEqual(election);
         });
       });
 
@@ -196,75 +200,6 @@ describe("Views.Pages.Election", function() {
           electionPage.params({ electionId: election.id() });
           expect(electionPage.candidateDetails).not.toHaveClass('active');
         });
-      });
-    });
-  });
-
-  describe("when the election is assigned", function() {
-    var election, creator;
-
-    beforeEach(function() {
-      creator = User.createFromRemote({id: 1, firstName: "animal", lastName: "eater"});
-      election = creator.elections().createFromRemote({id: 1, body: 'What would jesus & <mary> do?', details: "wlk on wtr.", organizationId: 98, createdAt: 91234});
-      electionPage.election(election);
-    });
-
-    it("assigns the election's body, details and avatar, and keeps the body and details up to date when they change", function() {
-      expect(electionPage.body.text()).toEqual(election.body());
-      expect(electionPage.details.text()).toEqual(election.details());
-      election.remotelyUpdated({body: "what would satan & <damien> do?", details: "Isdf"});
-      expect(electionPage.body.text()).toEqual(election.body());
-      expect(electionPage.details.text()).toEqual(election.details());
-      expect(electionPage.avatar.user()).toBe(election.creator());
-      expect(electionPage.creatorName.text()).toBe(election.creator().fullName());
-      expect(electionPage.createdAt.text()).toBe(election.formattedCreatedAt());
-
-      var election2 = Election.createFromRemote({id: 2, body: 'Are you my mother?', details: "I hope so.", createdAt: 2345, creatorId: creator.id()});
-      electionPage.election(election2);
-      expect(electionPage.body.text()).toEqual(election2.body());
-      expect(electionPage.details.text()).toEqual(election2.details());
-
-      election.remotelyUpdated({body: "what would you do for a klondike bar?", details: "jhjyg"});
-      expect(electionPage.body.text()).toEqual(election2.body());
-      expect(electionPage.details.text()).toEqual(election2.details());
-    });
-
-    it("assigns the currentOrganizationId on the layout", function() {
-      expect(Application.currentOrganizationId()).toBe(election.organizationId());
-    });
-
-    describe("showing and hiding of the edit form", function() {
-      it("shows the form when the edit button is clicked and hides it when the cancel button is clicked", function() {
-        expect(electionPage.form).toBeHidden();
-        expect(electionPage.saveLink).toBeHidden();
-        expect(electionPage.cancelEditLink).toBeHidden();
-
-        electionPage.editLink.click();
-        expect(electionPage.form).toBeVisible();
-        expect(electionPage.cancelEditLink).toBeVisible();
-        expect(electionPage.saveLink).toBeVisible();
-        expect(electionPage.editLink).toBeHidden();
-        expect(electionPage.nonEditableContent).toBeHidden();
-
-        electionPage.cancelEditLink.click();
-        expect(electionPage.form).toBeHidden();
-        expect(electionPage.cancelEditLink).toBeHidden();
-        expect(electionPage.saveLink).toBeHidden();
-        expect(electionPage.editLink).toBeVisible();
-        expect(electionPage.nonEditableContent).toBeVisible();
-      });
-
-      it("hides the form when the election changes", function() {
-        electionPage.form.show();
-        electionPage.saveLink.show();
-        electionPage.cancelEditLink.show();
-
-        var election2 = creator.elections().createFromRemote({id: 2, body: 'MEUAUOEU?!', details: "aonetuhaoeu??!?!!?", organizationId: 98, createdAt: 91234});
-        electionPage.election(election2);
-        
-        expect(electionPage.form).toBeHidden();
-        expect(electionPage.saveLink).toBeHidden();
-        expect(electionPage.cancelEditLink).toBeHidden();
       });
     });
   });
