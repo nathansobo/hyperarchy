@@ -205,7 +205,7 @@ describe("Views.Pages.Election", function() {
 
     beforeEach(function() {
       creator = User.createFromRemote({id: 1, firstName: "animal", lastName: "eater"});
-      election = creator.elections().createFromRemote({id: 1, body: 'What would jesus & <mary> do?', details: "wlk on wtr.", organizationId: 98});
+      election = creator.elections().createFromRemote({id: 1, body: 'What would jesus & <mary> do?', details: "wlk on wtr.", organizationId: 98, createdAt: 91234});
       electionPage.election(election);
     });
 
@@ -215,8 +215,11 @@ describe("Views.Pages.Election", function() {
       election.remotelyUpdated({body: "what would satan & <damien> do?", details: "Isdf"});
       expect(electionPage.body.text()).toEqual(election.body());
       expect(electionPage.details.text()).toEqual(election.details());
+      expect(electionPage.avatar.user()).toBe(election.creator());
+      expect(electionPage.creatorName.text()).toBe(election.creator().fullName());
+      expect(electionPage.createdAt.text()).toBe(election.formattedCreatedAt());
 
-      var election2 = Election.createFromRemote({id: 2, body: 'Are you my mother?', details: "I hope so."});
+      var election2 = Election.createFromRemote({id: 2, body: 'Are you my mother?', details: "I hope so.", createdAt: 2345, creatorId: creator.id()});
       electionPage.election(election2);
       expect(electionPage.body.text()).toEqual(election2.body());
       expect(electionPage.details.text()).toEqual(election2.details());
@@ -228,6 +231,41 @@ describe("Views.Pages.Election", function() {
 
     it("assigns the currentOrganizationId on the layout", function() {
       expect(Application.currentOrganizationId()).toBe(election.organizationId());
+    });
+
+    describe("showing and hiding of the edit form", function() {
+      it("shows the form when the edit button is clicked and hides it when the cancel button is clicked", function() {
+        expect(electionPage.form).toBeHidden();
+        expect(electionPage.saveLink).toBeHidden();
+        expect(electionPage.cancelEditLink).toBeHidden();
+
+        electionPage.editLink.click();
+        expect(electionPage.form).toBeVisible();
+        expect(electionPage.cancelEditLink).toBeVisible();
+        expect(electionPage.saveLink).toBeVisible();
+        expect(electionPage.editLink).toBeHidden();
+        expect(electionPage.nonEditableContent).toBeHidden();
+
+        electionPage.cancelEditLink.click();
+        expect(electionPage.form).toBeHidden();
+        expect(electionPage.cancelEditLink).toBeHidden();
+        expect(electionPage.saveLink).toBeHidden();
+        expect(electionPage.editLink).toBeVisible();
+        expect(electionPage.nonEditableContent).toBeVisible();
+      });
+
+      it("hides the form when the election changes", function() {
+        electionPage.form.show();
+        electionPage.saveLink.show();
+        electionPage.cancelEditLink.show();
+
+        var election2 = creator.elections().createFromRemote({id: 2, body: 'MEUAUOEU?!', details: "aonetuhaoeu??!?!!?", organizationId: 98, createdAt: 91234});
+        electionPage.election(election2);
+        
+        expect(electionPage.form).toBeHidden();
+        expect(electionPage.saveLink).toBeHidden();
+        expect(electionPage.cancelEditLink).toBeHidden();
+      });
     });
   });
 });

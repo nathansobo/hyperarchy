@@ -5,7 +5,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
   
   beforeEach(function() {
     currentUser = User.createFromRemote({id: 1});
-    election = Election.createFromRemote({id: 1});
+    election = Election.createFromRemote({id: 1, creatorId: 1, createdAt: 234234234});
     candidate1 = election.candidates().createFromRemote({id: 1, body: "Candidate 1", createdAt: 1308352736162, creatorId: 1});
     candidate2 = election.candidates().createFromRemote({id: 2, body: "Candidate 2", createdAt: 1308352736162, creatorId: 1});
     candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3", createdAt: 1308352736162, creatorId: 1});

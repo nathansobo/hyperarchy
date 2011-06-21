@@ -4,7 +4,7 @@ describe("Views.Pages.Election.VoteLi", function() {
   var voteLi, vote, user, election;
   beforeEach(function() {
     user = User.createFromRemote({id: 1, firstName: 'joe', lastName: 'henderson'});
-    election = Election.createFromRemote({id: 1});
+    election = Election.createFromRemote({id: 1, creatorId: 1, createdAt: 234234});
     vote = user.votes().createFromRemote({electionId: election.id(), updatedAt: 1308352736162});
     voteLi = Views.Pages.Election.VoteLi.toView({vote: vote});
   });

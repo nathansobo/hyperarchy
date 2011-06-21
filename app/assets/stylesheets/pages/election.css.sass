@@ -1,103 +1,30 @@
-$wide-column: $phi/(3.0 * $phi + 1) * 100%
-$thin-column: 1/(3.0 * $phi + 1) * 100%
-$thin-column: 17.5%
-
 .placeholder
   background: purple
   
 #election
   height: 100%
-
-  > div#columns
+  > #columns
     height: 100%
     width: 100%
     display: table
     border-spacing: $padding-x 0
     table-layout: fixed
-    > div
+    > .column
       display: table-cell
-      backround: #eee
-      width: $wide-column
       @include box-sizing('border-box')
-      &#votes-column
-        //width: $thin-column
+      width: 30%
+      &:last-child
         width: $s10 + 10
-
-.candidate
-  position: relative
-  .position
-    float: left
-    text-align: right
-    width: $s0
-    color: #888
-    letter-spacing: $s-11
-    font-weight: $semibold
-
-  .body
-    margin-left: 2 * $s0
-    right: 0
-    top: ($line-height/2) - 1
-    bottom: 0
-
-
-.candidate, .ranking
-  padding: (ceil($line-height/2) - 1) ($line-height/2) ($line-height/2) ($line-height/2)
-  background: white
-  border: 1px solid #ccc
-  @include box-shadow(#aaa 0 0 3px)
-  cursor: default
-
-#election-details
-  padding-right: $line-height
-  .body, .details
-    margin-bottom: $line-height
-  .details
-    font-size: $s-1
-  .edit.button
-    font-size: $s-1
-    float: right
-
-#current-consensus
-  height: 100%
-  position: relative
-  ol
-    position: absolute
-    top: 1.5 * $line-height
-    bottom: 0
-    width: 100%
-    overflow-y: auto
-    background: #f0f0f0
-    border: 1px solid #ccc
-    @include box-shadow(#aaa 0 0 3px inset)
-    li.candidate, li.ranking
-      border-left: none
-      border-top: none
-      border-right: none
-      &.selected
-        @include background-image(linear-gradient(left, rgb(255,235,113), rgb(255, 247, 203)))
-
-
-#column-3
-  height: 100%
-  position: relative
-  .inset
-    overflow: hidden
-    @include box-sizing('border-box')
-    position: absolute
-    top: 1.5 * $line-height
-    bottom: 0
-    right: 0
-    left: 0
-    border: 1px solid #ccc
-    background: #f0f0f0
-    @include box-shadow(#aaa 0 0 3px inset)
+      > div // because display table-cell divs can't be position: relative
+        height: 100%
+        width: 100%
+        position: relative
 
 #ranked-candidates
   height: 100%
   ol
     height: 100%
     overflow-y: auto
-    //border-top: 1px solid #ccc
     #positive-drag-target, #negative-drag-target
       height: 42%
       width: 100%
@@ -115,23 +42,28 @@ $thin-column: 17.5%
       border-top: none
       border-right: none
 
+#election-details
+  padding-right: $padding-x
+  position: relative
+  .body
+    font-weight: $semibold
+
 #candidate-details
+  position: absolute
+  right: 100%
+  @include transition('right', 150ms, 'ease-in')
+  @include box-sizing('border-box')
   width: 100%
   height: 100%
   overflow-x: hidden
   overflow-y: auto
-  @include box-sizing('border-box')
   padding: ($line-height/2) ($line-height/2) ($line-height/2) ($line-height/2)
-
-  position: absolute
   z-index: 1
   background-color: white
-  right: 100%
-  @include transition('right', 150ms, 'ease-in')
-  //@include background-image(linear-gradient(left, rgb(255, 247, 203), white 30%))
   &.active
     right: 0
 
+#candidate-details, #election-details
   .creator
     height: 2 * $line-height
     margin-bottom: $line-height
@@ -139,8 +71,6 @@ $thin-column: 17.5%
       margin-top: 1px
       float: left
       margin-right: 6px
-    .name
-      //font-size: $s-1
     .date
       font-size: $s-2
       color: #999
@@ -184,15 +114,41 @@ $thin-column: 17.5%
         position: relative
         top: -1px
 
-    .button
-      float: right
-      @include clearfix
-      margin-left: $s-3
+  .button
+    float: right
+    margin-left: $s-3
 
+#current-consensus
+  ol
+    position: absolute
+    top: 1.5 * $line-height
+    bottom: 0
+    width: 100%
+    overflow-y: auto
+    background: #f0f0f0
+    border: 1px solid #ccc
+    @include box-shadow(#aaa 0 0 3px inset)
+    li.candidate, li.ranking
+      border-left: none
+      border-top: none
+      border-right: none
+      &.selected
+        @include background-image(linear-gradient(left, rgb(255,235,113), rgb(255, 247, 203)))
+
+#rankings-and-details
+  overflow: hidden
+  @include box-sizing('border-box')
+  position: absolute
+  top: 1.5 * $line-height
+  bottom: 0
+  width: 100%
+  //right: 0
+  //left: 0
+  border: 1px solid #ccc
+  background: #f0f0f0
+  @include box-shadow(#aaa 0 0 3px inset)
 
 #votes
-  height: 100%
-  position: relative
   ol
     border-top: 1px solid #ccc
     padding-top: $line-height/2
@@ -203,7 +159,6 @@ $thin-column: 17.5%
     width: 100%
     li
       padding-right: $s-2
-      //height: 2 * $line-height - 1
       overflow: hidden
       *
         white-space: nowrap
@@ -219,4 +174,29 @@ $thin-column: 17.5%
         color: #999
       &.selected
         @include background-image(linear-gradient(right, rgb(255,235,113), rgb(255, 247, 203)))
+
+.candidate
+  position: relative
+  .position
+    float: left
+    text-align: right
+    width: $s0
+    color: #888
+    letter-spacing: $s-11
+    font-weight: $semibold
+
+  .body
+    margin-left: 2 * $s0
+    right: 0
+    top: ($line-height/2) - 1
+    bottom: 0
+
+
+.candidate, .ranking
+  padding: (ceil($line-height/2) - 1) ($line-height/2) ($line-height/2) ($line-height/2)
+  background: white
+  border: 1px solid #ccc
+  @include box-shadow(#aaa 0 0 3px)
+  cursor: default
+
 

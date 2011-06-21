@@ -92,6 +92,8 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       candidateDetails.editLink.click();
 
       expect(candidateDetails.form).toBeVisible();
+      expect(candidateDetails.saveLink).toBeVisible();
+      expect(candidateDetails.cancelEditLink).toBeVisible();
       expect(candidateDetails.nonEditableContent).toBeHidden();
 
       expect(candidateDetails.formBody.val()).toBe(candidate.body());
@@ -100,6 +102,8 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       candidateDetails.cancelEditLink.click();
 
       expect(candidateDetails.form).toBeHidden();
+      expect(candidateDetails.saveLink).toBeHidden();
+      expect(candidateDetails.cancelEditLink).toBeHidden();
       expect(candidateDetails.nonEditableContent).toBeVisible();
     });
   });

@@ -7,7 +7,7 @@ describe("Views.Pages.Election.CandidateLi", function() {
     attachLayout();
     Application.currentUser(User.createFromRemote({id: 1}));
 
-    election = Election.createFromRemote({id: 22});
+    election = Election.createFromRemote({id: 22, creatorId: 1, createdAt: 234});
     candidate = election.candidates().createFromRemote({id: 11, body: "Fruitloops"});
     candidateLi = Views.Pages.Election.CandidateLi.toView({candidate: candidate});
   });
