@@ -45,6 +45,11 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         this.creatorName.bindText(candidate.creator(), 'fullName');
         this.createdAt.text(candidate.formattedCreatedAt());
         this.showOrHideMutateLinks();
+
+        if (this.candidateDestroySubscription) this.candidateDestroySubscription.destroy();
+        this.candidateDestroySubscription = candidate.onDestroy(function() {
+          History.pushState(null, null, candidate.election().url());
+        });
       },
 
       write: function() {

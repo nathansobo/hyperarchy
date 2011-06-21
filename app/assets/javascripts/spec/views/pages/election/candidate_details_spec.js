@@ -29,6 +29,19 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.createdAt.text()).toBe(candidate.formattedCreatedAt());
     });
 
+    it("removes subscriptions to the previous candidate", function() {
+      var candidate2 = Candidate.createFromRemote({id: 57, body: "soup.", electionId: election.id(), createdAt: 1111, creatorId: creator.id()});
+      var subscriptionsBefore = candidate.onDestroyNode.size();
+
+      candidateDetails.candidate(candidate2);
+
+      expect(candidate.onDestroyNode.size()).toBe(subscriptionsBefore - 1);
+
+      spyOn(History, 'pushState');
+      candidate.remotelyDestroyed();
+      expect(History.pushState).not.toHaveBeenCalled();
+    });
+
     it("hides the form if it is showing, even if the candidate does not change", function() {
       candidateDetails.candidate(candidate);
 
@@ -268,6 +281,13 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
         expect(Server.destroys.length).toBe(0);
       });
+    });
+  });
+
+  describe("when the candidate is destroyed", function() {
+    it("navigates to the election url", function() {
+      candidate.remotelyDestroyed();
+      expect(Path.routes.current).toBe(election.url());
     });
   });
 });

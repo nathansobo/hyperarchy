@@ -21,6 +21,12 @@ _.constructor("Candidate", Model.Record, {
     this.rankingsByUsers = {};
   },
 
+  afterRemoteDestroy: function() {
+    this.rankings().each(function(ranking) {
+      ranking.remotelyDestroyed();
+    });
+  },
+
   rankingByUser: function(user) {
     var relation = this.rankingsByUsers[user.id()];
     if (relation) return relation;
