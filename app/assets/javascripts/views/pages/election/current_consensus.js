@@ -5,11 +5,11 @@ _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
       subview('list', Views.Components.SortedList, {
         buildElement: function(candidate) {
           return Views.Pages.Election.CandidateLi.toView({candidate: candidate});
-        }
+        },
 
-//        onUpdate: function(record) {
-//          this.elementForRecord(record).position.text(record.position());
-//        }
+        onUpdate: function(element, record) {
+          element.position.text(record.position());
+        }
       });
     })
   }},
