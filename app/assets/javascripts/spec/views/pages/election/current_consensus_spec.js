@@ -44,4 +44,16 @@ describe("Views.Pages.Election.CurrentConsensus", function() {
       expect(candidate2Li.position.text()).toBe("1");
     });
   });
+
+  describe("when the body of a candidate changes", function() {
+    it("updates the body in the candidate li", function() {
+      var candidate1Li = currentConsensusView.find('li:contains("' + candidate1.body() + '")').view();
+
+      expect(candidate1Li.body.text()).toBe("Cheese");
+
+      candidate1.remotelyUpdated({body: 'rockets!'});
+
+      expect(candidate1Li.body.text()).toBe("rockets!");
+    });
+  });
 });

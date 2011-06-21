@@ -1,5 +1,3 @@
-//= require jquery
-//= require jquery_ujs
 //= require monarch
 //= require monarch/add_to_global_namespace
 //= require jquery-ui/jquery.ui.core

@@ -19,7 +19,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         .ref('form');
       a({'class': 'save button'}, "Save").ref('saveLink').click('save');
       a({'class': 'cancel button'}, "Cancel").ref('cancelEditLink').click('hideForm');
-      a({'class': 'create button'}, "Add Answer").ref('createLink');
+      a({'class': 'create button'}, "Add Answer").ref('createLink').click('create');
 
       div({'class': "creator"}, function() {
         subview('avatar', Views.Components.Avatar, {imageSize: 34});
@@ -53,7 +53,15 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
 
     save: function(e) {
       e.preventDefault();
+      if ($.trim(this.formBody.val()) === '') return;
       this.candidate().update(this.form.fieldValues()).success(this.hitch('hideForm'));
+    },
+
+    create: function(e) {
+      e.preventDefault();
+      if ($.trim(this.formBody.val()) === '') return;
+      this.parentView.election().candidates().create(this.form.fieldValues());
+      History.pushState(null, null, this.parentView.election().url());
     },
 
     showForm: function() {
@@ -65,6 +73,8 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         this.formBody.val(this.candidate().body()).elastic();
         this.formDetails.val(this.candidate().details()).elastic();
       }
+
+      this.formBody.focus();
     },
 
     showNewForm: function() {

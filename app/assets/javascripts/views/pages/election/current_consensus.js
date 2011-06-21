@@ -8,6 +8,7 @@ _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
 
         onUpdate: function(element, record) {
           element.position.text(record.position());
+          element.body.text(record.body());
         }
       });
     })

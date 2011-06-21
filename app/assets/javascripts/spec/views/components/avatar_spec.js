@@ -33,6 +33,12 @@ describe("Views.Components.Avatar", function() {
         avatar.img.trigger("load");
         expect(avatar).toContain('img');
         expect(avatar).toHaveClass('valid-gravatar');
+
+        var otherUser = User.createFromRemote({id: 2, emailHash: "oaneuth"})
+        avatar.user(otherUser);
+        expect(avatar).not.toHaveClass('valid-gravatar');
+        avatar.img.trigger("load");
+        expect(avatar).toHaveClass('valid-gravatar');
       });
     });
   });

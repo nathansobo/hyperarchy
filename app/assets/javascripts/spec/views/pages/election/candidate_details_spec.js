@@ -1,14 +1,15 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Election.CandidateDetails", function() {
-  var candidateDetails, candidate, creator;
+  var candidateDetails, candidate, creator, election;
 
   beforeEach(function() {
     attachLayout();
     candidateDetails = Application.electionPage.candidateDetails;
     creator = User.createFromRemote({id: 999, emailHash: 'blas', firstName: "Mr.", lastName: "Creator"});
     Application.currentUser(creator);
-    candidate = creator.candidates().createFromRemote({id: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?", createdAt: 1308352736162});
+    election = Election.createFromRemote({id: 1, creatorId: 999, createdAt: 12});
+    candidate = creator.candidates().createFromRemote({id: 1, electionId: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?", createdAt: 1308352736162});
 
     $('#jasmine_content').html(Application.electionPage);
     Application.electionPage.showCandidateDetails();
@@ -119,8 +120,56 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     });
   });
 
+  describe("when the create button is clicked", function() {
+    var fieldValues;
+
+    beforeEach(function() {
+      useFakeServer();
+      Application.electionPage.election(election);
+      candidateDetails.showNewForm();
+      fieldValues = {
+        body: "Relish",
+        details: "That green stuff..."
+      }
+
+      candidateDetails.formBody.val(fieldValues.body);
+      candidateDetails.formDetails.val(fieldValues.details);
+    });
+
+    describe("when the body field is filled in", function() {
+      it("creates a new candidates with the given body and details on the server and hides the form", function() {
+        candidateDetails.createLink.click();
+
+        expect(Server.creates.length).toBe(1);
+
+        console.debug(Server.lastCreate);
+        expect(Server.lastCreate.record.dirtyWireRepresentation()).toEqual(_.extend(fieldValues, {election_id: election.id()}));
+        Server.lastCreate.simulateSuccess();
+
+        expect(Path.routes.current).toBe(election.url());
+      });
+
+      it("wires the form submit event to save", function() {
+        candidateDetails.form.submit();
+        expect(Server.updates.length).toBe(1);
+      });
+    });
+
+    describe("when the body field is empty", function() {
+      it("does nothing", function() {
+        spyOn(History, 'pushState');
+        candidateDetails.formBody.val('                  ');
+        candidateDetails.createLink.click();
+        expect(Server.creates.length).toBe(0);
+        expect(History.pushState).not.toHaveBeenCalled();
+      });
+    });
+
+
+  });
+
   describe("showing and hiding of the edit form", function() {
-    it("shows and populates the form fields when edit is clicked and hides them when cancel is clicked", function() {
+    it("shows and populates the form fields and sets focus when edit is clicked and hides them when cancel is clicked", function() {
       expect(candidateDetails.form).toBeHidden();
       expect(candidateDetails.nonEditableContent).toBeVisible();
 
@@ -132,6 +181,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.nonEditableContent).toBeHidden();
 
       expect(candidateDetails.formBody.val()).toBe(candidate.body());
+      expect(candidateDetails.formBody[0]).toBe(document.activeElement);
       expect(candidateDetails.formDetails.val()).toBe(candidate.details());
 
       candidateDetails.cancelEditLink.click();
@@ -143,19 +193,19 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     });
   });
 
-  describe("when the save is button is clicked", function() {
-    var updates;
+  describe("when the save button is clicked", function() {
+    var fieldValues;
 
     beforeEach(function() {
       useFakeServer();
       candidateDetails.editLink.click();
-      updates = {
+      fieldValues = {
         body: "Relish",
         details: "That green stuff..."
       }
 
-      candidateDetails.formBody.val(updates.body);
-      candidateDetails.formDetails.val(updates.details);
+      candidateDetails.formBody.val(fieldValues.body);
+      candidateDetails.formDetails.val(fieldValues.details);
     });
 
     it("updates the record's body and details on the server and hides the form", function() {
@@ -163,19 +213,27 @@ describe("Views.Pages.Election.CandidateDetails", function() {
   
       expect(Server.updates.length).toBe(1);
 
-      expect(Server.lastUpdate.dirtyFieldValues).toEqual(updates);
+      expect(Server.lastUpdate.dirtyFieldValues).toEqual(fieldValues);
       Server.lastUpdate.simulateSuccess();
 
       expect(candidateDetails.form).toBeHidden();
       expect(candidateDetails.nonEditableContent).toBeVisible();
       
-      expect(candidateDetails.body.text()).toBe(updates.body);
-      expect(candidateDetails.details.text()).toBe(updates.details);
+      expect(candidateDetails.body.text()).toBe(fieldValues.body);
+      expect(candidateDetails.details.text()).toBe(fieldValues.details);
     });
 
     it("wires the form submit event to save", function() {
       candidateDetails.form.submit();
       expect(Server.updates.length).toBe(1);
+    });
+
+    it("does not allow a blank body", function() {
+      spyOn(History, 'pushState');
+      candidateDetails.formBody.val('  ');
+      candidateDetails.saveLink.click();
+      expect(Server.updates.length).toBe(0);
+      expect(History.pushState).not.toHaveBeenCalled();
     });
   });
 });
