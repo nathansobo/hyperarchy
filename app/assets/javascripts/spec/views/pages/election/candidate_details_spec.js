@@ -6,7 +6,9 @@ describe("Views.Pages.Election.CandidateDetails", function() {
   beforeEach(function() {
     attachLayout();
     candidateDetails = Application.electionPage.candidateDetails;
-    candidate = Candidate.createFromRemote({id: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?"});
+    creator = User.createFromRemote({id: 999, emailHash: 'blas', firstName: "Mr.", lastName: "Creator"});
+    candidate = creator.candidates().createFromRemote({id: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?", createdAt: 1308352736162});
+
     $('#jasmine_content').html(Application.electionPage);
     Application.electionPage.showCandidateDetails();
 
@@ -20,6 +22,9 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       candidate.remotelyUpdated({body: "Catsup", details: "37 flavors"});
       expect(candidateDetails.body.text()).toEqual(candidate.body());
       expect(candidateDetails.details.text()).toEqual(candidate.details());
+      expect(candidateDetails.avatar.user()).toBe(candidate.creator());
+      expect(candidateDetails.creatorName.text()).toBe(creator.fullName());
+      expect(candidateDetails.createdAt.text()).toBe(candidate.formattedCreatedAt());
     });
 
     it("hides the form if it is showing, even if the candidate does not change", function() {

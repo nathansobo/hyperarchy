@@ -5,7 +5,7 @@ describe("Views.Components.Avatar", function() {
   var avatar;
   beforeEach(function() {
     window.Application = Views.Layout.toView();
-    avatar = Views.Components.Avatar.toView({size: 25});
+    avatar = Views.Components.Avatar.toView({imageSize: 25});
   });
 
   describe("#initialize", function() {

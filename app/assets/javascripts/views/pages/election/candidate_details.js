@@ -1,6 +1,11 @@
 _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "candidate-details"}, function() {
+      div({'class': "creator"}, function() {
+        subview('avatar', Views.Components.Avatar, {imageSize: 34});
+        div({'class': "name"}).ref('creatorName');
+        div({'class': "date"}).ref('createdAt');
+      }).ref('creator');
       div(function() {
         div({'class': "body"}).ref("body");
         div({'class': "details"}).ref("details");
@@ -17,6 +22,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         a({'class': 'cancel button'}, "Cancel").ref('cancelEditLink').click('hideForm');
       }).submit('save')
         .ref('form');
+
     });
   }},
 
@@ -25,6 +31,9 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       change: function(candidate) {
         this.body.bindText(candidate, 'body');
         this.details.bindText(candidate, 'details');
+        this.avatar.user(candidate.creator());
+        this.creatorName.bindText(candidate.creator(), 'fullName');
+        this.createdAt.text(candidate.formattedCreatedAt());
       },
 
       write: function() {

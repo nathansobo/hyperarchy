@@ -128,6 +128,20 @@ $thin-column: 17.5%
   //@include background-image(linear-gradient(left, rgb(255, 247, 203), white 30%))
   &.active
     right: 0
+
+  .creator
+    height: 2 * $line-height
+    margin-bottom: $line-height
+    .avatar
+      margin-top: 1px
+      float: left
+      margin-right: 6px
+    .name
+      //font-size: $s-1
+    .date
+      font-size: $s-2
+      color: #999
+
   .body, .details
     margin-bottom: $line-height
   .details
@@ -147,19 +161,25 @@ $thin-column: 17.5%
       width: 100%
       resize: none
       &.body
-        margin-bottom: 0
         min-height: 4 * $line-height
+        margin-top: -3px
+        margin-bottom: 3px
       &.details
+        margin-top: -2px
+        padding-top: 1px
+        margin-bottom: $line-height + 2
         min-height: 6 * $line-height
 
-    .chars-remaining
-      margin-bottom: $line-height
-      float: right
-
     label
-      display: block
-      clear: right
       font-size: $s-1
+      display: block
+      &.chars-remaining
+        margin-bottom: $line-height
+        float: right
+      &[for='details']
+        clear: right
+        position: relative
+        top: -1px
 
     .button
       float: right
@@ -185,9 +205,7 @@ $thin-column: 17.5%
       *
         white-space: nowrap
       .avatar
-        //margin-top: 3px
-        margin-top: 3px
-        background-image: url(/images/mystery_man_34.jpeg)
+        margin-top: 1px
         margin-right: 6px
         float: left
       .name

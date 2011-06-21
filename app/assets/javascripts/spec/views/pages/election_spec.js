@@ -18,9 +18,10 @@ describe("Views.Pages.Election", function() {
       usingBackdoor(function() {
         election = Election.create();
         otherUser = User.create();
+        otherUser2 = User.create();
         otherUser.memberships().create({organizationId: election.organizationId()});
         candidate1 = election.candidates().create();
-        candidate2 = election.candidates().create();
+        candidate2 = election.candidates().create({creatorId: otherUser2.id()});
         currentUserRanking1 = election.rankings().create({userId: currentUser.id(), position: 64, candidateId: candidate1.id()});
         currentUserRanking2 = election.rankings().create({userId: currentUser.id(), position: -64, candidateId: candidate2.id()});
         otherUserRanking1 = election.rankings().create({userId: otherUser.id(), position: 64, candidateId: candidate1.id()});
@@ -31,7 +32,7 @@ describe("Views.Pages.Election", function() {
 
     describe("if the electionId changes", function() {
       describe("if no voterId or candidateId is specified", function() {
-        it("fetches the election, candidates, votes, and the the current user's rankings before assigning relations to the subviews", function() {
+        it("fetches the election, candidates, candidate creators, votes, and the the current user's rankings before assigning relations to the subviews", function() {
           waitsFor("fetch to complete", function(complete) {
             electionPage.params({ electionId: election.id() }).success(complete);
             expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
@@ -40,6 +41,7 @@ describe("Views.Pages.Election", function() {
           runs(function() {
             expect(Election.find(election.id())).toEqual(election);
             expect(election.candidates().size()).toBe(2);
+            expect(election.candidates().join(User).on(User.id.eq(Candidate.creatorId)).size()).toBe(2);
             expect(election.rankings().size()).toBeGreaterThan(0);
             expect(election.votes().size()).toBeGreaterThan(0);
             expect(election.voters().size()).toBe(election.votes().size());
@@ -71,6 +73,7 @@ describe("Views.Pages.Election", function() {
 
             expect(electionPage.election()).toEqual(election);
             expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
+            expect(election.candidates().join(User).on(User.id.eq(Candidate.creatorId)).size()).toBe(2);
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(election.rankings().where({userId: otherUser.id()}).tuples());
             expect(electionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
             expect(electionPage.rankedCandidates).toBeVisible();
@@ -108,7 +111,7 @@ describe("Views.Pages.Election", function() {
             Election.fetch(election.id());
           });
 
-          stubAjax();
+          stubAjax(); // we still fetch, but we're not testing that in this spec
           electionPage.params({electionId: election.id()});
           expect(electionPage.election()).toEqual(election);
         });

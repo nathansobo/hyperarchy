@@ -30,6 +30,10 @@ _.constructor("Views.Layout", View.Template, {
   viewProperties: {
     initialize: function() {
       this.connectToSocketServer();
+
+      $(document).bind('keydown', 'ctrl+g', function() {
+        $('body').toggleClass('grid');
+      });
     },
 
     currentUser: {

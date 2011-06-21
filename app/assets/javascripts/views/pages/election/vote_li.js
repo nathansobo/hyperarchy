@@ -2,7 +2,7 @@ _.constructor('Views.Pages.Election.VoteLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
     li({'class': "vote"}, function() {
       a(function() {
-        subview('avatar', Views.Components.Avatar, {size: 34});
+        subview('avatar', Views.Components.Avatar, {imageSize: 34});
         div({'class': "name"}).ref('name');
         div({'class': "date"}).ref('date');
       }).click(function() {

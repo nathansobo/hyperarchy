@@ -17,6 +17,7 @@ _.constructor("User", Model.Record, {
 
     this.hasMany('votes');
     this.hasMany('rankings');
+    this.hasMany('candidates', {key: 'creatorId'});
     this.hasMany('memberships');
     this.hasMany('electionVisits');
 

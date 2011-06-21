@@ -4,7 +4,7 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
       a({id: "login-link"}, "Login").ref('loginLink').click("showLoginForm");
       subview('dropdownMenu', Views.Layout.DropdownMenu, {
         linkContent: function() { with(this.builder) {
-          subview('avatar', Views.Components.Avatar, {size: 27});
+          subview('avatar', Views.Components.Avatar, {imageSize: 27});
           span({id: "name"}).ref("name");
         }},
         menuContent: function() { with(this.builder) {

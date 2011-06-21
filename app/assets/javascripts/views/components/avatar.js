@@ -5,8 +5,9 @@ _.constructor("Views.Components.Avatar", View.Template, {
 
   viewProperties: {
     initialize: function() {
-      this.css('height', this.size);
-      this.css('width', this.size);
+      if (!this.imageSize) throw new Error("No image size");
+      this.css('height', this.imageSize);
+      this.css('width', this.imageSize);
     },
 
     user: {
@@ -16,7 +17,7 @@ _.constructor("Views.Components.Avatar", View.Template, {
         this.img = $(new Image());
         this.img
           .load(this.hitch('imageLoaded'))
-          .attr('src', user.gravatarUrl(this.size));
+          .attr('src', user.gravatarUrl(this.imageSize));
       }
     },
 
