@@ -70,4 +70,40 @@ describe("Views.Pages.Election.ElectionDetails", function() {
       expect(electionDetails.cancelEditLink).toBeHidden();
     });
   });
+
+  describe("when the save is button is clicked", function() {
+    var updates;
+
+    beforeEach(function() {
+      useFakeServer();
+      electionDetails.editLink.click();
+      updates = {
+        body: "Relish",
+        details: "That green stuff..."
+      }
+
+      electionDetails.formBody.val(updates.body);
+      electionDetails.formDetails.val(updates.details);
+    });
+
+    it("updates the record's body and details on the server and hides the form", function() {
+      electionDetails.saveLink.click();
+
+      expect(Server.updates.length).toBe(1);
+
+      expect(Server.lastUpdate.dirtyFieldValues).toEqual(updates);
+      Server.lastUpdate.simulateSuccess();
+
+      expect(electionDetails.form).toBeHidden();
+      expect(electionDetails.nonEditableContent).toBeVisible();
+
+      expect(electionDetails.body.text()).toBe(updates.body);
+      expect(electionDetails.details.text()).toBe(updates.details);
+    });
+
+    it("wires the form submit event to save", function() {
+      electionDetails.form.submit();
+      expect(Server.updates.length).toBe(1);
+    });
+  });
 });

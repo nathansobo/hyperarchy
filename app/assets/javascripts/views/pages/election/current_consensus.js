@@ -6,6 +6,10 @@ _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
         buildElement: function(candidate) {
           return Views.Pages.Election.CandidateLi.toView({candidate: candidate});
         }
+
+//        onUpdate: function(record) {
+//          this.elementForRecord(record).position.text(record.position());
+//        }
       });
     })
   }},

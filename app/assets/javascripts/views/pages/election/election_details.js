@@ -46,6 +46,11 @@ _.constructor('Views.Pages.Election.ElectionDetails', Monarch.View.Template, {
       }
     },
 
+    save: function(e) {
+      e.preventDefault();
+      this.election().update(this.form.fieldValues()).success(this.hitch('hideForm'));
+    },
+
     showForm: function() {
       this.nonEditableContent.hide();
       this.editLink.hide();
