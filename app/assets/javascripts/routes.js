@@ -5,7 +5,7 @@ Path.map('/organizations/:organizationId').to(function() {
 Path.map('/elections/:electionId').to(function() {
   Application.showPage('election', this.params);
 });
-
+                                           // also handles 'new'
 Path.map('/elections/:electionId/candidates/:candidateId').to(function() {
   Application.showPage('election', this.params);
 });

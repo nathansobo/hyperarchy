@@ -119,5 +119,9 @@ _.constructor("Election", Model.Record, {
 
   url: function() {
     return "/elections/" + this.id();
+  },
+
+  newCandidateUrl: function() {
+    return this.url() + "/candidates/new";
   }
 });

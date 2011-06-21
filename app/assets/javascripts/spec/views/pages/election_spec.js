@@ -108,6 +108,32 @@ describe("Views.Pages.Election", function() {
         });
       });
 
+      describe("if 'new' is specified as the candidateId", function() {
+        it("fetches the election and candidates before assigning relations to the subviews and showing the candidate details form in 'new' mode", function() {
+          spyOn(electionPage.candidateDetails, 'showNewForm');
+
+          waitsFor("fetch to complete", function(complete) {
+            electionPage.params({ electionId: election.id(), candidateId: 'new' }).success(complete);
+            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+          });
+
+          runs(function() {
+            expect(Election.find(election.id())).toEqual(election);
+            expect(election.candidates().size()).toBe(2);
+
+            expect(Application.currentOrganizationId()).toBe(election.organizationId());
+            expect(electionPage.electionDetails.election()).toEqual(election);
+            expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
+            expect(electionPage.candidateDetails.showNewForm).toHaveBeenCalled();
+            expect(electionPage.candidateDetails.candidate()).toBeFalsy();
+            expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
+            expect(electionPage.rankedCandidates).not.toHaveClass('active');
+            expect(electionPage.candidateDetails).toBeVisible();
+            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+          });
+        });
+      });
+
       describe("if the election is already present in the repository", function() {
         it("assigns the election before fetching additional data", function() {
           synchronously(function() {
@@ -201,6 +227,17 @@ describe("Views.Pages.Election", function() {
           expect(electionPage.candidateDetails).not.toHaveClass('active');
         });
       });
+    });
+  });
+
+  describe("when the 'suggest an answer' button is clicked", function() {
+    it("navigates to the url for new candidates for the current election", function() {
+      Application.currentUser(User.createFromRemote({id: 1}));
+      var election = Election.createFromRemote({id: 1, creatorId: 1, createdAt: 2345});
+
+      electionPage.election(election);
+      electionPage.newCandidateButton.click();
+      expect(Path.routes.current).toBe(election.url() + "/candidates/new");
     });
   });
 });

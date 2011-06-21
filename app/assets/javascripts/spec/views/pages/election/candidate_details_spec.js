@@ -41,6 +41,10 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.form).toBeHidden();
       expect(candidateDetails.nonEditableContent).toBeVisible();
     });
+
+    it("handles null candidates", function() {
+      candidateDetails.candidate(null);
+    });
   });
 
   describe("showing and hiding of the edit button", function() {
@@ -81,6 +85,37 @@ describe("Views.Pages.Election.CandidateDetails", function() {
         Application.currentUser(creator);
         expect(candidateDetails.editLink).toBeHidden();
       });
+    });
+  });
+
+  describe("showing and hiding the new form", function() {
+    it("empties out and shows the form fields and the create button when #showNewForm is called", function() {
+      candidateDetails.formBody.val("woweee!");
+      candidateDetails.formDetails.val("cocooo!");
+      candidateDetails.hideForm();
+
+      var now = new Date();
+      spyOn(window, 'Date').andReturn(now);
+
+      expect(candidateDetails.createLink).toBeHidden();
+      candidateDetails.showNewForm();
+      expect(candidateDetails.form).toBeVisible();
+      expect(candidateDetails.formBody.val()).toBe('');
+      expect(candidateDetails.formDetails.val()).toBe('');
+      expect(candidateDetails.createLink).toBeVisible();
+      expect(candidateDetails.cancelEditLink).toBeHidden();
+      expect(candidateDetails.saveLink).toBeHidden();
+
+      expect(candidateDetails.avatar.user()).toBe(Application.currentUser());
+      expect(candidateDetails.creatorName.text()).toBe(Application.currentUser().fullName());
+      expect(candidateDetails.createdAt.text()).toBe($.PHPDate("M j, Y @ g:ia", now));
+
+      candidateDetails.candidate(candidate);
+
+      expect(candidateDetails.form).toBeHidden();
+      expect(candidateDetails.createLink).toBeHidden();
+      expect(candidateDetails.cancelEditLink).toBeHidden();
+      expect(candidateDetails.saveLink).toBeHidden();
     });
   });
 

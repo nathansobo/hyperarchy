@@ -1,7 +1,6 @@
 _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "current-consensus"}, function() {
-      h2("Current Consensus");
       subview('list', Views.Components.SortedList, {
         buildElement: function(candidate) {
           return Views.Pages.Election.CandidateLi.toView({candidate: candidate});

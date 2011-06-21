@@ -45,6 +45,19 @@ describe("Routes", function() {
     });
   });
 
+  describe("/elections/:electionId/candidates/new", function() {
+    it("shows only the electionsPage assigns the election id, and shows the new candidate form", function() {
+      Application.electionPage.show();
+      History.pushState(null, null, '/elections/12/candidates/new');
+      expect(Application.organizationPage).toBeHidden();
+      expect(Application.electionPage).toBeVisible();
+      expect(Application.electionPage.params()).toEqual({
+        electionId: 12,
+        candidateId: 'new'
+      });
+    });
+  });
+
   describe("/elections/:electionId/candidates/:candidateId", function() {
     it("shows only the electionsPage and assigns the id and selectedCandidateId on it", function() {
       Application.electionPage.show();

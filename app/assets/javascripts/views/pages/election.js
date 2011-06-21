@@ -3,7 +3,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     div({id: "election"}, function() {
       div({id: "columns"}, function() {
         for (var i = 1; i <= 4; i++) {
-          div({'class': "column"}, function() {
+          div({'class': "column", id: "column" + i}, function() {
             div(function() {
               div({style: "height: 0"}, function() { raw("&nbsp;") }); // hack to allow textareas first
               template['column' + i]();
@@ -18,9 +18,13 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     this.builder.subview('electionDetails', Views.Pages.Election.ElectionDetails);
   },
 
-  column2: function() {
-    this.builder.subview('currentConsensus', Views.Pages.Election.CurrentConsensus);
-  },
+  column2: function() { with(this.builder) {
+    a({'class': "link"}, "Add An Answer")
+      .ref('newCandidateButton')
+      .click('routeToNewElectionForm');
+    h2("Current Consensus");
+    subview('currentConsensus', Views.Pages.Election.CurrentConsensus);
+  }},
 
   column3: function() { with(this.builder) {
     h2("Your Ranking").ref('rankedCandidatesHeader');
@@ -47,10 +51,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
     populateContentBeforeFetch: function(params) {
       var election = Election.find(params.electionId);
-      if (election) {
-        Application.currentOrganizationId(election.organizationId());
-        this.electionDetails.election(election);
-      }
+      if (election) this.election(election);
 
       var voterId;
       if (!params.candidateId) {
@@ -89,21 +90,28 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         return;
       }
 
-      Application.currentOrganizationId(election.organizationId());
-      this.electionDetails.election(election);
+      this.election(election);
       this.currentConsensus.candidates(election.candidates());
       this.votes.votes(election.votes());
 
       if (params.candidateId) {
-        var candidate = Candidate.find(params.candidateId)
+        var candidate = Candidate.find(params.candidateId);
         this.currentConsensus.selectedCandidate(candidate);
-        this.showCandidateDetails();
         this.candidateDetails.candidate(candidate);
+        this.showCandidateDetails();
+        if (params.candidateId === 'new') this.candidateDetails.showNewForm();
       } else {
         var rankings = Ranking.where({electionId: params.electionId, userId: params.voterId || Application.currentUserId()});
         this.showRankedCandidates();
         this.populateRankedCandidatesHeader(params.voterId);
         this.rankedCandidates.rankings(rankings);
+      }
+    },
+
+    election: {
+      change: function(election) {
+        Application.currentOrganizationId(election.organizationId());
+        this.electionDetails.election(election);
       }
     },
 
@@ -127,6 +135,10 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.rankedCandidatesHeader.hide();
       this.candidateDetailsHeader.show();
       this.candidateDetails.addClass('active');
+    },
+
+    routeToNewElectionForm: function() {
+      History.pushState(null, null, this.election().newCandidateUrl());
     }
   }
 });

@@ -60,8 +60,8 @@ _.constructor("Views.Layout", View.Template, {
       this.body.children().hide();
       var parsedParams = {};
       _.each(params, function(value, key) {
-        parsedParams[key] = parseInt(value);
-      })
+        parsedParams[key] = (value !== 'new') ? parseInt(value) : value;
+      });
       this[name + 'Page'].show().params(parsedParams);
     },
 
