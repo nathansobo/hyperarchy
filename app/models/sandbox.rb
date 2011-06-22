@@ -24,6 +24,10 @@ class Sandbox < Prequel::Sandbox
     organizations.join_through(Election)
   end
 
+  expose :election_comments do
+    elections.join_through(ElectionComment)
+  end
+
   expose :candidates do
     elections.join_through(Candidate)
   end

@@ -15,7 +15,7 @@ describe("Views.Pages.Election.ElectionDetails", function() {
   });
 
   describe("#election", function() {
-    it("assigns the election's body, details and avatar, and keeps the body and details up to date when they change", function() {
+    it("assigns the election's body, details, avatar, and comments relation, and keeps the body and details up to date when they change", function() {
       expect(electionDetails.body.text()).toEqual(election.body());
       expect(electionDetails.details.text()).toEqual(election.details());
       election.remotelyUpdated({body: "what would satan & <damien> do?", details: "Isdf"});
@@ -24,6 +24,7 @@ describe("Views.Pages.Election.ElectionDetails", function() {
       expect(electionDetails.avatar.user()).toBe(election.creator());
       expect(electionDetails.creatorName.text()).toBe(election.creator().fullName());
       expect(electionDetails.createdAt.text()).toBe(election.formattedCreatedAt());
+      expect(electionDetails.comments.comments()).toBe(election.comments());
 
       var election2 = Election.createFromRemote({id: 2, body: 'Are you my mother?', details: "I hope so.", createdAt: 2345, creatorId: creator.id()});
       electionDetails.election(election2);

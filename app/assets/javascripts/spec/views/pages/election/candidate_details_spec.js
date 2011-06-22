@@ -162,7 +162,6 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
         expect(Server.creates.length).toBe(1);
 
-        console.debug(Server.lastCreate);
         expect(Server.lastCreate.record.dirtyWireRepresentation()).toEqual(_.extend(fieldValues, {election_id: election.id()}));
         Server.lastCreate.simulateSuccess();
 

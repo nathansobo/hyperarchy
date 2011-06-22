@@ -22,6 +22,11 @@ Election.blueprint do
   suppress_current_user_membership_check { true }
 end
 
+ElectionComment.blueprint do
+  election { Election.make }
+  body { Faker::Lorem.sentence }
+end
+
 Candidate.blueprint do
   election { Election.make }
   body { Sham.answer }

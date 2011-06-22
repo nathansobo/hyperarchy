@@ -34,6 +34,9 @@ body, textarea
     background: #999
     @include background-image(linear-gradient(left, #ddd, #bbb))
 
+textarea
+  border: 1px solid #ccc
+
 a
   cursor: pointer
   &.link
@@ -55,8 +58,14 @@ a
       background: $pale-red
     &.update:hover
       background: $pale-green
+    &.create:hover
+      background: $pale-green
     &.edit:hover, &.new:hover
       background: $pale-blue
+
+  &.icon
+    display: inline-block
+    
 
 
 li

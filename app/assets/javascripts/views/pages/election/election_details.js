@@ -1,12 +1,12 @@
 _.constructor('Views.Pages.Election.ElectionDetails', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "election-details"}, function() {
-      div(function() {
+      div({'class': "main"}, function() {
         h2({'class': 'body'}).ref('body');
         div({'class': 'details'}).ref('details');
       }).ref('nonEditableContent');
 
-      form(function() {
+      form({'class': "main"}, function() {
         textarea({name: "body", 'class': "body"}).ref("formBody");
         label({'for': "body", 'class': "chars-remaining"}, "67 characters remaining");
         label({'for': "details"}, "Further Details");
@@ -24,6 +24,7 @@ _.constructor('Views.Pages.Election.ElectionDetails', Monarch.View.Template, {
         div({'class': 'date'}).ref('createdAt');
       });
 
+      subview('comments', Views.Pages.Election.ElectionComments);
     });
   }},
 
@@ -32,6 +33,7 @@ _.constructor('Views.Pages.Election.ElectionDetails', Monarch.View.Template, {
       change: function(election) {
         this.body.bindText(election, 'body');
         this.details.bindText(election, 'details');
+        this.comments.comments(election.comments());
 
         if (election.details()) {
           this.details.show()

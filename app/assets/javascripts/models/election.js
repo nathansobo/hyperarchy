@@ -16,6 +16,11 @@ _.constructor("Election", Model.Record, {
 
       this.hasMany('candidates');
       this.hasMany('votes', {orderBy: 'updatedAt desc'});
+      this.hasMany('comments', {constructorName: 'ElectionComment'});
+      this.relatesToMany('commenters', function() {
+        return this.comments().join(User).on(ElectionComment.creatorId.eq(User.id));
+      });
+
       this.hasMany('electionVisits');
       this.relatesToMany('voters', function() {
         return this.votes().joinThrough(User);

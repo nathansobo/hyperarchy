@@ -73,6 +73,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         relationsToFetch.push(Candidate.where({electionId: params.electionId}).join(User).on(Candidate.creatorId.eq(User.id))); // candidates
         relationsToFetch.push(Vote.where({electionId: params.electionId}).joinTo(User)); // votes
         relationsToFetch.push(Application.currentUser().rankings().where({electionId: params.electionId})); // current user's rankings
+        relationsToFetch.push(ElectionComment.where({electionId: params.electionId}).join(User).on(ElectionComment.creatorId.eq(User.id))); // election comments
       }
 
       if (params.voterId) {
