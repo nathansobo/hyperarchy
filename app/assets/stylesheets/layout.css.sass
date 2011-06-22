@@ -7,33 +7,65 @@ $max-width: 1443px
 #layout
   #header-wrapper
     height: $header-height
-    background-color: transparentize(#aaa, 0.5)
+    background-color: #444
+    @include background-image(linear-gradient(top, #555, #363636))
+    color: transparentize(white, .15)
 
     > #header
       margin: 0 auto
       @include box-sizing('border-box')
       min-width: $min-width
       max-width: $max-width
-      padding: (($header-height - $line-height) / 2) $padding-x
+      padding: 0 $padding-x
       height: 100%
 
       > h1
-        font-weight: $semibold
+        font-weight: $regular
         float: left
         letter-spacing: $s-9
+        padding: ($line-height/2) 0
 
       > #menu-items
         float: right
+        height: $header-height
+        font-weight: $light
+
         > div
           display: inline-block
-          margin-left: $s2
+          margin-left: 0
 
+        .dropdown-menu
+          padding: $line-height/2
+          @include unselectable
+          position: relative
+          &.active
+            background: transparentize(white, 0.9)
+          ul
+            //font-weight: $regular
+            font-size: $s-1
+            display: none
+            position: absolute
+            top: 2 * $line-height
+            z-index: 2
+            left: 0
+            right: 0
+            background: white
+            padding: $line-height / 2
+            color: black
+            @include box-shadow(#aaa 0 0 3px)
+
+        #organizations-menu
+          .dropdown-menu
+            padding-left: $s3
+            padding-right: $s3
+
+        #account-menu
           .avatar
             background-image: url(/images/mystery_man_27.jpeg)
-            float: left
-            position: relative
-            top: -($s2 - $line-height)/2 - 1
-            margin-right: $s-6
+            position: absolute
+            top: (27 - $line-height)/2 + 1
+          #name
+            margin-left: 27 + $line-height/2
 
 
   #body-wrapper

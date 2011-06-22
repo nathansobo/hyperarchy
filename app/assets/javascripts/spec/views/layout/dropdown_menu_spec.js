@@ -13,13 +13,15 @@ describe("Views.Layout.DropdownMenu", function() {
     $('#jasmine_content').html(dropdownMenu);
   });
 
-  it("shows the dropdown menu when it is clicked, then hides it when the user clicks again anywhere", function() {
+  it("shows the dropdown menu and adds the 'active' class to the link when it is clicked, then hides the menu and removes the class when the user clicks again anywhere", function() {
     clickDropdownLink();
 
     runs(function() {
       expect(dropdownMenu.menu).toBeVisible();
+      expect(dropdownMenu).toHaveClass('active');
       $(window).click();
       expect(dropdownMenu.menu).toBeHidden();
+      expect(dropdownMenu).not.toHaveClass('active');
     });
   });
 

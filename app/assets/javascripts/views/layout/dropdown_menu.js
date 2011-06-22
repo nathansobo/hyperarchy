@@ -11,6 +11,7 @@ _.constructor('Views.Layout.DropdownMenu', View.Template, {
       if (this.menu.is(':visible')) return;
 
       this.menu.show();
+      this.addClass('active');
       this.defer(function() {
         $(window).one('click', this.hitch('hideMenu'));
       });
@@ -18,6 +19,7 @@ _.constructor('Views.Layout.DropdownMenu', View.Template, {
 
     hideMenu: function() {
       this.menu.hide();
+      this.removeClass('active');
     }
   }
 });

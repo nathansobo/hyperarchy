@@ -1,6 +1,6 @@
 _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
   content: function() { with(this.builder) {
-    div({'class': "dropdown-menu"}, function() {
+    div({id: "organizations-menu"}, function() {
       a({id: "add-organization-link"}, "Add Your Organization").ref('addOrganizationLink').click("showAddOrganizationForm");
       subview("dropdownMenu", Views.Layout.DropdownMenu, {
         linkContent: function() {

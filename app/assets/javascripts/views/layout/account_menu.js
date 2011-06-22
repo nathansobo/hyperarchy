@@ -5,7 +5,7 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
       subview('dropdownMenu', Views.Layout.DropdownMenu, {
         linkContent: function() { with(this.builder) {
           subview('avatar', Views.Components.Avatar, {imageSize: 27});
-          span({id: "name"}).ref("name");
+          div({id: "name"}).ref("name");
         }},
         menuContent: function() { with(this.builder) {
           li(function() {
