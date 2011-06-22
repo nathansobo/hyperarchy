@@ -1,16 +1,8 @@
 describe("Views.Layout.DropdownMenu", function() {
   var dropdownMenu;
   beforeEach(function() {
-    dropdownMenu = Views.Layout.DropdownMenu.toView({
-      linkContent: function() {
-        return "Open Dropdown...";
-      },
-      menuContent: function() {
-        this.builder.li("Item 1");
-        this.builder.li("Item 2");
-      }
-    });
-    $('#jasmine_content').html(dropdownMenu);
+    renderLayout();
+    dropdownMenu = Application.accountMenu.dropdownMenu
   });
 
   it("shows the dropdown menu and adds the 'active' class to the link when it is clicked, then hides the menu and removes the class when the user clicks again anywhere", function() {
