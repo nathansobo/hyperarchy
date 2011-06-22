@@ -1,15 +1,24 @@
 _.constructor('Views.Pages.Election', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "election"}, function() {
+
+      div({id: "headline"}, function() {
+        subview('avatar', Views.Components.Avatar, {imageSize: 19 * 1.5 * 3 });
+        div({id: "body"}).ref('body')
+        div({'class': "clearfix"});
+      });
+
       div({id: "columns"}, function() {
-        for (var i = 1; i <= 4; i++) {
-          div({'class': "column", id: "column" + i}, function() {
-            div(function() {
-              div({style: "height: 0"}, function() { raw("&nbsp;") }); // hack to allow textareas first
-              template['column' + i]();
+        div(function() {
+          for (var i = 1; i <= 4; i++) {
+            div({'class': "column", id: "column" + i}, function() {
+              div(function() {
+                div({style: "height: 0"}, function() { raw("&nbsp;") }); // hack to allow textareas first
+                template['column' + i]();
+              });
             });
-          });
-        }
+          }
+        });
       });
     });
   }},
@@ -111,6 +120,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
     election: {
       change: function(election) {
+        this.avatar.user(election.creator());
+        this.body.text(election.body());
         Application.currentOrganizationId(election.organizationId());
         this.electionDetails.election(election);
       }

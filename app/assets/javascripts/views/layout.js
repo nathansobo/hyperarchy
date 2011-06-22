@@ -1,7 +1,7 @@
 _.constructor("Views.Layout", View.Template, {
   content: function() { with(this.builder) {
     div({id: "layout"}, function() {
-      div({id: "header-wrapper"}, function() {
+      div({id: "body-wrapper"}, function() {
         div({id: "header"}, function() {
           h1("HYPERARCHY");
           div({id: "menu-items"}, function() {
@@ -9,9 +9,7 @@ _.constructor("Views.Layout", View.Template, {
             subview('accountMenu', Views.Layout.AccountMenu);
           });
         });
-      });
 
-      div({id: "body-wrapper"}, function() {
         div({id: "body"}, function() {
           subview('organizationPage', Views.Pages.Organization);
           subview('electionPage', Views.Pages.Election);

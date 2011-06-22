@@ -3,22 +3,40 @@
   
 #election
   height: 100%
+  position: relative
+  > #headline
+    position: relative
+    font-size: $s2
+    padding-left: $padding-x !important
+    margin-bottom: 2 * $line-height
+    line-height: 1.5 * $line-height
+    width: 55%
+    > .avatar
+      margin-right: $s0
+      float: left
+      @include clearfix
+
   > #columns
-    height: 100%
+    position: absolute
+    top: $line-height * 6.5
+    bottom: 0
     width: 100%
-    display: table
-    border-spacing: $padding-x 0
-    table-layout: fixed
-    > .column
-      display: table-cell
-      @include box-sizing('border-box')
-      width: 30%
-      &:last-child
-        width: $s10 + 10
-      > div // because display table-cell divs can't be position: relative
-        height: 100%
-        width: 100%
-        position: relative
+    > div
+      display: table
+      height: 100%
+      width: 100%
+      border-spacing: $padding-x 0
+      table-layout: fixed
+      > .column
+        display: table-cell
+        @include box-sizing('border-box')
+        width: 33%
+        &:last-child
+          width: $s10 + 10
+        > div // because display table-cell divs can't be position: relative
+          height: 100%
+          width: 100%
+          position: relative
 
 #ranked-candidates
   height: 100%
@@ -43,10 +61,15 @@
       border-right: none
 
 #election-details
-  padding-right: $padding-x
   position: relative
   .main .body
+    display: none
     font-weight: $semibold
+  .main .details
+    font-size: $s0
+  .creator, .edit, .cancel, .update
+    display: none
+    visibility: hidden
 
 #candidate-details
   position: absolute
@@ -128,7 +151,7 @@
     resize: none
   h2
     margin-bottom: 1/3*$line-height
-    padding-bottom: 1/3*$line-height
+    padding-bottom: 1/2*$line-height
     border-bottom: 1px solid #ccc
   li
     font-size: $s-1
@@ -148,7 +171,7 @@
       font-size: $s-2
       color: #888
 
-#column2, #column3
+#column1, #column2
   a
     float: right
     //margin-top: 2px
@@ -156,7 +179,6 @@
     //font-weight: $semibold
     //padding: $s-6 $s-3
     //margin-top: -$s-6
-
 
 #current-consensus
   ol

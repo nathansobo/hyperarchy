@@ -3,6 +3,7 @@ _.constructor('Views.Pages.Election.ElectionDetails', Monarch.View.Template, {
     div({id: "election-details"}, function() {
       div({'class': "main"}, function() {
         h2({'class': 'body'}).ref('body');
+        h2("Details");
         div({'class': 'details'}).ref('details');
       }).ref('nonEditableContent');
 
