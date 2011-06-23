@@ -3,7 +3,6 @@ _.constructor('Views.Pages.Election.ElectionDetails', Monarch.View.Template, {
     div({id: "election-details"}, function() {
       div({'class': "main"}, function() {
         h2({'class': 'body'}).ref('body');
-        h2("Details");
         div({'class': 'details'}).ref('details');
       }).ref('nonEditableContent');
 
@@ -36,12 +35,10 @@ _.constructor('Views.Pages.Election.ElectionDetails', Monarch.View.Template, {
         this.details.bindText(election, 'details');
         this.comments.comments(election.comments());
 
-        if (election.details()) {
-          this.details.show()
-        } else {
-          this.details.hide()
-        }
+        if (this.electionUpdateSubscription) this.electionUpdateSubscription.destroy();
+        this.electionUpdateSubscription = election.onUpdate(this.hitch('showOrHideDetails'));
 
+        this.showOrHideDetails();
         this.avatar.user(election.creator());
         this.creatorName.bindText(election.creator(), 'fullName');
         this.createdAt.text(election.formattedCreatedAt());
@@ -70,6 +67,14 @@ _.constructor('Views.Pages.Election.ElectionDetails', Monarch.View.Template, {
       this.form.hide();
       this.updateLink.hide();
       this.cancelEditLink.hide();
+    },
+
+    showOrHideDetails: function() {
+      if (this.election().details()) {
+        this.details.show()
+      } else {
+        this.details.hide()
+      }
     }
   }
 });

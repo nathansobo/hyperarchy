@@ -8,17 +8,19 @@
     position: relative
     font-size: $s2
     padding-left: $padding-x !important
-    margin-bottom: 2 * $line-height
     line-height: 1.5 * $line-height
-    width: 55%
+    width: 600px
+    > .body
+      padding: 0
     > .avatar
+      display: none
       margin-right: $s0
       float: left
       @include clearfix
 
   > #columns
     position: absolute
-    top: $line-height * 6.5
+    top: $line-height * 3
     bottom: 0
     width: 100%
     > div
@@ -62,14 +64,12 @@
 
 #election-details
   position: relative
+  padding-right: $padding-x
   .main .body
     display: none
     font-weight: $semibold
   .main .details
     font-size: $s0
-  .creator, .edit, .cancel, .update
-    display: none
-    visibility: hidden
 
 #candidate-details
   position: absolute

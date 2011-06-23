@@ -4,9 +4,9 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
       div({id: "headline"}, function() {
         subview('avatar', Views.Components.Avatar, {imageSize: 19 * 1.5 * 3 });
-        div({id: "body"}).ref('body')
+        div({'class': "body"}).ref('body');
         div({'class': "clearfix"});
-      });
+      }).ref('headline');
 
       div({id: "columns"}, function() {
         div(function() {
@@ -19,7 +19,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
             });
           }
         });
-      });
+      }).ref('columns');
     });
   }},
 
@@ -121,9 +121,13 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     election: {
       change: function(election) {
         this.avatar.user(election.creator());
-        this.body.text(election.body());
+        this.body.bindText(election, 'body');
         Application.currentOrganizationId(election.organizationId());
         this.electionDetails.election(election);
+        this.adjustColumnTop();
+
+        if (this.electionUpdateSubscription) this.electionUpdateSubscription.destroy();
+        this.electionUpdateSubscription = election.onUpdate(this.hitch('adjustColumnTop'));
       }
     },
 
@@ -151,6 +155,10 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
     routeToNewElectionForm: function() {
       History.pushState(null, null, this.election().newCandidateUrl());
+    },
+
+    adjustColumnTop: function() {
+      this.columns.css('top', Application.lineHeight * 2 + this.headline.height());
     }
   }
 });

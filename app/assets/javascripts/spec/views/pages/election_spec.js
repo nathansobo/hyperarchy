@@ -245,4 +245,53 @@ describe("Views.Pages.Election", function() {
       expect(Path.routes.current).toBe(election.url() + "/candidates/new");
     });
   });
+
+  describe("adjustment of the columns' top position", function() {
+    var creator, election, election2;
+    var headlineTextWhenAdjustColumnTopWasCalled;
+
+    beforeEach(function() {
+      creator = User.createFromRemote({id: 1, firstName: "animal", lastName: "eater"});
+      election = creator.elections().createFromRemote({id: 1, body: 'short body', details: "", organizationId: 98, createdAt: 91234});
+      election2 = creator.elections().createFromRemote({id: 2, body: 'short body', details: "", organizationId: 98, createdAt: 91234});
+
+      spyOn(electionPage, 'adjustColumnTop').andCallFake(function() {
+        headlineTextWhenAdjustColumnTopWasCalled = electionPage.body.text();
+      });
+    });
+
+    describe("when the election is assigned", function() {
+      it("calls #adjustColumnTop", function() {
+        electionPage.election(election);
+        expect(electionPage.adjustColumnTop).toHaveBeenCalled();
+        expect(headlineTextWhenAdjustColumnTopWasCalled).toBe(election.body());
+
+        electionPage.adjustColumnTop.reset();
+        electionPage.election(election2);
+        expect(electionPage.adjustColumnTop).toHaveBeenCalled();
+        expect(headlineTextWhenAdjustColumnTopWasCalled).toBe(election2.body());
+      });
+
+      describe("garbage collection of election subscriptions", function() {
+        it("does not leave dangling subscriptions on the previous election when another one is assigned", function() {
+          var subCountBefore = election.onUpdateNode.size();
+          electionPage.election(election);
+          expect(election.onUpdateNode.size()).toBeGreaterThan(subCountBefore);
+          electionPage.election(election2);
+          expect(election.onUpdateNode.size()).toBe(subCountBefore);
+        });
+      });
+    });
+
+    describe("when the election body changes", function() {
+      it("calls #adjustColumnTop after assigning it to the body div", function() {
+        electionPage.election(election);
+        electionPage.adjustColumnTop.reset();
+
+        election.remotelyUpdated({body: "this is a longer body?"});
+        expect(electionPage.adjustColumnTop).toHaveBeenCalled();
+        expect(headlineTextWhenAdjustColumnTopWasCalled).toBe("this is a longer body?");
+      });
+    });
+  });
 });

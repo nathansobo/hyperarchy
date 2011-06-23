@@ -26,6 +26,8 @@ _.constructor("Views.Layout", View.Template, {
   }},
 
   viewProperties: {
+    lineHeight: 19,
+
     initialize: function() {
       this.connectToSocketServer();
 
