@@ -64,6 +64,10 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
   },
 
   viewProperties: {
+    initialize: function() {
+      this.editableBody.bind('elastic', this.hitch('adjustColumnTop'));
+    },
+
     params: {
       change: function(params, oldParams) {
         this.populateContentBeforeFetch(params);
@@ -164,11 +168,12 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.editableDetails.val(this.election().details()).elastic();
       this.updateLink.show();
       this.cancelEditLink.show();
+      this.adjustColumnTop();
     },
 
     cancelEdit: function() {
       this.body.show();
-      this.details.show();
+      this.showOrHideDetails();
       this.editLink.show();
       this.editableBody.hide();
       this.editableDetails.hide();
@@ -221,8 +226,12 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       History.pushState(null, null, this.election().newCandidateUrl());
     },
 
+    distanceFromHeadline: function() {
+      return Application.lineHeight * 2;
+    },
+    
     adjustColumnTop: function() {
-      this.columns.css('top', Application.lineHeight * 2 + this.headline.height());
+      this.columns.css('top', this.distanceFromHeadline() + this.headline.height());
     }
   }
 });

@@ -255,10 +255,6 @@ describe("Views.Pages.Election", function() {
       election = creator.elections().createFromRemote({id: 1, body: 'short body', details: "aoeu!", organizationId: 98, createdAt: 91234});
       election2 = creator.elections().createFromRemote({id: 2, body: 'short body', details: "woo!", organizationId: 98, createdAt: 91234});
 
-      spyOn(electionPage, 'adjustColumnTop').andCallFake(function() {
-        headlineTextWhenAdjustColumnTopWasCalled = electionPage.body.text();
-      });
-
       electionPage.election(election);
     });
 
@@ -293,7 +289,7 @@ describe("Views.Pages.Election", function() {
     });
     
     describe("showing and hiding of the edit fields", function() {
-      it("shows the fields and focuses the body when the edit button is clicked and hides it when the cancel button is clicked", function() {
+      it("shows the fields populates their vals, and focuses the body when the edit button is clicked and hides the fields when the cancel button is clicked", function() {
         expectFieldsHidden();
 
         election.remotelyUpdated({details: "and sometimes Y"});
@@ -307,7 +303,7 @@ describe("Views.Pages.Election", function() {
 
         electionPage.cancelEditLink.click();
         expectFieldsHidden();
-        expect(electionPage.adjustColumnTop).toHaveBeenCalled();
+        expectColumnTopCorrectlyAdjusted();
       });
 
       it("hides the editable fields when the election changes", function() {
@@ -335,11 +331,20 @@ describe("Views.Pages.Election", function() {
         });
       });
 
-      describe("when the details change", function() {
+      describe("when the details are updated", function() {
+        beforeEach(function() {
+          useFakeServer();
+        });
+
         it("shows the details if they aren't blank and hides them otherwise", function() {
-          election.remotelyUpdated({details: ""});
+          electionPage.editableDetails.val("");
+          electionPage.updateLink.click();
+          Server.lastUpdate.simulateSuccess();
           expect(electionPage.details).toBeHidden();
-          election.remotelyUpdated({details: "aonetuhaoneuth"});
+
+          electionPage.editableDetails.val("aoeuaoeu");
+          electionPage.updateLink.click();
+          Server.lastUpdate.simulateSuccess();
           expect(electionPage.details).toBeVisible();
         });
       });
@@ -376,31 +381,42 @@ describe("Views.Pages.Election", function() {
     });
     
     describe("adjustment of the columns' top position", function() {
+      beforeEach(function() {
+        electionPage.election(election);
+      });
+
       describe("when the election is assigned", function() {
         it("calls #adjustColumnTop", function() {
-          electionPage.election(election);
-          expect(electionPage.adjustColumnTop).toHaveBeenCalled();
-          expect(headlineTextWhenAdjustColumnTopWasCalled).toBe(election.body());
-
-          electionPage.adjustColumnTop.reset();
           electionPage.election(election2);
-          expect(electionPage.adjustColumnTop).toHaveBeenCalled();
-          expect(headlineTextWhenAdjustColumnTopWasCalled).toBe(election2.body());
+          expectColumnTopCorrectlyAdjusted();
+
+          electionPage.election(election);
+          expectColumnTopCorrectlyAdjusted();
         });
       });
 
       describe("when the election body changes", function() {
         it("calls #adjustColumnTop after assigning it to the body div", function() {
-          electionPage.election(election);
-          electionPage.adjustColumnTop.reset();
-
           election.remotelyUpdated({body: "this is a longer body?"});
-          expect(electionPage.adjustColumnTop).toHaveBeenCalled();
-          expect(headlineTextWhenAdjustColumnTopWasCalled).toBe("this is a longer body?");
+          expectColumnTopCorrectlyAdjusted();
+        });
+      });
+
+      describe("when the edit button is clicked or the elastic textarea resizes", function() {
+        it("calls #adjustColumnTop after assigning it to the body div", function() {
+          electionPage.editLink.click();
+          expectColumnTopCorrectlyAdjusted();
+
+          electionPage.editableBody.trigger('elastic');
+          expectColumnTopCorrectlyAdjusted();
         });
       });
     })
   });
+
+  function expectColumnTopCorrectlyAdjusted() {
+    expect(electionPage.columns.offset().top).toBe(electionPage.distanceFromHeadline() + electionPage.headline.height());
+  }
 
   function expectFieldsVisible() {
     expect(electionPage.editableBody).toBeVisible();
