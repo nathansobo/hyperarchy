@@ -148,16 +148,31 @@
   ol
     border-top: 1px solid #eee
     li
-      &:first-child
-        border-top: none
       font-size: $s-1
       margin-bottom: ceil($line-height/3)
       padding: ($line-height/3 - 1)
       background: #f8f8f8
       border: 1px solid #eee
+      &:first-child
+        border-top: none
       .avatar
         float: left
         margin-right: $line-height/3
+      &.destroyable:hover
+        .destroy
+          display: block
+        .date
+          //margin-right: 20px
+      .destroy
+        cursor: pointer
+        display: none
+        float: right
+        width: 11px
+        height: 11px
+        margin: 4px 2px 0 6px
+        background: url(/images/x_11x11_light.png)
+        &:hover
+          background: url(/images/x_11x11_dark.png)
       .name
         margin-right: $s-3
         font-weight: $semibold
