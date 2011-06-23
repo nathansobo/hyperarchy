@@ -18,7 +18,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
   });
 
   describe("when the candidate is assigned", function() {
-    it("populates the body, details, avatar and comments", function() {
+    it("populates the body, details, and avatar", function() {
       expect(candidateDetails.body.text()).toEqual(candidate.body());
       expect(candidateDetails.details.text()).toEqual(candidate.details());
       candidate.remotelyUpdated({body: "Catsup", details: "37 flavors"});
@@ -27,7 +27,6 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.avatar.user()).toBe(candidate.creator());
       expect(candidateDetails.creatorName.text()).toBe(creator.fullName());
       expect(candidateDetails.createdAt.text()).toBe(candidate.formattedCreatedAt());
-      expect(candidateDetails.comments.comments()).toBe(candidate.comments());
     });
 
     it("removes subscriptions to the previous candidate", function() {
@@ -186,8 +185,6 @@ describe("Views.Pages.Election.CandidateDetails", function() {
         expect(History.pushState).not.toHaveBeenCalled();
       });
     });
-
-
   });
 
   describe("showing and hiding of the edit form", function() {

@@ -10,7 +10,7 @@ describe("Views.Pages.Election", function() {
 
   describe("when the params hash is assigned", function() {
     var currentUser, election, candidate1, candidate2, currentUserRanking1, currentUserRanking2;
-    var otherUser, otherUser2, commentCreator, otherUserRanking1, otherUserRanking2;
+    var otherUser, otherUser2, electionCommentCreator, candidateCommentCreator, otherUserRanking1, otherUserRanking2;
 
     beforeEach(function() {
       enableAjax();
@@ -19,12 +19,16 @@ describe("Views.Pages.Election", function() {
         election = Election.create();
         otherUser = User.create();
         otherUser2 = User.create();
-        commentCreator = User.create();
+        electionCommentCreator = User.create();
+        candidateCommentCreator = User.create();
         otherUser.memberships().create({organizationId: election.organizationId()});
-        commentCreator.memberships().create({organizationId: election.organizationId()});
+        electionCommentCreator.memberships().create({organizationId: election.organizationId()});
+        candidateCommentCreator.memberships().create({organizationId: election.organizationId()});
         var electionComment = election.comments().create();
-        electionComment.update({creatorId: commentCreator.id()});
+        electionComment.update({creatorId: electionCommentCreator.id()});
         candidate1 = election.candidates().create();
+        var candidateComment = candidate1.comments().create();
+        candidateComment.update({creatorId: candidateCommentCreator.id()});
         candidate2 = election.candidates().create({creatorId: otherUser2.id()});
         currentUserRanking1 = election.rankings().create({userId: currentUser.id(), position: 64, candidateId: candidate1.id()});
         currentUserRanking2 = election.rankings().create({userId: currentUser.id(), position: -64, candidateId: candidate2.id()});
@@ -101,7 +105,7 @@ describe("Views.Pages.Election", function() {
       });
 
       describe("if the candidateId is specified", function() {
-        it("fetches the election data before assigning relations to the subviews and the selectedCandidate to the currentConsensus and candidateDetails", function() {
+        it("fetches the election data along with the candidate's comments and commenters before assigning relations to the subviews and the selectedCandidate to the currentConsensus and candidateDetails", function() {
           waitsFor("fetch to complete", function(complete) {
             electionPage.newCandidateLink.hide();
             electionPage.params({ electionId: election.id(), candidateId: candidate1.id() }).success(complete);
@@ -111,6 +115,9 @@ describe("Views.Pages.Election", function() {
 
           runs(function() {
             expectElectionDataFetched();
+            expect(candidate1.comments().size()).toBeGreaterThan(0);
+            expect(candidate1.commenters().size()).toBe(candidate1.comments().size());
+
             expectElectionDataAssigned();
 
             expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
@@ -223,12 +230,20 @@ describe("Views.Pages.Election", function() {
       });
 
       describe("if the candidateId is specified", function() {
-        it("assigns the selectedCandidate to the currentConsensus and candidateDetails without fetching", function() {
-          electionPage.params({ electionId: election.id(), candidateId: candidate1.id() });
-          expect(electionPage.candidateDetails).toHaveClass('active');
-          expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
-          expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
-          expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+        it("assigns the selectedCandidate to the currentConsensus and candidateDetails, then fetches the candidates comments and assigns those later", function() {
+          waitsFor("comments and commenters to be fetched", function(complete) {
+            electionPage.params({ electionId: election.id(), candidateId: candidate1.id() }).success(complete);
+            expect(electionPage.candidateDetails).toHaveClass('active');
+            expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
+            expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
+            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+          });
+
+          runs(function() {
+            expect(candidate1.comments().size()).toBeGreaterThan(0);
+            expect(candidate1.commenters().size()).toBe(candidate1.comments().size());
+            expect(electionPage.candidateDetails.comments.comments().tuples()).toEqual(candidate1.comments().tuples());
+          });
         });
       });
 

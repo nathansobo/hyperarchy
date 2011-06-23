@@ -15,6 +15,9 @@ _.constructor("Candidate", Model.Record, {
     this.hasMany('comments', {constructorName: "CandidateComment"});
     this.belongsTo('election');
     this.belongsTo('creator', {constructorName: "User"});
+    this.relatesToMany('commenters', function() {
+      return this.comments().join(User).on(CandidateComment.creatorId.eq(User.id));
+    });
   },
 
   afterInitialize: function() {

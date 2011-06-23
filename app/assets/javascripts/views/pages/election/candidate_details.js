@@ -46,7 +46,6 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         this.avatar.user(candidate.creator());
         this.creatorName.bindText(candidate.creator(), 'fullName');
         this.createdAt.text(candidate.formattedCreatedAt());
-        this.comments.comments(candidate.comments());
         this.showOrHideMutateLinks();
 
         if (this.candidateDestroySubscription) this.candidateDestroySubscription.destroy();
@@ -55,7 +54,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         });
       },
 
-      write: function() {
+      write: function(candidate) {
         this.hideForm();
       }
     },

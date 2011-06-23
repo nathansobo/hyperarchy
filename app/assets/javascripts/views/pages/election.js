@@ -78,7 +78,14 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       if (election) this.election(election);
 
       var voterId;
-      if (!params.candidateId) {
+
+      if (params.candidateId) {
+        var candidate = Candidate.find(params.candidateId);
+        if (candidate) {
+          this.currentConsensus.selectedCandidate(candidate);
+          this.candidateDetails.candidate(candidate);
+        }
+      } else {
         this.candidateDetails.removeClass('active');
         this.currentConsensus.selectedCandidate(null);
         voterId = params.voterId || Application.currentUserId();
@@ -103,11 +110,15 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         relationsToFetch.push(Candidate.where({electionId: params.electionId}).join(User).on(Candidate.creatorId.eq(User.id))); // candidates
         relationsToFetch.push(Vote.where({electionId: params.electionId}).joinTo(User)); // votes
         relationsToFetch.push(Application.currentUser().rankings().where({electionId: params.electionId})); // current user's rankings
-        relationsToFetch.push(ElectionComment.where({electionId: params.electionId}).join(User).on(ElectionComment.creatorId.eq(User.id))); // election comments
+        relationsToFetch.push(ElectionComment.where({electionId: params.electionId}).join(User).on(ElectionComment.creatorId.eq(User.id))); // election comments and commenters
       }
 
       if (params.voterId) {
         relationsToFetch.push(Ranking.where({electionId: params.electionId, userId: params.voterId})); // additional rankings
+      }
+
+      if (params.candidateId && params.candidateId !== "new") {
+        relationsToFetch.push(CandidateComment.where({candidateId: params.candidateId}).join(User).on(CandidateComment.creatorId.eq(User.id))); // candidate comments and commenters
       }
 
       return Server.fetch(relationsToFetch);
@@ -130,6 +141,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         var candidate = Candidate.find(params.candidateId);
         this.currentConsensus.selectedCandidate(candidate);
         this.candidateDetails.candidate(candidate);
+        if (candidate) this.candidateDetails.comments.comments(candidate.comments());
         this.showCandidateDetails();
         if (params.candidateId === 'new') this.candidateDetails.showNewForm();
       } else {

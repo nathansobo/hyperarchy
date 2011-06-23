@@ -14,6 +14,7 @@ describe("Views.Pages.Election.CandidateLi", function() {
 
   describe("when clicked", function() {
     it("navigates to the candidate's url", function() {
+      spyOn(Application, 'showPage');
       candidateLi.click();
       expect(Path.routes.current).toBe(candidate.url());
     });
