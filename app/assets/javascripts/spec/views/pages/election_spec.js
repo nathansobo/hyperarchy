@@ -295,9 +295,15 @@ describe("Views.Pages.Election", function() {
     describe("showing and hiding of the edit fields", function() {
       it("shows the fields and focuses the body when the edit button is clicked and hides it when the cancel button is clicked", function() {
         expectFieldsHidden();
+
+        election.remotelyUpdated({details: "and sometimes Y"});
+
         electionPage.editLink.click();
         expectFieldsVisible();
         expect(electionPage.editableBody[0]).toBe(document.activeElement);
+
+        expect(electionPage.editableBody.val()).toBe(election.body());
+        expect(electionPage.editableDetails.val()).toBe(election.details());
 
         electionPage.cancelEditLink.click();
         expectFieldsHidden();
