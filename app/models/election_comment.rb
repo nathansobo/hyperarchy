@@ -35,4 +35,8 @@ class ElectionComment < Prequel::Record
   def update_whitelist
     [:body]
   end
+
+  def extra_records_for_create_events
+    [creator]
+  end
 end

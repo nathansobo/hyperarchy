@@ -35,4 +35,8 @@ class Vote < Prequel::Record
   def updated
     update(:updated_at => Time.now)
   end
+
+  def extra_records_for_create_events
+    [user]
+  end
 end

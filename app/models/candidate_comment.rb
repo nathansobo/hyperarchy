@@ -64,4 +64,8 @@ class CandidateComment < Prequel::Record
 
     users_who_ranked_my_candidate | user_who_created_my_candidate
   end
+
+  def extra_records_for_create_events
+    [creator]
+  end
 end
