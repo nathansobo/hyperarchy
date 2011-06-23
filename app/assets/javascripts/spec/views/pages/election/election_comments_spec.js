@@ -57,6 +57,12 @@ describe("Views.Pages.Election.ElectionComments", function() {
         expect(createdRecord.body()).toBe("I like to eat stamps!");
         expect(createdRecord.electionId()).toBe(election.id());
       });
+
+      it("does nothing if the textarea is blank", function() {
+        commentsView.textarea.val("   ");
+        commentsView.textarea.trigger({ type : 'keydown', which : 13 });
+        expect(Server.creates).toBeEmpty();
+      });
     });
   });
 });

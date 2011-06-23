@@ -21,6 +21,8 @@ _.constructor('Views.Pages.Election.ElectionComments', Monarch.View.Template, {
     },
 
     create: function() {
+      if (!$.trim(this.textarea.val())) return;
+      
       this.comments().create({body: this.textarea.val()});
       this.textarea.val("");
     },
