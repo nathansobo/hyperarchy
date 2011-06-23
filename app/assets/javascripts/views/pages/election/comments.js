@@ -21,10 +21,11 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
     },
 
     create: function() {
-      if (!$.trim(this.textarea.val())) return;
+      if (!$.trim(this.textarea.val())) return false;
       
       this.comments().create({body: this.textarea.val()});
       this.textarea.val("");
+      return false;
     },
 
     attach: function() {
