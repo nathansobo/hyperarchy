@@ -1,6 +1,6 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election.ElectionCommentLi", function() {
+describe("Views.Pages.Election.CommentLi", function() {
   var election, comment, creator, commentLi;
 
   beforeEach(function() {
@@ -10,7 +10,7 @@ describe("Views.Pages.Election.ElectionCommentLi", function() {
     election = Election.createFromRemote({id: 22, creatorId: 1, createdAt: 234});
     creator = User.createFromRemote({id: 1, firstName: "Commento", lastName: "Santiago"});
     comment = election.comments().createFromRemote({id: 11, body: "I likeah the fruiloops so much", creatorId: creator.id(), createdAt: 3245});
-    commentLi = Views.Pages.Election.ElectionCommentLi.toView({comment: comment});
+    commentLi = Views.Pages.Election.CommentLi.toView({comment: comment});
   });
 
   describe("#initialize", function() {

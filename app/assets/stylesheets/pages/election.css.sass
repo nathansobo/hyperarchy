@@ -92,7 +92,7 @@
 #candidate-details, #column1
   .creator
     height: 2 * $line-height
-    margin-bottom: $line-height
+    margin-bottom: 2 * $line-height
     .avatar
       margin-top: 1px
       float: left
@@ -143,6 +143,29 @@
     margin-left: $s-3
 
 .comments
+  h2
+    padding-bottom: $line-height / 6
+  ol
+    border-top: 1px solid #eee
+    li
+      &:first-child
+        border-top: none
+      font-size: $s-1
+      margin-bottom: ceil($line-height/3)
+      padding: ($line-height/3 - 1)
+      background: #f8f8f8
+      border: 1px solid #eee
+      .avatar
+        float: left
+        margin-right: $line-height/3
+      .name
+        margin-right: $s-3
+        font-weight: $semibold
+        color: #666
+      .date
+        float: right
+        font-size: $s-2
+        color: #888
   textarea
     font-size: $s-1
     padding: ($line-height/3 - 1)
@@ -150,27 +173,6 @@
     width: 100%
     margin-bottom: ceil($line-height/3)
     height: $line-height
-  h2
-    margin-bottom: 1/3*$line-height
-    padding-bottom: 1/2*$line-height
-    border-bottom: 1px solid #ccc
-  li
-    font-size: $s-1
-    margin-bottom: ceil($line-height/3)
-    padding: ($line-height/3 - 1)
-    background: #f8f8f8
-    border: 1px solid #eee
-    .avatar
-      float: left
-      margin-right: $line-height/3
-    .name
-      margin-right: $s-3
-      font-weight: $semibold
-      color: #666
-    .date
-      float: right
-      font-size: $s-2
-      color: #888
 
 #column1, #column2
   a

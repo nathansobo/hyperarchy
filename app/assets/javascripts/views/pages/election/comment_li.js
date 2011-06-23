@@ -1,4 +1,4 @@
-_.constructor('Views.Pages.Election.ElectionCommentLi', Monarch.View.Template, {
+_.constructor('Views.Pages.Election.CommentLi', Monarch.View.Template, {
   content: function() { with(this.builder) {
     li({'class': "comment"}, function() {
       subview('avatar', Views.Components.Avatar, {imageSize: 34});

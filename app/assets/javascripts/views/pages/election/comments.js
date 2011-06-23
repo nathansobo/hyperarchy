@@ -1,10 +1,10 @@
-_.constructor('Views.Pages.Election.ElectionComments', Monarch.View.Template, {
+_.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({'class': "comments"}, function() {
       h2("Discussion");
       subview('list', Views.Components.SortedList, {
         buildElement: function(comment) {
-          return Views.Pages.Election.ElectionCommentLi.toView({comment: comment});
+          return Views.Pages.Election.CommentLi.toView({comment: comment});
         }
       });
 

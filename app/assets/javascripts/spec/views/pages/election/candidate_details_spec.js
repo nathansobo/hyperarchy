@@ -18,7 +18,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
   });
 
   describe("when the candidate is assigned", function() {
-    it("populates the body, details, and avatar", function() {
+    it("populates the body, details, avatar and comments", function() {
       expect(candidateDetails.body.text()).toEqual(candidate.body());
       expect(candidateDetails.details.text()).toEqual(candidate.details());
       candidate.remotelyUpdated({body: "Catsup", details: "37 flavors"});
@@ -27,6 +27,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.avatar.user()).toBe(candidate.creator());
       expect(candidateDetails.creatorName.text()).toBe(creator.fullName());
       expect(candidateDetails.createdAt.text()).toBe(candidate.formattedCreatedAt());
+      expect(candidateDetails.comments.comments()).toBe(candidate.comments());
     });
 
     it("removes subscriptions to the previous candidate", function() {
@@ -110,7 +111,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
   });
 
   describe("showing and hiding the new form", function() {
-    it("empties out and shows the form fields and the create button when #showNewForm is called", function() {
+    it("hides comments and empties out and shows the form fields & create button when #showNewForm is called", function() {
       candidateDetails.formBody.val("woweee!");
       candidateDetails.formDetails.val("cocooo!");
       candidateDetails.hideForm();
@@ -126,6 +127,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.createLink).toBeVisible();
       expect(candidateDetails.cancelEditLink).toBeHidden();
       expect(candidateDetails.updateLink).toBeHidden();
+      expect(candidateDetails.comments).toBeHidden();
 
       expect(candidateDetails.avatar.user()).toBe(Application.currentUser());
       expect(candidateDetails.creatorName.text()).toBe(Application.currentUser().fullName());
@@ -137,6 +139,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.createLink).toBeHidden();
       expect(candidateDetails.cancelEditLink).toBeHidden();
       expect(candidateDetails.updateLink).toBeHidden();
+      expect(candidateDetails.comments).toBeVisible();
     });
   });
 

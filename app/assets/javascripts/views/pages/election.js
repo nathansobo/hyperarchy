@@ -38,7 +38,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       div({'class': 'date'}).ref('createdAt');
     });
 
-    subview('comments', Views.Pages.Election.ElectionComments);
+    subview('comments', Views.Pages.Election.Comments);
   }},
 
   column2: function() { with(this.builder) {

@@ -28,12 +28,14 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         div({'class': "date"}).ref('createdAt');
       }).ref('creator');
 
+      subview('comments', Views.Pages.Election.Comments);
     });
   }},
 
   viewProperties: {
-    attach: function() {
+    attach: function($super) {
       Application.signal('currentUser').change(this.hitch('showOrHideMutateLinks'));
+      $super();
     },
 
     candidate: {
@@ -44,6 +46,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         this.avatar.user(candidate.creator());
         this.creatorName.bindText(candidate.creator(), 'fullName');
         this.createdAt.text(candidate.formattedCreatedAt());
+        this.comments.comments(candidate.comments());
         this.showOrHideMutateLinks();
 
         if (this.candidateDestroySubscription) this.candidateDestroySubscription.destroy();
@@ -90,6 +93,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
     },
 
     showNewForm: function() {
+      this.comments.hide();
       this.showForm();
       this.formBody.val('');
       this.formDetails.val('');
@@ -103,6 +107,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
 
     hideForm: function() {
       this.nonEditableContent.show();
+      this.comments.show();
       this.form.hide();
       this.updateLink.hide();
       this.cancelEditLink.hide();

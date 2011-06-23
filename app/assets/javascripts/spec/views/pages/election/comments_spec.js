@@ -1,6 +1,6 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election.ElectionComments", function() {
+describe("Views.Pages.Election.Comments", function() {
   var election, comment1, comment2, creator1, creator2, commentsRelation, commentsView;
 
   beforeEach(function() {
