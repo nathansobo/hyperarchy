@@ -7,9 +7,16 @@
   > #headline
     position: relative
     font-size: $s2
-    padding-left: $padding-x !important
     line-height: 1.5 * $line-height
+    padding-left: $padding-x
     width: 600px
+    textarea.body
+      width: 100%
+      height: 1.5 * $line-height * 2
+      resize: none
+      line-height: 1.5 * $line-height
+      font-size: $s2
+      display: none
     > .body
       padding: 0
     > .avatar
@@ -40,6 +47,16 @@
           width: 100%
           position: relative
 
+#column1
+  position: relative
+  padding-right: $padding-x
+  textarea.details
+    width: 100%
+    height: 6 * $line-height
+    display: none
+  .details
+    font-size: $s0
+
 #ranked-candidates
   height: 100%
   ol
@@ -62,15 +79,6 @@
       border-top: none
       border-right: none
 
-#election-details
-  position: relative
-  padding-right: $padding-x
-  .main .body
-    display: none
-    font-weight: $semibold
-  .main .details
-    font-size: $s0
-
 #candidate-details
   position: absolute
   right: 100%
@@ -86,7 +94,7 @@
   &.active
     right: 0
 
-#candidate-details, #election-details
+#candidate-details, #column1
   .creator
     height: 2 * $line-height
     margin-bottom: $line-height

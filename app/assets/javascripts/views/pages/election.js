@@ -5,6 +5,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       div({id: "headline"}, function() {
         subview('avatar', Views.Components.Avatar, {imageSize: 19 * 1.5 * 3 });
         div({'class': "body"}).ref('body');
+        textarea({name: "body", 'class': "body"}).ref("editableBody");
         div({'class': "clearfix"});
       }).ref('headline');
 
@@ -23,9 +24,22 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     });
   }},
 
-  column1: function() {
-    this.builder.subview('electionDetails', Views.Pages.Election.ElectionDetails);
-  },
+  column1: function() { with(this.builder) {
+    div({'class': 'details'}).ref('details');
+    textarea({name: 'details', 'class': "details"}).ref("editableDetails");
+
+    a({'class': 'update button'}, "Save").ref('updateLink').click('save');
+    a({'class': 'cancel button'}, "Cancel").ref('cancelEditLink').click('cancelEdit');
+    a({'class': "edit button"}, "Edit").ref('editLink').click('edit');
+
+    div({'class': 'creator'}, function() {
+      subview('avatar', Views.Components.Avatar, {imageSize: 34});
+      div({'class': 'name'}).ref('creatorName');
+      div({'class': 'date'}).ref('createdAt');
+    });
+
+    subview('comments', Views.Pages.Election.ElectionComments);
+  }},
 
   column2: function() { with(this.builder) {
     a({'class': "link"}, "Add An Answer")
@@ -103,6 +117,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.election(election);
       this.currentConsensus.candidates(election.candidates());
       this.votes.votes(election.votes());
+      this.comments.comments(election.comments());
 
       if (params.candidateId) {
         var candidate = Candidate.find(params.candidateId);
@@ -123,12 +138,48 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         this.avatar.user(election.creator());
         this.body.bindText(election, 'body');
         Application.currentOrganizationId(election.organizationId());
-        this.electionDetails.election(election);
-        this.adjustColumnTop();
+
+        this.body.bindText(election, 'body');
+        this.details.bindText(election, 'details');
+        this.comments.comments(election.comments());
+        this.avatar.user(election.creator());
+        this.creatorName.bindText(election.creator(), 'fullName');
+        this.createdAt.text(election.formattedCreatedAt());
+        this.cancelEdit();
 
         if (this.electionUpdateSubscription) this.electionUpdateSubscription.destroy();
-        this.electionUpdateSubscription = election.onUpdate(this.hitch('adjustColumnTop'));
+        this.electionUpdateSubscription = election.onUpdate(this.hitch('handleElectionUpdate'));
+        this.handleElectionUpdate();
       }
+    },
+
+    edit: function() {
+      this.body.hide();
+      this.details.hide();
+      this.editLink.hide();
+      this.editableBody.show();
+      this.editableBody.focus();
+      this.editableDetails.show();
+      this.editableBody.val(this.election().body()).elastic();
+      this.editableDetails.val(this.election().details()).elastic();
+      this.updateLink.show();
+      this.cancelEditLink.show();
+    },
+
+    cancelEdit: function() {
+      this.body.show();
+      this.details.show();
+      this.editLink.show();
+      this.editableBody.hide();
+      this.editableDetails.hide();
+      this.updateLink.hide();
+      this.cancelEditLink.hide();
+      this.adjustColumnTop();
+    },
+
+    save: function(e) {
+      e.preventDefault();
+      this.election().update({body: this.editableBody.val(), details: this.editableDetails.val()}).success(this.hitch('cancelEdit'));
     },
 
     populateRankedCandidatesHeader: function(voterId) {
@@ -151,6 +202,19 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.rankedCandidatesHeader.hide();
       this.candidateDetailsHeader.show();
       this.candidateDetails.addClass('active');
+    },
+
+    handleElectionUpdate: function() {
+      this.adjustColumnTop();
+      this.showOrHideDetails();
+    },
+
+    showOrHideDetails: function() {
+      if (this.election().details()) {
+        this.details.show()
+      } else {
+        this.details.hide()
+      }
     },
 
     routeToNewElectionForm: function() {

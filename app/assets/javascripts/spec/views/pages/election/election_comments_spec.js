@@ -13,7 +13,7 @@ describe("Views.Pages.Election.ElectionComments", function() {
     comment1 = election.comments().createFromRemote({id: 11, body: "I likeah the fruiloops so much", creatorId: creator1.id(), createdAt: 3245});
     comment2 = election.comments().createFromRemote({id: 12, body: "Yez but sie koko krispies sind sehr yummy", creatorId: creator2.id(), createdAt: 3295});
 
-    commentsView = Application.electionPage.electionDetails.comments;
+    commentsView = Application.electionPage.comments;
     commentsRelation = election.comments();
     commentsView.comments(commentsRelation);
   });

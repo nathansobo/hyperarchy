@@ -48,10 +48,10 @@ describe("Views.Pages.Election", function() {
 
       function expectElectionDataAssigned() {
         expect(Application.currentOrganizationId()).toBe(election.organizationId());
-        expect(electionPage.electionDetails.election()).toEqual(election);
+        expect(electionPage.election()).toEqual(election);
         expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
         expect(electionPage.votes.votes().tuples()).toEqual(election.votes().tuples());
-        expect(electionPage.electionDetails.comments.comments().tuples()).toEqual(election.comments().tuples());
+        expect(electionPage.comments.comments().tuples()).toEqual(election.comments().tuples());
       }
 
       describe("if no voterId or candidateId is specified", function() {
@@ -148,7 +148,7 @@ describe("Views.Pages.Election", function() {
           stubAjax(); // we still fetch, but we're not testing that in this spec
           electionPage.params({electionId: election.id()});
           expect(Application.currentOrganizationId()).toBe(election.organizationId());
-          expect(electionPage.electionDetails.election()).toEqual(election);
+          expect(electionPage.election()).toEqual(election);
         });
       });
 
@@ -246,52 +246,173 @@ describe("Views.Pages.Election", function() {
     });
   });
 
-  describe("adjustment of the columns' top position", function() {
+  describe("local logic (no fetching)", function() {
     var creator, election, election2;
     var headlineTextWhenAdjustColumnTopWasCalled;
 
     beforeEach(function() {
       creator = User.createFromRemote({id: 1, firstName: "animal", lastName: "eater"});
-      election = creator.elections().createFromRemote({id: 1, body: 'short body', details: "", organizationId: 98, createdAt: 91234});
-      election2 = creator.elections().createFromRemote({id: 2, body: 'short body', details: "", organizationId: 98, createdAt: 91234});
+      election = creator.elections().createFromRemote({id: 1, body: 'short body', details: "aoeu!", organizationId: 98, createdAt: 91234});
+      election2 = creator.elections().createFromRemote({id: 2, body: 'short body', details: "woo!", organizationId: 98, createdAt: 91234});
 
       spyOn(electionPage, 'adjustColumnTop').andCallFake(function() {
         headlineTextWhenAdjustColumnTopWasCalled = electionPage.body.text();
       });
+
+      electionPage.election(election);
     });
 
-    describe("when the election is assigned", function() {
-      it("calls #adjustColumnTop", function() {
-        electionPage.election(election);
-        expect(electionPage.adjustColumnTop).toHaveBeenCalled();
-        expect(headlineTextWhenAdjustColumnTopWasCalled).toBe(election.body());
+    describe("when an election is assigned", function() {
+      it("assigns the election's body, details, avatar, and comments relation, and keeps the body and details up to date when they change", function() {
+        expect(electionPage.body.text()).toEqual(election.body());
+        expect(electionPage.details.text()).toEqual(election.details());
+        election.remotelyUpdated({body: "what would satan & <damien> do?", details: "Isdf"});
+        expect(electionPage.body.text()).toEqual(election.body());
+        expect(electionPage.details.text()).toEqual(election.details());
+        expect(electionPage.avatar.user()).toBe(election.creator());
+        expect(electionPage.creatorName.text()).toBe(election.creator().fullName());
+        expect(electionPage.createdAt.text()).toBe(election.formattedCreatedAt());
+        expect(electionPage.comments.comments()).toBe(election.comments());
 
-        electionPage.adjustColumnTop.reset();
         electionPage.election(election2);
-        expect(electionPage.adjustColumnTop).toHaveBeenCalled();
-        expect(headlineTextWhenAdjustColumnTopWasCalled).toBe(election2.body());
+        expect(electionPage.body.text()).toEqual(election2.body());
+        expect(electionPage.details.text()).toEqual(election2.details());
+
+        election.remotelyUpdated({body: "what would you do for a klondike bar?", details: "jhjyg"});
+        expect(electionPage.body.text()).toEqual(election2.body());
+        expect(electionPage.details.text()).toEqual(election2.details());
       });
 
-      describe("garbage collection of election subscriptions", function() {
-        it("does not leave dangling subscriptions on the previous election when another one is assigned", function() {
-          var subCountBefore = election.onUpdateNode.size();
-          electionPage.election(election);
-          expect(election.onUpdateNode.size()).toBeGreaterThan(subCountBefore);
+      it("does not leave dangling subscriptions on the previous election when another one is assigned", function() {
+        var subCountBefore = election2.onUpdateNode.size();
+        electionPage.election(election2);
+        expect(election2.onUpdateNode.size()).toBeGreaterThan(subCountBefore);
+        electionPage.election(election);
+        expect(election2.onUpdateNode.size()).toBe(subCountBefore);
+      });
+    });
+    
+    describe("showing and hiding of the edit fields", function() {
+      it("shows the fields and focuses the body when the edit button is clicked and hides it when the cancel button is clicked", function() {
+        expectFieldsHidden();
+        electionPage.editLink.click();
+        expectFieldsVisible();
+        expect(electionPage.editableBody[0]).toBe(document.activeElement);
+
+        electionPage.cancelEditLink.click();
+        expectFieldsHidden();
+        expect(electionPage.adjustColumnTop).toHaveBeenCalled();
+      });
+
+      it("hides the editable fields when the election changes", function() {
+        electionPage.editLink.click();
+        expectFieldsVisible();
+
+        electionPage.election(election2);
+        expectFieldsHidden();
+      });
+    });
+    
+    describe("showing and hiding of the details", function() {
+      describe("when an election is assigned", function() {
+        it("shows the details if they aren't blank and hides them otherwise", function() {
+          election2.remotelyUpdated({details: ""});
+
           electionPage.election(election2);
-          expect(election.onUpdateNode.size()).toBe(subCountBefore);
+
+          expect(electionPage.details).toBeHidden();
+
+          expect(election.details()).not.toBe("");
+          electionPage.election(election);
+
+          expect(electionPage.details).toBeVisible();
+        });
+      });
+
+      describe("when the details change", function() {
+        it("shows the details if they aren't blank and hides them otherwise", function() {
+          election.remotelyUpdated({details: ""});
+          expect(electionPage.details).toBeHidden();
+          election.remotelyUpdated({details: "aonetuhaoneuth"});
+          expect(electionPage.details).toBeVisible();
         });
       });
     });
+    
+    describe("when the save is button is clicked", function() {
+      var updates;
 
-    describe("when the election body changes", function() {
-      it("calls #adjustColumnTop after assigning it to the body div", function() {
-        electionPage.election(election);
-        electionPage.adjustColumnTop.reset();
+      beforeEach(function() {
+        useFakeServer();
+        electionPage.editLink.click();
+        updates = {
+          body: "Relish",
+          details: "That green stuff..."
+        }
 
-        election.remotelyUpdated({body: "this is a longer body?"});
-        expect(electionPage.adjustColumnTop).toHaveBeenCalled();
-        expect(headlineTextWhenAdjustColumnTopWasCalled).toBe("this is a longer body?");
+        electionPage.editableBody.val(updates.body);
+        electionPage.editableDetails.val(updates.details);
+      });
+
+      it("updates the record's body and details on the server and hides the form", function() {
+        electionPage.updateLink.click();
+
+        expect(Server.updates.length).toBe(1);
+
+        expect(Server.lastUpdate.dirtyFieldValues).toEqual(updates);
+        Server.lastUpdate.simulateSuccess();
+
+        expectFieldsHidden();
+
+        expect(electionPage.body.text()).toBe(updates.body);
+        expect(electionPage.details.text()).toBe(updates.details);
       });
     });
+    
+    describe("adjustment of the columns' top position", function() {
+      describe("when the election is assigned", function() {
+        it("calls #adjustColumnTop", function() {
+          electionPage.election(election);
+          expect(electionPage.adjustColumnTop).toHaveBeenCalled();
+          expect(headlineTextWhenAdjustColumnTopWasCalled).toBe(election.body());
+
+          electionPage.adjustColumnTop.reset();
+          electionPage.election(election2);
+          expect(electionPage.adjustColumnTop).toHaveBeenCalled();
+          expect(headlineTextWhenAdjustColumnTopWasCalled).toBe(election2.body());
+        });
+      });
+
+      describe("when the election body changes", function() {
+        it("calls #adjustColumnTop after assigning it to the body div", function() {
+          electionPage.election(election);
+          electionPage.adjustColumnTop.reset();
+
+          election.remotelyUpdated({body: "this is a longer body?"});
+          expect(electionPage.adjustColumnTop).toHaveBeenCalled();
+          expect(headlineTextWhenAdjustColumnTopWasCalled).toBe("this is a longer body?");
+        });
+      });
+    })
   });
+
+  function expectFieldsVisible() {
+    expect(electionPage.editableBody).toBeVisible();
+    expect(electionPage.editableDetails).toBeVisible();
+    expect(electionPage.cancelEditLink).toBeVisible();
+    expect(electionPage.updateLink).toBeVisible();
+    expect(electionPage.editLink).toBeHidden();
+    expect(electionPage.body).toBeHidden();
+    expect(electionPage.details).toBeHidden();
+  }
+
+  function expectFieldsHidden() {
+    expect(electionPage.editableBody).toBeHidden();
+    expect(electionPage.editableDetails).toBeHidden();
+    expect(electionPage.cancelEditLink).toBeHidden();
+    expect(electionPage.updateLink).toBeHidden();
+    expect(electionPage.editLink).toBeVisible();
+    expect(electionPage.body).toBeVisible();
+    expect(electionPage.details).toBeVisible();
+  }
 });
