@@ -4,25 +4,21 @@
 #election
   height: 100%
   position: relative
+
+
   > #headline
     position: relative
-    font-size: $s2
-    line-height: 1.5 * $line-height
-    padding-left: $padding-x
-    width: 600px
-    textarea.body
-      width: 100%
-      height: 1.5 * $line-height
+    padding: 0 $padding-x
+    .new.button
+      float: right
+      font-size: $s0
+      padding: ($line-height / 2 + 2) ($line-height + 2)
+    .body
+      width: 600px
       line-height: 1.5 * $line-height
       font-size: $s2
+    textarea.body
       display: none
-    > .body
-      padding: 0
-    > .avatar
-      display: none
-      margin-right: $s0
-      float: left
-      @include clearfix
 
   > #columns
     position: absolute

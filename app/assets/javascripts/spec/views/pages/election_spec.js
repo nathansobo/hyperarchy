@@ -57,8 +57,10 @@ describe("Views.Pages.Election", function() {
       describe("if no voterId or candidateId is specified", function() {
         it("fetches the election data before assigning relations to the subviews and the current org id", function() {
           waitsFor("fetch to complete", function(complete) {
+            electionPage.newCandidateLink.hide();
             electionPage.params({ electionId: election.id() }).success(complete);
             expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
+            expect(electionPage.newCandidateLink).toBeVisible();
           });
 
           runs(function() {
@@ -77,7 +79,9 @@ describe("Views.Pages.Election", function() {
       describe("if the voterId is specified", function() {
         it("fetches the election data and the specified voter's rankings before assigning relations to the subviews", function() {
           waitsFor("fetch to complete", function(complete) {
+            electionPage.newCandidateLink.hide();
             electionPage.params({ electionId: election.id(), voterId: otherUser.id() }).success(complete);
+            expect(electionPage.newCandidateLink).toBeVisible();
             expect(electionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
             expect(electionPage.votes.selectedVoterId()).toEqual(otherUser.id());
           });
@@ -99,7 +103,9 @@ describe("Views.Pages.Election", function() {
       describe("if the candidateId is specified", function() {
         it("fetches the election data before assigning relations to the subviews and the selectedCandidate to the currentConsensus and candidateDetails", function() {
           waitsFor("fetch to complete", function(complete) {
+            electionPage.newCandidateLink.hide();
             electionPage.params({ electionId: election.id(), candidateId: candidate1.id() }).success(complete);
+            expect(electionPage.newCandidateLink).toBeVisible();
             expect(electionPage.votes.selectedVoterId()).toBeFalsy();
           });
 
@@ -121,7 +127,9 @@ describe("Views.Pages.Election", function() {
           spyOn(electionPage.candidateDetails, 'showNewForm');
 
           waitsFor("fetch to complete", function(complete) {
+            expect(electionPage.newCandidateLink).toBeVisible();
             electionPage.params({ electionId: election.id(), candidateId: 'new' }).success(complete);
+            expect(electionPage.newCandidateLink).toBeHidden();
             expect(electionPage.votes.selectedVoterId()).toBeFalsy();
           });
 
@@ -241,7 +249,7 @@ describe("Views.Pages.Election", function() {
       var election = Election.createFromRemote({id: 1, creatorId: 1, createdAt: 2345});
 
       electionPage.election(election);
-      electionPage.newCandidateButton.click();
+      electionPage.newCandidateLink.click();
       expect(Path.routes.current).toBe(election.url() + "/candidates/new");
     });
   });
@@ -415,7 +423,9 @@ describe("Views.Pages.Election", function() {
   });
 
   function expectColumnTopCorrectlyAdjusted() {
-    expect(electionPage.columns.offset().top).toBe(electionPage.distanceFromHeadline() + electionPage.headline.height());
+    var bigLineHeight = Application.lineHeight * 1.5;
+    var quantizedHeadlineHeight = Math.round(electionPage.headline.height() / bigLineHeight) * bigLineHeight;
+    expect(electionPage.columns.offset().top).toBe(Math.floor(quantizedHeadlineHeight + electionPage.distanceFromHeadline()));
   }
 
   function expectFieldsVisible() {

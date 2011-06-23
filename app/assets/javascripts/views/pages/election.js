@@ -1,12 +1,12 @@
 _.constructor('Views.Pages.Election', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "election"}, function() {
-
       div({id: "headline"}, function() {
-        subview('avatar', Views.Components.Avatar, {imageSize: 19 * 1.5 * 3 });
+        a({'class': "new button"}, "Add An Answer")
+          .ref('newCandidateLink')
+          .click('routeToNewElectionForm');
         div({'class': "body"}).ref('body');
         textarea({name: "body", 'class': "body"}).ref("editableBody");
-        div({'class': "clearfix"});
       }).ref('headline');
 
       div({id: "columns"}, function() {
@@ -42,9 +42,6 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
   }},
 
   column2: function() { with(this.builder) {
-    a({'class': "link"}, "Add An Answer")
-      .ref('newCandidateButton')
-      .click('routeToNewElectionForm');
     h2("Current Consensus");
     subview('currentConsensus', Views.Pages.Election.CurrentConsensus);
   }},
@@ -87,6 +84,12 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         voterId = params.voterId || Application.currentUserId();
         this.rankedCandidates.sortingEnabled(!voterId || voterId === Application.currentUserId());
         this.populateRankedCandidatesHeader(voterId);
+      }
+
+      if (params.candidateId === 'new') {
+        this.newCandidateLink.hide();
+      } else {
+        this.newCandidateLink.show();
       }
 
       this.votes.selectedVoterId(voterId);
@@ -231,7 +234,9 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     },
     
     adjustColumnTop: function() {
-      this.columns.css('top', this.distanceFromHeadline() + this.headline.height());
+      var bigLineHeight = Application.lineHeight * 1.5;
+      var quantizedHeadlineHeight = Math.round(this.headline.height() / bigLineHeight) * bigLineHeight;
+      this.columns.css('top', quantizedHeadlineHeight + this.distanceFromHeadline());
     }
   }
 });

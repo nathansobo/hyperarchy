@@ -15,9 +15,11 @@
 
 body.grid
   @include baseline-grid-background($line-height, transparentize(blue, .5))
-  background-position: 0 ($line-height / 2)
   #body
     opacity: 0.5
+
+body.grid-offset
+  background-position: 0 ($line-height / 2)
 
 body, textarea
   font-family: "proxima-nova-1", Helvetica, Arial, sans-serif
@@ -45,24 +47,21 @@ a
     &:hover
       text-decoration: underline
   &.button
+    @include background-image(linear-gradient(top, #f6f6f6, #eee))
+    border: 1px solid #ccc
     text-align: center
     display: inline-block
     margin-top: -$s-8
     padding: $s-8 $s-4
     min-width: 35px
     @include border-radius(2)
-    background: #eee
     font-size: $s-1
-    &.cancel:hover
-      background: $pale-red
-    &.destroy:hover
-      background: $pale-red
-    &.update:hover
-      background: $pale-green
-    &.create:hover
-      background: $pale-green
+    &.cancel:hover, &.destroy:hover
+      @include background-image(linear-gradient(top, $pale-red, darken($pale-red, 3%)))
+    &.update:hover, &.create:hover
+      @include background-image(linear-gradient(top, $pale-green, darken($pale-green, 3%)))
     &.edit:hover, &.new:hover
-      background: $pale-blue
+      @include background-image(linear-gradient(top, $pale-blue, darken($pale-blue, 3%)))
 
   &.icon
     display: inline-block

@@ -34,6 +34,9 @@ _.constructor("Views.Layout", View.Template, {
       $(document).bind('keydown', 'ctrl+g', function() {
         $('body').toggleClass('grid');
       });
+      $(document).bind('keydown', 'ctrl+shift+g', function() {
+        $('body').toggleClass('grid-offset');
+      });
     },
 
     currentUser: {
