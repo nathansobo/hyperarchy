@@ -111,9 +111,9 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
   describe("showing and hiding the new form", function() {
     it("hides comments and empties out and shows the form fields & create button when #showNewForm is called", function() {
-      candidateDetails.formBody.val("woweee!");
-      candidateDetails.formDetails.val("cocooo!");
-      candidateDetails.hideForm();
+      candidateDetails.editableBody.val("woweee!");
+      candidateDetails.editableDetails.val("cocooo!");
+      candidateDetails.cancelEdit();
 
       var now = new Date();
       spyOn(window, 'Date').andReturn(now);
@@ -121,8 +121,8 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.createLink).toBeHidden();
       candidateDetails.showNewForm();
       expect(candidateDetails.form).toBeVisible();
-      expect(candidateDetails.formBody.val()).toBe('');
-      expect(candidateDetails.formDetails.val()).toBe('');
+      expect(candidateDetails.editableBody.val()).toBe('');
+      expect(candidateDetails.editableDetails.val()).toBe('');
       expect(candidateDetails.createLink).toBeVisible();
       expect(candidateDetails.cancelEditLink).toBeHidden();
       expect(candidateDetails.updateLink).toBeHidden();
@@ -154,8 +154,8 @@ describe("Views.Pages.Election.CandidateDetails", function() {
         details: "That green stuff..."
       }
 
-      candidateDetails.formBody.val(fieldValues.body);
-      candidateDetails.formDetails.val(fieldValues.details);
+      candidateDetails.editableBody.val(fieldValues.body);
+      candidateDetails.editableDetails.val(fieldValues.details);
     });
 
     describe("when the body field is filled in", function() {
@@ -179,7 +179,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     describe("when the body field is empty", function() {
       it("does nothing", function() {
         spyOn(History, 'pushState');
-        candidateDetails.formBody.val('                  ');
+        candidateDetails.editableBody.val('                  ');
         candidateDetails.createLink.click();
         expect(Server.creates.length).toBe(0);
         expect(History.pushState).not.toHaveBeenCalled();
@@ -199,9 +199,9 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.cancelEditLink).toBeVisible();
       expect(candidateDetails.nonEditableContent).toBeHidden();
 
-      expect(candidateDetails.formBody.val()).toBe(candidate.body());
-      expect(candidateDetails.formBody[0]).toBe(document.activeElement);
-      expect(candidateDetails.formDetails.val()).toBe(candidate.details());
+      expect(candidateDetails.editableBody.val()).toBe(candidate.body());
+      expect(candidateDetails.editableBody[0]).toBe(document.activeElement);
+      expect(candidateDetails.editableDetails.val()).toBe(candidate.details());
 
       candidateDetails.cancelEditLink.click();
 
@@ -223,8 +223,8 @@ describe("Views.Pages.Election.CandidateDetails", function() {
         details: "That green stuff..."
       }
 
-      candidateDetails.formBody.val(fieldValues.body);
-      candidateDetails.formDetails.val(fieldValues.details);
+      candidateDetails.editableBody.val(fieldValues.body);
+      candidateDetails.editableDetails.val(fieldValues.details);
     });
 
     it("updates the record's body and details on the server and hides the form", function() {
@@ -249,7 +249,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
     it("does not allow a blank body", function() {
       spyOn(History, 'pushState');
-      candidateDetails.formBody.val('  ');
+      candidateDetails.editableBody.val('  ');
       candidateDetails.updateLink.click();
       expect(Server.updates.length).toBe(0);
       expect(History.pushState).not.toHaveBeenCalled();
@@ -287,6 +287,67 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     it("navigates to the election url", function() {
       candidate.remotelyDestroyed();
       expect(Path.routes.current).toBe(election.url());
+    });
+  });
+  
+  describe("adjustment of the comments top position", function() {
+    var longText;
+
+    beforeEach(function() {
+      longText = "";
+      for (var i = 0; i < 10; i++) longText += "Bee bee boo boo ";
+      spyOn(candidateDetails.comments, 'enableOrDisableFullHeight');
+    });
+
+    describe("when the details/body are assigned and when they change", function() {
+      it("adjusts the top of the comments to be below the creator", function() {
+        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+
+        candidate.remotelyUpdated({body: longText});
+        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+
+        candidate.remotelyUpdated({details: longText});
+        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+        expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+      });
+    });
+
+    describe("when the form is shown and hidden", function() {
+      it("adjusts the top of the comments to be below the creator", function() {
+        candidateDetails.editLink.click();
+        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+        
+        candidateDetails.cancelEditLink.click();
+        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+        expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+      });
+    });
+
+    describe("when the window is resized", function() {
+      it("adjusts the top of the comments to be below the creator", function() {
+        Application.electionPage.width(1000);
+        candidate.remotelyUpdated({details: longText});
+
+        Application.electionPage.width(700);
+        $(window).resize();
+        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+        expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+      });
+    });
+
+    describe("when the body or details textareas resize elastically", function() {
+      it("adjusts the top of the comments to be below the creator", function() {
+        candidateDetails.editLink.click();
+
+        candidateDetails.editableBody.val(longText);
+        candidateDetails.editableBody.keyup();
+        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+
+        candidateDetails.editableDetails.val(longText);
+        candidateDetails.editableDetails.keyup();
+        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+        expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+      });
     });
   });
 });
