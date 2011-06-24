@@ -82,9 +82,19 @@
         vertical-align: middle
         text-align: center
     #separator
-      @include box-shadow(#aaa 0 0 3px)
+      @include box-shadow(#333 0 0px 3px)
       background: #aaa
       padding: (ceil($line-height/2) - 1) ($line-height/2) ($line-height/2) ($line-height/2)
+      @include background-image(linear-gradient(top, #6f6f6f, #565656))
+      border-bottom: 1px solid #333
+      text-align: center
+      color: transparentize(white, 0.15)
+      @include text-shadow(1px 1px 1px #222)
+      #agree
+        margin-right: $s3
+      #disagree
+        margin-left: $s3
+
     li.ranking
       border-left: none
       border-top: none

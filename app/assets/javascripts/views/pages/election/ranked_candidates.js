@@ -5,7 +5,10 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
         li({id: "positive-drag-target"}, function() {
           span("Drag ideas you like here").ref('positiveDragExplanation');
         }).ref('positiveDragTarget');
-        li({id: 'separator'}, "Separator").ref('separator');
+        li({id: 'separator'}, function() {
+          span({id: "agree"}, "⬆  Agree");
+          span({id: "disagree"}, "Disagree ⬇");
+        }).ref('separator');
         li({id: "negative-drag-target"},function() {
           span("Drag ideas you dislike here").ref('negativeDragExplanation');
         }).ref('negativeDragTarget');
