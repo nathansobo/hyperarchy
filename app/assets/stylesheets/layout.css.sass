@@ -26,44 +26,56 @@ body
 
   > #menu-items
     float: right
+    margin-right: -$line-height
     height: $header-height
-    font-weight: $light
-
-    > div
-      display: inline-block
-      margin-left: 0
-
-    .dropdown-menu
-      padding: $line-height/2
-      @include unselectable
-      position: relative
-      &.active
-        background: transparentize(white, 0.9)
-      ul
-        font-size: $s-1
-        display: none
-        position: absolute
-        top: 2 * $line-height
-        z-index: 2
-        left: 0
-        right: 0
-        background: white
-        padding: $line-height / 2
-        color: black
-        @include box-shadow(#aaa 0 0 3px)
+    position: relative
 
     #organizations-menu
-      .dropdown-menu
-        padding-left: $s3
-        padding-right: $s3
+      display: inline-block
+      #add-organization-link
+        display: inline-block
+        padding: ceil($line-height/2) $line-height ($line-height/2) $line-height
+      .dropdown-menu ul
+        left: 0
+        right: 0
 
     #account-menu
+      display: inline-block
+      #login-link
+        padding: ceil($line-height/2) $line-height ($line-height/2) $line-height
       .avatar
         background-image: url(/images/mystery_man_27.jpeg)
         position: absolute
         top: (27 - $line-height)/2 + 1
       #name
         margin-left: 27 + $line-height/2
+      .dropdown-menu ul
+        text-align: right
+        right: 0
+
+.dropdown-menu
+  padding: $line-height/2 $line-height
+  @include unselectable
+  &.active
+    background: transparentize(white, 0.9)
+  ul
+    display: none
+    position: absolute
+    top: $header-height
+    z-index: 2
+    right: 0
+    background: white
+    color: black
+    @include box-shadow(transparentize(black, 0.5) 0 0 3px)
+    li, #add-organization-menu-item
+      display: block
+      padding: $line-height/2 $line-height
+      &:hover
+        background: $highlight-yellow
+    #add-organization-menu-item
+      border-top: 1px solid #eee
+      background: #f8f8f8
+
 
 #body-wrapper
   margin: 0 auto

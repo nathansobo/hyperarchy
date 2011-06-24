@@ -8,7 +8,6 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
         },
 
         menuContent: function() {
-          this.builder.a({id: "add-organization-link"}, "Add Your Organization").ref('addOrganizationLink').click("showAddOrganizationForm");
           this.builder.subview('organizationsList', Views.Components.SortedList, {
             buildElement: function(organization) {
               return $("<li><a>" + organization.name() +"</a></li>").click(function() {
@@ -16,6 +15,7 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
               });
             }
           });
+          this.builder.a({id: "add-organization-menu-item"}, "Add Your Organization").ref('addOrganizationLink').click("showAddOrganizationForm");
         }
       });
     });
