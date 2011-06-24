@@ -1,6 +1,12 @@
 _.constructor('Views.Pages.Election', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "election"}, function() {
+      div({id: "subheader"}, function() {
+        a({href: "javascript:void"}, "Back to Questions").ref('organizationLink').click(function() {
+          History.pushState(null, null, this.election().organization().url());
+          return false;
+        });
+      });
       div({id: "headline"}, function() {
         a({'class': "new button"}, "Add An Answer")
           .ref('newCandidateLink')
@@ -241,14 +247,18 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       History.pushState(null, null, this.election().newCandidateUrl());
     },
 
-    distanceFromHeadline: function() {
-      return Application.lineHeight * 2;
-    },
-    
-    adjustColumnTop: function() {
+    columnTopPosition: function() {
       var bigLineHeight = Application.lineHeight * 1.5;
+
+      var distanceFromHeadline = Application.lineHeight * 2;
+      var subheaderHeight = this.headline.position().top;
       var quantizedHeadlineHeight = Math.round(this.headline.height() / bigLineHeight) * bigLineHeight;
-      this.columns.css('top', quantizedHeadlineHeight + this.distanceFromHeadline());
+
+      return Math.round(quantizedHeadlineHeight + distanceFromHeadline + subheaderHeight);
+    },
+
+    adjustColumnTop: function() {
+      this.columns.css('top', this.columnTopPosition());
     }
   }
 });

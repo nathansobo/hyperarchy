@@ -275,7 +275,8 @@ describe("Views.Pages.Election", function() {
 
     beforeEach(function() {
       creator = User.createFromRemote({id: 1, firstName: "animal", lastName: "eater"});
-      election = creator.elections().createFromRemote({id: 1, body: 'short body', details: "aoeu!", organizationId: 98, createdAt: 91234});
+      organization = Organization.createFromRemote({id: 1, name: "Neurotic designers"});
+      election = creator.elections().createFromRemote({id: 1, body: 'short body', details: "aoeu!", organizationId: 98, createdAt: 91234, organizationId: organization.id()});
       election2 = creator.elections().createFromRemote({id: 2, body: 'short body', details: "woo!", organizationId: 98, createdAt: 91234});
 
       electionPage.election(election);
@@ -435,12 +436,19 @@ describe("Views.Pages.Election", function() {
         });
       });
     })
+
+    describe("when the 'back to questions' link is clicked", function() {
+      it("navigates to the election's organization page", function() {
+        spyOn(Application, 'showPage');
+        electionPage.organizationLink.click();
+        expect(Path.routes.current).toBe(organization.url());
+      });
+    });
   });
 
+
   function expectColumnTopCorrectlyAdjusted() {
-    var bigLineHeight = Application.lineHeight * 1.5;
-    var quantizedHeadlineHeight = Math.round(electionPage.headline.height() / bigLineHeight) * bigLineHeight;
-    expect(electionPage.columns.offset().top).toBe(Math.floor(quantizedHeadlineHeight + electionPage.distanceFromHeadline()));
+    expect(electionPage.columns.offset().top).toBe(electionPage.columnTopPosition());
   }
 
   function expectFieldsVisible() {

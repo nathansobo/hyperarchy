@@ -15,7 +15,7 @@
 
 body.grid
   @include baseline-grid-background($line-height, transparentize(blue, .5))
-  #body
+  #body-wrapper
     opacity: 0.5
 
 body.grid-offset
@@ -41,6 +41,7 @@ textarea
   resize: none
 
 a
+  text-decoration: none
   cursor: pointer
   &.link
     color: #3e3eb6

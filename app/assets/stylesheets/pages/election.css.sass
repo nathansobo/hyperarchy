@@ -4,11 +4,25 @@
 #election
   height: 100%
   position: relative
+  padding-top: 0
 
+  #subheader
+    @include box-sizing('border-box')
+    padding: ($subheader-height - $line-height)/2 (2*$padding-x)
+    margin-bottom: 2 * $line-height
+    font-size: $s-1
+    @include background-image(linear-gradient(top, white, darken(white, 5%)))
+    border-bottom: 1px solid #ccc
+    height: $subheader-height
+    color: transparentize(black, 0.3)
+    a
+      color: transparentize(black, 0.3)
+      &:hover
+        color: black
 
   > #headline
     position: relative
-    padding: 0 $padding-x
+    padding: 0 ($padding-x + $line-height)
     .new.button
       float: right
       font-size: $s0
@@ -21,10 +35,12 @@
       display: none
 
   > #columns
+    padding: 0 $line-height
     position: absolute
     top: $line-height * 3
-    bottom: 0
-    width: 100%
+    bottom: 2 * $line-height
+    left: 0
+    right: 0
     > div
       display: table
       height: 100%
