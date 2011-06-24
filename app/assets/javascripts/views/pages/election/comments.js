@@ -20,7 +20,7 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
     comments: {
       change: function(comments) {
         this.list.relation(comments);
-        this.defer(this.scrollToBottom);
+        this.defer(this.adjustHeightAndScroll);
       }
     },
 
@@ -34,9 +34,15 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
     },
 
     attach: function() {
-      $(window).resize(this.hitch('scrollToBottom'));
-      this.list.onInsert = this.hitch('scrollToBottom');
+      $(window).resize(this.hitch('adjustHeightAndScroll'));
+      this.list.onInsert = this.hitch('adjustHeightAndScroll');
+      this.list.onRemove = this.hitch('enableOrDisableFullHeight');
       this.textarea.elastic();
+    },
+
+    adjustHeightAndScroll: function() {
+      this.enableOrDisableFullHeight();
+      this.scrollToBottom();
     },
 
     fullHeight: {
@@ -49,13 +55,25 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
       }
     },
 
-    scrollToBottom: function(animate) {
+    enableOrDisableFullHeight: function() {
+      if (this.fullHeight()) {
+        this.tryToDisableFullHeight();
+      } else {
+        this.tryToEnableFullHeight();
+      }
+    },
+
+    tryToEnableFullHeight: function() {
       var contentHeight = this.textareaAndButton.position().top + this.textareaAndButton.height();
       var overflow = contentHeight - this.height();
-
-      console.debug(overflow >= 0);
-
       this.fullHeight(overflow >= 0);
+    },
+    
+    tryToDisableFullHeight: function() {
+      this.fullHeight(this.list.attr('scrollHeight') > this.list.height());
+    },
+
+    scrollToBottom: function(animate) {
       if (this.fullHeight()) this.list.attr('scrollTop', 99999999999999);
     }
   }

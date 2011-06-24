@@ -1,7 +1,7 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Election.Comments", function() {
-  var election, comment1, comment2, creator1, creator2, commentsRelation, commentsView;
+  var election, comment1, comment2, creator1, creator2, commentsRelation, commentsView, longCommentBody;
 
   beforeEach(function() {
     attachLayout();
@@ -13,12 +13,16 @@ describe("Views.Pages.Election.Comments", function() {
     comment1 = election.comments().createFromRemote({id: 11, body: "I likeah the fruiloops so much", creatorId: creator1.id(), createdAt: 3245});
     comment2 = election.comments().createFromRemote({id: 12, body: "Yez but sie koko krispies sind sehr yummy", creatorId: creator2.id(), createdAt: 3295});
 
-    spyOn(comment1, 'editableByCurrentUser').andReturn(true);
-    spyOn(comment2, 'editableByCurrentUser').andReturn(true);
+    spyOn(ElectionComment.prototype, 'editableByCurrentUser').andReturn(true);
 
     commentsView = Application.electionPage.comments;
     commentsRelation = election.comments();
     commentsView.comments(commentsRelation);
+
+    longCommentBody = ""
+    for (var i = 0; i < 20; i++) {
+      longCommentBody += "Coocoo for cocoa puffs!!! Coocoo!! Ahh!! "
+    }
   });
 
   describe("when the comments relation is assigned", function() {
@@ -26,7 +30,6 @@ describe("Views.Pages.Election.Comments", function() {
       expect(commentsView.list.relation().tuples()).toEqual(commentsRelation.tuples());
     });
   });
-
 
   describe("comment creation", function() {
     beforeEach(function() {
@@ -66,6 +69,50 @@ describe("Views.Pages.Election.Comments", function() {
         commentsView.textarea.trigger({ type : 'keydown', which : 13 });
         expect(Server.creates).toBeEmpty();
       });
+    });
+  });
+  
+  describe("rendering", function() {
+    beforeEach(function() {
+      $('#jasmine_content').html(commentsView);
+      commentsView.height(300);
+    });
+    
+    describe("enabling / disabling of 'full-height' mode", function() {
+      describe("when comments are inserted and removed", function() {
+        it("enables full-height mode to avoid overflow and disables it if no longer needed", function() {
+          expect(commentsView).not.toHaveClass('full-height');
+          var longComment = commentsRelation.createFromRemote({id: 13, body: longCommentBody, creatorId: creator1.id(), createdAt: 2345234})
+          expect(commentsView).toHaveClass('full-height');
+          expectListScrolledToBottom();
+          longComment.remotelyDestroyed();
+          expect(commentsView).not.toHaveClass('full-height');
+          expectListScrolledToBottom();
+        });
+      });
+
+      describe("when the window is resized (which could cause the height of the comments view to change)", function() {
+        it("enables full-height mode to avoid overflow and disables it if no longer needed", function() {
+          expect(commentsView).not.toHaveClass('full-height');
+
+          commentsView.height(150);
+          $(window).resize();
+
+          expect(commentsView).toHaveClass('full-height');
+          expectListScrolledToBottom();
+
+          commentsView.height(300);
+          $(window).resize();
+
+          expect(commentsView).not.toHaveClass('full-height');
+          expectListScrolledToBottom();
+        });
+      });
+
+      function expectListScrolledToBottom() {
+        var list = commentsView.list;
+        expect(list.attr('scrollTop') + list.height()).toBe(list.attr('scrollHeight'));
+      }
     });
   });
 });
