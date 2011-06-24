@@ -352,10 +352,27 @@ describe("Views.Pages.Election.CandidateDetails", function() {
   });
 
   describe("when the close link is clicked", function() {
-    it("routes to the election's url", function() {
-      spyOn(Application, 'showPage');
-      candidateDetails.closeLink.click();
-      expect(Path.routes.current).toBe(election.url());
+    beforeEach(function() {
+      Application.electionPage.election(election);
+    });
+
+    describe("when the view is in 'new' mode", function() {
+      it("routes to the election's url", function() {
+        Application.electionPage.election(election);
+        candidateDetails.candidate(null);
+        candidateDetails.showNewForm();
+        spyOn(Application, 'showPage');
+        candidateDetails.closeLink.click();
+        expect(Path.routes.current).toBe(election.url());
+      });
+    });
+
+    describe("when the view is in 'details' mode", function() {
+      it("routes to the election's url", function() {
+        spyOn(Application, 'showPage');
+        candidateDetails.closeLink.click();
+        expect(Path.routes.current).toBe(election.url());
+      });
     });
   });
 });

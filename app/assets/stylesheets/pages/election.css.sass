@@ -84,9 +84,8 @@
     #separator
       @include box-shadow(#333 0 0px 3px)
       background: #aaa
-      padding: (ceil($line-height/2) - 1) ($line-height/2) ($line-height/2) ($line-height/2)
+      padding: (ceil($line-height/2) - 1) ($line-height/2) (($line-height/2)+1) ($line-height/2)
       @include background-image(linear-gradient(top, #6f6f6f, #565656))
-      border-bottom: 1px solid #333
       text-align: center
       color: transparentize(white, 0.15)
       @include text-shadow(1px 1px 1px #222)

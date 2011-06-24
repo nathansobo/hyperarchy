@@ -4,7 +4,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       a({'class': "close"}, "×")
         .ref('closeLink')
         .click(function() {
-          History.pushState(null, null, this.candidate().election().url());
+          History.pushState(null, null, this.parentView.election().url());
         });
 
       div(function() {
