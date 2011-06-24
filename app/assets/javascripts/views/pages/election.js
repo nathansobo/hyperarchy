@@ -147,7 +147,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         var candidate = Candidate.find(params.candidateId);
         this.currentConsensus.selectedCandidate(candidate);
         this.candidateDetails.candidate(candidate);
-        if (candidate) this.candidateDetails.comments.comments(candidate.comments());
+//        if (candidate) this.candidateDetails.comments.comments(candidate.comments());
         this.showCandidateDetails();
         if (params.candidateId === 'new') this.candidateDetails.showNewForm();
       } else {

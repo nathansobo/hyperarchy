@@ -99,11 +99,16 @@
   height: 100%
   overflow-x: hidden
   overflow-y: auto
-  padding: ($line-height/2) ($line-height/2) ($line-height/2) ($line-height/2)
+  padding: $line-height/2
   z-index: 1
   background-color: white
   &.active
     right: 0
+  .comments
+    left: $line-height/2
+    right: $line-height/2
+    bottom: $line-height/2
+
 
 #candidate-details, #column1
   .creator
@@ -159,51 +164,78 @@
     margin-left: $s-3
 
 .comments
+  &.full-height
+    ol
+      position: absolute
+      top: 5 / 3 * $line-height
+      bottom: 68 + $line-height / 2
+      width: 100%
+    .textarea-and-button
+      position: absolute
+      bottom: 0
+      width: 100%
+  overflow: hidden
+  position: absolute
+  top: $line-height * 12
+  bottom: 0
+  left: 0
+  right: 0
   h2
     padding-bottom: $line-height / 6
   ol
+    overflow-y: auto
+    overflow-x: hidden
     border-top: 1px solid #eee
-    li
+    border-bottom: 1px solid #eee
+    margin-bottom: $line-height / 2
+
+  .textarea-and-button
+    textarea
+      width: 100%
       font-size: $s-1
-      margin-bottom: ceil($line-height/3)
       padding: ($line-height/3 - 1)
-      background: #f8f8f8
-      border: 1px solid #eee
-      &:first-child
-        border-top: none
-      .avatar
-        float: left
-        margin-right: $line-height/3
-      &.destroyable:hover
-        .destroy
-          display: block
-        .date
-          //margin-right: 20px
-      .destroy
-        cursor: pointer
-        display: none
-        float: right
-        width: 11px
-        height: 11px
-        margin: 4px 2px 0 6px
-        background: url(/images/x_11x11_light.png)
-        &:hover
-          background: url(/images/x_11x11_dark.png)
-      .name
-        margin-right: $s-3
-        font-weight: $semibold
-        color: #666
-      .date
-        float: right
-        font-size: $s-2
-        color: #888
-  textarea
-    font-size: $s-1
-    padding: ($line-height/3 - 1)
-    display: block
-    width: 100%
-    margin-bottom: ceil($line-height/3)
-    height: $line-height
+      display: block
+      margin-bottom: ceil($line-height/3)
+      height: $line-height
+    .button
+      float:right
+
+.comment
+  font-size: $s-1
+  margin-top: ceil($line-height/3)
+  padding: ($line-height/3 - 1)
+  background: #f8f8f8
+  border: 1px solid #eee
+  &:first-child
+    border-top: none
+    margin-top: 0
+  &:last-child
+    border-bottom: none
+  .avatar
+    float: left
+    margin-right: $line-height/3
+  &.destroyable:hover
+    .destroy
+      display: block
+  .destroy
+    cursor: pointer
+    display: none
+    float: right
+    width: 11px
+    height: 11px
+    margin: 4px 2px 0 6px
+    background: url(/images/x_11x11_light.png)
+    &:hover
+      background: url(/images/x_11x11_dark.png)
+  .name
+    margin-right: $s-3
+    font-weight: $semibold
+    color: #666
+  .date
+    float: right
+    font-size: $s-2
+    color: #888
+
 
 #column1, #column2
   a
