@@ -403,7 +403,15 @@ describe("Views.Pages.Election", function() {
         expect(electionPage.details.text()).toBe(updates.details);
       });
     });
-    
+
+    describe("when the 'back to questions' link is clicked", function() {
+      it("navigates to the election's organization page", function() {
+        spyOn(Application, 'showPage');
+        electionPage.organizationLink.click();
+        expect(Path.routes.current).toBe(organization.url());
+      });
+    });
+
     describe("adjustment of the columns' top position", function() {
       beforeEach(function() {
         electionPage.election(election);
@@ -437,11 +445,42 @@ describe("Views.Pages.Election", function() {
       });
     })
 
-    describe("when the 'back to questions' link is clicked", function() {
-      it("navigates to the election's organization page", function() {
-        spyOn(Application, 'showPage');
-        electionPage.organizationLink.click();
-        expect(Path.routes.current).toBe(organization.url());
+    describe("adjustment of the comments top position", function() {
+      var longDetails = "";
+      beforeEach(function() {
+        longDetails = "";
+        for (var i = 0; i < 10; i++) longDetails += "Bee bee boo boo ";
+
+        spyOn(electionPage.comments, 'enableOrDisableFullHeight');
+      });
+
+      describe("when the details and creator div are populated or when the details change", function() {
+        it("adjusts to top of the comments to be below the details", function() {
+          expect(electionPage.comments.position().top).toBe(electionPage.commentsTopPosition());
+          election.remotelyUpdated({details: longDetails});
+          expect(electionPage.comments.position().top).toBe(electionPage.commentsTopPosition());
+          expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+        });
+      });
+
+      describe("when the window is resized", function() {
+        it("adjusts to top of the comments to be below the details", function() {
+          electionPage.width(1000);
+          election.remotelyUpdated({details: longDetails});
+
+          electionPage.width(700);
+          $(window).resize();
+          expect(electionPage.comments.position().top).toBe(electionPage.commentsTopPosition());
+          expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+        });
+      });
+
+      describe("when showing or hiding the editable details", function() {
+        it("adjusts to top of the comments to be below the details", function() {
+          electionPage.editLink.click();
+          expect(electionPage.comments.position().top).toBe(electionPage.commentsTopPosition());
+          expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+        });
       });
     });
   });

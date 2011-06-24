@@ -98,24 +98,6 @@ describe("Views.Pages.Election.Comments", function() {
         });
       });
 
-      describe("when the window is resized (which could cause the height of the comments view to change)", function() {
-        it("enables full-height mode to avoid overflow and disables it if no longer needed", function() {
-          expect(commentsView).not.toHaveClass('full-height');
-
-          commentsView.height(150);
-          $(window).resize();
-
-          expect(commentsView).toHaveClass('full-height');
-          expectListScrolledToBottom();
-
-          commentsView.height(300);
-          $(window).resize();
-
-          expect(commentsView).not.toHaveClass('full-height');
-          expectListScrolledToBottom();
-        });
-      });
-
       function expectListScrolledToBottom() {
         var list = commentsView.list;
         expect(list.attr('scrollTop') + list.height()).toBe(list.attr('scrollHeight'));

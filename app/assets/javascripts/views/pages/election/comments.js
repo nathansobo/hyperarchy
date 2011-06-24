@@ -35,7 +35,6 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
     },
 
     attach: function() {
-      $(window).resize(this.hitch('adjustHeightAndScroll'));
       this.list.onInsert = this.hitch('adjustHeightAndScroll');
       this.list.onRemove = this.hitch('enableOrDisableFullHeight');
       this.textarea.elastic();

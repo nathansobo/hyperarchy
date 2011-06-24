@@ -28,7 +28,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         div({'class': "date"}).ref('createdAt');
       }).ref('creator');
 
-//      subview('comments', Views.Pages.Election.Comments);
+      subview('comments', Views.Pages.Election.Comments);
     });
   }},
 
@@ -92,7 +92,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
     },
 
     showNewForm: function() {
-//      this.comments.hide();
+      this.comments.hide();
       this.showForm();
       this.formBody.val('');
       this.formDetails.val('');
@@ -106,7 +106,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
 
     hideForm: function() {
       this.nonEditableContent.show();
-//      this.comments.show();
+      this.comments.show();
       this.form.hide();
       this.updateLink.hide();
       this.cancelEditLink.hide();
