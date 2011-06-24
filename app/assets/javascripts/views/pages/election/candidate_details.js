@@ -1,6 +1,12 @@
 _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "candidate-details"}, function() {
+      a({'class': "close"}, "×")
+        .ref('closeLink')
+        .click(function() {
+          History.pushState(null, null, this.candidate().election().url());
+        });
+
       div(function() {
         div({'class': "body"}).ref("body");
         div({'class': "details"}).ref("details");

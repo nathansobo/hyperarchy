@@ -350,4 +350,12 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       });
     });
   });
+
+  describe("when the close link is clicked", function() {
+    it("routes to the election's url", function() {
+      spyOn(Application, 'showPage');
+      candidateDetails.closeLink.click();
+      expect(Path.routes.current).toBe(election.url());
+    });
+  });
 });
