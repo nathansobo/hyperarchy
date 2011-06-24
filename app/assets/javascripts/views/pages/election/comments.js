@@ -30,6 +30,7 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
       
       this.comments().create({body: this.textarea.val()});
       this.textarea.val("");
+      this.textarea.keyup();
       return false;
     },
 
@@ -38,6 +39,8 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
       this.list.onInsert = this.hitch('adjustHeightAndScroll');
       this.list.onRemove = this.hitch('enableOrDisableFullHeight');
       this.textarea.elastic();
+      this.textarea.bind('elastic', this.hitch('adjustListBottom'))
+      this.adjustListBottom();
     },
 
     adjustHeightAndScroll: function() {
@@ -75,6 +78,12 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
 
     scrollToBottom: function(animate) {
       if (this.fullHeight()) this.list.attr('scrollTop', 99999999999999);
+    },
+
+    adjustListBottom: function() {
+      var bottomOfList = this.textareaAndButton.height();
+      this.list.css('bottom', bottomOfList);
+      this.scrollToBottom();
     }
   }
 });

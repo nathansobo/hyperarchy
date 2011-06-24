@@ -15,8 +15,13 @@ describe("Views.Pages.Election.Comments", function() {
 
     spyOn(ElectionComment.prototype, 'editableByCurrentUser').andReturn(true);
 
-    commentsView = Application.electionPage.comments;
+    commentsView = Views.Pages.Election.Comments.toView();
     commentsRelation = election.comments();
+
+    $('#jasmine_content').html(commentsView);
+    commentsView.width(800);
+    commentsView.height(300);
+    commentsView.attach();
     commentsView.comments(commentsRelation);
 
     longCommentBody = ""
@@ -37,16 +42,23 @@ describe("Views.Pages.Election.Comments", function() {
     });
 
     describe("when the create comment button is clicked", function() {
-      it("clears the textarea and submits a comment to the server", function() {
-        commentsView.textarea.val("I like to eat stamps!");
+      it("clears the textarea, resizes it and submits a comment to the server", function() {
+        var originalTextareaHeight = commentsView.textarea.height();
+
+        commentsView.textarea.val(longCommentBody);
+        commentsView.textarea.keyup(); // trigger elastic
+        expect(commentsView.textarea.height()).toBeGreaterThan(originalTextareaHeight);
+        
+
         commentsView.createLink.click();
         expect(commentsView.textarea.val()).toBe('');
+        expect(commentsView.textarea.height()).toBe(originalTextareaHeight);
 
         expect(Server.creates.length).toBe(1);
 
         var createdRecord = Server.lastCreate.record;
 
-        expect(createdRecord.body()).toBe("I like to eat stamps!");
+        expect(createdRecord.body()).toBe(longCommentBody);
         expect(createdRecord.electionId()).toBe(election.id());
       });
     });
@@ -73,11 +85,6 @@ describe("Views.Pages.Election.Comments", function() {
   });
   
   describe("rendering", function() {
-    beforeEach(function() {
-      $('#jasmine_content').html(commentsView);
-      commentsView.height(300);
-    });
-    
     describe("enabling / disabling of 'full-height' mode", function() {
       describe("when comments are inserted and removed", function() {
         it("enables full-height mode to avoid overflow and disables it if no longer needed", function() {
@@ -113,6 +120,20 @@ describe("Views.Pages.Election.Comments", function() {
         var list = commentsView.list;
         expect(list.attr('scrollTop') + list.height()).toBe(list.attr('scrollHeight'));
       }
+    });
+
+    describe("when the textarea resizes in full height mode", function() {
+      it("adjusts the bottom of the list so its always above the textarea", function() {
+        var longComment = commentsRelation.createFromRemote({id: 13, body: longCommentBody, creatorId: creator1.id(), createdAt: 2345234})
+        expect(commentsView).toHaveClass('full-height');
+
+        commentsView.textarea.val(longCommentBody);
+        commentsView.textarea.keyup();
+
+        var list = commentsView.list;
+        var listBottom = list.position().top + list.height();
+        expect(listBottom).toBeLessThan(commentsView.textareaAndButton.position().top);
+      });
     });
   });
 });
