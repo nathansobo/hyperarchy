@@ -108,13 +108,15 @@ body
     opacity: 0.3
 
 .lightbox
+  z-index: $darkened-background-z-index + 1
+  position: fixed
+  left: 50%
+  top: 50%
+  margin: -200px auto 0 -150px
   display: none
-  position: relative
-  margin: auto
   background: white
   width: 300
   height: 400
-  z-index: $darkened-background-z-index + 1
 
 //@media all and (min-width: 1220px)
 //  #layout #header
