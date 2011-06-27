@@ -213,7 +213,7 @@ module Prequel
           before_save
           self.created_at = Time.now if fields_by_name.has_key?(:created_at)
           self.updated_at = Time.now if fields_by_name.has_key?(:updated_at)
-          self.id = (DB[table.name] << field_values_without_id)
+          self.id = (DB[table.name] << field_values_without_nil_id)
           Prequel.session[table.name][id] = self
           mark_clean
           after_create
@@ -422,9 +422,9 @@ module Prequel
       field = fields_by_name[name] ||  synthetic_fields_by_name[name]
     end
 
-    def field_values_without_id
+    def field_values_without_nil_id
       field_values.tap do |field_values|
-        field_values.delete(:id)
+        field_values.delete(:id) if field_values[:id].nil?
       end
     end
   end
