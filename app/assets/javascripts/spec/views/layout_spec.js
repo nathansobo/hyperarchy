@@ -63,7 +63,7 @@ describe("Views.Layout", function() {
     });
 
     describe("when the socket client has not yet connected", function() {
-      it("subscribes to the organization's channel", function() {
+      it("subscribes to the organization's channel after the client connects", function() {
         Application.currentOrganizationId(22);
 
         expect(jQuery.ajax).not.toHaveBeenCalled();
@@ -79,6 +79,18 @@ describe("Views.Layout", function() {
           dataType: undefined
         });
       });
+    });
+  });
+
+  describe("when the socket client is disconnected", function() {
+    it("shows the disconnect lightbox", function() {
+      $("#jasmine_content").html(Application);
+
+      expect(Application.disconnectDialog).toBeHidden();
+      expect(Application.darkenedBackground).toBeHidden();
+      socketClient.emit('disconnect');
+      expect(Application.disconnectDialog).toBeVisible();
+      expect(Application.darkenedBackground).toBeVisible();
     });
   });
 });

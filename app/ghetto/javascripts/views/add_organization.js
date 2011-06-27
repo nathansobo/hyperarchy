@@ -1,4 +1,4 @@
-_.constructor("Views.AddOrganization", Views.Lightbox, {
+_.constructor("Views.AddOrganization", Views.Lightboxes.Lightbox, {
   lightboxContent: function() { with(this.builder) {
     div(function() {
 

@@ -1,4 +1,4 @@
-_.constructor("Views.Lightbox", View.Template, {
+_.constructor("Views.Lightboxes.Lightbox", View.Template, {
   content: function() { with(this.builder) {
     div({id: template.id, 'class': "lightbox floatingCard dropShadow", style: "display: none;"}, function() {
       div({'class': "rightCancelX"}).click('hide');

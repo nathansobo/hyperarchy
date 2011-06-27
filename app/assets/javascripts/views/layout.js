@@ -19,6 +19,7 @@ _.constructor("Views.Layout", View.Template, {
       div({id: "lightboxes"}, function() {
         subview("loginForm", Views.Lightboxes.LoginForm);
         subview("signupForm", Views.Lightboxes.SignupForm);
+        subview("disconnectDialog", Views.Lightboxes.DisconnectDialog);
       }).ref("lightboxes");
 
       div({id: "darkened-background"}).ref("darkenedBackground");
@@ -79,10 +80,14 @@ _.constructor("Views.Layout", View.Template, {
         Repository.mutate([JSON.parse(m)]);
       });
       socket.on('disconnect', this.bind(function() {
-        this.layout.disconnectDialog.show();
+        this.disconnectDialog.show();
       }));
 
       socket.connect();
+    },
+
+    reload: function() {
+      window.location.reload();
     }
   }
 });

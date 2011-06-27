@@ -1,4 +1,4 @@
-_.constructor("Views.MustBeMemberMessage", Views.Lightbox, {
+_.constructor("Views.MustBeMemberMessage", Views.Lightboxes.Lightbox, {
   lightboxContent: function() { with(this.builder) {
     h1("Sorry, you must be a member of this organization to do that.");
     div("This organization is configured as read-only by the public. If you want to participate, please contact its owner and ask them to invite you.")

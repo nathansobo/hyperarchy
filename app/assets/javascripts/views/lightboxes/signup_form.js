@@ -1,4 +1,4 @@
-_.constructor('Views.Lightboxes.SignupForm', Views.Lightbox, {
+_.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
   id: "signup-form",
 
   lightboxContent: function() { with(this.builder) {
