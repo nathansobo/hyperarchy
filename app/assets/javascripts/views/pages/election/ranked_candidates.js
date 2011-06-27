@@ -113,21 +113,19 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     },
 
     handleListReceive: function(event, ui) {
-      Application.currentOrganization().ensureCurrentUserCanParticipate(function() {
-        var candidate = ui.item.view().candidate;
+      var candidate = ui.item.view().candidate;
 
-        var existingRankingLi = this.lisByCandidateId[candidate.id()];
-        if (existingRankingLi) existingRankingLi.remove();
+      var existingRankingLi = this.lisByCandidateId[candidate.id()];
+      if (existingRankingLi) existingRankingLi.remove();
 
-        var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
-        this.lisByCandidateId[candidate.id()] = rankingLi;
+      var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
+      this.lisByCandidateId[candidate.id()] = rankingLi;
 
-        var clonedLi = this.list.find('li.ui-draggable');
-        clonedLi.replaceWith(rankingLi);
-        this.detachDragTargets();
-        rankingLi.handleListDrop();
-        this.showOrHideDragTargets();
-      }, this);
+      var clonedLi = this.list.find('li.ui-draggable');
+      clonedLi.replaceWith(rankingLi);
+      this.detachDragTargets();
+      rankingLi.handleListDrop();
+      this.showOrHideDragTargets();
     },
 
     rankings: {

@@ -74,6 +74,17 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     attach: function($super) {
       $super();
       $(window).resize(this.hitch('adjustCommentsTop'));
+
+      Application.signal('currentUser').change(function(currentUser) {
+        var params = this.params();
+        if (!params) return;
+        this.fetchingRankings =
+          currentUser
+            .rankings()
+            .where({electionId: params.electionId})
+            .fetch()
+            .success(this.hitch('populateContentAfterFetch', params));
+      }, this);
     },
 
     params: {

@@ -256,6 +256,50 @@ describe("Views.Pages.Election", function() {
         });
       });
     });
+
+    describe("when the current user subsequently changes", function() {
+      describe("when displaying the current user's rankings", function() {
+        beforeEach(function() {
+          waitsFor("fetch to complete", function(complete) {
+            electionPage.params({ electionId: election.id() }).success(complete);
+          });
+          runs(function() {
+            expect(otherUser.rankings().size()).toBe(0);
+          });
+        });
+
+        it("fetches the new user's rankings and displays them in the ranked candidates view", function() {
+          waitsFor("new rankings to be fetched", function(complete) {
+            Application.currentUser(otherUser);
+            electionPage.fetchingRankings.success(complete);
+          });
+
+          runs(function() {
+            expect(otherUser.rankings().size()).toBeGreaterThan(0);
+            expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(otherUser.rankings().tuples());
+          });
+        });
+      });
+
+      describe("when not displaying the current user's ranking", function() {
+        it("fetches the new user's rankings for this election but does not change the view", function() {
+          waitsFor("fetching of candidate data", function(complete) {
+            electionPage.params({ electionId: election.id(), candidateId: candidate1.id()}).success(complete);
+          });
+          
+          waitsFor("new rankings to be fetched", function(complete) {
+            expect(electionPage.candidateDetails).toHaveClass('active');
+            Application.currentUser(otherUser);
+            electionPage.fetchingRankings.success(complete);
+          });
+
+          runs(function() {
+            expect(otherUser.rankings().size()).toBeGreaterThan(0);
+            expect(electionPage.candidateDetails).toHaveClass('active'); // we don't change the view
+          });
+        });
+      });
+    });
   });
 
   describe("when the 'suggest an answer' button is clicked", function() {
@@ -484,7 +528,6 @@ describe("Views.Pages.Election", function() {
       });
     });
   });
-
 
   function expectColumnTopCorrectlyAdjusted() {
     expect(electionPage.columns.offset().top).toBe(electionPage.columnTopPosition());
