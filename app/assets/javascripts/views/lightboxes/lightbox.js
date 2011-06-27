@@ -1,7 +1,7 @@
 _.constructor("Views.Lightbox", View.Template, {
   content: function() { with(this.builder) {
     div({id: template.id, 'class': "lightbox"}, function() {
-      div({'class': "CancelX"}).click('close');
+      a({'class': "close"}, "×").click('close').ref('closeX');
       template.lightboxContent();
     });
   }},
