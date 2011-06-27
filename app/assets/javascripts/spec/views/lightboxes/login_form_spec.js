@@ -10,11 +10,12 @@ describe("Views.Lightboxes.LoginForm", function() {
   });
 
   describe("#afterShow", function() {
-    it("shows the darkened background and focuses the email address", function() {
+    it("shows the darkened background, hides the errors, and focuses the email address", function() {
       expect(loginForm).not.toBeVisible();
       loginForm.show();
       expect(loginForm).toBeVisible();
       expect(darkenedBackground).toBeVisible();
+      expect(loginForm.errors).toBeHidden();
       expect(loginForm.emailAddress[0]).toBe(document.activeElement);
     });
     
@@ -93,6 +94,7 @@ describe("Views.Lightboxes.LoginForm", function() {
         });
 
         runs(function() {
+          expect(loginForm.errors).toBeVisible();
           expect(loginForm.errors.text()).toContain("password");
           expect(loginForm).toBeVisible();
         });

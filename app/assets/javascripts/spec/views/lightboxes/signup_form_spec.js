@@ -23,6 +23,7 @@ describe("Views.Lightboxes.SignupForm", function() {
       
       signupForm.show();
 
+      expect(signupForm.errors).toBeHidden();
       expect(signupForm.addOrganizationHeader).toBeHidden();
       expect(signupForm.organizationSection).toBeHidden();
       expect(signupForm.participateHeader).toBeVisible();

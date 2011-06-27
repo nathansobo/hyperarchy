@@ -4,7 +4,7 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
   lightboxContent: function() { with(this.builder) {
     form(function() {
       h1("Log in to participate:");
-      div().ref("errors");
+      ul({'class': "errors"}).ref("errors");
 
       label("Email Address");
       input({name: "user[emailAddress]", tabindex: 101}).ref('emailAddress');
@@ -28,6 +28,7 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
 
     beforeShow: function($super) {
       $super();
+      this.errors.hide();
       $(window).one('popstate', this.hitch('hide'));
     },
 
@@ -59,8 +60,10 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
     handleErrors: function(xhr) {
       var errors = this.getValidationErrors(xhr);
       this.errors.empty();
+      this.errors.show();
       _.each(errors, function(error) {
-        this.errors.append(error);
+
+        this.errors.append("<li>" + error + "</li>");
       }, this);
     }
   }

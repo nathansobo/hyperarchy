@@ -5,7 +5,7 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
     form(function() {
       h1("Sign up to participate:").ref('participateHeader');
       h1("Add your organization:").ref('addOrganizationHeader');
-      div().ref("errors");
+      ul({'class': "errors"}).ref("errors");
 
       div(function() {
         label("Organization Name");
@@ -34,6 +34,7 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
     },
 
     afterShow: function($super) {
+      this.errors.hide();
       this.hideOrganizationSection();
       $super();
     },
@@ -61,8 +62,9 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
     handleError: function(xhr) {
       var errors = this.getValidationErrors(xhr);
       this.errors.empty();
+      this.errors.show();
       _.each(errors, function(error) {
-        this.errors.append(error);
+        this.errors.append("<li>" + error + "</li>");
       }, this);
     },
 
