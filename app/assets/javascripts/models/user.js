@@ -6,7 +6,8 @@ _.constructor("User", Model.Record, {
       emailAddress: 'string',
       emailHash: 'string',
       admin: 'boolean',
-      guest: 'boolean'
+      guest: 'boolean',
+      defaultGuest: 'boolean'
     });
 
     this.syntheticColumn('fullName', function() {

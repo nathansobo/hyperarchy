@@ -28,6 +28,24 @@ function fetchInitialRepositoryContents() {
   });
 }
 
+function uploadRepository() {
+  var wireRepresentation = {};
+  _.each(Repository.tables, function(table, tableName) {
+    wireRepresentation[tableName] = {};
+    table.each(function(record) {
+      wireRepresentation[tableName][record.id()] = record.wireRepresentation();
+    });
+  });
+
+  synchronously(function() {
+    $.ajax({
+      type: 'post',
+      url: "/backdoor/upload_repository",
+      data: { records: JSON.stringify(wireRepresentation) }
+    });
+  });
+}
+
 function usingBackdoor(callback) {
   synchronously(function() {
     var previousSandboxUrl = Server.sandboxUrl;

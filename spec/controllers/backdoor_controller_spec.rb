@@ -27,4 +27,19 @@ describe BackdoorController do
       User.all.should == [User.default_guest]
     end
   end
+
+  describe "#upload_repository" do
+    it "inserts the given records hash into the database" do
+      records_json = {
+        "candidates" => {
+          "1" => { "id" => 1, "election_id" => 1, "creator_id" => 2,"body" => "Candidate 1","created_at" => 1308352736162}
+        }
+      }.to_json
+
+      post :upload_repository, :records => records_json
+
+      Candidate.find(1).body.should == "Candidate 1"
+      Candidate.find(1).created_at.to_millis.should == 1308352736162
+    end
+  end
 end

@@ -36,6 +36,7 @@ Hyperarchy::Application.routes.draw do
   if Rails.env.jasmine? || Rails.env.test?
     mount Princess::Engine => '/'
     post '/backdoor/clear_tables' => 'backdoor#clear_tables'
+    post '/backdoor/upload_repository' => 'backdoor#upload_repository'
     post '/backdoor/login' => 'backdoor#login'
     post '/backdoor/:relation/multiple' => 'backdoor#create_multiple'
     get '/backdoor/initial_repository_contents' => 'backdoor#initial_repository_contents'
