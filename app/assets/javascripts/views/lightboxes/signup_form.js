@@ -19,10 +19,12 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightbox, {
       input({name: "user[email_address]"}).ref('emailAddress');
       label("Choose Your Password");
       input({name: "user[password]", type: "password"}).ref('password');
-      input({type: "submit", value: "Sign Up"}).ref('submit');
+      a({'class': "button"}, "Sign up").ref('submit');
 
-      div("Already a member?");
-      a("Click here to log in.").ref("loginFormLink").click('showLoginForm');
+      div({'class': "login-message"}, function() {
+        div("Already a member?");
+        a({'class': "link"}, "Click here to log in.").ref("loginFormLink").click('showLoginForm');
+      });
     }).ref('form').submit('submitForm');
   }},
 
@@ -31,8 +33,9 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightbox, {
       Application.loginForm.show();
     },
 
-    afterShow: function() {
+    afterShow: function($super) {
       this.hideOrganizationSection();
+      $super();
     },
 
     submitForm: function(e) {
@@ -67,12 +70,15 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightbox, {
       this.organizationSection.show();
       this.addOrganizationHeader.show();
       this.participateHeader.hide();
+      this.addClass('add-organization');
+      this.organizationName.focus();
     },
 
     hideOrganizationSection: function() {
       this.organizationSection.hide();
       this.addOrganizationHeader.hide();
       this.participateHeader.show();
+      this.removeClass('add-organization');
     }
   }
 });

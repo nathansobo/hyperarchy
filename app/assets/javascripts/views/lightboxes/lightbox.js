@@ -13,6 +13,10 @@ _.constructor("Views.Lightbox", View.Template, {
       Application.darkenedBackground.one('click', this.hitch('close'));
     },
 
+    afterShow: function() {
+      this.find('input:visible').eq(0).focus();
+    },
+
     close: function() {
       this.hide();
     },

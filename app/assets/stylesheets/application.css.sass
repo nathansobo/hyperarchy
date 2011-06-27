@@ -19,6 +19,11 @@ body.grid
   #body-wrapper
     opacity: 0.5
 
+  .lightbox
+    @include baseline-grid-background($s1, transparentize(blue, .5))
+    > *
+      opacity: 0.5
+
 body.grid-offset
   background-position: 0 ($line-height / 2)
 
@@ -48,22 +53,22 @@ a
     color: #3e3eb6
     &:hover
       text-decoration: underline
-  &.button
-    @include background-image(linear-gradient(top, #f6f6f6, #eee))
-    border: 1px solid #ccc
-    text-align: center
-    display: inline-block
-    margin-top: -$s-8
-    padding: $s-8 $s-4
-    min-width: 35px
-    @include border-radius(2)
-    font-size: $s-1
-    &.cancel:hover, &.destroy:hover
-      @include background-image(linear-gradient(top, $pale-red, darken($pale-red, 3%)))
-    &.update:hover, &.create:hover
-      @include background-image(linear-gradient(top, $pale-green, darken($pale-green, 3%)))
-    &.edit:hover, &.new:hover
-      @include background-image(linear-gradient(top, $pale-blue, darken($pale-blue, 3%)))
+.button
+  @include background-image(linear-gradient(top, #f6f6f6, #eee))
+  border: 1px solid #ccc
+  text-align: center
+  display: inline-block
+  margin-top: -$s-8
+  padding: $s-8 $s-4
+  min-width: 35px
+  @include border-radius(2)
+  font-size: $s-1
+  &.cancel:hover, &.destroy:hover
+    @include background-image(linear-gradient(top, $pale-red, darken($pale-red, 3%)))
+  &.update:hover, &.create:hover
+    @include background-image(linear-gradient(top, $pale-green, darken($pale-green, 3%)))
+  &.edit:hover, &.new:hover
+    @include background-image(linear-gradient(top, $pale-blue, darken($pale-blue, 3%)))
 
   &.icon
     display: inline-block

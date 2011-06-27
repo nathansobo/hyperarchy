@@ -12,10 +12,12 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightbox, {
       label("Password");
       input({name: "user[password]", type: "password", tabindex: 102}).ref('password');
 
-      input({type: "submit", value: "Log In", tabindex: 103}).ref('submit');
+      a({tabindex: 103, 'class': "button"}, "Log in").ref('submit');
 
-      div("Not yet a member?");
-      a("Click here to sign up.").ref("signupFormLink").click('showSignupForm');
+      div({'class': "signup-message"}, function() {
+        div("Not yet a member?");
+        a({'class': "link"}, "Click here to sign up.").ref("signupFormLink").click('showSignupForm');
+      });
     }).ref('form').submit('submitForm');
   }},
 

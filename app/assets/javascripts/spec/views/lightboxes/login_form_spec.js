@@ -10,11 +10,12 @@ describe("Views.Lightboxes.LoginForm", function() {
   });
 
   describe("#afterShow", function() {
-    it("shows the darkened background", function() {
+    it("shows the darkened background and focuses the email address", function() {
       expect(loginForm).not.toBeVisible();
       loginForm.show();
       expect(loginForm).toBeVisible();
       expect(darkenedBackground).toBeVisible();
+      expect(loginForm.emailAddress[0]).toBe(document.activeElement);
     });
     
     it("causes the form to be hidden if the url changes", function() {

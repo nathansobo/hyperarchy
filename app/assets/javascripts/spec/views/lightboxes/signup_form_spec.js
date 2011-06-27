@@ -3,8 +3,7 @@
 describe("Views.Lightboxes.SignupForm", function() {
   var signupForm, darkenedBackground;
   beforeEach(function() {
-    $("#jasmine_content").html(window.Application = Views.Layout.toView());
-    Application.attach();
+    renderLayout();
     darkenedBackground = Application.darkenedBackground;
     signupForm = Application.signupForm;
     expect(signupForm).toExist();
@@ -12,7 +11,7 @@ describe("Views.Lightboxes.SignupForm", function() {
   });
 
   describe("#afterShow / #afterHide", function() {
-    it("shows / hides the darkened background and hides the organization section", function() {
+    it("shows / hides the darkened background, hides the organization section, and focuses the first field", function() {
       expect(signupForm).toBeVisible();
       expect(darkenedBackground).toBeVisible();
       signupForm.showOrganizationSection();
@@ -28,6 +27,8 @@ describe("Views.Lightboxes.SignupForm", function() {
       expect(signupForm.organizationSection).toBeHidden();
       expect(signupForm.participateHeader).toBeVisible();
       expect(darkenedBackground).toBeVisible();
+
+      expect(Application.signupForm.firstName[0]).toBe(document.activeElement);
     });
   });
 

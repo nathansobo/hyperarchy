@@ -68,6 +68,8 @@ describe("Views.Layout.OrganizationsMenu", function() {
       expect(Application.signupForm.organizationSection).toBeVisible();
       expect(Application.signupForm.participateHeader).toBeHidden();
       expect(Application.signupForm.addOrganizationHeader).toBeVisible();
+      expect(Application.signupForm).toHaveClass('add-organization');
+      expect(Application.signupForm.organizationName[0]).toBe(document.activeElement);
     });
   });
 
@@ -78,6 +80,8 @@ describe("Views.Layout.OrganizationsMenu", function() {
       expect(Application.signupForm.organizationSection).toBeVisible();
       expect(Application.signupForm.participateHeader).toBeHidden();
       expect(Application.signupForm.addOrganizationHeader).toBeVisible();
+      expect(Application.signupForm).toHaveClass('add-organization');
+      expect(Application.signupForm.organizationName[0]).toBe(document.activeElement);
     });
   });
 
