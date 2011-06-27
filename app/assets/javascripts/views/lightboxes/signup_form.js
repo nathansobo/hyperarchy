@@ -19,7 +19,7 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
       input({name: "user[email_address]"}).ref('emailAddress');
       label("Choose Your Password");
       input({name: "user[password]", type: "password"}).ref('password');
-      a({'class': "button"}, "Sign up").ref('submit');
+      input({'class': "button", type: "submit", value: "Sign up"}).ref('submit');
 
       div({'class': "login-message"}, function() {
         div("Already a member?");
