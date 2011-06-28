@@ -133,17 +133,28 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
           } else {
             this.list.append(rankingLi);
           }
+
           rankingLi.handleListDrop();
           this.showOrHideDragTargets();
           Application.signupForm.unbind('cancel', onCancel);
+          unbindHandlers();
         });
 
         var onCancel = this.bind(function() {
           this.list.find('.candidate').remove();
-          Application.signupForm.unbind('success', onSuccess);
+          unbindHandlers();
         });
 
+        function unbindHandlers() {
+          Application.signupForm.unbind('success', onSuccess);
+          Application.signupForm.unbind('cancel', onCancel);
+          Application.loginForm.unbind('success', onSuccess);
+          Application.loginForm.unbind('cancel', onCancel);
+        };
+
+        Application.loginForm.one('success', onSuccess);
         Application.signupForm.one('success', onSuccess);
+        Application.loginForm.one('cancel', onCancel);
         Application.signupForm.one('cancel', onCancel);
         return;
       }

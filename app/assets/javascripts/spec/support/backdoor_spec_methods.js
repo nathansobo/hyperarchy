@@ -23,8 +23,10 @@ function fetchInitialRepositoryContents() {
     $.ajax({
       type: 'get',
       url: "/backdoor/initial_repository_contents",
-      dataType: 'records!'
-    });
+      dataType: 'data+records!'
+    }).success(function(data) {
+        Application.currentUserId(data.current_user_id);
+      });
   });
 }
 

@@ -5,6 +5,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
   
   beforeEach(function() {
     currentUser = User.createFromRemote({id: 2, emailAddress: "foo@example.com"});
+    currentUser.memberships().createFromRemote({organizationId: 1});
     election = Election.createFromRemote({id: 1, creatorId: 2, createdAt: 234234234, organizationId: 1});
     candidate1 = election.candidates().createFromRemote({id: 1, body: "Candidate 1", createdAt: 1308352736162, creatorId: 2});
     candidate2 = election.candidates().createFromRemote({id: 2, body: "Candidate 2", createdAt: 1308352736162, creatorId: 2});
@@ -283,106 +284,174 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       });
 
       describe("when the user is a guest", function() {
-        var candidate3Li;
+        var candidate3Li, existingUser;
 
         beforeEach(function() {
+          existingUser = currentUser;
           enableAjax();
           unspy(rankedCandidates, 'currentUserCanRank');
           uploadRepository();
           fetchInitialRepositoryContents();
+
+          expect(Application.currentUserId()).toBeDefined();
+          expect(Application.currentUser()).toBeDefined();
+
           synchronously(function() {
             electionPage.params({electionId: election.id()});
           });
 
           candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
 
-          waitsFor("current user to switch", function(complete) {
-            Application.currentUser(User.find({defaultGuest: true})).success(complete);
-          });
-
-          runs(function() {
-            expect(rankedCandidates.list.find('li.ranking')).not.toExist();
-          });
+          expect(rankedCandidates.list.find('li.ranking')).not.toExist();
         });
 
-        describe("when the user drags a candidate above the separator and then signs up at the login prompt", function() {
-          it("creates a positive ranking once they have signed up", function() {
+        describe("when the user drags a candidate above the separator", function() {
+          beforeEach(function() {
             candidate3Li.dragAbove(rankedCandidates.separator);
-
             expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+            unspy(Ranking, 'createOrUpdate');
             expect(Application.signupForm).toBeVisible();
+          });
 
-            Application.signupForm.firstName.val("Max");
-            Application.signupForm.lastName.val("Brunsfeld");
-            Application.signupForm.emailAddress.val("maxbruns@example.com");
-            Application.signupForm.password.val("password");
+          describe("and then signs up at the prompt", function() {
+            it("creates a positive ranking once they have signed up", function() {
+              Application.signupForm.firstName.val("Max");
+              Application.signupForm.lastName.val("Brunsfeld");
+              Application.signupForm.emailAddress.val("maxbruns@example.com");
+              Application.signupForm.password.val("password");
 
-            waitsFor("signup to succeed", function(complete) {
-              Application.signupForm.form.trigger('submit', complete);
-              unspy(Ranking, 'createOrUpdate');
+              waitsFor("signup to succeed", function(complete) {
+                Application.signupForm.form.trigger('submit', complete);
+              });
+
+              var rankingLi;
+              runs(function() {
+                rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
+                expect(rankingLi.nextAll('#separator')).toExist();
+                expect(rankingLi.data('position')).toBe(64);
+              });
+
+              waitsFor("ranking to be createed", function() {
+                return !Application.currentUser().rankings().empty()
+              });
+
+              runs(function() {
+                var ranking = rankingLi.ranking;
+                expect(ranking.position()).toBe(64);
+                expect(ranking.candidate()).toEqual(candidate3);
+                expect(ranking.user()).toEqual(Application.currentUser());
+              });
             });
+          });
 
-            var rankingLi;
-            runs(function() {
-              rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
-              expect(rankingLi.nextAll('#separator')).toExist();
-              expect(rankingLi.data('position')).toBe(64);
-            });
+          describe("and then logs in at the prompt", function() {
+            it("creates a new positive ranking with a position greater than all previous rankings after they log in", function() {
+              Application.signupForm.loginFormLink.click();
 
-            waitsFor("ranking to be createed", function() {
-              return !Application.currentUser().rankings().empty()
-            });
+              Application.loginForm.emailAddress.val(existingUser.emailAddress());
+              Application.loginForm.password.val("password");
 
-            runs(function() {
-              var ranking = rankingLi.ranking;
-              expect(ranking.position()).toBe(64);
-              expect(ranking.candidate()).toEqual(candidate3);
-              expect(ranking.user()).toEqual(Application.currentUser());
+              waitsFor("user to log in", function(complete) {
+                Application.loginForm.form.trigger('submit', complete);
+              });
 
-              Application.currentUser(currentUser);
+              var rankingLi;
+              runs(function() {
+                expect(Path.routes.current).toBe(election.url());
+                expect(Application.currentUser().rankings().size()).toBe(2);
+                rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
+                expect(rankingLi.prevAll('li')).not.toExist();
+                expect(rankingLi.data('position')).toBe(128);
+              });
+
+              waitsFor("ranking to be createed", function() {
+                return Application.currentUser().rankings().size() === 3;
+              });
+
+              runs(function() {
+                var ranking = rankingLi.ranking;
+                expect(ranking.position()).toBe(128);
+                expect(ranking.candidate()).toEqual(candidate3);
+                expect(ranking.user()).toEqual(existingUser);
+              });
             });
           });
         });
 
         describe("when the user drags a candidate below the separator and then signs up at the login prompt", function() {
-          it("creates a negative ranking once they have signed up", function() {
+          beforeEach(function() {
             candidate3Li.dragAbove(rankedCandidates.negativeDragTarget);
-
             expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+            unspy(Ranking, 'createOrUpdate');
             expect(Application.signupForm).toBeVisible();
+          });
 
-            Application.signupForm.firstName.val("Max");
-            Application.signupForm.lastName.val("Brunsfeld");
-            Application.signupForm.emailAddress.val("maxbruns@example.com");
-            Application.signupForm.password.val("password");
+          describe("and then signs up at the prompt", function() {
+            it("creates a negative ranking once they have signed up", function() {
+              Application.signupForm.firstName.val("Max");
+              Application.signupForm.lastName.val("Brunsfeld");
+              Application.signupForm.emailAddress.val("maxbruns@example.com");
+              Application.signupForm.password.val("password");
 
-            waitsFor("signup to succeed", function(complete) {
-              Application.signupForm.form.trigger('submit', complete);
-              unspy(Ranking, 'createOrUpdate');
+              waitsFor("signup to succeed", function(complete) {
+                Application.signupForm.form.trigger('submit', complete);
+              });
+
+              var rankingLi;
+              runs(function() {
+                rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
+                expect(rankingLi.prevAll('#separator')).toExist();
+                expect(rankingLi.data('position')).toBe(-64);
+              });
+
+              waitsFor("ranking to be createed", function() {
+                return !Application.currentUser().rankings().empty()
+              });
+
+              runs(function() {
+                var ranking = rankingLi.ranking;
+                expect(ranking.position()).toBe(-64);
+                expect(ranking.candidate()).toEqual(candidate3);
+                expect(ranking.user()).toEqual(Application.currentUser());
+
+                Application.currentUser(currentUser);
+              });
             });
+          });
 
-            var rankingLi;
-            runs(function() {
-              rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
-              expect(rankingLi.prevAll('#separator')).toExist();
-              expect(rankingLi.data('position')).toBe(-64);
-            });
+          describe("and then logs in at the prompt", function() {
+            it("creates a new negative ranking with a position less than all previous rankings after they log in", function() {
+              Application.signupForm.loginFormLink.click();
 
-            waitsFor("ranking to be createed", function() {
-              return !Application.currentUser().rankings().empty()
-            });
+              Application.loginForm.emailAddress.val(existingUser.emailAddress());
+              Application.loginForm.password.val("password");
 
-            runs(function() {
-              var ranking = rankingLi.ranking;
-              expect(ranking.position()).toBe(-64);
-              expect(ranking.candidate()).toEqual(candidate3);
-              expect(ranking.user()).toEqual(Application.currentUser());
+              waitsFor("user to log in", function(complete) {
+                Application.loginForm.form.trigger('submit', complete);
+              });
 
-              Application.currentUser(currentUser);
+              var rankingLi;
+              runs(function() {
+                expect(Path.routes.current).toBe(election.url());
+                expect(Application.currentUser().rankings().size()).toBe(2);
+                rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
+                expect(rankingLi.nextAll('li')).not.toExist();
+                expect(rankingLi.data('position')).toBe(-128);
+              });
+
+              waitsFor("ranking to be createed", function() {
+                return Application.currentUser().rankings().size() === 3;
+              });
+
+              runs(function() {
+                var ranking = rankingLi.ranking;
+                expect(ranking.position()).toBe(-128);
+                expect(ranking.candidate()).toEqual(candidate3);
+                expect(ranking.user()).toEqual(existingUser);
+              });
             });
           });
         });
-
 
         describe("when the user cancels the login prompt", function() {
           it("does not create a ranking and removes the li from the list", function() {

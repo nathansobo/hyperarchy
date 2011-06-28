@@ -40,31 +40,37 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
 
     submitForm: function(e) {
       e.preventDefault();
+
+      var promise = new Monarch.Promise();
+
       var fieldValues = _.underscoreKeys(this.fieldValues());
-      return $.ajax({
+      $.ajax({
         type: 'post',
         url: "/login",
         data: fieldValues,
         dataType: 'data+records',
-        success: this.hitch('userEstablished'),
-        error: this.hitch('handleErrors')
+        success: this.hitch('userEstablished', promise),
+        error: this.hitch('handleErrors', promise)
       });
+      return promise;
     },
 
-    userEstablished: function(data) {
-      Application.currentUserId(data.current_user_id);
-      History.pushState(null, null, Application.currentUser().defaultOrganization().url());
+    userEstablished: function(promise, data) {
       this.hide();
+      Application.currentUserId(data.current_user_id).success(function() {
+        this.trigger('success');
+        promise.triggerSuccess();
+      }, this);
     },
         
-    handleErrors: function(xhr) {
+    handleErrors: function(promise, xhr) {
       var errors = this.getValidationErrors(xhr);
       this.errors.empty();
       this.errors.show();
       _.each(errors, function(error) {
-
         this.errors.append("<li>" + error + "</li>");
       }, this);
+      promise.triggerError();
     }
   }
 });
