@@ -49,28 +49,29 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
         data: fieldValues,
         dataType: 'data+records',
         success: this.hitch('handleSuccess', promise),
-        error: this.hitch('handleError')
+        error: this.hitch('handleError', promise)
       });
       return promise;
     },
 
     handleSuccess: function(promise, data) {
+      this.hide();
       Application.currentUserId(data.current_user_id).success(function() {
         this.trigger('success');
         promise.triggerSuccess();
       }, this);
-      var id = data.new_organization_id;
-      if (id) History.pushState(null, null, Organization.find(id).url());
-      this.hide();
+      var newOrganizationId = data.new_organization_id;
+      if (newOrganizationId) History.pushState(null, null, Organization.find(newOrganizationId).url());
     },
 
-    handleError: function(xhr) {
+    handleError: function(promise, xhr) {
       var errors = this.getValidationErrors(xhr);
       this.errors.empty();
       this.errors.show();
       _.each(errors, function(error) {
         this.errors.append("<li>" + error + "</li>");
       }, this);
+      promise.triggerError();
     },
 
     showOrganizationSection: function() {
@@ -86,6 +87,11 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
       this.addOrganizationHeader.hide();
       this.participateHeader.show();
       this.removeClass('add-organization');
+    },
+    
+    close: function($super) {
+      this.trigger('cancel');
+      $super();
     }
   }
 });

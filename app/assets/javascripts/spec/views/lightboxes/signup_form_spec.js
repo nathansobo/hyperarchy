@@ -65,7 +65,6 @@ describe("Views.Lightboxes.SignupForm", function() {
         });
 
         runs(function() {
-          var user = Application.currentUser();
           expect(user.guest()).toBeFalsy();
           expect(user.firstName()).toEqual("Richard");
           expect(user.lastName()).toEqual("Nixon");

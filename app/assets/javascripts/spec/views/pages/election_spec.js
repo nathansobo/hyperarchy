@@ -270,8 +270,7 @@ describe("Views.Pages.Election", function() {
 
         it("fetches the new user's rankings and displays them in the ranked candidates view", function() {
           waitsFor("new rankings to be fetched", function(complete) {
-            Application.currentUser(otherUser);
-            electionPage.fetchingRankings.success(complete);
+            Application.currentUser(otherUser).success(complete);
           });
 
           runs(function() {
@@ -289,8 +288,7 @@ describe("Views.Pages.Election", function() {
           
           waitsFor("new rankings to be fetched", function(complete) {
             expect(electionPage.candidateDetails).toHaveClass('active');
-            Application.currentUser(otherUser);
-            electionPage.fetchingRankings.success(complete);
+            Application.currentUser(otherUser).success(complete);
           });
 
           runs(function() {

@@ -336,8 +336,21 @@ describe("Views.Pages.Election.RankedCandidates", function() {
               expect(ranking.candidate()).toEqual(candidate3);
               expect(ranking.user()).toEqual(Application.currentUser());
 
-              Application.currentUser(currentUser )
+              Application.currentUser(currentUser);
             });
+          });
+        });
+
+        describe("when the user cancels the login prompt", function() {
+          it("does not create a ranking and removes the li from the list", function() {
+            expect(rankedCandidates.list.find('li.candidate')).toExist();
+            Application.signupForm.closeX.click();
+            expect(rankedCandidates.list.find('li.candidate')).not.toExist();
+            expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+
+            Application.signupForm.trigger('success');
+            expect(rankedCandidates.list.find('li.ranking')).not.toExist();
+            expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
           });
         });
       });

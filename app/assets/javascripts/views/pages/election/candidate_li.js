@@ -22,9 +22,9 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
         cancel: '.expandArrow, .tooltipIcon, .noDrag'
       });
 
-      this.click(function() {
+      this.click(this.bind(function() {
         History.pushState(null, null, this.candidate.url());
-      });
+      }));
     },
 
     dragDelay: 100,

@@ -35,7 +35,7 @@ class BackdoorController < SandboxController
   def clear_tables
     Prequel.clear_tables
     Sham.reset
-    org = Organization.make(:id => 1, :name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true)
+    org = Organization.make(:id => 1, :name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true, :privacy => "public")
     User.clear
     User.create!(:id => 1, :first_name => "Guest", :last_name => "User", :password => "password", :email_address => "guest@example.com", :default_guest => true, :guest => true)
     Membership.clear
