@@ -378,7 +378,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           });
         });
 
-        describe("when the user drags a candidate below the separator and then signs up at the login prompt", function() {
+        describe("when the user drags a candidate below the separator", function() {
           beforeEach(function() {
             candidate3Li.dragAbove(rankedCandidates.negativeDragTarget);
             expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
@@ -453,7 +453,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           });
         });
 
-        describe("when the user cancels the login prompt", function() {
+        describe("when the user cancels the signup prompt", function() {
           it("does not create a ranking and removes the li from the list", function() {
             candidate3Li.dragAbove(rankedCandidates.separator);
 
@@ -462,6 +462,25 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
             expect(rankedCandidates.list.find('li.candidate')).toExist();
             Application.signupForm.closeX.click();
+            expect(rankedCandidates.list.find('li.candidate')).not.toExist();
+            expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+
+            Application.signupForm.trigger('success');
+            expect(rankedCandidates.list.find('li.ranking')).not.toExist();
+            expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+          });
+        });
+
+        describe("when the clicks log in at the signup prompt and then cancels at the login prompt", function() {
+          it("does not create a ranking and removes the li from the list", function() {
+            candidate3Li.dragAbove(rankedCandidates.separator);
+
+            expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+            expect(Application.signupForm).toBeVisible();
+            Application.signupForm.loginFormLink.click();
+
+            expect(rankedCandidates.list.find('li.candidate')).toExist();
+            Application.loginForm.closeX.click();
             expect(rankedCandidates.list.find('li.candidate')).not.toExist();
             expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
 

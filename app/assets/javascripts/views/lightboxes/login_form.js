@@ -26,6 +26,11 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
       Application.signupForm.show();
     },
 
+    close: function($super) {
+      $super();
+      this.trigger('cancel');
+    },
+
     beforeShow: function($super) {
       $super();
       this.errors.hide();
