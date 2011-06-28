@@ -122,16 +122,13 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       if (!this.currentUserCanRank()) {
         Application.signupForm.show();
         Application.signupForm.one('success', this.bind(function() {
-          this.parentView.fetchingRankings.success(function() {
-            var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
-            this.lisByCandidateId[candidate.id()] = rankingLi;
-            this.detachDragTargets();
-            this.list.prepend(rankingLi);
-            rankingLi.handleListDrop();
-            this.showOrHideDragTargets();
-          }, this);
+          var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
+          this.lisByCandidateId[candidate.id()] = rankingLi;
+          this.detachDragTargets();
+          this.list.prepend(rankingLi);
+          rankingLi.handleListDrop();
+          this.showOrHideDragTargets();
         }));
-
         return;
       }
 

@@ -28,7 +28,7 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
     },
 
     attach: function() {
-      Application.signal('currentUser').change(function(user) {
+      Application.onCurrentUserChange(function(user) {
         this.showOrHideDropdownLink();
         this.userSubscriptions.destroy();
         this.userSubscriptions.add(user.organizations().onInsert(this.hitch('showOrHideDropdownLink')));

@@ -38,7 +38,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
 
   viewProperties: {
     attach: function($super) {
-      Application.signal('currentUser').change(this.hitch('showOrHideMutateLinks'));
+      Application.onCurrentUserChange(this.hitch('showOrHideMutateLinks'));
       $super();
       $(window).resize(this.hitch('adjustCommentsTop'));
       this.editableBody.bind('elastic', this.hitch('adjustCommentsTop'));

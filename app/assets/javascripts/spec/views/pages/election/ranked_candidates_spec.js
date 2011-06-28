@@ -294,8 +294,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
 
           waitsFor("current user to switch", function(complete) {
-            Application.currentUser(User.find({defaultGuest: true}));
-            electionPage.fetchingRankings.success(complete);
+            Application.currentUser(User.find({defaultGuest: true})).success(complete);
           });
 
           runs(function() {
@@ -318,23 +317,17 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
             waitsFor("signup to succeed", function(complete) {
               Application.signupForm.form.trigger('submit', complete);
-            });
-
-            var rankingCreationPromise;
-            waitsFor("rankings to be fetched", function(complete) {
               unspy(Ranking, 'createOrUpdate');
-              spyOn(Ranking, 'createOrUpdate').andCallFake(function() {
-                return rankingCreationPromise = Ranking.createOrUpdate.originalValue.apply(Ranking, arguments);
-              });
-              electionPage.fetchingRankings.success(complete);
             });
 
             var rankingLi;
-            waitsFor("ranking to be createed", function(complete) {
+            runs(function() {
               rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
               expect(rankingLi.data('position')).toBe(64);
-              expect(Ranking.createOrUpdate).toHaveBeenCalled();
-              rankingCreationPromise.success(complete);
+            });
+
+            waitsFor("ranking to be createed", function() {
+              return !Application.currentUser().rankings().empty()
             });
 
             runs(function() {
@@ -342,6 +335,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
               expect(ranking.position()).toBe(64);
               expect(ranking.candidate()).toEqual(candidate3);
               expect(ranking.user()).toEqual(Application.currentUser());
+
+              Application.currentUser(currentUser )
             });
           });
         });

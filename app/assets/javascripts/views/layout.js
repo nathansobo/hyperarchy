@@ -30,6 +30,7 @@ _.constructor("Views.Layout", View.Template, {
     lineHeight: 19,
 
     initialize: function() {
+      this.currentUserChangeNode = new Monarch.SubscriptionNode();
       this.connectToSocketServer();
 
       $(document).bind('keydown', 'ctrl+g', function() {
@@ -43,13 +44,18 @@ _.constructor("Views.Layout", View.Template, {
     currentUser: {
       change: function(user) {
         this.currentUserId(user.id());
+        return this.currentUserChangeNode.publishForPromise(user);
       }
     },
 
     currentUserId: {
       change: function(currentUserId) {
-        this.currentUser(User.find(currentUserId));
+        return this.currentUser(User.find(currentUserId));
       }
+    },
+
+    onCurrentUserChange: function(callback, context) {
+      this.currentUserChangeNode.subscribe(callback, context);
     },
 
     currentOrganizationId: {

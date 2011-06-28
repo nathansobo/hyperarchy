@@ -41,22 +41,26 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
 
     submitForm: function(e) {
       e.preventDefault();
+      var promise = new Monarch.Promise();
       var fieldValues = _.underscoreKeys(this.fieldValues());
-      return $.ajax({
+      $.ajax({
         type: 'post',
         url: "/signup",
         data: fieldValues,
         dataType: 'data+records',
-        success: this.hitch('handleSuccess'),
+        success: this.hitch('handleSuccess', promise),
         error: this.hitch('handleError')
       });
+      return promise;
     },
 
-    handleSuccess: function(data) {
-      Application.currentUserId(data.current_user_id);
+    handleSuccess: function(promise, data) {
+      Application.currentUserId(data.current_user_id).success(function() {
+        this.trigger('success');
+        promise.triggerSuccess();
+      }, this);
       var id = data.new_organization_id;
       if (id) History.pushState(null, null, Organization.find(id).url());
-      this.trigger('success');
       this.hide();
     },
 
