@@ -9,15 +9,15 @@ class BackdoorController < SandboxController
   end
 
   def login
-    user = set_current_user(User.make)
-    render :json => {
-      :data => { :current_user_id => user.id },
-      :records => build_client_dataset(user.initial_repository_contents)
-    }
+    set_current_user(User.make)
+    initial_repository_contents
   end
 
   def initial_repository_contents
-    render :json => build_client_dataset(current_user.initial_repository_contents)
+    render :json => {
+      :data => { :current_user_id => current_user_id },
+      :records => build_client_dataset(current_user.initial_repository_contents)
+    }
   end
 
   def create_multiple
@@ -33,6 +33,7 @@ class BackdoorController < SandboxController
   end
 
   def clear_tables
+    clear_current_user
     Prequel.clear_tables
     Sham.reset
     org = Organization.make(:id => 1, :name => "Hyperarchy Social", :suppress_membership_creation => true, :social => true, :privacy => "public")
@@ -44,23 +45,19 @@ class BackdoorController < SandboxController
   end
 
   def upload_repository
+    records = []
+
     records_by_table = JSON.parse(params[:records])
     records_by_table.each do |table_name, records_by_id|
       records_by_id.each do |id, field_values|
-
         field_values.symbolize_keys!
-
         record_class = table_name.to_s.singularize.camelize.constantize
-        field_values.each do |name, value|
-          field_values[name] = record_class.get_column(name).normalize_field_value(value)
-        end
-        puts "inserting into #{table_name} with #{field_values.inspect}"
-
-        Prequel::DB[table_name.to_sym] << field_values
+        blueprint_field_values = record_class.plan(field_values).merge(field_values) # hack to keep foreign keys from being ignored by machinist
+        records << record_class.raw_create(blueprint_field_values)
       end
     end
 
-    head :ok
+    render :json => build_client_dataset(records)
   end
 
   protected

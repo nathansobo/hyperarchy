@@ -6,6 +6,30 @@ module Prequel
   class Record
     include RunLater::InstanceMethods
 
+    def self.raw_create(attributes)
+      new(attributes).tap(&:raw_save)
+    end
+
+    def raw_save
+      if persisted?
+        initial_changeset = build_changeset
+        return true unless dirty?
+        self.updated_at = Time.now if fields_by_name.has_key?(:updated_at)
+
+        dirty_fields = dirty_field_values
+        final_changeset = build_changeset
+        table.where(:id => id).update(dirty_fields) unless dirty_fields.empty?
+        mark_clean
+      else
+        self.created_at = Time.now if fields_by_name.has_key?(:created_at)
+        self.updated_at = Time.now if fields_by_name.has_key?(:updated_at)
+        self.id = (DB[table.name] << field_values_without_nil_id)
+        Prequel.session[table.name][id] = self
+        mark_clean
+      end
+      true
+    end
+
     def current_user
       Prequel.session.current_user
     end

@@ -29,17 +29,23 @@ describe BackdoorController do
   end
 
   describe "#upload_repository" do
-    it "inserts the given records hash into the database" do
+    it "inserts the given records into the database after filling in their missing properties with blueprints" do
+      freeze_time
+
       records_json = {
         "candidates" => {
-          "1" => { "id" => 1, "election_id" => 1, "creator_id" => 2,"body" => "Candidate 1","created_at" => 1308352736162}
+          "1" => { "id" => 1, "election_id" => 1, "creator_id" => 2}
         }
       }.to_json
 
       post :upload_repository, :records => records_json
 
-      Candidate.find(1).body.should == "Candidate 1"
-      Candidate.find(1).created_at.to_millis.should == 1308352736162
+      candidate = Candidate.find(1)
+      candidate.body.should_not be_blank
+
+      response_json.should == {
+        "candidates" => {"1" => candidate.wire_representation }
+      }
     end
   end
 end
