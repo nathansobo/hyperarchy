@@ -283,6 +283,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       });
 
       describe("when the user is a guest", function() {
+        var candidate3Li;
+
         beforeEach(function() {
           enableAjax();
           unspy(rankedCandidates, 'currentUserCanRank');
@@ -292,6 +294,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             electionPage.params({electionId: election.id()});
           });
 
+          candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
 
           waitsFor("current user to switch", function(complete) {
             Application.currentUser(User.find({defaultGuest: true})).success(complete);
@@ -299,17 +302,16 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
           runs(function() {
             expect(rankedCandidates.list.find('li.ranking')).not.toExist();
+          });
+        });
 
-            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+        describe("when the user drags a candidate above the separator and then signs up at the login prompt", function() {
+          it("creates a positive ranking once they have signed up", function() {
             candidate3Li.dragAbove(rankedCandidates.separator);
 
             expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
             expect(Application.signupForm).toBeVisible();
-          });
-        });
 
-        describe("when the user signs up at the login prompt", function() {
-          it("creates the ranking once they have signed up", function() {
             Application.signupForm.firstName.val("Max");
             Application.signupForm.lastName.val("Brunsfeld");
             Application.signupForm.emailAddress.val("maxbruns@example.com");
@@ -323,6 +325,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             var rankingLi;
             runs(function() {
               rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
+              expect(rankingLi.nextAll('#separator')).toExist();
               expect(rankingLi.data('position')).toBe(64);
             });
 
@@ -341,8 +344,53 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           });
         });
 
+        describe("when the user drags a candidate below the separator and then signs up at the login prompt", function() {
+          it("creates a negative ranking once they have signed up", function() {
+            candidate3Li.dragAbove(rankedCandidates.negativeDragTarget);
+
+            expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+            expect(Application.signupForm).toBeVisible();
+
+            Application.signupForm.firstName.val("Max");
+            Application.signupForm.lastName.val("Brunsfeld");
+            Application.signupForm.emailAddress.val("maxbruns@example.com");
+            Application.signupForm.password.val("password");
+
+            waitsFor("signup to succeed", function(complete) {
+              Application.signupForm.form.trigger('submit', complete);
+              unspy(Ranking, 'createOrUpdate');
+            });
+
+            var rankingLi;
+            runs(function() {
+              rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
+              expect(rankingLi.prevAll('#separator')).toExist();
+              expect(rankingLi.data('position')).toBe(-64);
+            });
+
+            waitsFor("ranking to be createed", function() {
+              return !Application.currentUser().rankings().empty()
+            });
+
+            runs(function() {
+              var ranking = rankingLi.ranking;
+              expect(ranking.position()).toBe(-64);
+              expect(ranking.candidate()).toEqual(candidate3);
+              expect(ranking.user()).toEqual(Application.currentUser());
+
+              Application.currentUser(currentUser);
+            });
+          });
+        });
+
+
         describe("when the user cancels the login prompt", function() {
           it("does not create a ranking and removes the li from the list", function() {
+            candidate3Li.dragAbove(rankedCandidates.separator);
+
+            expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+            expect(Application.signupForm).toBeVisible();
+
             expect(rankedCandidates.list.find('li.candidate')).toExist();
             Application.signupForm.closeX.click();
             expect(rankedCandidates.list.find('li.candidate')).not.toExist();

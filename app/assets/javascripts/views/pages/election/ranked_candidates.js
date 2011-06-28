@@ -120,13 +120,19 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       var candidate = ui.item.view().candidate;
 
       if (!this.currentUserCanRank()) {
+        var positiveRanking = (this.list.find('li.ui-draggable').nextAll("#separator").length > 0);
         Application.signupForm.show();
 
         var onSuccess = this.bind(function() {
           var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
           this.lisByCandidateId[candidate.id()] = rankingLi;
           this.detachDragTargets();
-          this.list.prepend(rankingLi);
+
+          if (positiveRanking) {
+            this.list.prepend(rankingLi);
+          } else {
+            this.list.append(rankingLi);
+          }
           rankingLi.handleListDrop();
           this.showOrHideDragTargets();
           Application.signupForm.unbind('cancel', onCancel);
