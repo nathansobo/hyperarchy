@@ -310,6 +310,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             candidate3Li.dragAbove(rankedCandidates.separator);
             expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
             unspy(Ranking, 'createOrUpdate');
+            expect(rankedCandidates.positiveDragTarget).toBeHidden();
             expect(Application.signupForm).toBeVisible();
           });
 
@@ -384,6 +385,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
             unspy(Ranking, 'createOrUpdate');
             expect(Application.signupForm).toBeVisible();
+            expect(rankedCandidates.negativeDragTarget).toBeHidden();
           });
 
           describe("and then signs up at the prompt", function() {
@@ -463,6 +465,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             expect(rankedCandidates.list.find('li.candidate')).toExist();
             Application.signupForm.closeX.click();
             expect(rankedCandidates.list.find('li.candidate')).not.toExist();
+            expect(rankedCandidates.positiveDragTarget).toBeVisible();
             expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
 
             Application.signupForm.trigger('success');
@@ -482,6 +485,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             expect(rankedCandidates.list.find('li.candidate')).toExist();
             Application.loginForm.closeX.click();
             expect(rankedCandidates.list.find('li.candidate')).not.toExist();
+            expect(rankedCandidates.positiveDragTarget).toBeVisible();
             expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
 
             Application.signupForm.trigger('success');

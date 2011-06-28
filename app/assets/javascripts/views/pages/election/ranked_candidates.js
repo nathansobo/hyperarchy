@@ -127,12 +127,20 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
     handleGuestRanking: function(candidate) {
       var isPositive = (this.list.find('li.ui-draggable').nextAll("#separator").length > 0);
+
+      if (isPositive) {
+        this.positiveDragTarget.detach();
+      } else {
+        this.negativeDragTarget.detach();
+      }
+
       Application.promptSignup()
         .success(function() {
           this.insertRankingLi(candidate, {isPositive: isPositive});
         }, this)
         .invalid(function() {
           this.list.find('.candidate').remove();
+          this.showOrHideDragTargets();
         }, this);
     },
 
