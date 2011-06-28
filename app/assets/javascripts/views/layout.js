@@ -98,6 +98,35 @@ _.constructor("Views.Layout", View.Template, {
 
     reload: function() {
       window.location.reload();
+    },
+
+    promptSignup: function() {
+      var promise = new Monarch.Promise();
+
+      function onSuccess() {
+        promise.triggerSuccess();
+        unbindHandlers();
+      }
+
+      function onCancel() {
+        promise.triggerInvalid();
+        unbindHandlers();
+      }
+
+      var unbindHandlers = this.bind(function() {
+        this.signupForm.unbind('success', onSuccess);
+        this.signupForm.unbind('cancel', onCancel);
+        this.loginForm.unbind('success', onSuccess);
+        this.loginForm.unbind('cancel', onCancel);
+      });
+
+      this.loginForm.one('success', onSuccess);
+      this.signupForm.one('success', onSuccess);
+      this.loginForm.one('cancel', onCancel);
+      this.signupForm.one('cancel', onCancel);
+
+      this.signupForm.show();
+      return promise;
     }
   }
 });

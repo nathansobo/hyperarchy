@@ -118,57 +118,42 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
     handleListReceive: function(event, ui) {
       var candidate = ui.item.view().candidate;
-
-      if (!this.currentUserCanRank()) {
-        var positiveRanking = (this.list.find('li.ui-draggable').nextAll("#separator").length > 0);
-        Application.signupForm.show();
-
-        var onSuccess = this.bind(function() {
-          var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
-          this.lisByCandidateId[candidate.id()] = rankingLi;
-          this.detachDragTargets();
-
-          if (positiveRanking) {
-            this.list.prepend(rankingLi);
-          } else {
-            this.list.append(rankingLi);
-          }
-
-          rankingLi.handleListDrop();
-          this.showOrHideDragTargets();
-          Application.signupForm.unbind('cancel', onCancel);
-          unbindHandlers();
-        });
-
-        var onCancel = this.bind(function() {
-          this.list.find('.candidate').remove();
-          unbindHandlers();
-        });
-
-        function unbindHandlers() {
-          Application.signupForm.unbind('success', onSuccess);
-          Application.signupForm.unbind('cancel', onCancel);
-          Application.loginForm.unbind('success', onSuccess);
-          Application.loginForm.unbind('cancel', onCancel);
-        };
-
-        Application.loginForm.one('success', onSuccess);
-        Application.signupForm.one('success', onSuccess);
-        Application.loginForm.one('cancel', onCancel);
-        Application.signupForm.one('cancel', onCancel);
-        return;
+      if (this.currentUserCanRank()) {
+        this.insertRankingLi(candidate, { replace: this.list.find('li.ui-draggable') });
+      } else {
+        this.handleGuestRanking(candidate);
       }
+    },
 
+    handleGuestRanking: function(candidate) {
+      var isPositive = (this.list.find('li.ui-draggable').nextAll("#separator").length > 0);
+      Application.promptSignup()
+        .success(function() {
+          this.insertRankingLi(candidate, {isPositive: isPositive});
+        }, this)
+        .invalid(function() {
+          this.list.find('.candidate').remove();
+        }, this);
+    },
 
+    insertRankingLi: function(candidate, options) {
       var existingRankingLi = this.lisByCandidateId[candidate.id()];
       if (existingRankingLi) existingRankingLi.remove();
 
       var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
-      this.lisByCandidateId[candidate.id()] = rankingLi;
-
-      var clonedLi = this.list.find('li.ui-draggable');
-      clonedLi.replaceWith(rankingLi);
+      this.lisByCandidateId[rankingLi.candidate.id()] = rankingLi;
       this.detachDragTargets();
+
+      if (options.replace) {
+        options.replace.replaceWith(rankingLi);
+      } else {
+        if (options.isPositive) {
+          this.list.prepend(rankingLi);
+        } else {
+          this.list.append(rankingLi);
+        }
+      }
+
       rankingLi.handleListDrop();
       this.showOrHideDragTargets();
     },
