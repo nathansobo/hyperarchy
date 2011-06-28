@@ -60,6 +60,10 @@ _.constructor("Views.Layout", View.Template, {
       }
     },
 
+    currentOrganization: function() {
+      return Organization.find(this.currentOrganizationId());
+    },
+
     showPage: function(name, params) {
       this.body.children().hide();
       var parsedParams = {};

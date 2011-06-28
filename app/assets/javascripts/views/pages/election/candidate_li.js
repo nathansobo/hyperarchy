@@ -3,8 +3,6 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
     li({'class': "candidate"}, function() {
       div({'class': "position"}, params.candidate.position()).ref('position');
       div({'class': "body"}, params.candidate.body()).ref('body');
-    }).click(function() {
-      History.pushState(null, null, params.candidate.url());
     });
   }},
 
@@ -22,6 +20,10 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
         zIndex: 2,
         start: this.hitch('handleDragStart'),
         cancel: '.expandArrow, .tooltipIcon, .noDrag'
+      });
+
+      this.click(function() {
+        History.pushState(null, null, this.candidate.url());
       });
     },
 

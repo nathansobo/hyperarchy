@@ -19,7 +19,7 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
       input({name: "user[email_address]"}).ref('emailAddress');
       label("Choose Your Password");
       input({name: "user[password]", type: "password"}).ref('password');
-      input({'class': "button", type: "submit", value: "Sign up"}).ref('submit');
+      input({'class': "button", type: "submit", value: "Sign up"});
 
       div({'class': "login-message"}, function() {
         div("Already a member?");
@@ -56,6 +56,7 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
       Application.currentUserId(data.current_user_id);
       var id = data.new_organization_id;
       if (id) History.pushState(null, null, Organization.find(id).url());
+      this.trigger('success');
       this.hide();
     },
 

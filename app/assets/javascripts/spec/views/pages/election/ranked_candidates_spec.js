@@ -4,19 +4,22 @@ describe("Views.Pages.Election.RankedCandidates", function() {
   var electionPage, rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation, createOrUpdatePromise;
   
   beforeEach(function() {
-    currentUser = User.createFromRemote({id: 1});
-    election = Election.createFromRemote({id: 1, creatorId: 1, createdAt: 234234234});
-    candidate1 = election.candidates().createFromRemote({id: 1, body: "Candidate 1", createdAt: 1308352736162, creatorId: 1});
-    candidate2 = election.candidates().createFromRemote({id: 2, body: "Candidate 2", createdAt: 1308352736162, creatorId: 1});
-    candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3", createdAt: 1308352736162, creatorId: 1});
+    currentUser = User.createFromRemote({id: 2, emailAddress: "foo@example.com"});
+    election = Election.createFromRemote({id: 1, creatorId: 2, createdAt: 234234234, organizationId: 1});
+    candidate1 = election.candidates().createFromRemote({id: 1, body: "Candidate 1", createdAt: 1308352736162, creatorId: 2});
+    candidate2 = election.candidates().createFromRemote({id: 2, body: "Candidate 2", createdAt: 1308352736162, creatorId: 2});
+    candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3", createdAt: 1308352736162, creatorId: 2});
     ranking1 = currentUser.rankings().createFromRemote({id: 1, electionId: election.id(), candidateId: candidate1.id(), position: 64});
     ranking2 = currentUser.rankings().createFromRemote({id: 2, electionId: election.id(), candidateId: candidate2.id(), position: -64});
     rankingsRelation = currentUser.rankingsForElection(election);
-    attachLayout();
+    renderLayout();
+
     Application.currentUser(currentUser);
+    Application.height(640);
     electionPage = Application.electionPage;
     rankedCandidates = electionPage.rankedCandidates;
-    $('#jasmine_content').html(electionPage);
+    spyOn(rankedCandidates, 'currentUserCanRank').andReturn(true);
+    electionPage.show();
 
     createOrUpdatePromise = new Monarch.Promise();
     spyOn(Ranking, 'createOrUpdate').andReturn(createOrUpdatePromise);
@@ -192,7 +195,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
       describe("when displaying another user's ranking", function() {
         beforeEach(function() {
-          var otherUser = User.createFromRemote({id: 2});
+          var otherUser = User.createFromRemote({id: 99});
           otherUser.rankings().createFromRemote({electionId: election.id(), candidateId: candidate1.id(), position: 64});
           rankedCandidates.rankings(otherUser.rankings());
         });
@@ -278,6 +281,71 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 64);
         });
       });
+
+      describe("when the user is a guest", function() {
+        beforeEach(function() {
+          enableAjax();
+          unspy(rankedCandidates, 'currentUserCanRank');
+          uploadRepository();
+          fetchInitialRepositoryContents();
+          synchronously(function() {
+            electionPage.params({electionId: election.id()});
+          });
+
+
+          waitsFor("current user to switch", function(complete) {
+            Application.currentUser(User.find({defaultGuest: true}));
+            electionPage.fetchingRankings.success(complete);
+          });
+
+          runs(function() {
+            expect(rankedCandidates.list.find('li.ranking')).not.toExist();
+
+            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+            candidate3Li.dragAbove(rankedCandidates.separator);
+
+            expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+            expect(Application.signupForm).toBeVisible();
+          });
+        });
+
+        describe("when the user signs up at the login prompt", function() {
+          it("creates the ranking once they have signed up", function() {
+            Application.signupForm.firstName.val("Max");
+            Application.signupForm.lastName.val("Brunsfeld");
+            Application.signupForm.emailAddress.val("maxbruns@example.com");
+            Application.signupForm.password.val("password");
+
+            waitsFor("signup to succeed", function(complete) {
+              Application.signupForm.form.trigger('submit', complete);
+            });
+
+            var rankingCreationPromise;
+            waitsFor("rankings to be fetched", function(complete) {
+              unspy(Ranking, 'createOrUpdate');
+              spyOn(Ranking, 'createOrUpdate').andCallFake(function() {
+                return rankingCreationPromise = Ranking.createOrUpdate.originalValue.apply(Ranking, arguments);
+              });
+              electionPage.fetchingRankings.success(complete);
+            });
+
+            var rankingLi;
+            waitsFor("ranking to be createed", function(complete) {
+              rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
+              expect(rankingLi.data('position')).toBe(64);
+              expect(Ranking.createOrUpdate).toHaveBeenCalled();
+              rankingCreationPromise.success(complete);
+            });
+
+            runs(function() {
+              var ranking = rankingLi.ranking;
+              expect(ranking.position()).toBe(64);
+              expect(ranking.candidate()).toEqual(candidate3);
+              expect(ranking.user()).toEqual(Application.currentUser());
+            });
+          });
+        });
+      });
     });
 
     describe("removal of rankings by dragging out of the list", function() {
@@ -337,6 +405,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         });
       });
     });
+
   });
 
   describe("handling of remote events on rankings", function() {

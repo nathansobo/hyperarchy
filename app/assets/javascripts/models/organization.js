@@ -104,6 +104,10 @@ _.constructor("Organization", Model.Record, {
     return future;
   },
 
+  currentUserCanParticipate: function() {
+    return !Application.currentUser().guest() && (this.isPublic() || this.currentUserIsMember());
+  },
+
   currentUserCanEdit: function() {
     return Application.currentUser().admin() || this.currentUserIsOwner();
   },

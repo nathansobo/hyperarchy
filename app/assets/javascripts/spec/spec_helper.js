@@ -70,3 +70,7 @@ function useFakeServer() {
   window.Server = new Monarch.Http.FakeServer();
   window.Server.auto = false;
 }
+
+function unspy(object, methodName) {
+  object[methodName] = object[methodName].originalValue;
+}
