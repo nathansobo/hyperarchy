@@ -351,4 +351,25 @@
     @include box-shadow(#aaa 0 0 3px)
     cursor: default
 
+#election
+  #headline
+    textarea.body
+      display: none
+  #column1
+    textarea.details, .update.button, .cancel.button
+      display: none
+
+#election.edit-mode
+  #headline
+    div.body
+      display: none
+    textarea.body
+      display: block
+  #column1
+    div.details
+      display: none !important
+    .edit.button
+      display: none
+    textarea.details, .update.button, .cancel.button
+      display: block
 

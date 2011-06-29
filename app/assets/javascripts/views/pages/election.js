@@ -204,28 +204,17 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     },
 
     edit: function() {
-      this.body.hide();
-      this.details.hide();
-      this.editLink.hide();
-      this.editableBody.show();
+      this.addClass('edit-mode');
       this.editableBody.focus();
-      this.editableDetails.show();
       this.editableBody.val(this.election().body()).elastic();
       this.editableDetails.val(this.election().details()).elastic();
-      this.updateLink.show();
-      this.cancelEditLink.show();
       this.adjustColumnTop();
       this.adjustCommentsTop();
     },
 
     cancelEdit: function() {
-      this.body.show();
+      this.removeClass('edit-mode');
       this.showOrHideDetails();
-      this.editLink.show();
-      this.editableBody.hide();
-      this.editableDetails.hide();
-      this.updateLink.hide();
-      this.cancelEditLink.hide();
       this.adjustColumnTop();
       this.adjustCommentsTop();
     },
