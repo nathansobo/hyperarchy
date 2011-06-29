@@ -87,12 +87,13 @@ body
   @include box-shadow(#666 0 0 5px)
   > #body
     @include box-sizing('border-box')
+    top: $header-height
+    bottom: 0
+    width: 100%
+    position: absolute
 
-#layout.fixed-height > #body-wrapper > #body
-  top: $header-height
-  bottom: 0
-  width: 100%
-  position: absolute
+#layout.normal-height > #body-wrapper > #body
+  position: static
 
 #darkened-background
   visibility: hidden

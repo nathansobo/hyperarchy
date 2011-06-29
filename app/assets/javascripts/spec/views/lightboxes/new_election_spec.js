@@ -66,8 +66,6 @@ describe("Views.Lightboxes.NewElection", function() {
           Application.signupForm.form.submit();
           expect($.ajax).toHaveBeenCalled();
 
-          console.debug($.ajax.mostRecentCall);
-
           $.ajax.mostRecentCall.args[0].success({ current_user_id: member.id() });
 
           expect(Server.creates.length).toBe(1);

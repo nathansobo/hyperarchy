@@ -83,4 +83,13 @@ describe("Views.Pages.Organization", function() {
       expect(Application.newElection).toBeVisible();
     });
   });
+
+  describe("when the organization page is shown and hidden", function() {
+    it("applies and removes the normal-height class to/from the layout", function() {
+      organizationPage.show();
+      expect(Application).toHaveClass('normal-height');
+      organizationPage.hide();
+      expect(Application).not.toHaveClass('normal-height');
+    });
+  });
 });

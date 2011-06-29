@@ -26,8 +26,11 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
 
     create: function() {
       if (!$.trim(this.textarea.val())) return false;
+      if (Application.currentUser().guest()) {
+        Application.promptSignup().success(this.hitch('create'));
+        return false;
+      }
 
-      
       this.comments().create({body: this.textarea.val()});
       this.textarea.val("");
       this.textarea.keyup();

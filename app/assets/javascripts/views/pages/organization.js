@@ -27,10 +27,6 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
   }},
 
   viewProperties: {
-    beforeShow: function() {
-      Application.removeClass('fixed-height');
-    },
-
     organization: {
       change: function(organization) {
         Application.currentOrganizationId(organization.id());
@@ -39,6 +35,14 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
             this.electionsList.relation(organization.elections());
           }));
       }
+    },
+
+    beforeShow: function() {
+      Application.addClass('normal-height');
+    },
+
+    afterHide: function() {
+      Application.removeClass('normal-height');
     },
 
     params: {

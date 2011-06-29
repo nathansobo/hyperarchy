@@ -1,11 +1,12 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Election.Comments", function() {
-  var election, comment1, comment2, creator1, creator2, commentsRelation, commentsView, longCommentBody;
+  var member, election, comment1, comment2, creator1, creator2, commentsRelation, commentsView, longCommentBody;
 
   beforeEach(function() {
     attachLayout();
-    Application.currentUser(User.createFromRemote({id: 1}));
+    member = User.createFromRemote({id: 1});
+    Application.currentUser(member);
 
     election = Election.createFromRemote({id: 22, creatorId: 1, createdAt: 234});
     creator1 = User.createFromRemote({id: 1, firstName: "Commento", lastName: "Santiago"});
@@ -41,45 +42,95 @@ describe("Views.Pages.Election.Comments", function() {
       useFakeServer();
     });
 
-    describe("when the create comment button is clicked", function() {
-      it("clears the textarea, resizes it and submits a comment to the server", function() {
-        var originalTextareaHeight = commentsView.textarea.height();
+    describe("when the current user is a member", function() {
+      describe("when the create comment button is clicked", function() {
+        it("clears the textarea, resizes it and submits a comment to the server", function() {
+          var originalTextareaHeight = commentsView.textarea.height();
 
-        commentsView.textarea.val(longCommentBody);
-        commentsView.textarea.keyup(); // trigger elastic
-        expect(commentsView.textarea.height()).toBeGreaterThan(originalTextareaHeight);
-        
+          commentsView.textarea.val(longCommentBody);
+          commentsView.textarea.keyup(); // trigger elastic
+          expect(commentsView.textarea.height()).toBeGreaterThan(originalTextareaHeight);
 
-        commentsView.createLink.click();
-        expect(commentsView.textarea.val()).toBe('');
-        expect(commentsView.textarea.height()).toBe(originalTextareaHeight);
 
-        expect(Server.creates.length).toBe(1);
+          commentsView.createLink.click();
+          expect(commentsView.textarea.val()).toBe('');
+          expect(commentsView.textarea.height()).toBe(originalTextareaHeight);
 
-        var createdRecord = Server.lastCreate.record;
+          expect(Server.creates.length).toBe(1);
 
-        expect(createdRecord.body()).toBe(longCommentBody);
-        expect(createdRecord.electionId()).toBe(election.id());
+          var createdRecord = Server.lastCreate.record;
+
+          expect(createdRecord.body()).toBe(longCommentBody);
+          expect(createdRecord.electionId()).toBe(election.id());
+        });
+      });
+
+      describe("when enter is pressed within the comment", function() {
+        it("clears the textarea and submits a comment to the server", function() {
+          commentsView.textarea.val("I like to eat stamps!");
+          commentsView.textarea.trigger({ type : 'keydown', which : 13 });
+          expect(commentsView.textarea.val()).toBe('');
+          expect(Server.creates.length).toBe(1);
+
+          var createdRecord = Server.lastCreate.record;
+
+          expect(createdRecord.body()).toBe("I like to eat stamps!");
+          expect(createdRecord.electionId()).toBe(election.id());
+        });
+
+        it("does nothing if the textarea is blank", function() {
+          commentsView.textarea.val("   ");
+          commentsView.textarea.trigger({ type : 'keydown', which : 13 });
+          expect(Server.creates).toBeEmpty();
+        });
       });
     });
 
-    describe("when enter is pressed within the comment", function() {
-      it("clears the textarea and submits a comment to the server", function() {
-        commentsView.textarea.val("I like to eat stamps!");
-        commentsView.textarea.trigger({ type : 'keydown', which : 13 });
-        expect(commentsView.textarea.val()).toBe('');
-        expect(Server.creates.length).toBe(1);
-
-        var createdRecord = Server.lastCreate.record;
-
-        expect(createdRecord.body()).toBe("I like to eat stamps!");
-        expect(createdRecord.electionId()).toBe(election.id());
+    describe("when the current user is a guest", function() {
+      var guest;
+      beforeEach(function() {
+        guest = User.createFromRemote({id: 2, guest: true});
+        Application.currentUser(guest);
+        commentsView.detach();
+        $('#jasmine_content').html(Application);
       });
 
-      it("does nothing if the textarea is blank", function() {
-        commentsView.textarea.val("   ");
-        commentsView.textarea.trigger({ type : 'keydown', which : 13 });
-        expect(Server.creates).toBeEmpty();
+      describe("when the user signs up / logs in at the prompt", function() {
+        it("creates the comment and clears the field", function() {
+          commentsView.textarea.val("I like to eat stamps!");
+          commentsView.textarea.trigger({ type : 'keydown', which : 13 });
+
+          expect(Server.creates.length).toBe(0);
+          expect(Application.signupForm).toBeVisible();
+          Application.signupForm.firstName.val("Dude");
+          Application.signupForm.lastName.val("Richardson");
+          Application.signupForm.emailAddress.val("dude@example.com");
+          Application.signupForm.password.val("wicked");
+          Application.signupForm.form.submit();
+          expect($.ajax).toHaveBeenCalled();
+
+          $.ajax.mostRecentCall.args[0].success({ current_user_id: member.id() });
+
+          expect(commentsView.textarea.val()).toBe('');
+          expect(Server.creates.length).toBe(1);
+          var createdRecord = Server.lastCreate.record;
+          expect(createdRecord.body()).toBe("I like to eat stamps!");
+          expect(createdRecord.electionId()).toBe(election.id());
+        });
+      });
+
+      describe("when the user cancels at the prompt", function() {
+        it("does not create the comment or clear out the field", function() {
+          commentsView.textarea.val("I like to eat stamps!");
+          commentsView.textarea.trigger({ type : 'keydown', which : 13 });
+
+          expect(Server.creates.length).toBe(0);
+          expect(Application.signupForm).toBeVisible();
+          Application.signupForm.close();
+
+          expect(Server.creates.length).toBe(0);
+          expect(commentsView.textarea.val()).toBe("I like to eat stamps!");
+        });
       });
     });
   });
