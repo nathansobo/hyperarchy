@@ -76,11 +76,11 @@ describe("Views.Pages.Organization", function() {
 
   describe("when the new question button is clicked", function() {
     it("navigates to the new question form for the current organization", function() {
+      $("#jasmine_content").html(Application);
       var organization = Organization.createFromRemote({id: 34});
       organizationPage.organization(organization);
-      spyOn(Application, 'showPage');
       organizationPage.newElectionButton.click();
-      expect(Path.routes.current).toBe(organization.newElectionUrl());
+      expect(Application.newElection).toBeVisible();
     });
   });
 });
