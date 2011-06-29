@@ -49,7 +49,7 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
     },
 
     newElection: function() {
-      History.pushState(null, null, this.organization().newElectionUrl());
+      Application.newElection.show();
     }
   }
 });

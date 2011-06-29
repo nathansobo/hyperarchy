@@ -19,6 +19,7 @@ _.constructor("Views.Layout", View.Template, {
       div({id: "lightboxes"}, function() {
         subview("loginForm", Views.Lightboxes.LoginForm);
         subview("signupForm", Views.Lightboxes.SignupForm);
+        subview("newElection", Views.Lightboxes.NewElection);
         subview("disconnectDialog", Views.Lightboxes.DisconnectDialog);
       }).ref("lightboxes");
 
