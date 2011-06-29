@@ -25,12 +25,27 @@ _.constructor('Views.Lightboxes.NewElection', Views.Lightboxes.Lightbox, {
 
     create: function() {
       if ($.trim(this.body.val()) === "") return false;
-      
-      Application.currentOrganization().elections().create(this.fieldValues())
-        .success(function(election) {
-          this.hide();
-          History.pushState(null, null, election.url());
+
+      var fieldValues = this.fieldValues();
+
+      var performCreate = this.bind(function() {
+        Application.currentOrganization().elections().create(fieldValues)
+          .success(function(election) {
+            this.hide();
+            History.pushState(null, null, election.url());
+          }, this);
+      });
+
+      if (Application.currentUser().guest()) {
+        Application.promptSignup().success(performCreate).invalid(function() {
+          this.show();
+          this.body.val(fieldValues.body);
+          this.details.val(fieldValues.details);
         }, this);
+      } else {
+        performCreate();
+      }
+      
       return false;
     }
   }

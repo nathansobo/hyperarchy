@@ -1,44 +1,99 @@
 //= require spec/spec_helper
 
 describe("Views.Lightboxes.NewElection", function() {
-  var newElectionForm, organization;
+  var newElectionForm, organization, member, guest;
   beforeEach(function() {
     renderLayout();
     newElectionForm = Application.newElection.show();
+    member = User.createFromRemote({id: 1});
+    guest = User.createFromRemote({id: 2, guest: true});
     organization = Organization.createFromRemote({id: 1});
+    Application.currentUser(member);
     Application.currentOrganizationId(organization.id());
     useFakeServer();
   });
 
   describe("when the form is submitted", function() {
-    describe("when the body field is not blank", function() {
-      it("creates an election, hides the form, and navigates to its url", function() {
-        spyOn(Application, 'showPage');
+    describe("when the current user is a member", function() {
+      describe("when the body field is not blank", function() {
+        it("creates an election, hides the form, and navigates to its url", function() {
+          spyOn(Application, 'showPage');
 
-        newElectionForm.body.val("What are you doing saturday night?");
-        newElectionForm.details.val("I am very lonely.");
-        newElectionForm.form.submit();
+          newElectionForm.body.val("What are you doing saturday night?");
+          newElectionForm.details.val("I am very lonely.");
+          newElectionForm.form.submit();
 
-        expect(Server.creates.length).toBe(1);
+          expect(Server.creates.length).toBe(1);
 
-        var createdElection = Server.lastCreate.record;
-        expect(createdElection.organization()).toBe(organization);
-        expect(createdElection.body()).toBe("What are you doing saturday night?");
-        expect(createdElection.details()).toBe("I am very lonely.");
+          var createdElection = Server.lastCreate.record;
+          expect(createdElection.organization()).toBe(organization);
+          expect(createdElection.body()).toBe("What are you doing saturday night?");
+          expect(createdElection.details()).toBe("I am very lonely.");
 
-        Server.lastCreate.simulateSuccess();
+          Server.lastCreate.simulateSuccess();
 
-        expect(newElectionForm).toBeHidden();
-        expect(Path.routes.current).toBe(createdElection.url());
+          expect(newElectionForm).toBeHidden();
+          expect(Path.routes.current).toBe(createdElection.url());
+        });
       });
-    });
 
-    describe("when the body field is blank", function() {
-      it("does not create an election or hide the form", function() {
-        newElectionForm.body.val("    ");
-        newElectionForm.form.submit();
-        expect(Server.creates.length).toBe(0);
-        expect(newElectionForm).toBeVisible();
+      describe("when the body field is blank", function() {
+        it("does not create an election or hide the form", function() {
+          newElectionForm.body.val("    ");
+          newElectionForm.form.submit();
+          expect(Server.creates.length).toBe(0);
+          expect(newElectionForm).toBeVisible();
+        });
+      });
+      
+    });
+    
+    describe("when the current user is a guest", function() {
+      beforeEach(function() {
+        Application.currentUser(guest);
+      });
+      
+      describe("when the user logs in / signs up at the prompt", function() {
+        it("creates the question and navigates to it", function() {
+          newElectionForm.body.val("What is your favorite vegatable?");
+          newElectionForm.form.submit();
+          expect(Server.creates.length).toBe(0);
+          expect(Application.signupForm).toBeVisible();
+          Application.signupForm.firstName.val("Dude");
+          Application.signupForm.lastName.val("Richardson");
+          Application.signupForm.emailAddress.val("dude@example.com");
+          Application.signupForm.password.val("wicked");
+          Application.signupForm.form.submit();
+          expect($.ajax).toHaveBeenCalled();
+
+          console.debug($.ajax.mostRecentCall);
+
+          $.ajax.mostRecentCall.args[0].success({ current_user_id: member.id() });
+
+          expect(Server.creates.length).toBe(1);
+          var createdRecord = Server.lastCreate.record
+          expect(createdRecord.body()).toBe("What is your favorite vegatable?");
+
+          spyOn(Application, 'showPage');
+          Server.lastCreate.simulateSuccess();
+          expect(Path.routes.current).toBe(createdRecord.url());
+        });
+      });
+      
+      describe("when the user dismisses the prompt", function() {
+        it("does not create a question but leaves the lightbox visible", function() {
+          newElectionForm.body.val("What is your favorite vegatable?");
+          newElectionForm.details.val("mine's chard.");
+          newElectionForm.form.submit();
+          expect(Server.creates.length).toBe(0);
+          expect(Application.signupForm).toBeVisible();
+          Application.signupForm.close();
+          expect(Server.creates.length).toBe(0);
+          expect(newElectionForm).toBeVisible();
+          expect(Application.darkenedBackground).toBeVisible();
+          expect(newElectionForm.body.val()).toBe("What is your favorite vegatable?");
+          expect(newElectionForm.details.val()).toBe("mine's chard.");
+        });
       });
     });
   });

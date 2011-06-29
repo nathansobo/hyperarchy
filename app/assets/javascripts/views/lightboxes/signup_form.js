@@ -90,8 +90,8 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
     },
     
     close: function($super) {
-      this.trigger('cancel');
       $super();
+      this.trigger('cancel');
     }
   }
 });
