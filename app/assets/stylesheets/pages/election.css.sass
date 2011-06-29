@@ -326,28 +326,29 @@
       &.selected
         @include background-image(linear-gradient(right, rgb(255,235,113), rgb(255, 247, 203)))
 
-.candidate
-  position: relative
-  .position
-    float: left
-    text-align: right
-    width: $s0
-    color: #888
-    letter-spacing: $s-11
-    font-weight: $semibold
+#election
+  .candidate
+    position: relative
+    .position
+      float: left
+      text-align: right
+      width: $s0
+      color: #888
+      letter-spacing: $s-11
+      font-weight: $semibold
 
-  .body
-    margin-left: 2 * $s0
-    right: 0
-    top: ($line-height/2) - 1
-    bottom: 0
+    .body
+      margin-left: 2 * $s0
+      right: 0
+      top: ($line-height/2) - 1
+      bottom: 0
 
-
-.candidate, .ranking
-  padding: (ceil($line-height/2) - 1) ($line-height/2) ($line-height/2) ($line-height/2)
-  background: white
-  border: 1px solid #ccc
-  @include box-shadow(#aaa 0 0 3px)
-  cursor: default
+#election
+  .candidate, .ranking
+    padding: (ceil($line-height/2) - 1) ($line-height/2) ($line-height/2) ($line-height/2)
+    background: white
+    border: 1px solid #ccc
+    @include box-shadow(#aaa 0 0 3px)
+    cursor: default
 
 

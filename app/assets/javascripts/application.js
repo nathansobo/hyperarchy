@@ -13,6 +13,7 @@
 //= require jquery-ui/jquery.effects.scale
 //= require jquery.elastic.source
 //= require jquery.holdplace
+//= require jquery.masonry
 //= require jquery.phpdate
 //= require jquery.caret
 //= require jquery.tooltip.v.1.1

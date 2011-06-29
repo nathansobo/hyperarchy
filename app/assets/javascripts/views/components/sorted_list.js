@@ -19,13 +19,17 @@ _.constructor("Views.Components.SortedList", View.Template, {
         if (this.useQueue) {
           relation.each(function(record, index) {
             this.renderQueue.add(function() {
-              this.append(this.elementForRecord(record, index));
+              var element = this.elementForRecord(record, index);
+              this.append(element);
+              if (element.attach) element.attach();
             }, this);
           }, this);
           this.renderQueue.start();
         } else {
           relation.each(function(record, index) {
-            this.append(this.elementForRecord(record, index));
+            var element = this.elementForRecord(record, index);
+            this.append(element);
+            if (element.attach) element.attach();
           }, this);
         }
 
@@ -58,6 +62,7 @@ _.constructor("Views.Components.SortedList", View.Template, {
       } else {
         this.append(element);
       }
+      if (element.attach) element.attach();
       this.updateIndices();
     },
 
