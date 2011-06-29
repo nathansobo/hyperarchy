@@ -32,7 +32,6 @@ _.constructor('Views.Pages.Organization.ElectionLi', Monarch.View.Template, {
       var lineHeight = Application.lineHeight
       var quantizedBodyHeight = Math.ceil(this.body.height() / lineHeight) * lineHeight;
       this.body.css('height', quantizedBodyHeight);
-      console.debug(quantizedBodyHeight);
     }
   }
 });
