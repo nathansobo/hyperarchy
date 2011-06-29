@@ -1,6 +1,7 @@
 Hyperarchy::Application.routes.draw do
   root :to => 'home#show'
   match 'organizations/:id' => 'home#show'
+  match 'organizations/:id/elections/new' => 'home#show'
   match 'elections/:id' => 'home#show'
   match 'elections/:id/candidates/:selected_candidate_id' => 'home#show'
   match 'elections/:id/votes/:selected_voter_id' => 'home#show'
