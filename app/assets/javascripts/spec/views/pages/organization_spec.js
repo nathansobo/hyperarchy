@@ -36,7 +36,7 @@ describe("Views.Pages.Organization", function() {
   });
 
   describe("when the organization is assigned", function() {
-    it("fetches the organization's elections", function() {
+    it("fetches the organization's elections, then renders them and attaches click handlers", function() {
       var user, organization, election1, election2;
 
       enableAjax();
@@ -65,9 +65,22 @@ describe("Views.Pages.Organization", function() {
         });
 
         var election = organization.elections().first();
-        electionsList.find("li:contains('" + election.body() + "')").click();
+
+        spyOn(Application, 'showPage');
+
+        electionsList.find("li:contains('" + election.body() + "') > div").click();
         expect(Path.routes.current).toBe("/elections/" + election.id());
       });
+    });
+  });
+
+  describe("when the new question button is clicked", function() {
+    it("navigates to the new question form for the current organization", function() {
+      var organization = Organization.createFromRemote({id: 34});
+      organizationPage.organization(organization);
+      spyOn(Application, 'showPage');
+      organizationPage.newElectionButton.click();
+      expect(Path.routes.current).toBe(organization.newElectionUrl());
     });
   });
 });

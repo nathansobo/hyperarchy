@@ -128,6 +128,10 @@ _.constructor("Organization", Model.Record, {
     return "/organizations/" + this.id();
   },
 
+  newElectionUrl: function() {
+    return this.url() + "/elections/new";
+  },
+
   secretUrl: function() {
     return 'https://' + Application.HTTP_HOST + "/access/" + this.id() + "/" + this.membershipCode();
   }

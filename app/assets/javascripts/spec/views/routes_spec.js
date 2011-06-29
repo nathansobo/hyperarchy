@@ -70,4 +70,17 @@ describe("Routes", function() {
       });
     });
   });
+
+  describe("/organizations/:electionId/elections/new", function() {
+    it("shows the electionsPage in new mode", function() {
+      Application.organizationPage.show();
+      History.pushState(null, null, '/organizations/1/elections/new');
+      expect(Application.organizationPage).toBeHidden();
+      expect(Application.electionPage).toBeVisible();
+      expect(Application.electionPage.params()).toEqual({
+        organizationId: 1,
+        electionId: 'new'
+      });
+    });
+  });
 });

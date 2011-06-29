@@ -3,7 +3,7 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
     div({id: "organization"}, function() {
 
       div({id: "headline"}, function() {
-        a({'class': "new button"}, "Ask A Question");
+        a({'class': "new button"}, "Ask A Question").ref('newElectionButton').click('newElection');
         h1("Questions Under Discussion");
       });
 
@@ -40,12 +40,16 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
           }));
       }
     },
-    
+
     params: {
       change: function(params) {
         var organization = Organization.find(params.organizationId) || Organization.findSocial();
         this.organization(organization);
       }
+    },
+
+    newElection: function() {
+      History.pushState(null, null, this.organization().newElectionUrl());
     }
   }
 });
