@@ -68,11 +68,17 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       }
     },
 
-    create: function(e) {
-      e.preventDefault();
+    create: function() {
       if ($.trim(this.editableBody.val()) === '') return;
+
+      if (Application.currentUser().guest()) {
+        Application.promptSignup().success(this.hitch('create'));
+        return false;
+      }
       this.parentView.election().candidates().create(this.form.fieldValues());
       History.pushState(null, null, this.parentView.election().url());
+
+      return false;
     },
 
     update: function(e) {

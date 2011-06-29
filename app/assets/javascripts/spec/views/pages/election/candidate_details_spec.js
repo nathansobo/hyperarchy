@@ -4,14 +4,15 @@ describe("Views.Pages.Election.CandidateDetails", function() {
   var candidateDetails, candidate, creator, election;
 
   beforeEach(function() {
-    attachLayout();
+    renderLayout();
+    Application.height(600);
+    
     candidateDetails = Application.electionPage.candidateDetails;
     creator = User.createFromRemote({id: 999, emailHash: 'blas', firstName: "Mr.", lastName: "Creator"});
     Application.currentUser(creator);
     election = Election.createFromRemote({id: 1, creatorId: 999, createdAt: 12});
     candidate = creator.candidates().createFromRemote({id: 1, electionId: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?", createdAt: 1308352736162});
 
-    $('#jasmine_content').html(Application.electionPage);
     Application.electionPage.showCandidateDetails();
 
     candidateDetails.candidate(candidate);
@@ -158,31 +159,77 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       candidateDetails.editableDetails.val(fieldValues.details);
     });
 
-    describe("when the body field is filled in", function() {
-      it("creates a new candidates with the given body and details on the server and hides the form", function() {
-        candidateDetails.createLink.click();
+    describe("when the current user is a member", function() {
+      describe("when the body field is filled in", function() {
+        it("creates a new candidates with the given body and details on the server and hides the form", function() {
+          candidateDetails.createLink.click();
 
-        expect(Server.creates.length).toBe(1);
+          expect(Server.creates.length).toBe(1);
 
-        expect(Server.lastCreate.record.dirtyWireRepresentation()).toEqual(_.extend(fieldValues, {election_id: election.id()}));
-        Server.lastCreate.simulateSuccess();
+          expect(Server.lastCreate.record.dirtyWireRepresentation()).toEqual(_.extend(fieldValues, {election_id: election.id()}));
+          Server.lastCreate.simulateSuccess();
 
-        expect(Path.routes.current).toBe(election.url());
+          expect(Path.routes.current).toBe(election.url());
+        });
+
+        it("wires the form submit event to save", function() {
+          candidateDetails.form.submit();
+          expect(Server.updates.length).toBe(1);
+        });
       });
 
-      it("wires the form submit event to save", function() {
-        candidateDetails.form.submit();
-        expect(Server.updates.length).toBe(1);
+      describe("when the body field is empty", function() {
+        it("does nothing", function() {
+          spyOn(History, 'pushState');
+          candidateDetails.editableBody.val('                  ');
+          candidateDetails.createLink.click();
+          expect(Server.creates.length).toBe(0);
+          expect(History.pushState).not.toHaveBeenCalled();
+        });
       });
     });
 
-    describe("when the body field is empty", function() {
-      it("does nothing", function() {
-        spyOn(History, 'pushState');
-        candidateDetails.editableBody.val('                  ');
+    describe("when the current user is a guest", function() {
+      var guest, member;
+
+      beforeEach(function() {
+        spyOn(candidate, 'editableByCurrentUser').andReturn(true);
+        guest = User.createFromRemote({id: 5, guest: true});
+        member = User.createFromRemote({id: 6});
+        Application.currentUser(guest);
+
+
+        candidateDetails.show();
+        candidateDetails.showNewForm();
+        candidateDetails.editableBody.val(fieldValues.body);
+        candidateDetails.editableDetails.val(fieldValues.details);
+      });
+
+      it("prompts for signup, and creates a candidate only if they sign up", function() {
         candidateDetails.createLink.click();
+
         expect(Server.creates.length).toBe(0);
-        expect(History.pushState).not.toHaveBeenCalled();
+        expect(Application.signupForm).toBeVisible();
+        Application.signupForm.firstName.val("Dude");
+        Application.signupForm.lastName.val("Richardson");
+        Application.signupForm.emailAddress.val("dude@example.com");
+        Application.signupForm.password.val("wicked");
+        Application.signupForm.form.submit();
+        expect($.ajax).toHaveBeenCalled();
+
+        $.ajax.mostRecentCall.args[0].success({ current_user_id: member.id() });
+
+        expect(Server.creates.length).toBe(1);
+
+        var createdCandidate = Server.lastCreate.record;
+
+        expect(createdCandidate.election()).toBe(election);
+        expect(createdCandidate.body()).toBe(fieldValues.body);
+        expect(createdCandidate.details()).toBe(fieldValues.details);
+
+        Server.lastCreate.simulateSuccess();
+
+        expect(Path.routes.current).toBe(election.url());
       });
     });
   });
