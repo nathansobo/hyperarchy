@@ -1,32 +1,44 @@
 #organization
-  padding: ceil($line-height * 2.5) ceil($line-height * 1.5) ($line-height * 1.5) ceil($line-height * 1.5)
-  height: 100%
+  padding: (2 * $line-height) $line-height
 
-  #introduction
-    width: 53%
-    float: left
-    text-align: right
-    
+  #headline
+    padding: 0 $line-height $line-height 2 * $line-height
+    @include clearfix
     h1
-      font-weight: $bold
-      font-size: $s4
-      line-height: $s4
-      margin-bottom: $s-2
-      margin-top: $s11
-    h2
+      line-height: 3 * $line-height
       font-weight: $semibold
       font-size: $s3
-      line-height: $s4
+    .button
+      float: right
+      font-size: $s2
+      padding: $line-height (2 * $line-height)
+
+
+  #introduction
+    display: none
+    @include box-sizing('border-box')
+    width: 50%
+    text-align: right
+    padding: 0 (2 * $line-height)
+    margin-top: 5 * $line-height
+    margin-bottom: 5 * $line-height
+
+    h1
+      font-weight: $bold
+      font-size: $s3
+      line-height: $s3
+      margin-bottom: $s-2
+    h2
+      font-weight: $semibold
+      font-size: $s2
+      line-height: $s3
       margin-bottom: $s-3
       span
         white-space: nowrap
-      //margin-bottom: $s2
     h3
       span
         white-space: nowrap
       display: block
-      //float: right
-      //width: 80%
       font-size: $s1
       line-height: $s2
       margin-bottom: $s2
@@ -35,81 +47,53 @@
         letter-spacing: $s-10
 
   > ol
-    background: #ddd
-    padding: $line-height
-    //background: $pale-green
-    width: 40%
-    float: right
-    height: 100%
-    //overflow-y: auto
-    //@include box-shadow(#333 0 0px 4px)
-    
-  .election
-    display: block
-    //padding: ($line-height)
-    padding-bottom: ceil($line-height)
-    float: left
-    @include box-sizing(border-box)
-    //width: 50%
-    width: 100%
-
-    > div
-      background: white
-      //background: #eee
-      //border: 1px solid #aaa
-      //border-bottom: none
-      //border: 5px solid desaturate(rgb(255, 237, 140), 10%)
+    @include clearfix
+    .election
+      @include box-sizing(border-box)
+      display: block
       padding: $line-height
-      //height: $line-height * 11
-      @include box-shadow(#333 0 0px 4px)
-      overflow: hidden
-      position: relative
+      float: left
+      width: 50%
 
-      .avatar
-        //position: absolute
-        //bottom: $line-height
-        //right: $line-height
-        float: right
-        margin-left: 2 * $line-height
-        margin-bottom: $line-height * 1
-        //background-image: url(/images/logo_medium.png)
+      > div
+        background: white
+        padding: $line-height
+        height: $line-height * 11
+        @include box-shadow(#333 1px 1px 5px)
+        overflow: hidden
+        position: relative
 
-      > .body
-        line-height: 1.5 * $line-height
-        font-size: $s1
-        margin-bottom: $line-height
-        font-weight: $semibold
+        .avatar
+          float: right
+          margin-left: 2 * $line-height
+          margin-bottom: $line-height * 1
+          background: url(/images/logo_57.png)
 
-    ol
-      //margin-left: 4 * $line-height
-      clear: left
+        > .body
+          line-height: 1.5 * $line-height
+          font-size: $s1
+          margin-bottom: $line-height
+          font-weight: $semibold
 
-    li.candidate
-      width: 90%
-      
-      .position
-        float: left
-        color: #888
-
-      .body
-        margin-left: $s0
-        //right: 0
-        //top: ($line-height/2) - 1
-        //bottom: 0
-
-      margin-bottom: 0.5 * $line-height
-      &:nth-child(1)
-        margin-bottom: ceil(0.5 * $line-height)
-      &:nth-child(3)
-        margin-bottom: ceil(0.5 * $line-height)
-      &:nth-child(5)
-        margin-bottom: ceil(0.5 * $line-height)
+      li.candidate
+        width: 85%
+        margin-bottom: 0.5 * $line-height
+        &:nth-child(1)
+          margin-bottom: ceil(0.5 * $line-height)
+        &:nth-child(3)
+          margin-bottom: ceil(0.5 * $line-height)
+        &:nth-child(5)
+          margin-bottom: ceil(0.5 * $line-height)
+        .position
+          float: left
+          color: #888
+        .body
+          margin-left: $s0
 
     .fadeout
       position: absolute
       bottom: 0
       height: $line-height * 4
-      //background-color: red
       left: 0
       right: 0
-      @include background-image(linear-gradient(top, transparentize(white, 1) 0%, transparentize(white, .8) 50%, white 85%))
+      @include background-image(linear-gradient(top, transparentize(white, 1) 0%, transparentize(white, .8) 40%, white 75%))

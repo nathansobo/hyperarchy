@@ -86,6 +86,14 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       }, this);
     },
 
+    beforeShow: function() {
+      Application.addClass('fixed-height');
+    },
+
+    afterHide: function() {
+      Application.removeClass('fixed-height');
+    },
+
     params: {
       change: function(params, oldParams) {
         this.populateContentBeforeFetch(params);

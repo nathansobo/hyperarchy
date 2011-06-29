@@ -79,19 +79,20 @@ body
 
 #body-wrapper
   margin: 0 auto
-  height: 100%
+  min-height: 100%
   background: white
   position: relative
   min-width: $min-width
   max-width: $max-width
   @include box-shadow(#666 0 0 5px)
   > #body
-    position: absolute
-    top: $header-height
-    bottom: 0
-    width: 100%
-    position: absolute
     @include box-sizing('border-box')
+
+#layout.fixed-height > #body-wrapper > #body
+  top: $header-height
+  bottom: 0
+  width: 100%
+  position: absolute
 
 #darkened-background
   visibility: hidden

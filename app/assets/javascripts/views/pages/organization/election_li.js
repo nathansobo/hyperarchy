@@ -14,7 +14,7 @@ _.constructor('Views.Pages.Organization.ElectionLi', Monarch.View.Template, {
             }});
           }
         });
-//        div({'class': "fadeout"});
+        div({'class': "fadeout"});
       }).click(function() {
         History.pushState(null, null, this.election.url());
       });
@@ -24,7 +24,7 @@ _.constructor('Views.Pages.Organization.ElectionLi', Monarch.View.Template, {
   viewProperties: {
     initialize: function() {
       this.body.bindText(this.election, 'body');
-      this.candidates.relation(this.election.candidates().limit(3));
+      this.candidates.relation(this.election.candidates().limit(6));
       this.avatar.user(this.election.creator());
     },
 
