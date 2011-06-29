@@ -16,7 +16,9 @@ describe("Views.Pages.Election", function() {
       enableAjax();
       currentUser = login();
       usingBackdoor(function() {
+        var electionCreator = User.create();
         election = Election.create();
+        election.update({creatorId: electionCreator.id()});
         otherUser = User.create();
         otherUser2 = User.create();
         electionCommentCreator = User.create();
@@ -41,6 +43,7 @@ describe("Views.Pages.Election", function() {
     describe("if the electionId changes", function() {
       function expectElectionDataFetched() {
         expect(Election.find(election.id())).toEqual(election);
+        expect(election.creator()).toBeDefined();
         expect(election.candidates().size()).toBe(2);
         expect(election.candidates().join(User).on(User.id.eq(Candidate.creatorId)).size()).toBe(2);
         expect(election.rankings().size()).toBeGreaterThan(0);
@@ -158,6 +161,7 @@ describe("Views.Pages.Election", function() {
         it("assigns the election before fetching additional data", function() {
           synchronously(function() {
             Election.fetch(election.id());
+            User.fetch(election.creatorId());
           });
 
           stubAjax(); // we still fetch, but we're not testing that in this spec
