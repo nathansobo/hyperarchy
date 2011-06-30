@@ -66,9 +66,12 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
       if (!this.is(':visible')) return;
       if (!this.electionsList.relation()) return;
       if (this.remainingScrollHeight() < this.listBottom.height() * 2) {
-        this.organization().fetchMoreElections(32);
-        this.listBottom.css('background', 'green');
+        this.organization().fetchMoreElections(32).success(this.hitch('hideListBottomIfNeeded'));
       }
+    },
+
+    hideListBottomIfNeeded: function() {
+      if (this.organization().numElectionsFetched >= this.organization().electionCount()) this.listBottom.hide()
     },
 
     remainingScrollHeight: function() {

@@ -36,8 +36,11 @@ describe("Views.Pages.Organization", function() {
   });
 
   describe("when the organization is assigned", function() {
-    it("fetches the organization's elections, then renders them and attaches click handlers", function() {
-      var user, organization, election1, election2;
+    it("fetches the and renders the organization's elections, and fetches more when the view scrolls", function() {
+      var user, organization, election1, election2, remainingScrollHeight;
+
+      $('#jasmine_content').html(Application);
+      Application.organizationPage.show();
 
       enableAjax();
       user = login();
@@ -45,7 +48,7 @@ describe("Views.Pages.Organization", function() {
         organization = Organization.create();
         user.memberships().create({organizationId: organization.id()});
         createMultiple({
-          count: 17,
+          count: 33,
           tableName: 'elections',
           fieldValues: { organizationId: organization.id() }
         });
@@ -71,6 +74,25 @@ describe("Views.Pages.Organization", function() {
 
         electionsList.find("li:contains('" + election.body() + "') > div").click();
         expect(Path.routes.current).toBe("/elections/" + election.id());
+
+        spyOn(organizationPage, 'remainingScrollHeight').andReturn(100);
+        $(window).scroll();
+      });
+
+      waitsFor("more elections to be fetched after scrolling", function() {
+        return organization.elections().size() === 32;
+      });
+
+      runs(function() {
+        $(window).scroll();
+      });
+
+      waitsFor("more elections to be fetched after scrolling again", function() {
+        return organization.elections().size() === 33;
+      });
+
+      runs(function() {
+        expect(organizationPage.listBottom).toBeHidden();
       });
     });
   });
