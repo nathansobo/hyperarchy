@@ -10,7 +10,8 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     candidateDetails = Application.electionPage.candidateDetails;
     creator = User.createFromRemote({id: 999, emailHash: 'blas', firstName: "Mr.", lastName: "Creator"});
     Application.currentUser(creator);
-    election = Election.createFromRemote({id: 1, creatorId: 999, createdAt: 12});
+    var organization = Organization.createFromRemote({id: 42});
+    election = organization.elections().createFromRemote({id: 1, creatorId: 999, createdAt: 12});
     candidate = creator.candidates().createFromRemote({id: 1, electionId: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?", createdAt: 1308352736162});
 
     Application.electionPage.showCandidateDetails();

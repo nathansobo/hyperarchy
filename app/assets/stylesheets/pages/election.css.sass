@@ -345,8 +345,13 @@
     textarea.body
       display: none
   #column1
-    textarea.details, .update.button, .cancel.button
+    textarea.details, .update.button, .cancel.button, .edit.button, .destroy.button
       display: none
+
+#election.editable
+  #column1
+    .edit.button, .destroy.button
+      display: block
 
 #election.edit-mode
   #headline
@@ -357,7 +362,7 @@
   #column1
     div.details
       display: none !important
-    .edit.button
+    .edit.button, .destroy.button
       display: none
     textarea.details, .update.button, .cancel.button
       display: block

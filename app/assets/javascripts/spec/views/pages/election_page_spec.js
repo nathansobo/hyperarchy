@@ -316,7 +316,7 @@ describe("Views.Pages.Election", function() {
   });
 
   describe("local logic (no fetching)", function() {
-    var creator, election, election2;
+    var creator, election, election2, editableByCurrentUser;
     var headlineTextWhenAdjustColumnTopWasCalled;
 
     beforeEach(function() {
@@ -325,6 +325,11 @@ describe("Views.Pages.Election", function() {
       organization = Organization.createFromRemote({id: 1, name: "Neurotic designers"});
       election = creator.elections().createFromRemote({id: 1, body: 'short body', details: "aoeu!", organizationId: 98, createdAt: 91234, organizationId: organization.id()});
       election2 = creator.elections().createFromRemote({id: 2, body: 'short body', details: "woo!", organizationId: 98, createdAt: 91234});
+
+      editableByCurrentUser = true;
+      spyOn(Election.prototype, 'editableByCurrentUser').andCallFake(function() {
+        return editableByCurrentUser;
+      });
 
       electionPage.election(election);
     });
@@ -358,7 +363,40 @@ describe("Views.Pages.Election", function() {
         expect(election2.onUpdateNode.size()).toBe(subCountBefore);
       });
     });
-    
+
+    describe("showing and hiding of the edit and destroy buttons", function() {
+      describe("when the current user changes", function() {
+        it("only shows the edit and destroy buttons if the current user can edit", function() {
+          var user1 = User.createFromRemote({id: 101});
+          var user2 = User.createFromRemote({id: 102});
+
+          editableByCurrentUser = false;
+          Application.currentUser(user1);
+          expect(electionPage.editLink).toBeHidden();
+          expect(electionPage.destroyLink).toBeHidden();
+
+          editableByCurrentUser = true;
+          Application.currentUser(user2);
+          expect(electionPage.editLink).toBeVisible();
+          expect(electionPage.destroyLink).toBeVisible();
+        });
+      });
+
+      describe("when an election is assigned", function() {
+        it("only shows the edit and destroy buttons if the current user can edit", function() {
+          editableByCurrentUser = false;
+          electionPage.election(election2);
+          expect(electionPage.editLink).toBeHidden();
+          expect(electionPage.destroyLink).toBeHidden();
+
+          editableByCurrentUser = true;
+          electionPage.election(election);
+          expect(electionPage.editLink).toBeVisible();
+          expect(electionPage.destroyLink).toBeVisible();
+        });
+      });
+    });
+
     describe("showing and hiding of the edit fields", function() {
       it("shows the fields populates their vals, and focuses the body when the edit button is clicked and hides the fields when the cancel button is clicked", function() {
         expectFieldsHidden();
@@ -613,6 +651,7 @@ describe("Views.Pages.Election", function() {
     expect(electionPage.editLink).toBeHidden();
     expect(electionPage.body).toBeHidden();
     expect(electionPage.details).toBeHidden();
+    expect(electionPage.destroyLink).toBeHidden();
   }
 
   function expectFieldsHidden() {

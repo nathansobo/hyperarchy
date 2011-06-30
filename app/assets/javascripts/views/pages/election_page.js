@@ -78,13 +78,18 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       $(window).resize(this.hitch('adjustCommentsHeight'));
 
       Application.onCurrentUserChange(function(currentUser) {
+        if (this.election()) {
+          this.showOrHideEditButtons();
+        }
+
         var params = this.params();
-        if (!params) return;
-        return currentUser
-          .rankings()
-          .where({electionId: params.electionId})
-          .fetch()
-          .success(this.hitch('populateContentAfterFetch', params));
+        if (params) {
+          return currentUser
+            .rankings()
+            .where({electionId: params.electionId})
+            .fetch()
+            .success(this.hitch('populateContentAfterFetch', params));
+        }
       }, this);
     },
 
@@ -195,7 +200,10 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         this.avatar.user(election.creator());
         this.creatorName.bindText(election.creator(), 'fullName');
         this.createdAt.text(election.formattedCreatedAt());
+
+        this.showOrHideEditButtons();
         this.cancelEdit();
+
 
         if (this.electionUpdateSubscription) this.electionUpdateSubscription.destroy();
         this.electionUpdateSubscription = election.onUpdate(this.hitch('handleElectionUpdate'));
@@ -293,8 +301,12 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.comments.adjustHeightAndScroll();
     },
 
-    commentsTopPosition: function() {
-      return this.creator.position().top + this.creator.height() + Application.lineHeight * 2;
+    showOrHideEditButtons: function() {
+      if (this.election().editableByCurrentUser()) {
+        this.addClass('editable');
+      } else {
+        this.removeClass('editable');
+      }
     }
   }
 });
