@@ -72,7 +72,8 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     showPage: function(name, params) {
-      this.body.children().hide();
+      this.organizationPage.hide();
+      this.electionPage.hide();
       var parsedParams = {};
       _.each(params, function(value, key) {
         parsedParams[key] = (value !== 'new') ? parseInt(value) : value;

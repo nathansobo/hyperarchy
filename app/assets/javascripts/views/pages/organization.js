@@ -66,7 +66,7 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
       if (!this.is(':visible')) return;
       if (!this.electionsList.relation()) return;
       if (this.remainingScrollHeight() < this.listBottom.height() * 2) {
-        this.organization().fetchMoreElections(32).success(this.hitch('hideListBottomIfNeeded'));
+        this.organization().fetchMoreElections().success(this.hitch('hideListBottomIfNeeded'));
       }
     },
 
