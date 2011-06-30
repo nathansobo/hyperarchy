@@ -51,6 +51,7 @@
         display: table-cell
         @include box-sizing('border-box')
         width: 33%
+        height: 100%
         &:last-child
           width: $s10 + 10
         > div // because display table-cell divs can't be position: relative
@@ -102,12 +103,11 @@
 #candidate-details
   position: absolute
   right: 100%
-  @include transition('right', 150ms, 'ease-in')
-  @include box-sizing('border-box')
-  width: 100%
-  height: 100%
-  overflow-x: hidden
-  overflow-y: auto
+  left: -100%
+  top: 0
+  bottom: 0
+  @include transition('right left', 150ms, 'ease-in')
+  overflow: hidden
   padding: $line-height/2
   z-index: 1
   background-color: white
@@ -121,15 +121,9 @@
     margin-top: 0
     &:hover
       color: #333
-
-
   &.active
     right: 0
-  .comments
-    left: $line-height/2
-    right: $line-height/2
-    bottom: $line-height/2
-
+    left: 0
 
 #candidate-details, #column1
   .creator
@@ -195,12 +189,7 @@
       position: absolute
       bottom: 0
       width: 100%
-  position: absolute
-  top: $line-height * 12
-  bottom: 0
-  left: 0
-  right: 0
-  overflow-y: hidden
+  position: relative
   h2
     padding-bottom: $line-height / 6
   ol

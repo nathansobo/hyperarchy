@@ -5,7 +5,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
   beforeEach(function() {
     renderLayout();
-    Application.height(600);
+    Application.height(1000);
     
     candidateDetails = Application.electionPage.candidateDetails;
     creator = User.createFromRemote({id: 999, emailHash: 'blas', firstName: "Mr.", lastName: "Creator"});
@@ -337,7 +337,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     });
   });
   
-  describe("adjustment of the comments top position", function() {
+  describe("adjustment of the comments height", function() {
     var longText;
 
     beforeEach(function() {
@@ -347,55 +347,62 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     });
 
     describe("when the details/body are assigned and when they change", function() {
-      it("adjusts the top of the comments to be below the creator", function() {
-        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+      it("adjusts the comments to fill the remaining available height", function() {
+        Application.electionPage.showCandidateDetails();
+        expectCommentsToHaveFullHeight();
 
         candidate.remotelyUpdated({body: longText});
-        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+        expectCommentsToHaveFullHeight();
 
         candidate.remotelyUpdated({details: longText});
-        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+        expectCommentsToHaveFullHeight();
         expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
       });
     });
 
     describe("when the form is shown and hidden", function() {
-      it("adjusts the top of the comments to be below the creator", function() {
+      it("adjusts the comments to fill the remaining available height", function() {
         candidateDetails.editLink.click();
-        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+        expectCommentsToHaveFullHeight();
         
         candidateDetails.cancelEditLink.click();
-        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+        expectCommentsToHaveFullHeight();
         expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
       });
     });
 
     describe("when the window is resized", function() {
-      it("adjusts the top of the comments to be below the creator", function() {
-        Application.electionPage.width(1000);
+      it("adjusts the comments to fill the remaining available height", function() {
+        Application.electionPage.width(1200);
         candidate.remotelyUpdated({details: longText});
 
-        Application.electionPage.width(700);
+        Application.electionPage.width(800);
         $(window).resize();
-        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+        expectCommentsToHaveFullHeight();
         expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
       });
     });
 
     describe("when the body or details textareas resize elastically", function() {
-      it("adjusts the top of the comments to be below the creator", function() {
+      it("adjusts the comments to fill the remaining available height", function() {
         candidateDetails.editLink.click();
 
         candidateDetails.editableBody.val(longText);
         candidateDetails.editableBody.keyup();
-        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+        expectCommentsToHaveFullHeight();
 
         candidateDetails.editableDetails.val(longText);
         candidateDetails.editableDetails.keyup();
-        expect(candidateDetails.comments.position().top).toBe(candidateDetails.commentsTopPosition());
+
+        expectCommentsToHaveFullHeight();
         expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
       });
     });
+
+    function expectCommentsToHaveFullHeight() {
+      var commentsBottom = candidateDetails.comments.position().top + candidateDetails.comments.outerHeight();
+      expect(commentsBottom).toBe(candidateDetails.outerHeight() - parseInt(candidateDetails.css('padding-bottom')));
+    }
   });
 
   describe("when the close link is clicked", function() {

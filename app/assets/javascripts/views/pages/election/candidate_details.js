@@ -40,9 +40,9 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
     attach: function($super) {
       Application.onCurrentUserChange(this.hitch('showOrHideMutateLinks'));
       $super();
-      $(window).resize(this.hitch('adjustCommentsTop'));
-      this.editableBody.bind('elastic', this.hitch('adjustCommentsTop'));
-      this.editableDetails.bind('elastic', this.hitch('adjustCommentsTop'));
+      $(window).resize(this.hitch('adjustCommentsHeight'));
+      this.editableBody.bind('elastic', this.hitch('adjustCommentsHeight'));
+      this.editableDetails.bind('elastic', this.hitch('adjustCommentsHeight'));
     },
 
     candidate: {
@@ -58,9 +58,8 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         this.registerInterest(candidate, 'onDestroy', function() {
           History.pushState(null, null, candidate.election().url());
         });
-        this.registerInterest(candidate, 'onUpdate', this.hitch('adjustCommentsTop'));
-
-        this.adjustCommentsTop();
+        this.registerInterest(candidate, 'onUpdate', this.hitch('adjustCommentsHeight'));
+        this.adjustCommentsHeight();
       },
 
       write: function(candidate) {
@@ -104,7 +103,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       }
 
       this.editableBody.focus();
-      this.adjustCommentsTop();
+      this.adjustCommentsHeight();
     },
 
     showNewForm: function() {
@@ -127,7 +126,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       this.updateLink.hide();
       this.cancelEditLink.hide();
       this.createLink.hide();
-      this.adjustCommentsTop();
+      this.adjustCommentsHeight();
     },
 
     showOrHideMutateLinks: function() {
@@ -140,8 +139,8 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       }
     },
 
-    adjustCommentsTop: function() {
-      this.comments.css('top', this.commentsTopPosition());
+    adjustCommentsHeight: function() {
+      this.comments.fillVerticalSpace(this);
       this.comments.enableOrDisableFullHeight();
     },
 
