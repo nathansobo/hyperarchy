@@ -32,19 +32,21 @@ _.constructor("Organization", Model.Record, {
     }
   },
 
-  fetchMoreElections: function(fetchIfWeHaveLessThan) {
+  afterInitialize: function() {
+    this.numElectionsFetched = 0;
+  },
+
+  fetchMoreElections: function() {
     if (this.fetchInProgressFuture) return this.fetchInProgressFuture;
-    if (!this.numElectionsFetched) this.numElectionsFetched = 0;
 
-
-    if (this.elections().size() >= (fetchIfWeHaveLessThan || this.electionCount())) {
-      var future = new Monarch.Http.AjaxFuture();
-      future.triggerSuccess();
-      return future;
+    if (this.numElectionsFetched >= this.electionCount()) {
+      var promise = new Monarch.Promise();
+      promise.triggerSuccess();
+      return promise;
     }
 
-    var offset, limit;
     // if we already fetched some, fetch 8 positions back to account for unseen swapping at the fringe
+    var offset, limit;
     if (this.numElectionsFetched > 0) {
       offset = this.numElectionsFetched - 8;
       limit = 24;
@@ -52,6 +54,7 @@ _.constructor("Organization", Model.Record, {
       offset = 0;
       limit = 16;
     }
+
     var promise = $.ajax({
       url: "/elections",
       data: {

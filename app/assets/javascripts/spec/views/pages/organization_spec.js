@@ -49,6 +49,7 @@ describe("Views.Pages.Organization", function() {
           tableName: 'elections',
           fieldValues: { organizationId: organization.id() }
         });
+        organization.fetch();
         Election.clear();
       });
 

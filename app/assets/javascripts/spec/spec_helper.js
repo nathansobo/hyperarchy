@@ -53,9 +53,12 @@ function renderLayout() {
   return Application;
 }
 
+var mostRecentAjaxDeferred, mostRecentAjaxRequest;
 function stubAjax() {
-  spyOn(jQuery, 'ajax').andCallFake(function() {
-    var promise = jQuery.Deferred().promise();
+  spyOn(jQuery, 'ajax').andCallFake(function(request) {
+    mostRecentAjaxRequest = request;
+    mostRecentAjaxDeferred = jQuery.Deferred();
+    var promise = mostRecentAjaxDeferred.promise();
     promise.success = promise.done;
     return promise;
   });
@@ -73,4 +76,10 @@ function useFakeServer() {
 
 function unspy(object, methodName) {
   object[methodName] = object[methodName].originalValue;
+}
+
+function simulateAjaxSuccess(data) {
+  if (!mostRecentAjaxRequest) throw new Error("No outstanding ajax request");
+  if (mostRecentAjaxRequest.success) mostRecentAjaxRequest.success(data);
+  mostRecentAjaxDeferred.resolve(data);
 }

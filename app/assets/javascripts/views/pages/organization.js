@@ -23,14 +23,20 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
           return Views.Pages.Organization.ElectionLi.toView({election: election});
         }
       });
+
+      div({id: "list-bottom"}).ref("listBottom");
     });
   }},
 
   viewProperties: {
+    attach: function() {
+      $(window).scroll(this.hitch('fetchIfNeeded'));
+    },
+
     organization: {
       change: function(organization) {
         Application.currentOrganizationId(organization.id());
-        return organization.fetchMoreElections(16)
+        return organization.fetchMoreElections()
           .success(this.bind(function() {
             this.electionsList.relation(organization.elections());
           }));
@@ -54,6 +60,20 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
 
     newElection: function() {
       Application.newElection.show();
+    },
+
+    fetchIfNeeded: function() {
+      if (!this.is(':visible')) return;
+      if (!this.electionsList.relation()) return;
+      if (this.remainingScrollHeight() < this.listBottom.height() * 2) {
+        this.organization().fetchMoreElections(32);
+        this.listBottom.css('background', 'green');
+      }
+    },
+
+    remainingScrollHeight: function() {
+      var doc = $(document), win = $(window);
+      return doc.height() - doc.scrollTop() - win.height();
     }
   }
 });
