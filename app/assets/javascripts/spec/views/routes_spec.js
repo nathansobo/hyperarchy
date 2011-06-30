@@ -1,9 +1,22 @@
 //= require spec/spec_helper
 
 describe("Routes", function() {
+  var defaultGuest, defaultOrganization;
   beforeEach(function() {
     renderLayout();
-    Application.currentUser(User.createFromRemote({id: 1}));
+    defaultOrganization = Organization.createFromRemote({id: 23});
+    defaultGuest = User.createFromRemote({id: 1});
+    spyOn(defaultGuest, 'defaultOrganization').andReturn(defaultOrganization);
+    Application.currentUser(defaultGuest);
+  });
+
+  describe("/", function() {
+    it("navigates to the current user's default organization page", function() {
+
+      History.pushState(null, null, '/');
+      
+      expect(Path.routes.current).toBe(defaultOrganization.url());
+    });
   });
 
   describe("/organizations/:id", function() {

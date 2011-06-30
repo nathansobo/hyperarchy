@@ -1,3 +1,9 @@
+//Path.root('/');
+
+Path.map('/').to(function() {
+  History.replaceState(null, null, Application.currentUser().defaultOrganization().url());
+});
+
 Path.map('/organizations/:organizationId').to(function() {
   Application.showPage('organization', this.params);
 });

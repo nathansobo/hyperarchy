@@ -33,24 +33,19 @@ afterEach(function() {
 
 var socketClient;
 
-function attachLayout() {
+function attachLayout(render) {
   spyOn(io.Socket.prototype, 'connect').andCallFake(function() {
     socketClient = this;
   });
   window.Application = Views.Layout.toView();
+  if (render) $("#jasmine_content").html(window.Application = Views.Layout.toView());
   Application.attach();
   Path.listen();
   return Application;
 }
 
 function renderLayout() {
-  spyOn(io.Socket.prototype, 'connect').andCallFake(function() {
-    socketClient = this;
-  });
-  $("#jasmine_content").html(window.Application = Views.Layout.toView());
-  Application.attach();
-  Path.listen();
-  return Application;
+  return attachLayout(true);
 }
 
 var mostRecentAjaxDeferred, mostRecentAjaxRequest;

@@ -9,6 +9,17 @@ window.History = {
     $(window).trigger('popstate', event);
   },
 
+  replaceState: function(state, title, url) {
+    var event = {
+      state: state,
+      url: this.getRootUrl() + url.replace(/^\//, '')
+    };
+    if (this.getState().url == event.url) return;
+    this.states.pop();
+    this.states.push(event);
+    $(window).trigger('popstate', event);
+  },
+
   getState: function() {
     return _.last(this.states);
   },
@@ -27,7 +38,7 @@ window.History = {
   reset: function() {
     this.states = [{
       state: {},
-      url: this.getRootUrl()
+      url: "http://test.hyperarchy.com:3000/initial_url"
     }];
   }
 }
