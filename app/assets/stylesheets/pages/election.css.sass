@@ -106,7 +106,7 @@
   left: -100%
   top: 0
   bottom: 0
-  @include transition('right left', 150ms, 'ease-in')
+  //@include transition('right left', 150ms, 'ease-in')
   overflow: hidden
   padding: $line-height/2
   z-index: 1
@@ -121,9 +121,15 @@
     margin-top: 0
     &:hover
       color: #333
+  .edit.button, .destroy.button
+    display: none
   &.active
     right: 0
     left: 0
+  &.mutable
+    .edit.button, .destroy.button
+      display: block
+
 
 #candidate-details, #column1
   .creator
@@ -348,7 +354,7 @@
     textarea.details, .update.button, .cancel.button, .edit.button, .destroy.button
       display: none
 
-#election.editable
+#election.mutable
   #column1
     .edit.button, .destroy.button
       display: block

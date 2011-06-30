@@ -38,7 +38,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
 
   viewProperties: {
     attach: function($super) {
-      Application.onCurrentUserChange(this.hitch('showOrHideMutateLinks'));
+      Application.onCurrentUserChange(this.hitch('showOrHideMutateButtons'));
       $super();
       $(window).resize(this.hitch('adjustCommentsHeight'));
       this.editableBody.bind('elastic', this.hitch('adjustCommentsHeight'));
@@ -53,7 +53,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         this.avatar.user(candidate.creator());
         this.creatorName.bindText(candidate.creator(), 'fullName');
         this.createdAt.text(candidate.formattedCreatedAt());
-        this.showOrHideMutateLinks();
+        this.showOrHideMutateButtons();
 
         this.registerInterest(candidate, 'onDestroy', function() {
           History.pushState(null, null, candidate.election().url());
@@ -129,13 +129,11 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       this.adjustCommentsHeight();
     },
 
-    showOrHideMutateLinks: function() {
+    showOrHideMutateButtons: function() {
       if (this.candidate() && this.candidate().editableByCurrentUser()) {
-        this.editLink.show();
-        this.destroyLink.show();
+        this.addClass('mutable');
       } else {
-        this.editLink.hide();
-        this.destroyLink.hide();
+        this.removeClass('mutable');
       }
     },
 

@@ -67,7 +67,7 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
         url: "/logout",
         dataType: 'data+records!',
         success: function(data) {
-          Application.currentUserId(data.current_user_id);
+          Application.reload();
         }
       });
     }

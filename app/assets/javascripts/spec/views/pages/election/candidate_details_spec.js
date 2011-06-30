@@ -69,26 +69,24 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       spyOn(Candidate.prototype, 'editableByCurrentUser').andCallFake(function() {
         return currentUserCanEdit;
       });
-      candidateDetails.editLink.hide();
-      candidateDetails.destroyLink.hide();
-      expect(candidateDetails.editLink).toBeHidden();
     });
 
     describe("on candidate assignment", function() {
       it("shows the edit link only if the current user can edit", function() {
         var otherCandidate = Candidate.createFromRemote({id: 100, creatorId: creator.id(), createdAt: 234234});
 
+        currentUserCanEdit = false;
+        candidateDetails.candidate(otherCandidate);
+        expect(candidateDetails).not.toHaveClass('mutable');
         expect(candidateDetails.editLink).toBeHidden();
         expect(candidateDetails.destroyLink).toBeHidden();
+
+
         currentUserCanEdit = true;
-        candidateDetails.candidate(otherCandidate);
+        candidateDetails.candidate(candidate);
+        expect(candidateDetails).toHaveClass('mutable');
         expect(candidateDetails.editLink).toBeVisible();
         expect(candidateDetails.destroyLink).toBeVisible();
-
-        currentUserCanEdit = false;
-        candidateDetails.candidate(candidate);
-        expect(candidateDetails.editLink).toBeHidden();
-        expect(candidateDetails.destroyLink).toBeHidden();
       });
     });
 
@@ -96,17 +94,15 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       it("shows the edit button only when the current user is the creator of the candidate, an owner of the organization, or an admin", function() {
         var otherUser = User.createFromRemote({id: 123});
 
+        currentUserCanEdit = false;
+        Application.currentUser(otherUser);
         expect(candidateDetails.editLink).toBeHidden();
         expect(candidateDetails.destroyLink).toBeHidden();
+
         currentUserCanEdit = true;
-        Application.currentUser(otherUser);
+        Application.currentUser(creator);
         expect(candidateDetails.editLink).toBeVisible();
         expect(candidateDetails.destroyLink).toBeVisible();
-
-        currentUserCanEdit = false;
-        Application.currentUser(creator);
-        expect(candidateDetails.editLink).toBeHidden();
-        expect(candidateDetails.destroyLink).toBeHidden();
       });
     });
   });

@@ -79,7 +79,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
       Application.onCurrentUserChange(function(currentUser) {
         if (this.election()) {
-          this.showOrHideEditButtons();
+          this.showOrHideMutateButtons();
         }
 
         var params = this.params();
@@ -201,7 +201,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         this.creatorName.bindText(election.creator(), 'fullName');
         this.createdAt.text(election.formattedCreatedAt());
 
-        this.showOrHideEditButtons();
+        this.showOrHideMutateButtons();
         this.cancelEdit();
 
 
@@ -301,11 +301,11 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.comments.adjustHeightAndScroll();
     },
 
-    showOrHideEditButtons: function() {
+    showOrHideMutateButtons: function() {
       if (this.election().editableByCurrentUser()) {
-        this.addClass('editable');
+        this.addClass('mutable');
       } else {
-        this.removeClass('editable');
+        this.removeClass('mutable');
       }
     }
   }

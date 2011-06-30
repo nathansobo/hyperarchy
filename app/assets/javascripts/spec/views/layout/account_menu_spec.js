@@ -45,27 +45,18 @@ describe("Views.Layout.AccountMenu", function() {
   });
 
   describe("when the logout link is clicked", function() {
-    var user;
-
-    beforeEach(function() {
-      enableAjax();
-      user = login();
-      expect(user.guest()).toBeFalsy();
-    });
-
-    it("it assigns the current to the default guest", function() {
+    it("it logs out and reloads the page", function() {
       accountMenu.dropdownMenu.link.click();
       expect(accountMenu.dropdownMenu.logoutLink).toBeVisible();
-      
-      waitsFor("user to be logged out", function(complete) {
-        accountMenu.dropdownMenu.logoutLink.trigger('click', complete);
-        expect(User.find(user.id())).toBeDefined();
-      });
 
-      runs(function() {
-        expect(User.find(user.id())).toBeUndefined();
-        expect(Application.currentUser().guest()).toBeTruthy();
-      });
+      spyOn(Application, 'reload');
+      accountMenu.dropdownMenu.logoutLink.click();
+
+      expect(mostRecentAjaxRequest.url).toBe('/logout');
+      simulateAjaxSuccess();
+
+      expect(Application.reload).toHaveBeenCalled();
+
     });
   });
 });
