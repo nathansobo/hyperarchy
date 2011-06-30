@@ -14,7 +14,6 @@
 (function(jQuery){ 
 	jQuery.fn.extend({  
 		elastic: function() {
-		
 			//	We will create a div clone of the textarea
 			//	by copying these attributes from the textarea to the div.
 			var mimics = [
@@ -79,11 +78,9 @@
 					if(widthChanged || textareaContent+'&nbsp;' != twinContent){
 						// Add an extra white space so new rows are added when you are at the end of a row.
 						$twin.html(textareaContent+'&nbsp;');
-						
 						// Change textarea height if twin plus the height of one line differs more than 3 pixel from textarea height
 						if(Math.abs($twin.height()+lineHeight - $textarea.height()) > 3){
-							
-							var goalheight = $twin.height()+lineHeight;
+							var goalheight = $twin.height() + lineHeight;
 							if(goalheight >= maxheight) {
 								setHeightAndOverflow(maxheight,'auto');
 							} else if(goalheight <= minheight) {
