@@ -244,15 +244,13 @@
     float: left
     margin-right: $line-height/3
   .destroy
-    cursor: pointer
+    font-size: $line-height
     display: none
     float: right
-    width: 11px
-    height: 11px
-    margin: 4px 2px 0 6px
-    background: url(/images/x_11x11_light.png)
+    margin: 0 2px 0 5px
+    color: #888
     &:hover
-      background: url(/images/x_11x11_dark.png)
+      color: #333
   .name
     margin-right: $s-3
     font-weight: $semibold
@@ -359,6 +357,7 @@
       text-align: center
       width:  8px
       height: 8px
+      background: transparentize(white, .5)
       &.positive
         background: $pale-green
         border-color: desaturate(darken($pale-green, 20%), 40%)
