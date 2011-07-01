@@ -245,6 +245,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
       expect(candidateDetails.editableBody.val()).toBe(candidate.body());
       expect(candidateDetails.editableBody[0]).toBe(document.activeElement);
+      expect(candidateDetails.charsRemaining.text()).toBe((140 - candidate.body().length).toString());
       expect(candidateDetails.editableDetails.val()).toBe(candidate.details());
 
       candidateDetails.cancelEditLink.click();

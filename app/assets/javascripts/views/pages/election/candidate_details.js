@@ -41,7 +41,10 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       Application.onCurrentUserChange(this.hitch('showOrHideMutateButtons'));
       $super();
       $(window).resize(this.hitch('adjustCommentsHeight'));
+      this.editableBody.elastic();
+      this.editableDetails.elastic();
       this.editableBody.bind('elastic', this.hitch('adjustCommentsHeight'));
+      this.charsRemaining.field(this.editableBody);
       this.editableDetails.bind('elastic', this.hitch('adjustCommentsHeight'));
     },
 
@@ -98,8 +101,8 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       this.updateLink.show();
       this.cancelEditLink.show();
       if (this.candidate()) {
-        this.editableBody.val(this.candidate().body()).elastic();
-        this.editableDetails.val(this.candidate().details()).elastic();
+        this.editableBody.val(this.candidate().body()).keyup();
+        this.editableDetails.val(this.candidate().details()).keyup();
       }
 
       this.editableBody.focus();
