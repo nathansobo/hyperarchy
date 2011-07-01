@@ -18,6 +18,7 @@ describe("Routes", function() {
       History.pushState(null, null, '/');
       
       expect(Path.routes.current).toBe(defaultOrganization.url());
+      expect(_.defer).toHaveBeenCalled(); // firefox needs this
     });
   });
 
