@@ -23,9 +23,8 @@ module Views
 
             csrf_meta_tag
             head_content
+            typekit_javascript
             google_analytics_javascript
-            script :type => "text/javascript", :src => "http://use.typekit.com/tzv2czk.js"
-            script "try{Typekit.load();}catch(e){}", :type => "text/javascript"
           end
 
           body :class => "#{controller_name} #{action_name}" do
@@ -48,6 +47,12 @@ module Views
 
       def store_in_repository(dataset)
         %{Repository.update(#{build_client_dataset(dataset).to_json});}
+      end
+
+      def typekit_javascript
+        src = "#{request.ssl?? "https" : "http"}://use.typekit.com/tzv2czk.js"
+        script :type => "text/javascript", :src => src
+        script "try{Typekit.load();}catch(e){}", :type => "text/javascript"
       end
 
       def google_analytics_javascript
