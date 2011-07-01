@@ -150,7 +150,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       fieldValues = {
         body: "Relish",
         details: "That green stuff..."
-      }
+      };
 
       candidateDetails.editableBody.val(fieldValues.body);
       candidateDetails.editableDetails.val(fieldValues.details);
@@ -228,6 +228,27 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
         expect(Path.routes.current).toBe(election.url());
       });
+    });
+  });
+  
+  describe("handling of the enter key on the body textarea", function() {
+    beforeEach(function() {
+      useFakeServer();
+      Application.electionPage.election(election);
+    });
+
+    it("creates the candidate when the new form is showing", function() {
+      candidateDetails.showNewForm();
+      candidateDetails.editableBody.val("Blah");
+      candidateDetails.editableBody.trigger({ type : 'keydown', which : 13 });
+      expect(Server.creates.length).toBe(1);
+    });
+
+    it("updates the candidate when the edit form is showing", function() {
+      candidateDetails.editLink.click();
+      candidateDetails.editableBody.val("Blah");
+      candidateDetails.editableBody.trigger({ type : 'keydown', which : 13 });
+      expect(Server.updates.length).toBe(1);
     });
   });
 

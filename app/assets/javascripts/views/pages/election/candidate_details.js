@@ -46,6 +46,9 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       this.editableBody.bind('elastic', this.hitch('adjustCommentsHeight'));
       this.charsRemaining.field(this.editableBody);
       this.editableDetails.bind('elastic', this.hitch('adjustCommentsHeight'));
+      this.editableBody.bind('keydown', 'return', this.bind(function() {
+        this.find(".create:visible, .update:visible").click();
+      }));
     },
 
     candidate: {
