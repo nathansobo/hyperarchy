@@ -73,6 +73,7 @@ _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
 
     clearStatus: function(ranking) {
       var candidate = ranking.candidate();
+      if (!candidate) return;
       this.list.elementForRecord(candidate).ranking(null);
     }
   }

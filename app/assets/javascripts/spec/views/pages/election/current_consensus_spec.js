@@ -141,6 +141,13 @@ describe("Views.Pages.Election.CurrentConsensus", function() {
         });
       });
 
+      describe("when a ranking is destroyed *AFTER* its candidate is destroyed", function() {
+        it("does not raise an exception trying to access the missing candidate", function() {
+          var ranking = user1.rankings().first();
+          ranking.candidate().remotelyDestroyed();
+          ranking.remotelyDestroyed();
+        });
+      });
     });
 
     describe("showing and hiding of the ellipsis", function() {
