@@ -647,6 +647,8 @@ module Prequel
 
     describe "#increment and #decrement" do
       attr_reader :blog
+      let(:update_events) { [] }
+
       before do
         class ::Blog
           column :times_read, :integer
@@ -655,14 +657,22 @@ module Prequel
         end
 
         @blog = Blog.create(:times_read => 5)
+
+        Blog.on_update {|blog, changeset| update_events << [blog, changeset] }
       end
 
       describe "#increment(field_name, count=1)" do
-        it "atomically increments the given field name by the given amount" do
+        it "atomically increments the given field name by the given amount and triggers an update event" do
           DB[:blogs].filter(:id => blog.id).update(:times_read => 7)
           blog.increment(:times_read, 2)
           blog.times_read.should == 9
           blog.reload.times_read.should == 9
+
+          update_events.length.should == 1
+          event = update_events.first
+          event[0].should == blog
+          event[1].new(:times_read).should == 9
+          event[1].old(:times_read).should == 7
         end
       end
 
@@ -672,6 +682,12 @@ module Prequel
           blog.decrement(:times_read, 2)
           blog.times_read.should == 1
           blog.reload.times_read.should == 1
+
+          update_events.length.should == 1
+          event = update_events.first
+          event[0].should == blog
+          event[1].new(:times_read).should == 1
+          event[1].old(:times_read).should == 3
         end
       end
     end

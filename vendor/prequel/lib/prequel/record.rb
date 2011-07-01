@@ -235,11 +235,19 @@ module Prequel
     def increment(field_name, count=1)
       table.where(:id => id).increment(field_name, count)
       reload(field_name)
+      new_value = get_field(field_name).value
+      changeset = Changeset.new(self)
+      changeset.changed(field_name, new_value - count, new_value)
+      Prequel.session.handle_update_event(self, changeset)
     end
 
     def decrement(field_name, count=1)
       table.where(:id => id).decrement(field_name, count)
       reload(field_name)
+      new_value = get_field(field_name).value
+      changeset = Changeset.new(self)
+      changeset.changed(field_name, new_value + count, new_value)
+      Prequel.session.handle_update_event(self, changeset)
     end
 
     def mark_clean
