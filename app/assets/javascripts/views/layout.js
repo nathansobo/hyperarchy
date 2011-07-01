@@ -70,6 +70,7 @@ _.constructor("Views.Layout", View.Template, {
         });
 
         var org = this.currentOrganization();
+        if (!org) return;
         if (org.social()) {
           this.organizationNameSeparator.hide();
           this.organizationName.hide();

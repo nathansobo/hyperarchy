@@ -42,10 +42,10 @@ describe("Views.Pages.Election.Votes", function() {
       otherUserVote.remotelyDestroyed();
       expect(votesView.header.html()).toEqual('No Votes Yet');
 
-      currentUser.votes().createFromRemote({id: 1, electionId: election.id()});
+      currentUser.votes().createFromRemote({id: 1, electionId: election.id(), updatedAt: 1308353647000});
       expect(votesView.header.html()).toEqual('1 Vote');
 
-     otherUser.votes().createFromRemote({id: 2, electionId: election.id()});
+     otherUser.votes().createFromRemote({id: 2, electionId: election.id(), updatedAt: 1308353647001});
      expect(votesView.header.html()).toEqual('2 Votes');
     });
   });
