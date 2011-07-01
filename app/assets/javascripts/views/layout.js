@@ -3,7 +3,10 @@ _.constructor("Views.Layout", View.Template, {
     div({id: "layout"}, function() {
       div({id: "body-wrapper"}, function() {
         div({id: "header"}, function() {
+          div({id: "logo"})
           h1("HYPERARCHY");
+          h2("/").ref('organizationNameSeparator');
+          h2().ref('organizationName');
           div({id: "menu-items"}, function() {
             subview('organizationsMenu', Views.Layout.OrganizationsMenu);
             subview('accountMenu', Views.Layout.AccountMenu);
@@ -64,6 +67,16 @@ _.constructor("Views.Layout", View.Template, {
         this.socketConnectionFuture.success(function(sessionId) {
           $.post('/channel_subscriptions/organizations/' + currentOrganizationId, { session_id: sessionId });
         });
+
+        var org = this.currentOrganization();
+        if (org.social()) {
+          this.organizationNameSeparator.hide();
+          this.organizationName.hide();
+        } else {
+          this.organizationNameSeparator.show();
+          this.organizationName.show();
+          this.organizationName.bindText(org, 'name');
+        }
       }
     },
 

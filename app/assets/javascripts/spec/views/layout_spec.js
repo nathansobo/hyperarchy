@@ -93,4 +93,28 @@ describe("Views.Layout", function() {
       expect(Application.darkenedBackground).toBeVisible();
     });
   });
+
+  describe("the organization name", function() {
+    it("it changes when the current organization changes and is hidden when viewing social", function() {
+      $('#jasmine_content').html(Application);
+
+      var org1 = Organization.createFromRemote({id: 1, name: "Papa Gino's"});
+      var org2 = Organization.createFromRemote({id: 2, name: "Fujimoto's"});
+      var social = Organization.createFromRemote({id: 3, name: "Hyperarchy Social", social: true});
+
+      Application.currentOrganizationId(org1.id());
+      expect(Application.organizationName).toBeVisible();
+      expect(Application.organizationNameSeparator).toBeVisible();
+      expect(Application.organizationName.text()).toBe(org1.name());
+
+      Application.currentOrganizationId(social.id());
+      expect(Application.organizationName).toBeHidden();
+      expect(Application.organizationNameSeparator).toBeHidden();
+
+      Application.currentOrganizationId(org2.id());
+      expect(Application.organizationName).toBeVisible();
+      expect(Application.organizationNameSeparator).toBeVisible();
+      expect(Application.organizationName.text()).toBe(org2.name());
+    });
+  });
 });

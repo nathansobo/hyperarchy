@@ -14,7 +14,8 @@ body
 
 #header
   height: $header-height
-  @include background-image(linear-gradient(top, #4f4f4f, #363636))
+  //@include background-image(linear-gradient(top, #4f4f4f, #363636))
+  @include background-image(linear-gradient(top, #4c4c4c, #333))
   margin: 0 auto
   @include box-sizing('border-box')
   min-width: $min-width
@@ -22,10 +23,25 @@ body
   padding: 0 (2 * $padding-x)
   color: transparentize(white, 0.15)
 
+  #logo
+    width: 18px
+    height: 16px
+    background-image: url(/images/logo_16.png)
+    float: left
+    margin-top: $line-height / 2
   > h1
     font-weight: $regular
     float: left
+    margin-left: $s-5
     letter-spacing: $s-9
+    padding: ($line-height/2) 0
+
+  > h2
+    display: none
+    font-weight: $regular
+    float: left
+    margin-left: $s-3
+    letter-spacing: $s-11
     padding: ($line-height/2) 0
 
   > #menu-items
