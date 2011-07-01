@@ -12,7 +12,9 @@ describe("Routes", function() {
 
   describe("/", function() {
     it("navigates to the current user's default organization page", function() {
-
+      spyOn(_, 'defer').andCallFake(function(fn) {
+        fn();
+      });
       History.pushState(null, null, '/');
       
       expect(Path.routes.current).toBe(defaultOrganization.url());

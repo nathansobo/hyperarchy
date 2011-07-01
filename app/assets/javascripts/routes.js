@@ -1,7 +1,7 @@
-//Path.root('/');
-
 Path.map('/').to(function() {
-  History.replaceState(null, null, Application.currentUser().defaultOrganization().url());
+  _.defer(function() {
+    History.replaceState(null, null, Application.currentUser().defaultOrganization().url());
+  })
 });
 
 Path.map('/organizations/:organizationId').to(function() {
