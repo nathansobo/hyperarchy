@@ -48,6 +48,7 @@ _.constructor("Views.Components.SortedList", View.Template, {
         this.subscriptions.add(relation.onRemove(function(record, index) {
           var element = this.elementForRecord(record, index);
           element.remove();
+          delete this.elementsById[record.id()];
           if (this.onRemove) this.onRemove(element, record, index);
         }, this));
       }

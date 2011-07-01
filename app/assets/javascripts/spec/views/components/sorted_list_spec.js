@@ -54,10 +54,12 @@ describe("Views.Components.SortedList", function() {
   });
 
   describe("when a record is removed from the relation", function() {
-    it("removes the li corresponding to the record", function() {
-      relation.first().remotelyDestroyed();
+    it("removes the li corresponding to the record and removes it from the elementsById hash", function() {
+      var record = relation.first();
+      record.remotelyDestroyed();
       expect(view.find('li').length).toBe(2);
       expect(view).not.toContain("li:contains('Red')");
+      expect(view.elementsById[record.id()]).toBeUndefined();
     });
   });
 
