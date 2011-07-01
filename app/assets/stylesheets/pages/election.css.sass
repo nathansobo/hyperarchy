@@ -124,8 +124,8 @@
     margin-bottom: $line-height
     margin-right: 2
     margin-top: 0
-    &:hover
-      color: #333
+  [class="close"]:hover // help firefox
+    color: #333
   .chars-remaining
     position: relative
     top: -$line-height - 4px
@@ -243,9 +243,6 @@
   .avatar
     float: left
     margin-right: $line-height/3
-  &.destroyable:hover
-    .destroy
-      display: block
   .destroy
     cursor: pointer
     display: none
@@ -265,15 +262,13 @@
     font-size: $s-2
     color: #888
 
+[class="comment destroyable"]:hover // help firefox
+  .destroy
+    display: block
 
 #column1, #column2
   a
     float: right
-    //margin-top: 2px
-    //font-size: $s-1
-    //font-weight: $semibold
-    //padding: $s-6 $s-3
-    //margin-top: -$s-6
 
 #current-consensus
   ol
@@ -299,8 +294,6 @@
   top: 1.5 * $line-height
   bottom: 0
   width: 100%
-  //right: 0
-  //left: 0
   border: 1px solid #ccc
   background: #f0f0f0
   @include box-shadow(#aaa 0 0 3px inset)
