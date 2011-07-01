@@ -299,6 +299,19 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(Server.updates.length).toBe(0);
       expect(History.pushState).not.toHaveBeenCalled();
     });
+
+    it("does not allow a body exceeding 140 chars", function() {
+      var longBody = ""
+      _.times(141, function() {
+        longBody += "X"
+      });
+
+      spyOn(History, 'pushState');
+      candidateDetails.editableBody.val(longBody);
+      candidateDetails.updateLink.click();
+      expect(Server.updates.length).toBe(0);
+      expect(History.pushState).not.toHaveBeenCalled();
+    });
   });
 
   describe("when the destroy button is clicked", function() {

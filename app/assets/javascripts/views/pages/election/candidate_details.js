@@ -86,6 +86,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
     update: function(e) {
       e.preventDefault();
       if ($.trim(this.editableBody.val()) === '') return;
+      if (this.editableBody.val().length > 140) return;
       this.candidate().update(this.form.fieldValues()).success(this.hitch('cancelEdit'));
     },
 
