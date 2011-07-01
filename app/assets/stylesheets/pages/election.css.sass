@@ -334,7 +334,9 @@
 
 #election
   .candidate
+    @include clearfix
     position: relative
+
     .position
       float: left
       text-align: right
@@ -345,9 +347,31 @@
 
     .body
       margin-left: 2 * $s0
-      right: 0
-      top: ($line-height/2) - 1
-      bottom: 0
+      margin-right: 2 * $s0
+
+    .more
+      font-size: 17px
+      color: #aaa
+      position: absolute
+      right: 6px
+      bottom: $line-height / 4
+
+    .status
+      @include box-sizing(border-box)
+      border: 1px solid #ccc
+      margin-right: -1px
+      float: right
+      color: white
+      font-weight: $bold
+      text-align: center
+      width:  8px
+      height: 8px
+      &.positive
+        background: $pale-green
+        border-color: desaturate(darken($pale-green, 20%), 40%)
+      &.negative
+        background: $pale-red
+        border-color: desaturate(darken($pale-red, 20%), 40%)
 
 #election
   .candidate, .ranking

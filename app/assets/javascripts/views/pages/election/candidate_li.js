@@ -1,6 +1,8 @@
 _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
     li({'class': "candidate"}, function() {
+      div({'class': "more"}, '…');
+      div({'class': "status "}).ref('status');
       div({'class': "position"}, params.candidate.position()).ref('position');
       div({'class': "body"}, params.candidate.body()).ref('body');
     });
@@ -35,6 +37,13 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
 
     handleDragStart: function() {
       History.pushState(null, null, this.candidate.election().url());
+    },
+
+    ranking: {
+      write: function(ranking) {
+        this.status.removeClass("positive negative");
+        if (ranking) this.status.addClass(ranking.position() > 0 ? 'positive' : 'negative');
+      }
     }
   }
 });
