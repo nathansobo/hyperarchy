@@ -17,7 +17,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
 
       form(function() {
         textarea({name: "body", 'class': "body"}).ref("editableBody");
-        label({'for': "body", 'class': "chars-remaining"}, "67 characters remaining");
+        subview('charsRemaining', Views.Components.CharsRemaining, {limit: 140});
         label({'for': "details"}, "Further Details");
         textarea({name: 'details', 'class': "details"}).ref("editableDetails");
       }).submit('update')
