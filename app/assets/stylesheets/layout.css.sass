@@ -20,7 +20,6 @@ body
 
 #header
   height: $header-height
-  //@include background-image(linear-gradient(top, #4f4f4f, #363636))
   @include background-image(linear-gradient(top, #4c4c4c, #333))
   margin: 0 auto
   @include box-sizing('border-box')
@@ -28,6 +27,11 @@ body
   max-width: $max-width
   padding: 0 (2 * $padding-x)
   color: transparentize(white, 0.15)
+
+  a
+    color: transparentize(white, 0.15)
+  .dropdown-menu ul a
+    color: black
 
   #logo
     width: 18px
@@ -101,7 +105,6 @@ body
     #add-organization-menu-item
       border-top: 1px solid #eee
       background: #f8f8f8
-
 
 #body-wrapper
   margin: 0 auto
