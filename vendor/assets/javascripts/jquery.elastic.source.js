@@ -103,6 +103,9 @@
 				$textarea.bind('paste', function() {
           setTimeout(update, 1);
 				});
+				$textarea.bind('cut', function() {
+          setTimeout(update, 1);
+				});
 
 				// And this line is to catch the browser paste event
 //				$textarea.live('input paste',function(e){ setTimeout( update, 250); });

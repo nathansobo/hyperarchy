@@ -33,6 +33,9 @@
       font-size: $s2
     textarea.body
       display: none
+      position: relative
+    > .chars-remaining
+      width: 592px
 
   > #columns
     padding: 0 $line-height
@@ -106,7 +109,7 @@
   left: -100%
   top: 0
   bottom: 0
-  //@include transition('right left', 150ms, 'ease-in')
+  @include transition('right left', 150ms, 'ease-in')
   overflow: hidden
   padding: $line-height/2
   z-index: 1
@@ -350,6 +353,9 @@
   #headline
     textarea.body
       display: none
+    .chars-remaining
+      display: none
+      left: right
   #column1
     textarea.details, .update.button, .cancel.button, .edit.button, .destroy.button
       display: none
@@ -364,6 +370,8 @@
     div.body
       display: none
     textarea.body
+      display: block
+    .chars-remaining
       display: block
   #column1
     div.details

@@ -409,6 +409,7 @@ describe("Views.Pages.Election", function() {
 
         expect(electionPage.editableBody.val()).toBe(election.body());
         expect(electionPage.editableDetails.val()).toBe(election.details());
+        expect(electionPage.charsRemaining.text()).toBe((140 - election.body().length).toString());
 
         electionPage.cancelEditLink.click();
         expectFieldsHidden();

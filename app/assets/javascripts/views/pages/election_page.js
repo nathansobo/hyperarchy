@@ -13,6 +13,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
           .click('routeToNewElectionForm');
         div({'class': "body"}).ref('body');
         textarea({name: "body", 'class': "body"}).ref("editableBody");
+        subview('charsRemaining', Views.Components.CharsRemaining, { limit: 140 });
       }).ref('headline');
 
       div({id: "columns"}, function() {
@@ -71,6 +72,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     attach: function($super) {
       $super();
 
+      this.charsRemaining.field(this.editableBody);
       this.editableBody.elastic();
       this.editableDetails.elastic();
       this.editableBody.bind('elastic', this.hitch('adjustColumnTop'));

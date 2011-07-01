@@ -86,6 +86,19 @@ li
   &.valid-gravatar
     background: none
 
+.chars-remaining
+  color: darken(#ccc, 20%)
+  position: absolute
+  bottom: 4px
+  text-align: right
+  &.active
+    color: #4783B5
+    &.warning
+      color: #8C4B43
+    &.critical
+      color: #C22F1F
+
+
 h2
   margin-bottom: $line-height/2
   font-weight: $semibold
