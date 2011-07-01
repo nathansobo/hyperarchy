@@ -45,7 +45,21 @@ describe("Views.Lightboxes.NewElection", function() {
           expect(newElectionForm).toBeVisible();
         });
       });
-      
+
+      describe("when the body field exceeds 140 characters", function() {
+
+        it("does not create the election or hide the form", function() {
+          var longBody = ""
+          _.times(141, function() {
+            longBody += "X"
+          });
+          newElectionForm.body.val(longBody);
+          newElectionForm.form.submit();
+          expect(Server.creates.length).toBe(0);
+          expect(newElectionForm).toBeVisible();
+        });
+      });
+
     });
     
     describe("when the current user is a guest", function() {

@@ -28,6 +28,7 @@ _.constructor('Views.Lightboxes.NewElection', Views.Lightboxes.Lightbox, {
 
     create: function() {
       if ($.trim(this.body.val()) === "") return false;
+      if (this.body.val().length > 140) return false;
 
       var fieldValues = this.fieldValues();
 

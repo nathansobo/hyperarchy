@@ -35,7 +35,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     div({'class': 'details'}).ref('details');
     textarea({name: 'details', 'class': "details"}).ref("editableDetails");
 
-    a({'class': 'update button'}, "Save").ref('updateLink').click('save');
+    a({'class': 'update button'}, "Save").ref('updateLink').click('update');
     a({'class': 'cancel button'}, "Cancel").ref('cancelEditLink').click('cancelEdit');
     a({'class': "destroy button"}, "Delete").ref('destroyLink').click('destroy');
     a({'class': "edit button"}, "Edit").ref('editLink').click('edit');
@@ -233,8 +233,10 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.adjustColumnTop();
     },
 
-    save: function(e) {
+    update: function(e) {
       e.preventDefault();
+      if ($.trim(this.editableBody.val()) === "") return false;
+      if (this.editableBody.val().length > 140) return false;
       this.election().update({body: this.editableBody.val(), details: this.editableDetails.val()}).success(this.hitch('cancelEdit'));
     },
 

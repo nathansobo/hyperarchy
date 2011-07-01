@@ -443,6 +443,7 @@ describe("Views.Pages.Election", function() {
 
       describe("when the details are updated", function() {
         it("shows the details if they aren't blank and hides them otherwise", function() {
+          electionPage.editableBody.val("aoeu");
           electionPage.editableDetails.val("");
           electionPage.updateLink.click();
           Server.lastUpdate.simulateSuccess();
@@ -470,18 +471,42 @@ describe("Views.Pages.Election", function() {
         electionPage.editableDetails.val(updates.details);
       });
 
-      it("updates the record's body and details on the server and hides the form", function() {
-        electionPage.updateLink.click();
+      describe("if the body is not blank and not too long", function() {
+        it("updates the record's body and details on the server and hides the form", function() {
+          electionPage.updateLink.click();
 
-        expect(Server.updates.length).toBe(1);
+          expect(Server.updates.length).toBe(1);
 
-        expect(Server.lastUpdate.dirtyFieldValues).toEqual(updates);
-        Server.lastUpdate.simulateSuccess();
+          expect(Server.lastUpdate.dirtyFieldValues).toEqual(updates);
+          Server.lastUpdate.simulateSuccess();
 
-        expectFieldsHidden();
+          expectFieldsHidden();
 
-        expect(electionPage.body.text()).toBe(updates.body);
-        expect(electionPage.details.text()).toBe(updates.details);
+          expect(electionPage.body.text()).toBe(updates.body);
+          expect(electionPage.details.text()).toBe(updates.details);
+        });
+      });
+
+      describe("if the body is blank", function() {
+        it("does not save the election or hide the fields", function() {
+          electionPage.editableBody.val("    ");
+          electionPage.updateLink.click();
+          expect(Server.updates.length).toBe(0);
+          expectFieldsVisible();
+        });
+      });
+
+      describe("if the body exceeds 140 characters", function() {
+        it("does not save the election or hide the fields", function() {
+          var longBody = ""
+          _.times(141, function() {
+            longBody += "X"
+          });
+          electionPage.editableBody.val(longBody);
+          electionPage.updateLink.click();
+          expect(Server.updates.length).toBe(0);
+          expectFieldsVisible();
+        });
       });
     });
 
