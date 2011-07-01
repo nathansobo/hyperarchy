@@ -1,7 +1,7 @@
 _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
     li({'class': "candidate"}, function() {
-      div({'class': "more"}, '…');
+      div({'class': "more"}, '…').ref('ellipsis');
       div({'class': "status "}).ref('status');
       div({'class': "position"}, params.candidate.position()).ref('position');
       div({'class': "body"}, params.candidate.body()).ref('body');
@@ -27,6 +27,8 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
       this.click(this.bind(function() {
         History.pushState(null, null, this.candidate.url());
       }));
+
+      this.showOrHideEllipsis();
     },
 
     dragDelay: 100,
@@ -43,6 +45,14 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
       write: function(ranking) {
         this.status.removeClass("positive negative");
         if (ranking) this.status.addClass(ranking.position() > 0 ? 'positive' : 'negative');
+      }
+    },
+
+    showOrHideEllipsis: function() {
+      if (this.candidate.details() || this.candidate.commentCount() > 0) {
+        this.ellipsis.show();
+      } else {
+        this.ellipsis.hide();
       }
     }
   }

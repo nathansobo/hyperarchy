@@ -22,7 +22,9 @@ _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
     },
 
     handleCurrentUserChange: function() {
+      if (! this.candidates()) return;
       this.updateStatuses();
+      this.observeCurrentUserRankings();
     },
 
     candidates: {
@@ -30,14 +32,24 @@ _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
         this.list.relation(candidates);
         this.updateStatuses();
         this.observeCurrentUserRankings();
+        this.observeCandidates();
       }
     },
 
     observeCurrentUserRankings: function() {
       var currentUserRankings = Application.currentUser().rankings();
-      this.registerInterest(currentUserRankings, 'onUpdate', this.hitch('updateStatus'));
-      this.registerInterest(currentUserRankings, 'onInsert', this.hitch('updateStatus'));
-      this.registerInterest(currentUserRankings, 'onRemove', this.hitch('clearStatus'));
+      this.registerInterest('rankings', currentUserRankings, 'onUpdate', this.hitch('updateStatus'));
+      this.registerInterest('rankings', currentUserRankings, 'onInsert', this.hitch('updateStatus'));
+      this.registerInterest('rankings', currentUserRankings, 'onRemove', this.hitch('clearStatus'));
+    },
+
+    observeCandidates: function() {
+      this.registerInterest('candidates', this.candidates(), 'onUpdate', function(candidate, changeset) {
+        console.debug(changeset);
+        if (changeset.commentCount || changeset.details) {
+          this.list.elementForRecord(candidate).showOrHideEllipsis();
+        }
+      }, this);
     },
 
     selectedCandidate: {
@@ -48,7 +60,6 @@ _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
     },
 
     updateStatuses: function() {
-      if (! this.candidates()) return;
       var currentUserRankings = Application.currentUser().rankings();
       this.candidates().each(function(candidate) {
         var ranking = currentUserRankings.find({candidateId: candidate.id()});

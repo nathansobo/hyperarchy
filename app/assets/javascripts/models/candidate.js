@@ -6,7 +6,8 @@ _.constructor("Candidate", Model.Record, {
       body: 'string',
       details: 'string',
       position: 'integer',
-      createdAt: 'datetime'
+      createdAt: 'datetime',
+      commentCount: 'integer'
     });
 
     this.defaultOrderBy('position asc');
