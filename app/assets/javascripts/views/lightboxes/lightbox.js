@@ -14,7 +14,7 @@ _.constructor("Views.Lightboxes.Lightbox", View.Template, {
     },
 
     afterShow: function() {
-      this.find('input:visible').eq(0).focus();
+      this.find('textarea:visible, input:visible').eq(0).focus();
     },
 
     close: function() {

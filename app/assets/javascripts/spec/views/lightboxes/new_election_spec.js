@@ -96,14 +96,26 @@ describe("Views.Lightboxes.NewElection", function() {
     });
   });
 
-  describe("when the form is shown after having text typed into it", function() {
-    it("clears out the old text", function() {
+  describe("when the form is shown", function() {
+    it("focuses the textarea", function() {
+      expect(newElectionForm.body).toHaveFocus();
+    });
+
+    it("clears out the old text from previous showings", function() {
       newElectionForm.body.val("Junk");
       newElectionForm.details.val("Garbage");
       newElectionForm.close();
       newElectionForm.show();
       expect(newElectionForm.body.val()).toBe("");
       expect(newElectionForm.details.val()).toBe("");
+    });
+  });
+
+  describe("when typing in the body", function() {
+    it("adjusts the chars remaining", function() {
+      newElectionForm.body.val("123")
+      newElectionForm.body.keyup();
+      expect(newElectionForm.charsRemaining.text()).toBe('137');
     });
   });
 

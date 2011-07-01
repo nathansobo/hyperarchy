@@ -5,21 +5,24 @@ _.constructor('Views.Lightboxes.NewElection', Views.Lightboxes.Lightbox, {
     form(function() {
       h1("Enter your question:")
       textarea({'class': "body", name: "body", tabindex: 101}).ref('body');
+      subview('charsRemaining', Views.Components.CharsRemaining, {limit: 140});
 
       label({'for': "details"}, "Further Details")
       textarea({'class': "details", name: "details", tabindex: 102}).ref('details');
 
-      input({tabindex: 103, 'type': 'submit', 'class': "button", value: "Ask Question", tabindex: 103}).ref('submit');
+      input({'type': 'submit', 'class': "button", value: "Ask Question", tabindex: 103}).ref('submit');
     }).ref('form').submit('create');
   }},
 
   viewProperties: {
     attach: function() {
       this.find('textarea').elastic();
+      this.charsRemaining.field(this.body);
       this.body.keydown('return', this.hitch('create'));
     },
 
-    afterShow: function() {
+    afterShow: function($super) {
+      $super();
       this.find('textarea').val("").keyup();
     },
 

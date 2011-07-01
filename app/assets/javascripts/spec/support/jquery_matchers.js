@@ -190,6 +190,10 @@ jasmine.JQuery.matchersClass = {};
       return hasProperty(this.actual.data(key), expectedValue);
     },
 
+    toHaveFocus: function(key, expectedValue) {
+      return this.actual[0] === document.activeElement
+    },
+
     toMatchSelector: function(selector) {
       return this.actual.is(selector);
     },
