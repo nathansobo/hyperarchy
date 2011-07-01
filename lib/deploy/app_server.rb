@@ -19,20 +19,17 @@ class AppServer
   end
 
   def deploy(ref)
-    run_locally "rm -rf public/assets"
+    nuke_local_assets
     run_locally "env RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
 
     as('hyperarchy', '/app') do
       run "git fetch origin"
-      run "mkdir -p public/assets"
-      Dir["public/assets/*"].each do |path|
-        upload! path, "/app/public/assets/#{File.basename(path)}"
-      end
     end
 
     stop_service "socket_server"
     maintenance_page_up
-
+    nuke_remote_assets
+    upload_assets
     as 'hyperarchy', '/app' do
       run "git checkout --force", ref
       run "source .rvmrc"
@@ -47,6 +44,8 @@ class AppServer
     start_service 'resque_web'
     sleep 1 until port_listening?(8080)
     maintenance_page_down
+
+    nuke_local_assets
   end
 
   def provision
@@ -295,6 +294,21 @@ class AppServer
     run "ln -s /log /app/log"
     run "rvm rvmrc trust /app"
     run "exit"
+  end
+
+  def upload_assets
+    Dir["public/assets/*"].each do |path|
+      upload! path, "/app/public/assets/#{File.basename(path)}"
+    end
+  end
+
+  def nuke_remote_assets
+    run "mkdir -p public/assets"
+    run "rm -rf /app/public/assets/*"
+  end
+
+  def nuke_local_assets
+    run_locally "rm -rf public/assets"
   end
 
   def install_services
