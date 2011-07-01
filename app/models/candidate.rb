@@ -7,6 +7,7 @@ class Candidate < Prequel::Record
   column :position, :integer
   column :created_at, :datetime
   column :updated_at, :datetime
+  column :comment_count, :integer, :default => 0
 
   belongs_to :election
   belongs_to :creator, :class_name => "User"

@@ -46,6 +46,11 @@ class CandidateComment < Prequel::Record
 
   def after_create
     send_immediate_notifications
+    candidate.increment(:comment_count)
+  end
+
+  def after_destroy
+    candidate.decrement(:comment_count)
   end
 
   def users_to_notify_immediately

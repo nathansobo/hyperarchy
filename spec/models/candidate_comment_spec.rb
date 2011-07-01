@@ -1,4 +1,4 @@
-  require 'spec_helper'
+require 'spec_helper'
 
 module Models
   describe CandidateComment do
@@ -46,6 +46,20 @@ module Models
 
         comment = candidate.comments.create!(:body => "Bullshit.")
         job_params.should ==  { :class_name => "CandidateComment", :id => comment.id }
+      end
+
+      it "increments the candidate's comment_count" do
+        expect {
+          candidate.comments.make(:creator => comment_creator)
+        }.to change(candidate, :comment_count).by(1)
+      end
+    end
+
+    describe "after destroy" do
+      it "decrements the candidate's comment_count" do
+        expect {
+          comment.destroy
+        }.to change(candidate, :comment_count).by(-1)
       end
     end
 
