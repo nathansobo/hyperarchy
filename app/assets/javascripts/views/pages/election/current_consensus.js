@@ -45,7 +45,6 @@ _.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
 
     observeCandidates: function() {
       this.registerInterest('candidates', this.candidates(), 'onUpdate', function(candidate, changeset) {
-        console.debug(changeset);
         if (changeset.commentCount || changeset.details) {
           this.list.elementForRecord(candidate).showOrHideEllipsis();
         }
