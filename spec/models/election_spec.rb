@@ -218,6 +218,31 @@ module Models
         @non_member = User.make
       end
 
+      describe "body length limit" do
+        it "raises a security error if trying to create or update with a body longer than 140 chars" do
+          long_body = "x" * 145
+
+          expect {
+            Election.make(:body => long_body)
+          }.to raise_error(SecurityError)
+
+          expect {
+            Election.make.update(:body => long_body)
+          }.to raise_error(SecurityError)
+
+          election = Election.make
+
+          # grandfathered elections can have other properties updated, but not the body
+          Prequel::DB[:elections].filter(:id => election.id).update(:body => long_body)
+          election.reload
+
+          election.update(:details => "Hi") # should work
+          expect {
+            election.update(:body => long_body + "and even longer!!!")
+          }.to raise_error(SecurityError)
+        end
+      end
+
       describe "#can_create?" do
         before do
           @election = organization.elections.make_unsaved

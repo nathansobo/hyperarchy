@@ -62,12 +62,18 @@ class Election < Prequel::Record
   end
 
   def before_create
+    ensure_body_within_limit
     organization.ensure_current_user_is_member unless suppress_current_user_membership_check
     self.creator ||= current_user
     self.score = INITIAL_SCORE
   end
 
+  def ensure_body_within_limit
+    raise SecurityError, "Body exceeds 140 characters" if body.length > 140
+  end
+
   def before_update(changeset)
+    ensure_body_within_limit if changeset[:body]
     self.score = compute_score if changeset.changed?(:vote_count)
   end
 

@@ -41,9 +41,18 @@ class Candidate < Prequel::Record
   end
 
   def before_create
+    ensure_body_within_limit
     organization.ensure_current_user_is_member unless suppress_current_user_membership_check
     election.lock
     self.creator ||= current_user
+  end
+
+  def before_update(changeset)
+    ensure_body_within_limit if changeset[:body]
+  end
+
+  def ensure_body_within_limit
+    raise SecurityError, "Body exceeds 140 characters" if body.length > 140
   end
 
   def after_create

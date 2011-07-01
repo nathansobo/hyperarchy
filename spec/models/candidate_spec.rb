@@ -216,6 +216,31 @@ module Models
         @candidate = election.candidates.make(:body => "Hey you!")
       end
 
+      describe "body length limit" do
+        it "raises a security error if trying to create or update with a body longer than 140 chars" do
+          long_body = "x" * 145
+
+          expect {
+            Candidate.make(:body => long_body)
+          }.to raise_error(SecurityError)
+
+          expect {
+            Candidate.make.update(:body => long_body)
+          }.to raise_error(SecurityError)
+
+          candidate = Candidate.make
+
+          # grandfathered candidates can have other properties updated, but not the body
+          Prequel::DB[:candidates].filter(:id => candidate.id).update(:body => long_body)
+          candidate.reload
+
+          candidate.update(:details => "Hi") # should work
+          expect {
+            candidate.update(:body => long_body + "and even longer!!!")
+          }.to raise_error(SecurityError)
+        end
+      end
+
       describe "#can_create?" do
         before do
           election.organization.update(:privacy => "read_only")
