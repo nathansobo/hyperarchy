@@ -8,6 +8,7 @@ class ElectionComment < Prequel::Record
 
   belongs_to :election
   belongs_to :creator, :class_name => 'User'
+  delegate :organization, :to => :election
 
   def before_create
     self.creator = current_user
