@@ -77,7 +77,7 @@ class Organization < Prequel::Record
   end
 
   def current_user_can_create_items?
-    (public? && !current_user.guest?) || current_user_is_member?
+    !current_user.guest && (public? || current_user_is_member?)
   end
 
   def has_owner?(user)
