@@ -44,6 +44,10 @@ module Prequel
     Thread.current[:prequel_session] = nil if Thread.current[:prequel_session]
   end
 
+  def clear_subscription_nodes
+    @subscription_nodes = nil
+  end
+
   def clear_session_in_test_mode
     raise "Prequel#clear_session_in_test_mode can only be called when test_mode=true" unless test_mode
     Thread.current[:prequel_session] = nil if Thread.current[:prequel_session]

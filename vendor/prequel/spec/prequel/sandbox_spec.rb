@@ -184,6 +184,24 @@ module Prequel
               :title => ["Title must be in Spanish."],
               :user_id => ["User must be from Spain."]
             }
+            Blog.should be_empty
+          end
+        end
+
+        context "when the #can_create? method on the created object returns false" do
+          before do
+            class ::Blog
+              def can_create?
+                false
+              end
+            end
+          end
+
+          it "returns '403 forbidden' as its status" do
+            Blog.should be_empty
+            status, response = sandbox.create('blogs', { 'user_id' => 1, 'title' => 'Blog Title' })
+            status.should == 403
+            Blog.should be_empty
           end
         end
 
@@ -241,6 +259,15 @@ module Prequel
             end
           end
 
+          context "when #can_update? on the record returns false" do
+            it "returns '403 forbidden' as its status and does not update the record" do
+              mock(blog).can_update? { false }
+              status, response = sandbox.update('blogs', blog.id, { 'title' => "New Title" })
+              status.should == 403
+              blog.reload.title.should == "Blog Title"
+            end
+          end
+
           context "when the update causes the record to no longer be a member of the exposed relation" do
             it "returns '403 forbidden' as its status and does not commit the transaction to update the record" do
               status, response = sandbox.update('blogs', blog.id, { 'user_id' => 90, 'title' => "New Title" })
@@ -290,6 +317,15 @@ module Prequel
           it "returns '404 not found'" do
             status, response = sandbox.destroy('junk', 44)
             status.should == 404
+          end
+        end
+
+        context "when #can_destroy? on the record returns false" do
+          it "does not destroy the record and returns 403" do
+            mock(blog).can_destroy? { false }
+            status, response = sandbox.destroy('blogs', blog.id)
+            status.should == 403
+            Blog.find(blog.id).should == blog
           end
         end
       end

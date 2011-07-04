@@ -21,5 +21,6 @@ RSpec.configure do |config|
     end
     Prequel.clear_subscription_nodes
     Prequel.clear_session
+    Prequel.clear_subscription_nodes
   end
 end

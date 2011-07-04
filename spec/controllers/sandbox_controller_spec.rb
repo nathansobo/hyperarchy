@@ -6,8 +6,8 @@ describe SandboxController do
   before do
     @organization = Organization.make(:privacy => 'public')
     @other_organization = Organization.make(:privacy => 'private')
-    @election = organization.elections.make
     @user = login_as organization.make_member
+    @election = organization.elections.make(:creator => user)
   end
 
   describe "#fetch" do

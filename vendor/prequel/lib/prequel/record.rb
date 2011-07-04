@@ -142,9 +142,10 @@ module Prequel
     end
 
     def secure_initialize(values={})
-      return false unless can_create?
+      values.symbolize_keys!
       permitted_field_names = create_whitelist - create_blacklist
       initialize(values.slice(*permitted_field_names))
+      return false unless can_create?
       self
     end
 
@@ -171,9 +172,14 @@ module Prequel
     end
 
     def secure_update(attributes)
-      return false unless can_update?
-      soft_update(attributes.slice(*update_whitelist - update_blacklist))
+      return false unless secure_soft_update(attributes)
       save
+    end
+
+    def secure_soft_update(attributes)
+      attributes.symbolize_keys!
+      soft_update(attributes.slice(*update_whitelist - update_blacklist))
+      can_update?
     end
 
     def destroy
@@ -189,6 +195,7 @@ module Prequel
     def secure_destroy
       return false unless can_destroy?
       destroy
+      true
     end
 
     def save
@@ -370,6 +377,10 @@ module Prequel
     end
 
     def can_update?
+      can_mutate?
+    end
+
+    def can_destroy?
       can_mutate?
     end
 

@@ -147,3 +147,9 @@ module Prequel
     Time.send(:include, self)
   end
 end
+
+class ActiveSupport::HashWithIndifferentAccess
+  def symbolize_keys!
+    #NOOP
+  end
+end
