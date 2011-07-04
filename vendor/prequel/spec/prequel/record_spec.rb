@@ -161,6 +161,7 @@ module Prequel
         it "if can_create? returns false, and does not create the record and returns false" do
           class ::Blog
             def can_create?
+              title.should == "Hola!"
               false
             end
           end
@@ -912,16 +913,25 @@ module Prequel
         end
 
         it "if can_update? returns false does not perform the update and returns false" do
-          stub(blog).can_update? { false }
+          mock(blog).can_update? do
+            blog.title.should == "Coding For Fun"
+            false
+          end
           blog.secure_update(:title => "Coding For Fun", :subtitle => "And Maybe Eventually Profit?").should be_false
-          DB[:blogs].find(blog.id).first.should == {
-            :id => blog.id,
-            :title => "Saved Blog",
-            :subtitle => nil,
-            :user_id => 1
-          }
-          
-          stub(blog).can_update? { true }
+
+          blog.reload
+
+          blog.title.should == "Saved Blog"
+          blog.subtitle.should be_nil
+          blog.user_id.should == 1
+
+          mock(blog).can_update? { true }
+
+          blog.secure_update(:title => "Coding For Fun", :subtitle => "And Maybe Eventually Profit?").should be_true
+          blog.reload
+          blog.title.should == "Coding For Fun"
+          blog.subtitle.should == "And Maybe Eventually Profit?"
+          blog.user_id.should == 1
         end
       end
 
@@ -938,14 +948,12 @@ module Prequel
           blog.title.should == "Saved Blog"
         end
 
-        it "if can_update? returns false does not modify fields and returns false" do
-          stub(blog).can_update? { false }
+        it "if can_update? returns false, it returns false" do
+          mock(blog).can_update? do
+            blog.title.should == "Coding For Fun"
+            false
+          end
           blog.secure_soft_update(:title => "Coding For Fun", :subtitle => "And Maybe Eventually Profit?").should be_false
-
-          blog.should_not be_dirty
-          blog.title.should == "Saved Blog"
-          blog.subtitle.should be_nil
-          blog.user_id.should == 1
         end
       end
     end

@@ -177,10 +177,9 @@ module Prequel
     end
 
     def secure_soft_update(attributes)
-      return false unless can_update?
       attributes.symbolize_keys!
       soft_update(attributes.slice(*update_whitelist - update_blacklist))
-      true
+      can_update?
     end
 
     def destroy
