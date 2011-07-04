@@ -229,9 +229,10 @@ module Prequel
           blog.user_id.should be_nil
         end
 
-        it "if can_create? returns false, and does not create the record and returns false" do
+        it "if can_create? returns false, does not create the record and returns false" do
           class ::Blog
             def can_create?
+              title.should == "Hola!"
               false
             end
           end
