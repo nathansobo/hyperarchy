@@ -26,8 +26,10 @@ describe EventObserver do
       election = org1.elections.make
       events.shift.should == ["create", "elections", election.wire_representation, {}]
 
+      expect_event(org1) # 2 events, 1 for the election count update and 1 for the destroy
       expect_event(org1)
       election.destroy
+      events.shift.should == ["update", "organizations", org1.id, {"election_count"=>0}]
       events.shift.should == ["destroy", "elections", election.id]
 
       user = org1.make_member
