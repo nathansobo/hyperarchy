@@ -41,9 +41,7 @@ _.constructor("Election", Model.Record, {
     updateScores: function() {
       var queue = new Monarch.Queue(10);
       this.each(function(election) {
-        queue.add(function() {
-          election.updateScore();
-        });
+        queue.add(election.hitch('updateScore'));
       });
       queue.start();
     }
@@ -110,7 +108,6 @@ _.constructor("Election", Model.Record, {
   },
 
   updateScore: function() {
-    // simulate update received from server
     this.remotelyUpdated({score: this.computeScore()});
   },
 

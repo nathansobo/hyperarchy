@@ -37,6 +37,7 @@ _.constructor("Views.Layout", View.Template, {
     initialize: function() {
       this.currentUserChangeNode = new Monarch.SubscriptionNode();
       this.connectToSocketServer();
+      Election.updateScoresPeriodically();
 
       $(document).bind('keydown', 'ctrl+g', function() {
         $('body').toggleClass('grid');

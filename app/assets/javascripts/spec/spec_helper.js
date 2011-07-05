@@ -20,6 +20,7 @@ beforeEach(function() {
   window.History.reset();
   Repository.clear();
   stubAjax();
+  spyOn(Election, 'updateScoresPeriodically');
 });
 
 afterEach(function() {

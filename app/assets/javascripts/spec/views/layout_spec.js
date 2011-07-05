@@ -22,6 +22,10 @@ describe("Views.Layout", function() {
       socketClient.emit('message', [JSON.stringify(updateCommand)]);
       expect(Election.find(1)).toBeUndefined();
     });
+
+    it("sets up the election scores to be updated periodically", function() {
+      expect(Election.updateScoresPeriodically).toHaveBeenCalled();
+    });
   });
 
   describe("#currentUser and #currentUserId", function() {
