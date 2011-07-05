@@ -129,7 +129,6 @@ describe("Views.Lightboxes.SignupForm", function() {
           expect(signupForm).toBeHidden();
           expect(Application.darkenedBackground).toBeHidden();
         });
-
       });
     });
   });

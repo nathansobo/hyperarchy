@@ -55,13 +55,19 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
     },
 
     handleSuccess: function(promise, data) {
+      console.debug("success");
       this.hide();
+
+      var newOrganizationId = data.new_organization_id;
+      if (newOrganizationId) {
+        console.debug("new org id", newOrganizationId);
+        History.pushState(null, null, Organization.find(newOrganizationId).url());
+      }
+
       Application.currentUserId(data.current_user_id).success(function() {
         this.trigger('success');
         promise.triggerSuccess();
       }, this);
-      var newOrganizationId = data.new_organization_id;
-      if (newOrganizationId) History.pushState(null, null, Organization.find(newOrganizationId).url());
     },
 
     handleError: function(promise, xhr) {
