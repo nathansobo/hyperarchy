@@ -57,6 +57,7 @@ class Candidate < Prequel::Record
   end
 
   def after_create
+    update(:position => 1) if other_candidates.empty?
     other_candidates.each do |other_candidate|
       Majority.create({:winner => self, :loser => other_candidate, :election_id => election_id})
       Majority.create({:winner => other_candidate, :loser => self, :election_id => election_id})

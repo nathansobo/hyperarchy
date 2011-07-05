@@ -123,6 +123,12 @@ module Models
           find_majority(candidate, unranked).con_count.should == 0
         end
 
+        it "gives the candidate a position of 1 if they are the only candidate" do
+          candidate = election.candidates.make(:body => "Only")
+          election.candidates.size.should == 1
+          candidate.position.should == 1
+        end
+
         it "enqueues a SendImmediateNotification job with the candidate" do
           job_params = nil
           mock(Jobs::SendImmediateNotifications).create(is_a(Hash)) do |params|
