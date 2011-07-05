@@ -39,10 +39,10 @@ _.constructor("Views.Components.SortedList", View.Template, {
           if (this.onInsert) this.onInsert(record, element);
         }, this));
 
-        this.subscriptions.add(relation.onUpdate(function(record, changes, index) {
-          var element = this.elementForRecord(record, index);
-          this.insertAtIndex(element.detach(), index);
-          if (this.onUpdate) this.onUpdate(element, record, changes, index);
+        this.subscriptions.add(relation.onUpdate(function(record, changes, newIndex, oldIndex) {
+          var element = this.elementForRecord(record, newIndex);
+          this.insertAtIndex(element.detach(), newIndex);
+          if (this.onUpdate) this.onUpdate(element, record, changes, newIndex, oldIndex);
         }, this));
 
         this.subscriptions.add(relation.onRemove(function(record, index) {

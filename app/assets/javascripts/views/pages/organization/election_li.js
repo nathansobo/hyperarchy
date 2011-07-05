@@ -8,10 +8,13 @@ _.constructor('Views.Pages.Organization.ElectionLi', Monarch.View.Template, {
           buildElement: function(candidate, index) {
             return Monarch.View.build(function(b) { with(b) {
               li({'class': "candidate"}, function() {
-                div({'class': "position"}, index + 1).ref('position');
+                div({'class': "position"}, candidate.position()).ref('position');
                 div({'class': "body"}, candidate.body()).ref('body');
               });
             }});
+          },
+          onUpdate: function(li, record) {
+            li.position.text(record.position());
           }
         });
         div({'class': "fadeout"});
