@@ -28,7 +28,7 @@ module Prequel
           raise Prequel::Rollback
         end
 
-        record = relation.secure_create(field_values)
+        record = (ignore_security?? relation.create(field_values) : relation.secure_create(field_values))
         return [403, "Create operation forbidden."] unless record
 
         if record.valid?
@@ -59,7 +59,7 @@ module Prequel
           raise Prequel::Rollback
         end
 
-        unless record.secure_soft_update(field_values)
+        unless (ignore_security?? record.soft_update(field_values) : record.secure_soft_update(field_values))
           return [403, "Update operation forbidden."]
         end
 
@@ -82,7 +82,7 @@ module Prequel
       return [404, "No relation #{relation_name} found"] unless relation
       record = relation.find(id)
       return [404, "No record #{id} found in #{relation_name}"] unless record
-      return [403, "Destroy operation forbidden"] unless record.secure_destroy
+      return [403, "Destroy operation forbidden"] unless (ignore_security?? record.destroy : record.secure_destroy)
       200
     end
 
