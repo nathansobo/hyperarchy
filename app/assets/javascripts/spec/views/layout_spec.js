@@ -48,48 +48,93 @@ describe("Views.Layout", function() {
   });
 
   describe("#currentOrganization / #currentOrganizationId", function() {
-    var organization1, organization2;
+    var organization1, organization2, member, guest, membership;
 
     beforeEach(function() {
-      organization1 = Organization.createFromRemote({id: 1});
-      organization2 = Organization.createFromRemote({id: 2});
+      organization1 = Organization.createFromRemote({id: 1, name: "Fujimoto's"});
+      organization2 = Organization.createFromRemote({id: 2, name: "Hey Ya"});
+      guest = User.createFromRemote({id: 11, guest: true});
+      member = User.createFromRemote({id: 12, guest: false});
+      membership = member.memberships().createFromRemote({id: 9, organizationId: organization1.id()});
+      guest.memberships().createFromRemote({id: 9, organizationId: organization2.id()});
+      Application.currentUser(guest);
     });
 
+    describe("#currentOrganizationId", function() {
+      describe("when the socket client has finished connecting", function() {
+        beforeEach(function() {
+          socketClient.transport.sessionid = 'fake-session-id';
+          socketClient.emit('connect');
+        });
 
-    describe("when the socket client has finished connecting", function() {
-      beforeEach(function() {
-        socketClient.transport.sessionid = 'fake-session-id';
-        socketClient.emit('connect');
+        it("subscribes to the organization's channel", function() {
+          Application.currentOrganizationId(organization2.id());
+          expect(jQuery.ajax).toHaveBeenCalledWith({
+            type : 'post',
+            url : '/channel_subscriptions/organizations/' + organization2.id(),
+            data : { session_id : 'fake-session-id' },
+            success: undefined,
+            dataType: undefined
+          });
+        });
       });
 
-      it("subscribes to the organization's channel", function() {
-        Application.currentOrganizationId(organization2.id());
-        expect(jQuery.ajax).toHaveBeenCalledWith({
-          type : 'post',
-          url : '/channel_subscriptions/organizations/' + organization2.id(),
-          data : { session_id : 'fake-session-id' },
-          success: undefined,
-          dataType: undefined
+      describe("when the socket client has not yet connected", function() {
+        it("subscribes to the organization's channel after the client connects", function() {
+          Application.currentOrganizationId(organization2.id());
+
+          expect(jQuery.ajax).not.toHaveBeenCalled();
+
+          socketClient.transport.sessionid = 'fake-session-id';
+          socketClient.emit('connect');
+
+          expect(jQuery.ajax).toHaveBeenCalledWith({
+            type : 'post',
+            url : '/channel_subscriptions/organizations/' + organization2.id(),
+            data : { session_id : 'fake-session-id' },
+            success: undefined,
+            dataType: undefined
+          });
         });
       });
     });
 
-    describe("when the socket client has not yet connected", function() {
-      it("subscribes to the organization's channel after the client connects", function() {
+    describe("#currentOrganization", function() {
+      it("it changes the organization name or hides it when viewing social", function() {
+        $('#jasmine_content').html(Application);
+
+        var social = Organization.createFromRemote({id: 3, name: "Hyperarchy Social", social: true});
+
+        Application.currentOrganizationId(organization1.id());
+        expect(Application.organizationName).toBeVisible();
+        expect(Application.organizationNameSeparator).toBeVisible();
+        expect(Application.organizationName.text()).toBe(organization1.name());
+
+        Application.currentOrganizationId(social.id());
+        expect(Application.organizationName).toBeHidden();
+        expect(Application.organizationNameSeparator).toBeHidden();
+
         Application.currentOrganizationId(organization2.id());
+        expect(Application.organizationName).toBeVisible();
+        expect(Application.organizationNameSeparator).toBeVisible();
+        expect(Application.organizationName.text()).toBe(organization2.name());
+      });
 
-        expect(jQuery.ajax).not.toHaveBeenCalled();
+      it("updates the visited_at field of the current user's membership to this organization if they aren't a guest", function() {
+        freezeTime();
+        useFakeServer();
 
-        socketClient.transport.sessionid = 'fake-session-id';
-        socketClient.emit('connect');
+        Application.currentUser(member);
+        Application.currentOrganization(organization1);
 
-        expect(jQuery.ajax).toHaveBeenCalledWith({
-          type : 'post',
-          url : '/channel_subscriptions/organizations/' + organization2.id(),
-          data : { session_id : 'fake-session-id' },
-          success: undefined,
-          dataType: undefined
-        });
+        expect(Server.updates.length).toBe(1);
+        expect(Server.lastUpdate.record).toBe(membership);
+        Server.lastUpdate.simulateSuccess();
+        expect(membership.lastVisited()).toBe(new Date());
+
+        Application.currentUser(guest);
+        Application.currentOrganization(organization2);
+        expect(Server.updates.length).toBe(0);
       });
     });
 
@@ -110,30 +155,6 @@ describe("Views.Layout", function() {
       socketClient.emit('disconnect');
       expect(Application.disconnectDialog).toBeVisible();
       expect(Application.darkenedBackground).toBeVisible();
-    });
-  });
-
-  describe("the organization name", function() {
-    it("it changes when the current organization changes and is hidden when viewing social", function() {
-      $('#jasmine_content').html(Application);
-
-      var org1 = Organization.createFromRemote({id: 1, name: "Papa Gino's"});
-      var org2 = Organization.createFromRemote({id: 2, name: "Fujimoto's"});
-      var social = Organization.createFromRemote({id: 3, name: "Hyperarchy Social", social: true});
-
-      Application.currentOrganizationId(org1.id());
-      expect(Application.organizationName).toBeVisible();
-      expect(Application.organizationNameSeparator).toBeVisible();
-      expect(Application.organizationName.text()).toBe(org1.name());
-
-      Application.currentOrganizationId(social.id());
-      expect(Application.organizationName).toBeHidden();
-      expect(Application.organizationNameSeparator).toBeHidden();
-
-      Application.currentOrganizationId(org2.id());
-      expect(Application.organizationName).toBeVisible();
-      expect(Application.organizationNameSeparator).toBeVisible();
-      expect(Application.organizationName.text()).toBe(org2.name());
     });
   });
 });

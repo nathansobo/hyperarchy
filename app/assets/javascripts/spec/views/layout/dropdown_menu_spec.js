@@ -2,7 +2,8 @@ describe("Views.Layout.DropdownMenu", function() {
   var dropdownMenu;
   beforeEach(function() {
     renderLayout();
-      dropdownMenu = Application.accountMenu.dropdownMenu
+    Application.currentUser(User.createFromRemote({id: 1, firstName: "Some", lastName: "Guy"}));
+    dropdownMenu = Application.accountMenu.dropdownMenu
   });
 
   it("shows the dropdown menu and adds the 'active' class to the link when it is clicked, then hides the menu and removes the class when the user clicks again anywhere", function() {

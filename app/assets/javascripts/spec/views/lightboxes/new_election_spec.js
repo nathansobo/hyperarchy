@@ -5,11 +5,11 @@ describe("Views.Lightboxes.NewElection", function() {
   beforeEach(function() {
     renderLayout();
     newElectionForm = Application.newElection.show();
-    member = User.createFromRemote({id: 1});
-    guest = User.createFromRemote({id: 2, guest: true});
     organization = Organization.createFromRemote({id: 1});
+    member = organization.makeMember({id: 1});
+    guest =  organization.makeMember({id: 2, guest: true});
     Application.currentUser(member);
-    Application.currentOrganizationId(organization.id());
+    Application.currentOrganization(organization);
     useFakeServer();
   });
 

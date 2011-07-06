@@ -6,7 +6,7 @@ describe("Routes", function() {
     renderLayout();
     defaultOrganization = Organization.createFromRemote({id: 23});
     defaultGuest = User.createFromRemote({id: 1, defaultGuest: true, guest: true});
-    member = User.createFromRemote({id: 2});
+    member = defaultOrganization.makeMember({id: 2});
     spyOn(defaultGuest, 'defaultOrganization').andReturn(defaultOrganization);
     spyOn(member, 'defaultOrganization').andReturn(defaultOrganization);
     Application.currentUser(defaultGuest);

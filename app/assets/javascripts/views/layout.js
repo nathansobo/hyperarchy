@@ -87,6 +87,10 @@ _.constructor("Views.Layout", View.Template, {
           this.organizationName.show();
           this.organizationName.bindText(organization, 'name');
         }
+
+        if (! Application.currentUser().guest()) {
+          organization.membershipForUser(Application.currentUser()).update({lastVisited: new Date()});
+        }
       }
     },
 

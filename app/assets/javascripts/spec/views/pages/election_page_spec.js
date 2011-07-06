@@ -24,6 +24,7 @@ describe("Views.Pages.Election", function() {
         otherUser2 = User.create();
         electionCommentCreator = User.create();
         candidateCommentCreator = User.create();
+        currentUser.memberships().create({organizationId: election.organizationId()});
         otherUser.memberships().create({organizationId: election.organizationId()});
         electionCommentCreator.memberships().create({organizationId: election.organizationId()});
         candidateCommentCreator.memberships().create({organizationId: election.organizationId()});
