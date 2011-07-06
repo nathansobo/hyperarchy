@@ -190,12 +190,12 @@ module Prequel
         after_destroy
         Prequel.session.handle_destroy_event(self)
       end
+      true
     end
 
     def secure_destroy
       return false unless can_destroy?
       destroy
-      true
     end
 
     def save

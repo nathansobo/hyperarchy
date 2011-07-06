@@ -180,8 +180,8 @@ module Prequel
         context "when a record with the given id exists" do
           it "destroys the record and returns '200 ok'" do
             status, response = backdoor.destroy('blogs', blog.id)
-            status.should == 200
             Blog.find(blog.id).should be_nil
+            status.should == 200
           end
         end
 
