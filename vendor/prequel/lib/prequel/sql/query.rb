@@ -1,7 +1,7 @@
 module Prequel
   module Sql
     class Query
-      attr_accessor :select_list, :group_bys, :order_bys, :limit, :offset, :projected_table_ref
+      attr_accessor :select_list, :group_bys, :order_bys, :limit, :offset, :distinct, :projected_table_ref
       attr_reader :relation, :parent, :table_ref, :conditions, :subquery_count, :query_columns
       attr_writer :tuple_builder
       delegate :count, :empty?, :to => :dataset
@@ -143,12 +143,16 @@ module Prequel
       end
 
       def select_clause_sql
-        "select " +
+        "select #{distinct_token}" +
           if select_list
             select_list.map { |column| column.to_select_clause_sql }.join(', ')
           else
             '*'
           end
+      end
+
+      def distinct_token
+        distinct ? "distinct " : ""
       end
 
       def from_clause_sql

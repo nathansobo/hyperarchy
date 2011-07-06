@@ -95,6 +95,10 @@ module Prequel
 
       alias_method :|, :union
 
+      def distinct
+        Distinct.new(self)
+      end
+
       def table_ref(query)
         singular_table_ref(query)
       end

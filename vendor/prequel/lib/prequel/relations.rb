@@ -2,9 +2,10 @@ module Prequel
   module Relations
     extend ActiveSupport::Autoload
 
+    autoload :Distinct
     autoload :GroupBy
-    autoload :Join
     autoload :InnerJoin
+    autoload :Join
     autoload :LeftJoin
     autoload :Limit
     autoload :Offset
