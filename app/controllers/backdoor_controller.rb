@@ -53,7 +53,14 @@ class BackdoorController < SandboxController
         field_values.symbolize_keys!
         record_class = table_name.to_s.singularize.camelize.constantize
         blueprint_field_values = record_class.plan(field_values).merge(field_values) # hack to keep foreign keys from being ignored by machinist
-        records << record_class.raw_create(blueprint_field_values)
+
+
+        if record = record_class.find(id)
+          record.raw_update(blueprint_field_values)
+          records << record
+        else
+          records << record_class.raw_create(blueprint_field_values)
+        end
       end
     end
 
