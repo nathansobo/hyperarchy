@@ -4,10 +4,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
   var organization, electionPage, rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation, createOrUpdatePromise;
   
   beforeEach(function() {
-    currentUser = User.createFromRemote({id: 2, emailAddress: "foo@example.com"});
-
     organization = Organization.createFromRemote({id: 1})
-    currentUser.memberships().createFromRemote({organizationId: organization.id()});
+    currentUser = organization.makeMember({id: 2, emailAddress: "foo@example.com"});
     election = Election.createFromRemote({id: 1, creatorId: 2, createdAt: 234234234, organizationId: organization.id()});
     candidate1 = election.candidates().createFromRemote({id: 1, body: "Candidate 1", createdAt: 1308352736162, creatorId: 2});
     candidate2 = election.candidates().createFromRemote({id: 2, body: "Candidate 2", createdAt: 1308352736162, creatorId: 2});
@@ -197,7 +195,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
       describe("when displaying another user's ranking", function() {
         beforeEach(function() {
-          var otherUser = User.createFromRemote({id: 99});
+          var otherUser = organization.makeMember({id: 99});
           otherUser.rankings().createFromRemote({electionId: election.id(), candidateId: candidate1.id(), position: 64});
           rankedCandidates.rankings(otherUser.rankings());
         });
@@ -292,7 +290,6 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           enableAjax();
           unspy(rankedCandidates, 'currentUserCanRank');
 
-          organization.remotelyDestroyed(); // don't conflict with org 1
           uploadRepository();
           fetchInitialRepositoryContents();
 
@@ -409,7 +406,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
                 expect(rankingLi.data('position')).toBe(-64);
               });
 
-              waitsFor("ranking to be createed", function() {
+              waitsFor("ranking to be created", function() {
                 return !Application.currentUser().rankings().empty()
               });
 

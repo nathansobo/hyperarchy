@@ -1,14 +1,14 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Election.CandidateDetails", function() {
-  var candidateDetails, candidate, creator, election;
+  var candidateDetails, candidate, creator, election, organization;
 
   beforeEach(function() {
     renderLayout();
     Application.height(1000);
 
     candidateDetails = Application.electionPage.candidateDetails;
-    var organization = Organization.createFromRemote({id: 42});
+    organization = Organization.createFromRemote({id: 42});
     creator = organization.makeMember({id: 999, emailHash: 'blas', firstName: "Mr.", lastName: "Creator"});
     Application.currentUser(creator);
     election = organization.elections().createFromRemote({id: 1, creatorId: 999, createdAt: 12});
@@ -192,10 +192,9 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
       beforeEach(function() {
         spyOn(candidate, 'editableByCurrentUser').andReturn(true);
-        guest = User.createFromRemote({id: 5, guest: true});
-        member = User.createFromRemote({id: 6});
+        guest = organization.makeMember({id: 5, guest: true});
+        member = organization.makeMember({id: 6});
         Application.currentUser(guest);
-
 
         candidateDetails.show();
         candidateDetails.showNewForm();

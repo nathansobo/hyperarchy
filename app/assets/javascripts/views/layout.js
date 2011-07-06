@@ -51,6 +51,7 @@ _.constructor("Views.Layout", View.Template, {
     currentUser: {
       change: function(user) {
         this.currentUserId(user.id());
+        this.recordOrganizationVisit();
         return this.currentUserChangeNode.publishForPromise(user);
       }
     },
@@ -88,10 +89,14 @@ _.constructor("Views.Layout", View.Template, {
           this.organizationName.bindText(organization, 'name');
         }
 
-        if (! Application.currentUser().guest()) {
-          organization.membershipForUser(Application.currentUser()).update({lastVisited: new Date()});
-        }
+        this.recordOrganizationVisit();
       }
+    },
+
+    recordOrganizationVisit: function() {
+      if (!this.currentOrganization() || Application.currentUser().guest()) return;
+      var membership = this.currentOrganization().membershipForUser(Application.currentUser());
+      if (membership) membership.update({lastVisited: new Date()});
     },
 
     showPage: function(name, params) {

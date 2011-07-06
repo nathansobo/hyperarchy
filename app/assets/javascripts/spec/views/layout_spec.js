@@ -29,10 +29,35 @@ describe("Views.Layout", function() {
   });
 
   describe("#currentUser and #currentUserId", function() {
-    it("ensures consistent results regardless of which is used to assign", function() {
-      var user1 = User.createFromRemote({id: 1});
-      var user2 = User.createFromRemote({id: 2});
+    var organization, user1, user2
 
+    beforeEach(function() {
+      organization = Organization.createFromRemote({id: 1});
+      user1 = organization.makeMember({id: 1});
+      user2 = organization.makeMember({id: 2});
+    });
+
+    it("updates lastVisited for the current user's membership to the current organization if they aren't a guest", function() {
+      Application.currentOrganization(organization);
+      useFakeServer();
+      freezeTime();
+
+      Application.currentUser(user1);
+      var user1Membership = organization.membershipForUser(user1);
+      expect(Server.updates.length).toBe(1);
+      expect(Server.lastUpdate.record).toBe(user1Membership);
+      Server.lastUpdate.simulateSuccess();
+      expect(user1Membership.lastVisited()).toBe(new Date());
+
+      Application.currentUser(user2);
+      var user2Membership = organization.membershipForUser(user2);
+      expect(Server.updates.length).toBe(1);
+      expect(Server.lastUpdate.record).toBe(user2Membership);
+      Server.lastUpdate.simulateSuccess();
+      expect(user2Membership.lastVisited()).toBe(new Date());
+    });
+
+    it("assigns currentUserId when currentUser is assigned and vice versa", function() {
       Application.currentUserId(user1.id());
       expect(Application.currentUserId()).toEqual(user1.id());
       expect(Application.currentUser()).toEqual(user1);
