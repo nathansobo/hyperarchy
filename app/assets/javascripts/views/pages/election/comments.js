@@ -79,7 +79,7 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
     },
 
     scrollToBottom: function(animate) {
-      if (this.fullHeight()) this.list.attr('scrollTop', 99999999999999);
+      if (this.fullHeight()) this.list.scrollTop(this.list.attr('scrollHeight') - this.list.height());
     },
 
     adjustListBottom: function() {
