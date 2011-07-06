@@ -4,10 +4,13 @@ _.constructor("Views.Layout", View.Template, {
       div({id: 'gradient-background'});
       div({id: "body-wrapper"}, function() {
         div({id: "header"}, function() {
-          div({id: "logo"})
-          h1("HYPERARCHY");
-          h2("/").ref('organizationNameSeparator');
-          h2().ref('organizationName');
+          a(function() {
+            div({id: "logo"})
+            h1("HYPERARCHY");
+            h2("/").ref('organizationNameSeparator');
+            h2().ref('organizationName');
+          }).ref('logoAndTitle').click('navigateToCurrentOrganization');
+
           div({id: "menu-items"}, function() {
             subview('organizationsMenu', Views.Layout.OrganizationsMenu);
             subview('accountMenu', Views.Layout.AccountMenu);
@@ -166,6 +169,10 @@ _.constructor("Views.Layout", View.Template, {
       var promise = this.promptSignup();
       this.signupForm.loginFormLink.click();
       return promise;
+    },
+
+    navigateToCurrentOrganization: function() {
+      History.pushState(null, null, this.currentOrganization().url());
     }
   }
 });

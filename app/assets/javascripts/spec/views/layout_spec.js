@@ -182,4 +182,15 @@ describe("Views.Layout", function() {
       expect(Application.darkenedBackground).toBeVisible();
     });
   });
+
+  describe("when the logo is clicked", function() {
+    it("navigates to the current org", function() {
+      spyOn(Application, 'showPage');
+      var org = Organization.createFromRemote({id: 1, name: "Boboland"});
+      Application.currentOrganization(org);
+
+      Application.logoAndTitle.click()
+      expect(Path.routes.current).toBe(org.url());
+    });
+  });
 });
