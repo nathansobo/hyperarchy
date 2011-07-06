@@ -44,7 +44,7 @@ describe("Views.Pages.Election.CommentLi", function() {
       describe("when the destroy button is clicked", function() {
         it("destroys the comment", function() {
           useFakeServer();
-          commentLi.destroyLink.click();
+          commentLi.destroyButton.click();
           expect(Server.destroys.length).toBe(1);
           expect(Server.lastDestroy.record).toBe(comment);
         });

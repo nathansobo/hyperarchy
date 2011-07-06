@@ -373,13 +373,13 @@ describe("Views.Pages.Election", function() {
 
           editableByCurrentUser = false;
           Application.currentUser(user1);
-          expect(electionPage.editLink).toBeHidden();
-          expect(electionPage.destroyLink).toBeHidden();
+          expect(electionPage.editButton).toBeHidden();
+          expect(electionPage.destroyButton).toBeHidden();
 
           editableByCurrentUser = true;
           Application.currentUser(user2);
-          expect(electionPage.editLink).toBeVisible();
-          expect(electionPage.destroyLink).toBeVisible();
+          expect(electionPage.editButton).toBeVisible();
+          expect(electionPage.destroyButton).toBeVisible();
         });
       });
 
@@ -387,13 +387,13 @@ describe("Views.Pages.Election", function() {
         it("only shows the edit and destroy buttons if the current user can edit", function() {
           editableByCurrentUser = false;
           electionPage.election(election2);
-          expect(electionPage.editLink).toBeHidden();
-          expect(electionPage.destroyLink).toBeHidden();
+          expect(electionPage.editButton).toBeHidden();
+          expect(electionPage.destroyButton).toBeHidden();
 
           editableByCurrentUser = true;
           electionPage.election(election);
-          expect(electionPage.editLink).toBeVisible();
-          expect(electionPage.destroyLink).toBeVisible();
+          expect(electionPage.editButton).toBeVisible();
+          expect(electionPage.destroyButton).toBeVisible();
         });
       });
     });
@@ -404,7 +404,7 @@ describe("Views.Pages.Election", function() {
 
         election.remotelyUpdated({details: "and sometimes Y"});
 
-        electionPage.editLink.click();
+        electionPage.editButton.click();
         expectFieldsVisible();
         expect(electionPage.editableBody[0]).toBe(document.activeElement);
 
@@ -412,13 +412,13 @@ describe("Views.Pages.Election", function() {
         expect(electionPage.editableDetails.val()).toBe(election.details());
         expect(electionPage.charsRemaining.text()).toBe((140 - election.body().length).toString());
 
-        electionPage.cancelEditLink.click();
+        electionPage.canceleditButton.click();
         expectFieldsHidden();
         expectColumnTopCorrectlyAdjusted();
       });
 
       it("hides the editable fields when the election changes", function() {
-        electionPage.editLink.click();
+        electionPage.editButton.click();
         expectFieldsVisible();
 
         electionPage.election(election2);
@@ -446,12 +446,12 @@ describe("Views.Pages.Election", function() {
         it("shows the details if they aren't blank and hides them otherwise", function() {
           electionPage.editableBody.val("aoeu");
           electionPage.editableDetails.val("");
-          electionPage.updateLink.click();
+          electionPage.updateButton.click();
           Server.lastUpdate.simulateSuccess();
           expect(electionPage.details).toBeHidden();
 
           electionPage.editableDetails.val("aoeuaoeu");
-          electionPage.updateLink.click();
+          electionPage.updateButton.click();
           Server.lastUpdate.simulateSuccess();
           expect(electionPage.details).toBeVisible();
         });
@@ -462,7 +462,7 @@ describe("Views.Pages.Election", function() {
       var updates;
 
       beforeEach(function() {
-        electionPage.editLink.click();
+        electionPage.editButton.click();
         updates = {
           body: "Relish",
           details: "That green stuff..."
@@ -474,7 +474,7 @@ describe("Views.Pages.Election", function() {
 
       describe("if the body is not blank and not too long", function() {
         it("updates the record's body and details on the server and hides the form", function() {
-          electionPage.updateLink.click();
+          electionPage.updateButton.click();
 
           expect(Server.updates.length).toBe(1);
 
@@ -491,7 +491,7 @@ describe("Views.Pages.Election", function() {
       describe("if the body is blank", function() {
         it("does not save the election or hide the fields", function() {
           electionPage.editableBody.val("    ");
-          electionPage.updateLink.click();
+          electionPage.updateButton.click();
           expect(Server.updates.length).toBe(0);
           expectFieldsVisible();
         });
@@ -504,7 +504,7 @@ describe("Views.Pages.Election", function() {
             longBody += "X"
           });
           electionPage.editableBody.val(longBody);
-          electionPage.updateLink.click();
+          electionPage.updateButton.click();
           expect(Server.updates.length).toBe(0);
           expectFieldsVisible();
         });
@@ -518,7 +518,7 @@ describe("Views.Pages.Election", function() {
           return confirmValue;
         });
 
-        electionPage.destroyLink.click();
+        electionPage.destroyButton.click();
 
         expect(window.confirm).toHaveBeenCalled();
         expect(Server.destroys.length).toBe(0);
@@ -526,7 +526,7 @@ describe("Views.Pages.Election", function() {
         window.confirm.reset();
         confirmValue = true;
 
-        electionPage.destroyLink.click();
+        electionPage.destroyButton.click();
 
         expect(window.confirm).toHaveBeenCalled();
         expect(Server.destroys.length).toBe(1);
@@ -585,7 +585,7 @@ describe("Views.Pages.Election", function() {
 
       describe("when the edit button is clicked or the elastic textarea resizes", function() {
         it("calls #adjustColumnTop after assigning it to the body div", function() {
-          electionPage.editLink.click();
+          electionPage.editButton.click();
           expectColumnTopCorrectlyAdjusted();
 
           electionPage.editableBody.trigger('elastic');
@@ -626,7 +626,7 @@ describe("Views.Pages.Election", function() {
 
       describe("when showing or hiding the editable details", function() {
         it("adjusts comments to fill remaining vertical space", function() {
-          electionPage.editLink.click();
+          electionPage.editButton.click();
           expectCommentsToHaveFullHeight();
           expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
         });
@@ -634,7 +634,7 @@ describe("Views.Pages.Election", function() {
 
       describe("when elastic is triggered on the or the body editable details", function() {
         it("adjusts comments to fill remaining vertical space", function() {
-          electionPage.editLink.click();
+          electionPage.editButton.click();
           expectCommentsToHaveFullHeight();
           expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
 
@@ -673,20 +673,20 @@ describe("Views.Pages.Election", function() {
   function expectFieldsVisible() {
     expect(electionPage.editableBody).toBeVisible();
     expect(electionPage.editableDetails).toBeVisible();
-    expect(electionPage.cancelEditLink).toBeVisible();
-    expect(electionPage.updateLink).toBeVisible();
-    expect(electionPage.editLink).toBeHidden();
+    expect(electionPage.canceleditButton).toBeVisible();
+    expect(electionPage.updateButton).toBeVisible();
+    expect(electionPage.editButton).toBeHidden();
     expect(electionPage.body).toBeHidden();
     expect(electionPage.details).toBeHidden();
-    expect(electionPage.destroyLink).toBeHidden();
+    expect(electionPage.destroyButton).toBeHidden();
   }
 
   function expectFieldsHidden() {
     expect(electionPage.editableBody).toBeHidden();
     expect(electionPage.editableDetails).toBeHidden();
-    expect(electionPage.cancelEditLink).toBeHidden();
-    expect(electionPage.updateLink).toBeHidden();
-    expect(electionPage.editLink).toBeVisible();
+    expect(electionPage.canceleditButton).toBeHidden();
+    expect(electionPage.updateButton).toBeHidden();
+    expect(electionPage.editButton).toBeVisible();
     expect(electionPage.body).toBeVisible();
     expect(electionPage.details).toBeVisible();
   }

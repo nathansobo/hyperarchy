@@ -52,7 +52,7 @@ describe("Views.Pages.Election.Comments", function() {
           expect(commentsView.textarea.height()).toBeGreaterThan(originalTextareaHeight);
 
 
-          commentsView.createLink.click();
+          commentsView.createButton.click();
           expect(commentsView.textarea.val()).toBe('');
           expect(commentsView.textarea.height()).toBe(originalTextareaHeight);
 

@@ -2,9 +2,7 @@ describe("Views.Layout.AccountMenu", function() {
   var accountMenu;
   beforeEach(function() {
     renderLayout();
-
-    $("#jasmine_content").html(window.Application = Views.Layout.toView());
-    Application.attach();
+    Application.currentUser(User.createFromRemote({id: 1}));
     accountMenu = Application.accountMenu;
     expect(accountMenu).toExist();
   });
@@ -56,7 +54,14 @@ describe("Views.Layout.AccountMenu", function() {
       simulateAjaxSuccess();
 
       expect(Application.reload).toHaveBeenCalled();
+    });
+  });
 
+  describe("when the account preferences link is clicked", function() {
+    it("navigates to the account page", function() {
+      spyOn(Application, 'showPage');
+      accountMenu.dropdownMenu.accountLink.click();
+      expect(Path.routes.current).toBe('/account');
     });
   });
 });

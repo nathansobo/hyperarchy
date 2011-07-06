@@ -2,7 +2,7 @@ _.constructor('Views.Pages.Election.CommentLi', Monarch.View.Template, {
   content: function() { with(this.builder) {
     li({'class': "comment"}, function() {
       subview('avatar', Views.Components.Avatar, {imageSize: 34});
-      a({'class': "destroy"}, "×").ref('destroyLink').click('destroy');
+      a({'class': "destroy"}, "×").ref('destroyButton').click('destroy');
       div({'class': "date"}).ref('createdAt');
       div({'class': "text"}, function() {
         div({'class': "name"}).ref('creatorName');

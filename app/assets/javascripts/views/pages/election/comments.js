@@ -10,7 +10,7 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
 
       div({'class': "textarea-and-button"}, function() {
         textarea().ref('textarea').bind('keydown', 'return', 'create');
-        a({'class': "create button"}, "Add Comment").ref('createLink').click('create');
+        a({'class': "create button"}, "Add Comment").ref('createButton').click('create');
         div({'class': "clearfix"});
       }).ref('textareaAndButton');
     });

@@ -48,7 +48,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     it("hides the form if it is showing, even if the candidate does not change", function() {
       candidateDetails.candidate(candidate);
 
-      candidateDetails.editLink.click();
+      candidateDetails.editButton.click();
 
       expect(candidateDetails.form).toBeVisible();
       expect(candidateDetails.nonEditableContent).toBeHidden();
@@ -79,15 +79,15 @@ describe("Views.Pages.Election.CandidateDetails", function() {
         currentUserCanEdit = false;
         candidateDetails.candidate(otherCandidate);
         expect(candidateDetails).not.toHaveClass('mutable');
-        expect(candidateDetails.editLink).toBeHidden();
-        expect(candidateDetails.destroyLink).toBeHidden();
+        expect(candidateDetails.editButton).toBeHidden();
+        expect(candidateDetails.destroyButton).toBeHidden();
 
 
         currentUserCanEdit = true;
         candidateDetails.candidate(candidate);
         expect(candidateDetails).toHaveClass('mutable');
-        expect(candidateDetails.editLink).toBeVisible();
-        expect(candidateDetails.destroyLink).toBeVisible();
+        expect(candidateDetails.editButton).toBeVisible();
+        expect(candidateDetails.destroyButton).toBeVisible();
       });
     });
 
@@ -97,13 +97,13 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
         currentUserCanEdit = false;
         Application.currentUser(otherUser);
-        expect(candidateDetails.editLink).toBeHidden();
-        expect(candidateDetails.destroyLink).toBeHidden();
+        expect(candidateDetails.editButton).toBeHidden();
+        expect(candidateDetails.destroyButton).toBeHidden();
 
         currentUserCanEdit = true;
         Application.currentUser(creator);
-        expect(candidateDetails.editLink).toBeVisible();
-        expect(candidateDetails.destroyLink).toBeVisible();
+        expect(candidateDetails.editButton).toBeVisible();
+        expect(candidateDetails.destroyButton).toBeVisible();
       });
     });
   });
@@ -117,14 +117,14 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       var now = new Date();
       spyOn(window, 'Date').andReturn(now);
 
-      expect(candidateDetails.createLink).toBeHidden();
+      expect(candidateDetails.createButton).toBeHidden();
       candidateDetails.showNewForm();
       expect(candidateDetails.form).toBeVisible();
       expect(candidateDetails.editableBody.val()).toBe('');
       expect(candidateDetails.editableDetails.val()).toBe('');
-      expect(candidateDetails.createLink).toBeVisible();
-      expect(candidateDetails.cancelEditLink).toBeHidden();
-      expect(candidateDetails.updateLink).toBeHidden();
+      expect(candidateDetails.createButton).toBeVisible();
+      expect(candidateDetails.canceleditButton).toBeHidden();
+      expect(candidateDetails.updateButton).toBeHidden();
       expect(candidateDetails.comments).toBeHidden();
 
       expect(candidateDetails.avatar.user()).toBe(Application.currentUser());
@@ -134,9 +134,9 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       candidateDetails.candidate(candidate);
 
       expect(candidateDetails.form).toBeHidden();
-      expect(candidateDetails.createLink).toBeHidden();
-      expect(candidateDetails.cancelEditLink).toBeHidden();
-      expect(candidateDetails.updateLink).toBeHidden();
+      expect(candidateDetails.createButton).toBeHidden();
+      expect(candidateDetails.canceleditButton).toBeHidden();
+      expect(candidateDetails.updateButton).toBeHidden();
       expect(candidateDetails.comments).toBeVisible();
     });
   });
@@ -160,7 +160,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     describe("when the current user is a member", function() {
       describe("when the body field is filled in", function() {
         it("creates a new candidates with the given body and details on the server and hides the form", function() {
-          candidateDetails.createLink.click();
+          candidateDetails.createButton.click();
 
           expect(Server.creates.length).toBe(1);
 
@@ -180,7 +180,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
         it("does nothing", function() {
           spyOn(History, 'pushState');
           candidateDetails.editableBody.val('                  ');
-          candidateDetails.createLink.click();
+          candidateDetails.createButton.click();
           expect(Server.creates.length).toBe(0);
           expect(History.pushState).not.toHaveBeenCalled();
         });
@@ -204,7 +204,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       });
 
       it("prompts for signup, and creates a candidate only if they sign up", function() {
-        candidateDetails.createLink.click();
+        candidateDetails.createButton.click();
 
         expect(Server.creates.length).toBe(0);
         expect(Application.signupForm).toBeVisible();
@@ -246,7 +246,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     });
 
     it("updates the candidate when the edit form is showing", function() {
-      candidateDetails.editLink.click();
+      candidateDetails.editButton.click();
       candidateDetails.editableBody.val("Blah");
       candidateDetails.editableBody.trigger({ type : 'keydown', which : 13 });
       expect(Server.updates.length).toBe(1);
@@ -258,11 +258,11 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.form).toBeHidden();
       expect(candidateDetails.nonEditableContent).toBeVisible();
 
-      candidateDetails.editLink.click();
+      candidateDetails.editButton.click();
 
       expect(candidateDetails.form).toBeVisible();
-      expect(candidateDetails.updateLink).toBeVisible();
-      expect(candidateDetails.cancelEditLink).toBeVisible();
+      expect(candidateDetails.updateButton).toBeVisible();
+      expect(candidateDetails.canceleditButton).toBeVisible();
       expect(candidateDetails.nonEditableContent).toBeHidden();
 
       expect(candidateDetails.editableBody.val()).toBe(candidate.body());
@@ -270,11 +270,11 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.charsRemaining.text()).toBe((140 - candidate.body().length).toString());
       expect(candidateDetails.editableDetails.val()).toBe(candidate.details());
 
-      candidateDetails.cancelEditLink.click();
+      candidateDetails.canceleditButton.click();
 
       expect(candidateDetails.form).toBeHidden();
-      expect(candidateDetails.updateLink).toBeHidden();
-      expect(candidateDetails.cancelEditLink).toBeHidden();
+      expect(candidateDetails.updateButton).toBeHidden();
+      expect(candidateDetails.canceleditButton).toBeHidden();
       expect(candidateDetails.nonEditableContent).toBeVisible();
     });
   });
@@ -284,7 +284,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
     beforeEach(function() {
       useFakeServer();
-      candidateDetails.editLink.click();
+      candidateDetails.editButton.click();
       fieldValues = {
         body: "Relish",
         details: "That green stuff..."
@@ -295,7 +295,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     });
 
     it("updates the record's body and details on the server and hides the form", function() {
-      candidateDetails.updateLink.click();
+      candidateDetails.updateButton.click();
   
       expect(Server.updates.length).toBe(1);
 
@@ -317,7 +317,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     it("does not allow a blank body", function() {
       spyOn(History, 'pushState');
       candidateDetails.editableBody.val('  ');
-      candidateDetails.updateLink.click();
+      candidateDetails.updateButton.click();
       expect(Server.updates.length).toBe(0);
       expect(History.pushState).not.toHaveBeenCalled();
     });
@@ -330,7 +330,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
       spyOn(History, 'pushState');
       candidateDetails.editableBody.val(longBody);
-      candidateDetails.updateLink.click();
+      candidateDetails.updateButton.click();
       expect(Server.updates.length).toBe(0);
       expect(History.pushState).not.toHaveBeenCalled();
     });
@@ -345,7 +345,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       it("deletes the candidate", function() {
         spyOn(window, 'confirm').andReturn(true);
 
-        candidateDetails.destroyLink.click();
+        candidateDetails.destroyButton.click();
 
         expect(Server.destroys.length).toBe(1);
         expect(Server.lastDestroy.record).toBe(candidate);
@@ -356,7 +356,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       it("does not delete the candidate", function() {
         spyOn(window, 'confirm').andReturn(false);
 
-        candidateDetails.destroyLink.click();
+        candidateDetails.destroyButton.click();
 
         expect(Server.destroys.length).toBe(0);
       });
@@ -395,10 +395,10 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
     describe("when the form is shown and hidden", function() {
       it("adjusts the comments to fill the remaining available height", function() {
-        candidateDetails.editLink.click();
+        candidateDetails.editButton.click();
         expectCommentsToHaveFullHeight();
         
-        candidateDetails.cancelEditLink.click();
+        candidateDetails.canceleditButton.click();
         expectCommentsToHaveFullHeight();
         expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
       });
@@ -418,7 +418,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
     describe("when the body or details textareas resize elastically", function() {
       it("adjusts the comments to fill the remaining available height", function() {
-        candidateDetails.editLink.click();
+        candidateDetails.editButton.click();
 
         candidateDetails.editableBody.val(longText);
         candidateDetails.editableBody.keyup();

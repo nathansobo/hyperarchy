@@ -35,10 +35,10 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     div({'class': 'details'}).ref('details');
     textarea({name: 'details', 'class': "details"}).ref("editableDetails");
 
-    a({'class': 'update button'}, "Save").ref('updateLink').click('update');
-    a({'class': 'cancel button'}, "Cancel").ref('cancelEditLink').click('cancelEdit');
-    a({'class': "destroy button"}, "Delete").ref('destroyLink').click('destroy');
-    a({'class': "edit button"}, "Edit").ref('editLink').click('edit');
+    a({'class': 'update button'}, "Save").ref('updateButton').click('update');
+    a({'class': 'cancel button'}, "Cancel").ref('canceleditButton').click('cancelEdit');
+    a({'class': "destroy button"}, "Delete").ref('destroyButton').click('destroy');
+    a({'class': "edit button"}, "Edit").ref('editButton').click('edit');
 
     div({'class': 'creator'}, function() {
       subview('avatar', Views.Components.Avatar, {imageSize: 34});

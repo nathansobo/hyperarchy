@@ -68,7 +68,7 @@ class User < Prequel::Record
   end 
 
   def update_whitelist
-    list = [:first_name, :last_name, :email_address]
+    list = [:first_name, :last_name, :email_address, :email_enabled]
     list.push(:admin) if current_user.admin?
     list
   end

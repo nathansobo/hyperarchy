@@ -10,8 +10,8 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       div(function() {
         div({'class': "body"}).ref("body");
         div({'class': "details"}).ref("details");
-        a({'class': "edit button"}, "Edit").ref('editLink').click('edit');
-        a({'class': "destroy button"}, "Delete").ref('destroyLink').click('destroy');
+        a({'class': "edit button"}, "Edit").ref('editButton').click('edit');
+        a({'class': "destroy button"}, "Delete").ref('destroyButton').click('destroy');
       }).ref('nonEditableContent');
 
 
@@ -22,9 +22,9 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         textarea({name: 'details', 'class': "details", tabindex: 102}).ref("editableDetails");
       }).submit('update')
         .ref('form');
-      a({'class': 'update button', tabindex: 103}, "Save").ref('updateLink').click('update');
-      a({'class': 'cancel button', tabindex: 104}, "Cancel").ref('cancelEditLink').click('cancelEdit');
-      a({'class': 'create button'}, "Add Answer").ref('createLink').click('create');
+      a({'class': 'update button', tabindex: 103}, "Save").ref('updateButton').click('update');
+      a({'class': 'cancel button', tabindex: 104}, "Cancel").ref('canceleditButton').click('cancelEdit');
+      a({'class': 'create button'}, "Add Answer").ref('createButton').click('create');
 
       div({'class': "creator"}, function() {
         subview('avatar', Views.Components.Avatar, {imageSize: 34});
@@ -102,8 +102,8 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
     edit: function() {
       this.nonEditableContent.hide();
       this.form.show();
-      this.updateLink.show();
-      this.cancelEditLink.show();
+      this.updateButton.show();
+      this.canceleditButton.show();
       if (this.candidate()) {
         this.editableBody.val(this.candidate().body()).keyup();
         this.editableDetails.val(this.candidate().details()).keyup();
@@ -118,9 +118,9 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       this.edit();
       this.editableBody.val('');
       this.editableDetails.val('');
-      this.cancelEditLink.hide();
-      this.updateLink.hide();
-      this.createLink.show();
+      this.canceleditButton.hide();
+      this.updateButton.hide();
+      this.createButton.show();
       this.avatar.user(Application.currentUser());
       this.creatorName.text(Application.currentUser().fullName());
       return this.createdAt.text($.PHPDate("M j, Y @ g:ia", new Date()));
@@ -130,9 +130,9 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       this.nonEditableContent.show();
       this.comments.show();
       this.form.hide();
-      this.updateLink.hide();
-      this.cancelEditLink.hide();
-      this.createLink.hide();
+      this.updateButton.hide();
+      this.canceleditButton.hide();
+      this.createButton.hide();
       this.adjustCommentsHeight();
     },
 

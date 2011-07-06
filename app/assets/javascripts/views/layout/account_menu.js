@@ -14,7 +14,9 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
               click('logout');
           });
           li(function() {
-            a("Account Preferences")
+            a("Account Preferences").ref('accountLink').click(function() {
+              History.pushState(null, null, '/account');
+            });
           });
         }}
       });

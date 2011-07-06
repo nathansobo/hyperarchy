@@ -90,8 +90,10 @@ _.constructor("Views.Layout", View.Template, {
 
     showPage: function(name, params) {
       this.lightboxes.children().hide();
-      this.organizationPage.hide();
-      this.electionPage.hide();
+      this.body.children().each(function() {
+        $(this).view().hide();
+      });
+
       var parsedParams = {};
       _.each(params, function(value, key) {
         parsedParams[key] = (value !== 'new') ? parseInt(value) : value;
