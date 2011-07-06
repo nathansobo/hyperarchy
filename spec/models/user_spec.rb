@@ -155,6 +155,7 @@ module Models
           m2 = make_membership('never', 'hourly', 'never', 'never')
           m3 = make_membership('never', 'never', 'hourly', 'never')
           m4 = make_membership('never', 'never', 'never', 'hourly')
+          m4b = make_membership('never', 'never', 'never', 'hourly', :user => m4.user) # ensure distinct users
           guest_m = make_membership('hourly', 'never', 'never', 'never')
           guest_m.user.update!(:guest => true)
           disabled_m = make_membership('hourly', 'never', 'never', 'never')
@@ -162,16 +163,16 @@ module Models
           
           make_membership('never', 'never', 'never', 'never')
 
-          User.users_to_notify('hourly').all.map(&:id).should == [m1, m2, m3, m4].map(&:user).map(&:id)
+          User.users_to_notify('hourly').all.map(&:id).should =~ [m1, m2, m3, m4].map(&:user).map(&:id)
         end
 
-        def make_membership(elections, candidates, comments_on_ranked, comments_on_own)
-          Membership.make(
+        def make_membership(elections, candidates, comments_on_ranked, comments_on_own, additional_attrs = {})
+          Membership.make(additional_attrs.merge(
             :notify_of_new_elections => elections,
             :notify_of_new_candidates => candidates,
             :notify_of_new_comments_on_own_candidates => comments_on_ranked,
             :notify_of_new_comments_on_ranked_candidates => comments_on_own
-          )
+          ))
         end
 
         describe "#memberships_to_notify(period)" do

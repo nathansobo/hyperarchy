@@ -41,7 +41,7 @@ class User < Prequel::Record
       :notify_of_new_candidates => period,
       :notify_of_new_comments_on_own_candidates => period,
       :notify_of_new_comments_on_ranked_candidates => period
-    ).join_through(User).where(:guest => false, :email_enabled => true)
+    ).join_through(User).where(:guest => false, :email_enabled => true).distinct
   end
 
   def self.default_guest
