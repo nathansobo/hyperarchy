@@ -30,6 +30,10 @@ describe("Views.Pages.Account", function() {
       expect(accountPage.emailEnabled.attr('checked')).toBe(currentUser.emailEnabled());
       expect(accountPage.membershipPreferences.relation()).toBe(currentUser.memberships());
     });
+
+    it("assigns the current organization to the user's default org", function() {
+      expect(Application.currentOrganization()).toBe(currentUser.defaultOrganization());
+    });
   });
 
   describe("editing and saving of details", function() {
