@@ -1,11 +1,13 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Account", function() {
-  var currentUser, accountPage;
+  var currentUser, membership, organization, accountPage;
 
   beforeEach(function() {
     renderLayout();
+    organization = Organization.createFromRemote({id: 1, name: "Bad Bob's"});
     currentUser = User.createFromRemote({id: 1, firstName: "First", lastName: "Last", emailAddress: "email@example.com", emailEnabled: true});
+    membership = currentUser.memberships().createFromRemote({id: 1, organizationId: organization.id()});
     Application.showPage('account', {userId: 1})
     accountPage = Application.accountPage;
   });
@@ -80,12 +82,16 @@ describe("Views.Pages.Account", function() {
       Server.lastUpdate.simulateSuccess();
 
       expect(currentUser.emailEnabled()).toBeFalsy();
+      expect(accountPage.membershipPreferences).toHaveClass('disabled');
+      expect(accountPage.find('select')).toMatchSelector(':disabled');
 
       accountPage.emailEnabled.click();
       expect(Server.updates.length).toBe(1);
       Server.lastUpdate.simulateSuccess();
 
       expect(currentUser.emailEnabled()).toBeTruthy();
+      expect(accountPage.membershipPreferences).not.toHaveClass('disabled');
+      expect(accountPage.find('select')).not.toMatchSelector(':disabled');
     });
   });
 });

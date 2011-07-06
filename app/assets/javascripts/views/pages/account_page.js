@@ -15,8 +15,8 @@ _.constructor('Views.Pages.Account', Monarch.View.Template, {
 
       div({id: "email-preferences"}, function() {
         h2("Email Preferences");
-        input({type: "checkbox", name: "emailEnabled"}).ref('emailEnabled').change('updateEmailEnabled');
-        label({'for': "emailEnabled"}, "I want to receive email (global setting)");
+        input({type: "checkbox", name: "emailEnabled", id: "email-enabled"}).ref('emailEnabled').change('updateEmailEnabled');
+        label({'for': "email-enabled"}, "I want to receive email (global setting)");
 
         subview('membershipPreferences', Views.Components.SortedList, {
           buildElement: function(membership) {
@@ -68,7 +68,18 @@ _.constructor('Views.Pages.Account', Monarch.View.Template, {
     },
 
     updateEmailEnabled: function() {
-      this.user().update({emailEnabled: this.emailEnabled.attr('checked')});
+      this.user().update({emailEnabled: this.emailEnabled.attr('checked')})
+        .success(this.hitch('enableOrDisableMembershipPreferences'));
+    },
+
+    enableOrDisableMembershipPreferences: function() {
+      if (this.user().emailEnabled()) {
+        this.membershipPreferences.removeClass('disabled');
+        this.membershipPreferences.find('select').attr('disabled', false);
+      } else {
+        this.membershipPreferences.addClass('disabled');
+        this.membershipPreferences.find('select').attr('disabled', true);
+      }
     }
   }
 });

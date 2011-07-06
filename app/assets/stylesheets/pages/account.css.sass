@@ -40,15 +40,18 @@
 
     padding: 2 * $line-height
 
-    li
-      width: 600px
-      padding: $line-height
-      @include box-shadow(#333 1px 1px 5px)
-      margin-top: 2 * $line-height
+    ol
+      &.disabled
+        opacity: 0.5
+      li
+        width: 600px
+        padding: $line-height
+        @include box-shadow(#333 1px 1px 5px)
+        margin-top: 2 * $line-height
 
-      h3
-        font-size: 20px
-        font-weight: $semibold
-        margin-bottom: $line-height
-      .email-preference
-        text-align: right
+        h3
+          font-size: 20px
+          font-weight: $semibold
+          margin-bottom: $line-height
+        .email-preference
+          text-align: right
