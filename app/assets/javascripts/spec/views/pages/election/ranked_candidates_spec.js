@@ -1,12 +1,14 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Election.RankedCandidates", function() {
-  var electionPage, rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation, createOrUpdatePromise;
+  var organization, electionPage, rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation, createOrUpdatePromise;
   
   beforeEach(function() {
     currentUser = User.createFromRemote({id: 2, emailAddress: "foo@example.com"});
-    currentUser.memberships().createFromRemote({organizationId: 1});
-    election = Election.createFromRemote({id: 1, creatorId: 2, createdAt: 234234234, organizationId: 1});
+
+    organization = Organization.createFromRemote({id: 1})
+    currentUser.memberships().createFromRemote({organizationId: organization.id()});
+    election = Election.createFromRemote({id: 1, creatorId: 2, createdAt: 234234234, organizationId: organization.id()});
     candidate1 = election.candidates().createFromRemote({id: 1, body: "Candidate 1", createdAt: 1308352736162, creatorId: 2});
     candidate2 = election.candidates().createFromRemote({id: 2, body: "Candidate 2", createdAt: 1308352736162, creatorId: 2});
     candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3", createdAt: 1308352736162, creatorId: 2});
@@ -289,6 +291,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           existingUser = currentUser;
           enableAjax();
           unspy(rankedCandidates, 'currentUserCanRank');
+
+          organization.remotelyDestroyed(); // don't conflict with org 1
           uploadRepository();
           fetchInitialRepositoryContents();
 
