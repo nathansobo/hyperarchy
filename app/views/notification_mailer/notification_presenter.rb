@@ -52,12 +52,12 @@ module Views
         membership_presenters.length > 1
       end
 
-      def to_s
+      def to_s(template)
         lines = []
         membership_presenters.each do |presenter|
           lines.push(presenter.organization.name) if multiple_memberships?
           lines.push("")
-          presenter.add_lines(lines)
+          presenter.add_lines(template, lines)
           lines.push("", "", "")
         end
         lines.join("\n")

@@ -38,13 +38,13 @@ module Views
         candidate_presenters_by_candidate.values.sort_by(&:position)
       end
 
-      def add_lines(lines)
+      def add_lines(template, lines)
         lines.push("Question:")
         lines.push("#{election.body} -- #{election.creator.full_name}")
-        lines.push("view at: #{election.full_url}")
+        lines.push("view at: #{template.election_url(election)}")
         lines.push("")
         candidate_presenters.each do |presenter|
-          presenter.add_lines(lines)
+          presenter.add_lines(template, lines)
         end
         lines.push("--------------------", "")
       end

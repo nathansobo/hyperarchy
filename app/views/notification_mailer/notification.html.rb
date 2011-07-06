@@ -12,7 +12,7 @@ module Views
               end
               div :style => "margin-top: 20px; width: 550px;" do
                 rawtext "To change the frequency of these notifications or unsubscribe entirely, "
-                a "visit your account preferences page", :href => "https://#{HTTP_HOST}/#view=account", :style => "color: #000094; white-space: nowrap;"
+                a "visit your account preferences page", :href => account_url, :style => "color: #000094; white-space: nowrap;"
                 text "."
               end
             end
@@ -37,7 +37,7 @@ module Views
 
         div :style => "background: #eee; border: 1px solid #DDD; margin-bottom: 10px; max-width: 500px; color: #{color};" do
           div :style => "margin: 8px;" do
-            a "View Question", :href => election.full_url, :style => "float: right; padding: 5px 15px; background: white; margin-left: 10px; color: #000094;"
+            a "View Question", :href => election_url(election), :style => "float: right; padding: 5px 15px; background: white; margin-left: 10px; color: #000094;"
             div election.body, :style => "padding: 0px; padding-top: 5px;"
             div :style => "clear: both;"
           end

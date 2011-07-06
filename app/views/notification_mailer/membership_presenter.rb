@@ -98,11 +98,11 @@ module Views
         new_election_count == 0 && new_candidate_count == 0 && new_comment_count == 0
       end
 
-      def add_lines(lines)
+      def add_lines(template, lines)
         lines.push(headline, "")
 
         election_presenters.each do |presenter|
-          presenter.add_lines(lines)
+          presenter.add_lines(template, lines)
         end
       end
     end

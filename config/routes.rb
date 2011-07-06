@@ -1,10 +1,11 @@
 Hyperarchy::Application.routes.draw do
   root :to => 'home#show'
-  match 'organizations/:id' => 'home#show'
-  match 'organizations/:id/elections/new' => 'home#show'
-  match 'elections/:id' => 'home#show'
-  match 'elections/:id/candidates/:selected_candidate_id' => 'home#show'
-  match 'elections/:id/votes/:selected_voter_id' => 'home#show'
+  match 'organizations/:id' => 'home#show', :as => "organanization"
+  match 'organizations/:id/elections/new' => 'home#show', :as => "new_organization_election"
+  match 'elections/:id' => 'home#show', :as => "election"
+  match 'elections/:id/candidates/:selected_candidate_id' => 'home#show', :as => "election_candidate"
+  match 'elections/:id/votes/:selected_voter_id' => 'home#show', :as => "election_voter"
+  match 'account' => 'home#show', :as => "account"
 
   match 'login' => 'sessions#new', :via => 'get', :as => "login"
   match 'login' => 'sessions#create', :via => 'post', :as => "login"
@@ -22,6 +23,11 @@ Hyperarchy::Application.routes.draw do
 
   post '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#create'
   delete '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#destroy'
+
+  resources :organizations do
+    resources :elections
+  end
+
 
   resources :users
   resources :memberships do

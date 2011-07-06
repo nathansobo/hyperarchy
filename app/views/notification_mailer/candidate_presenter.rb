@@ -13,7 +13,7 @@ module Views
         new_comments.push(comment)
       end
 
-      def add_lines(lines)
+      def add_lines(template, lines)
         lines.push("Answer:")
         lines.push(candidate.body)
         lines.push("suggested by #{candidate.creator.full_name}")
