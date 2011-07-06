@@ -47,7 +47,15 @@ describe("Views.Layout", function() {
     });
   });
 
-  describe("#organizationId", function() {
+  describe("#currentOrganization / #currentOrganizationId", function() {
+    var organization1, organization2;
+
+    beforeEach(function() {
+      organization1 = Organization.createFromRemote({id: 1});
+      organization2 = Organization.createFromRemote({id: 2});
+    });
+
+
     describe("when the socket client has finished connecting", function() {
       beforeEach(function() {
         socketClient.transport.sessionid = 'fake-session-id';
@@ -55,10 +63,10 @@ describe("Views.Layout", function() {
       });
 
       it("subscribes to the organization's channel", function() {
-        Application.currentOrganizationId(22);
+        Application.currentOrganizationId(organization2.id());
         expect(jQuery.ajax).toHaveBeenCalledWith({
           type : 'post',
-          url : '/channel_subscriptions/organizations/22',
+          url : '/channel_subscriptions/organizations/' + organization2.id(),
           data : { session_id : 'fake-session-id' },
           success: undefined,
           dataType: undefined
@@ -68,7 +76,7 @@ describe("Views.Layout", function() {
 
     describe("when the socket client has not yet connected", function() {
       it("subscribes to the organization's channel after the client connects", function() {
-        Application.currentOrganizationId(22);
+        Application.currentOrganizationId(organization2.id());
 
         expect(jQuery.ajax).not.toHaveBeenCalled();
 
@@ -77,12 +85,19 @@ describe("Views.Layout", function() {
 
         expect(jQuery.ajax).toHaveBeenCalledWith({
           type : 'post',
-          url : '/channel_subscriptions/organizations/22',
+          url : '/channel_subscriptions/organizations/' + organization2.id(),
           data : { session_id : 'fake-session-id' },
           success: undefined,
           dataType: undefined
         });
       });
+    });
+
+    it("assigns currentOrganizationId when currentOrganization is assigned and vice versa", function() {
+      Application.currentOrganization(organization1);
+      expect(Application.currentOrganizationId()).toBe(organization1.id());
+      Application.currentOrganizationId(organization2.id());
+      expect(Application.currentOrganization()).toBe(organization2);
     });
   });
 

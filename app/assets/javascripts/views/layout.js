@@ -71,21 +71,23 @@ _.constructor("Views.Layout", View.Template, {
           $.post('/channel_subscriptions/organizations/' + currentOrganizationId, { session_id: sessionId });
         });
 
-        var org = this.currentOrganization();
-        if (!org) return;
-        if (org.social()) {
+        this.currentOrganization(Organization.find(currentOrganizationId));
+      }
+    },
+
+    currentOrganization: {
+      change: function(organization) {
+        if (!organization) return;
+        this.currentOrganizationId(organization.id());
+        if (organization.social()) {
           this.organizationNameSeparator.hide();
           this.organizationName.hide();
         } else {
           this.organizationNameSeparator.show();
           this.organizationName.show();
-          this.organizationName.bindText(org, 'name');
+          this.organizationName.bindText(organization, 'name');
         }
       }
-    },
-
-    currentOrganization: function() {
-      return Organization.find(this.currentOrganizationId());
     },
 
     showPage: function(name, params) {

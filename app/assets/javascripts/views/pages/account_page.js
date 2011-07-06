@@ -39,7 +39,7 @@ _.constructor('Views.Pages.Account', Monarch.View.Template, {
     params: {
       change: function(params) {
         var user = User.find(params.userId);
-        Application.currentOrganizationId(user.defaultOrganization().id());
+        Application.currentOrganization(user.defaultOrganization());
         this.user(user);
       }
     },
