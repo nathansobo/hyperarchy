@@ -1,11 +1,12 @@
 //= require spec/spec_helper
 
 describe("Routes", function() {
-  var defaultGuest, defaultOrganization;
+  var member, defaultGuest, defaultOrganization;
   beforeEach(function() {
     renderLayout();
     defaultOrganization = Organization.createFromRemote({id: 23});
-    defaultGuest = User.createFromRemote({id: 1});
+    defaultGuest = User.createFromRemote({id: 1, defaultGuest: true, guest: true});
+    member = User.createFromRemote({id: 2});
     spyOn(defaultGuest, 'defaultOrganization').andReturn(defaultOrganization);
     Application.currentUser(defaultGuest);
   });
@@ -96,6 +97,57 @@ describe("Routes", function() {
       expect(Application.electionPage.params()).toEqual({
         organizationId: 1,
         electionId: 'new'
+      });
+    });
+  });
+
+  describe("/account", function() {
+    describe("if the current user is not a guest", function() {
+      beforeEach(function() {
+        Application.currentUser(member);
+      });
+
+      it("shows only the accountPage and assigns its user", function() {
+        Application.organizationPage.show();
+        History.pushState(null, null, '/account');
+        expect(Application.organizationPage).toBeHidden();
+        expect(Application.accountPage).toBeVisible();
+        expect(Application.accountPage.params()).toEqual({userId: member.id()});
+      });
+    });
+
+    describe("if the current user is a guest", function() {
+      describe("if they log in / sign up at the prompt", function() {
+        it("shows the account page and assigns its params", function() {
+          Application.organizationPage.show();
+          History.pushState(null, null, '/account');
+          expect(Application.organizationPage).toBeVisible();
+
+          expect(Application.loginForm).toBeVisible();
+          Application.loginForm.emailAddress.val("dude@example.com");
+          Application.loginForm.password.val("wicked");
+          Application.loginForm.form.submit();
+          expect($.ajax).toHaveBeenCalled();
+          simulateAjaxSuccess({ current_user_id: member.id() });
+
+          expect(Application.organizationPage).toBeHidden();
+          expect(Application.accountPage).toBeVisible();
+          expect(Application.accountPage.params()).toEqual({userId: member.id()});
+        });
+      });
+
+      describe("if they cancel at the prompt", function() {
+        it("navigates them to their default organization", function() {
+          Application.organizationPage.show();
+          History.pushState(null, null, '/account');
+          expect(Application.organizationPage).toBeVisible();
+
+          expect(Application.loginForm).toBeVisible();
+          spyOn(Application, 'showPage');
+          Application.loginForm.close();
+
+          expect(Path.routes.current).toBe(defaultGuest.defaultOrganization().url());
+        });
       });
     });
   });

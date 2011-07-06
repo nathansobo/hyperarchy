@@ -14,6 +14,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     election = organization.elections().createFromRemote({id: 1, creatorId: 999, createdAt: 12});
     candidate = creator.candidates().createFromRemote({id: 1, electionId: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?", createdAt: 1308352736162});
 
+    Application.electionPage.show();
     Application.electionPage.showCandidateDetails();
 
     candidateDetails.candidate(candidate);

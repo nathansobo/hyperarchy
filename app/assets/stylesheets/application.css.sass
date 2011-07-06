@@ -14,6 +14,7 @@
 @import "lightboxes"
 @import "pages/election"
 @import "pages/organization"
+@import "pages/account"
 
 
 body.grid
@@ -25,6 +26,9 @@ body.grid
     @include baseline-grid-background($s1, transparentize(blue, .5))
     > *
       opacity: 0.5
+      
+  #gradient-background
+    display: none
 
 body.grid-offset
   background-position: 0 ($line-height / 2)
@@ -58,6 +62,7 @@ a
       text-decoration: underline
 .button
   @include background-image(linear-gradient(top, #f6f6f6, #eee))
+  cursor: pointer
   border: 1px solid #ccc
   text-align: center
   display: inline-block

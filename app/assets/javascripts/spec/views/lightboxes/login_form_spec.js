@@ -21,7 +21,8 @@ describe("Views.Lightboxes.LoginForm", function() {
     
     it("causes the form to be hidden if the url changes", function() {
       loginForm.show();
-      $(window).trigger('popstate');
+      spyOn(Application.organizationPage, 'params');
+      History.pushState(null, null, 'organizations/1');
       expect(loginForm).toBeHidden();
     });
     

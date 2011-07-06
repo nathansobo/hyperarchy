@@ -6,6 +6,7 @@ describe("Views.Pages.Election", function() {
     renderLayout();
     Application.height(700);
     electionPage = Application.electionPage;
+    electionPage.show();
   });
 
   describe("when the params hash is assigned", function() {

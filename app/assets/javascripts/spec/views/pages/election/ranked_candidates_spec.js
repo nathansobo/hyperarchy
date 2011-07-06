@@ -96,7 +96,6 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             ranking3Li.dragAbove(ranking2Li);
 
             expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 48);
-            console.debug();
           });
         });
 

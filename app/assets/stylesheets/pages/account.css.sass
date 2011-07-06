@@ -1,0 +1,38 @@
+#account
+  //padding: (2 * $line-height) $line-height
+
+  h2
+    font-size: $s1
+    margin-bottom: $line-height
+
+  #personal-details, #password-reset
+    width: 400px
+    display: inline-block
+    @include box-sizing('border-box')
+    padding: 2 * $line-height
+
+    label
+      font-size: $s0
+      margin-bottom: 0
+      display: block
+
+    input:not([type="submit"])
+      height: $line-height * 2
+      padding: ($line-height / 2 - 2)
+      display: block
+      width: 100%
+      margin: 0
+      margin-bottom: $line-height
+      font-size: $s0
+    input
+      padding: 0 inherit
+
+    .button
+      float: right
+      font-size: $s0
+      padding: ($line-height/2 - 1) $line-height
+      margin-top: 0
+
+
+  #email-preferences
+    padding: 2 * $line-height

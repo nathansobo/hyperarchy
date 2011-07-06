@@ -23,3 +23,21 @@ Path.map('/elections/:electionId/candidates/:candidateId').to(function() {
 Path.map('/elections/:electionId/votes/:voterId').to(function() {
   Application.showPage('election', this.params);
 });
+
+Path.map('/account').to(function() {
+  function showAccountPage() {
+    Application.showPage('account', {userId: Application.currentUserId()});
+  }
+
+  var currentUser = Application.currentUser();
+
+  if (currentUser.guest()) {
+    Application.promptLogin()
+      .success(showAccountPage)
+      .invalid(function() {
+        History.pushState(null, null, currentUser.defaultOrganization().url());
+      });
+  } else {
+    showAccountPage();
+  }
+});

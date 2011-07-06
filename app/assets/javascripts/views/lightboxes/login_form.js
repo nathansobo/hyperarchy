@@ -34,7 +34,6 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
     beforeShow: function($super) {
       $super();
       this.errors.hide();
-      $(window).one('popstate', this.hitch('hide'));
     },
 
     afterHide: function($super) {

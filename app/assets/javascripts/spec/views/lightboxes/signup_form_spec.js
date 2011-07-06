@@ -51,6 +51,7 @@ describe("Views.Lightboxes.SignupForm", function() {
     describe("when the fields are valid and the form is submitted", function() {
       it("creates a user and logs them in according to the information entered and hides the form", function() {
         fetchInitialRepositoryContents();
+        spyOn(Application, 'showPage');
         History.pushState(null, null, Organization.findSocial().url());
 
         var signupForm = Application.signupForm;
@@ -102,6 +103,7 @@ describe("Views.Lightboxes.SignupForm", function() {
     describe("when the organization section is visible and the organization name is specified", function() {
       it("signs them up and directs them to the main page of their new organization", function() {
         fetchInitialRepositoryContents();
+        spyOn(Application, 'showPage');
         History.pushState(null, null, Organization.findSocial().url());
 
         var signupForm = Application.signupForm;

@@ -15,6 +15,7 @@ _.constructor("Views.Layout", View.Template, {
         });
 
         div({id: "body"}, function() {
+          subview('accountPage', Views.Pages.Account);
           subview('organizationPage', Views.Pages.Organization);
           subview('electionPage', Views.Pages.Election);
         }).ref("body");
@@ -88,6 +89,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     showPage: function(name, params) {
+      this.lightboxes.children().hide();
       this.organizationPage.hide();
       this.electionPage.hide();
       var parsedParams = {};
@@ -144,6 +146,12 @@ _.constructor("Views.Layout", View.Template, {
       this.signupForm.one('cancel', onCancel);
 
       this.signupForm.show();
+      return promise;
+    },
+
+    promptLogin: function() {
+      var promise = this.promptSignup();
+      this.signupForm.loginFormLink.click();
       return promise;
     }
   }

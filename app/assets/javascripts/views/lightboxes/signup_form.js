@@ -55,12 +55,10 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
     },
 
     handleSuccess: function(promise, data) {
-      console.debug("success");
       this.hide();
 
       var newOrganizationId = data.new_organization_id;
       if (newOrganizationId) {
-        console.debug("new org id", newOrganizationId);
         History.pushState(null, null, Organization.find(newOrganizationId).url());
       }
 
