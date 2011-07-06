@@ -6,8 +6,13 @@ module Prequel
   class Record
     include RunLater::InstanceMethods
 
-    def self.raw_create(attributes)
+    def self.raw_create(attributes={})
       new(attributes).tap(&:raw_save)
+    end
+
+    def raw_update(attributes={})
+      soft_update(attributes)
+      raw_save
     end
 
     def raw_save

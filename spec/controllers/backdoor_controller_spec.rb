@@ -29,22 +29,30 @@ describe BackdoorController do
   end
 
   describe "#upload_repository" do
-    it "inserts the given records into the database after filling in their missing properties with blueprints" do
+    it "inserts / updates the given records after filling in their missing properties with blueprints" do
       freeze_time
+
+      existing_candidate = Candidate.make(:id => 2, :body => "Overwrite me!")
 
       records_json = {
         "candidates" => {
-          "1" => { "id" => 1, "election_id" => 1, "creator_id" => 2}
+          "1" => { "id" => 1, "election_id" => 1, "creator_id" => 2},
+          "2" => { "id" => 2, "body" => "La la" }
         }
       }.to_json
 
       post :upload_repository, :records => records_json
 
-      candidate = Candidate.find(1)
-      candidate.body.should_not be_blank
+      new_candidate = Candidate.find(1)
+      new_candidate.body.should_not be_blank
+
+      existing_candidate.reload.body.should == "La la"
 
       response_json.should == {
-        "candidates" => {"1" => candidate.wire_representation }
+        "candidates" => {
+          "1" => new_candidate.wire_representation,
+          "2" => existing_candidate.wire_representation
+        }
       }
     end
   end
