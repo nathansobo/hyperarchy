@@ -13,27 +13,29 @@ _.constructor('Views.Pages.Account', Monarch.View.Template, {
         input({type: "submit", value: "Save", 'class': "update button"}).ref('updateButton');
       }).ref('personalDetails').submit('update');
 
-//      div({id: "password-reset"}, function() {
-//        h2("Reset Your Password");
-//        label({'for': "old_password"}, "Old Password");
-//        input({name: "old_password", type: "password"}).ref('oldPassword');
-//        label("New Password");
-//        input({name: "password", type: "password"}).ref('password');
-//        label("Confirm New Password");
-//        input({name: "password_confirmation", type: "password"}).ref('passwordConfirmation');
-//
-//        input({type: "submit", value: "Change Password", 'class': "update button"});
-//      });
-
       div({id: "email-preferences"}, function() {
         h2("Email Preferences");
         input({type: "checkbox", name: "emailEnabled"}).ref('emailEnabled').change('updateEmailEnabled');
         label({'for': "emailEnabled"}, "I want to receive email (global setting)");
+
+        subview('membershipPreferences', Views.Components.SortedList, {
+          buildElement: function(membership) {
+            return Views.Pages.Account.MembershipPreferencesLi.toView({membership: membership});
+          }
+        });
       });
     });
   }},
 
   viewProperties: {
+    beforeShow: function() {
+      Application.addClass('normal-height');
+    },
+
+    afterHide: function() {
+      Application.removeClass('normal-height');
+    },
+
     params: {
       change: function(params) {
         this.user(User.find(params.userId));
@@ -45,6 +47,7 @@ _.constructor('Views.Pages.Account', Monarch.View.Template, {
         this.model(user);
         this.enableOrDisableUpdateButton();
         this.personalDetails.find('input').bind('keyup paste cut change', this.hitch('enableOrDisableUpdateButton'));
+        this.membershipPreferences.relation(user.memberships());
       }
     },
 
