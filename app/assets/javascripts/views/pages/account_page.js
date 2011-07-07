@@ -28,14 +28,6 @@ _.constructor('Views.Pages.Account', Monarch.View.Template, {
   }},
 
   viewProperties: {
-    beforeShow: function() {
-      Application.addClass('normal-height');
-    },
-
-    afterHide: function() {
-      Application.removeClass('normal-height');
-    },
-
     params: {
       change: function(params) {
         var user = User.find(params.userId);

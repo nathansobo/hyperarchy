@@ -1,0 +1,34 @@
+#organization-settings
+  padding: 2*$line-height
+
+  h2
+    font-size: $s1
+    margin-bottom: $line-height
+    
+  form
+    width: 400px
+    label, input
+      display: block
+
+    input, select
+      font-size: $s1
+      margin-bottom: $line-height
+
+    input[name="name"]
+      width: 100%
+    label[for="privacy"], input[name="privacy"]
+      display: inline
+    .button
+      float: right
+
+    margin-bottom: 2*$line-height
+
+  table
+    border: 1px solid #ccc
+    th, td
+      padding: $line-height/2
+    th
+      font-weight: $semibold
+    tbody
+      tr:nth-child(odd)
+        background: #eee

@@ -69,6 +69,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
   },
 
   viewProperties: {
+    fixedHeight: true,
+
     attach: function($super) {
       $super();
 

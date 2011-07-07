@@ -43,14 +43,6 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
       }
     },
 
-    beforeShow: function() {
-      Application.addClass('normal-height');
-    },
-
-    afterHide: function() {
-      Application.removeClass('normal-height');
-    },
-
     params: {
       change: function(params) {
         var organization = Organization.find(params.organizationId) || Organization.findSocial();

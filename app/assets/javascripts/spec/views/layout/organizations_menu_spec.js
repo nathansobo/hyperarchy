@@ -101,8 +101,6 @@ describe("Views.Layout.OrganizationsMenu", function() {
     });
 
     it("always contains the current user's organizations", function() {
-      console.debug(Organization.tuples());
-      
       Application.currentUser(user1);
       expect(organizationsMenu.dropdownMenu).toContain(":contains('org1')");
       expect(organizationsMenu.dropdownMenu).not.toContain(":contains('org2')");
@@ -110,9 +108,6 @@ describe("Views.Layout.OrganizationsMenu", function() {
       Application.currentUser(user2);
       expect(organizationsMenu.dropdownMenu).toContain(":contains('org1')");
       expect(organizationsMenu.dropdownMenu).toContain(":contains('org2')");
-
-
-      console.debug(user2.organizations().operand.constructor.basename);
 
       u2m2.remotelyDestroyed();
 

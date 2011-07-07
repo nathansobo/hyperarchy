@@ -108,12 +108,15 @@ _.constructor("Views.Layout", View.Template, {
       this.body.children().each(function() {
         $(this).view().hide();
       });
+      this.removeClass('normal-height');
 
       var parsedParams = {};
       _.each(params, function(value, key) {
         parsedParams[key] = (value !== 'new') ? parseInt(value) : value;
       });
-      this[name + 'Page'].show().params(parsedParams);
+      var page = this[name + 'Page'];
+      if (!page.fixedHeight) this.addClass('normal-height');
+      page.show().params(parsedParams);
     },
 
     connectToSocketServer: function() {

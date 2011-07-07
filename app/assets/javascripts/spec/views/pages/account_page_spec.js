@@ -12,16 +12,6 @@ describe("Views.Pages.Account", function() {
     accountPage = Application.accountPage;
   });
 
-  describe("before / after show", function() {
-    it("adds / removes the normal-height class to the layout", function() {
-      expect(Application).toHaveClass('normal-height');
-
-      accountPage.hide();
-
-      expect(Application).not.toHaveClass('normal-height');
-    });
-  });
-
   describe("#params", function() {
     it("assigns the input fields and membership preferences list", function() {
       expect(accountPage.firstName.val()).toBe(currentUser.firstName());
