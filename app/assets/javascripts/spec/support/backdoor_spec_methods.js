@@ -4,13 +4,16 @@ function clearServerTables() {
   });
 }
 
-function login() {
+function login(user) {
   return synchronously(function() {
     var currentUser;
+    var data;
+    if (user) data = { user_id: user.id() };
     $.ajax({
       type: 'post',
+      data: data,
       url: "/backdoor/login",
-      dataType: 'data+records'
+      dataType: 'data+records!'
     }).success(function(data) {
       Application.currentUserId(data.current_user_id)
     });
@@ -43,6 +46,7 @@ function uploadRepository() {
     $.ajax({
       type: 'post',
       url: "/backdoor/upload_repository",
+      dataType: 'records',
       data: { records: JSON.stringify(wireRepresentation) }
     });
   });

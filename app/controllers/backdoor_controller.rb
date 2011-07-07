@@ -9,7 +9,8 @@ class BackdoorController < SandboxController
   end
 
   def login
-    set_current_user(User.make)
+    user = params[:user_id] ? User.find(params[:user_id]) : User.make
+    set_current_user(user)
     initial_repository_contents
   end
 

@@ -6,6 +6,16 @@ _.constructor('Views.Pages.OrganizationSettings', Monarch.View.Template, {
   }},
 
   viewProperties: {
-    propertyAccessors: ['params']
+    params: {
+      change: function(params) {
+        return this.organization(Organization.find(params.organizationId));
+      }
+    },
+
+    organization: {
+      change: function(organization) {
+        return organization.memberships().joinTo(User).fetch();
+      }
+    }
   }
 });
