@@ -151,6 +151,10 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
 
     commentsTopPosition: function() {
       return this.creator.position().top + this.creator.height() + Application.lineHeight * 2;
+    },
+
+    loading: function() {
+      return this.comments.loading.apply(this.comments, arguments);
     }
   }
 });

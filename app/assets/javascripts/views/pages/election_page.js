@@ -171,6 +171,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
       if (params.candidateId && params.candidateId !== "new") {
         relationsToFetch.push(CandidateComment.where({candidateId: params.candidateId}).join(User).on(CandidateComment.creatorId.eq(User.id))); // candidate comments and commenters
+        this.candidateDetails.loading(true);
       } else {
         this.rankedCandidates.loading(true);
       }
@@ -181,6 +182,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     populateContentAfterFetch: function(params) {
       this.loading(false);
       this.rankedCandidates.loading(false);
+      this.candidateDetails.loading(false);
       this.votes.loading(false);
       this.comments.loading(false);
 

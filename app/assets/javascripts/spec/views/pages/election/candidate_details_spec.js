@@ -461,4 +461,13 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       });
     });
   });
+
+  describe("loading", function() {
+    it("assigns loading to the comments", function() {
+      candidateDetails.loading(true);
+      expect(candidateDetails.comments.loading()).toBeTruthy();
+      candidateDetails.loading(false);
+      expect(candidateDetails.comments.loading()).toBeFalsy();
+    });
+  });
 });

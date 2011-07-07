@@ -274,6 +274,9 @@ describe("Views.Pages.Election", function() {
         it("assigns the selectedCandidate to the currentConsensus and candidateDetails, then fetches the candidates comments and assigns those later", function() {
           waitsFor("comments and commenters to be fetched", function(complete) {
             electionPage.params({ electionId: election.id(), candidateId: candidate1.id() }).success(complete);
+
+            expect(electionPage.candidateDetails.loading()).toBeTruthy();
+
             expect(electionPage.candidateDetails).toHaveClass('active');
             expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
             expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
@@ -285,6 +288,8 @@ describe("Views.Pages.Election", function() {
           });
 
           runs(function() {
+            expect(electionPage.candidateDetails.loading()).toBeFalsy();
+            
             expect(candidate1.comments().size()).toBeGreaterThan(0);
             expect(candidate1.commenters().size()).toBe(candidate1.comments().size());
             expect(electionPage.candidateDetails.comments.comments().tuples()).toEqual(candidate1.comments().tuples());
