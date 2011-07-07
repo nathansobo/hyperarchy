@@ -1,3 +1,5 @@
+//= require spec/spec_helper
+
 describe("Views.Layout.AccountMenu", function() {
   var accountMenu;
   beforeEach(function() {

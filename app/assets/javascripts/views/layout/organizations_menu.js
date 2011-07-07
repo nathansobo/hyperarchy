@@ -8,8 +8,10 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
         },
 
         menuContent: function() {
+          var b = this.builder;
           this.builder.subview('organizationsList', Views.Components.SortedList, {
             buildElement: function(organization) {
+              return Views.Layout.OrganizationsMenuItem.toView({organization: organization});
               return $("<li><a>" + organization.name() +"</a></li>").click(function() {
                 History.pushState(null, null, organization.url());
               });

@@ -1,3 +1,5 @@
+//= require spec/spec_helper
+
 describe("Views.Layout.OrganizationsMenu", function() {
   var organizationsMenu;
   beforeEach(function() {
@@ -93,12 +95,14 @@ describe("Views.Layout.OrganizationsMenu", function() {
       user1 = User.createFromRemote({id: 1});
       user2 = User.createFromRemote({id: 2});
       org2 = Organization.createFromRemote({id: 2, name: "org2"});
-      u1m1 = user1.memberships().createFromRemote({organizationId: 1});
-      u2m1 = user2.memberships().createFromRemote({organizationId: 1});
-      u2m2 = user2.memberships().createFromRemote({organizationId: 2});
+      u1m1 = user1.memberships().createFromRemote({id: 1, organizationId: org1.id()});
+      u2m1 = user2.memberships().createFromRemote({id: 2, organizationId: org1.id(), role: "owner"});
+      u2m2 = user2.memberships().createFromRemote({id: 3, organizationId: org2.id()});
     });
 
     it("always contains the current user's organizations", function() {
+      console.debug(Organization.tuples());
+      
       Application.currentUser(user1);
       expect(organizationsMenu.dropdownMenu).toContain(":contains('org1')");
       expect(organizationsMenu.dropdownMenu).not.toContain(":contains('org2')");
@@ -107,11 +111,18 @@ describe("Views.Layout.OrganizationsMenu", function() {
       expect(organizationsMenu.dropdownMenu).toContain(":contains('org1')");
       expect(organizationsMenu.dropdownMenu).toContain(":contains('org2')");
 
+
+      console.debug(user2.organizations().operand.constructor.basename);
+//      user2.organizations().operand.onRemove(function() {
+//        console.debug("REMOVED composite tuple");
+//      });
+
+
       u2m2.remotelyDestroyed();
 
       expect(organizationsMenu.dropdownMenu).not.toContain(":contains('org2')");
 
-      user2.memberships().createFromRemote({organizationId: 2});
+      user2.memberships().createFromRemote({id: 4, organizationId: 2});
 
       expect(organizationsMenu.dropdownMenu).toContain(":contains('org2')");
     });
@@ -123,5 +134,22 @@ describe("Views.Layout.OrganizationsMenu", function() {
       orgLink.click();
       expect(Path.routes.current).toBe(org1.url());
     });
+
+    it("shows the admin link for only those organizations that the current user owns", function() {
+      Application.currentUser(user2);
+      organizationsMenu.dropdownMenu.link.click();
+      var org1Li = organizationsMenu.dropdownMenu.organizationsList.find("li:contains('org1')").view();
+      var org2Li = organizationsMenu.dropdownMenu.organizationsList.find("li:contains('org2')").view();
+
+      expect(org1Li.adminLink).toBeVisible();
+      expect(org2Li.adminLink).toBeHidden();
+
+      u2m1.remotelyUpdated({role: "member"});
+      u2m2.remotelyUpdated({role: "owner"});
+
+      expect(org1Li.adminLink).toBeHidden();
+      expect(org2Li.adminLink).toBeVisible();
+    });
   });
+
 });
