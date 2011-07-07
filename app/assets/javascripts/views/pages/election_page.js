@@ -122,7 +122,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         this.election(election);
         this.currentConsensus.candidates(election.candidates());
       } else {
-        this.startLoading();
+        this.loading(true);
       }
 
       var voterId;
@@ -173,7 +173,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     },
 
     populateContentAfterFetch: function(params) {
-      this.stopLoading();
+      this.loading(false);
 
       var election = Election.find(params.electionId);
 
@@ -325,16 +325,18 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       }
     },
 
-    startLoading: function() {
-      this.headline.hide();
-      this.columns.hide();
-      this.spinner.show();
-    },
-
-    stopLoading: function() {
-      this.headline.show();
-      this.columns.show();
-      this.spinner.hide();
+    loading: {
+      change: function(loading) {
+        if (loading) {
+          this.headline.hide();
+          this.columns.hide();
+          this.spinner.show();
+        } else {
+          this.headline.show();
+          this.columns.show();
+          this.spinner.hide();
+        }
+      }
     }
   }
 });
