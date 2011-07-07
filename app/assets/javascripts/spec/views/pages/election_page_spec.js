@@ -180,7 +180,15 @@ describe("Views.Pages.Election", function() {
             expect(Application.currentOrganizationId()).toBe(election.organizationId());
             expect(electionPage.election()).toEqual(election);
             expect(electionPage.currentConsensus.candidates().tuples()).toEqual(election.candidates().tuples());
+            expect(electionPage.rankedCandidates.loading()).toBeTruthy();
+            expect(electionPage.votes.loading()).toBeTruthy();
           });
+
+          runs(function() {
+            expect(electionPage.rankedCandidates.rankings()).toBeDefined();
+            expect(electionPage.rankedCandidates.loading()).toBeFalsy();
+            expect(electionPage.votes.loading()).toBeFalsy();
+          })
         });
       });
 

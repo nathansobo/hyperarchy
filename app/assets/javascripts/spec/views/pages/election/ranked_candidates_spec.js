@@ -899,4 +899,18 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       });
     });
   });
+
+  describe("#loading", function() {
+    it("hides the list and shows the spinner if loading", function() {
+      rankedCandidates.loading(true);
+
+      expect(rankedCandidates.list).toBeHidden();
+      expect(rankedCandidates.spinner).toBeVisible();
+
+      rankedCandidates.loading(false);
+
+      expect(rankedCandidates.list).toBeVisible();
+      expect(rankedCandidates.spinner).toBeHidden();
+    });
+  });
 });

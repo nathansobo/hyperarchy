@@ -6,7 +6,6 @@ describe("Views.Pages.Election.Votes", function() {
   beforeEach(function() {
     attachLayout();
     votesView = Application.electionPage.votes;
-    $('jasmine-content').html(votesView);
 
     election = Election.createFromRemote({id: 1});
     currentUser = User.createFromRemote({id: 1});
@@ -79,6 +78,18 @@ describe("Views.Pages.Election.Votes", function() {
         expect(otherUserVoteLi).toHaveClass('selected');
         expect(votesView.list.find('.selected').size()).toBe(1);
       });
+    });
+  });
+
+  describe("#loading", function() {
+    it("hides the view if set to true", function() {
+      $('#jasmine_content').html(votesView.detach());
+      
+      expect(votesView).toBeVisible();
+      votesView.loading(true);
+      expect(votesView).toBeHidden();
+      votesView.loading(false);
+      expect(votesView).toBeVisible();
     });
   });
 });

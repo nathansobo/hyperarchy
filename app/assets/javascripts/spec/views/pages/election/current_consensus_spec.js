@@ -182,5 +182,4 @@ describe("Views.Pages.Election.CurrentConsensus", function() {
       });
     });
   });
-
 });

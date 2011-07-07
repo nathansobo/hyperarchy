@@ -12,7 +12,9 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
         li({id: "negative-drag-target"},function() {
           span("Drag ideas you dislike here").ref('negativeDragExplanation');
         }).ref('negativeDragTarget');
-      }).ref('list')
+      }).ref('list');
+
+      subview('spinner', Views.Components.Spinner);
     });
   }},
 
@@ -29,7 +31,6 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
     attach: function($super) {
       $super();
-
       this.list.sortable({
         items: "li",
 
@@ -255,6 +256,18 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       rankings.each(function(ranking) {
         this.list.append(this.findOrCreateLi(ranking));
       }, this);
+    },
+
+    loading: {
+      change: function(loading) {
+        if (loading) {
+          this.list.hide();
+          this.spinner.show();
+        } else {
+          this.list.show();
+          this.spinner.hide();
+        }
+      }
     }
   }
 });

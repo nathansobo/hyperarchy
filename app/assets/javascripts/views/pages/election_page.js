@@ -125,6 +125,9 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         this.loading(true);
       }
 
+      this.rankedCandidates.loading(true);
+      this.votes.loading(true);
+
       var voterId;
 
       if (params.candidateId) {
@@ -174,6 +177,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
     populateContentAfterFetch: function(params) {
       this.loading(false);
+      this.rankedCandidates.loading(false);
+      this.votes.loading(false);
 
       var election = Election.find(params.electionId);
 

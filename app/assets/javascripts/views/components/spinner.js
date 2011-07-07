@@ -23,6 +23,7 @@ _.constructor('Views.Components.Spinner', Monarch.View.Template, {
 
     rotate: function() {
       this.degrees += 45;
+      if (this.degrees === 360) this.degrees = 0;
       this.css('-webkit-transform', 'rotate(' + this.degrees + 'deg)');
     }
   }

@@ -51,6 +51,16 @@ _.constructor('Views.Pages.Election.Votes', Monarch.View.Template, {
         default:
           this.header.text(voteCount + ' Votes');
       }
+    },
+
+    loading: {
+      change: function(loading) {
+        if (loading) {
+          this.hide();
+        } else {
+          this.show();
+        }
+      }
     }
   }
 });
