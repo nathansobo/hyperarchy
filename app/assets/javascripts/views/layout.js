@@ -20,6 +20,7 @@ _.constructor("Views.Layout", View.Template, {
         div({id: "body"}, function() {
           subview('accountPage', Views.Pages.Account);
           subview('organizationPage', Views.Pages.Organization);
+          subview('organizationSettingsPage', Views.Pages.OrganizationSettings);
           subview('electionPage', Views.Pages.Election);
         }).ref("body");
       });

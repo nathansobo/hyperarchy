@@ -113,10 +113,6 @@ describe("Views.Layout.OrganizationsMenu", function() {
 
 
       console.debug(user2.organizations().operand.constructor.basename);
-//      user2.organizations().operand.onRemove(function() {
-//        console.debug("REMOVED composite tuple");
-//      });
-
 
       u2m2.remotelyDestroyed();
 
@@ -149,6 +145,20 @@ describe("Views.Layout.OrganizationsMenu", function() {
 
       expect(org1Li.adminLink).toBeHidden();
       expect(org2Li.adminLink).toBeVisible();
+    });
+
+    describe("when an admin link is clicked", function() {
+      it("navigates to the settings page for that organization", function() {
+        Application.currentUser(user2);
+        organizationsMenu.dropdownMenu.link.click();
+        var org1Li = organizationsMenu.dropdownMenu.organizationsList.find("li:contains('org1')").view();
+        expect(org1Li.adminLink).toBeVisible();
+
+        spyOn(Application, 'showPage');
+        org1Li.adminLink.click()
+
+        expect(Path.routes.current).toBe(org1.settingsUrl());
+      });
     });
   });
 

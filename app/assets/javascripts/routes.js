@@ -8,6 +8,10 @@ Path.map('/organizations/:organizationId').to(function() {
   Application.showPage('organization', this.params);
 });
 
+Path.map('/organizations/:organizationId/settings').to(function() {
+  Application.showPage('organizationSettings', this.params);
+});
+
 Path.map('/organizations/:organizationId/elections/new').to(function() {
   Application.showPage('election', { organizationId: this.params.organizationId, electionId: 'new'});
 });

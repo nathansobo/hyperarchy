@@ -131,6 +131,10 @@ _.constructor("Organization", Model.Record, {
     return "/organizations/" + this.id();
   },
 
+  settingsUrl: function() {
+    return this.url() + "/settings";
+  },
+
   newElectionUrl: function() {
     return this.url() + "/elections/new";
   },
