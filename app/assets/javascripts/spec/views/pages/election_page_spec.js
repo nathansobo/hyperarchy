@@ -210,22 +210,30 @@ describe("Views.Pages.Election", function() {
     describe("when the electionId does not change", function() {
       beforeEach(function() {
         waitsFor("fetch to complete", function(complete) {
-          electionPage.params({ electionId: election.id(), candidateId: candidate2.id() }).success(complete);
+          electionPage.params({ electionId: election.id() }).success(complete);
         });
       });
-
+      
       describe("if no voterId or candidateId is specified", function() {
-        it("synchronously assigns relations to the subviews, shows the current user's rankings and enables sorting", function() {
-          electionPage.params({ electionId: election.id() });
-          expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
-          expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(currentUser.rankingsForElection(election).tuples());
-          expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
-          expect(electionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
-          expect(electionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
-          expect(electionPage.rankedCandidates).toBeVisible();
-          expect(electionPage.candidateDetails).not.toHaveClass('active');
-          expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
-          expect(electionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
+        it("hides the candidate details and assigns relations to the subviews, shows the current user's rankings and enables sorting", function() {
+          waitsFor("fetch to complete", function(complete) {
+            electionPage.params({ electionId: election.id(), candidateId: candidate2.id() }).success(complete);
+          });
+
+          runs(function() {
+            electionPage.params({ electionId: election.id() });
+
+            expect(electionPage.candidateDetails).not.toHaveClass('active');
+            expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
+            expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(currentUser.rankingsForElection(election).tuples());
+            expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
+            expect(electionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
+            expect(electionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
+            expect(electionPage.rankedCandidates).toBeVisible();
+            expect(electionPage.candidateDetails).not.toHaveClass('active');
+            expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
+            expect(electionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
+          });
         });
       });
 
@@ -233,9 +241,9 @@ describe("Views.Pages.Election", function() {
         it("fetches the specified voter's rankings in addition to the current user's before assigning relations to the subviews and disables sorting because they won't be the current user", function() {
           waitsFor("fetch to complete", function(complete) {
             electionPage.params({ electionId: election.id(), voterId: otherUser.id() }).success(complete);
+            expect(electionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
             expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
             expect(electionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
-            expect(electionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
 
             expect(electionPage.rankedCandidates.loading()).toBeTruthy();
             expect(electionPage.comments.loading()).toBeFalsy();
@@ -281,15 +289,6 @@ describe("Views.Pages.Election", function() {
             expect(candidate1.commenters().size()).toBe(candidate1.comments().size());
             expect(electionPage.candidateDetails.comments.comments().tuples()).toEqual(candidate1.comments().tuples());
           });
-        });
-      });
-
-      describe("if the candidate details are showing (meaning the candidateId was _previously_ specified) and no candidateId is specified now", function() {
-        it("hides the candidate details view immediately", function() {
-          electionPage.params({ electionId: election.id(), candidateId: candidate1.id() });
-          expect(electionPage.candidateDetails).toHaveClass('active');
-          electionPage.params({ electionId: election.id() });
-          expect(electionPage.candidateDetails).not.toHaveClass('active');
         });
       });
     });

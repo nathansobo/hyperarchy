@@ -128,6 +128,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       var voterId;
 
       if (params.candidateId) {
+        this.showCandidateDetails();
         var candidate = Candidate.find(params.candidateId);
         if (candidate) {
           this.currentConsensus.selectedCandidate(candidate);
@@ -200,7 +201,6 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         this.currentConsensus.selectedCandidate(candidate);
         this.candidateDetails.candidate(candidate);
         if (candidate) this.candidateDetails.comments.comments(candidate.comments());
-        this.showCandidateDetails();
         if (params.candidateId === 'new') this.candidateDetails.showNewForm();
       } else {
         var rankings = Ranking.where({electionId: params.electionId, userId: params.voterId || Application.currentUserId()});
