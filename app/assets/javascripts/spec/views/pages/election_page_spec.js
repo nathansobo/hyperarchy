@@ -339,6 +339,20 @@ describe("Views.Pages.Election", function() {
         });
       });
     });
+
+    describe("when the params hash differs by the time the fetch completes", function() {
+      it("does not populate data for the old params", function() {
+        waitsFor("fetch to complete", function(complete) {
+          electionPage.params({ electionId: election.id(), candidateId: candidate1.id() }).success(complete);
+          stubAjax();
+          electionPage.params({ electionId: 999 });
+        });
+
+        runs(function() {
+          expect(electionPage.candidateDetails.candidate()).not.toBeDefined();
+        });
+      });
+    });
   });
 
   describe("when the 'suggest an answer' button is clicked", function() {
@@ -448,7 +462,7 @@ describe("Views.Pages.Election", function() {
         expect(electionPage.editableDetails.val()).toBe(election.details());
         expect(electionPage.charsRemaining.text()).toBe((140 - election.body().length).toString());
 
-        electionPage.canceleditButton.click();
+        electionPage.cancelEditButton.click();
         expectFieldsHidden();
         expectColumnTopCorrectlyAdjusted();
       });
@@ -709,7 +723,7 @@ describe("Views.Pages.Election", function() {
   function expectFieldsVisible() {
     expect(electionPage.editableBody).toBeVisible();
     expect(electionPage.editableDetails).toBeVisible();
-    expect(electionPage.canceleditButton).toBeVisible();
+    expect(electionPage.cancelEditButton).toBeVisible();
     expect(electionPage.updateButton).toBeVisible();
     expect(electionPage.editButton).toBeHidden();
     expect(electionPage.body).toBeHidden();
@@ -720,7 +734,7 @@ describe("Views.Pages.Election", function() {
   function expectFieldsHidden() {
     expect(electionPage.editableBody).toBeHidden();
     expect(electionPage.editableDetails).toBeHidden();
-    expect(electionPage.canceleditButton).toBeHidden();
+    expect(electionPage.cancelEditButton).toBeHidden();
     expect(electionPage.updateButton).toBeHidden();
     expect(electionPage.editButton).toBeVisible();
     expect(electionPage.body).toBeVisible();

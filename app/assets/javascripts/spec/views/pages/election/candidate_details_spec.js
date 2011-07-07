@@ -123,7 +123,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.editableBody.val()).toBe('');
       expect(candidateDetails.editableDetails.val()).toBe('');
       expect(candidateDetails.createButton).toBeVisible();
-      expect(candidateDetails.canceleditButton).toBeHidden();
+      expect(candidateDetails.cancelEditButton).toBeHidden();
       expect(candidateDetails.updateButton).toBeHidden();
       expect(candidateDetails.comments).toBeHidden();
 
@@ -135,7 +135,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
       expect(candidateDetails.form).toBeHidden();
       expect(candidateDetails.createButton).toBeHidden();
-      expect(candidateDetails.canceleditButton).toBeHidden();
+      expect(candidateDetails.cancelEditButton).toBeHidden();
       expect(candidateDetails.updateButton).toBeHidden();
       expect(candidateDetails.comments).toBeVisible();
     });
@@ -261,7 +261,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
       expect(candidateDetails.form).toBeVisible();
       expect(candidateDetails.updateButton).toBeVisible();
-      expect(candidateDetails.canceleditButton).toBeVisible();
+      expect(candidateDetails.cancelEditButton).toBeVisible();
       expect(candidateDetails.nonEditableContent).toBeHidden();
 
       expect(candidateDetails.editableBody.val()).toBe(candidate.body());
@@ -269,12 +269,19 @@ describe("Views.Pages.Election.CandidateDetails", function() {
       expect(candidateDetails.charsRemaining.text()).toBe((140 - candidate.body().length).toString());
       expect(candidateDetails.editableDetails.val()).toBe(candidate.details());
 
-      candidateDetails.canceleditButton.click();
+      candidateDetails.cancelEditButton.click();
 
       expect(candidateDetails.form).toBeHidden();
       expect(candidateDetails.updateButton).toBeHidden();
-      expect(candidateDetails.canceleditButton).toBeHidden();
+      expect(candidateDetails.cancelEditButton).toBeHidden();
       expect(candidateDetails.nonEditableContent).toBeVisible();
+    });
+
+    it("does not show the comments if they are still loading", function() {
+      candidateDetails.comments.loading(true);
+      candidateDetails.editButton.click();
+      candidateDetails.cancelEditButton.click();
+      expect(candidateDetails.comments).toBeHidden();
     });
   });
 
@@ -397,7 +404,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
         candidateDetails.editButton.click();
         expectCommentsToHaveFullHeight();
         
-        candidateDetails.canceleditButton.click();
+        candidateDetails.cancelEditButton.click();
         expectCommentsToHaveFullHeight();
         expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
       });

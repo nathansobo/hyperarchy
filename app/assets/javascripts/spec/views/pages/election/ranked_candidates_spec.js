@@ -14,6 +14,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     ranking2 = currentUser.rankings().createFromRemote({id: 2, electionId: election.id(), candidateId: candidate2.id(), position: -64});
     rankingsRelation = currentUser.rankingsForElection(election);
     renderLayout();
+    spyOn(Application, 'showPage');
 
     Application.currentUser(currentUser);
     Application.height(640);
@@ -24,9 +25,11 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
     createOrUpdatePromise = new Monarch.Promise();
     spyOn(Ranking, 'createOrUpdate').andReturn(createOrUpdatePromise);
+
+    useFakeServer(true);
   });
 
-  describe("#rankings", function() {
+  describe("rankings", function() {
     it("populates the list with candidates ordered according to their ranking's position, with the divider at position 0", function() {
       rankedCandidates.rankings(rankingsRelation);
       expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
@@ -46,12 +49,17 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       var rankingB = otherRankingsRelation.createFromRemote({id: 1, candidateId: candidateB.id(), position: 64});
 
       rankedCandidates.rankings(otherRankingsRelation);
+
       expect(rankedCandidates.list.find('.ranking').size()).toBe(1);
       expect(rankedCandidates.list.find('.ranking').eq(0).view().ranking).toBe(rankingB);
 
       rankingsRelation.createFromRemote({candidateId: candidate3.id(), position: 128});
 
       expect(rankedCandidates.list.find('.ranking').size()).toBe(1);
+
+      rankingsRelation.each(function(ranking) {
+        expect(ranking.onUpdateNode.size()).toBe(1); // records subscribe to their own update, but that should be all
+      });
     });
 
     describe("#sortingEnabled(boolean)", function() {
@@ -210,75 +218,84 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     });
 
     describe("receiving new rankings from the current consensus", function() {
-      beforeEach(function() {
-        electionPage.populateContentAfterFetch({electionId: election.id()});
-      });
 
-      describe("when receiving a candidate that has not yet been ranked", function() {
-        it("adds a new RankingLi for the candidate and associates it with a position", function() {
-          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
-          var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
-          candidate3Li.dragAbove(ranking1Li);
-
-          expect(rankedCandidates.list.find('li').size()).toBe(4);
-          expect(rankedCandidates.list.find('li').eq(0).data('position')).toBe(128);
-
-          expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 128);
-
-          // simulate creation of ranking on server
-          var ranking3 = Ranking.createFromRemote({id: 3, userId: currentUser.id(), candidateId: candidate3.id(), electionId: election.id(), position: 128});
-          createOrUpdatePromise.triggerSuccess(ranking3);
-
-          expect(rankedCandidates.list.find('li').size()).toBe(4);
-
-          ranking3.remotelyUpdated({position: -128});
-
-          expect(rankedCandidates.list.find('li').eq(3).data('position')).toBe(-128);
-          expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking3);
+      describe("when the current user is a member", function() {
+        beforeEach(function() {
+          electionPage.params({electionId: election.id()});
         });
 
-        it("allows the li to be dragged again before the ranking is created", function() {
-          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
-          var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
-          candidate3Li.dragAbove(ranking1Li);
+        describe("when receiving a candidate that has not yet been ranked", function() {
+          it("adds a new RankingLi for the candidate and associates it with a position", function() {
+            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+            var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
+            candidate3Li.dragAbove(ranking1Li);
 
-          expect(Ranking.createOrUpdate).toHaveBeenCalled();
-          Ranking.createOrUpdate.reset();
+            expect(rankedCandidates.list.find('li').size()).toBe(4);
+            expect(rankedCandidates.list.find('li').eq(0).data('position')).toBe(128);
 
-          var ranking3Li = rankedCandidates.find('li:contains("Candidate 3")');
-          ranking3Li.dragBelow(rankedCandidates.separator);
-          expect(Ranking.createOrUpdate).toHaveBeenCalled();
+            expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 128);
+
+            // simulate creation of ranking on server
+            var ranking3 = Ranking.createFromRemote({id: 3, userId: currentUser.id(), candidateId: candidate3.id(), electionId: election.id(), position: 128});
+            createOrUpdatePromise.triggerSuccess(ranking3);
+
+            expect(rankedCandidates.list.find('li').size()).toBe(4);
+
+            ranking3.remotelyUpdated({position: -128});
+
+            expect(rankedCandidates.list.find('li').eq(3).data('position')).toBe(-128);
+            expect(rankedCandidates.list.find('li').eq(3).view().ranking).toBe(ranking3);
+          });
+
+          it("allows the li to be dragged again before the ranking is created", function() {
+            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+            var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
+            candidate3Li.dragAbove(ranking1Li);
+
+            expect(Ranking.createOrUpdate).toHaveBeenCalled();
+            Ranking.createOrUpdate.reset();
+
+            var ranking3Li = rankedCandidates.find('li:contains("Candidate 3")');
+            ranking3Li.dragBelow(rankedCandidates.separator);
+            expect(Ranking.createOrUpdate).toHaveBeenCalled();
+          });
         });
-      });
 
-      describe("when receiving a candidate that has already been ranked", function() {
-        it("removes the previous RankingLi for the candidate and adds a new one, associating it with a position", function() {
-          var candidate2Li = electionPage.currentConsensus.find('li:contains("Candidate 2")');
-          var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
-          var numUpdateSubscriptionsBefore = ranking2.onUpdateNode.size();
+        describe("when receiving a candidate that has already been ranked", function() {
+          it("removes the previous RankingLi for the candidate and adds a new one, associating it with a position", function() {
+            Server.auto = false;
 
-          candidate2Li.dragAbove(ranking1Li);
+            var candidate2Li = electionPage.currentConsensus.find('li:contains("Candidate 2")');
+            var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
 
-          expect(rankedCandidates.list.find('li.ranking').size()).toBe(2);
-          expect(rankedCandidates.list.find('li.ranking').eq(0).data('position')).toBe(128);
+            var numUpdateSubscriptionsBefore = ranking2.onUpdateNode.size();
 
-          expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate2, 128);
+            Server.auto = true;
+            candidate2Li.dragAbove(ranking1Li);
+
+            Server.auto = false;
+
+            expect(rankedCandidates.list.find('li.ranking').size()).toBe(2);
+            expect(rankedCandidates.list.find('li.ranking').eq(0).data('position')).toBe(128);
+
+            expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate2, 128);
 
 
-          // simulate creation of ranking on server
-          ranking2.remotelyUpdated({position: 128});
-          createOrUpdatePromise.triggerSuccess(ranking2);
+            // simulate creation of ranking on server
+            ranking2.remotelyUpdated({position: 128});
+            createOrUpdatePromise.triggerSuccess(ranking2);
 
-          expect(ranking2.onUpdateNode.subscriptions.length).toBe(numUpdateSubscriptionsBefore);
+            expect(ranking2.onUpdateNode.size()).toBe(numUpdateSubscriptionsBefore);
+          });
         });
-      });
 
-      describe("when receiving a candidate in the positive region above the drag target", function() {
-        it("computes the position correctly", function() {
-          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
-          ranking1.remotelyDestroyed();
-          candidate3Li.dragAbove(rankedCandidates.positiveDragTarget);
-          expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 64);
+        describe("when receiving a candidate in the positive region above the drag target", function() {
+          it("computes the position correctly", function() {
+            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+            ranking1.remotelyDestroyed();
+            candidate3Li.dragAbove(rankedCandidates.positiveDragTarget);
+            expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 64);
+          });
         });
       });
 
@@ -500,7 +517,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       var ranking1Li, ranking2Li;
 
       beforeEach(function() {
-        electionPage.populateContentAfterFetch({electionId: election.id()});
+        electionPage.params({electionId: election.id()});
         ranking1Li = rankedCandidates.list.find('li:eq(0)');
         ranking2Li = rankedCandidates.list.find('li:eq(1)');
       });
@@ -847,7 +864,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     describe("when rankings are dragged and dropped", function() {
       describe("when candidates are dragged in from the consensus", function() {
         beforeEach(function() {
-          electionPage.populateContentAfterFetch({electionId: election.id()});
+          electionPage.params({electionId: election.id()});
         });
 
         describe("when positive ranking lis are received from the current consensus", function() {

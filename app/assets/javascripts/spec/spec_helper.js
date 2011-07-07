@@ -63,13 +63,15 @@ function stubAjax() {
 }
 
 function enableAjax() {
+  window.Server = originalServer;
   jQuery.ajax = jQuery.ajax.originalValue;
   clearServerTables();
 }
 
-function useFakeServer() {
+var originalServer;
+function useFakeServer(auto) {
   window.Server = new Monarch.Http.FakeServer();
-  window.Server.auto = false;
+  window.Server.auto = auto;
 }
 
 function unspy(object, methodName) {

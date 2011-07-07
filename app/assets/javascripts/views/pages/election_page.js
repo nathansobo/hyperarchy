@@ -39,7 +39,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     textarea({name: 'details', 'class': "details"}).ref("editableDetails");
 
     a({'class': 'update button'}, "Save").ref('updateButton').click('update');
-    a({'class': 'cancel button'}, "Cancel").ref('canceleditButton').click('cancelEdit');
+    a({'class': 'cancel button'}, "Cancel").ref('cancelEditButton').click('cancelEdit');
     a({'class': "destroy button"}, "Delete").ref('destroyButton').click('destroy');
     a({'class': "edit button"}, "Edit").ref('editButton').click('edit');
 
@@ -180,6 +180,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     },
 
     populateContentAfterFetch: function(params) {
+      if (!_.isEqual(params, this.params())) return;
+
       this.loading(false);
       this.rankedCandidates.loading(false);
       this.candidateDetails.loading(false);

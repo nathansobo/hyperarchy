@@ -49,7 +49,12 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       this.separator.detach();
       this.detachDragTargets();
 
-      this.list.find('li').remove();
+      this.list.find('li.ranking').each(function() {
+        $(this).view().remove();
+      });
+      this.list.empty();
+
+
       this.appendRankings(this.positiveRankings(), this.positiveDragTarget);
       this.list.append(this.separator);
       this.appendRankings(this.negativeRankings(), this.negativeDragTarget);

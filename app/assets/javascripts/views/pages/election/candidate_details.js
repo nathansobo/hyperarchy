@@ -23,7 +23,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       }).submit('update')
         .ref('form');
       a({'class': 'update button', tabindex: 103}, "Save").ref('updateButton').click('update');
-      a({'class': 'cancel button', tabindex: 104}, "Cancel").ref('canceleditButton').click('cancelEdit');
+      a({'class': 'cancel button', tabindex: 104}, "Cancel").ref('cancelEditButton').click('cancelEdit');
       a({'class': 'create button'}, "Add Answer").ref('createButton').click('create');
 
       div({'class': "creator"}, function() {
@@ -103,7 +103,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       this.nonEditableContent.hide();
       this.form.show();
       this.updateButton.show();
-      this.canceleditButton.show();
+      this.cancelEditButton.show();
       if (this.candidate()) {
         this.editableBody.val(this.candidate().body()).keyup();
         this.editableDetails.val(this.candidate().details()).keyup();
@@ -118,7 +118,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       this.edit();
       this.editableBody.val('');
       this.editableDetails.val('');
-      this.canceleditButton.hide();
+      this.cancelEditButton.hide();
       this.updateButton.hide();
       this.createButton.show();
       this.avatar.user(Application.currentUser());
@@ -128,10 +128,10 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
 
     cancelEdit: function() {
       this.nonEditableContent.show();
-      this.comments.show();
+      if (!this.comments.loading()) this.comments.show();
       this.form.hide();
       this.updateButton.hide();
-      this.canceleditButton.hide();
+      this.cancelEditButton.hide();
       this.createButton.hide();
       this.adjustCommentsHeight();
     },
@@ -153,7 +153,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
       return this.creator.position().top + this.creator.height() + Application.lineHeight * 2;
     },
 
-    loading: function() {
+    loading: function(loading) {
       return this.comments.loading.apply(this.comments, arguments);
     }
   }
