@@ -143,16 +143,23 @@ describe("Views.Layout.OrganizationsMenu", function() {
     });
 
     describe("when an admin link is clicked", function() {
-      it("navigates to the settings page for that organization", function() {
+      it("navigates to the settings page for that organization and closes the dropdown menu", function() {
         Application.currentUser(user2);
         organizationsMenu.dropdownMenu.link.click();
-        var org1Li = organizationsMenu.dropdownMenu.organizationsList.find("li:contains('org1')").view();
-        expect(org1Li.adminLink).toBeVisible();
 
-        spyOn(Application, 'showPage');
-        org1Li.adminLink.click()
 
-        expect(Path.routes.current).toBe(org1.settingsUrl());
+        waits(); // wait for defered close click handler to bind to window
+
+        runs(function() {
+          var org1Li = organizationsMenu.dropdownMenu.organizationsList.find("li:contains('org1')").view();
+          expect(org1Li.adminLink).toBeVisible();
+
+          spyOn(Application, 'showPage');
+          org1Li.adminLink.click()
+
+          expect(organizationsMenu.dropdownMenu.menu).toBeHidden();
+          expect(Path.routes.current).toBe(org1.settingsUrl());
+        });
       });
     });
   });

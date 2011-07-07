@@ -4,6 +4,7 @@ _.constructor('Views.Layout.OrganizationsMenuItem', Monarch.View.Template, {
       a().ref('name');
       a({'class': "admin link"}, "Admin").ref('adminLink').click(function() {
         History.pushState(null, null, this.organization.settingsUrl());
+        $(window).click();
         return false;
       });
     }).click(function() {
