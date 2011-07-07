@@ -41,8 +41,7 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
       this.list.onInsert = this.hitch('adjustHeightAndScroll');
       this.list.onRemove = this.hitch('enableOrDisableFullHeight');
       this.textarea.elastic();
-      this.textarea.bind('elastic', this.hitch('adjustListBottom'))
-      this.adjustListBottom();
+      this.textarea.bind('elastic', this.hitch('adjustListBottom'));
     },
 
     adjustHeightAndScroll: function() {
