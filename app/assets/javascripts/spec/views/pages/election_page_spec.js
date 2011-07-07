@@ -69,18 +69,26 @@ describe("Views.Pages.Election", function() {
             electionPage.newCandidateLink.hide();
             electionPage.params({ electionId: election.id() }).success(complete);
             expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
-            expect(electionPage.newCandidateLink).toBeVisible();
+
+            expect(electionPage.headline).toBeHidden();
+            expect(electionPage.columns).toBeHidden();
+            expect(electionPage.spinner).toBeVisible();
           });
 
           runs(function() {
             expectElectionDataFetched();
             expectElectionDataAssigned();
 
+            expect(electionPage.headline).toBeVisible();
+            expect(electionPage.columns).toBeVisible();
+            expect(electionPage.spinner).toBeHidden();
+
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(election.rankings().where({userId: currentUser.id()}).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
             expect(electionPage.candidateDetails).not.toHaveClass('active');
             expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
             expect(electionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
+            expect(electionPage.newCandidateLink).toBeVisible();
           });
         });
       });

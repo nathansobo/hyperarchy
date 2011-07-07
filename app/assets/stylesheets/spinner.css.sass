@@ -1,0 +1,46 @@
+.spinner
+  display: none
+  width: 100px
+  height: 100px
+
+  div
+    width: 10px
+    height: 30px
+    background: black
+    position: absolute
+    top: 35px
+    left: 45px
+    @include border-top-radius(10px)
+
+  .bar-0
+    @include transform(rotate(0deg) translate(0, -40px))
+    opacity: 0.12
+
+  .bar-1
+    @include transform(rotate(45deg) translate(0, -40px))
+    opacity: 0.25
+
+  .bar-2
+    @include transform(rotate(90deg) translate(0, -40px))
+    opacity: 0.37
+
+  .bar-3
+    @include transform(rotate(135deg) translate(0, -40px))
+    opacity: 0.50
+
+  .bar-4
+    @include transform(rotate(180deg) translate(0, -40px))
+    opacity: 0.62
+
+  .bar-5
+    @include transform(rotate(225deg) translate(0, -40px))
+    opacity: 0.75
+
+  .bar-6
+    @include transform(rotate(270deg) translate(0, -40px))
+    opacity: 0.87
+
+  .bar-7
+    @include transform(rotate(315deg) translate(0, -40px))
+    opacity: 1
+

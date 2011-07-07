@@ -7,6 +7,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
           return false;
         });
       });
+
       div({id: "headline"}, function() {
         a({'class': "new button"}, "Add An Answer")
           .ref('newCandidateLink')
@@ -28,6 +29,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
           }
         });
       }).ref('columns');
+
+      subview('spinner', Views.Components.Spinner);
     });
   }},
 
@@ -115,7 +118,11 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
     populateContentBeforeFetch: function(params) {
       var election = Election.find(params.electionId);
-      if (election) this.election(election);
+      if (election) {
+        this.election(election);
+      } else {
+        this.startLoading();
+      }
 
       var voterId;
 
@@ -165,6 +172,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     },
 
     populateContentAfterFetch: function(params) {
+      this.stopLoading();
+
       var election = Election.find(params.electionId);
 
       if (!election) {
@@ -313,6 +322,18 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       } else {
         this.removeClass('mutable');
       }
+    },
+
+    startLoading: function() {
+      this.headline.hide();
+      this.columns.hide();
+      this.spinner.show();
+    },
+
+    stopLoading: function() {
+      this.headline.show();
+      this.columns.show();
+      this.spinner.hide();
     }
   }
 });
