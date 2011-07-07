@@ -85,6 +85,16 @@ _.constructor('Views.Pages.Election.Comments', Monarch.View.Template, {
       var bottomOfList = this.textareaAndButton.height();
       this.list.css('bottom', bottomOfList);
       this.scrollToBottom();
+    },
+
+    loading: {
+      change: function(loading) {
+        if (loading) {
+          this.hide();
+        } else {
+          this.show();
+        }
+      }
     }
   }
 });

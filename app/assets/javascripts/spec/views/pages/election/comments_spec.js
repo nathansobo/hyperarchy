@@ -169,4 +169,15 @@ describe("Views.Pages.Election.Comments", function() {
       });
     });
   });
+
+  describe("loading", function() {
+    it("hides the view if loading, shows it otherwise", function() {
+      expect(commentsView).toBeVisible();
+      commentsView.loading(true);
+      expect(commentsView).toBeHidden();
+
+      commentsView.loading(false);
+      expect(commentsView).toBeVisible();
+    });
+  });
 });

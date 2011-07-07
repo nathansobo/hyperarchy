@@ -182,12 +182,14 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.currentConsensus.candidates().tuples()).toEqual(election.candidates().tuples());
             expect(electionPage.rankedCandidates.loading()).toBeTruthy();
             expect(electionPage.votes.loading()).toBeTruthy();
+            expect(electionPage.comments.loading()).toBeTruthy();
           });
 
           runs(function() {
             expect(electionPage.rankedCandidates.rankings()).toBeDefined();
             expect(electionPage.rankedCandidates.loading()).toBeFalsy();
             expect(electionPage.votes.loading()).toBeFalsy();
+            expect(electionPage.comments.loading()).toBeFalsy();
           })
         });
       });
@@ -234,9 +236,15 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
             expect(electionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
             expect(electionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
+
+            expect(electionPage.rankedCandidates.loading()).toBeTruthy();
+            expect(electionPage.comments.loading()).toBeFalsy();
+            expect(electionPage.votes.loading()).toBeFalsy();
           });
 
           runs(function() {
+            expect(electionPage.rankedCandidates.loading()).toBeFalsy();
+
             expect(currentUser.rankings().size()).toBeGreaterThan(0);
             expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(otherUser.rankingsForElection(election).tuples());
             expect(electionPage.rankedCandidates).toBeVisible();
@@ -262,6 +270,10 @@ describe("Views.Pages.Election", function() {
             expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
             expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
             expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+
+            expect(electionPage.rankedCandidates.loading()).toBeFalsy();
+            expect(electionPage.comments.loading()).toBeFalsy();
+            expect(electionPage.votes.loading()).toBeFalsy();
           });
 
           runs(function() {

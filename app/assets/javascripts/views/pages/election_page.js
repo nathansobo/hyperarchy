@@ -125,9 +125,6 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         this.loading(true);
       }
 
-      this.rankedCandidates.loading(true);
-      this.votes.loading(true);
-
       var voterId;
 
       if (params.candidateId) {
@@ -162,6 +159,9 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         relationsToFetch.push(Vote.where({electionId: params.electionId}).joinTo(User)); // votes
         relationsToFetch.push(Application.currentUser().rankings().where({electionId: params.electionId})); // current user's rankings
         relationsToFetch.push(ElectionComment.where({electionId: params.electionId}).join(User).on(ElectionComment.creatorId.eq(User.id))); // election comments and commenters
+
+        this.comments.loading(true);
+        this.votes.loading(true);
       }
 
       if (params.voterId) {
@@ -170,6 +170,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
 
       if (params.candidateId && params.candidateId !== "new") {
         relationsToFetch.push(CandidateComment.where({candidateId: params.candidateId}).join(User).on(CandidateComment.creatorId.eq(User.id))); // candidate comments and commenters
+      } else {
+        this.rankedCandidates.loading(true);
       }
 
       return Server.fetch(relationsToFetch);
@@ -179,6 +181,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.loading(false);
       this.rankedCandidates.loading(false);
       this.votes.loading(false);
+      this.comments.loading(false);
 
       var election = Election.find(params.electionId);
 
