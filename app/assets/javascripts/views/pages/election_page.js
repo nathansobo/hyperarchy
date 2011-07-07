@@ -120,6 +120,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       var election = Election.find(params.electionId);
       if (election) {
         this.election(election);
+        this.currentConsensus.candidates(election.candidates());
       } else {
         this.startLoading();
       }

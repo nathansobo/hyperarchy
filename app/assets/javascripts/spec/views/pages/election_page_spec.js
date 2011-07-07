@@ -168,16 +168,19 @@ describe("Views.Pages.Election", function() {
       });
 
       describe("if the election is already present in the repository", function() {
-        it("assigns the election before fetching additional data", function() {
+        it("assigns the election and candidates before fetching additional data, and puts spinners on the ranking and votes", function() {
           synchronously(function() {
-            Election.fetch(election.id());
+            election.fetch();
+            election.candidates().fetch();
             User.fetch(election.creatorId());
           });
 
-          stubAjax(); // we still fetch, but we're not testing that in this spec
-          electionPage.params({electionId: election.id()});
-          expect(Application.currentOrganizationId()).toBe(election.organizationId());
-          expect(electionPage.election()).toEqual(election);
+          waitsFor("fetch to complete", function(complete) {
+            electionPage.params({electionId: election.id()}).success(complete);
+            expect(Application.currentOrganizationId()).toBe(election.organizationId());
+            expect(electionPage.election()).toEqual(election);
+            expect(electionPage.currentConsensus.candidates().tuples()).toEqual(election.candidates().tuples());
+          });
         });
       });
 
