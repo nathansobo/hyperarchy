@@ -18,8 +18,7 @@ class PasswordResetsController < ApplicationController
 
     user.update(:password => params[:password])
     set_current_user(user)
-    default_org_id = user.default_organization.id
-    redirect_to(root_path(:anchor => "#view=organization&organizationId=#{default_org_id}"))
+    redirect_to(organization_url(user.default_organization))
   end
 
   protected
