@@ -7,15 +7,16 @@ _.constructor("Views.Components.SortedList", View.Template, {
 
   viewProperties: {
     initialize: function() {
-      this.subscriptions = new Monarch.SubscriptionBundle();
       this.renderQueue = new Monarch.Queue(this.renderSegmentSize || 3, this.renderDelay || 30);
     },
 
     relation: {
       change: function(relation) {
-        if (this.subscriptions) this.subscriptions.destroy();
-
+        this.unregisterAllInterest();
         this.empty();
+
+        if (!relation) return;
+
         if (this.useQueue) {
           relation.each(function(record, index) {
             this.renderQueue.add(function() {
@@ -33,24 +34,25 @@ _.constructor("Views.Components.SortedList", View.Template, {
           }, this);
         }
 
-        this.subscriptions.add(relation.onInsert(function(record, index) {
+
+        this.registerInterest(relation, 'onInsert', function(record, index) {
           var element = this.elementForRecord(record, index);
           this.insertAtIndex(element, index);
           if (this.onInsert) this.onInsert(record, element);
-        }, this));
+        });
 
-        this.subscriptions.add(relation.onUpdate(function(record, changes, newIndex, oldIndex) {
+        this.registerInterest(relation, 'onUpdate', function(record, changes, newIndex, oldIndex) {
           var element = this.elementForRecord(record, newIndex);
           this.insertAtIndex(element.detach(), newIndex);
           if (this.onUpdate) this.onUpdate(element, record, changes, newIndex, oldIndex);
-        }, this));
+        });
 
-        this.subscriptions.add(relation.onRemove(function(record, index) {
+        this.registerInterest(relation, 'onRemove', function(record, index) {
           var element = this.elementForRecord(record, index);
           element.remove();
           delete this.elementsById[record.id()];
           if (this.onRemove) this.onRemove(element, record, index);
-        }, this));
+        });
       }
     },
 
@@ -74,10 +76,6 @@ _.constructor("Views.Components.SortedList", View.Template, {
       } else {
         return this.elementsById[id] = this.buildElement(record, index);
       }
-    },
-
-    afterRemove: function() {
-      this.subscriptions.destroy();
     },
 
     updateIndices: function() {

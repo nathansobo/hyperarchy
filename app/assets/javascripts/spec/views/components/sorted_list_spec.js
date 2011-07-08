@@ -45,6 +45,18 @@ describe("Views.Components.SortedList", function() {
     });
   });
 
+  describe("when a null relation is assigned", function() {
+    it("unsubscribes from a previous relation and empties the list", function() {
+      expect(view.find('li').length).toBe(3);
+      expect(relation.hasSubscribers()).toBeTruthy();
+
+      view.relation(null);
+
+      expect(view.find('li')).not.toExist();
+      expect(relation.hasSubscribers()).toBeFalsy();
+    });
+  });
+
   describe("when a record is inserted into the relation", function() {
     it("inserts an li for the record at the appropriate index", function() {
       relation.createFromRemote({id: "yellow", body: "Yellow", position: 4});
