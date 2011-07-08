@@ -27,6 +27,8 @@ _.constructor('Views.Components.Spinner', Monarch.View.Template, {
       this.degrees += 45;
       if (this.degrees === 360) this.degrees = 0;
       this.css('-webkit-transform', 'rotate(' + this.degrees + 'deg)');
+      this.css('-moz-transform', 'rotate(' + this.degrees + 'deg)');
+      this.css('transform', 'rotate(' + this.degrees + 'deg)');
     }
   }
 });
