@@ -13,9 +13,12 @@ _.constructor("Views.Layout", View.Template, {
 
           div({id: "menu-items"}, function() {
             a({id: "feedback-link"}, "Feedback").ref('feedbackLink').click('showFeedbackForm');
-            a({id: "invite-link"}, "Invite").ref('inviteLink').click('showInviteBox');
-            subview('organizationsMenu', Views.Layout.OrganizationsMenu);
-            subview('accountMenu', Views.Layout.AccountMenu);
+            a({id: "invite-link"}, "Invite Your Team").ref('inviteLink').click('showInviteBox');
+
+            div({id: "organization-and-account"}, function() {
+              subview('organizationsMenu', Views.Layout.OrganizationsMenu);
+              subview('accountMenu', Views.Layout.AccountMenu);
+            });
           });
         });
 

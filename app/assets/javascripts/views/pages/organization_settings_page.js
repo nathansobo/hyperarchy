@@ -13,20 +13,23 @@ _.constructor('Views.Pages.OrganizationSettings', Monarch.View.Template, {
         input({type: "submit", value: "Save", 'class': "update button"}).ref('updateButton');
       }).submit('save');
 
-      h2("Members");
-      table(function() {
-        thead(function() {
-          th("Name");
-          th("Email Address");
-          th("Role");
-          th("");
-        });
-        subview('memberships', Views.Components.SortedList, {
-          placeholderTag: "tbody",
-          rootTag: "tbody",
-          buildElement: function(membership) {
-            return Views.Pages.OrganizationSettings.MembershipLi.toView({membership: membership});
-          }
+      div({id: "members"}, function() {
+        a({'class': "link"}, "Invite Your Team").ref('inviteLink').click('showInviteBox');
+        h2("Members");
+        table(function() {
+          thead(function() {
+            th("Name");
+            th("Email Address");
+            th("Role");
+            th("");
+          });
+          subview('memberships', Views.Components.SortedList, {
+            placeholderTag: "tbody",
+            rootTag: "tbody",
+            buildElement: function(membership) {
+              return Views.Pages.OrganizationSettings.MembershipLi.toView({membership: membership});
+            }
+          });
         });
       });
     });
@@ -65,6 +68,10 @@ _.constructor('Views.Pages.OrganizationSettings', Monarch.View.Template, {
     save: function($super) {
       $super().success(this.hitch('enableOrDisableUpdateButton'));
       return false;
+    },
+
+    showInviteBox: function() {
+      Application.inviteBox.show();
     }
   }
 });

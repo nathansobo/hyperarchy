@@ -130,5 +130,11 @@ describe("Views.Pages.OrganizationSettings", function() {
       });
     });
 
+    describe("the invite link", function() {
+      it("shows the invite form when clicked", function() {
+        settingsPage.inviteLink.click();
+        expect(Application.inviteBox).toBeVisible();
+      });
+    });
   });
 });

@@ -64,31 +64,35 @@ body
     #feedback-link, #invite-link
       padding: 0 $line-height
 
-    #organizations-menu
-      display: inline-block
-      #add-organization-link
-        display: inline-block
-        padding: ceil($line-height/2) $line-height ($line-height/2) $line-height
-      .dropdown-menu ul
-        left: 0
-        right: 0
-      .admin
-        float: right
-        @extend .link
+    #organization-and-account
+      position: relative
+      display: inline
 
-    #account-menu
-      display: inline-block
-      #login-link
-        padding: ceil($line-height/2) $line-height ($line-height/2) $line-height
-      .avatar
-        background-image: url(/images/mystery_man_27.jpeg)
-        position: absolute
-        top: (27 - $line-height)/2 + 1
-      #name
-        margin-left: 27 + $line-height/2
-      .dropdown-menu ul
-        text-align: right
-        right: 0
+      #organizations-menu
+        display: inline-block
+        #add-organization-link
+          display: inline-block
+          padding: ceil($line-height/2) $line-height ($line-height/2) $line-height
+        .dropdown-menu ul
+          left: 0
+          right: 0
+        .admin
+          float: right
+          @extend .link
+
+      #account-menu
+        display: inline-block
+        #login-link
+          padding: ceil($line-height/2) $line-height ($line-height/2) $line-height
+        .avatar
+          background-image: url(/images/mystery_man_27.jpeg)
+          position: absolute
+          top: (27 - $line-height)/2 + 1
+        #name
+          margin-left: 27 + $line-height/2
+        .dropdown-menu ul
+          text-align: right
+          right: 0
 
 .dropdown-menu
   padding: $line-height/2 $line-height
