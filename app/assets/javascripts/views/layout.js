@@ -13,6 +13,7 @@ _.constructor("Views.Layout", View.Template, {
 
           div({id: "menu-items"}, function() {
             a({id: "feedback-link"}, "Feedback").ref('feedbackLink').click('showFeedbackForm');
+            a({id: "invite-link"}, "Invite").ref('inviteLink').click('showInviteBox');
             subview('organizationsMenu', Views.Layout.OrganizationsMenu);
             subview('accountMenu', Views.Layout.AccountMenu);
           });
@@ -32,6 +33,7 @@ _.constructor("Views.Layout", View.Template, {
         subview("signupForm", Views.Lightboxes.SignupForm);
         subview("newQuestion", Views.Lightboxes.NewQuestion);
         subview("disconnectDialog", Views.Lightboxes.DisconnectDialog);
+        subview("inviteBox", Views.Lightboxes.InviteBox);
       }).ref("lightboxes");
 
       div({id: "darkened-background"}).ref("darkenedBackground");
@@ -95,6 +97,8 @@ _.constructor("Views.Layout", View.Template, {
           this.organizationName.bindText(organization, 'name');
         }
 
+        this.registerInterest(organization, 'onUpdate', this.showOrHideIniviteLink);
+        this.showOrHideIniviteLink();
         this.recordOrganizationVisit();
       }
     },
@@ -183,6 +187,18 @@ _.constructor("Views.Layout", View.Template, {
 
     showFeedbackForm: function() {
       this.feedbackForm.show();
+    },
+
+    showInviteBox: function() {
+      this.inviteBox.show();
+    },
+
+    showOrHideIniviteLink: function() {
+      if (this.currentOrganization().isPrivate()) {
+        this.inviteLink.show();
+      } else {
+        this.inviteLink.hide();
+      }
     }
   }
 });

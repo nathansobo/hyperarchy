@@ -123,6 +123,10 @@ _.constructor("Organization", Model.Record, {
     return this.privacy() === "public";
   },
 
+  isPrivate: function() {
+    return this.privacy() === "private";
+  },
+
   hasNonAdminQuestions: function() {
     return !this.questions().where(Question.creatorId.neq(1)).empty();
   },
@@ -140,6 +144,6 @@ _.constructor("Organization", Model.Record, {
   },
 
   secretUrl: function() {
-    return 'https://' + Application.HTTP_HOST + "/access/" + this.id() + "/" + this.membershipCode();
+    return 'https://' + window.location.hostname + "/access/" + this.id() + "/" + this.membershipCode();
   }
 });

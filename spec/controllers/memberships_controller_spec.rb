@@ -12,7 +12,7 @@ describe MembershipsController do
           current_user.memberships.where(:organization => organization).should be_empty
           get :create, :organization_id => organization.id, :code => organization.membership_code
           current_user.memberships.where(:organization => organization, :role => "member").size.should == 1
-          response.should redirect_to(root_url(:anchor => "view=organization&organizationId=#{organization.id}"))
+          response.should redirect_to(organization_url(organization))
 
           # a subsequent request does not create a duplicate membership
           expect do
@@ -27,7 +27,7 @@ describe MembershipsController do
           get :create, :organization_id => organization.id, :code => organization.membership_code
           current_user.should == organization.guest
 
-          response.should redirect_to(root_url(:anchor => "view=organization&organizationId=#{organization.id}"))
+          response.should redirect_to(organization_url(organization))
         end
       end
 
@@ -36,7 +36,7 @@ describe MembershipsController do
           current_user.should == User.default_guest
           get :create, :organization_id => organization.id, :code => organization.membership_code
           current_user.should == organization.guest
-          response.should redirect_to(root_url(:anchor => "view=organization&organizationId=#{organization.id}"))
+          response.should redirect_to(organization_url(organization))
         end
       end
     end
@@ -48,7 +48,7 @@ describe MembershipsController do
           default_org = Organization.make
           stub(user).default_organization { default_org }
           get :create, :organization_id => organization.id, :code => "garbage"
-          response.should redirect_to(root_url(:anchor => "view=organization&organizationId=#{default_org.id}"))
+          response.should redirect_to(organization_url(default_org))
         end
       end
 
@@ -57,7 +57,7 @@ describe MembershipsController do
           current_user.should == User.default_guest
           get :create, :organization_id => organization.id, :code => "garbage"
           current_user.should == User.default_guest
-          response.should redirect_to(root_url(:anchor => "view=organization&organizationId=#{Organization.social.id}"))
+          response.should redirect_to(organization_url(Organization.social))
         end
       end
     end

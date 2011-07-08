@@ -4,7 +4,7 @@ class MembershipsController < ApplicationController
   def create
     organization = Organization.find(:id => params[:organization_id], :membership_code => params[:code])
     unless organization
-      redirect_to(root_url(:anchor => "view=organization&organizationId=#{current_user.default_organization.id}"))
+      redirect_to organization_url(current_user.default_organization)
       return
     end
     if current_user.guest?
@@ -13,6 +13,6 @@ class MembershipsController < ApplicationController
       current_user.memberships.create!(:organization => organization)
     end
     
-    redirect_to(root_url(:anchor => "view=organization&organizationId=#{organization.id}"))
+    redirect_to organization_url(organization)
   end
 end

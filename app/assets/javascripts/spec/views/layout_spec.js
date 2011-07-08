@@ -76,8 +76,8 @@ describe("Views.Layout", function() {
     var organization1, organization2, member, guest, membership;
 
     beforeEach(function() {
-      organization1 = Organization.createFromRemote({id: 1, name: "Fujimoto's"});
-      organization2 = Organization.createFromRemote({id: 2, name: "Hey Ya"});
+      organization1 = Organization.createFromRemote({id: 1, name: "Fujimoto's", privacy: "private"});
+      organization2 = Organization.createFromRemote({id: 2, name: "Hey Ya", privacy: "public"});
       guest = User.createFromRemote({id: 11, guest: true});
       member = User.createFromRemote({id: 12, guest: false});
       membership = member.memberships().createFromRemote({id: 9, organizationId: organization1.id()});
@@ -126,9 +126,9 @@ describe("Views.Layout", function() {
 
     describe("#currentOrganization", function() {
       it("it changes the organization name or hides it when viewing social", function() {
-        $('#jasmine_content').html(Application);
+        var social = Organization.createFromRemote({id: 3, name: "Hyperarchy Social", social: true, privacy: "public"});
 
-        var social = Organization.createFromRemote({id: 3, name: "Hyperarchy Social", social: true});
+        $('#jasmine_content').html(Application);
 
         Application.currentOrganizationId(organization1.id());
         expect(Application.organizationName).toBeVisible();
@@ -199,6 +199,35 @@ describe("Views.Layout", function() {
       $("#jasmine_content").html(Application);
       Application.feedbackLink.click();
       expect(Application.feedbackForm).toBeVisible();
+    });
+  });
+
+  describe("the invite link", function() {
+    it("shows the invite link only for private organizations, and shows the invite box with the org's secret url when it is clicked", function() {
+      $('#jasmine_content').html(Application);
+      var privateOrg = Organization.createFromRemote({id: 1, name: "Private Eyes", privacy: "private"});
+      var publicOrg = Organization.createFromRemote({id: 2, name: "Public Enemies", privacy: "public"});
+      var user = privateOrg.makeMember({id: 1});
+      spyOn(privateOrg, 'secretUrl').andReturn('/this_is_so_secret');
+      Application.currentUser(user);
+
+      Application.currentOrganization(publicOrg);
+      expect(Application.inviteLink).not.toBeVisible();
+
+      Application.currentOrganization(privateOrg);
+      expect(Application.inviteLink).toBeVisible();
+
+      Application.inviteLink.click();
+      var inviteBox = Application.inviteBox
+      expect(inviteBox).toBeVisible();
+      expect(inviteBox.secretUrl.val()).toBe(privateOrg.secretUrl());
+      expect(inviteBox.secretUrl).toHaveFocus();
+
+      privateOrg.remotelyUpdated({privacy: "public"});
+      expect(Application.inviteLink).not.toBeVisible();
+
+      privateOrg.remotelyUpdated({privacy: "private"});
+      expect(Application.inviteLink).toBeVisible();
     });
   });
 });
