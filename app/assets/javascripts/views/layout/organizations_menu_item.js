@@ -1,12 +1,12 @@
 _.constructor('Views.Layout.OrganizationsMenuItem', Monarch.View.Template, {
   content: function() { with(this.builder) {
     li(function() {
-      a().ref('name');
       a({'class': "admin link"}, "Admin").ref('adminLink').click(function() {
         History.pushState(null, null, this.organization.settingsUrl());
         $(window).click();
         return false;
       });
+      a().ref('name');
     }).click(function() {
       History.pushState(null, null, this.organization.url());
     });
