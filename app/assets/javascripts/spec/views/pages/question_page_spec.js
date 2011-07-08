@@ -722,6 +722,7 @@ describe("Views.Pages.Question", function() {
 
   function expectFieldsVisible() {
     expect(questionPage.editableBody).toBeVisible();
+    expect(questionPage.detailsHeader).toBeVisible();
     expect(questionPage.editableDetails).toBeVisible();
     expect(questionPage.cancelEditButton).toBeVisible();
     expect(questionPage.updateButton).toBeVisible();
@@ -732,6 +733,7 @@ describe("Views.Pages.Question", function() {
   }
 
   function expectFieldsHidden() {
+    expect(questionPage.detailsHeader).toBeHidden();
     expect(questionPage.editableBody).toBeHidden();
     expect(questionPage.editableDetails).toBeHidden();
     expect(questionPage.cancelEditButton).toBeHidden();

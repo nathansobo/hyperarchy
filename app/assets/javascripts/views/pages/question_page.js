@@ -35,6 +35,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
   }},
 
   column1: function() { with(this.builder) {
+    h2({id: "details-header"}, "Details").ref('detailsHeader');
     div({'class': 'details'}).ref('details');
     textarea({name: 'details', 'class': "details"}).ref("editableDetails");
 
