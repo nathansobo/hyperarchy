@@ -1,6 +1,4 @@
 class SandboxController < ApplicationController
-  before_filter :slow_it_down
-
   def fetch
     render :json => sandbox.fetch(*JSON.parse(params[:relations]))
   end
@@ -21,10 +19,6 @@ class SandboxController < ApplicationController
   end
 
   protected
-
-  def slow_it_down
-    sleep 2
-  end
 
   def sandbox
     @sandbox ||= Sandbox.new(current_user)
