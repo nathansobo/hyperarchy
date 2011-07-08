@@ -6,7 +6,7 @@
   position: relative
   padding-top: 0
 
-  .spinner
+  > .spinner, #ranked-candidates > .spinner
     top: 50%
     left: 50%
     position: absolute
@@ -287,12 +287,13 @@
     background: #f0f0f0
     border: 1px solid #ccc
     @include box-shadow(#aaa 0 0 3px inset)
-    li.candidate, li.ranking
+    li.candidate
       border-left: none
       border-top: none
       border-right: none
       &.selected
         @include background-image(linear-gradient(left, rgb(255,235,113), rgb(255, 247, 203)))
+
 
 #rankings-and-details
   overflow: hidden
@@ -381,6 +382,19 @@
     border: 1px solid #ccc
     @include box-shadow(#aaa 0 0 3px)
     cursor: default
+    .spinner
+      width: $line-height
+      height: $line-height
+      float: right
+      .spoke
+        width: 2px
+        left: (18 - 2) / 2
+        .solid
+          background: #333
+          height: 5px
+          @include border-top-radius(1)
+
+
 
 #election
   #headline

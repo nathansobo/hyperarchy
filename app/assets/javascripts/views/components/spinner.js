@@ -2,7 +2,9 @@ _.constructor('Views.Components.Spinner', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({'class': "spinner"}, function() {
       _.times(8, function(i) {
-        div({'class': "bar-" + i});
+        div({'class': "spoke spoke-" + i}, function() {
+          div({'class': "solid"});
+        });
       });
     });
   }},

@@ -1,6 +1,9 @@
 _.constructor('Views.Pages.Election.RankingLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
-    li({'class': "ranking"}).mousedown('handleMousedown');
+    li({'class': "ranking"}, function() {
+      subview('spinner', Views.Components.Spinner);
+      div().ref('body');
+    }).mousedown('handleMousedown');
   }},
 
   viewProperties: {
@@ -9,7 +12,7 @@ _.constructor('Views.Pages.Election.RankingLi', Monarch.View.Template, {
         this.candidate = this.ranking.candidate();
         this.observeRankingPosition();
       }
-      this.text(this.candidate.body());
+      this.body.text(this.candidate.body());
     },
     
     observeRankingPosition: function() {
@@ -37,8 +40,11 @@ _.constructor('Views.Pages.Election.RankingLi', Monarch.View.Template, {
 
       var position = (nextPosition + prevPosition) / 2;
       this.data('position', position);
+
+      this.loading(true);
       Ranking.createOrUpdate(Application.currentUser(), candidate, position)
         .success(function(ranking) {
+          this.loading(false);
           if (!this.ranking) {
             this.ranking = ranking;
             this.observeRankingPosition();
@@ -48,6 +54,16 @@ _.constructor('Views.Pages.Election.RankingLi', Monarch.View.Template, {
 
     handleMousedown: function() {
       if (this.ranking && this.ranking.userId() !== Application.currentUserId()) return false;
+    },
+
+    loading: {
+      change: function(loading) {
+        if (loading) {
+          this.spinner.show();
+        } else {
+          this.spinner.hide();
+        }
+      }
     }
   }
 });

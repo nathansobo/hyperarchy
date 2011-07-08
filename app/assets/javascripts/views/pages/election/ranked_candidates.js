@@ -151,11 +151,15 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     },
 
     insertRankingLi: function(candidate, options) {
-      var existingRankingLi = this.lisByCandidateId[candidate.id()];
-      if (existingRankingLi) existingRankingLi.remove();
+      var rankingLi = this.lisByCandidateId[candidate.id()];
 
-      var rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
-      this.lisByCandidateId[rankingLi.candidate.id()] = rankingLi;
+      if (rankingLi) {
+        rankingLi.detach();
+      } else {
+        rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
+        this.lisByCandidateId[candidate.id()] = rankingLi;
+      }
+
       this.detachDragTargets();
 
       if (options.replace) {

@@ -86,16 +86,16 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
   describe("drag and drop of rankings", function() {
     describe("sorting existing rankings", function() {
-      var ranking3, ranking3Li, createOrUpdatePromise;
+      var ranking3, ranking3Li;
 
       beforeEach(function() {
         ranking2.remotelyUpdated({position: 32});
         ranking3 = currentUser.rankings().createFromRemote({id: 3, electionId: election.id(), candidateId: candidate3.id(), position: -64});
         rankedCandidates.rankings(rankingsRelation);
 
-        ranking1Li = rankedCandidates.list.find('li:eq(0)');
-        ranking2Li = rankedCandidates.list.find('li:eq(1)');
-        ranking3Li = rankedCandidates.list.find('li:eq(3)');
+        ranking1Li = rankedCandidates.list.find('li:eq(0)').view();
+        ranking2Li = rankedCandidates.list.find('li:eq(1)').view();
+        ranking3Li = rankedCandidates.list.find('li:eq(3)').view();
       });
 
       describe("dragging into the positive ranking region", function() {
@@ -213,6 +213,15 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           expect(otherUserRankingLi).toExist();
           otherUserRankingLi.dragBelow(rankedCandidates.separator);
           expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("showing and hiding of spinners", function() {
+        it("shows the spinner while the ranking is being updated", function() {
+          ranking3Li.dragAbove(ranking1Li);
+          expect(ranking3Li.loading()).toBeTruthy();
+          createOrUpdatePromise.triggerSuccess(ranking3);
+          expect(ranking3Li.loading()).toBeFalsy();
         });
       });
     });
