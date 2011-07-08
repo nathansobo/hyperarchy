@@ -46,7 +46,7 @@ describe PasswordResetsController do
           current_user.should == user
           user.password.should == "new password"
           default_org_id = user.default_organization.id
-          response.should redirect_to(root_path(:anchor => "#view=organization&organizationId=#{default_org_id}"))
+          response.should redirect_to(organization_url(user.default_organization))
         end
       end
 

@@ -3,8 +3,12 @@ module Views
     class New < Layouts::FloatingCard
       attr_accessor :token
 
+      def id
+        'password-reset'
+      end
+
       def floating_card_content
-        form :id => "resetPasswordForm", :method => "post", :action => password_resets_path do
+        form :method => "post", :action => password_resets_path do
           label "New Password", :for => "password"
           input :name => "password", :type => "password"
 
@@ -13,7 +17,7 @@ module Views
 
           input :name => "token", :type => "hidden", :value => token
 
-          input :value => "Reset My Password", :type => "submit", :class => "glossyBlack roundedButton"
+          input :value => "Reset My Password", :type => "submit", :class => "button"
           div :class => "clear"
         end
       end

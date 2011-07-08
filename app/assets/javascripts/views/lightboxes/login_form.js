@@ -9,6 +9,7 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
       label("Email Address");
       input({name: "user[emailAddress]", tabindex: 101}).ref('emailAddress');
 
+      a({id: "forgot-password", href: "/password_reset_requests/new", 'class': "link"}, "I forgot my password");
       label("Password");
       input({name: "user[password]", type: "password", tabindex: 102}).ref('password');
 

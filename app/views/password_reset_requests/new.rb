@@ -1,11 +1,15 @@
 module Views
   module PasswordResetRequests
     class New < Layouts::FloatingCard
+      def id
+        'password-reset-request'
+      end
+
       def floating_card_content
-        form :id => "requestPasswordResetForm", :method => "post", :action => password_reset_requests_path do
+        form :method => "post", :action => password_reset_requests_path do
           label "Email Address", :for => "email_address"
           input :name => "email_address", :value => @email_address
-          input :value => "Reset My Password", :type => "submit", :class => "glossyBlack roundedButton"
+          input :value => "Reset My Password", :type => "submit", :class => "button"
           div :class => "clear"
         end
       end
