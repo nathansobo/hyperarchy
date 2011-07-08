@@ -12,7 +12,6 @@ _.constructor('Views.Components.Spinner', Monarch.View.Template, {
   viewProperties: {
     initialize: function() {
       this.degrees = 0;
-      this.show();
     },
 
     beforeShow: function() {
