@@ -13,6 +13,7 @@ _.constructor('Views.Pages.Election.RankingLi', Monarch.View.Template, {
         this.observeRankingPosition();
       }
       this.body.text(this.candidate.body());
+      this.outstandingRequests = 0;
     },
     
     observeRankingPosition: function() {
@@ -42,9 +43,11 @@ _.constructor('Views.Pages.Election.RankingLi', Monarch.View.Template, {
       this.data('position', position);
 
       this.loading(true);
+      this.outstandingRequests++;
       Ranking.createOrUpdate(Application.currentUser(), candidate, position)
         .success(function(ranking) {
-          this.loading(false);
+          this.outstandingRequests--;
+          if (this.outstandingRequests === 0) this.loading(false);
           if (!this.ranking) {
             this.ranking = ranking;
             this.observeRankingPosition();

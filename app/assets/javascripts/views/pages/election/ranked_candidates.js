@@ -199,7 +199,11 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
     insertAtIndex: function(ranking, changesetOrIndex, index) {
       if (_.isNumber(changesetOrIndex)) index = changesetOrIndex;
 
-      var li = this.findOrCreateLi(ranking).detach();
+      var li = this.findOrCreateLi(ranking)
+
+      if (li.outstandingRequests > 0) return;
+
+      li.detach();
       var lis = ranking.position() > 0 ? this.positiveLis() : this.negativeLis();
       var followingLi = lis.eq(index);
 

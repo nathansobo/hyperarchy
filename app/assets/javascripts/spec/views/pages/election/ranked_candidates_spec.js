@@ -1,7 +1,7 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Election.RankedCandidates", function() {
-  var organization, electionPage, rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation, createOrUpdatePromise;
+  var organization, electionPage, rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation, lastCreateOrUpdatePromise;
   
   beforeEach(function() {
     organization = Organization.createFromRemote({id: 1})
@@ -23,8 +23,9 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     spyOn(rankedCandidates, 'currentUserCanRank').andReturn(true);
     electionPage.show();
 
-    createOrUpdatePromise = new Monarch.Promise();
-    spyOn(Ranking, 'createOrUpdate').andReturn(createOrUpdatePromise);
+    spyOn(Ranking, 'createOrUpdate').andCallFake(function() {
+      return lastCreateOrUpdatePromise = new Monarch.Promise();
+    });
 
     useFakeServer(true);
   });
@@ -220,7 +221,26 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         it("shows the spinner while the ranking is being updated", function() {
           ranking3Li.dragAbove(ranking1Li);
           expect(ranking3Li.loading()).toBeTruthy();
-          createOrUpdatePromise.triggerSuccess(ranking3);
+          lastCreateOrUpdatePromise.triggerSuccess(ranking3);
+          expect(ranking3Li.loading()).toBeFalsy();
+        });
+
+        it("does not hide the spinner if there are outstanding requests", function() {
+          expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
+
+          ranking3Li.dragAbove(ranking1Li);
+          expect(ranking3Li.loading()).toBeTruthy();
+
+          var firstRequestPromise = lastCreateOrUpdatePromise;
+
+          ranking3Li.dragAbove(ranking2Li);
+          var secondRequestPromise = lastCreateOrUpdatePromise;
+          expect(ranking3Li.loading()).toBeTruthy();
+
+          firstRequestPromise.triggerSuccess(ranking3);
+          expect(ranking3Li.loading()).toBeTruthy();
+
+          secondRequestPromise.triggerSuccess(ranking3);
           expect(ranking3Li.loading()).toBeFalsy();
         });
       });
@@ -246,7 +266,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
             // simulate creation of ranking on server
             var ranking3 = Ranking.createFromRemote({id: 3, userId: currentUser.id(), candidateId: candidate3.id(), electionId: election.id(), position: 128});
-            createOrUpdatePromise.triggerSuccess(ranking3);
+            lastCreateOrUpdatePromise.triggerSuccess(ranking3);
 
             expect(rankedCandidates.list.find('li').size()).toBe(4);
 
@@ -292,7 +312,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
             // simulate creation of ranking on server
             ranking2.remotelyUpdated({position: 128});
-            createOrUpdatePromise.triggerSuccess(ranking2);
+            lastCreateOrUpdatePromise.triggerSuccess(ranking2);
 
             expect(ranking2.onUpdateNode.size()).toBe(numUpdateSubscriptionsBefore);
           });
@@ -567,7 +587,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
           // now the simulate creation of a ranking on server
           var ranking3 = Ranking.createFromRemote({id: 3, userId: currentUser.id(), candidateId: candidate3.id(), electionId: election.id(), position: 128});
-          createOrUpdatePromise.triggerSuccess(ranking3);
+          lastCreateOrUpdatePromise.triggerSuccess(ranking3);
 
           expect(rankedCandidates.list.find('li').size()).toBe(4);
 
@@ -763,6 +783,34 @@ describe("Views.Pages.Election.RankedCandidates", function() {
         expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
 
         expect(rankedCandidates.lisByCandidateId[ranking2.candidateId()]).toBeUndefined();
+      });
+    });
+
+    describe("when the ranking has an outstanding request", function() {
+      it("is not relocated", function() {
+        rankedCandidates.rankings(rankingsRelation);
+        var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")').view();
+        var ranking2Li = rankedCandidates.find('li:contains("Candidate 2")').view();
+
+        ranking2Li.dragAbove(ranking1Li);
+        expect(Ranking.createOrUpdate).toHaveBeenCalled();
+        var firstRequestPromise = lastCreateOrUpdatePromise;
+
+        Ranking.createOrUpdate.reset();
+        ranking2Li.dragAbove(rankedCandidates.negativeDragTarget);
+        expect(Ranking.createOrUpdate).toHaveBeenCalled();
+        var secondRequestPromise = lastCreateOrUpdatePromise;
+
+        // simulate completion of first request
+        ranking2.remotelyUpdated({position: 128});
+        firstRequestPromise.triggerSuccess(ranking2);
+
+        expect(ranking2Li.loading()).toBeTruthy();
+        expect(ranking2Li.prev('#separator')).toExist();
+
+        ranking2.remotelyUpdated({position: -64});
+        secondRequestPromise.triggerSuccess(ranking2);
+        expect(ranking2Li.loading()).toBeFalsy();
       });
     });
   });
