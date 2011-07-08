@@ -1,7 +1,7 @@
 .placeholder
   background: purple
   
-#election
+#question
   height: 100%
   position: relative
   padding-top: 0
@@ -333,7 +333,7 @@
       &.selected
         @include background-image(linear-gradient(right, rgb(255,235,113), rgb(255, 247, 203)))
 
-#election
+#question
   .candidate
     @include clearfix
     position: relative
@@ -375,7 +375,7 @@
         background: darken($pale-red, 7%)
         border-color: desaturate(darken($pale-red, 20%), 40%)
 
-#election
+#question
   .candidate, .ranking
     padding: (ceil($line-height/2) - 1) ($line-height/2) ($line-height/2) ($line-height/2)
     background: white
@@ -396,7 +396,7 @@
 
 
 
-#election
+#question
   #headline
     textarea.body
       display: none
@@ -406,12 +406,12 @@
     textarea.details, .update.button, .cancel.button, .edit.button, .destroy.button
       display: none
 
-#election.mutable
+#question.mutable
   #column1
     .edit.button, .destroy.button
       display: block
 
-#election.edit-mode
+#question.edit-mode
   #headline
     div.body
       display: none

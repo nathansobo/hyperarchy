@@ -1,12 +1,12 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election.VoteLi", function() {
-  var voteLi, vote, user, election;
+describe("Views.Pages.Question.VoteLi", function() {
+  var voteLi, vote, user, question;
   beforeEach(function() {
     user = User.createFromRemote({id: 1, firstName: 'joe', lastName: 'henderson'});
-    election = Election.createFromRemote({id: 1, creatorId: 1, createdAt: 234234});
-    vote = user.votes().createFromRemote({electionId: election.id(), updatedAt: 1308352736162});
-    voteLi = Views.Pages.Election.VoteLi.toView({vote: vote});
+    question = Question.createFromRemote({id: 1, creatorId: 1, createdAt: 234234});
+    vote = user.votes().createFromRemote({questionId: question.id(), updatedAt: 1308352736162});
+    voteLi = Views.Pages.Question.VoteLi.toView({vote: vote});
   });
 
   describe("when the vote is assigned", function() {
@@ -32,7 +32,7 @@ describe("Views.Pages.Election.VoteLi", function() {
 
         it("fetches the user and populates the li with their name", function() {
           user.remotelyDestroyed();
-          voteLi = Views.Pages.Election.VoteLi.toView({vote: vote});
+          voteLi = Views.Pages.Question.VoteLi.toView({vote: vote});
           $('#jasmine_content').html(voteLi);
 
           expect(voteLi).toBeHidden();

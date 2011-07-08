@@ -17,8 +17,8 @@ class CandidateComment < Prequel::Record
     candidate ? candidate.organization_ids : []
   end
 
-  def election
-    candidate.election
+  def question
+    candidate.question
   end
 
   def can_create?
@@ -26,7 +26,7 @@ class CandidateComment < Prequel::Record
   end
 
   def can_update_or_destroy?
-    current_user.admin? || creator_id == current_user.id || election.organization.has_owner?(current_user)
+    current_user.admin? || creator_id == current_user.id || question.organization.has_owner?(current_user)
   end
   alias can_update? can_update_or_destroy?
   alias can_destroy? can_update_or_destroy?

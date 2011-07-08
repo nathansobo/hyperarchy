@@ -33,7 +33,7 @@ module Models
           new_membership.can_create?.should be_false
           membership.can_update?.should be_true
           membership.can_destroy?.should be_false
-          membership.can_update_columns?([:role, :notify_of_new_elections, :notify_of_new_candidates]).should be_false
+          membership.can_update_columns?([:role, :notify_of_new_questions, :notify_of_new_candidates]).should be_false
           membership.can_update_columns?([:last_visited]).should be_true
 
           set_current_user(owner)
@@ -79,24 +79,24 @@ module Models
         end
       end
 
-      describe "#new_elections_in_period(period)" do
+      describe "#new_questions_in_period(period)" do
         context "when the user last visited before the beginning of the last period" do
           before do
             membership.update(:last_visited => time_of_notification - 2.hours)
           end
 
-          it "returns elections not created by the membership's user that were created after the beginning of the last period" do
+          it "returns questions not created by the membership's user that were created after the beginning of the last period" do
             time_travel_to(time_of_notification - 70.minutes)
-            organization.elections.make(:creator => other_user)
+            organization.questions.make(:creator => other_user)
 
             time_travel_to(time_of_notification - 50.minutes)
-            organization.elections.make(:creator => user)
-            e1 = organization.elections.make(:creator => other_user)
-            e2 = organization.elections.make(:creator => other_user)
-            Election.make(:creator => other_user) # other org, should not show up
+            organization.questions.make(:creator => user)
+            e1 = organization.questions.make(:creator => other_user)
+            e2 = organization.questions.make(:creator => other_user)
+            Question.make(:creator => other_user) # other org, should not show up
 
             time_travel_to(time_of_notification)
-            membership.new_elections_in_period('hourly').all.should =~ [e1, e2]
+            membership.new_questions_in_period('hourly').all.should =~ [e1, e2]
           end
         end
 
@@ -105,34 +105,34 @@ module Models
             membership.update(:last_visited => time_of_notification - 40.minutes)
           end
 
-          it "returns elections not created by the membership's user that were created after the last visit" do
+          it "returns questions not created by the membership's user that were created after the last visit" do
             time_travel_to(time_of_notification - 70.minutes)
-            organization.elections.make(:creator => other_user)
+            organization.questions.make(:creator => other_user)
 
             time_travel_to(time_of_notification - 50.minutes)
-            organization.elections.make(:creator => other_user)
+            organization.questions.make(:creator => other_user)
 
             time_travel_to(time_of_notification - 30.minutes)
-            organization.elections.make(:creator => user)
-            e1 = organization.elections.make(:creator => other_user)
-            e2 = organization.elections.make(:creator => other_user)
-            Election.make(:creator => other_user) # other org, should not show up
+            organization.questions.make(:creator => user)
+            e1 = organization.questions.make(:creator => other_user)
+            e2 = organization.questions.make(:creator => other_user)
+            Question.make(:creator => other_user) # other org, should not show up
 
             time_travel_to(time_of_notification)
-            membership.new_elections_in_period('hourly').all.should =~ [e1, e2]
+            membership.new_questions_in_period('hourly').all.should =~ [e1, e2]
           end
         end
       end
 
       describe "#new_candidates_in_period(period)" do
-        attr_reader :election_with_vote, :election_without_vote
+        attr_reader :question_with_vote, :question_without_vote
 
         before do
           time_travel_to(time_of_notification - 2.hours)
-          @election_without_vote = organization.elections.make(:creator => other_user)
-          @election_with_vote = organization.elections.make(:creator => other_user)
-          candidate_to_rank =  election_with_vote.candidates.make
-          election_with_vote.rankings.create(:user => user, :candidate => candidate_to_rank, :position => 64)
+          @question_without_vote = organization.questions.make(:creator => other_user)
+          @question_with_vote = organization.questions.make(:creator => other_user)
+          candidate_to_rank =  question_with_vote.candidates.make
+          question_with_vote.rankings.create(:user => user, :candidate => candidate_to_rank, :position => 64)
         end
 
         context "when the user last visited before the beginning of the last period" do
@@ -142,13 +142,13 @@ module Models
 
           it "returns candidates not created by the membership's user that were created after the beginning of the last period" do
             time_travel_to(time_of_notification - 70.minutes)
-            election_with_vote.candidates.make(:creator => other_user)
+            question_with_vote.candidates.make(:creator => other_user)
 
             time_travel_to(time_of_notification - 50.minutes)
-            election_without_vote.candidates.make(:creator => other_user)
-            c1 = election_with_vote.candidates.make(:creator => other_user)
-            c2 = election_with_vote.candidates.make(:creator => other_user)
-            election_with_vote.candidates.make(:creator => user)
+            question_without_vote.candidates.make(:creator => other_user)
+            c1 = question_with_vote.candidates.make(:creator => other_user)
+            c2 = question_with_vote.candidates.make(:creator => other_user)
+            question_with_vote.candidates.make(:creator => user)
             Candidate.make(:creator => other_user) # other org, should not show up
 
             time_travel_to(time_of_notification)
@@ -163,16 +163,16 @@ module Models
 
           it "returns candidates not created by the membership's user that were created after the last visit" do
             time_travel_to(time_of_notification - 70.minutes)
-            election_with_vote.candidates.make(:creator => other_user)
+            question_with_vote.candidates.make(:creator => other_user)
 
             time_travel_to(time_of_notification - 50.minutes)
-            election_with_vote.candidates.make(:creator => other_user)
+            question_with_vote.candidates.make(:creator => other_user)
 
             time_travel_to(time_of_notification - 30.minutes)
-            election_without_vote.candidates.make(:creator => other_user)
-            c1 = election_with_vote.candidates.make(:creator => other_user)
-            c2 = election_with_vote.candidates.make(:creator => other_user)
-            election_with_vote.candidates.make(:creator => user)
+            question_without_vote.candidates.make(:creator => other_user)
+            c1 = question_with_vote.candidates.make(:creator => other_user)
+            c2 = question_with_vote.candidates.make(:creator => other_user)
+            question_with_vote.candidates.make(:creator => user)
             Candidate.make(:creator => other_user) # other org, should not show up
 
             time_travel_to(time_of_notification)
@@ -186,10 +186,10 @@ module Models
 
         before do
           time_travel_to(time_of_notification - 2.hours)
-          election = organization.elections.make(:creator => other_user)
-          @ranked_candidate =  election.candidates.make(:creator => other_user)
-          @unranked_candidate =  election.candidates.make(:creator => other_user)
-          election.rankings.create(:user => user, :candidate => ranked_candidate, :position => 64)
+          question = organization.questions.make(:creator => other_user)
+          @ranked_candidate =  question.candidates.make(:creator => other_user)
+          @unranked_candidate =  question.candidates.make(:creator => other_user)
+          question.rankings.create(:user => user, :candidate => ranked_candidate, :position => 64)
         end
 
         context "when the user last visited before the beginning of the last period" do
@@ -244,9 +244,9 @@ module Models
 
         before do
           time_travel_to(time_of_notification - 2.hours)
-          election = organization.elections.make(:creator => other_user)
-          @own_candidate =  election.candidates.make(:creator => user)
-          @other_candidate =  election.candidates.make(:creator => other_user)
+          question = organization.questions.make(:creator => other_user)
+          @own_candidate =  question.candidates.make(:creator => user)
+          @other_candidate =  question.candidates.make(:creator => other_user)
         end
 
         context "when the user last visited before the beginning of the last period" do

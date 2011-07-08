@@ -2,13 +2,13 @@ require 'spec_helper'
 
 module Models
   describe Candidate do
-    attr_reader :election, :organization, :creator, :candidate
+    attr_reader :question, :organization, :creator, :candidate
     before do
-      @election = Election.make
-      @organization = election.organization
+      @question = Question.make
+      @organization = question.organization
       @creator = organization.make_member
       set_current_user(creator)
-      @candidate = election.candidates.make
+      @candidate = question.candidates.make
     end
 
     describe "life-cycle hooks" do
@@ -19,9 +19,9 @@ module Models
       describe "before create" do
         it "assigns the creator to the Model::Record.current_user" do
           set_current_user(User.make)
-          election.organization.memberships.make(:user => current_user)
+          question.organization.memberships.make(:user => current_user)
 
-          candidate = election.candidates.create(:body => "foo")
+          candidate = question.candidates.create(:body => "foo")
           candidate.creator.should == current_user
         end
 
@@ -31,68 +31,68 @@ module Models
 
           organization.update(:privacy => "private")
           expect do
-            election.candidates.create(:body => "foo")
+            question.candidates.create(:body => "foo")
           end.should raise_error(SecurityError)
 
           organization.update(:privacy => "public")
-          candidate = election.candidates.create(:body => "foo")
+          candidate = question.candidates.create(:body => "foo")
 
           current_user.memberships.where(:organization => organization).size.should == 1
         end
       end
 
       describe "after create" do
-        def verify_majority(winner, loser, election)
-          majority = Majority.find(:winner => winner, :loser => loser, :election => election)
+        def verify_majority(winner, loser, question)
+          majority = Majority.find(:winner => winner, :loser => loser, :question => question)
           majority.should_not be_nil
           majority.winner_created_at.to_i.should == winner.created_at.to_i
         end
 
         it "creates a winning and losing majority every pairing of the created candidate with other candidates" do
-          election.candidates.should be_empty
+          question.candidates.should be_empty
 
-          falafel = election.candidates.make(:body => "Falafel")
-          tacos = election.candidates.make(:body => "Tacos")
+          falafel = question.candidates.make(:body => "Falafel")
+          tacos = question.candidates.make(:body => "Tacos")
 
-          verify_majority(falafel, tacos, election)
-          verify_majority(tacos, falafel, election)
+          verify_majority(falafel, tacos, question)
+          verify_majority(tacos, falafel, question)
 
-          fish = election.candidates.make(:body => "Fish")
+          fish = question.candidates.make(:body => "Fish")
 
-          verify_majority(falafel, fish, election)
-          verify_majority(tacos, fish, election)
-          verify_majority(fish, falafel, election)
-          verify_majority(fish, tacos, election)
+          verify_majority(falafel, fish, question)
+          verify_majority(tacos, fish, question)
+          verify_majority(fish, falafel, question)
+          verify_majority(fish, tacos, question)
         end
 
-        it "makes the new candidate lose to every positively ranked candidate and win over every negatively ranked one, then recomputes the election results" do
+        it "makes the new candidate lose to every positively ranked candidate and win over every negatively ranked one, then recomputes the question results" do
           user_1 = User.make
           user_2 = User.make
           user_3 = User.make
 
-          _3_up_0_down = election.candidates.make(:body => "3 Up - 0 Down")
-          _2_up_1_down = election.candidates.make(:body => "2 Up - 1 Down")
-          _1_up_2_down = election.candidates.make(:body => "1 Up - 2 Down")
-          _0_up_3_down = election.candidates.make(:body => "0 Up - 3 Down")
-          unranked     = election.candidates.make(:body => "Unranked")
+          _3_up_0_down = question.candidates.make(:body => "3 Up - 0 Down")
+          _2_up_1_down = question.candidates.make(:body => "2 Up - 1 Down")
+          _1_up_2_down = question.candidates.make(:body => "1 Up - 2 Down")
+          _0_up_3_down = question.candidates.make(:body => "0 Up - 3 Down")
+          unranked     = question.candidates.make(:body => "Unranked")
 
-          election.rankings.create(:user => user_1, :candidate => _3_up_0_down, :position => 64)
-          election.rankings.create(:user => user_1, :candidate => _2_up_1_down, :position => 32)
-          election.rankings.create(:user => user_1, :candidate => _1_up_2_down, :position => 16)
-          election.rankings.create(:user => user_1, :candidate => _0_up_3_down, :position => -64)
+          question.rankings.create(:user => user_1, :candidate => _3_up_0_down, :position => 64)
+          question.rankings.create(:user => user_1, :candidate => _2_up_1_down, :position => 32)
+          question.rankings.create(:user => user_1, :candidate => _1_up_2_down, :position => 16)
+          question.rankings.create(:user => user_1, :candidate => _0_up_3_down, :position => -64)
 
-          election.rankings.create(:user => user_2, :candidate => _3_up_0_down, :position => 64)
-          election.rankings.create(:user => user_2, :candidate => _2_up_1_down, :position => 32)
-          election.rankings.create(:user => user_2, :candidate => _1_up_2_down, :position => -32)
-          election.rankings.create(:user => user_2, :candidate => _0_up_3_down, :position => -64)
+          question.rankings.create(:user => user_2, :candidate => _3_up_0_down, :position => 64)
+          question.rankings.create(:user => user_2, :candidate => _2_up_1_down, :position => 32)
+          question.rankings.create(:user => user_2, :candidate => _1_up_2_down, :position => -32)
+          question.rankings.create(:user => user_2, :candidate => _0_up_3_down, :position => -64)
 
-          election.rankings.create(:user => user_3, :candidate => _3_up_0_down, :position => 64)
-          election.rankings.create(:user => user_3, :candidate => _2_up_1_down, :position => -16)
-          election.rankings.create(:user => user_3, :candidate => _1_up_2_down, :position => -32)
-          election.rankings.create(:user => user_3, :candidate => _0_up_3_down, :position => -64)
+          question.rankings.create(:user => user_3, :candidate => _3_up_0_down, :position => 64)
+          question.rankings.create(:user => user_3, :candidate => _2_up_1_down, :position => -16)
+          question.rankings.create(:user => user_3, :candidate => _1_up_2_down, :position => -32)
+          question.rankings.create(:user => user_3, :candidate => _0_up_3_down, :position => -64)
 
-          mock.proxy(election).compute_global_ranking
-          candidate = election.candidates.make(:body => "Alpaca")
+          mock.proxy(question).compute_global_ranking
+          candidate = question.candidates.make(:body => "Alpaca")
           # new candidate is tied with 'Unranked' so could go either before it or after it
           # until we handle ties, but it should be less than the negatively ranked candidates
           candidate.position.should be < 5
@@ -124,8 +124,8 @@ module Models
         end
 
         it "gives the candidate a position of 1 if they are the only candidate" do
-          candidate = election.candidates.make(:body => "Only")
-          election.candidates.size.should == 1
+          candidate = question.candidates.make(:body => "Only")
+          question.candidates.size.should == 1
           candidate.position.should == 1
         end
 
@@ -135,7 +135,7 @@ module Models
             job_params = params
           end
 
-          candidate = election.candidates.create!(:body => "Turkey.")
+          candidate = question.candidates.create!(:body => "Turkey.")
           job_params.should ==  { :class_name => "Candidate", :id => candidate.id }
         end
       end
@@ -145,25 +145,25 @@ module Models
           user_1 = User.make
           user_2 = User.make
 
-          candidate_1 = election.candidates.make(:body => "foo")
-          candidate_2 = election.candidates.make(:body => "bar")
+          candidate_1 = question.candidates.make(:body => "foo")
+          candidate_2 = question.candidates.make(:body => "bar")
           comment_1 = candidate_1.comments.make
           comment_2 = candidate_1.comments.make
 
           freeze_time
           voting_time = Time.now
 
-          election.rankings.create(:user => user_1, :candidate => candidate_1, :position => 64)
-          election.rankings.create(:user => user_1, :candidate => candidate_2, :position => 32)
-          election.rankings.create(:user => user_2, :candidate => candidate_1, :position => 32)
+          question.rankings.create(:user => user_1, :candidate => candidate_1, :position => 64)
+          question.rankings.create(:user => user_1, :candidate => candidate_2, :position => 32)
+          question.rankings.create(:user => user_2, :candidate => candidate_1, :position => 32)
 
           Ranking.where(:candidate_id => candidate_1.id).size.should == 2
           Majority.where(:winner_id => candidate_1.id).size.should == 1
           Majority.where(:loser_id => candidate_1.id).size.should == 1
           CandidateComment.where(:candidate_id => candidate_1.id).size.should == 2
 
-          election.votes.size.should == 2
-          election.votes.each do |vote|
+          question.votes.size.should == 2
+          question.votes.each do |vote|
             vote.updated_at.should == Time.now
           end
 
@@ -176,24 +176,24 @@ module Models
           Majority.where(:loser_id => candidate_1.id).should be_empty
           CandidateComment.where(:candidate_id => candidate_1.id).should be_empty
 
-          election.votes.size.should == 1
-          election.votes.first.updated_at.should == voting_time
+          question.votes.size.should == 1
+          question.votes.first.updated_at.should == voting_time
         end
       end
     end
 
     describe "#users_to_notify_immediately" do
       it "returns the members of the candidate's organization who have their candidate notifaction preference set to 'immediately' " +
-          "and who voted on the candidate's election and who did not create the candidate" do
+          "and who voted on the candidate's question and who did not create the candidate" do
         notify1 = User.make
         notify2 = User.make
         dont_notify1 = User.make
         dont_notify2 = User.make
 
-        notify1.votes.create!(:election => election)
-        notify2.votes.create!(:election => election)
-        dont_notify1.votes.create!(:election => election)
-        creator.votes.create!(:election => election)
+        notify1.votes.create!(:question => question)
+        notify2.votes.create!(:question => question)
+        dont_notify1.votes.create!(:question => question)
+        creator.votes.create!(:question => question)
 
         organization.memberships.make(:user => notify1, :notify_of_new_candidates => 'immediately')
         organization.memberships.make(:user => notify2, :notify_of_new_candidates => 'immediately')
@@ -215,11 +215,11 @@ module Models
       attr_reader :member, :owner, :non_member, :membership, :candidate
 
       before do
-        @member = election.organization.make_member
-        @owner = election.organization.make_owner
+        @member = question.organization.make_member
+        @owner = question.organization.make_owner
         @non_member = User.make
-        @membership = election.organization.memberships.make(:user => member)
-        @candidate = election.candidates.make(:body => "Hey you!")
+        @membership = question.organization.memberships.make(:user => member)
+        @candidate = question.candidates.make(:body => "Hey you!")
       end
 
       describe "body length limit" do
@@ -249,30 +249,30 @@ module Models
 
       describe "#can_create?" do
         before do
-          election.organization.update(:privacy => "read_only")
+          question.organization.update(:privacy => "read_only")
         end
 
-        context "if the given election's organization is non-public" do
+        context "if the given question's organization is non-public" do
           specify "only members create candidates" do
             set_current_user(member)
-            election.candidates.make_unsaved.can_create?.should be_true
+            question.candidates.make_unsaved.can_create?.should be_true
 
             set_current_user(non_member)
-            election.candidates.make_unsaved.can_create?.should be_false
+            question.candidates.make_unsaved.can_create?.should be_false
           end
         end
 
-        context "if the given election's organization is public" do
+        context "if the given question's organization is public" do
           before do
-            election.organization.update(:privacy => "public")
+            question.organization.update(:privacy => "public")
           end
 
           specify "non-guest users can create candidates" do
             set_current_user(User.default_guest)
-            election.candidates.make_unsaved.can_create?.should be_false
+            question.candidates.make_unsaved.can_create?.should be_false
 
             set_current_user(non_member)
-            election.candidates.make_unsaved.can_create?.should be_true
+            question.candidates.make_unsaved.can_create?.should be_true
           end
         end
       end
@@ -301,7 +301,7 @@ module Models
           candidate.can_destroy?.should be_true
 
           # no one can update properties other than body and details
-          candidate.can_update_columns?([:election_id, :creator_id, :position]).should be_false
+          candidate.can_update_columns?([:question_id, :creator_id, :position]).should be_false
         end
       end
     end

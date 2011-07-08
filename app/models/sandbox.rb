@@ -20,28 +20,28 @@ class Sandbox < Prequel::Sandbox
     User.table
   end
 
-  expose :elections do
-    organizations.join_through(Election)
+  expose :questions do
+    organizations.join_through(Question)
   end
 
-  expose :election_comments do
-    elections.join_through(ElectionComment)
+  expose :question_comments do
+    questions.join_through(QuestionComment)
   end
 
   expose :candidates do
-    elections.join_through(Candidate)
+    questions.join_through(Candidate)
   end
 
   expose :votes do
-    elections.join_through(Vote)
+    questions.join_through(Vote)
   end
 
-  expose :election_visits do
-    user.election_visits
+  expose :question_visits do
+    user.question_visits
   end
 
   expose :rankings do
-    elections.join_through(Ranking)
+    questions.join_through(Ranking)
   end
 
   expose :candidate_comments do

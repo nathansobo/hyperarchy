@@ -21,14 +21,14 @@ _.constructor("Views.Layout", View.Template, {
           subview('accountPage', Views.Pages.Account);
           subview('organizationPage', Views.Pages.Organization);
           subview('organizationSettingsPage', Views.Pages.OrganizationSettings);
-          subview('electionPage', Views.Pages.Election);
+          subview('questionPage', Views.Pages.Question);
         }).ref("body");
       });
 
       div({id: "lightboxes"}, function() {
         subview("loginForm", Views.Lightboxes.LoginForm);
         subview("signupForm", Views.Lightboxes.SignupForm);
-        subview("newElection", Views.Lightboxes.NewElection);
+        subview("newQuestion", Views.Lightboxes.NewQuestion);
         subview("disconnectDialog", Views.Lightboxes.DisconnectDialog);
       }).ref("lightboxes");
 
@@ -42,7 +42,7 @@ _.constructor("Views.Layout", View.Template, {
     initialize: function() {
       this.currentUserChangeNode = new Monarch.SubscriptionNode();
       this.connectToSocketServer();
-      Election.updateScoresPeriodically();
+      Question.updateScoresPeriodically();
 
       $(document).bind('keydown', 'ctrl+g', function() {
         $('body').toggleClass('grid');

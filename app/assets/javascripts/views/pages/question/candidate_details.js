@@ -1,10 +1,10 @@
-_.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
+_.constructor('Views.Pages.Question.CandidateDetails', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "candidate-details"}, function() {
       a({'class': "close"}, "×")
         .ref('closeLink')
         .click(function() {
-          History.pushState(null, null, this.parentView.election().url());
+          History.pushState(null, null, this.parentView.question().url());
         });
 
       div(function() {
@@ -32,7 +32,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         div({'class': "date"}).ref('createdAt');
       }).ref('creator');
 
-      subview('comments', Views.Pages.Election.Comments);
+      subview('comments', Views.Pages.Question.Comments);
     });
   }},
 
@@ -62,7 +62,7 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         this.showOrHideMutateButtons();
 
         this.registerInterest(candidate, 'onDestroy', function() {
-          History.pushState(null, null, candidate.election().url());
+          History.pushState(null, null, candidate.question().url());
         });
         this.registerInterest(candidate, 'onUpdate', this.hitch('adjustCommentsHeight'));
         this.adjustCommentsHeight();
@@ -80,8 +80,8 @@ _.constructor('Views.Pages.Election.CandidateDetails', Monarch.View.Template, {
         Application.promptSignup().success(this.hitch('create'));
         return false;
       }
-      this.parentView.election().candidates().create(this.form.fieldValues());
-      History.pushState(null, null, this.parentView.election().url());
+      this.parentView.question().candidates().create(this.form.fieldValues());
+      History.pushState(null, null, this.parentView.question().url());
 
       return false;
     },

@@ -15,10 +15,10 @@ class User < Prequel::Record
   synthetic_column :email_hash, :string
 
   has_many :memberships
-  has_many :election_visits
+  has_many :question_visits
   has_many :votes
   has_many :rankings
-  has_many :elections
+  has_many :questions
   has_many :candidates, :foreign_key => :creator_id
 
   def organizations
@@ -37,7 +37,7 @@ class User < Prequel::Record
 
   def self.users_to_notify(period)
     Membership.where_any(
-      :notify_of_new_elections => period,
+      :notify_of_new_questions => period,
       :notify_of_new_candidates => period,
       :notify_of_new_comments_on_own_candidates => period,
       :notify_of_new_comments_on_ranked_candidates => period

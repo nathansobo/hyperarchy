@@ -1,23 +1,23 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election.Comments", function() {
-  var member, election, comment1, comment2, creator1, creator2, commentsRelation, commentsView, longCommentBody;
+describe("Views.Pages.Question.Comments", function() {
+  var member, question, comment1, comment2, creator1, creator2, commentsRelation, commentsView, longCommentBody;
 
   beforeEach(function() {
     attachLayout();
     member = User.createFromRemote({id: 1});
     Application.currentUser(member);
 
-    election = Election.createFromRemote({id: 22, creatorId: 1, createdAt: 234});
+    question = Question.createFromRemote({id: 22, creatorId: 1, createdAt: 234});
     creator1 = User.createFromRemote({id: 1, firstName: "Commento", lastName: "Santiago"});
     creator2 = User.createFromRemote({id: 2, firstName: "Kommentor", lastName: "Brunsfeld"});
-    comment1 = election.comments().createFromRemote({id: 11, body: "I likeah the fruiloops so much", creatorId: creator1.id(), createdAt: 3245});
-    comment2 = election.comments().createFromRemote({id: 12, body: "Yez but sie koko krispies sind sehr yummy", creatorId: creator2.id(), createdAt: 3295});
+    comment1 = question.comments().createFromRemote({id: 11, body: "I likeah the fruiloops so much", creatorId: creator1.id(), createdAt: 3245});
+    comment2 = question.comments().createFromRemote({id: 12, body: "Yez but sie koko krispies sind sehr yummy", creatorId: creator2.id(), createdAt: 3295});
 
-    spyOn(ElectionComment.prototype, 'editableByCurrentUser').andReturn(true);
+    spyOn(QuestionComment.prototype, 'editableByCurrentUser').andReturn(true);
 
-    commentsView = Views.Pages.Election.Comments.toView();
-    commentsRelation = election.comments();
+    commentsView = Views.Pages.Question.Comments.toView();
+    commentsRelation = question.comments();
 
     $('#jasmine_content').html(commentsView);
     commentsView.width(800);
@@ -61,7 +61,7 @@ describe("Views.Pages.Election.Comments", function() {
           var createdRecord = Server.lastCreate.record;
 
           expect(createdRecord.body()).toBe(longCommentBody);
-          expect(createdRecord.electionId()).toBe(election.id());
+          expect(createdRecord.questionId()).toBe(question.id());
         });
       });
 
@@ -75,7 +75,7 @@ describe("Views.Pages.Election.Comments", function() {
           var createdRecord = Server.lastCreate.record;
 
           expect(createdRecord.body()).toBe("I like to eat stamps!");
-          expect(createdRecord.electionId()).toBe(election.id());
+          expect(createdRecord.questionId()).toBe(question.id());
         });
 
         it("does nothing if the textarea is blank", function() {
@@ -115,7 +115,7 @@ describe("Views.Pages.Election.Comments", function() {
           expect(Server.creates.length).toBe(1);
           var createdRecord = Server.lastCreate.record;
           expect(createdRecord.body()).toBe("I like to eat stamps!");
-          expect(createdRecord.electionId()).toBe(election.id());
+          expect(createdRecord.questionId()).toBe(question.id());
         });
       });
 

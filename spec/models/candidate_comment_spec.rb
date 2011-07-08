@@ -5,11 +5,11 @@ module Models
     attr_reader :candidate, :organization, :candidate_creator, :comment_creator, :comment
     before do
       @organization = Organization.make
-      election = organization.elections.make
+      question = organization.questions.make
       @candidate_creator = organization.make_member
       @comment_creator = organization.make_member
       set_current_user(comment_creator)
-      @candidate = election.candidates.make(:creator => candidate_creator)
+      @candidate = question.candidates.make(:creator => candidate_creator)
       @comment = candidate.comments.make(:creator => comment_creator)
     end
     

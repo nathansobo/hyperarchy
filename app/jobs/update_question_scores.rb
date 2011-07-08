@@ -1,9 +1,9 @@
 module Jobs
-  class UpdateElectionScores < Resque::JobWithStatus
-    @queue = 'update_election_scores'
+  class UpdateQuestionScores < Resque::JobWithStatus
+    @queue = 'update_question_scores'
 
     def perform
-      Election.update_scores
+      Question.update_scores
       completed
     end
   end

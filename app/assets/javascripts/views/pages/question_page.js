@@ -1,9 +1,9 @@
-_.constructor('Views.Pages.Election', Monarch.View.Template, {
+_.constructor('Views.Pages.Question', Monarch.View.Template, {
   content: function() { with(this.builder) {
-    div({id: "election"}, function() {
+    div({id: "question"}, function() {
       div({id: "subheader"}, function() {
         a({href: "javascript:void"}, "Back to Questions").ref('organizationLink').click(function() {
-          History.pushState(null, null, this.election().organization().url());
+          History.pushState(null, null, this.question().organization().url());
           return false;
         });
       });
@@ -11,7 +11,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       div({id: "headline"}, function() {
         a({'class': "new button"}, "Add An Answer")
           .ref('newCandidateLink')
-          .click('routeToNewElectionForm');
+          .click('routeToNewQuestionForm');
         div({'class': "body"}).ref('body');
         textarea({name: "body", 'class': "body"}).ref("editableBody");
         subview('charsRemaining', Views.Components.CharsRemaining, { limit: 140 });
@@ -49,12 +49,12 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       div({'class': 'date'}).ref('createdAt');
     }).ref('creator');
 
-    subview('comments', Views.Pages.Election.Comments);
+    subview('comments', Views.Pages.Question.Comments);
   }},
 
   column2: function() { with(this.builder) {
     h2("Current Consensus");
-    subview('currentConsensus', Views.Pages.Election.CurrentConsensus);
+    subview('currentConsensus', Views.Pages.Question.CurrentConsensus);
   }},
 
   column3: function() { with(this.builder) {
@@ -62,13 +62,13 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     h2("Answer Details").ref('candidateDetailsHeader');
 
     div({id: "rankings-and-details"}, function() {
-      subview('candidateDetails', Views.Pages.Election.CandidateDetails);
-      subview('rankedCandidates', Views.Pages.Election.RankedCandidates);
+      subview('candidateDetails', Views.Pages.Question.CandidateDetails);
+      subview('rankedCandidates', Views.Pages.Question.RankedCandidates);
     });
   }},
 
   column4: function() {
-    this.builder.subview('votes', Views.Pages.Election.Votes);
+    this.builder.subview('votes', Views.Pages.Question.Votes);
   },
 
   viewProperties: {
@@ -85,7 +85,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       $(window).resize(this.hitch('adjustCommentsHeight'));
 
       Application.onCurrentUserChange(function(currentUser) {
-        if (this.election()) {
+        if (this.question()) {
           this.showOrHideMutateButtons();
         }
 
@@ -93,7 +93,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         if (params) {
           return currentUser
             .rankings()
-            .where({electionId: params.electionId})
+            .where({questionId: params.questionId})
             .fetch()
             .success(this.hitch('populateContentAfterFetch', params));
         }
@@ -117,10 +117,10 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     },
 
     populateContentBeforeFetch: function(params) {
-      var election = Election.find(params.electionId);
-      if (election) {
-        this.election(election);
-        this.currentConsensus.candidates(election.candidates());
+      var question = Question.find(params.questionId);
+      if (question) {
+        this.question(question);
+        this.currentConsensus.candidates(question.candidates());
       } else {
         this.loading(true);
       }
@@ -154,19 +154,19 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     fetchData: function(params, oldParams) {
       var relationsToFetch = [];
 
-      if (!oldParams || params.electionId !== oldParams.electionId) {
-        if (!Election.find(params.electionId)) relationsToFetch.push(Election.where({id: params.electionId}).join(User).on(User.id.eq(Election.creatorId))); // election
-        relationsToFetch.push(Candidate.where({electionId: params.electionId}).join(User).on(Candidate.creatorId.eq(User.id))); // candidates
-        relationsToFetch.push(Vote.where({electionId: params.electionId}).joinTo(User)); // votes
-        relationsToFetch.push(Application.currentUser().rankings().where({electionId: params.electionId})); // current user's rankings
-        relationsToFetch.push(ElectionComment.where({electionId: params.electionId}).join(User).on(ElectionComment.creatorId.eq(User.id))); // election comments and commenters
+      if (!oldParams || params.questionId !== oldParams.questionId) {
+        if (!Question.find(params.questionId)) relationsToFetch.push(Question.where({id: params.questionId}).join(User).on(User.id.eq(Question.creatorId))); // question
+        relationsToFetch.push(Candidate.where({questionId: params.questionId}).join(User).on(Candidate.creatorId.eq(User.id))); // candidates
+        relationsToFetch.push(Vote.where({questionId: params.questionId}).joinTo(User)); // votes
+        relationsToFetch.push(Application.currentUser().rankings().where({questionId: params.questionId})); // current user's rankings
+        relationsToFetch.push(QuestionComment.where({questionId: params.questionId}).join(User).on(QuestionComment.creatorId.eq(User.id))); // question comments and commenters
 
         this.comments.loading(true);
         this.votes.loading(true);
       }
 
       if (params.voterId) {
-        relationsToFetch.push(Ranking.where({electionId: params.electionId, userId: params.voterId})); // additional rankings
+        relationsToFetch.push(Ranking.where({questionId: params.questionId, userId: params.voterId})); // additional rankings
       }
 
       if (params.candidateId && params.candidateId !== "new") {
@@ -188,17 +188,17 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.votes.loading(false);
       this.comments.loading(false);
 
-      var election = Election.find(params.electionId);
+      var question = Question.find(params.questionId);
 
-      if (!election) {
+      if (!question) {
         History.pushState(null, null, Application.currentUser().defaultOrganization().url());
         return;
       }
 
-      this.election(election);
-      this.currentConsensus.candidates(election.candidates());
-      this.votes.votes(election.votes());
-      this.comments.comments(election.comments());
+      this.question(question);
+      this.currentConsensus.candidates(question.candidates());
+      this.votes.votes(question.votes());
+      this.comments.comments(question.comments());
 
       if (params.candidateId) {
         var candidate = Candidate.find(params.candidateId);
@@ -207,35 +207,35 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
         if (candidate) this.candidateDetails.comments.comments(candidate.comments());
         if (params.candidateId === 'new') this.candidateDetails.showNewForm();
       } else {
-        var rankings = Ranking.where({electionId: params.electionId, userId: params.voterId || Application.currentUserId()});
+        var rankings = Ranking.where({questionId: params.questionId, userId: params.voterId || Application.currentUserId()});
         this.showRankedCandidates();
         this.populateRankedCandidatesHeader(params.voterId);
         this.rankedCandidates.rankings(rankings);
       }
     },
 
-    election: {
-      change: function(election) {
-        this.avatar.user(election.creator());
-        this.body.bindText(election, 'body');
-        Application.currentOrganizationId(election.organizationId());
+    question: {
+      change: function(question) {
+        this.avatar.user(question.creator());
+        this.body.bindText(question, 'body');
+        Application.currentOrganizationId(question.organizationId());
 
-        this.body.bindText(election, 'body');
-        this.details.bindText(election, 'details');
-        this.comments.comments(election.comments());
-        this.avatar.user(election.creator());
-        this.creatorName.bindText(election.creator(), 'fullName');
-        this.createdAt.text(election.formattedCreatedAt());
+        this.body.bindText(question, 'body');
+        this.details.bindText(question, 'details');
+        this.comments.comments(question.comments());
+        this.avatar.user(question.creator());
+        this.creatorName.bindText(question.creator(), 'fullName');
+        this.createdAt.text(question.formattedCreatedAt());
 
         this.showOrHideMutateButtons();
         this.cancelEdit();
 
 
-        if (this.electionUpdateSubscription) this.electionUpdateSubscription.destroy();
-        this.electionUpdateSubscription = election.onUpdate(this.hitch('handleElectionUpdate'));
-        this.handleElectionUpdate();
+        if (this.questionUpdateSubscription) this.questionUpdateSubscription.destroy();
+        this.questionUpdateSubscription = question.onUpdate(this.hitch('handleQuestionUpdate'));
+        this.handleQuestionUpdate();
 
-        this.registerInterest(election, 'onDestroy', this.bind(function() {
+        this.registerInterest(question, 'onDestroy', this.bind(function() {
           if (this.is(':visible')) History.pushState(null, null, Application.currentOrganization().url());
         }));
 
@@ -246,8 +246,8 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     edit: function() {
       this.addClass('edit-mode');
       this.editableBody.focus();
-      this.editableBody.val(this.election().body()).keyup();
-      this.editableDetails.val(this.election().details()).keyup();
+      this.editableBody.val(this.question().body()).keyup();
+      this.editableDetails.val(this.question().details()).keyup();
       this.adjustColumnTop();
     },
 
@@ -261,12 +261,12 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       e.preventDefault();
       if ($.trim(this.editableBody.val()) === "") return false;
       if (this.editableBody.val().length > 140) return false;
-      this.election().update({body: this.editableBody.val(), details: this.editableDetails.val()}).success(this.hitch('cancelEdit'));
+      this.question().update({body: this.editableBody.val(), details: this.editableDetails.val()}).success(this.hitch('cancelEdit'));
     },
 
     destroy: function() {
       if (window.confirm("Are you sure you want to delete this question? It can't be undone.")) {
-        this.election().destroy();
+        this.question().destroy();
       }
     },
 
@@ -292,21 +292,21 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
       this.candidateDetails.addClass('active');
     },
 
-    handleElectionUpdate: function() {
+    handleQuestionUpdate: function() {
       this.showOrHideDetails();
       this.adjustColumnTop();
     },
 
     showOrHideDetails: function() {
-      if (this.election().details()) {
+      if (this.question().details()) {
         this.details.show()
       } else {
         this.details.hide()
       }
     },
 
-    routeToNewElectionForm: function() {
-      History.pushState(null, null, this.election().newCandidateUrl());
+    routeToNewQuestionForm: function() {
+      History.pushState(null, null, this.question().newCandidateUrl());
     },
 
     adjustColumnTop: function() {
@@ -330,7 +330,7 @@ _.constructor('Views.Pages.Election', Monarch.View.Template, {
     },
 
     showOrHideMutateButtons: function() {
-      if (this.election().editableByCurrentUser()) {
+      if (this.question().editableByCurrentUser()) {
         this.addClass('mutable');
       } else {
         this.removeClass('mutable');

@@ -8,7 +8,7 @@ describe("Views.Pages.Account.MembershipPreferencesLi", function() {
     membership = Membership.createFromRemote({
       id: 1,
       organizationId: organization.id(),
-      notifyOfNewElections: "daily",
+      notifyOfNewQuestions: "daily",
       notifyOfNewCandidates: "weekly",
       notifyOfNewCommentsOnOwnCandidates: "never",
       notifyOfNewCommentsOnRankedCandidates: "immediately"
@@ -19,7 +19,7 @@ describe("Views.Pages.Account.MembershipPreferencesLi", function() {
   describe("#initialize", function() {
     it("assigns the organization name and all the email preferences", function() {
       expect(preferencesLi.find('h3').text()).toBe("Email Preferences for " + organization.name());
-      expect(preferencesLi.find("[name='notifyOfNewElections']").val()).toBe(membership.notifyOfNewElections());
+      expect(preferencesLi.find("[name='notifyOfNewQuestions']").val()).toBe(membership.notifyOfNewQuestions());
       expect(preferencesLi.find("[name='notifyOfNewCandidates']").val()).toBe(membership.notifyOfNewCandidates());
       expect(preferencesLi.find("[name='notifyOfNewCommentsOnOwnCandidates']").val()).toBe(membership.notifyOfNewCommentsOnOwnCandidates());
       expect(preferencesLi.find("[name='notifyOfNewCommentsOnRankedCandidates']").val()).toBe(membership.notifyOfNewCommentsOnRankedCandidates());
@@ -30,10 +30,10 @@ describe("Views.Pages.Account.MembershipPreferencesLi", function() {
     it("updates the membership record", function() {
       $('#jasmine_content').html(preferencesLi);
       useFakeServer();
-      preferencesLi.find("[name='notifyOfNewElections']").val("weekly").change();
+      preferencesLi.find("[name='notifyOfNewQuestions']").val("weekly").change();
       expect(Server.updates.length).toBe(1);
       Server.lastUpdate.simulateSuccess();
-      expect(membership.notifyOfNewElections()).toBe("weekly");
+      expect(membership.notifyOfNewQuestions()).toBe("weekly");
     });
   });
 });

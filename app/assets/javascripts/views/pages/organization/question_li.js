@@ -1,6 +1,6 @@
-_.constructor('Views.Pages.Organization.ElectionLi', Monarch.View.Template, {
+_.constructor('Views.Pages.Organization.QuestionLi', Monarch.View.Template, {
   content: function() { with(this.builder) {
-    li({'class': "election"}, function() {
+    li({'class': "question"}, function() {
       div(function() {
         subview('avatar', Views.Components.Avatar, {imageSize: Application.lineHeight * 3});
         div({'class': "body"}).ref('body')
@@ -19,16 +19,16 @@ _.constructor('Views.Pages.Organization.ElectionLi', Monarch.View.Template, {
         });
         div({'class': "fadeout"});
       }).click(function() {
-        History.pushState(null, null, this.election.url());
+        History.pushState(null, null, this.question.url());
       });
     });
   }},
 
   viewProperties: {
     initialize: function() {
-      this.body.bindText(this.election, 'body');
-      this.candidates.relation(this.election.candidates().limit(6));
-      this.avatar.user(this.election.creator());
+      this.body.bindText(this.question, 'body');
+      this.candidates.relation(this.question.candidates().limit(6));
+      this.avatar.user(this.question.creator());
     },
 
     attach: function() {

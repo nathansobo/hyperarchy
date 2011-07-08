@@ -4,15 +4,15 @@ module Views
       include HeadlineGeneration
 
       attr_reader :membership, :period, :item
-      attr_reader :election_presenters_by_election, :candidate_presenters_by_candidate
-      attr_accessor :new_election_count, :new_candidate_count, :new_comment_count
+      attr_reader :question_presenters_by_question, :candidate_presenters_by_candidate
+      attr_accessor :new_question_count, :new_candidate_count, :new_comment_count
       delegate :organization, :to => :membership
 
       def initialize(membership, period, item)
         @membership, @period, @item = membership, period, item
-        @election_presenters_by_election = {}
+        @question_presenters_by_question = {}
         @candidate_presenters_by_candidate = {}
-        @new_election_count = 0
+        @new_question_count = 0
         @new_candidate_count = 0
         @new_comment_count = 0
 
@@ -25,8 +25,8 @@ module Views
 
       def build_immediate_notification
         case item
-          when Election
-            add_new_election(item)
+          when Question
+            add_new_question(item)
           when Candidate
             add_new_candidate(item)
           when CandidateComment
@@ -37,9 +37,9 @@ module Views
       end
 
       def build_periodic_notification
-        if membership.wants_election_notifications?(period)
-          membership.new_elections_in_period(period).each do |election|
-            add_new_election(election)
+        if membership.wants_question_notifications?(period)
+          membership.new_questions_in_period(period).each do |question|
+            add_new_question(question)
           end
         end
 
@@ -62,32 +62,32 @@ module Views
         end
       end
 
-      def add_new_election(election)
-        self.new_election_count += 1
-        election_presenters_by_election[election] = ElectionPresenter.new(election, true)
+      def add_new_question(question)
+        self.new_question_count += 1
+        question_presenters_by_question[question] = QuestionPresenter.new(question, true)
       end
 
       def add_new_candidate(candidate)
         self.new_candidate_count += 1
-        election = candidate.election
-        build_election_presenter_if_needed(election)
-        election_presenters_by_election[election].add_new_candidate(candidate)
+        question = candidate.question
+        build_question_presenter_if_needed(question)
+        question_presenters_by_question[question].add_new_candidate(candidate)
       end
 
       def add_new_comment(comment)
         self.new_comment_count += 1
-        election = comment.election
-        build_election_presenter_if_needed(election)
-        election_presenters_by_election[election].add_new_comment(comment)
+        question = comment.question
+        build_question_presenter_if_needed(question)
+        question_presenters_by_question[question].add_new_comment(comment)
       end
 
-      def build_election_presenter_if_needed(election)
-        return if election_presenters_by_election.has_key?(election)
-        election_presenters_by_election[election] = ElectionPresenter.new(election, false)
+      def build_question_presenter_if_needed(question)
+        return if question_presenters_by_question.has_key?(question)
+        question_presenters_by_question[question] = QuestionPresenter.new(question, false)
       end
 
-      def election_presenters
-        election_presenters_by_election.values.sort_by(&:score).reverse!
+      def question_presenters
+        question_presenters_by_question.values.sort_by(&:score).reverse!
       end
 
       def headline
@@ -95,13 +95,13 @@ module Views
       end
 
       def empty?
-        new_election_count == 0 && new_candidate_count == 0 && new_comment_count == 0
+        new_question_count == 0 && new_candidate_count == 0 && new_comment_count == 0
       end
 
       def add_lines(template, lines)
         lines.push(headline, "")
 
-        election_presenters.each do |presenter|
+        question_presenters.each do |presenter|
           presenter.add_lines(template, lines)
         end
       end

@@ -1,4 +1,4 @@
-_.constructor('Views.Pages.Election.Votes', Monarch.View.Template, {
+_.constructor('Views.Pages.Question.Votes', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "votes"}, function() {
       h2(function() {
@@ -6,7 +6,7 @@ _.constructor('Views.Pages.Election.Votes', Monarch.View.Template, {
       }).ref('header');
       subview("list", Views.Components.SortedList, {
         buildElement: function(vote) {
-          return Views.Pages.Election.VoteLi.toView({vote: vote});
+          return Views.Pages.Question.VoteLi.toView({vote: vote});
         },
       });
     });

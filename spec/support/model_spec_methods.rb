@@ -8,6 +8,6 @@ module ModelSpecMethods
   end
 
   def find_majority(winner, loser)
-    election.majorities.find(:winner => winner, :loser => loser).reload
+    question.majorities.find(:winner => winner, :loser => loser).reload
   end
 end

@@ -1,4 +1,4 @@
-_.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
+_.constructor('Views.Pages.Question.CandidateLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
     li({'class': "candidate"}, function() {
       div({'class': "more"}, '…').ref('ellipsis');
@@ -14,7 +14,7 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
 
       this.draggable({
         connectToSortable: '#ranked-candidates ol',
-        appendTo: '#election',
+        appendTo: '#question',
         revert: 'invalid',
         delay: this.dragDelay,
         revertDuration: 100,
@@ -38,7 +38,7 @@ _.constructor('Views.Pages.Election.CandidateLi', Monarch.View.Template, {
     },
 
     handleDragStart: function() {
-      History.pushState(null, null, this.candidate.election().url());
+      History.pushState(null, null, this.candidate.question().url());
     },
 
     ranking: {

@@ -1,7 +1,7 @@
 _.constructor("Candidate", Model.Record, {
   constructorInitialize: function() {
     this.columns({
-      electionId: 'key',
+      questionId: 'key',
       creatorId: 'key',
       body: 'string',
       details: 'string',
@@ -14,7 +14,7 @@ _.constructor("Candidate", Model.Record, {
 
     this.hasMany('rankings');
     this.hasMany('comments', {constructorName: "CandidateComment"});
-    this.belongsTo('election');
+    this.belongsTo('question');
     this.belongsTo('creator', {constructorName: "User"});
     this.relatesToMany('commenters', function() {
       return this.comments().join(User).on(CandidateComment.creatorId.eq(User.id));
@@ -51,7 +51,7 @@ _.constructor("Candidate", Model.Record, {
   },
 
   organization: function() {
-    return this.election().organization();
+    return this.question().organization();
   },
 
   formattedCreatedAt: function() {
@@ -59,6 +59,6 @@ _.constructor("Candidate", Model.Record, {
   },
 
   url: function() {
-    return "/elections/" + this.electionId() + "/candidates/" + this.id();
+    return "/questions/" + this.questionId() + "/candidates/" + this.id();
   }
 });

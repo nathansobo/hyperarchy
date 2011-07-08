@@ -1,7 +1,7 @@
-update_election_scores:
+update_question_scores:
   cron: "*/5 * * * *"
-  custom_job_class: Jobs::UpdateElectionScores
-  description: "Updates the election scores in the database using the weighting equation"
+  custom_job_class: Jobs::UpdateQuestionScores
+  description: "Updates the question scores in the database using the weighting equation"
 
 every_5_mins_notifications:
   cron: "*/1 * * * *"

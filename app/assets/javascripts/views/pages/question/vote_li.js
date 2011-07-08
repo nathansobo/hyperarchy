@@ -1,4 +1,4 @@
-_.constructor('Views.Pages.Election.VoteLi', Monarch.View.Template, {
+_.constructor('Views.Pages.Question.VoteLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
     li({'class': "vote"}, function() {
       a(function() {

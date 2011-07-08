@@ -30,74 +30,74 @@ describe("Routes", function() {
         Organization.createFromRemote({id: 23});
         History.pushState(null, null, '/organizations/23');
 
-        expect(Application.electionPage).toBeHidden();
+        expect(Application.questionPage).toBeHidden();
         expect(Application.organizationPage).toBeVisible();
         expect(Application.organizationPage.params()).toEqual({organizationId: 23});
       });
     });
   });
 
-  describe("/elections/:electionId", function() {
-    it("shows only the electionsPage, assigns the id on it, and assigns the current user's rankings relation on ranked candidates list", function() {
-      Application.electionPage.show();
-      History.pushState(null, null, '/elections/12');
+  describe("/questions/:questionId", function() {
+    it("shows only the questionsPage, assigns the id on it, and assigns the current user's rankings relation on ranked candidates list", function() {
+      Application.questionPage.show();
+      History.pushState(null, null, '/questions/12');
       expect(Application.organizationPage).toBeHidden();
-      expect(Application.electionPage).toBeVisible();
+      expect(Application.questionPage).toBeVisible();
 
-      expect(Application.electionPage.params()).toEqual({
-        electionId: 12
+      expect(Application.questionPage.params()).toEqual({
+        questionId: 12
       });
     });
   });
 
-  describe("/elections/:electionId/votes/:voterId", function() {
-    it("shows only the electionsPage, assigns the id on it, and assigns the specified user's rankings relation on the ranked candidates list", function() {
-      Application.electionPage.show();
-      History.pushState(null, null, '/elections/12/votes/29');
+  describe("/questions/:questionId/votes/:voterId", function() {
+    it("shows only the questionsPage, assigns the id on it, and assigns the specified user's rankings relation on the ranked candidates list", function() {
+      Application.questionPage.show();
+      History.pushState(null, null, '/questions/12/votes/29');
       expect(Application.organizationPage).toBeHidden();
-      expect(Application.electionPage).toBeVisible();
-      expect(Application.electionPage.params()).toEqual({
-        electionId: 12,
+      expect(Application.questionPage).toBeVisible();
+      expect(Application.questionPage.params()).toEqual({
+        questionId: 12,
         voterId: 29
       });
     });
   });
 
-  describe("/elections/:electionId/candidates/new", function() {
-    it("shows only the electionsPage assigns the election id, and shows the new candidate form", function() {
-      Application.electionPage.show();
-      History.pushState(null, null, '/elections/12/candidates/new');
+  describe("/questions/:questionId/candidates/new", function() {
+    it("shows only the questionsPage assigns the question id, and shows the new candidate form", function() {
+      Application.questionPage.show();
+      History.pushState(null, null, '/questions/12/candidates/new');
       expect(Application.organizationPage).toBeHidden();
-      expect(Application.electionPage).toBeVisible();
-      expect(Application.electionPage.params()).toEqual({
-        electionId: 12,
+      expect(Application.questionPage).toBeVisible();
+      expect(Application.questionPage.params()).toEqual({
+        questionId: 12,
         candidateId: 'new'
       });
     });
   });
 
-  describe("/elections/:electionId/candidates/:candidateId", function() {
-    it("shows only the electionsPage and assigns the id and selectedCandidateId on it", function() {
-      Application.electionPage.show();
-      History.pushState(null, null, '/elections/12/candidates/33');
+  describe("/questions/:questionId/candidates/:candidateId", function() {
+    it("shows only the questionsPage and assigns the id and selectedCandidateId on it", function() {
+      Application.questionPage.show();
+      History.pushState(null, null, '/questions/12/candidates/33');
       expect(Application.organizationPage).toBeHidden();
-      expect(Application.electionPage).toBeVisible();
-      expect(Application.electionPage.params()).toEqual({
-        electionId: 12,
+      expect(Application.questionPage).toBeVisible();
+      expect(Application.questionPage.params()).toEqual({
+        questionId: 12,
         candidateId: 33
       });
     });
   });
 
-  describe("/organizations/:electionId/elections/new", function() {
-    it("shows the electionsPage in new mode", function() {
+  describe("/organizations/:questionId/questions/new", function() {
+    it("shows the questionsPage in new mode", function() {
       Application.organizationPage.show();
-      History.pushState(null, null, '/organizations/1/elections/new');
+      History.pushState(null, null, '/organizations/1/questions/new');
       expect(Application.organizationPage).toBeHidden();
-      expect(Application.electionPage).toBeVisible();
-      expect(Application.electionPage.params()).toEqual({
+      expect(Application.questionPage).toBeVisible();
+      expect(Application.questionPage.params()).toEqual({
         organizationId: 1,
-        electionId: 'new'
+        questionId: 'new'
       });
     });
   });

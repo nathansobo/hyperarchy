@@ -1,5 +1,5 @@
-_.constructor('Views.Lightboxes.NewElection', Views.Lightboxes.Lightbox, {
-  id: "new-election",
+_.constructor('Views.Lightboxes.NewQuestion', Views.Lightboxes.Lightbox, {
+  id: "new-question",
 
   lightboxContent: function() { with(this.builder) {
     form(function() {
@@ -33,10 +33,10 @@ _.constructor('Views.Lightboxes.NewElection', Views.Lightboxes.Lightbox, {
       var fieldValues = this.fieldValues();
 
       var performCreate = this.bind(function() {
-        Application.currentOrganization().elections().create(fieldValues)
-          .success(function(election) {
+        Application.currentOrganization().questions().create(fieldValues)
+          .success(function(question) {
             this.hide();
-            History.pushState(null, null, election.url());
+            History.pushState(null, null, question.url());
           }, this);
       });
 

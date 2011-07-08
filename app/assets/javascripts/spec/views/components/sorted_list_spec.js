@@ -10,14 +10,14 @@ describe("Views.Components.SortedList", function() {
       }
     });
 
-    var election = Election.createFromRemote({id: 1, body: "What's your favorite color?"});
-    relation = election.candidates();
+    var question = Question.createFromRemote({id: 1, body: "What's your favorite color?"});
+    relation = question.candidates();
     relation.createFromRemote({id: 1, body: "Red", position: 1});
     relation.createFromRemote({id: 2, body: "Green", position: 3});
     relation.createFromRemote({id: 3, body: "Blue", position: 5});
 
-    var election2 = Election.createFromRemote({id: 2, body: "What's your favorite type of car?"});
-    relation2 = election2.candidates();
+    var question2 = Question.createFromRemote({id: 2, body: "What's your favorite type of car?"});
+    relation2 = question2.candidates();
     relation2.createFromRemote({id: 4, body: "Audi", position: 1});
     relation2.createFromRemote({id: 5, body: "Volvo", position: 3});
     relation2.createFromRemote({id: 6, body: "Mercedes", position: 5});

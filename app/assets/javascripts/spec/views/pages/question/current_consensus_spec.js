@@ -1,16 +1,16 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election.CurrentConsensus", function() {
-  var currentConsensusView, election, candidate1, candidate2, user1;
+describe("Views.Pages.Question.CurrentConsensus", function() {
+  var currentConsensusView, question, candidate1, candidate2, user1;
 
   beforeEach(function() {
     attachLayout();
-    currentConsensusView = Application.electionPage.currentConsensus;
+    currentConsensusView = Application.questionPage.currentConsensus;
     $('#jasmine_content').append(currentConsensusView);
 
-    election = Election.createFromRemote({id: 1});
-    candidate1 = election.candidates().createFromRemote({id: 1, body: "Cheese", position: 1});
-    candidate2 = election.candidates().createFromRemote({id: 2, body: "Goats", position: 2});
+    question = Question.createFromRemote({id: 1});
+    candidate1 = question.candidates().createFromRemote({id: 1, body: "Cheese", position: 1});
+    candidate2 = question.candidates().createFromRemote({id: 2, body: "Goats", position: 2});
 
     user1 = User.createFromRemote({id: 1});
     Application.currentUser(user1);
@@ -19,7 +19,7 @@ describe("Views.Pages.Election.CurrentConsensus", function() {
 
   describe("with the candidates relation assigned", function() {
     beforeEach(function() {
-      currentConsensusView.candidates(election.candidates());
+      currentConsensusView.candidates(question.candidates());
     });
 
     describe("when the selectedCandidate is changed", function() {
@@ -70,17 +70,17 @@ describe("Views.Pages.Election.CurrentConsensus", function() {
     var user2, candidate3, candidate1Li, candidate2Li, candidate3Li;
 
     beforeEach(function() {
-      candidate3 = election.candidates().createFromRemote({id: 3, body: "Deer", position: 3});
+      candidate3 = question.candidates().createFromRemote({id: 3, body: "Deer", position: 3});
       user2 = User.createFromRemote({id: 2});
-      user1.rankingsForElection(election).createFromRemote({candidateId: candidate1.id(), position: 64});
-      user1.rankingsForElection(election).createFromRemote({candidateId: candidate2.id(), position: -64});
-      user2.rankingsForElection(election).createFromRemote({candidateId: candidate2.id(), position: 64});
-      user2.rankingsForElection(election).createFromRemote({candidateId: candidate3.id(), position: -64});
+      user1.rankingsForQuestion(question).createFromRemote({candidateId: candidate1.id(), position: 64});
+      user1.rankingsForQuestion(question).createFromRemote({candidateId: candidate2.id(), position: -64});
+      user2.rankingsForQuestion(question).createFromRemote({candidateId: candidate2.id(), position: 64});
+      user2.rankingsForQuestion(question).createFromRemote({candidateId: candidate3.id(), position: -64});
 
       candidate1.remotelyUpdated({commentCount: 1});
       candidate2.remotelyUpdated({details: "Arcata's full of nimby cryers"});
 
-      currentConsensusView.candidates(election.candidates());
+      currentConsensusView.candidates(question.candidates());
       candidate1Li = currentConsensusView.list.elementForRecord(candidate1);
       candidate2Li = currentConsensusView.list.elementForRecord(candidate2);
       candidate3Li = currentConsensusView.list.elementForRecord(candidate3);

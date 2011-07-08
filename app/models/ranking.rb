@@ -1,7 +1,7 @@
 class Ranking < Prequel::Record
   column :id, :integer
   column :user_id, :integer
-  column :election_id, :integer
+  column :question_id, :integer
   column :candidate_id, :integer
   column :vote_id, :integer
   column :position, :float
@@ -10,7 +10,7 @@ class Ranking < Prequel::Record
 
   belongs_to :user
   belongs_to :candidate
-  belongs_to :election
+  belongs_to :question
   belongs_to :vote
 
   attr_accessor :suppress_vote_update
@@ -26,13 +26,13 @@ class Ranking < Prequel::Record
   end
 
   def organization_ids
-    election ? election.organization_ids : []
+    question ? question.organization_ids : []
   end
 
   def before_create
-    self.election_id = candidate.election_id
-    election.lock
-    self.vote = election.votes.find_or_create(:user_id => user_id)
+    self.question_id = candidate.question_id
+    question.lock
+    self.vote = question.votes.find_or_create(:user_id => user_id)
     vote.updated
   end
 
@@ -47,12 +47,12 @@ class Ranking < Prequel::Record
       increment_defeats_by(candidates_not_ranked_by_same_user)
     end
 
-    election.compute_global_ranking
-    election.unlock
+    question.compute_global_ranking
+    question.unlock
   end
 
   def before_update(changeset)
-    election.lock
+    question.lock
   end
 
   def after_update(changeset)
@@ -64,9 +64,9 @@ class Ranking < Prequel::Record
       after_ranking_moved_down(old_position)
     end
 
-    election.votes.find(:user_id => user_id).updated
-    election.compute_global_ranking
-    election.unlock
+    question.votes.find(:user_id => user_id).updated
+    question.compute_global_ranking
+    question.unlock
   end
 
   def after_ranking_moved_up(old_position)
@@ -93,7 +93,7 @@ class Ranking < Prequel::Record
   end
 
   def before_destroy
-    election.lock
+    question.lock
   end
 
   def after_destroy
@@ -112,8 +112,8 @@ class Ranking < Prequel::Record
     elsif !suppress_vote_update
       vote.updated
     end
-    election.compute_global_ranking
-    election.unlock
+    question.compute_global_ranking
+    question.unlock
   end
 
   def increment_victories_over(rankings_or_candidates)
@@ -151,7 +151,7 @@ class Ranking < Prequel::Record
   end
 
   def rankings_by_same_user
-    Ranking.where(:user_id => user_id, :election_id => election_id)
+    Ranking.where(:user_id => user_id, :question_id => question_id)
   end
 
   def higher_rankings_by_same_user
@@ -198,12 +198,12 @@ class Ranking < Prequel::Record
     Ranking.where(:candidate_id => candidate_id)
   end
 
-  def all_candidates_in_election
-    Candidate.where(:election_id => election_id)
+  def all_candidates_in_question
+    Candidate.where(:question_id => question_id)
   end
 
   def candidates_not_ranked_by_same_user
-    all_candidates_in_election.
+    all_candidates_in_question.
       left_join(rankings_by_same_user).
       where(Ranking[:id] => nil).
       project(Candidate)

@@ -1,39 +1,39 @@
 require 'spec_helper'
 
 describe SandboxController do
-  attr_reader :organization, :other_organization, :election, :user
+  attr_reader :organization, :other_organization, :question, :user
 
   before do
     @organization = Organization.make(:privacy => 'public')
     @other_organization = Organization.make(:privacy => 'private')
     @user = login_as organization.make_member
-    @election = organization.elections.make(:creator => user)
+    @question = organization.questions.make(:creator => user)
   end
 
   describe "#fetch" do
     it "calls #fetch on the sandbox object with the given relations, parsed from json and returns the result as json" do
-      get :fetch, :relations => [Election.wire_representation].to_json
-      JSON.parse(response.body)['elections'][election.to_param].should == election.wire_representation
+      get :fetch, :relations => [Question.wire_representation].to_json
+      JSON.parse(response.body)['questions'][question.to_param].should == question.wire_representation
     end
   end
 
   describe "#create" do
     context "when creating a legal record" do
       it "creates the record and returns its wire representation" do
-        Election.count.should == 1
-        post :create, :relation => "elections", :field_values => Election.plan(:organization => organization)
+        Question.count.should == 1
+        post :create, :relation => "questions", :field_values => Question.plan(:organization => organization)
         response.should be_success
-        Election.count.should == 2
+        Question.count.should == 2
         json = JSON.parse(response.body)
-        json.should == Election.find(json['id']).wire_representation
+        json.should == Question.find(json['id']).wire_representation
       end
     end
 
     context "when creating an illegal record" do
       it "returns '403 forbidden'" do
-        Election.count.should == 1
-        post :create, :relation => "elections", :field_values => Election.plan(:organization => other_organization)
-        Election.count.should == 1
+        Question.count.should == 1
+        post :create, :relation => "questions", :field_values => Question.plan(:organization => other_organization)
+        Question.count.should == 1
         response.should be_forbidden
       end
     end
@@ -61,11 +61,11 @@ describe SandboxController do
   describe "#update" do
     describe "when performing a legal update" do
       it "updates the record and returns its new wire representation" do
-        put :update, :relation => "elections", :id => election.to_param, :field_values => { :body => "New body" }
+        put :update, :relation => "questions", :id => question.to_param, :field_values => { :body => "New body" }
         response.should be_success
         json = JSON.parse(response.body)
-        json.should == election.wire_representation
-        election.body.should == "New body"
+        json.should == question.wire_representation
+        question.body.should == "New body"
       end
     end
 
@@ -85,7 +85,7 @@ describe SandboxController do
 
     describe "when performing an update against a record that is not in the relation" do
       it "returns '404 not found'" do
-        put :update, :relation => "elections", :id => '909', :field_values => { :body => "New body" }
+        put :update, :relation => "questions", :id => '909', :field_values => { :body => "New body" }
         response.status.should == 404
       end
     end
@@ -94,15 +94,15 @@ describe SandboxController do
   describe "#destroy" do
     describe "when destroying a record that exists" do
       it "destroys the record and returns 200 ok" do
-        delete :destroy, :relation => "elections", :id => election.to_param
+        delete :destroy, :relation => "questions", :id => question.to_param
         response.should be_success
-        Election.find(election.id).should be_nil
+        Question.find(question.id).should be_nil
       end
     end
 
     describe "when destroying a record that doesn't exist" do
       it "returns '404 not found'" do
-        delete :destroy, :relation => "elections", :id => '909'
+        delete :destroy, :relation => "questions", :id => '909'
         response.status.should == 404
       end
     end

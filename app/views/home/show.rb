@@ -10,9 +10,9 @@ module Views
         javascript %[
         $(function() {
           window.WEB_SOCKET_SWF_LOCATION = '/WebSocketMain.swf';
-          Election.SCORE_EXTRA_VOTES = #{Election::SCORE_EXTRA_VOTES};
-          Election.SCORE_EXTRA_HOURS = #{Election::SCORE_EXTRA_HOURS};
-          Election.SCORE_GRAVITY = #{Election::SCORE_GRAVITY};
+          Question.SCORE_EXTRA_VOTES = #{Question::SCORE_EXTRA_VOTES};
+          Question.SCORE_EXTRA_HOURS = #{Question::SCORE_EXTRA_HOURS};
+          Question.SCORE_GRAVITY = #{Question::SCORE_GRAVITY};
           #{store_in_repository(current_user.initial_repository_contents)}
           window.Application = Views.Layout.toView();
           Application.environment = #{Rails.env.to_json};

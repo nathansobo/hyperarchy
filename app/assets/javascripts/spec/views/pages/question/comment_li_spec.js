@@ -1,7 +1,7 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election.CommentLi", function() {
-  var currentUser, election, comment, creator, commentLi, commentEditableByCurrentUser;
+describe("Views.Pages.Question.CommentLi", function() {
+  var currentUser, question, comment, creator, commentLi, commentEditableByCurrentUser;
 
 
   beforeEach(function() {
@@ -9,14 +9,14 @@ describe("Views.Pages.Election.CommentLi", function() {
     currentUser = User.createFromRemote({id: 1});
     Application.currentUser(currentUser);
 
-    election = Election.createFromRemote({id: 22, creatorId: 1, createdAt: 234});
+    question = Question.createFromRemote({id: 22, creatorId: 1, createdAt: 234});
     creator = User.createFromRemote({id: 2, firstName: "Commento", lastName: "Santiago"});
-    comment = election.comments().createFromRemote({id: 11, body: "I likeah the fruiloops so much", creatorId: creator.id(), createdAt: 3245});
+    comment = question.comments().createFromRemote({id: 11, body: "I likeah the fruiloops so much", creatorId: creator.id(), createdAt: 3245});
     spyOn(comment, 'editableByCurrentUser').andCallFake(function() {
       return commentEditableByCurrentUser;
     });
 
-    commentLi = Views.Pages.Election.CommentLi.toView({comment: comment});
+    commentLi = Views.Pages.Question.CommentLi.toView({comment: comment});
   });
 
   describe("#initialize", function() {
@@ -33,11 +33,11 @@ describe("Views.Pages.Election.CommentLi", function() {
     describe("when the li is initialized", function() {
       it("adds the deletable class if the current user can delete the comment", function() {
         commentEditableByCurrentUser = false;
-        commentLi = Views.Pages.Election.CommentLi.toView({comment: comment});
+        commentLi = Views.Pages.Question.CommentLi.toView({comment: comment});
         expect(commentLi).not.toHaveClass('destroyable');
 
         commentEditableByCurrentUser = true;
-        commentLi = Views.Pages.Election.CommentLi.toView({comment: comment});
+        commentLi = Views.Pages.Question.CommentLi.toView({comment: comment});
         expect(commentLi).toHaveClass('destroyable');
       });
 

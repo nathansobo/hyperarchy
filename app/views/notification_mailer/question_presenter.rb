@@ -1,25 +1,25 @@
 module Views
   module NotificationMailer
-    class ElectionPresenter
-      attr_reader :election, :election_is_new
+    class QuestionPresenter
+      attr_reader :question, :question_is_new
       attr_reader :candidate_presenters_by_candidate
-      delegate :score, :to => :election
+      delegate :score, :to => :question
 
-      def initialize(election, election_is_new)
-        @election, @election_is_new = election, election_is_new
+      def initialize(question, question_is_new)
+        @question, @question_is_new = question, question_is_new
 
         @candidate_presenters_by_candidate = {}
 
-        # show all candidates of a new election
-        if election_is_new
-          election.candidates.each do |candidate|
+        # show all candidates of a new question
+        if question_is_new
+          question.candidates.each do |candidate|
             candidate_presenters_by_candidate[candidate] = CandidatePresenter.new(candidate, true)
           end
         end
       end
 
       def add_new_candidate(candidate)
-        return if election_is_new # already have all the candidates
+        return if question_is_new # already have all the candidates
         candidate_presenters_by_candidate[candidate] = CandidatePresenter.new(candidate, true)
       end
 
@@ -30,7 +30,7 @@ module Views
       end
 
       def build_candidate_presenter_if_needed(candidate)
-        return if election_is_new || candidate_presenters_by_candidate.has_key?(candidate)
+        return if question_is_new || candidate_presenters_by_candidate.has_key?(candidate)
         candidate_presenters_by_candidate[candidate] = CandidatePresenter.new(candidate, false)
       end
 
@@ -40,8 +40,8 @@ module Views
 
       def add_lines(template, lines)
         lines.push("Question:")
-        lines.push("#{election.body} -- #{election.creator.full_name}")
-        lines.push("view at: #{template.election_url(election)}")
+        lines.push("#{question.body} -- #{question.creator.full_name}")
+        lines.push("view at: #{template.question_url(question)}")
         lines.push("")
         candidate_presenters.each do |presenter|
           presenter.add_lines(template, lines)

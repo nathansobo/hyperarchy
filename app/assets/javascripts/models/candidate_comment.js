@@ -21,11 +21,11 @@ _.constructor("CandidateComment", Model.Record, {
   },
 
   organization: function() {
-    return this.election().organization();
+    return this.question().organization();
   },
 
-  election: function() {
-    return this.candidate().election();
+  question: function() {
+    return this.candidate().question();
   },
 
   formattedCreatedAt: function() {

@@ -1,4 +1,4 @@
-_.constructor('Views.Pages.Election.RankingLi', Monarch.View.Template, {
+_.constructor('Views.Pages.Question.RankingLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
     li({'class': "ranking"}, function() {
       subview('spinner', Views.Components.Spinner);

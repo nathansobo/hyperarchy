@@ -9,22 +9,22 @@ describe("Views.Layout", function() {
     it("connects to the socket server and sets up the client to send mutation messages to the repository", function() {
       expect(socketClient.connect).toHaveBeenCalled();
 
-      var createCommand = ['create', 'elections', {id: 1, body: "What up now?"}];
+      var createCommand = ['create', 'questions', {id: 1, body: "What up now?"}];
       socketClient.emit('message', [JSON.stringify(createCommand)]);
 
-      expect(Election.find(1).body()).toBe("What up now?");
+      expect(Question.find(1).body()).toBe("What up now?");
 
-      var updateCommand = ['update', 'elections', 1, {body: "What up later?"}];
+      var updateCommand = ['update', 'questions', 1, {body: "What up later?"}];
       socketClient.emit('message', [JSON.stringify(updateCommand)]);
-      expect(Election.find(1).body()).toBe("What up later?");
+      expect(Question.find(1).body()).toBe("What up later?");
 
-      var updateCommand = ['destroy', 'elections', 1];
+      var updateCommand = ['destroy', 'questions', 1];
       socketClient.emit('message', [JSON.stringify(updateCommand)]);
-      expect(Election.find(1)).toBeUndefined();
+      expect(Question.find(1)).toBeUndefined();
     });
 
-    it("sets up the election scores to be updated periodically", function() {
-      expect(Election.updateScoresPeriodically).toHaveBeenCalled();
+    it("sets up the question scores to be updated periodically", function() {
+      expect(Question.updateScoresPeriodically).toHaveBeenCalled();
     });
   });
 

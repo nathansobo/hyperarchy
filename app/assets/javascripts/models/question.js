@@ -1,4 +1,4 @@
-_.constructor("Election", Model.Record, {
+_.constructor("Question", Model.Record, {
   constructorProperties: {
     initialize: function() {
       this.columns({
@@ -16,12 +16,12 @@ _.constructor("Election", Model.Record, {
 
       this.hasMany('candidates');
       this.hasMany('votes', {orderBy: 'updatedAt desc'});
-      this.hasMany('comments', {constructorName: 'ElectionComment'});
+      this.hasMany('comments', {constructorName: 'QuestionComment'});
       this.relatesToMany('commenters', function() {
-        return this.comments().join(User).on(ElectionComment.creatorId.eq(User.id));
+        return this.comments().join(User).on(QuestionComment.creatorId.eq(User.id));
       });
 
-      this.hasMany('electionVisits');
+      this.hasMany('questionVisits');
       this.relatesToMany('voters', function() {
         return this.votes().joinThrough(User);
       });
@@ -40,8 +40,8 @@ _.constructor("Election", Model.Record, {
 
     updateScores: function() {
       var queue = new Monarch.Queue(10);
-      this.each(function(election) {
-        queue.add(election.hitch('updateScore'));
+      this.each(function(question) {
+        queue.add(question.hitch('updateScore'));
       });
       queue.start();
     }
@@ -84,7 +84,7 @@ _.constructor("Election", Model.Record, {
   },
 
   currentUsersVisit: function() {
-    return this.electionVisits().find({userId: Application.currentUserId});
+    return this.questionVisits().find({userId: Application.currentUserId});
   },
 
   fetchVotes: function() {
@@ -112,7 +112,7 @@ _.constructor("Election", Model.Record, {
   },
 
   computeScore: function() {
-    return (this.voteCount() + Election.SCORE_EXTRA_HOURS) / Math.pow(this.ageInHours() + Election.SCORE_EXTRA_HOURS, Election.SCORE_GRAVITY);
+    return (this.voteCount() + Question.SCORE_EXTRA_HOURS) / Math.pow(this.ageInHours() + Question.SCORE_EXTRA_HOURS, Question.SCORE_GRAVITY);
   },
 
   ageInHours: function() {
@@ -120,7 +120,7 @@ _.constructor("Election", Model.Record, {
   },
 
   url: function() {
-    return "/elections/" + this.id();
+    return "/questions/" + this.id();
   },
 
   newCandidateUrl: function() {

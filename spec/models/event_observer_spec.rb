@@ -11,7 +11,7 @@ describe EventObserver do
     let(:events) { [] }
 
     it "causes all events on the given model classes to be sent to the appropriate channels on the socket server" do
-      EventObserver.observe(User, Organization, Election)
+      EventObserver.observe(User, Organization, Question)
 
       freeze_time
       org1 = Organization.make
@@ -23,14 +23,14 @@ describe EventObserver do
       events.shift.should == ["update", "organizations", org1.id, {"name"=>"New Org Name", "description"=>"New Org Description", 'updated_at' => Time.now.to_millis}]
 
       expect_event(org1)
-      election = org1.elections.make
-      events.shift.should == ["create", "elections", election.wire_representation, {}]
+      question = org1.questions.make
+      events.shift.should == ["create", "questions", question.wire_representation, {}]
 
-      expect_event(org1) # 2 events, 1 for the election count update and 1 for the destroy
+      expect_event(org1) # 2 events, 1 for the question count update and 1 for the destroy
       expect_event(org1)
-      election.destroy
-      events.shift.should == ["update", "organizations", org1.id, {"election_count"=>0}]
-      events.shift.should == ["destroy", "elections", election.id]
+      question.destroy
+      events.shift.should == ["update", "organizations", org1.id, {"question_count"=>0}]
+      events.shift.should == ["destroy", "questions", question.id]
 
       user = org1.make_member
       org2.memberships.make(:user => user)
@@ -45,18 +45,18 @@ describe EventObserver do
     end
 
     it "sends extra records for create events if desired" do
-      extra_election = Election.make
+      extra_question = Question.make
       org1 = Organization.make
-      instance_of(Election).extra_records_for_create_events { [extra_election] }
+      instance_of(Question).extra_records_for_create_events { [extra_question] }
 
-      EventObserver.observe(Election)
+      EventObserver.observe(Question)
 
       freeze_time
 
       expect_event(org1)
-      election = org1.elections.make
+      question = org1.questions.make
       extra_records = RecordsWrapper.new(events.shift.last)
-      extra_records.should include(extra_election)
+      extra_records.should include(extra_question)
     end
 
     def expect_event(organization)

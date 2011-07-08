@@ -8,7 +8,7 @@ _.constructor("Membership", Model.Record, {
       lastName: "string",
       emailAddress: "string",
       lastVisited: "datetime",
-      notifyOfNewElections: "string",
+      notifyOfNewQuestions: "string",
       notifyOfNewCandidates: "string",
       notifyOfNewCommentsOnOwnCandidates: "string",
       notifyOfNewCommentsOnRankedCandidates: "string"

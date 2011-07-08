@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Sandbox do
 
-  attr_reader :election, :repository, :user_1, :user_2, :candidate_1, :candidate_2
+  attr_reader :question, :repository, :user_1, :user_2, :candidate_1, :candidate_2
 
   before do
     org = Organization.make
@@ -11,14 +11,14 @@ describe Sandbox do
     @user_1 = org.make_member
     @user_2 = org.make_member
 
-    @election = org.elections.make
-    @candidate_1 = election.candidates.make(:creator => user_1)
-    @candidate_2 = election.candidates.make(:creator => user_2)
+    @question = org.questions.make
+    @candidate_1 = question.candidates.make(:creator => user_1)
+    @candidate_2 = question.candidates.make(:creator => user_2)
 
     @repository = Sandbox.new(current_user)
   end
 
-  it "correctly interprets a join from candidates on a given election to their users" do
+  it "correctly interprets a join from candidates on a given question to their users" do
     wire_reps = [
       {"type" => "inner_join",
        "left_operand" =>
@@ -26,8 +26,8 @@ describe Sandbox do
          "operand" => {"type" => "table", "name" => "candidates"},
          "predicate" =>
           {"type" => "eq",
-           "left_operand" => {"type" => "column", "table" => "candidates", "name" => "election_id"},
-           "right_operand" => {"type" => "scalar", "value" => election.id}}},
+           "left_operand" => {"type" => "column", "table" => "candidates", "name" => "question_id"},
+           "right_operand" => {"type" => "scalar", "value" => question.id}}},
        "right_operand" => {"type" => "table", "name" => "users"},
        "predicate" =>
         {"type" => "eq",

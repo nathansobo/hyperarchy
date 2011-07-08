@@ -36,7 +36,7 @@ describe BackdoorController do
 
       records_json = {
         "candidates" => {
-          "1" => { "id" => 1, "election_id" => 1, "creator_id" => 2},
+          "1" => { "id" => 1, "question_id" => 1, "creator_id" => 2},
           "2" => { "id" => 2, "body" => "La la" }
         }
       }.to_json

@@ -1,20 +1,20 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election.Votes", function() {
-  var votesView, election, currentUser, otherUser, currentUserVote, otherUserVote, votesRelation;
+describe("Views.Pages.Question.Votes", function() {
+  var votesView, question, currentUser, otherUser, currentUserVote, otherUserVote, votesRelation;
 
   beforeEach(function() {
     attachLayout();
-    votesView = Application.electionPage.votes;
+    votesView = Application.questionPage.votes;
 
-    election = Election.createFromRemote({id: 1});
+    question = Question.createFromRemote({id: 1});
     currentUser = User.createFromRemote({id: 1});
     otherUser = User.createFromRemote({id: 2});
 
-    currentUserVote = currentUser.votes().createFromRemote({id: 1, electionId: election.id(), updatedAt: 1308353647242});
-    otherUserVote = otherUser.votes().createFromRemote({id: 2, electionId: election.id(), updatedAt: 1308353647242});
+    currentUserVote = currentUser.votes().createFromRemote({id: 1, questionId: question.id(), updatedAt: 1308353647242});
+    otherUserVote = otherUser.votes().createFromRemote({id: 2, questionId: question.id(), updatedAt: 1308353647242});
 
-    votesRelation = election.votes();
+    votesRelation = question.votes();
   });
 
   describe("#votes", function() {
@@ -41,10 +41,10 @@ describe("Views.Pages.Election.Votes", function() {
       otherUserVote.remotelyDestroyed();
       expect(votesView.header.html()).toEqual('No Votes Yet');
 
-      currentUser.votes().createFromRemote({id: 1, electionId: election.id(), updatedAt: 1308353647000});
+      currentUser.votes().createFromRemote({id: 1, questionId: question.id(), updatedAt: 1308353647000});
       expect(votesView.header.html()).toEqual('1 Vote');
 
-     otherUser.votes().createFromRemote({id: 2, electionId: election.id(), updatedAt: 1308353647001});
+     otherUser.votes().createFromRemote({id: 2, questionId: question.id(), updatedAt: 1308353647001});
      expect(votesView.header.html()).toEqual('2 Votes');
     });
   });

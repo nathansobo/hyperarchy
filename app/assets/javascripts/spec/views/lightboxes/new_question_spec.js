@@ -1,10 +1,10 @@
 //= require spec/spec_helper
 
-describe("Views.Lightboxes.NewElection", function() {
-  var newElectionForm, organization, member, guest;
+describe("Views.Lightboxes.NewQuestion", function() {
+  var newQuestionForm, organization, member, guest;
   beforeEach(function() {
     renderLayout();
-    newElectionForm = Application.newElection.show();
+    newQuestionForm = Application.newQuestion.show();
     organization = Organization.createFromRemote({id: 1});
     member = organization.makeMember({id: 1});
     guest =  organization.makeMember({id: 2, guest: true});
@@ -16,47 +16,47 @@ describe("Views.Lightboxes.NewElection", function() {
   describe("when the form is submitted", function() {
     describe("when the current user is a member", function() {
       describe("when the body field is not blank", function() {
-        it("creates an election, hides the form, and navigates to its url", function() {
+        it("creates an question, hides the form, and navigates to its url", function() {
           spyOn(Application, 'showPage');
 
-          newElectionForm.body.val("What are you doing saturday night?");
-          newElectionForm.details.val("I am very lonely.");
-          newElectionForm.form.submit();
+          newQuestionForm.body.val("What are you doing saturday night?");
+          newQuestionForm.details.val("I am very lonely.");
+          newQuestionForm.form.submit();
 
           expect(Server.creates.length).toBe(1);
 
-          var createdElection = Server.lastCreate.record;
-          expect(createdElection.organization()).toBe(organization);
-          expect(createdElection.body()).toBe("What are you doing saturday night?");
-          expect(createdElection.details()).toBe("I am very lonely.");
+          var createdQuestion = Server.lastCreate.record;
+          expect(createdQuestion.organization()).toBe(organization);
+          expect(createdQuestion.body()).toBe("What are you doing saturday night?");
+          expect(createdQuestion.details()).toBe("I am very lonely.");
 
           Server.lastCreate.simulateSuccess();
 
-          expect(newElectionForm).toBeHidden();
-          expect(Path.routes.current).toBe(createdElection.url());
+          expect(newQuestionForm).toBeHidden();
+          expect(Path.routes.current).toBe(createdQuestion.url());
         });
       });
 
       describe("when the body field is blank", function() {
-        it("does not create an election or hide the form", function() {
-          newElectionForm.body.val("    ");
-          newElectionForm.form.submit();
+        it("does not create an question or hide the form", function() {
+          newQuestionForm.body.val("    ");
+          newQuestionForm.form.submit();
           expect(Server.creates.length).toBe(0);
-          expect(newElectionForm).toBeVisible();
+          expect(newQuestionForm).toBeVisible();
         });
       });
 
       describe("when the body field exceeds 140 characters", function() {
 
-        it("does not create the election or hide the form", function() {
+        it("does not create the question or hide the form", function() {
           var longBody = ""
           _.times(141, function() {
             longBody += "X"
           });
-          newElectionForm.body.val(longBody);
-          newElectionForm.form.submit();
+          newQuestionForm.body.val(longBody);
+          newQuestionForm.form.submit();
           expect(Server.creates.length).toBe(0);
-          expect(newElectionForm).toBeVisible();
+          expect(newQuestionForm).toBeVisible();
         });
       });
 
@@ -69,8 +69,8 @@ describe("Views.Lightboxes.NewElection", function() {
       
       describe("when the user logs in / signs up at the prompt", function() {
         it("creates the question and navigates to it", function() {
-          newElectionForm.body.val("What is your favorite vegatable?");
-          newElectionForm.form.submit();
+          newQuestionForm.body.val("What is your favorite vegatable?");
+          newQuestionForm.form.submit();
           expect(Server.creates.length).toBe(0);
           expect(Application.signupForm).toBeVisible();
           Application.signupForm.firstName.val("Dude");
@@ -94,17 +94,17 @@ describe("Views.Lightboxes.NewElection", function() {
       
       describe("when the user dismisses the prompt", function() {
         it("does not create a question but leaves the lightbox visible", function() {
-          newElectionForm.body.val("What is your favorite vegatable?");
-          newElectionForm.details.val("mine's chard.");
-          newElectionForm.form.submit();
+          newQuestionForm.body.val("What is your favorite vegatable?");
+          newQuestionForm.details.val("mine's chard.");
+          newQuestionForm.form.submit();
           expect(Server.creates.length).toBe(0);
           expect(Application.signupForm).toBeVisible();
           Application.signupForm.close();
           expect(Server.creates.length).toBe(0);
-          expect(newElectionForm).toBeVisible();
+          expect(newQuestionForm).toBeVisible();
           expect(Application.darkenedBackground).toBeVisible();
-          expect(newElectionForm.body.val()).toBe("What is your favorite vegatable?");
-          expect(newElectionForm.details.val()).toBe("mine's chard.");
+          expect(newQuestionForm.body.val()).toBe("What is your favorite vegatable?");
+          expect(newQuestionForm.details.val()).toBe("mine's chard.");
         });
       });
     });
@@ -112,31 +112,31 @@ describe("Views.Lightboxes.NewElection", function() {
 
   describe("when the form is shown", function() {
     it("focuses the textarea", function() {
-      expect(newElectionForm.body).toHaveFocus();
+      expect(newQuestionForm.body).toHaveFocus();
     });
 
     it("clears out the old text from previous showings", function() {
-      newElectionForm.body.val("Junk");
-      newElectionForm.details.val("Garbage");
-      newElectionForm.close();
-      newElectionForm.show();
-      expect(newElectionForm.body.val()).toBe("");
-      expect(newElectionForm.details.val()).toBe("");
+      newQuestionForm.body.val("Junk");
+      newQuestionForm.details.val("Garbage");
+      newQuestionForm.close();
+      newQuestionForm.show();
+      expect(newQuestionForm.body.val()).toBe("");
+      expect(newQuestionForm.details.val()).toBe("");
     });
   });
 
   describe("when typing in the body", function() {
     it("adjusts the chars remaining", function() {
-      newElectionForm.body.val("123")
-      newElectionForm.body.keyup();
-      expect(newElectionForm.charsRemaining.text()).toBe('137');
+      newQuestionForm.body.val("123")
+      newQuestionForm.body.keyup();
+      expect(newQuestionForm.charsRemaining.text()).toBe('137');
     });
   });
 
   describe("when enter is pressed in the body textarea", function() {
     it("submits the form", function() {
-      newElectionForm.body.val("What's your favorite kinda cheese?");
-      newElectionForm.body.trigger({ type : 'keydown', which : 13 });
+      newQuestionForm.body.val("What's your favorite kinda cheese?");
+      newQuestionForm.body.trigger({ type : 'keydown', which : 13 });
 
       expect(Server.creates.length).toBe(1);
 

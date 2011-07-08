@@ -1,203 +1,203 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election", function() {
-  var electionPage;
+describe("Views.Pages.Question", function() {
+  var questionPage;
   beforeEach(function() {
     renderLayout();
     Application.height(700);
-    electionPage = Application.electionPage;
-    electionPage.show();
+    questionPage = Application.questionPage;
+    questionPage.show();
   });
 
   describe("when the params hash is assigned", function() {
-    var currentUser, election, candidate1, candidate2, currentUserRanking1, currentUserRanking2;
-    var otherUser, otherUser2, electionCommentCreator, candidateCommentCreator, otherUserRanking1, otherUserRanking2;
+    var currentUser, question, candidate1, candidate2, currentUserRanking1, currentUserRanking2;
+    var otherUser, otherUser2, questionCommentCreator, candidateCommentCreator, otherUserRanking1, otherUserRanking2;
 
     beforeEach(function() {
       enableAjax();
       currentUser = login();
       usingBackdoor(function() {
-        var electionCreator = User.create();
-        election = Election.create();
-        election.update({creatorId: electionCreator.id()});
+        var questionCreator = User.create();
+        question = Question.create();
+        question.update({creatorId: questionCreator.id()});
         otherUser = User.create();
         otherUser2 = User.create();
-        electionCommentCreator = User.create();
+        questionCommentCreator = User.create();
         candidateCommentCreator = User.create();
-        currentUser.memberships().create({organizationId: election.organizationId()});
-        otherUser.memberships().create({organizationId: election.organizationId()});
-        electionCommentCreator.memberships().create({organizationId: election.organizationId()});
-        candidateCommentCreator.memberships().create({organizationId: election.organizationId()});
-        var electionComment = election.comments().create();
-        electionComment.update({creatorId: electionCommentCreator.id()});
-        candidate1 = election.candidates().create();
+        currentUser.memberships().create({organizationId: question.organizationId()});
+        otherUser.memberships().create({organizationId: question.organizationId()});
+        questionCommentCreator.memberships().create({organizationId: question.organizationId()});
+        candidateCommentCreator.memberships().create({organizationId: question.organizationId()});
+        var questionComment = question.comments().create();
+        questionComment.update({creatorId: questionCommentCreator.id()});
+        candidate1 = question.candidates().create();
         var candidateComment = candidate1.comments().create();
         candidateComment.update({creatorId: candidateCommentCreator.id()});
-        candidate2 = election.candidates().create({creatorId: otherUser2.id()});
-        currentUserRanking1 = election.rankings().create({userId: currentUser.id(), position: 64, candidateId: candidate1.id()});
-        currentUserRanking2 = election.rankings().create({userId: currentUser.id(), position: -64, candidateId: candidate2.id()});
-        otherUserRanking1 = election.rankings().create({userId: otherUser.id(), position: 64, candidateId: candidate1.id()});
-        otherUserRanking2 = election.rankings().create({userId: otherUser.id(), position: -64, candidateId: candidate2.id()});
+        candidate2 = question.candidates().create({creatorId: otherUser2.id()});
+        currentUserRanking1 = question.rankings().create({userId: currentUser.id(), position: 64, candidateId: candidate1.id()});
+        currentUserRanking2 = question.rankings().create({userId: currentUser.id(), position: -64, candidateId: candidate2.id()});
+        otherUserRanking1 = question.rankings().create({userId: otherUser.id(), position: 64, candidateId: candidate1.id()});
+        otherUserRanking2 = question.rankings().create({userId: otherUser.id(), position: -64, candidateId: candidate2.id()});
       });
       fetchInitialRepositoryContents();
     });
 
-    describe("if the electionId changes", function() {
-      function expectElectionDataFetched() {
-        expect(Election.find(election.id())).toEqual(election);
-        expect(election.creator()).toBeDefined();
-        expect(election.candidates().size()).toBe(2);
-        expect(election.candidates().join(User).on(User.id.eq(Candidate.creatorId)).size()).toBe(2);
-        expect(election.rankings().size()).toBeGreaterThan(0);
-        expect(election.votes().size()).toBeGreaterThan(0);
-        expect(election.voters().size()).toBe(election.votes().size());
-        expect(election.comments().size()).toBeGreaterThan(0);
-        expect(election.commenters().size()).toBe(election.comments().size());
+    describe("if the questionId changes", function() {
+      function expectQuestionDataFetched() {
+        expect(Question.find(question.id())).toEqual(question);
+        expect(question.creator()).toBeDefined();
+        expect(question.candidates().size()).toBe(2);
+        expect(question.candidates().join(User).on(User.id.eq(Candidate.creatorId)).size()).toBe(2);
+        expect(question.rankings().size()).toBeGreaterThan(0);
+        expect(question.votes().size()).toBeGreaterThan(0);
+        expect(question.voters().size()).toBe(question.votes().size());
+        expect(question.comments().size()).toBeGreaterThan(0);
+        expect(question.commenters().size()).toBe(question.comments().size());
       }
 
-      function expectElectionDataAssigned() {
-        expect(Application.currentOrganizationId()).toBe(election.organizationId());
-        expect(electionPage.election()).toEqual(election);
-        expect(electionPage.currentConsensus.candidates()).toEqual(election.candidates());
-        expect(electionPage.votes.votes().tuples()).toEqual(election.votes().tuples());
-        expect(electionPage.comments.comments().tuples()).toEqual(election.comments().tuples());
+      function expectQuestionDataAssigned() {
+        expect(Application.currentOrganizationId()).toBe(question.organizationId());
+        expect(questionPage.question()).toEqual(question);
+        expect(questionPage.currentConsensus.candidates()).toEqual(question.candidates());
+        expect(questionPage.votes.votes().tuples()).toEqual(question.votes().tuples());
+        expect(questionPage.comments.comments().tuples()).toEqual(question.comments().tuples());
       }
 
       describe("if no voterId or candidateId is specified", function() {
-        it("fetches the election data before assigning relations to the subviews and the current org id", function() {
+        it("fetches the question data before assigning relations to the subviews and the current org id", function() {
           waitsFor("fetch to complete", function(complete) {
-            electionPage.newCandidateLink.hide();
-            electionPage.params({ electionId: election.id() }).success(complete);
-            expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
+            questionPage.newCandidateLink.hide();
+            questionPage.params({ questionId: question.id() }).success(complete);
+            expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
 
-            expect(electionPage.headline).toBeHidden();
-            expect(electionPage.columns).toBeHidden();
-            expect(electionPage.spinner).toBeVisible();
+            expect(questionPage.headline).toBeHidden();
+            expect(questionPage.columns).toBeHidden();
+            expect(questionPage.spinner).toBeVisible();
           });
 
           runs(function() {
-            expectElectionDataFetched();
-            expectElectionDataAssigned();
+            expectQuestionDataFetched();
+            expectQuestionDataAssigned();
 
-            expect(electionPage.headline).toBeVisible();
-            expect(electionPage.columns).toBeVisible();
-            expect(electionPage.spinner).toBeHidden();
+            expect(questionPage.headline).toBeVisible();
+            expect(questionPage.columns).toBeVisible();
+            expect(questionPage.spinner).toBeHidden();
 
-            expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(election.rankings().where({userId: currentUser.id()}).tuples());
-            expect(electionPage.rankedCandidates).toBeVisible();
-            expect(electionPage.candidateDetails).not.toHaveClass('active');
-            expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
-            expect(electionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
-            expect(electionPage.newCandidateLink).toBeVisible();
+            expect(questionPage.rankedCandidates.rankings().tuples()).toEqual(question.rankings().where({userId: currentUser.id()}).tuples());
+            expect(questionPage.rankedCandidates).toBeVisible();
+            expect(questionPage.candidateDetails).not.toHaveClass('active');
+            expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
+            expect(questionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
+            expect(questionPage.newCandidateLink).toBeVisible();
           });
         });
       });
 
       describe("if the voterId is specified", function() {
-        it("fetches the election data and the specified voter's rankings before assigning relations to the subviews", function() {
+        it("fetches the question data and the specified voter's rankings before assigning relations to the subviews", function() {
           waitsFor("fetch to complete", function(complete) {
-            electionPage.newCandidateLink.hide();
-            electionPage.params({ electionId: election.id(), voterId: otherUser.id() }).success(complete);
-            expect(electionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
-            expect(electionPage.votes.selectedVoterId()).toEqual(otherUser.id());
+            questionPage.newCandidateLink.hide();
+            questionPage.params({ questionId: question.id(), voterId: otherUser.id() }).success(complete);
+            expect(questionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
+            expect(questionPage.votes.selectedVoterId()).toEqual(otherUser.id());
           });
 
           runs(function() {
-            expectElectionDataFetched();
-            expectElectionDataAssigned();
+            expectQuestionDataFetched();
+            expectQuestionDataAssigned();
 
-            expect(election.rankingsForUser(otherUser).size()).toBeGreaterThan(0);
+            expect(question.rankingsForUser(otherUser).size()).toBeGreaterThan(0);
 
-            expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(election.rankingsForUser(otherUser).tuples());
-            expect(electionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
-            expect(electionPage.rankedCandidates).toBeVisible();
-            expect(electionPage.candidateDetails).not.toHaveClass('active');
-            expect(electionPage.newCandidateLink).toBeVisible();
+            expect(questionPage.rankedCandidates.rankings().tuples()).toEqual(question.rankingsForUser(otherUser).tuples());
+            expect(questionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
+            expect(questionPage.rankedCandidates).toBeVisible();
+            expect(questionPage.candidateDetails).not.toHaveClass('active');
+            expect(questionPage.newCandidateLink).toBeVisible();
           });
         });
       });
 
       describe("if the candidateId is specified", function() {
-        it("fetches the election data along with the candidate's comments and commenters before assigning relations to the subviews and the selectedCandidate to the currentConsensus and candidateDetails", function() {
+        it("fetches the question data along with the candidate's comments and commenters before assigning relations to the subviews and the selectedCandidate to the currentConsensus and candidateDetails", function() {
           waitsFor("fetch to complete", function(complete) {
-            electionPage.newCandidateLink.hide();
-            electionPage.params({ electionId: election.id(), candidateId: candidate1.id() }).success(complete);
-            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+            questionPage.newCandidateLink.hide();
+            questionPage.params({ questionId: question.id(), candidateId: candidate1.id() }).success(complete);
+            expect(questionPage.votes.selectedVoterId()).toBeFalsy();
           });
 
           runs(function() {
-            expectElectionDataFetched();
+            expectQuestionDataFetched();
             expect(candidate1.comments().size()).toBeGreaterThan(0);
             expect(candidate1.commenters().size()).toBe(candidate1.comments().size());
 
-            expectElectionDataAssigned();
+            expectQuestionDataAssigned();
 
-            expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
-            expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
-            expect(electionPage.rankedCandidates).not.toHaveClass('active');
-            expect(electionPage.candidateDetails).toBeVisible();
-            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
-            expect(electionPage.newCandidateLink).toBeVisible();
+            expect(questionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
+            expect(questionPage.candidateDetails.candidate()).toEqual(candidate1);
+            expect(questionPage.rankedCandidates).not.toHaveClass('active');
+            expect(questionPage.candidateDetails).toBeVisible();
+            expect(questionPage.votes.selectedVoterId()).toBeFalsy();
+            expect(questionPage.newCandidateLink).toBeVisible();
           });
         });
       });
 
       describe("if 'new' is specified as the candidateId", function() {
-        it("fetches the election data assigning relations to the subviews and showing the candidate details form in 'new' mode", function() {
-          spyOn(electionPage.candidateDetails, 'showNewForm');
+        it("fetches the question data assigning relations to the subviews and showing the candidate details form in 'new' mode", function() {
+          spyOn(questionPage.candidateDetails, 'showNewForm');
 
           waitsFor("fetch to complete", function(complete) {
-            expect(electionPage.newCandidateLink).toBeVisible();
-            electionPage.params({ electionId: election.id(), candidateId: 'new' }).success(complete);
-            expect(electionPage.newCandidateLink).toBeHidden();
-            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+            expect(questionPage.newCandidateLink).toBeVisible();
+            questionPage.params({ questionId: question.id(), candidateId: 'new' }).success(complete);
+            expect(questionPage.newCandidateLink).toBeHidden();
+            expect(questionPage.votes.selectedVoterId()).toBeFalsy();
           });
 
           runs(function() {
-            expectElectionDataFetched();
-            expectElectionDataAssigned();
+            expectQuestionDataFetched();
+            expectQuestionDataAssigned();
 
-            expect(electionPage.candidateDetails.showNewForm).toHaveBeenCalled();
-            expect(electionPage.candidateDetails.candidate()).toBeFalsy();
-            expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
-            expect(electionPage.rankedCandidates).not.toHaveClass('active');
-            expect(electionPage.candidateDetails).toBeVisible();
-            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+            expect(questionPage.candidateDetails.showNewForm).toHaveBeenCalled();
+            expect(questionPage.candidateDetails.candidate()).toBeFalsy();
+            expect(questionPage.currentConsensus.selectedCandidate()).toBeFalsy();
+            expect(questionPage.rankedCandidates).not.toHaveClass('active');
+            expect(questionPage.candidateDetails).toBeVisible();
+            expect(questionPage.votes.selectedVoterId()).toBeFalsy();
           });
         });
       });
 
-      describe("if the election is already present in the repository", function() {
-        it("assigns the election and candidates before fetching additional data, and puts spinners on the ranking and votes", function() {
+      describe("if the question is already present in the repository", function() {
+        it("assigns the question and candidates before fetching additional data, and puts spinners on the ranking and votes", function() {
           synchronously(function() {
-            election.fetch();
-            election.candidates().fetch();
-            User.fetch(election.creatorId());
+            question.fetch();
+            question.candidates().fetch();
+            User.fetch(question.creatorId());
           });
 
           waitsFor("fetch to complete", function(complete) {
-            electionPage.params({electionId: election.id()}).success(complete);
-            expect(Application.currentOrganizationId()).toBe(election.organizationId());
-            expect(electionPage.election()).toEqual(election);
-            expect(electionPage.currentConsensus.candidates().tuples()).toEqual(election.candidates().tuples());
-            expect(electionPage.rankedCandidates.loading()).toBeTruthy();
-            expect(electionPage.votes.loading()).toBeTruthy();
-            expect(electionPage.comments.loading()).toBeTruthy();
+            questionPage.params({questionId: question.id()}).success(complete);
+            expect(Application.currentOrganizationId()).toBe(question.organizationId());
+            expect(questionPage.question()).toEqual(question);
+            expect(questionPage.currentConsensus.candidates().tuples()).toEqual(question.candidates().tuples());
+            expect(questionPage.rankedCandidates.loading()).toBeTruthy();
+            expect(questionPage.votes.loading()).toBeTruthy();
+            expect(questionPage.comments.loading()).toBeTruthy();
           });
 
           runs(function() {
-            expect(electionPage.rankedCandidates.rankings()).toBeDefined();
-            expect(electionPage.rankedCandidates.loading()).toBeFalsy();
-            expect(electionPage.votes.loading()).toBeFalsy();
-            expect(electionPage.comments.loading()).toBeFalsy();
+            expect(questionPage.rankedCandidates.rankings()).toBeDefined();
+            expect(questionPage.rankedCandidates.loading()).toBeFalsy();
+            expect(questionPage.votes.loading()).toBeFalsy();
+            expect(questionPage.comments.loading()).toBeFalsy();
           })
         });
       });
 
-      describe("if the election does not exist", function() {
+      describe("if the question does not exist", function() {
         it("navigates to the current user's default organization url", function() {
           waitsFor("fetch to complete", function(complete) {
-            electionPage.params({electionId: -27}).success(complete);
+            questionPage.params({questionId: -27}).success(complete);
           });
           
           runs(function() {
@@ -207,32 +207,32 @@ describe("Views.Pages.Election", function() {
       });
     });
 
-    describe("when the electionId does not change", function() {
+    describe("when the questionId does not change", function() {
       beforeEach(function() {
         waitsFor("fetch to complete", function(complete) {
-          electionPage.params({ electionId: election.id() }).success(complete);
+          questionPage.params({ questionId: question.id() }).success(complete);
         });
       });
       
       describe("if no voterId or candidateId is specified", function() {
         it("hides the candidate details and assigns relations to the subviews, shows the current user's rankings and enables sorting", function() {
           waitsFor("fetch to complete", function(complete) {
-            electionPage.params({ electionId: election.id(), candidateId: candidate2.id() }).success(complete);
+            questionPage.params({ questionId: question.id(), candidateId: candidate2.id() }).success(complete);
           });
 
           runs(function() {
-            electionPage.params({ electionId: election.id() });
+            questionPage.params({ questionId: question.id() });
 
-            expect(electionPage.candidateDetails).not.toHaveClass('active');
-            expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
-            expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(currentUser.rankingsForElection(election).tuples());
-            expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
-            expect(electionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
-            expect(electionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
-            expect(electionPage.rankedCandidates).toBeVisible();
-            expect(electionPage.candidateDetails).not.toHaveClass('active');
-            expect(electionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
-            expect(electionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
+            expect(questionPage.candidateDetails).not.toHaveClass('active');
+            expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
+            expect(questionPage.rankedCandidates.rankings().tuples()).toEqual(currentUser.rankingsForQuestion(question).tuples());
+            expect(questionPage.currentConsensus.selectedCandidate()).toBeFalsy();
+            expect(questionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
+            expect(questionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
+            expect(questionPage.rankedCandidates).toBeVisible();
+            expect(questionPage.candidateDetails).not.toHaveClass('active');
+            expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
+            expect(questionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
           });
         });
       });
@@ -240,59 +240,59 @@ describe("Views.Pages.Election", function() {
       describe("if the voterId is specified", function() {
         it("fetches the specified voter's rankings in addition to the current user's before assigning relations to the subviews and disables sorting because they won't be the current user", function() {
           waitsFor("fetch to complete", function(complete) {
-            electionPage.params({ electionId: election.id(), voterId: otherUser.id() }).success(complete);
-            expect(electionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
-            expect(electionPage.currentConsensus.selectedCandidate()).toBeFalsy();
-            expect(electionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
+            questionPage.params({ questionId: question.id(), voterId: otherUser.id() }).success(complete);
+            expect(questionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
+            expect(questionPage.currentConsensus.selectedCandidate()).toBeFalsy();
+            expect(questionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
 
-            expect(electionPage.rankedCandidates.loading()).toBeTruthy();
-            expect(electionPage.comments.loading()).toBeFalsy();
-            expect(electionPage.votes.loading()).toBeFalsy();
+            expect(questionPage.rankedCandidates.loading()).toBeTruthy();
+            expect(questionPage.comments.loading()).toBeFalsy();
+            expect(questionPage.votes.loading()).toBeFalsy();
           });
 
           runs(function() {
-            expect(electionPage.rankedCandidates.loading()).toBeFalsy();
+            expect(questionPage.rankedCandidates.loading()).toBeFalsy();
 
             expect(currentUser.rankings().size()).toBeGreaterThan(0);
-            expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(otherUser.rankingsForElection(election).tuples());
-            expect(electionPage.rankedCandidates).toBeVisible();
-            expect(electionPage.candidateDetails).not.toHaveClass('active');
-            expect(electionPage.votes.selectedVoterId()).toEqual(otherUser.id());
-            expect(electionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
+            expect(questionPage.rankedCandidates.rankings().tuples()).toEqual(otherUser.rankingsForQuestion(question).tuples());
+            expect(questionPage.rankedCandidates).toBeVisible();
+            expect(questionPage.candidateDetails).not.toHaveClass('active');
+            expect(questionPage.votes.selectedVoterId()).toEqual(otherUser.id());
+            expect(questionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
           });
         });
 
         it("still enables sorting on the votes list and sets the correct header if the voter id matches the current user id", function() {
           stubAjax();
-          electionPage.params({ electionId: election.id(), voterId: currentUser.id() });
-          expect(electionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
-          expect(electionPage.rankedCandidatesHeader.text()).toBe('Your Ranking');
+          questionPage.params({ questionId: question.id(), voterId: currentUser.id() });
+          expect(questionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
+          expect(questionPage.rankedCandidatesHeader.text()).toBe('Your Ranking');
         });
       });
 
       describe("if the candidateId is specified", function() {
         it("assigns the selectedCandidate to the currentConsensus and candidateDetails, then fetches the candidates comments and assigns those later", function() {
           waitsFor("comments and commenters to be fetched", function(complete) {
-            electionPage.params({ electionId: election.id(), candidateId: candidate1.id() }).success(complete);
+            questionPage.params({ questionId: question.id(), candidateId: candidate1.id() }).success(complete);
 
-            expect(electionPage.candidateDetails.loading()).toBeTruthy();
+            expect(questionPage.candidateDetails.loading()).toBeTruthy();
 
-            expect(electionPage.candidateDetails).toHaveClass('active');
-            expect(electionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
-            expect(electionPage.candidateDetails.candidate()).toEqual(candidate1);
-            expect(electionPage.votes.selectedVoterId()).toBeFalsy();
+            expect(questionPage.candidateDetails).toHaveClass('active');
+            expect(questionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
+            expect(questionPage.candidateDetails.candidate()).toEqual(candidate1);
+            expect(questionPage.votes.selectedVoterId()).toBeFalsy();
 
-            expect(electionPage.rankedCandidates.loading()).toBeFalsy();
-            expect(electionPage.comments.loading()).toBeFalsy();
-            expect(electionPage.votes.loading()).toBeFalsy();
+            expect(questionPage.rankedCandidates.loading()).toBeFalsy();
+            expect(questionPage.comments.loading()).toBeFalsy();
+            expect(questionPage.votes.loading()).toBeFalsy();
           });
 
           runs(function() {
-            expect(electionPage.candidateDetails.loading()).toBeFalsy();
+            expect(questionPage.candidateDetails.loading()).toBeFalsy();
             
             expect(candidate1.comments().size()).toBeGreaterThan(0);
             expect(candidate1.commenters().size()).toBe(candidate1.comments().size());
-            expect(electionPage.candidateDetails.comments.comments().tuples()).toEqual(candidate1.comments().tuples());
+            expect(questionPage.candidateDetails.comments.comments().tuples()).toEqual(candidate1.comments().tuples());
           });
         });
       });
@@ -302,7 +302,7 @@ describe("Views.Pages.Election", function() {
       describe("when displaying the current user's rankings", function() {
         beforeEach(function() {
           waitsFor("fetch to complete", function(complete) {
-            electionPage.params({ electionId: election.id() }).success(complete);
+            questionPage.params({ questionId: question.id() }).success(complete);
           });
           runs(function() {
             expect(otherUser.rankings().size()).toBe(0);
@@ -316,25 +316,25 @@ describe("Views.Pages.Election", function() {
 
           runs(function() {
             expect(otherUser.rankings().size()).toBeGreaterThan(0);
-            expect(electionPage.rankedCandidates.rankings().tuples()).toEqual(otherUser.rankings().tuples());
+            expect(questionPage.rankedCandidates.rankings().tuples()).toEqual(otherUser.rankings().tuples());
           });
         });
       });
 
       describe("when not displaying the current user's ranking", function() {
-        it("fetches the new user's rankings for this election but does not change the view", function() {
+        it("fetches the new user's rankings for this question but does not change the view", function() {
           waitsFor("fetching of candidate data", function(complete) {
-            electionPage.params({ electionId: election.id(), candidateId: candidate1.id()}).success(complete);
+            questionPage.params({ questionId: question.id(), candidateId: candidate1.id()}).success(complete);
           });
           
           waitsFor("new rankings to be fetched", function(complete) {
-            expect(electionPage.candidateDetails).toHaveClass('active');
+            expect(questionPage.candidateDetails).toHaveClass('active');
             Application.currentUser(otherUser).success(complete);
           });
 
           runs(function() {
             expect(otherUser.rankings().size()).toBeGreaterThan(0);
-            expect(electionPage.candidateDetails).toHaveClass('active'); // we don't change the view
+            expect(questionPage.candidateDetails).toHaveClass('active'); // we don't change the view
           });
         });
       });
@@ -343,75 +343,75 @@ describe("Views.Pages.Election", function() {
     describe("when the params hash differs by the time the fetch completes", function() {
       it("does not populate data for the old params", function() {
         waitsFor("fetch to complete", function(complete) {
-          electionPage.params({ electionId: election.id(), candidateId: candidate1.id() }).success(complete);
+          questionPage.params({ questionId: question.id(), candidateId: candidate1.id() }).success(complete);
           stubAjax();
-          electionPage.params({ electionId: 999 });
+          questionPage.params({ questionId: 999 });
         });
 
         runs(function() {
-          expect(electionPage.candidateDetails.candidate()).not.toBeDefined();
+          expect(questionPage.candidateDetails.candidate()).not.toBeDefined();
         });
       });
     });
   });
 
   describe("when the 'suggest an answer' button is clicked", function() {
-    it("navigates to the url for new candidates for the current election", function() {
+    it("navigates to the url for new candidates for the current question", function() {
       Application.currentUser(User.createFromRemote({id: 1}));
-      var election = Election.createFromRemote({id: 1, creatorId: 1, createdAt: 2345});
+      var question = Question.createFromRemote({id: 1, creatorId: 1, createdAt: 2345});
 
-      electionPage.election(election);
-      electionPage.newCandidateLink.click();
-      expect(Path.routes.current).toBe(election.url() + "/candidates/new");
+      questionPage.question(question);
+      questionPage.newCandidateLink.click();
+      expect(Path.routes.current).toBe(question.url() + "/candidates/new");
     });
   });
 
   describe("local logic (no fetching)", function() {
-    var creator, election, election2, editableByCurrentUser;
+    var creator, question, question2, editableByCurrentUser;
     var headlineTextWhenAdjustColumnTopWasCalled;
 
     beforeEach(function() {
       useFakeServer();
       creator = User.createFromRemote({id: 1, firstName: "animal", lastName: "eater"});
       organization = Organization.createFromRemote({id: 1, name: "Neurotic designers"});
-      election = creator.elections().createFromRemote({id: 1, body: 'short body', details: "aoeu!", organizationId: 98, createdAt: 91234, organizationId: organization.id()});
-      election2 = creator.elections().createFromRemote({id: 2, body: 'short body', details: "woo!", organizationId: 98, createdAt: 91234});
+      question = creator.questions().createFromRemote({id: 1, body: 'short body', details: "aoeu!", organizationId: 98, createdAt: 91234, organizationId: organization.id()});
+      question2 = creator.questions().createFromRemote({id: 2, body: 'short body', details: "woo!", organizationId: 98, createdAt: 91234});
 
       editableByCurrentUser = true;
-      spyOn(Election.prototype, 'editableByCurrentUser').andCallFake(function() {
+      spyOn(Question.prototype, 'editableByCurrentUser').andCallFake(function() {
         return editableByCurrentUser;
       });
 
-      electionPage.election(election);
+      questionPage.question(question);
     });
 
-    describe("when an election is assigned", function() {
-      it("assigns the election's body, details, avatar, and comments relation, and keeps the body and details up to date when they change", function() {
-        expect(electionPage.body.text()).toEqual(election.body());
-        expect(electionPage.details.text()).toEqual(election.details());
-        election.remotelyUpdated({body: "what would satan & <damien> do?", details: "Isdf"});
-        expect(electionPage.body.text()).toEqual(election.body());
-        expect(electionPage.details.text()).toEqual(election.details());
-        expect(electionPage.avatar.user()).toBe(election.creator());
-        expect(electionPage.creatorName.text()).toBe(election.creator().fullName());
-        expect(electionPage.createdAt.text()).toBe(election.formattedCreatedAt());
-        expect(electionPage.comments.comments()).toBe(election.comments());
+    describe("when an question is assigned", function() {
+      it("assigns the question's body, details, avatar, and comments relation, and keeps the body and details up to date when they change", function() {
+        expect(questionPage.body.text()).toEqual(question.body());
+        expect(questionPage.details.text()).toEqual(question.details());
+        question.remotelyUpdated({body: "what would satan & <damien> do?", details: "Isdf"});
+        expect(questionPage.body.text()).toEqual(question.body());
+        expect(questionPage.details.text()).toEqual(question.details());
+        expect(questionPage.avatar.user()).toBe(question.creator());
+        expect(questionPage.creatorName.text()).toBe(question.creator().fullName());
+        expect(questionPage.createdAt.text()).toBe(question.formattedCreatedAt());
+        expect(questionPage.comments.comments()).toBe(question.comments());
 
-        electionPage.election(election2);
-        expect(electionPage.body.text()).toEqual(election2.body());
-        expect(electionPage.details.text()).toEqual(election2.details());
+        questionPage.question(question2);
+        expect(questionPage.body.text()).toEqual(question2.body());
+        expect(questionPage.details.text()).toEqual(question2.details());
 
-        election.remotelyUpdated({body: "what would you do for a klondike bar?", details: "jhjyg"});
-        expect(electionPage.body.text()).toEqual(election2.body());
-        expect(electionPage.details.text()).toEqual(election2.details());
+        question.remotelyUpdated({body: "what would you do for a klondike bar?", details: "jhjyg"});
+        expect(questionPage.body.text()).toEqual(question2.body());
+        expect(questionPage.details.text()).toEqual(question2.details());
       });
 
-      it("does not leave dangling subscriptions on the previous election when another one is assigned", function() {
-        var subCountBefore = election2.onUpdateNode.size();
-        electionPage.election(election2);
-        expect(election2.onUpdateNode.size()).toBeGreaterThan(subCountBefore);
-        electionPage.election(election);
-        expect(election2.onUpdateNode.size()).toBe(subCountBefore);
+      it("does not leave dangling subscriptions on the previous question when another one is assigned", function() {
+        var subCountBefore = question2.onUpdateNode.size();
+        questionPage.question(question2);
+        expect(question2.onUpdateNode.size()).toBeGreaterThan(subCountBefore);
+        questionPage.question(question);
+        expect(question2.onUpdateNode.size()).toBe(subCountBefore);
       });
     });
 
@@ -423,27 +423,27 @@ describe("Views.Pages.Election", function() {
 
           editableByCurrentUser = false;
           Application.currentUser(user1);
-          expect(electionPage.editButton).toBeHidden();
-          expect(electionPage.destroyButton).toBeHidden();
+          expect(questionPage.editButton).toBeHidden();
+          expect(questionPage.destroyButton).toBeHidden();
 
           editableByCurrentUser = true;
           Application.currentUser(user2);
-          expect(electionPage.editButton).toBeVisible();
-          expect(electionPage.destroyButton).toBeVisible();
+          expect(questionPage.editButton).toBeVisible();
+          expect(questionPage.destroyButton).toBeVisible();
         });
       });
 
-      describe("when an election is assigned", function() {
+      describe("when an question is assigned", function() {
         it("only shows the edit and destroy buttons if the current user can edit", function() {
           editableByCurrentUser = false;
-          electionPage.election(election2);
-          expect(electionPage.editButton).toBeHidden();
-          expect(electionPage.destroyButton).toBeHidden();
+          questionPage.question(question2);
+          expect(questionPage.editButton).toBeHidden();
+          expect(questionPage.destroyButton).toBeHidden();
 
           editableByCurrentUser = true;
-          electionPage.election(election);
-          expect(electionPage.editButton).toBeVisible();
-          expect(electionPage.destroyButton).toBeVisible();
+          questionPage.question(question);
+          expect(questionPage.editButton).toBeVisible();
+          expect(questionPage.destroyButton).toBeVisible();
         });
       });
     });
@@ -452,58 +452,58 @@ describe("Views.Pages.Election", function() {
       it("shows the fields populates their vals, and focuses the body when the edit button is clicked and hides the fields when the cancel button is clicked", function() {
         expectFieldsHidden();
 
-        election.remotelyUpdated({details: "and sometimes Y"});
+        question.remotelyUpdated({details: "and sometimes Y"});
 
-        electionPage.editButton.click();
+        questionPage.editButton.click();
         expectFieldsVisible();
-        expect(electionPage.editableBody[0]).toBe(document.activeElement);
+        expect(questionPage.editableBody[0]).toBe(document.activeElement);
 
-        expect(electionPage.editableBody.val()).toBe(election.body());
-        expect(electionPage.editableDetails.val()).toBe(election.details());
-        expect(electionPage.charsRemaining.text()).toBe((140 - election.body().length).toString());
+        expect(questionPage.editableBody.val()).toBe(question.body());
+        expect(questionPage.editableDetails.val()).toBe(question.details());
+        expect(questionPage.charsRemaining.text()).toBe((140 - question.body().length).toString());
 
-        electionPage.cancelEditButton.click();
+        questionPage.cancelEditButton.click();
         expectFieldsHidden();
         expectColumnTopCorrectlyAdjusted();
       });
 
-      it("hides the editable fields when the election changes", function() {
-        electionPage.editButton.click();
+      it("hides the editable fields when the question changes", function() {
+        questionPage.editButton.click();
         expectFieldsVisible();
 
-        electionPage.election(election2);
+        questionPage.question(question2);
         expectFieldsHidden();
       });
     });
     
     describe("showing and hiding of the details", function() {
-      describe("when an election is assigned", function() {
+      describe("when an question is assigned", function() {
         it("shows the details if they aren't blank and hides them otherwise", function() {
-          election2.remotelyUpdated({details: ""});
+          question2.remotelyUpdated({details: ""});
 
-          electionPage.election(election2);
+          questionPage.question(question2);
 
-          expect(electionPage.details).toBeHidden();
+          expect(questionPage.details).toBeHidden();
 
-          expect(election.details()).not.toBe("");
-          electionPage.election(election);
+          expect(question.details()).not.toBe("");
+          questionPage.question(question);
 
-          expect(electionPage.details).toBeVisible();
+          expect(questionPage.details).toBeVisible();
         });
       });
 
       describe("when the details are updated", function() {
         it("shows the details if they aren't blank and hides them otherwise", function() {
-          electionPage.editableBody.val("aoeu");
-          electionPage.editableDetails.val("");
-          electionPage.updateButton.click();
+          questionPage.editableBody.val("aoeu");
+          questionPage.editableDetails.val("");
+          questionPage.updateButton.click();
           Server.lastUpdate.simulateSuccess();
-          expect(electionPage.details).toBeHidden();
+          expect(questionPage.details).toBeHidden();
 
-          electionPage.editableDetails.val("aoeuaoeu");
-          electionPage.updateButton.click();
+          questionPage.editableDetails.val("aoeuaoeu");
+          questionPage.updateButton.click();
           Server.lastUpdate.simulateSuccess();
-          expect(electionPage.details).toBeVisible();
+          expect(questionPage.details).toBeVisible();
         });
       });
     });
@@ -512,19 +512,19 @@ describe("Views.Pages.Election", function() {
       var updates;
 
       beforeEach(function() {
-        electionPage.editButton.click();
+        questionPage.editButton.click();
         updates = {
           body: "Relish",
           details: "That green stuff..."
         }
 
-        electionPage.editableBody.val(updates.body);
-        electionPage.editableDetails.val(updates.details);
+        questionPage.editableBody.val(updates.body);
+        questionPage.editableDetails.val(updates.details);
       });
 
       describe("if the body is not blank and not too long", function() {
         it("updates the record's body and details on the server and hides the form", function() {
-          electionPage.updateButton.click();
+          questionPage.updateButton.click();
 
           expect(Server.updates.length).toBe(1);
 
@@ -533,28 +533,28 @@ describe("Views.Pages.Election", function() {
 
           expectFieldsHidden();
 
-          expect(electionPage.body.text()).toBe(updates.body);
-          expect(electionPage.details.text()).toBe(updates.details);
+          expect(questionPage.body.text()).toBe(updates.body);
+          expect(questionPage.details.text()).toBe(updates.details);
         });
       });
 
       describe("if the body is blank", function() {
-        it("does not save the election or hide the fields", function() {
-          electionPage.editableBody.val("    ");
-          electionPage.updateButton.click();
+        it("does not save the question or hide the fields", function() {
+          questionPage.editableBody.val("    ");
+          questionPage.updateButton.click();
           expect(Server.updates.length).toBe(0);
           expectFieldsVisible();
         });
       });
 
       describe("if the body exceeds 140 characters", function() {
-        it("does not save the election or hide the fields", function() {
+        it("does not save the question or hide the fields", function() {
           var longBody = ""
           _.times(141, function() {
             longBody += "X"
           });
-          electionPage.editableBody.val(longBody);
-          electionPage.updateButton.click();
+          questionPage.editableBody.val(longBody);
+          questionPage.updateButton.click();
           expect(Server.updates.length).toBe(0);
           expectFieldsVisible();
         });
@@ -562,13 +562,13 @@ describe("Views.Pages.Election", function() {
     });
 
     describe("when the destroy button is clicked", function() {
-      it("destroys the election if the user confirms the prompt", function() {
+      it("destroys the question if the user confirms the prompt", function() {
         var confirmValue = false;
         spyOn(window, 'confirm').andCallFake(function() {
           return confirmValue;
         });
 
-        electionPage.destroyButton.click();
+        questionPage.destroyButton.click();
 
         expect(window.confirm).toHaveBeenCalled();
         expect(Server.destroys.length).toBe(0);
@@ -576,69 +576,69 @@ describe("Views.Pages.Election", function() {
         window.confirm.reset();
         confirmValue = true;
 
-        electionPage.destroyButton.click();
+        questionPage.destroyButton.click();
 
         expect(window.confirm).toHaveBeenCalled();
         expect(Server.destroys.length).toBe(1);
-        expect(Server.lastDestroy.record).toBe(electionPage.election());
+        expect(Server.lastDestroy.record).toBe(questionPage.question());
       });
     });
 
-    describe("when the election is destroyed", function() {
-      describe("when the election page is visible", function() {
+    describe("when the question is destroyed", function() {
+      describe("when the question page is visible", function() {
         it("navigates back to the current organization page", function() {
           spyOn(Application, 'showPage');
-          electionPage.election().remotelyDestroyed();
+          questionPage.question().remotelyDestroyed();
           expect(Path.routes.current).toBe(Application.currentOrganization().url());
         });
       });
 
-      describe("when the election page is not visible", function() {
+      describe("when the question page is not visible", function() {
         it("does not change the url", function() {
-          electionPage.hide();
+          questionPage.hide();
           spyOn(Application, 'showPage');
-          electionPage.election().remotelyDestroyed();
+          questionPage.question().remotelyDestroyed();
           expect(Application.showPage).not.toHaveBeenCalled();
         });
       });
     });
 
     describe("when the 'back to questions' link is clicked", function() {
-      it("navigates to the election's organization page", function() {
+      it("navigates to the question's organization page", function() {
         spyOn(Application, 'showPage');
-        electionPage.organizationLink.click();
+        questionPage.organizationLink.click();
         expect(Path.routes.current).toBe(organization.url());
       });
     });
 
     describe("adjustment of the columns' top position", function() {
       beforeEach(function() {
-        electionPage.election(election);
+        questionPage.question(question);
       });
 
-      describe("when the election is assigned", function() {
+      describe("when the question is assigned", function() {
         it("calls #adjustColumnTop", function() {
-          electionPage.election(election2);
+          questionPage.question(question2);
           expectColumnTopCorrectlyAdjusted();
 
-          electionPage.election(election);
+          questionPage.question(question);
           expectColumnTopCorrectlyAdjusted();
         });
       });
 
-      describe("when the election body changes", function() {
+      describe("when the question body changes", function() {
         it("calls #adjustColumnTop after assigning it to the body div", function() {
-          election.remotelyUpdated({body: "this is a longer body?"});
+          question.remotelyUpdated({body: "this is a longer body?"});
           expectColumnTopCorrectlyAdjusted();
         });
       });
 
       describe("when the edit button is clicked or the elastic textarea resizes", function() {
         it("calls #adjustColumnTop after assigning it to the body div", function() {
-          electionPage.editButton.click();
+          questionPage.editButton.click();
           expectColumnTopCorrectlyAdjusted();
 
-          electionPage.editableBody.trigger('elastic');
+          questionPage.editableBody.trigger('elastic');
           expectColumnTopCorrectlyAdjusted();
         });
       });
@@ -650,94 +650,94 @@ describe("Views.Pages.Election", function() {
         longDetails = "";
         for (var i = 0; i < 10; i++) longDetails += "Bee bee boo boo ";
 
-        spyOn(electionPage.comments, 'enableOrDisableFullHeight');
+        spyOn(questionPage.comments, 'enableOrDisableFullHeight');
       });
 
       describe("when the details and creator div are populated or when the details change", function() {
         it("adjusts comments to fill remaining vertical space", function() {
           expectCommentsToHaveFullHeight();
-          election.remotelyUpdated({details: longDetails});
+          question.remotelyUpdated({details: longDetails});
           expectCommentsToHaveFullHeight();
-          expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+          expect(questionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
         });
       });
 
       describe("when the window is resized", function() {
         it("adjusts comments to fill remaining vertical space", function() {
           Application.width(1000);
-          election.remotelyUpdated({details: longDetails});
+          question.remotelyUpdated({details: longDetails});
 
           Application.width(700);
           $(window).resize();
           expectCommentsToHaveFullHeight();
-          expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+          expect(questionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
         });
       });
 
       describe("when showing or hiding the editable details", function() {
         it("adjusts comments to fill remaining vertical space", function() {
-          electionPage.editButton.click();
+          questionPage.editButton.click();
           expectCommentsToHaveFullHeight();
-          expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+          expect(questionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
         });
       });
 
       describe("when elastic is triggered on the or the body editable details", function() {
         it("adjusts comments to fill remaining vertical space", function() {
-          electionPage.editButton.click();
+          questionPage.editButton.click();
           expectCommentsToHaveFullHeight();
-          expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+          expect(questionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
 
-          electionPage.comments.enableOrDisableFullHeight.reset();
-          var columnHeightBeforeElastic = electionPage.find('#column1').height();
-          electionPage.editableDetails.val(longDetails + longDetails);
-          electionPage.editableDetails.keyup();
+          questionPage.comments.enableOrDisableFullHeight.reset();
+          var columnHeightBeforeElastic = questionPage.find('#column1').height();
+          questionPage.editableDetails.val(longDetails + longDetails);
+          questionPage.editableDetails.keyup();
           expectCommentsToHaveFullHeight(columnHeightBeforeElastic);
-          expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+          expect(questionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
 
-          electionPage.comments.enableOrDisableFullHeight.reset();
-          electionPage.editableDetails.val("");
-          electionPage.editableDetails.keyup();
+          questionPage.comments.enableOrDisableFullHeight.reset();
+          questionPage.editableDetails.val("");
+          questionPage.editableDetails.keyup();
           expectCommentsToHaveFullHeight(columnHeightBeforeElastic);
-          expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+          expect(questionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
 
 
-          electionPage.comments.enableOrDisableFullHeight.reset();
-          electionPage.editableBody.val(longDetails);
-          electionPage.editableBody.keyup();
-          expect(electionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+          questionPage.comments.enableOrDisableFullHeight.reset();
+          questionPage.editableBody.val(longDetails);
+          questionPage.editableBody.keyup();
+          expect(questionPage.comments.enableOrDisableFullHeight).toHaveBeenCalled();
         });
       });
 
       function expectCommentsToHaveFullHeight(expectedBottom) {
-        var commentsBottom = electionPage.comments.position().top + electionPage.comments.height();
-        expect(commentsBottom).toBe(expectedBottom || electionPage.find('#column1').height());
+        var commentsBottom = questionPage.comments.position().top + questionPage.comments.height();
+        expect(commentsBottom).toBe(expectedBottom || questionPage.find('#column1').height());
       }
     });
   });
 
   function expectColumnTopCorrectlyAdjusted() {
-    expect(electionPage.columns.position().top).toBe(electionPage.columnTopPosition());
+    expect(questionPage.columns.position().top).toBe(questionPage.columnTopPosition());
   }
 
   function expectFieldsVisible() {
-    expect(electionPage.editableBody).toBeVisible();
-    expect(electionPage.editableDetails).toBeVisible();
-    expect(electionPage.cancelEditButton).toBeVisible();
-    expect(electionPage.updateButton).toBeVisible();
-    expect(electionPage.editButton).toBeHidden();
-    expect(electionPage.body).toBeHidden();
-    expect(electionPage.details).toBeHidden();
-    expect(electionPage.destroyButton).toBeHidden();
+    expect(questionPage.editableBody).toBeVisible();
+    expect(questionPage.editableDetails).toBeVisible();
+    expect(questionPage.cancelEditButton).toBeVisible();
+    expect(questionPage.updateButton).toBeVisible();
+    expect(questionPage.editButton).toBeHidden();
+    expect(questionPage.body).toBeHidden();
+    expect(questionPage.details).toBeHidden();
+    expect(questionPage.destroyButton).toBeHidden();
   }
 
   function expectFieldsHidden() {
-    expect(electionPage.editableBody).toBeHidden();
-    expect(electionPage.editableDetails).toBeHidden();
-    expect(electionPage.cancelEditButton).toBeHidden();
-    expect(electionPage.updateButton).toBeHidden();
-    expect(electionPage.editButton).toBeVisible();
-    expect(electionPage.body).toBeVisible();
-    expect(electionPage.details).toBeVisible();
+    expect(questionPage.editableBody).toBeHidden();
+    expect(questionPage.editableDetails).toBeHidden();
+    expect(questionPage.cancelEditButton).toBeHidden();
+    expect(questionPage.updateButton).toBeHidden();
+    expect(questionPage.editButton).toBeVisible();
+    expect(questionPage.body).toBeVisible();
+    expect(questionPage.details).toBeVisible();
   }
 });

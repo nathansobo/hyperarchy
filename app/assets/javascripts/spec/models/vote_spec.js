@@ -4,7 +4,7 @@ describe("Vote", function() {
   var vote, user;
   beforeEach(function() {
     user = User.createFromRemote({id: 1});
-    vote = user.votes().createFromRemote({id: 1, electionId: 33, updatedAt: 1308353647242});
+    vote = user.votes().createFromRemote({id: 1, questionId: 33, updatedAt: 1308353647242});
   });
 
   describe("#formattedUpdatedAt", function() {
@@ -16,11 +16,11 @@ describe("Vote", function() {
   describe("#url", function() {
     it("returns the correct url", function() {
       attachLayout();
-      expect(vote.url()).toEqual('/elections/33/votes/1');
+      expect(vote.url()).toEqual('/questions/33/votes/1');
 
       Application.currentUser(user);
 
-      expect(vote.url()).toEqual('/elections/33');
+      expect(vote.url()).toEqual('/questions/33');
     });
   });
 });

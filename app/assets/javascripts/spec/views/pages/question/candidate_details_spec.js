@@ -1,21 +1,21 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election.CandidateDetails", function() {
-  var candidateDetails, candidate, creator, election, organization;
+describe("Views.Pages.Question.CandidateDetails", function() {
+  var candidateDetails, candidate, creator, question, organization;
 
   beforeEach(function() {
     renderLayout();
     Application.height(1000);
 
-    candidateDetails = Application.electionPage.candidateDetails;
+    candidateDetails = Application.questionPage.candidateDetails;
     organization = Organization.createFromRemote({id: 42});
     creator = organization.makeMember({id: 999, emailHash: 'blas', firstName: "Mr.", lastName: "Creator"});
     Application.currentUser(creator);
-    election = organization.elections().createFromRemote({id: 1, creatorId: 999, createdAt: 12});
-    candidate = creator.candidates().createFromRemote({id: 1, electionId: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?", createdAt: 1308352736162});
+    question = organization.questions().createFromRemote({id: 1, creatorId: 999, createdAt: 12});
+    candidate = creator.candidates().createFromRemote({id: 1, questionId: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?", createdAt: 1308352736162});
 
-    Application.electionPage.show();
-    Application.electionPage.showCandidateDetails();
+    Application.questionPage.show();
+    Application.questionPage.showCandidateDetails();
 
     candidateDetails.candidate(candidate);
   });
@@ -33,7 +33,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     });
 
     it("removes subscriptions to the previous candidate", function() {
-      var candidate2 = Candidate.createFromRemote({id: 57, body: "soup.", electionId: election.id(), createdAt: 1111, creatorId: creator.id()});
+      var candidate2 = Candidate.createFromRemote({id: 57, body: "soup.", questionId: question.id(), createdAt: 1111, creatorId: creator.id()});
       var subscriptionsBefore = candidate.onDestroyNode.size();
 
       candidateDetails.candidate(candidate2);
@@ -145,7 +145,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
     var fieldValues;
 
     beforeEach(function() {
-      Application.electionPage.election(election);
+      Application.questionPage.question(question);
       useFakeServer();
       candidateDetails.showNewForm();
       fieldValues = {
@@ -164,10 +164,10 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
           expect(Server.creates.length).toBe(1);
 
-          expect(Server.lastCreate.record.dirtyWireRepresentation()).toEqual(_.extend(fieldValues, {election_id: election.id()}));
+          expect(Server.lastCreate.record.dirtyWireRepresentation()).toEqual(_.extend(fieldValues, {question_id: question.id()}));
           Server.lastCreate.simulateSuccess();
 
-          expect(Path.routes.current).toBe(election.url());
+          expect(Path.routes.current).toBe(question.url());
         });
 
         it("wires the form submit event to save", function() {
@@ -220,20 +220,20 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
         var createdCandidate = Server.lastCreate.record;
 
-        expect(createdCandidate.election()).toBe(election);
+        expect(createdCandidate.question()).toBe(question);
         expect(createdCandidate.body()).toBe(fieldValues.body);
         expect(createdCandidate.details()).toBe(fieldValues.details);
 
         Server.lastCreate.simulateSuccess();
 
-        expect(Path.routes.current).toBe(election.url());
+        expect(Path.routes.current).toBe(question.url());
       });
     });
   });
   
   describe("handling of the enter key on the body textarea", function() {
     beforeEach(function() {
-      Application.electionPage.election(election);
+      Application.questionPage.question(question);
       useFakeServer();
     });
 
@@ -370,9 +370,9 @@ describe("Views.Pages.Election.CandidateDetails", function() {
   });
 
   describe("when the candidate is destroyed", function() {
-    it("navigates to the election url", function() {
+    it("navigates to the question url", function() {
       candidate.remotelyDestroyed();
-      expect(Path.routes.current).toBe(election.url());
+      expect(Path.routes.current).toBe(question.url());
     });
   });
   
@@ -387,7 +387,7 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
     describe("when the details/body are assigned and when they change", function() {
       it("adjusts the comments to fill the remaining available height", function() {
-        Application.electionPage.showCandidateDetails();
+        Application.questionPage.showCandidateDetails();
         expectCommentsToHaveFullHeight();
 
         candidate.remotelyUpdated({body: longText});
@@ -412,10 +412,10 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
     describe("when the window is resized", function() {
       it("adjusts the comments to fill the remaining available height", function() {
-        Application.electionPage.width(1200);
+        Application.questionPage.width(1200);
         candidate.remotelyUpdated({details: longText});
 
-        Application.electionPage.width(800);
+        Application.questionPage.width(800);
         $(window).resize();
         expectCommentsToHaveFullHeight();
         expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
@@ -446,25 +446,25 @@ describe("Views.Pages.Election.CandidateDetails", function() {
 
   describe("when the close link is clicked", function() {
     beforeEach(function() {
-      Application.electionPage.election(election);
+      Application.questionPage.question(question);
     });
 
     describe("when the view is in 'new' mode", function() {
-      it("routes to the election's url", function() {
-        Application.electionPage.election(election);
+      it("routes to the question's url", function() {
+        Application.questionPage.question(question);
         candidateDetails.candidate(null);
         candidateDetails.showNewForm();
         spyOn(Application, 'showPage');
         candidateDetails.closeLink.click();
-        expect(Path.routes.current).toBe(election.url());
+        expect(Path.routes.current).toBe(question.url());
       });
     });
 
     describe("when the view is in 'details' mode", function() {
-      it("routes to the election's url", function() {
+      it("routes to the question's url", function() {
         spyOn(Application, 'showPage');
         candidateDetails.closeLink.click();
-        expect(Path.routes.current).toBe(election.url());
+        expect(Path.routes.current).toBe(question.url());
       });
     });
   });

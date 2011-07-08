@@ -1,18 +1,18 @@
 require 'spec_helper'
 
 describe RankingsController do
-  attr_reader :organization, :member, :non_member, :election, :c1, :c2
+  attr_reader :organization, :member, :non_member, :question, :c1, :c2
 
   before do
     @organization = Organization.make
-    @election = organization.elections.make
-    @c1 = election.candidates.make
-    @c2 = election.candidates.make
+    @question = organization.questions.make
+    @c1 = question.candidates.make
+    @c2 = question.candidates.make
     @member = organization.make_member
     @non_member = User.make
   end
 
-  context "when authenticated as a member of the ranked election's organization" do
+  context "when authenticated as a member of the ranked question's organization" do
     before do
       login_as member
     end
@@ -47,7 +47,7 @@ describe RankingsController do
     end
   end
 
-  context "when authenticated as a user that is not a member of the ranked election's organization" do
+  context "when authenticated as a user that is not a member of the ranked question's organization" do
     before do
       login_as(non_member)
     end

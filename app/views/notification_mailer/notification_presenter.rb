@@ -4,7 +4,7 @@ module Views
       include HeadlineGeneration
 
       attr_reader :user, :period, :item, :membership_presenters
-      attr_accessor :new_election_count, :new_candidate_count, :new_comment_count
+      attr_accessor :new_question_count, :new_candidate_count, :new_comment_count
 
       def initialize(user, period, item=nil)
         @user, @period, @item = user, period, item
@@ -29,12 +29,12 @@ module Views
       end
 
       def gather_counts
-        @new_election_count = 0
+        @new_question_count = 0
         @new_candidate_count = 0
         @new_comment_count = 0
 
         membership_presenters.each do |presenter|
-          self.new_election_count += presenter.new_election_count
+          self.new_question_count += presenter.new_question_count
           self.new_candidate_count += presenter.new_candidate_count
           self.new_comment_count += presenter.new_comment_count
         end

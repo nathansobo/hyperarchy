@@ -1,27 +1,27 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Election.RankedCandidates", function() {
-  var organization, electionPage, rankedCandidates, currentUser, election, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation, lastCreateOrUpdatePromise;
+describe("Views.Pages.Question.RankedCandidates", function() {
+  var organization, questionPage, rankedCandidates, currentUser, question, candidate1, candidate2, candidate3, ranking1, ranking2, rankingsRelation, lastCreateOrUpdatePromise;
   
   beforeEach(function() {
     organization = Organization.createFromRemote({id: 1})
     currentUser = organization.makeMember({id: 2, emailAddress: "foo@example.com"});
-    election = Election.createFromRemote({id: 1, creatorId: 2, createdAt: 234234234, organizationId: organization.id()});
-    candidate1 = election.candidates().createFromRemote({id: 1, body: "Candidate 1", createdAt: 1308352736162, creatorId: 2});
-    candidate2 = election.candidates().createFromRemote({id: 2, body: "Candidate 2", createdAt: 1308352736162, creatorId: 2});
-    candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3", createdAt: 1308352736162, creatorId: 2});
-    ranking1 = currentUser.rankings().createFromRemote({id: 1, electionId: election.id(), candidateId: candidate1.id(), position: 64});
-    ranking2 = currentUser.rankings().createFromRemote({id: 2, electionId: election.id(), candidateId: candidate2.id(), position: -64});
-    rankingsRelation = currentUser.rankingsForElection(election);
+    question = Question.createFromRemote({id: 1, creatorId: 2, createdAt: 234234234, organizationId: organization.id()});
+    candidate1 = question.candidates().createFromRemote({id: 1, body: "Candidate 1", createdAt: 1308352736162, creatorId: 2});
+    candidate2 = question.candidates().createFromRemote({id: 2, body: "Candidate 2", createdAt: 1308352736162, creatorId: 2});
+    candidate3 = question.candidates().createFromRemote({id: 3, body: "Candidate 3", createdAt: 1308352736162, creatorId: 2});
+    ranking1 = currentUser.rankings().createFromRemote({id: 1, questionId: question.id(), candidateId: candidate1.id(), position: 64});
+    ranking2 = currentUser.rankings().createFromRemote({id: 2, questionId: question.id(), candidateId: candidate2.id(), position: -64});
+    rankingsRelation = currentUser.rankingsForQuestion(question);
     renderLayout();
     spyOn(Application, 'showPage');
 
     Application.currentUser(currentUser);
     Application.height(640);
-    electionPage = Application.electionPage;
-    rankedCandidates = electionPage.rankedCandidates;
+    questionPage = Application.questionPage;
+    rankedCandidates = questionPage.rankedCandidates;
     spyOn(rankedCandidates, 'currentUserCanRank').andReturn(true);
-    electionPage.show();
+    questionPage.show();
 
     spyOn(Ranking, 'createOrUpdate').andCallFake(function() {
       return lastCreateOrUpdatePromise = new Monarch.Promise();
@@ -44,9 +44,9 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       expect(rankedCandidates.list.find('li').eq(1)).toMatchSelector('#separator');
       expect(rankedCandidates.list.find('li').eq(2).view().ranking).toBe(ranking2);
 
-      electionB = Election.createFromRemote({id: 100});
-      var candidateB = election.candidates().createFromRemote({id: 100, body: "Candidate B"});
-      var otherRankingsRelation = currentUser.rankingsForElection(electionB);
+      questionB = Question.createFromRemote({id: 100});
+      var candidateB = question.candidates().createFromRemote({id: 100, body: "Candidate B"});
+      var otherRankingsRelation = currentUser.rankingsForQuestion(questionB);
       var rankingB = otherRankingsRelation.createFromRemote({id: 1, candidateId: candidateB.id(), position: 64});
 
       rankedCandidates.rankings(otherRankingsRelation);
@@ -91,7 +91,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
       beforeEach(function() {
         ranking2.remotelyUpdated({position: 32});
-        ranking3 = currentUser.rankings().createFromRemote({id: 3, electionId: election.id(), candidateId: candidate3.id(), position: -64});
+        ranking3 = currentUser.rankings().createFromRemote({id: 3, questionId: question.id(), candidateId: candidate3.id(), position: -64});
         rankedCandidates.rankings(rankingsRelation);
 
         ranking1Li = rankedCandidates.list.find('li:eq(0)').view();
@@ -205,7 +205,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       describe("when displaying another user's ranking", function() {
         beforeEach(function() {
           var otherUser = organization.makeMember({id: 99});
-          otherUser.rankings().createFromRemote({electionId: election.id(), candidateId: candidate1.id(), position: 64});
+          otherUser.rankings().createFromRemote({questionId: question.id(), candidateId: candidate1.id(), position: 64});
           rankedCandidates.rankings(otherUser.rankings());
         });
 
@@ -250,12 +250,12 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
       describe("when the current user is a member", function() {
         beforeEach(function() {
-          electionPage.params({electionId: election.id()});
+          questionPage.params({questionId: question.id()});
         });
 
         describe("when receiving a candidate that has not yet been ranked", function() {
           it("adds a new RankingLi for the candidate and associates it with a position", function() {
-            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+            var candidate3Li = questionPage.currentConsensus.find('li:contains("Candidate 3")');
             var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
             candidate3Li.dragAbove(ranking1Li);
 
@@ -265,7 +265,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 128);
 
             // simulate creation of ranking on server
-            var ranking3 = Ranking.createFromRemote({id: 3, userId: currentUser.id(), candidateId: candidate3.id(), electionId: election.id(), position: 128});
+            var ranking3 = Ranking.createFromRemote({id: 3, userId: currentUser.id(), candidateId: candidate3.id(), questionId: question.id(), position: 128});
             lastCreateOrUpdatePromise.triggerSuccess(ranking3);
 
             expect(rankedCandidates.list.find('li').size()).toBe(4);
@@ -277,7 +277,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           });
 
           it("allows the li to be dragged again before the ranking is created", function() {
-            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+            var candidate3Li = questionPage.currentConsensus.find('li:contains("Candidate 3")');
             var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
             candidate3Li.dragAbove(ranking1Li);
 
@@ -294,7 +294,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           it("removes the previous RankingLi for the candidate and adds a new one, associating it with a position", function() {
             Server.auto = false;
 
-            var candidate2Li = electionPage.currentConsensus.find('li:contains("Candidate 2")');
+            var candidate2Li = questionPage.currentConsensus.find('li:contains("Candidate 2")');
             var ranking1Li = rankedCandidates.find('li:contains("Candidate 1")');
 
             var numUpdateSubscriptionsBefore = ranking2.onUpdateNode.size();
@@ -320,7 +320,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
         describe("when receiving a candidate in the positive region above the drag target", function() {
           it("computes the position correctly", function() {
-            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+            var candidate3Li = questionPage.currentConsensus.find('li:contains("Candidate 3")');
             ranking1.remotelyDestroyed();
             candidate3Li.dragAbove(rankedCandidates.positiveDragTarget);
             expect(Ranking.createOrUpdate).toHaveBeenCalledWith(currentUser, candidate3, 64);
@@ -343,10 +343,10 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           expect(Application.currentUser()).toBeDefined();
 
           synchronously(function() {
-            electionPage.params({electionId: election.id()});
+            questionPage.params({questionId: question.id()});
           });
 
-          candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+          candidate3Li = questionPage.currentConsensus.find('li:contains("Candidate 3")');
 
           expect(rankedCandidates.list.find('li.ranking')).not.toExist();
         });
@@ -404,7 +404,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
               var rankingLi;
               runs(function() {
-                expect(Path.routes.current).toBe(election.url());
+                expect(Path.routes.current).toBe(question.url());
                 expect(Application.currentUser().rankings().size()).toBe(2);
                 rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
                 expect(rankingLi.prevAll('li')).not.toExist();
@@ -480,7 +480,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
               var rankingLi;
               runs(function() {
-                expect(Path.routes.current).toBe(election.url());
+                expect(Path.routes.current).toBe(question.url());
                 expect(Application.currentUser().rankings().size()).toBe(2);
                 rankingLi = rankedCandidates.find('li:contains("Candidate 3")').view();
                 expect(rankingLi.nextAll('li')).not.toExist();
@@ -546,7 +546,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
       var ranking1Li, ranking2Li;
 
       beforeEach(function() {
-        electionPage.params({electionId: election.id()});
+        questionPage.params({questionId: question.id()});
         ranking1Li = rankedCandidates.list.find('li:eq(0)');
         ranking2Li = rankedCandidates.list.find('li:eq(1)');
       });
@@ -561,18 +561,18 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           expect(rankedCandidates.list).toContain('#positive-drag-target:visible');
           expect(ranking1.destroy).toHaveBeenCalled();
 
-          expect(electionPage.find('.ui-sortable-helper')).toHaveClass('highlight');
+          expect(questionPage.find('.ui-sortable-helper')).toHaveClass('highlight');
           waits(500);
 
           runs(function() {
-            expect(electionPage.find('.ui-sortable-helper')).not.toExist();
+            expect(questionPage.find('.ui-sortable-helper')).not.toExist();
           });
         });
       });
 
       describe("when attempting to remove a ranking li whose ranking has not yet been assigned (because the initial ranking request is incomplete)", function() {
         it("does not remove the li and instead reverts it to its original location", function() {
-          var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+          var candidate3Li = questionPage.currentConsensus.find('li:contains("Candidate 3")');
           
           candidate3Li.dragAbove(ranking1Li);
 
@@ -586,7 +586,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
           expect(rankedCandidates.separator.prevAll('.ranking').size()).toBe(2);
 
           // now the simulate creation of a ranking on server
-          var ranking3 = Ranking.createFromRemote({id: 3, userId: currentUser.id(), candidateId: candidate3.id(), electionId: election.id(), position: 128});
+          var ranking3 = Ranking.createFromRemote({id: 3, userId: currentUser.id(), candidateId: candidate3.id(), questionId: question.id(), position: 128});
           lastCreateOrUpdatePromise.triggerSuccess(ranking3);
 
           expect(rankedCandidates.list.find('li').size()).toBe(4);
@@ -714,8 +714,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     describe("when a ranking is inserted", function() {
       it("responds to a ranking inserted in the last positive position", function() {
         rankedCandidates.rankings(rankingsRelation);
-        candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3"});
-        ranking3 = currentUser.rankings().createFromRemote({id: 3, electionId: election.id(), candidateId: candidate3.id(), position: 8});
+        candidate3 = question.candidates().createFromRemote({id: 3, body: "Candidate 3"});
+        ranking3 = currentUser.rankings().createFromRemote({id: 3, questionId: question.id(), candidateId: candidate3.id(), position: 8});
 
         expect(rankedCandidates.list.find('li').size()).toBe(4);
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
@@ -726,8 +726,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
       it("responds to a ranking inserted in a positive position other than the last", function() {
         rankedCandidates.rankings(rankingsRelation);
-        candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3"});
-        ranking3 = currentUser.rankings().createFromRemote({id: 3, electionId: election.id(), candidateId: candidate3.id(), position: 128});
+        candidate3 = question.candidates().createFromRemote({id: 3, body: "Candidate 3"});
+        ranking3 = currentUser.rankings().createFromRemote({id: 3, questionId: question.id(), candidateId: candidate3.id(), position: 128});
 
         expect(rankedCandidates.list.find('li').size()).toBe(4);
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking3);
@@ -738,8 +738,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
       it("responds to a ranking inserted in the last negative position", function() {
         rankedCandidates.rankings(rankingsRelation);
-        candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3"});
-        ranking3 = currentUser.rankings().createFromRemote({id: 3, electionId: election.id(), candidateId: candidate3.id(), position: -128});
+        candidate3 = question.candidates().createFromRemote({id: 3, body: "Candidate 3"});
+        ranking3 = currentUser.rankings().createFromRemote({id: 3, questionId: question.id(), candidateId: candidate3.id(), position: -128});
 
         expect(rankedCandidates.list.find('li').size()).toBe(4);
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
@@ -750,8 +750,8 @@ describe("Views.Pages.Election.RankedCandidates", function() {
 
       it("responds to a ranking inserted in a negative position other than the last", function() {
         rankedCandidates.rankings(rankingsRelation);
-        candidate3 = election.candidates().createFromRemote({id: 3, body: "Candidate 3"});
-        ranking3 = currentUser.rankings().createFromRemote({id: 3, electionId: election.id(), candidateId: candidate3.id(), position: -32});
+        candidate3 = question.candidates().createFromRemote({id: 3, body: "Candidate 3"});
+        ranking3 = currentUser.rankings().createFromRemote({id: 3, questionId: question.id(), candidateId: candidate3.id(), position: -32});
 
         expect(rankedCandidates.list.find('li').size()).toBe(4);
         expect(rankedCandidates.list.find('li').eq(0).view().ranking).toBe(ranking1);
@@ -921,7 +921,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
     describe("when rankings are dragged and dropped", function() {
       describe("when candidates are dragged in from the consensus", function() {
         beforeEach(function() {
-          electionPage.params({electionId: election.id()});
+          questionPage.params({questionId: question.id()});
         });
 
         describe("when positive ranking lis are received from the current consensus", function() {
@@ -929,7 +929,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             ranking1.remotelyDestroyed();
             expect(rankedCandidates.positiveDragTarget).toBeVisible();
 
-            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+            var candidate3Li = questionPage.currentConsensus.find('li:contains("Candidate 3")');
 
             candidate3Li.dragAbove(rankedCandidates.separator);
             expect(rankedCandidates.positiveDragTarget).toBeHidden();
@@ -941,7 +941,7 @@ describe("Views.Pages.Election.RankedCandidates", function() {
             ranking2.remotelyDestroyed();
             expect(rankedCandidates.negativeDragTarget).toBeVisible();
 
-            var candidate3Li = electionPage.currentConsensus.find('li:contains("Candidate 3")');
+            var candidate3Li = questionPage.currentConsensus.find('li:contains("Candidate 3")');
             
             candidate3Li.dragAbove(rankedCandidates.negativeDragTarget);
             expect(rankedCandidates.negativeDragTarget).toBeHidden();

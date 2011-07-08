@@ -1,11 +1,11 @@
 Hyperarchy::Application.routes.draw do
   root :to => 'home#show'
   match 'organizations/:id' => 'home#show', :as => "organanization"
-  match 'organizations/:id/elections/new' => 'home#show', :as => "new_organization_election"
+  match 'organizations/:id/questions/new' => 'home#show', :as => "new_organization_question"
   match 'organizations/:id/settings' => 'home#show', :as => "organization_settings"
-  match 'elections/:id' => 'home#show', :as => "election"
-  match 'elections/:id/candidates/:selected_candidate_id' => 'home#show', :as => "election_candidate"
-  match 'elections/:id/votes/:selected_voter_id' => 'home#show', :as => "election_voter"
+  match 'questions/:id' => 'home#show', :as => "question"
+  match 'questions/:id/candidates/:selected_candidate_id' => 'home#show', :as => "question_candidate"
+  match 'questions/:id/votes/:selected_voter_id' => 'home#show', :as => "question_voter"
   match 'account' => 'home#show', :as => "account"
 
   match 'login' => 'sessions#new', :via => 'get', :as => "login"
@@ -26,7 +26,7 @@ Hyperarchy::Application.routes.draw do
   delete '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#destroy'
 
   resources :organizations do
-    resources :elections
+    resources :questions
   end
 
 
@@ -34,9 +34,9 @@ Hyperarchy::Application.routes.draw do
   resources :memberships do
     get :confirm, :on => :member
   end
-  resources :elections
+  resources :questions
   resources :rankings
-  resources :election_visits
+  resources :question_visits
   resources :password_reset_requests
   resources :password_resets
 

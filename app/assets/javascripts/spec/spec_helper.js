@@ -12,7 +12,7 @@ jQuery.ajax = function() {
 
 var originalServer = window.Server;
 
-Views.Pages.Election.CandidateLi.prototype.viewProperties.dragDelay = null;
+Views.Pages.Question.CandidateLi.prototype.viewProperties.dragDelay = null;
 
 beforeEach(function() {
   ajaxRequests = [];
@@ -20,7 +20,7 @@ beforeEach(function() {
   window.History.reset();
   Repository.clear();
   stubAjax();
-  spyOn(Election, 'updateScoresPeriodically');
+  spyOn(Question, 'updateScoresPeriodically');
 });
 
 afterEach(function() {

@@ -1,4 +1,4 @@
-class Election < Prequel::Record
+class Question < Prequel::Record
   column :id, :integer
   column :organization_id, :integer
   column :creator_id, :integer
@@ -13,7 +13,7 @@ class Election < Prequel::Record
   has_many :votes
   has_many :rankings
   has_many :majorities
-  has_many :election_visits
+  has_many :question_visits
 
   belongs_to :creator, :class_name => "User"
   belongs_to :organization
@@ -25,7 +25,7 @@ class Election < Prequel::Record
   class << self
     def update_scores
       Prequel::DB.execute(%{
-        update elections set score = ((vote_count + #{SCORE_EXTRA_HOURS}) / pow((extract(epoch from (now() - created_at)) / 3600) + 2, 1.8))
+        update questions set score = ((vote_count + #{SCORE_EXTRA_HOURS}) / pow((extract(epoch from (now() - created_at)) / 3600) + 2, 1.8))
       })
     end
 
@@ -78,24 +78,24 @@ class Election < Prequel::Record
   end
 
   def after_create
-    organization.increment(:election_count)
+    organization.increment(:question_count)
     send_immediate_notifications
   end
 
   def users_to_notify_immediately
     organization.memberships.
-      where(:notify_of_new_elections => "immediately").
+      where(:notify_of_new_questions => "immediately").
       where(Membership[:user_id].neq(creator_id)).
       join_through(User)
   end
 
   def before_destroy
     candidates.each(&:destroy)
-    election_visits.each(&:destroy)
+    question_visits.each(&:destroy)
   end
 
   def after_destroy
-    organization.decrement(:election_count)
+    organization.decrement(:question_count)
   end
 
   def compute_global_ranking

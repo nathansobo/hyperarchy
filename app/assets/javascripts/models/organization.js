@@ -5,7 +5,7 @@ _.constructor("Organization", Model.Record, {
         name: "string",
         description: "string",
         membersCanInvite: "boolean",
-        electionCount: 'integer',
+        questionCount: 'integer',
         memberCount: 'integer',
         useSsl: 'boolean',
         social: 'boolean',
@@ -13,12 +13,12 @@ _.constructor("Organization", Model.Record, {
         membershipCode: 'string'
       });
 
-      this.hasMany("elections");
+      this.hasMany("questions");
       this.relatesToMany("candidates", function() {
-        return this.elections().joinThrough(Candidate);
+        return this.questions().joinThrough(Candidate);
       });
       this.relatesToMany("votes", function() {
-        return this.elections().joinThrough(Vote);
+        return this.questions().joinThrough(Vote);
       });
 
       this.hasMany("memberships", {orderBy: ["firstName asc", "emailAddress asc"]});
@@ -33,13 +33,13 @@ _.constructor("Organization", Model.Record, {
   },
 
   afterInitialize: function() {
-    this.numElectionsFetched = 0;
+    this.numQuestionsFetched = 0;
   },
 
-  fetchMoreElections: function() {
+  fetchMoreQuestions: function() {
     if (this.fetchInProgressFuture) return this.fetchInProgressFuture;
 
-    if (this.numElectionsFetched >= this.electionCount()) {
+    if (this.numQuestionsFetched >= this.questionCount()) {
       var promise = new Monarch.Promise();
       promise.triggerSuccess();
       return promise;
@@ -47,8 +47,8 @@ _.constructor("Organization", Model.Record, {
 
     // if we already fetched some, fetch 8 positions back to account for unseen swapping at the fringe
     var offset, limit;
-    if (this.numElectionsFetched > 0) {
-      offset = this.numElectionsFetched - 8;
+    if (this.numQuestionsFetched > 0) {
+      offset = this.numQuestionsFetched - 8;
       limit = 24;
     } else {
       offset = 0;
@@ -56,7 +56,7 @@ _.constructor("Organization", Model.Record, {
     }
 
     var promise = $.ajax({
-      url: "/elections",
+      url: "/questions",
       data: {
         organization_id: this.id(),
         offset: offset,
@@ -68,7 +68,7 @@ _.constructor("Organization", Model.Record, {
     this.fetchInProgressFuture = promise;
     promise.success(this.bind(function() {
       delete this.fetchInProgressFuture;
-      this.numElectionsFetched += 16;
+      this.numQuestionsFetched += 16;
     }));
 
     return promise;
@@ -124,7 +124,7 @@ _.constructor("Organization", Model.Record, {
   },
 
   hasNonAdminQuestions: function() {
-    return !this.elections().where(Election.creatorId.neq(1)).empty();
+    return !this.questions().where(Question.creatorId.neq(1)).empty();
   },
 
   url: function() {
@@ -135,8 +135,8 @@ _.constructor("Organization", Model.Record, {
     return this.url() + "/settings";
   },
 
-  newElectionUrl: function() {
-    return this.url() + "/elections/new";
+  newQuestionUrl: function() {
+    return this.url() + "/questions/new";
   },
 
   secretUrl: function() {

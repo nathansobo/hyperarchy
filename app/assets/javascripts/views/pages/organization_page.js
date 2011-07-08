@@ -3,7 +3,7 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
     div({id: "organization"}, function() {
 
       div({id: "headline"}, function() {
-        a({'class': "new button"}, "Ask A Question").ref('newElectionButton').click('newElection');
+        a({'class': "new button"}, "Ask A Question").ref('newQuestionButton').click('newQuestion');
         h1("Questions Under Discussion");
       });
 
@@ -18,9 +18,9 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
         });
       }).ref('introduction');
 
-      subview("electionsList", Views.Components.SortedList, {
-        buildElement: function(election) {
-          return Views.Pages.Organization.ElectionLi.toView({election: election});
+      subview("questionsList", Views.Components.SortedList, {
+        buildElement: function(question) {
+          return Views.Pages.Organization.QuestionLi.toView({question: question});
         }
       });
 
@@ -38,13 +38,13 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
     organization: {
       change: function(organization) {
         Application.currentOrganizationId(organization.id());
-        this.electionsList.relation(null);
+        this.questionsList.relation(null);
         this.loading(true);
 
-        return organization.fetchMoreElections()
+        return organization.fetchMoreQuestions()
           .success(this.bind(function() {
             this.stopLoadingIfNeeded();
-            this.electionsList.relation(organization.elections());
+            this.questionsList.relation(organization.questions());
           }));
       }
     },
@@ -56,20 +56,20 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
       }
     },
 
-    newElection: function() {
-      Application.newElection.show();
+    newQuestion: function() {
+      Application.newQuestion.show();
     },
 
     fetchIfNeeded: function() {
       if (!this.is(':visible')) return;
-      if (!this.electionsList.relation()) return;
+      if (!this.questionsList.relation()) return;
       if (this.remainingScrollHeight() < this.listBottom.height() * 2) {
-        this.organization().fetchMoreElections().success(this.hitch('stopLoadingIfNeeded'));
+        this.organization().fetchMoreQuestions().success(this.hitch('stopLoadingIfNeeded'));
       }
     },
 
     stopLoadingIfNeeded: function() {
-      if (this.organization().numElectionsFetched >= this.organization().electionCount()) {
+      if (this.organization().numQuestionsFetched >= this.organization().questionCount()) {
         this.loading(false);
       }
     },

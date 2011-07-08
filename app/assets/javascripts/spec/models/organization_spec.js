@@ -4,7 +4,7 @@ describe("Organization", function() {
   var organization;
 
   beforeEach(function() {
-    organization = Organization.createFromRemote({id: 22, electionCount: 32});
+    organization = Organization.createFromRemote({id: 22, questionCount: 32});
   });
 
   describe(".findSocial", function() {
@@ -15,13 +15,13 @@ describe("Organization", function() {
     });
   });
 
-  describe("#fetchMoreElections", function() {
-    it("fetches elections in blocks, first of 16, then of 24 with 8 elections of overlap with the previously fetched block", function() {
-      expect(organization.numElectionsFetched).toBe(0);
+  describe("#fetchMoreQuestions", function() {
+    it("fetches questions in blocks, first of 16, then of 24 with 8 questions of overlap with the previously fetched block", function() {
+      expect(organization.numQuestionsFetched).toBe(0);
 
-      organization.fetchMoreElections();
+      organization.fetchMoreQuestions();
       expect($.ajax).toHaveBeenCalledWith({
-        url: "/elections",
+        url: "/questions",
         data: {
           organization_id: organization.id(),
           offset: 0,
@@ -31,16 +31,16 @@ describe("Organization", function() {
       });
 
       $.ajax.reset();
-      organization.fetchMoreElections();
+      organization.fetchMoreQuestions();
       expect($.ajax).not.toHaveBeenCalled();
 
       simulateAjaxSuccess();
-      expect(organization.numElectionsFetched).toBe(16);
+      expect(organization.numQuestionsFetched).toBe(16);
 
-      organization.fetchMoreElections();
+      organization.fetchMoreQuestions();
 
       expect($.ajax).toHaveBeenCalledWith({
-        url: "/elections",
+        url: "/questions",
         data: {
           organization_id: organization.id(),
           offset: 8,
@@ -51,11 +51,11 @@ describe("Organization", function() {
 
       simulateAjaxSuccess();
 
-      expect(organization.numElectionsFetched).toBe(32);
+      expect(organization.numQuestionsFetched).toBe(32);
 
       $.ajax.reset();
 
-      organization.fetchMoreElections(); // num fetched == election count
+      organization.fetchMoreQuestions(); // num fetched == question count
       expect($.ajax).not.toHaveBeenCalled();
     });
   });

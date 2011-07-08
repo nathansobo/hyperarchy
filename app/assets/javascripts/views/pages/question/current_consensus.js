@@ -1,9 +1,9 @@
-_.constructor('Views.Pages.Election.CurrentConsensus', Monarch.View.Template, {
+_.constructor('Views.Pages.Question.CurrentConsensus', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "current-consensus"}, function() {
       subview('list', Views.Components.SortedList, {
         buildElement: function(candidate) {
-          return Views.Pages.Election.CandidateLi.toView({candidate: candidate});
+          return Views.Pages.Question.CandidateLi.toView({candidate: candidate});
         },
 
         onUpdate: function(element, record) {

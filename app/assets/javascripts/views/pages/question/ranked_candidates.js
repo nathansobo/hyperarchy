@@ -1,4 +1,4 @@
-_.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
+_.constructor('Views.Pages.Question.RankedCandidates', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "ranked-candidates"}, function() {
       ol(function() {
@@ -40,7 +40,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
         sort: this.hitch('handleListSort'),
         beforeStop: this.hitch('handleListBeforeStop'),
 
-        appendTo: "#election",
+        appendTo: "#question",
         helper: 'clone'
       });
     },
@@ -156,7 +156,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
       if (rankingLi) {
         rankingLi.detach();
       } else {
-        rankingLi = Views.Pages.Election.RankingLi.toView({candidate: candidate});
+        rankingLi = Views.Pages.Question.RankingLi.toView({candidate: candidate});
         this.lisByCandidateId[candidate.id()] = rankingLi;
       }
 
@@ -259,7 +259,7 @@ _.constructor('Views.Pages.Election.RankedCandidates', Monarch.View.Template, {
 
     findOrCreateLi: function(ranking) {
       var id = ranking.candidateId();
-      if (!this.lisByCandidateId[id]) this.lisByCandidateId[id] = Views.Pages.Election.RankingLi.toView({ranking: ranking});
+      if (!this.lisByCandidateId[id]) this.lisByCandidateId[id] = Views.Pages.Question.RankingLi.toView({ranking: ranking});
       return this.lisByCandidateId[id];
     },
 

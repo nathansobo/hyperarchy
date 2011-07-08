@@ -166,9 +166,9 @@ module Models
           User.users_to_notify('hourly').all.map(&:id).should =~ [m1, m2, m3, m4].map(&:user).map(&:id)
         end
 
-        def make_membership(elections, candidates, comments_on_ranked, comments_on_own, additional_attrs = {})
+        def make_membership(questions, candidates, comments_on_ranked, comments_on_own, additional_attrs = {})
           Membership.make(additional_attrs.merge(
-            :notify_of_new_elections => elections,
+            :notify_of_new_questions => questions,
             :notify_of_new_candidates => candidates,
             :notify_of_new_comments_on_own_candidates => comments_on_ranked,
             :notify_of_new_comments_on_ranked_candidates => comments_on_own

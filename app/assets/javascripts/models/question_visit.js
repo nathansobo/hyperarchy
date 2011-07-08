@@ -1,12 +1,12 @@
-_.constructor("ElectionVisit", Model.Record, {
+_.constructor("QuestionVisit", Model.Record, {
   constructorInitialize: function() {
     this.columns({
       userId: 'key',
-      electionId: 'key',
+      questionId: 'key',
       updatedAt: 'datetime'
     });
 
-    this.belongsTo('election');
+    this.belongsTo('question');
     this.belongsTo('user');
   }
 });

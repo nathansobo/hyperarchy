@@ -5,13 +5,13 @@ describe("Candidate", function() {
     var organization, candidate, admin, owner, creator, otherUser, organization;
     beforeEach(function() {
       organization = Organization.createFromRemote({id: 1});
-      var election = organization.elections().createFromRemote({id: 1});
+      var question = organization.questions().createFromRemote({id: 1});
       owner = User.createFromRemote({id: 1});
       organization.memberships().createFromRemote({userId: owner.id(), role: 'owner'});
       admin = User.createFromRemote({id: 2, admin: true});
       otherUser = User.createFromRemote({id: 3});
       creator = User.createFromRemote({id: 4});
-      candidate = election.candidates().createFromRemote({id: 1, creatorId: creator.id()});
+      candidate = question.candidates().createFromRemote({id: 1, creatorId: creator.id()});
 
       attachLayout();
     });
@@ -48,7 +48,7 @@ describe("Candidate", function() {
 
   describe("#url", function() {
     it("returns the correct url", function() {
-      expect(Candidate.createFromRemote({id: 11, electionId: 22, body: "Fruitloops"}).url()).toEqual('/elections/22/candidates/11');
+      expect(Candidate.createFromRemote({id: 11, questionId: 22, body: "Fruitloops"}).url()).toEqual('/questions/22/candidates/11');
     });
   });
 });

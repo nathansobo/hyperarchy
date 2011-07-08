@@ -15,20 +15,20 @@ User.blueprint do
   password { "password" }
 end
 
-Election.blueprint do
+Question.blueprint do
   body { Sham.question }
   organization { Organization.make }
   suppress_immediate_notifications { true }
   suppress_current_user_membership_check { true }
 end
 
-ElectionComment.blueprint do
-  election { Election.make }
+QuestionComment.blueprint do
+  question { Question.make }
   body { Faker::Lorem.sentence }
 end
 
 Candidate.blueprint do
-  election { Election.make }
+  question { Question.make }
   body { Sham.answer }
   suppress_immediate_notifications { true }
   suppress_current_user_membership_check { true }
@@ -80,7 +80,7 @@ Membership.class_eval do
 
   def before_save
     return unless all_notifications
-    self.notify_of_new_elections = all_notifications
+    self.notify_of_new_questions = all_notifications
     self.notify_of_new_candidates = all_notifications
     self.notify_of_new_comments_on_own_candidates = all_notifications
     self.notify_of_new_comments_on_ranked_candidates = all_notifications

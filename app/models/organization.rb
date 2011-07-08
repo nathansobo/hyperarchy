@@ -5,14 +5,14 @@ class Organization < Prequel::Record
   column :members_can_invite, :boolean, :default => false
   column :dismissed_welcome_guide, :boolean, :default => false
   column :use_ssl, :boolean, :default => true
-  column :election_count, :integer, :default => 0
+  column :question_count, :integer, :default => 0
   column :created_at, :datetime
   column :updated_at, :datetime
   column :social, :boolean, :default => false
   column :privacy, :string, :default => "read_only"
   column :membership_code, :string
 
-  has_many :elections, :order_by => :score.desc
+  has_many :questions, :order_by => :score.desc
   has_many :memberships
 
   attr_accessor :suppress_membership_creation

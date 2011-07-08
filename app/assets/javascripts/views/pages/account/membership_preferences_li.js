@@ -8,7 +8,7 @@ _.constructor('Views.Pages.Account.MembershipPreferencesLi', Monarch.View.Templa
 
       div({'class': "email-preference"}, function() {
         label("Email me about new questions: ");
-        select({name: "notifyOfNewElections"}, function() {
+        select({name: "notifyOfNewQuestions"}, function() {
           option({value: "immediately"}, "Immediately");
           option({value: "every5"}, "Every 5 Minutes");
           option({value: "hourly"}, "Hourly");
