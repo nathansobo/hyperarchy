@@ -38,8 +38,7 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
     organization: {
       change: function(organization) {
         Application.currentOrganizationId(organization.id());
-
-        this.electionsList.empty();
+        this.electionsList.relation(null);
         this.loading(true);
 
         return organization.fetchMoreElections()
