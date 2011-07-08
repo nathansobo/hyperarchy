@@ -4,12 +4,12 @@ _.constructor('Views.Pages.Organization.QuestionLi', Monarch.View.Template, {
       div(function() {
         subview('avatar', Views.Components.Avatar, {imageSize: Application.lineHeight * 3});
         div({'class': "body"}).ref('body')
-        subview('candidates', Views.Components.SortedList, {
-          buildElement: function(candidate, index) {
+        subview('answers', Views.Components.SortedList, {
+          buildElement: function(answer, index) {
             return Monarch.View.build(function(b) { with(b) {
-              li({'class': "candidate"}, function() {
-                div({'class': "position"}, candidate.position()).ref('position');
-                div({'class': "body"}, candidate.body()).ref('body');
+              li({'class': "answer"}, function() {
+                div({'class': "position"}, answer.position()).ref('position');
+                div({'class': "body"}, answer.body()).ref('body');
               });
             }});
           },
@@ -27,7 +27,7 @@ _.constructor('Views.Pages.Organization.QuestionLi', Monarch.View.Template, {
   viewProperties: {
     initialize: function() {
       this.body.bindText(this.question, 'body');
-      this.candidates.relation(this.question.candidates().limit(6));
+      this.answers.relation(this.question.answers().limit(6));
       this.avatar.user(this.question.creator());
     },
 

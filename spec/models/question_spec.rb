@@ -10,11 +10,11 @@ module Models
       @organization = Organization.make
       @creator = organization.make_member
       @question = organization.questions.make(:body => "Where should the capital of Tennesee be?", :creator => creator)
-      @memphis = question.candidates.make(:body => "Memphis")
-      @knoxville = question.candidates.make(:body => "Knoxville")
-      @chattanooga = question.candidates.make(:body => "Chattanooga")
-      @nashville = question.candidates.make(:body => "Nashville")
-      @unranked = question.candidates.make(:body => "Unranked")
+      @memphis = question.answers.make(:body => "Memphis")
+      @knoxville = question.answers.make(:body => "Knoxville")
+      @chattanooga = question.answers.make(:body => "Chattanooga")
+      @nashville = question.answers.make(:body => "Nashville")
+      @unranked = question.answers.make(:body => "Unranked")
     end
 
 
@@ -109,29 +109,29 @@ module Models
     end
 
     describe "before destroy" do
-      it "destroys any candidates, candidate comments, votes and visits that belong to the question" do
+      it "destroys any answers, answer comments, votes and visits that belong to the question" do
         question = Question.make
         user_1 = question.organization.make_member
         user_2 = question.organization.make_member
-        candidate_1 = question.candidates.make
-        candidate_2 = question.candidates.make
-        candidate_1.comments.make
-        candidate_2.comments.make
+        answer_1 = question.answers.make
+        answer_2 = question.answers.make
+        answer_1.comments.make
+        answer_2.comments.make
 
-        Ranking.create!(:user => user_1, :candidate => candidate_1, :position => 64)
-        Ranking.create!(:user => user_1, :candidate => candidate_2, :position => 32)
-        Ranking.create!(:user => user_2, :candidate => candidate_1, :position => 64)
+        Ranking.create!(:user => user_1, :answer => answer_1, :position => 64)
+        Ranking.create!(:user => user_1, :answer => answer_2, :position => 32)
+        Ranking.create!(:user => user_2, :answer => answer_1, :position => 64)
         question.question_visits.create!(:user => user_1)
 
         question.question_visits.size.should == 1
-        question.candidates.size.should == 2
+        question.answers.size.should == 2
         question.votes.size.should == 2
-        question.candidates.join_through(CandidateComment).size.should == 2
+        question.answers.join_through(AnswerComment).size.should == 2
         question.destroy
-        question.candidates.should be_empty
+        question.answers.should be_empty
         question.votes.should be_empty
         question.question_visits.should be_empty
-        question.candidates.join_through(CandidateComment).should be_empty
+        question.answers.join_through(AnswerComment).should be_empty
       end
     end
 
@@ -145,39 +145,39 @@ module Models
     end
 
     describe "#compute_global_ranking" do
-      it "uses the ranked-pairs algoritm to produce a global ranking, assigning a position of null to any unranked candidates" do
+      it "uses the ranked-pairs algoritm to produce a global ranking, assigning a position of null to any unranked answers" do
         jump(1.minute)
 
         4.times do
           user = User.make
-          question.rankings.create(:user => user, :candidate => memphis, :position => 4)
-          question.rankings.create(:user => user, :candidate => nashville, :position => 3)
-          question.rankings.create(:user => user, :candidate => chattanooga, :position => 2)
-          question.rankings.create(:user => user, :candidate => knoxville, :position => 1)
+          question.rankings.create(:user => user, :answer => memphis, :position => 4)
+          question.rankings.create(:user => user, :answer => nashville, :position => 3)
+          question.rankings.create(:user => user, :answer => chattanooga, :position => 2)
+          question.rankings.create(:user => user, :answer => knoxville, :position => 1)
         end
 
         3.times do
           user = User.make
-          question.rankings.create(:user => user, :candidate => nashville, :position => 4)
-          question.rankings.create(:user => user, :candidate => chattanooga, :position => 3)
-          question.rankings.create(:user => user, :candidate => knoxville, :position => 2)
-          question.rankings.create(:user => user, :candidate => memphis, :position => 1)
+          question.rankings.create(:user => user, :answer => nashville, :position => 4)
+          question.rankings.create(:user => user, :answer => chattanooga, :position => 3)
+          question.rankings.create(:user => user, :answer => knoxville, :position => 2)
+          question.rankings.create(:user => user, :answer => memphis, :position => 1)
         end
 
         1.times do
           user = User.make
-          question.rankings.create(:user => user, :candidate => chattanooga, :position => 4)
-          question.rankings.create(:user => user, :candidate => knoxville, :position => 3)
-          question.rankings.create(:user => user, :candidate => nashville, :position => 2)
-          question.rankings.create(:user => user, :candidate => memphis, :position => 1)
+          question.rankings.create(:user => user, :answer => chattanooga, :position => 4)
+          question.rankings.create(:user => user, :answer => knoxville, :position => 3)
+          question.rankings.create(:user => user, :answer => nashville, :position => 2)
+          question.rankings.create(:user => user, :answer => memphis, :position => 1)
         end
 
         2.times do
           user = User.make
-          question.rankings.create(:user => user, :candidate => knoxville, :position => 4)
-          question.rankings.create(:user => user, :candidate => chattanooga, :position => 3)
-          question.rankings.create(:user => user, :candidate => nashville, :position => 2)
-          question.rankings.create(:user => user, :candidate => memphis, :position => 1)
+          question.rankings.create(:user => user, :answer => knoxville, :position => 4)
+          question.rankings.create(:user => user, :answer => chattanooga, :position => 3)
+          question.rankings.create(:user => user, :answer => nashville, :position => 2)
+          question.rankings.create(:user => user, :answer => memphis, :position => 1)
         end
 
         question.compute_global_ranking
@@ -253,7 +253,7 @@ module Models
             question.organization.update(:privacy => "read_only")
           end
 
-          specify "only members create candidates" do
+          specify "only members create answers" do
             set_current_user(member)
             question.can_create?.should be_true
 
@@ -267,7 +267,7 @@ module Models
             question.organization.update(:privacy => "public")
           end
 
-          specify "non-guest users can create candidates" do
+          specify "non-guest users can create answers" do
             set_current_user(User.default_guest)
             question.can_create?.should be_false
 

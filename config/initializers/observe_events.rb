@@ -1,3 +1,3 @@
 unless Rails.env.test?
-  EventObserver.observe(Candidate, CandidateComment, Question, QuestionComment, Membership, Organization, Ranking, User, Vote)
+  EventObserver.observe(Answer, AnswerComment, Question, QuestionComment, Membership, Organization, Ranking, User, Vote)
 end

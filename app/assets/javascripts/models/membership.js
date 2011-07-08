@@ -9,9 +9,9 @@ _.constructor("Membership", Model.Record, {
       emailAddress: "string",
       lastVisited: "datetime",
       notifyOfNewQuestions: "string",
-      notifyOfNewCandidates: "string",
-      notifyOfNewCommentsOnOwnCandidates: "string",
-      notifyOfNewCommentsOnRankedCandidates: "string"
+      notifyOfNewAnswers: "string",
+      notifyOfNewCommentsOnOwnAnswers: "string",
+      notifyOfNewCommentsOnRankedAnswers: "string"
     });
 
     this.belongsTo("organization");

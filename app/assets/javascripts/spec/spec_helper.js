@@ -12,7 +12,7 @@ jQuery.ajax = function() {
 
 var originalServer = window.Server;
 
-Views.Pages.Question.CandidateLi.prototype.viewProperties.dragDelay = null;
+Views.Pages.Question.AnswerLi.prototype.viewProperties.dragDelay = null;
 
 beforeEach(function() {
   ajaxRequests = [];

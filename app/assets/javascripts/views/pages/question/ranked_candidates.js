@@ -1,6 +1,6 @@
-_.constructor('Views.Pages.Question.RankedCandidates', Monarch.View.Template, {
+_.constructor('Views.Pages.Question.RankedAnswers', Monarch.View.Template, {
   content: function() { with(this.builder) {
-    div({id: "ranked-candidates"}, function() {
+    div({id: "ranked-answers"}, function() {
       ol(function() {
         li({id: "positive-drag-target"}, function() {
           span("Drag ideas you like here").ref('positiveDragExplanation');
@@ -123,15 +123,15 @@ _.constructor('Views.Pages.Question.RankedCandidates', Monarch.View.Template, {
     },
 
     handleListReceive: function(event, ui) {
-      var candidate = ui.item.view().candidate;
+      var answer = ui.item.view().answer;
       if (this.currentUserCanRank()) {
-        this.insertRankingLi(candidate, { replace: this.list.find('li.ui-draggable') });
+        this.insertRankingLi(answer, { replace: this.list.find('li.ui-draggable') });
       } else {
-        this.handleGuestRanking(candidate);
+        this.handleGuestRanking(answer);
       }
     },
 
-    handleGuestRanking: function(candidate) {
+    handleGuestRanking: function(answer) {
       var isPositive = (this.list.find('li.ui-draggable').nextAll("#separator").length > 0);
 
       if (isPositive) {
@@ -142,22 +142,22 @@ _.constructor('Views.Pages.Question.RankedCandidates', Monarch.View.Template, {
 
       Application.promptSignup()
         .success(function() {
-          this.insertRankingLi(candidate, {isPositive: isPositive});
+          this.insertRankingLi(answer, {isPositive: isPositive});
         }, this)
         .invalid(function() {
-          this.list.find('.candidate').remove();
+          this.list.find('.answer').remove();
           this.showOrHideDragTargets();
         }, this);
     },
 
-    insertRankingLi: function(candidate, options) {
-      var rankingLi = this.lisByCandidateId[candidate.id()];
+    insertRankingLi: function(answer, options) {
+      var rankingLi = this.lisByAnswerId[answer.id()];
 
       if (rankingLi) {
         rankingLi.detach();
       } else {
-        rankingLi = Views.Pages.Question.RankingLi.toView({candidate: candidate});
-        this.lisByCandidateId[candidate.id()] = rankingLi;
+        rankingLi = Views.Pages.Question.RankingLi.toView({answer: answer});
+        this.lisByAnswerId[answer.id()] = rankingLi;
       }
 
       this.detachDragTargets();
@@ -178,7 +178,7 @@ _.constructor('Views.Pages.Question.RankedCandidates', Monarch.View.Template, {
 
     rankings: {
       change: function(rankingsRelation) {
-        this.lisByCandidateId = {};
+        this.lisByAnswerId = {};
         this.populateList();
         this.observeListUpdates();
       }
@@ -234,10 +234,10 @@ _.constructor('Views.Pages.Question.RankedCandidates', Monarch.View.Template, {
     },
 
     removeRanking: function(ranking) {
-      var candidateId = ranking.candidateId();
-      var rankingLi = this.lisByCandidateId[candidateId];
+      var answerId = ranking.answerId();
+      var rankingLi = this.lisByAnswerId[answerId];
       if (rankingLi) rankingLi.remove();
-      delete this.lisByCandidateId[candidateId];
+      delete this.lisByAnswerId[answerId];
       this.showOrHideDragTargets();
     },
 
@@ -258,9 +258,9 @@ _.constructor('Views.Pages.Question.RankedCandidates', Monarch.View.Template, {
     },
 
     findOrCreateLi: function(ranking) {
-      var id = ranking.candidateId();
-      if (!this.lisByCandidateId[id]) this.lisByCandidateId[id] = Views.Pages.Question.RankingLi.toView({ranking: ranking});
-      return this.lisByCandidateId[id];
+      var id = ranking.answerId();
+      if (!this.lisByAnswerId[id]) this.lisByAnswerId[id] = Views.Pages.Question.RankingLi.toView({ranking: ranking});
+      return this.lisByAnswerId[id];
     },
 
     appendRankings: function(rankings, dragTargetIfEmpty) {

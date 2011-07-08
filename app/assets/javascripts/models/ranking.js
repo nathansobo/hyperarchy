@@ -2,7 +2,7 @@ _.constructor("Ranking", Model.Record, {
   constructorProperties: {
     initialize: function() {
       this.columns({
-        candidateId: 'key',
+        answerId: 'key',
         questionId: 'key',
         voteId: 'key',
         userId: 'key',
@@ -11,12 +11,12 @@ _.constructor("Ranking", Model.Record, {
 
       this.defaultOrderBy('position desc');
 
-      this.belongsTo('candidate');
+      this.belongsTo('answer');
       this.belongsTo('question');
       this.belongsTo('user');
     },
 
-    createOrUpdate: function(user, candidate, position) {
+    createOrUpdate: function(user, answer, position) {
       var future = new Monarch.Http.AjaxFuture();
 
       $.ajax({
@@ -25,8 +25,8 @@ _.constructor("Ranking", Model.Record, {
         dataType: 'data+records',
         data: {
           user_id: user.id(),
-          question_id: candidate.questionId(),
-          candidate_id: candidate.id(),
+          question_id: answer.questionId(),
+          answer_id: answer.id(),
           position: position
         },
         success: function(data) {

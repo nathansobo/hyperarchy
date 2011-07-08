@@ -1,28 +1,28 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Question.CandidateLi", function() {
-  var question, candidate, candidateLi;
+describe("Views.Pages.Question.AnswerLi", function() {
+  var question, answer, answerLi;
 
   beforeEach(function() {
     attachLayout();
     Application.currentUser(User.createFromRemote({id: 1}));
 
     question = Question.createFromRemote({id: 22, creatorId: 1, createdAt: 234});
-    candidate = question.candidates().createFromRemote({id: 11, body: "Fruitloops"});
-    candidateLi = Views.Pages.Question.CandidateLi.toView({candidate: candidate});
+    answer = question.answers().createFromRemote({id: 11, body: "Fruitloops"});
+    answerLi = Views.Pages.Question.AnswerLi.toView({answer: answer});
   });
 
   describe("when clicked", function() {
-    it("navigates to the candidate's url", function() {
+    it("navigates to the answer's url", function() {
       spyOn(Application, 'showPage');
-      candidateLi.click();
-      expect(Path.routes.current).toBe(candidate.url());
+      answerLi.click();
+      expect(Path.routes.current).toBe(answer.url());
     });
   });
 
   describe("#handleDragStart (having trouble simulating it getting called without triggering the click handler)", function() {
     it("navigates to the question's bare url to cause the user's rankings to be revealed", function() {
-      candidateLi.handleDragStart();
+      answerLi.handleDragStart();
       expect(Path.routes.current).toBe(question.url());
     });
   });

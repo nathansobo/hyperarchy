@@ -1,19 +1,19 @@
-_.constructor('Views.Pages.Question.CandidateLi', Monarch.View.Template, {
+_.constructor('Views.Pages.Question.AnswerLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
-    li({'class': "candidate"}, function() {
+    li({'class': "answer"}, function() {
       div({'class': "more"}, '…').ref('ellipsis');
       div({'class': "status "}).ref('status');
-      div({'class': "position"}, params.candidate.position()).ref('position');
-      div({'class': "body"}, params.candidate.body()).ref('body');
+      div({'class': "position"}, params.answer.position()).ref('position');
+      div({'class': "body"}, params.answer.body()).ref('body');
     });
   }},
 
   viewProperties: {
     initialize: function() {
-      this.data('candidateId', this.candidate.id());
+      this.data('answerId', this.answer.id());
 
       this.draggable({
-        connectToSortable: '#ranked-candidates ol',
+        connectToSortable: '#ranked-answers ol',
         appendTo: '#question',
         revert: 'invalid',
         delay: this.dragDelay,
@@ -25,7 +25,7 @@ _.constructor('Views.Pages.Question.CandidateLi', Monarch.View.Template, {
       });
 
       this.click(this.bind(function() {
-        History.pushState(null, null, this.candidate.url());
+        History.pushState(null, null, this.answer.url());
       }));
 
       this.showOrHideEllipsis();
@@ -38,7 +38,7 @@ _.constructor('Views.Pages.Question.CandidateLi', Monarch.View.Template, {
     },
 
     handleDragStart: function() {
-      History.pushState(null, null, this.candidate.question().url());
+      History.pushState(null, null, this.answer.question().url());
     },
 
     ranking: {
@@ -49,7 +49,7 @@ _.constructor('Views.Pages.Question.CandidateLi', Monarch.View.Template, {
     },
 
     showOrHideEllipsis: function() {
-      if (this.candidate.details() || this.candidate.commentCount() > 0) {
+      if (this.answer.details() || this.answer.commentCount() > 0) {
         this.ellipsis.show();
       } else {
         this.ellipsis.hide();

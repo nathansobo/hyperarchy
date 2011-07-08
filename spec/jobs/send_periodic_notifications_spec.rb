@@ -18,7 +18,7 @@ module Jobs
         user1_membership.update!(:notify_of_new_questions => period)
         user2_membership.update!(:notify_of_new_questions => period)
         user3_membership.update!(:notify_of_new_questions => period)
-        user4_membership.update!(:notify_of_new_questions => 'never', :notify_of_new_candidates => period)
+        user4_membership.update!(:notify_of_new_questions => 'never', :notify_of_new_answers => period)
 
         new_question = Organization.social.questions.make
 

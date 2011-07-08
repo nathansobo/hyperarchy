@@ -10,7 +10,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
 
       div({id: "headline"}, function() {
         a({'class': "new button"}, "Add An Answer")
-          .ref('newCandidateLink')
+          .ref('newAnswerLink')
           .click('routeToNewQuestionForm');
         div({'class': "body"}).ref('body');
         textarea({name: "body", 'class': "body"}).ref("editableBody");
@@ -58,12 +58,12 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
   }},
 
   column3: function() { with(this.builder) {
-    h2("Your Ranking").ref('rankedCandidatesHeader');
-    h2("Answer Details").ref('candidateDetailsHeader');
+    h2("Your Ranking").ref('rankedAnswersHeader');
+    h2("Answer Details").ref('answerDetailsHeader');
 
     div({id: "rankings-and-details"}, function() {
-      subview('candidateDetails', Views.Pages.Question.CandidateDetails);
-      subview('rankedCandidates', Views.Pages.Question.RankedCandidates);
+      subview('answerDetails', Views.Pages.Question.AnswerDetails);
+      subview('rankedAnswers', Views.Pages.Question.RankedAnswers);
     });
   }},
 
@@ -120,32 +120,32 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       var question = Question.find(params.questionId);
       if (question) {
         this.question(question);
-        this.currentConsensus.candidates(question.candidates());
+        this.currentConsensus.answers(question.answers());
       } else {
         this.loading(true);
       }
 
       var voterId;
 
-      if (params.candidateId) {
-        this.showCandidateDetails();
-        var candidate = Candidate.find(params.candidateId);
-        if (candidate) {
-          this.currentConsensus.selectedCandidate(candidate);
-          this.candidateDetails.candidate(candidate);
+      if (params.answerId) {
+        this.showAnswerDetails();
+        var answer = Answer.find(params.answerId);
+        if (answer) {
+          this.currentConsensus.selectedAnswer(answer);
+          this.answerDetails.answer(answer);
         }
       } else {
-        this.candidateDetails.removeClass('active');
-        this.currentConsensus.selectedCandidate(null);
+        this.answerDetails.removeClass('active');
+        this.currentConsensus.selectedAnswer(null);
         voterId = params.voterId || Application.currentUserId();
-        this.rankedCandidates.sortingEnabled(!voterId || voterId === Application.currentUserId());
-        this.populateRankedCandidatesHeader(voterId);
+        this.rankedAnswers.sortingEnabled(!voterId || voterId === Application.currentUserId());
+        this.populateRankedAnswersHeader(voterId);
       }
 
-      if (params.candidateId === 'new') {
-        this.newCandidateLink.hide();
+      if (params.answerId === 'new') {
+        this.newAnswerLink.hide();
       } else {
-        this.newCandidateLink.show();
+        this.newAnswerLink.show();
       }
 
       this.votes.selectedVoterId(voterId);
@@ -156,7 +156,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
 
       if (!oldParams || params.questionId !== oldParams.questionId) {
         if (!Question.find(params.questionId)) relationsToFetch.push(Question.where({id: params.questionId}).join(User).on(User.id.eq(Question.creatorId))); // question
-        relationsToFetch.push(Candidate.where({questionId: params.questionId}).join(User).on(Candidate.creatorId.eq(User.id))); // candidates
+        relationsToFetch.push(Answer.where({questionId: params.questionId}).join(User).on(Answer.creatorId.eq(User.id))); // answers
         relationsToFetch.push(Vote.where({questionId: params.questionId}).joinTo(User)); // votes
         relationsToFetch.push(Application.currentUser().rankings().where({questionId: params.questionId})); // current user's rankings
         relationsToFetch.push(QuestionComment.where({questionId: params.questionId}).join(User).on(QuestionComment.creatorId.eq(User.id))); // question comments and commenters
@@ -169,11 +169,11 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         relationsToFetch.push(Ranking.where({questionId: params.questionId, userId: params.voterId})); // additional rankings
       }
 
-      if (params.candidateId && params.candidateId !== "new") {
-        relationsToFetch.push(CandidateComment.where({candidateId: params.candidateId}).join(User).on(CandidateComment.creatorId.eq(User.id))); // candidate comments and commenters
-        this.candidateDetails.loading(true);
+      if (params.answerId && params.answerId !== "new") {
+        relationsToFetch.push(AnswerComment.where({answerId: params.answerId}).join(User).on(AnswerComment.creatorId.eq(User.id))); // answer comments and commenters
+        this.answerDetails.loading(true);
       } else {
-        this.rankedCandidates.loading(true);
+        this.rankedAnswers.loading(true);
       }
 
       return Server.fetch(relationsToFetch);
@@ -183,8 +183,8 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       if (!_.isEqual(params, this.params())) return;
 
       this.loading(false);
-      this.rankedCandidates.loading(false);
-      this.candidateDetails.loading(false);
+      this.rankedAnswers.loading(false);
+      this.answerDetails.loading(false);
       this.votes.loading(false);
       this.comments.loading(false);
 
@@ -196,21 +196,21 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       }
 
       this.question(question);
-      this.currentConsensus.candidates(question.candidates());
+      this.currentConsensus.answers(question.answers());
       this.votes.votes(question.votes());
       this.comments.comments(question.comments());
 
-      if (params.candidateId) {
-        var candidate = Candidate.find(params.candidateId);
-        this.currentConsensus.selectedCandidate(candidate);
-        this.candidateDetails.candidate(candidate);
-        if (candidate) this.candidateDetails.comments.comments(candidate.comments());
-        if (params.candidateId === 'new') this.candidateDetails.showNewForm();
+      if (params.answerId) {
+        var answer = Answer.find(params.answerId);
+        this.currentConsensus.selectedAnswer(answer);
+        this.answerDetails.answer(answer);
+        if (answer) this.answerDetails.comments.comments(answer.comments());
+        if (params.answerId === 'new') this.answerDetails.showNewForm();
       } else {
         var rankings = Ranking.where({questionId: params.questionId, userId: params.voterId || Application.currentUserId()});
-        this.showRankedCandidates();
-        this.populateRankedCandidatesHeader(params.voterId);
-        this.rankedCandidates.rankings(rankings);
+        this.showRankedAnswers();
+        this.populateRankedAnswersHeader(params.voterId);
+        this.rankedAnswers.rankings(rankings);
       }
     },
 
@@ -270,26 +270,26 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       }
     },
 
-    populateRankedCandidatesHeader: function(voterId) {
+    populateRankedAnswersHeader: function(voterId) {
       if (!voterId || voterId === Application.currentUserId()) {
-        this.rankedCandidatesHeader.text('Your Ranking');
+        this.rankedAnswersHeader.text('Your Ranking');
         return;
       }
 
       var voter = User.find(voterId);
-      if (voter) this.rankedCandidatesHeader.text(voter.fullName() + "'s Ranking");
+      if (voter) this.rankedAnswersHeader.text(voter.fullName() + "'s Ranking");
     },
 
-    showRankedCandidates: function() {
-      this.candidateDetailsHeader.hide();
-      this.rankedCandidatesHeader.show();
-      this.candidateDetails.removeClass('active');
+    showRankedAnswers: function() {
+      this.answerDetailsHeader.hide();
+      this.rankedAnswersHeader.show();
+      this.answerDetails.removeClass('active');
     },
 
-    showCandidateDetails: function() {
-      this.rankedCandidatesHeader.hide();
-      this.candidateDetailsHeader.show();
-      this.candidateDetails.addClass('active');
+    showAnswerDetails: function() {
+      this.rankedAnswersHeader.hide();
+      this.answerDetailsHeader.show();
+      this.answerDetails.addClass('active');
     },
 
     handleQuestionUpdate: function() {
@@ -306,7 +306,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
     },
 
     routeToNewQuestionForm: function() {
-      History.pushState(null, null, this.question().newCandidateUrl());
+      History.pushState(null, null, this.question().newAnswerUrl());
     },
 
     adjustColumnTop: function() {

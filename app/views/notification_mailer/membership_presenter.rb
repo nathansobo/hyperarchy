@@ -4,16 +4,16 @@ module Views
       include HeadlineGeneration
 
       attr_reader :membership, :period, :item
-      attr_reader :question_presenters_by_question, :candidate_presenters_by_candidate
-      attr_accessor :new_question_count, :new_candidate_count, :new_comment_count
+      attr_reader :question_presenters_by_question, :answer_presenters_by_answer
+      attr_accessor :new_question_count, :new_answer_count, :new_comment_count
       delegate :organization, :to => :membership
 
       def initialize(membership, period, item)
         @membership, @period, @item = membership, period, item
         @question_presenters_by_question = {}
-        @candidate_presenters_by_candidate = {}
+        @answer_presenters_by_answer = {}
         @new_question_count = 0
-        @new_candidate_count = 0
+        @new_answer_count = 0
         @new_comment_count = 0
 
         if period == "immediately"
@@ -27,9 +27,9 @@ module Views
         case item
           when Question
             add_new_question(item)
-          when Candidate
-            add_new_candidate(item)
-          when CandidateComment
+          when Answer
+            add_new_answer(item)
+          when AnswerComment
             add_new_comment(item)
           else
             raise "No notification mechanism implemented for item: #{item.inspect}"
@@ -43,20 +43,20 @@ module Views
           end
         end
 
-        if membership.wants_candidate_notifications?(period)
-          membership.new_candidates_in_period(period).each do |candidate|
-            add_new_candidate(candidate)
+        if membership.wants_answer_notifications?(period)
+          membership.new_answers_in_period(period).each do |answer|
+            add_new_answer(answer)
           end
         end
 
-        if membership.wants_own_candidate_comment_notifications?(period)
-          membership.new_comments_on_own_candidates_in_period(period).each do |comment|
+        if membership.wants_own_answer_comment_notifications?(period)
+          membership.new_comments_on_own_answers_in_period(period).each do |comment|
             add_new_comment(comment)
           end
         end
 
-        if membership.wants_ranked_candidate_comment_notifications?(period)
-          membership.new_comments_on_ranked_candidates_in_period(period).each do |comment|
+        if membership.wants_ranked_answer_comment_notifications?(period)
+          membership.new_comments_on_ranked_answers_in_period(period).each do |comment|
             add_new_comment(comment)
           end
         end
@@ -67,11 +67,11 @@ module Views
         question_presenters_by_question[question] = QuestionPresenter.new(question, true)
       end
 
-      def add_new_candidate(candidate)
-        self.new_candidate_count += 1
-        question = candidate.question
+      def add_new_answer(answer)
+        self.new_answer_count += 1
+        question = answer.question
         build_question_presenter_if_needed(question)
-        question_presenters_by_question[question].add_new_candidate(candidate)
+        question_presenters_by_question[question].add_new_answer(answer)
       end
 
       def add_new_comment(comment)
@@ -95,7 +95,7 @@ module Views
       end
 
       def empty?
-        new_question_count == 0 && new_candidate_count == 0 && new_comment_count == 0
+        new_question_count == 0 && new_answer_count == 0 && new_comment_count == 0
       end
 
       def add_lines(template, lines)

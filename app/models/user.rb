@@ -19,7 +19,7 @@ class User < Prequel::Record
   has_many :votes
   has_many :rankings
   has_many :questions
-  has_many :candidates, :foreign_key => :creator_id
+  has_many :answers, :foreign_key => :creator_id
 
   def organizations
     memberships.join_through(Organization)
@@ -38,9 +38,9 @@ class User < Prequel::Record
   def self.users_to_notify(period)
     Membership.where_any(
       :notify_of_new_questions => period,
-      :notify_of_new_candidates => period,
-      :notify_of_new_comments_on_own_candidates => period,
-      :notify_of_new_comments_on_ranked_candidates => period
+      :notify_of_new_answers => period,
+      :notify_of_new_comments_on_own_answers => period,
+      :notify_of_new_comments_on_ranked_answers => period
     ).join_through(User).where(:guest => false, :email_enabled => true).distinct
   end
 

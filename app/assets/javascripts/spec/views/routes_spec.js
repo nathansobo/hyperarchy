@@ -38,7 +38,7 @@ describe("Routes", function() {
   });
 
   describe("/questions/:questionId", function() {
-    it("shows only the questionsPage, assigns the id on it, and assigns the current user's rankings relation on ranked candidates list", function() {
+    it("shows only the questionsPage, assigns the id on it, and assigns the current user's rankings relation on ranked answers list", function() {
       Application.questionPage.show();
       History.pushState(null, null, '/questions/12');
       expect(Application.organizationPage).toBeHidden();
@@ -51,7 +51,7 @@ describe("Routes", function() {
   });
 
   describe("/questions/:questionId/votes/:voterId", function() {
-    it("shows only the questionsPage, assigns the id on it, and assigns the specified user's rankings relation on the ranked candidates list", function() {
+    it("shows only the questionsPage, assigns the id on it, and assigns the specified user's rankings relation on the ranked answers list", function() {
       Application.questionPage.show();
       History.pushState(null, null, '/questions/12/votes/29');
       expect(Application.organizationPage).toBeHidden();
@@ -63,28 +63,28 @@ describe("Routes", function() {
     });
   });
 
-  describe("/questions/:questionId/candidates/new", function() {
-    it("shows only the questionsPage assigns the question id, and shows the new candidate form", function() {
+  describe("/questions/:questionId/answers/new", function() {
+    it("shows only the questionsPage assigns the question id, and shows the new answer form", function() {
       Application.questionPage.show();
-      History.pushState(null, null, '/questions/12/candidates/new');
+      History.pushState(null, null, '/questions/12/answers/new');
       expect(Application.organizationPage).toBeHidden();
       expect(Application.questionPage).toBeVisible();
       expect(Application.questionPage.params()).toEqual({
         questionId: 12,
-        candidateId: 'new'
+        answerId: 'new'
       });
     });
   });
 
-  describe("/questions/:questionId/candidates/:candidateId", function() {
-    it("shows only the questionsPage and assigns the id and selectedCandidateId on it", function() {
+  describe("/questions/:questionId/answers/:answerId", function() {
+    it("shows only the questionsPage and assigns the id and selectedAnswerId on it", function() {
       Application.questionPage.show();
-      History.pushState(null, null, '/questions/12/candidates/33');
+      History.pushState(null, null, '/questions/12/answers/33');
       expect(Application.organizationPage).toBeHidden();
       expect(Application.questionPage).toBeVisible();
       expect(Application.questionPage.params()).toEqual({
         questionId: 12,
-        candidateId: 33
+        answerId: 33
       });
     });
   });

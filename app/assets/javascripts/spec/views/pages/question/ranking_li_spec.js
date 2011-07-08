@@ -1,18 +1,18 @@
 //= require spec/spec_helper
 
 describe("Views.Pages.Question.RankingLi", function() {
-  var candidate, ranking, rankedCandidateLi;
+  var answer, ranking, rankedAnswerLi;
 
   beforeEach(function() {
     attachLayout();
-    candidate = Candidate.createFromRemote({id: 11, questionId: 22, body: "Fruitloops"});
-    ranking = Ranking.createFromRemote({candidateId: candidate.id()});
+    answer = Answer.createFromRemote({id: 11, questionId: 22, body: "Fruitloops"});
+    ranking = Ranking.createFromRemote({answerId: answer.id()});
   });
 
   describe("initialize", function() {
-    it("assigns itself the candidate for the given ranking", function() {
-      rankedCandidateLi = Views.Pages.Question.RankingLi.toView({ranking: ranking});
-      expect(rankedCandidateLi.candidate).toEqual(candidate);
+    it("assigns itself the answer for the given ranking", function() {
+      rankedAnswerLi = Views.Pages.Question.RankingLi.toView({ranking: ranking});
+      expect(rankedAnswerLi.answer).toEqual(answer);
     });
   });
 });

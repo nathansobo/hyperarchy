@@ -14,7 +14,7 @@ _.constructor("Question", Model.Record, {
 
       this.defaultOrderBy('score desc');
 
-      this.hasMany('candidates');
+      this.hasMany('answers');
       this.hasMany('votes', {orderBy: 'updatedAt desc'});
       this.hasMany('comments', {constructorName: 'QuestionComment'});
       this.relatesToMany('commenters', function() {
@@ -49,8 +49,8 @@ _.constructor("Question", Model.Record, {
 
   afterInitialize: function() {
     this.rankingsByUserId = {};
-    this.rankedCandidatesByUserId = {};
-    this.unrankedCandidatesByUserId = {};
+    this.rankedAnswersByUserId = {};
+    this.unrankedAnswersByUserId = {};
   },
 
   rankingsForUser: function(user) {
@@ -63,10 +63,10 @@ _.constructor("Question", Model.Record, {
     return this.rankingsForUser(Application.currentUser());
   },
 
-  rankedCandidatesForUser: function(user) {
+  rankedAnswersForUser: function(user) {
     var userId = user.id();
-    if (this.rankedCandidatesByUserId[userId]) return this.rankedCandidatesByUserId[userId];
-    return this.rankedCandidatesByUserId[userId] = this.rankingsForUser(user).joinThrough(Candidate);
+    if (this.rankedAnswersByUserId[userId]) return this.rankedAnswersByUserId[userId];
+    return this.rankedAnswersByUserId[userId] = this.rankingsForUser(user).joinThrough(Answer);
   },
 
   editableByCurrentUser: function() {
@@ -77,10 +77,10 @@ _.constructor("Question", Model.Record, {
     return this.creator() === Application.currentUser();
   },
 
-  unrankedCandidatesForUser: function(user) {
+  unrankedAnswersForUser: function(user) {
     var userId = user.id();
-    if (this.unrankedCandidatesByUserId[userId]) return this.unrankedCandidatesByUserId[userId];
-    return this.unrankedCandidatesByUserId[userId] = this.candidates().difference(this.rankedCandidatesForUser(user));
+    if (this.unrankedAnswersByUserId[userId]) return this.unrankedAnswersByUserId[userId];
+    return this.unrankedAnswersByUserId[userId] = this.answers().difference(this.rankedAnswersForUser(user));
   },
 
   currentUsersVisit: function() {
@@ -96,9 +96,9 @@ _.constructor("Question", Model.Record, {
       return this.commentFetchFuture;
     } else {
       return this.commentFetchFuture =
-        this.candidates()
-          .joinThrough(CandidateComment)
-          .join(User).on(CandidateComment.creatorId.eq(User.id))
+        this.answers()
+          .joinThrough(AnswerComment)
+          .join(User).on(AnswerComment.creatorId.eq(User.id))
           .fetch();
     }
   },
@@ -123,7 +123,7 @@ _.constructor("Question", Model.Record, {
     return "/questions/" + this.id();
   },
 
-  newCandidateUrl: function() {
-    return this.url() + "/candidates/new";
+  newAnswerUrl: function() {
+    return this.url() + "/answers/new";
   }
 });

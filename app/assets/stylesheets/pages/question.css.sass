@@ -6,7 +6,7 @@
   position: relative
   padding-top: 0
 
-  > .spinner, #ranked-candidates > .spinner
+  > .spinner, #ranked-answers > .spinner
     top: 50%
     left: 50%
     position: absolute
@@ -83,7 +83,7 @@
   .details
     font-size: $s0
 
-#ranked-candidates
+#ranked-answers
   height: 100%
   ol
     height: 100%
@@ -114,7 +114,7 @@
       border-top: none
       border-right: none
 
-#candidate-details
+#answer-details
   position: absolute
   right: 100%
   left: -100%
@@ -151,7 +151,7 @@
       display: block
 
 
-#candidate-details, #column1
+#answer-details, #column1
   .creator
     height: 2 * $line-height
     margin-bottom: 2 * $line-height
@@ -287,7 +287,7 @@
     background: #f0f0f0
     border: 1px solid #ccc
     @include box-shadow(#aaa 0 0 3px inset)
-    li.candidate
+    li.answer
       border-left: none
       border-top: none
       border-right: none
@@ -334,7 +334,7 @@
         @include background-image(linear-gradient(right, rgb(255,235,113), rgb(255, 247, 203)))
 
 #question
-  .candidate
+  .answer
     @include clearfix
     position: relative
 
@@ -376,7 +376,7 @@
         border-color: desaturate(darken($pale-red, 20%), 40%)
 
 #question
-  .candidate, .ranking
+  .answer, .ranking
     padding: (ceil($line-height/2) - 1) ($line-height/2) ($line-height/2) ($line-height/2)
     background: white
     border: 1px solid #ccc

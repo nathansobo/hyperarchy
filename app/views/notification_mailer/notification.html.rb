@@ -42,11 +42,11 @@ module Views
             div :style => "clear: both;"
           end
 
-          unless presenter.candidate_presenters.empty?
+          unless presenter.answer_presenters.empty?
             div :style => "max-height: 400px; overflow-y: auto; padding: 0px 8px; margin-top: 8px;" do
               div :style => "margin-top: 8px;" do
-                presenter.candidate_presenters.each do |candidate_presenter|
-                  candidate_section(candidate_presenter)
+                presenter.answer_presenters.each do |answer_presenter|
+                  answer_section(answer_presenter)
                 end
               end
             end
@@ -54,13 +54,13 @@ module Views
         end
       end
 
-      def candidate_section(presenter)
-        candidate = presenter.candidate
-        color = presenter.candidate_is_new ? "black" : "#888"
+      def answer_section(presenter)
+        answer = presenter.answer
+        color = presenter.answer_is_new ? "black" : "#888"
 
         div :style => "margin-bottom: 8px; background: white; color: #{color};" do
-          div candidate.body, :style => "float: left; padding: 8px; margin-bottom: -8px;"
-          div raw("&mdash;#{candidate.creator.full_name}"), :style => "white-space: nowrap; float: right; font-style: italic; color: #777; padding: 8px;"
+          div answer.body, :style => "float: left; padding: 8px; margin-bottom: -8px;"
+          div raw("&mdash;#{answer.creator.full_name}"), :style => "white-space: nowrap; float: right; font-style: italic; color: #777; padding: 8px;"
           div :style => "clear: both;"
 
           unless presenter.new_comments.empty?

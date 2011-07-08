@@ -27,15 +27,15 @@ QuestionComment.blueprint do
   body { Faker::Lorem.sentence }
 end
 
-Candidate.blueprint do
+Answer.blueprint do
   question { Question.make }
   body { Sham.answer }
   suppress_immediate_notifications { true }
   suppress_current_user_membership_check { true }
 end
 
-CandidateComment.blueprint do
-  candidate { Candidate.make }
+AnswerComment.blueprint do
+  answer { Answer.make }
   body { Faker::Lorem.sentence }
   suppress_immediate_notifications { true }
   suppress_current_user_membership_check { true }
@@ -81,9 +81,9 @@ Membership.class_eval do
   def before_save
     return unless all_notifications
     self.notify_of_new_questions = all_notifications
-    self.notify_of_new_candidates = all_notifications
-    self.notify_of_new_comments_on_own_candidates = all_notifications
-    self.notify_of_new_comments_on_ranked_candidates = all_notifications
+    self.notify_of_new_answers = all_notifications
+    self.notify_of_new_comments_on_own_answers = all_notifications
+    self.notify_of_new_comments_on_ranked_answers = all_notifications
   end
 end
 

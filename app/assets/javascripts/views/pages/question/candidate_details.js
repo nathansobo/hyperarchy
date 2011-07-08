@@ -1,6 +1,6 @@
-_.constructor('Views.Pages.Question.CandidateDetails', Monarch.View.Template, {
+_.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
   content: function() { with(this.builder) {
-    div({id: "candidate-details"}, function() {
+    div({id: "answer-details"}, function() {
       a({'class': "close"}, "×")
         .ref('closeLink')
         .click(function() {
@@ -51,24 +51,24 @@ _.constructor('Views.Pages.Question.CandidateDetails', Monarch.View.Template, {
       }));
     },
 
-    candidate: {
-      change: function(candidate) {
-        if (!candidate) return;
-        this.body.bindText(candidate, 'body');
-        this.details.bindText(candidate, 'details');
-        this.avatar.user(candidate.creator());
-        this.creatorName.bindText(candidate.creator(), 'fullName');
-        this.createdAt.text(candidate.formattedCreatedAt());
+    answer: {
+      change: function(answer) {
+        if (!answer) return;
+        this.body.bindText(answer, 'body');
+        this.details.bindText(answer, 'details');
+        this.avatar.user(answer.creator());
+        this.creatorName.bindText(answer.creator(), 'fullName');
+        this.createdAt.text(answer.formattedCreatedAt());
         this.showOrHideMutateButtons();
 
-        this.registerInterest(candidate, 'onDestroy', function() {
-          History.pushState(null, null, candidate.question().url());
+        this.registerInterest(answer, 'onDestroy', function() {
+          History.pushState(null, null, answer.question().url());
         });
-        this.registerInterest(candidate, 'onUpdate', this.hitch('adjustCommentsHeight'));
+        this.registerInterest(answer, 'onUpdate', this.hitch('adjustCommentsHeight'));
         this.adjustCommentsHeight();
       },
 
-      write: function(candidate) {
+      write: function(answer) {
         this.cancelEdit();
       }
     },
@@ -80,7 +80,7 @@ _.constructor('Views.Pages.Question.CandidateDetails', Monarch.View.Template, {
         Application.promptSignup().success(this.hitch('create'));
         return false;
       }
-      this.parentView.question().candidates().create(this.form.fieldValues());
+      this.parentView.question().answers().create(this.form.fieldValues());
       History.pushState(null, null, this.parentView.question().url());
 
       return false;
@@ -90,12 +90,12 @@ _.constructor('Views.Pages.Question.CandidateDetails', Monarch.View.Template, {
       e.preventDefault();
       if ($.trim(this.editableBody.val()) === '') return;
       if (this.editableBody.val().length > 140) return;
-      this.candidate().update(this.form.fieldValues()).success(this.hitch('cancelEdit'));
+      this.answer().update(this.form.fieldValues()).success(this.hitch('cancelEdit'));
     },
 
     destroy: function() {
       if (window.confirm("Are you sure you want to delete this answer?")) {
-        this.candidate().destroy();
+        this.answer().destroy();
       }
     },
 
@@ -104,9 +104,9 @@ _.constructor('Views.Pages.Question.CandidateDetails', Monarch.View.Template, {
       this.form.show();
       this.updateButton.show();
       this.cancelEditButton.show();
-      if (this.candidate()) {
-        this.editableBody.val(this.candidate().body()).keyup();
-        this.editableDetails.val(this.candidate().details()).keyup();
+      if (this.answer()) {
+        this.editableBody.val(this.answer().body()).keyup();
+        this.editableDetails.val(this.answer().details()).keyup();
       }
 
       this.editableBody.focus();
@@ -137,7 +137,7 @@ _.constructor('Views.Pages.Question.CandidateDetails', Monarch.View.Template, {
     },
 
     showOrHideMutateButtons: function() {
-      if (this.candidate() && this.candidate().editableByCurrentUser()) {
+      if (this.answer() && this.answer().editableByCurrentUser()) {
         this.addClass('mutable');
       } else {
         this.removeClass('mutable');

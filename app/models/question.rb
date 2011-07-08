@@ -9,7 +9,7 @@ class Question < Prequel::Record
   column :created_at, :datetime
   column :updated_at, :datetime
 
-  has_many :candidates
+  has_many :answers
   has_many :votes
   has_many :rankings
   has_many :majorities
@@ -90,7 +90,7 @@ class Question < Prequel::Record
   end
 
   def before_destroy
-    candidates.each(&:destroy)
+    answers.each(&:destroy)
     question_visits.each(&:destroy)
   end
 
@@ -111,9 +111,9 @@ class Question < Prequel::Record
       graph.remove_edge(winner_id, loser_id) unless graph.acyclic?
     end
 
-    graph.topsort_iterator.each_with_index do |candidate_id, index|
-      candidate = candidates.find(candidate_id)
-      candidate.update!(:position => index + 1)
+    graph.topsort_iterator.each_with_index do |answer_id, index|
+      answer = answers.find(answer_id)
+      answer.update!(:position => index + 1)
     end
 
     update!(:updated_at => Time.now)
@@ -127,24 +127,24 @@ class Question < Prequel::Record
     rankings.where(Ranking[:position].lt(0))
   end
 
-  def positive_candidate_ranking_counts
-    times_each_candidate_is_ranked(positive_rankings)
+  def positive_answer_ranking_counts
+    times_each_answer_is_ranked(positive_rankings)
   end
 
-  def negative_candidate_ranking_counts
-    times_each_candidate_is_ranked(negative_rankings)
+  def negative_answer_ranking_counts
+    times_each_answer_is_ranked(negative_rankings)
   end
 
-  def times_each_candidate_is_ranked(relation)
+  def times_each_answer_is_ranked(relation)
     relation.
-      group_by(:candidate_id).
-      project(:candidate_id, Ranking[:id].count.as(:times_ranked))
+      group_by(:answer_id).
+      project(:answer_id, Ranking[:id].count.as(:times_ranked))
   end
 
-  def ranked_candidates
-    candidates.
+  def ranked_answers
+    answers.
       join(rankings).
-      project(Candidate)
+      project(Answer)
   end
 
   def compute_score

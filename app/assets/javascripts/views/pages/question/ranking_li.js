@@ -9,10 +9,10 @@ _.constructor('Views.Pages.Question.RankingLi', Monarch.View.Template, {
   viewProperties: {
     initialize: function() {
       if (this.ranking) {
-        this.candidate = this.ranking.candidate();
+        this.answer = this.ranking.answer();
         this.observeRankingPosition();
       }
-      this.body.text(this.candidate.body());
+      this.body.text(this.answer.body());
       this.outstandingRequests = 0;
     },
     
@@ -28,7 +28,7 @@ _.constructor('Views.Pages.Question.RankingLi', Monarch.View.Template, {
     },
     
     handleListDrop: function() {
-      var candidate = this.candidate;
+      var answer = this.answer;
 
       var nextLi = this.next('li');
       var nextPosition = nextLi.data('position');
@@ -44,7 +44,7 @@ _.constructor('Views.Pages.Question.RankingLi', Monarch.View.Template, {
 
       this.loading(true);
       this.outstandingRequests++;
-      Ranking.createOrUpdate(Application.currentUser(), candidate, position)
+      Ranking.createOrUpdate(Application.currentUser(), answer, position)
         .success(function(ranking) {
           this.outstandingRequests--;
           if (this.outstandingRequests === 0) this.loading(false);

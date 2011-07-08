@@ -5,19 +5,19 @@ describe("Views.Components.SortedList", function() {
 
   beforeEach(function() {
     view = Views.Components.SortedList.toView({
-      buildElement: function(candidate) {
-        return $("<li>" + candidate.body() + "</li>");
+      buildElement: function(answer) {
+        return $("<li>" + answer.body() + "</li>");
       }
     });
 
     var question = Question.createFromRemote({id: 1, body: "What's your favorite color?"});
-    relation = question.candidates();
+    relation = question.answers();
     relation.createFromRemote({id: 1, body: "Red", position: 1});
     relation.createFromRemote({id: 2, body: "Green", position: 3});
     relation.createFromRemote({id: 3, body: "Blue", position: 5});
 
     var question2 = Question.createFromRemote({id: 2, body: "What's your favorite type of car?"});
-    relation2 = question2.candidates();
+    relation2 = question2.answers();
     relation2.createFromRemote({id: 4, body: "Audi", position: 1});
     relation2.createFromRemote({id: 5, body: "Volvo", position: 3});
     relation2.createFromRemote({id: 6, body: "Mercedes", position: 5});

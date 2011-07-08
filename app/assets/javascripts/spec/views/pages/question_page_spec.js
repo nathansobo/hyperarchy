@@ -10,8 +10,8 @@ describe("Views.Pages.Question", function() {
   });
 
   describe("when the params hash is assigned", function() {
-    var currentUser, question, candidate1, candidate2, currentUserRanking1, currentUserRanking2;
-    var otherUser, otherUser2, questionCommentCreator, candidateCommentCreator, otherUserRanking1, otherUserRanking2;
+    var currentUser, question, answer1, answer2, currentUserRanking1, currentUserRanking2;
+    var otherUser, otherUser2, questionCommentCreator, answerCommentCreator, otherUserRanking1, otherUserRanking2;
 
     beforeEach(function() {
       enableAjax();
@@ -23,21 +23,21 @@ describe("Views.Pages.Question", function() {
         otherUser = User.create();
         otherUser2 = User.create();
         questionCommentCreator = User.create();
-        candidateCommentCreator = User.create();
+        answerCommentCreator = User.create();
         currentUser.memberships().create({organizationId: question.organizationId()});
         otherUser.memberships().create({organizationId: question.organizationId()});
         questionCommentCreator.memberships().create({organizationId: question.organizationId()});
-        candidateCommentCreator.memberships().create({organizationId: question.organizationId()});
+        answerCommentCreator.memberships().create({organizationId: question.organizationId()});
         var questionComment = question.comments().create();
         questionComment.update({creatorId: questionCommentCreator.id()});
-        candidate1 = question.candidates().create();
-        var candidateComment = candidate1.comments().create();
-        candidateComment.update({creatorId: candidateCommentCreator.id()});
-        candidate2 = question.candidates().create({creatorId: otherUser2.id()});
-        currentUserRanking1 = question.rankings().create({userId: currentUser.id(), position: 64, candidateId: candidate1.id()});
-        currentUserRanking2 = question.rankings().create({userId: currentUser.id(), position: -64, candidateId: candidate2.id()});
-        otherUserRanking1 = question.rankings().create({userId: otherUser.id(), position: 64, candidateId: candidate1.id()});
-        otherUserRanking2 = question.rankings().create({userId: otherUser.id(), position: -64, candidateId: candidate2.id()});
+        answer1 = question.answers().create();
+        var answerComment = answer1.comments().create();
+        answerComment.update({creatorId: answerCommentCreator.id()});
+        answer2 = question.answers().create({creatorId: otherUser2.id()});
+        currentUserRanking1 = question.rankings().create({userId: currentUser.id(), position: 64, answerId: answer1.id()});
+        currentUserRanking2 = question.rankings().create({userId: currentUser.id(), position: -64, answerId: answer2.id()});
+        otherUserRanking1 = question.rankings().create({userId: otherUser.id(), position: 64, answerId: answer1.id()});
+        otherUserRanking2 = question.rankings().create({userId: otherUser.id(), position: -64, answerId: answer2.id()});
       });
       fetchInitialRepositoryContents();
     });
@@ -46,8 +46,8 @@ describe("Views.Pages.Question", function() {
       function expectQuestionDataFetched() {
         expect(Question.find(question.id())).toEqual(question);
         expect(question.creator()).toBeDefined();
-        expect(question.candidates().size()).toBe(2);
-        expect(question.candidates().join(User).on(User.id.eq(Candidate.creatorId)).size()).toBe(2);
+        expect(question.answers().size()).toBe(2);
+        expect(question.answers().join(User).on(User.id.eq(Answer.creatorId)).size()).toBe(2);
         expect(question.rankings().size()).toBeGreaterThan(0);
         expect(question.votes().size()).toBeGreaterThan(0);
         expect(question.voters().size()).toBe(question.votes().size());
@@ -58,15 +58,15 @@ describe("Views.Pages.Question", function() {
       function expectQuestionDataAssigned() {
         expect(Application.currentOrganizationId()).toBe(question.organizationId());
         expect(questionPage.question()).toEqual(question);
-        expect(questionPage.currentConsensus.candidates()).toEqual(question.candidates());
+        expect(questionPage.currentConsensus.answers()).toEqual(question.answers());
         expect(questionPage.votes.votes().tuples()).toEqual(question.votes().tuples());
         expect(questionPage.comments.comments().tuples()).toEqual(question.comments().tuples());
       }
 
-      describe("if no voterId or candidateId is specified", function() {
+      describe("if no voterId or answerId is specified", function() {
         it("fetches the question data before assigning relations to the subviews and the current org id", function() {
           waitsFor("fetch to complete", function(complete) {
-            questionPage.newCandidateLink.hide();
+            questionPage.newAnswerLink.hide();
             questionPage.params({ questionId: question.id() }).success(complete);
             expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
 
@@ -83,12 +83,12 @@ describe("Views.Pages.Question", function() {
             expect(questionPage.columns).toBeVisible();
             expect(questionPage.spinner).toBeHidden();
 
-            expect(questionPage.rankedCandidates.rankings().tuples()).toEqual(question.rankings().where({userId: currentUser.id()}).tuples());
-            expect(questionPage.rankedCandidates).toBeVisible();
-            expect(questionPage.candidateDetails).not.toHaveClass('active');
+            expect(questionPage.rankedAnswers.rankings().tuples()).toEqual(question.rankings().where({userId: currentUser.id()}).tuples());
+            expect(questionPage.rankedAnswers).toBeVisible();
+            expect(questionPage.answerDetails).not.toHaveClass('active');
             expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
-            expect(questionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
-            expect(questionPage.newCandidateLink).toBeVisible();
+            expect(questionPage.rankedAnswersHeader.text()).toBe("Your Ranking");
+            expect(questionPage.newAnswerLink).toBeVisible();
           });
         });
       });
@@ -96,9 +96,9 @@ describe("Views.Pages.Question", function() {
       describe("if the voterId is specified", function() {
         it("fetches the question data and the specified voter's rankings before assigning relations to the subviews", function() {
           waitsFor("fetch to complete", function(complete) {
-            questionPage.newCandidateLink.hide();
+            questionPage.newAnswerLink.hide();
             questionPage.params({ questionId: question.id(), voterId: otherUser.id() }).success(complete);
-            expect(questionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
+            expect(questionPage.rankedAnswers.sortingEnabled()).toBeFalsy();
             expect(questionPage.votes.selectedVoterId()).toEqual(otherUser.id());
           });
 
@@ -108,48 +108,48 @@ describe("Views.Pages.Question", function() {
 
             expect(question.rankingsForUser(otherUser).size()).toBeGreaterThan(0);
 
-            expect(questionPage.rankedCandidates.rankings().tuples()).toEqual(question.rankingsForUser(otherUser).tuples());
-            expect(questionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
-            expect(questionPage.rankedCandidates).toBeVisible();
-            expect(questionPage.candidateDetails).not.toHaveClass('active');
-            expect(questionPage.newCandidateLink).toBeVisible();
+            expect(questionPage.rankedAnswers.rankings().tuples()).toEqual(question.rankingsForUser(otherUser).tuples());
+            expect(questionPage.rankedAnswersHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
+            expect(questionPage.rankedAnswers).toBeVisible();
+            expect(questionPage.answerDetails).not.toHaveClass('active');
+            expect(questionPage.newAnswerLink).toBeVisible();
           });
         });
       });
 
-      describe("if the candidateId is specified", function() {
-        it("fetches the question data along with the candidate's comments and commenters before assigning relations to the subviews and the selectedCandidate to the currentConsensus and candidateDetails", function() {
+      describe("if the answerId is specified", function() {
+        it("fetches the question data along with the answer's comments and commenters before assigning relations to the subviews and the selectedAnswer to the currentConsensus and answerDetails", function() {
           waitsFor("fetch to complete", function(complete) {
-            questionPage.newCandidateLink.hide();
-            questionPage.params({ questionId: question.id(), candidateId: candidate1.id() }).success(complete);
+            questionPage.newAnswerLink.hide();
+            questionPage.params({ questionId: question.id(), answerId: answer1.id() }).success(complete);
             expect(questionPage.votes.selectedVoterId()).toBeFalsy();
           });
 
           runs(function() {
             expectQuestionDataFetched();
-            expect(candidate1.comments().size()).toBeGreaterThan(0);
-            expect(candidate1.commenters().size()).toBe(candidate1.comments().size());
+            expect(answer1.comments().size()).toBeGreaterThan(0);
+            expect(answer1.commenters().size()).toBe(answer1.comments().size());
 
             expectQuestionDataAssigned();
 
-            expect(questionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
-            expect(questionPage.candidateDetails.candidate()).toEqual(candidate1);
-            expect(questionPage.rankedCandidates).not.toHaveClass('active');
-            expect(questionPage.candidateDetails).toBeVisible();
+            expect(questionPage.currentConsensus.selectedAnswer()).toEqual(answer1);
+            expect(questionPage.answerDetails.answer()).toEqual(answer1);
+            expect(questionPage.rankedAnswers).not.toHaveClass('active');
+            expect(questionPage.answerDetails).toBeVisible();
             expect(questionPage.votes.selectedVoterId()).toBeFalsy();
-            expect(questionPage.newCandidateLink).toBeVisible();
+            expect(questionPage.newAnswerLink).toBeVisible();
           });
         });
       });
 
-      describe("if 'new' is specified as the candidateId", function() {
-        it("fetches the question data assigning relations to the subviews and showing the candidate details form in 'new' mode", function() {
-          spyOn(questionPage.candidateDetails, 'showNewForm');
+      describe("if 'new' is specified as the answerId", function() {
+        it("fetches the question data assigning relations to the subviews and showing the answer details form in 'new' mode", function() {
+          spyOn(questionPage.answerDetails, 'showNewForm');
 
           waitsFor("fetch to complete", function(complete) {
-            expect(questionPage.newCandidateLink).toBeVisible();
-            questionPage.params({ questionId: question.id(), candidateId: 'new' }).success(complete);
-            expect(questionPage.newCandidateLink).toBeHidden();
+            expect(questionPage.newAnswerLink).toBeVisible();
+            questionPage.params({ questionId: question.id(), answerId: 'new' }).success(complete);
+            expect(questionPage.newAnswerLink).toBeHidden();
             expect(questionPage.votes.selectedVoterId()).toBeFalsy();
           });
 
@@ -157,21 +157,21 @@ describe("Views.Pages.Question", function() {
             expectQuestionDataFetched();
             expectQuestionDataAssigned();
 
-            expect(questionPage.candidateDetails.showNewForm).toHaveBeenCalled();
-            expect(questionPage.candidateDetails.candidate()).toBeFalsy();
-            expect(questionPage.currentConsensus.selectedCandidate()).toBeFalsy();
-            expect(questionPage.rankedCandidates).not.toHaveClass('active');
-            expect(questionPage.candidateDetails).toBeVisible();
+            expect(questionPage.answerDetails.showNewForm).toHaveBeenCalled();
+            expect(questionPage.answerDetails.answer()).toBeFalsy();
+            expect(questionPage.currentConsensus.selectedAnswer()).toBeFalsy();
+            expect(questionPage.rankedAnswers).not.toHaveClass('active');
+            expect(questionPage.answerDetails).toBeVisible();
             expect(questionPage.votes.selectedVoterId()).toBeFalsy();
           });
         });
       });
 
       describe("if the question is already present in the repository", function() {
-        it("assigns the question and candidates before fetching additional data, and puts spinners on the ranking and votes", function() {
+        it("assigns the question and answers before fetching additional data, and puts spinners on the ranking and votes", function() {
           synchronously(function() {
             question.fetch();
-            question.candidates().fetch();
+            question.answers().fetch();
             User.fetch(question.creatorId());
           });
 
@@ -179,15 +179,15 @@ describe("Views.Pages.Question", function() {
             questionPage.params({questionId: question.id()}).success(complete);
             expect(Application.currentOrganizationId()).toBe(question.organizationId());
             expect(questionPage.question()).toEqual(question);
-            expect(questionPage.currentConsensus.candidates().tuples()).toEqual(question.candidates().tuples());
-            expect(questionPage.rankedCandidates.loading()).toBeTruthy();
+            expect(questionPage.currentConsensus.answers().tuples()).toEqual(question.answers().tuples());
+            expect(questionPage.rankedAnswers.loading()).toBeTruthy();
             expect(questionPage.votes.loading()).toBeTruthy();
             expect(questionPage.comments.loading()).toBeTruthy();
           });
 
           runs(function() {
-            expect(questionPage.rankedCandidates.rankings()).toBeDefined();
-            expect(questionPage.rankedCandidates.loading()).toBeFalsy();
+            expect(questionPage.rankedAnswers.rankings()).toBeDefined();
+            expect(questionPage.rankedAnswers.loading()).toBeFalsy();
             expect(questionPage.votes.loading()).toBeFalsy();
             expect(questionPage.comments.loading()).toBeFalsy();
           })
@@ -214,25 +214,25 @@ describe("Views.Pages.Question", function() {
         });
       });
       
-      describe("if no voterId or candidateId is specified", function() {
-        it("hides the candidate details and assigns relations to the subviews, shows the current user's rankings and enables sorting", function() {
+      describe("if no voterId or answerId is specified", function() {
+        it("hides the answer details and assigns relations to the subviews, shows the current user's rankings and enables sorting", function() {
           waitsFor("fetch to complete", function(complete) {
-            questionPage.params({ questionId: question.id(), candidateId: candidate2.id() }).success(complete);
+            questionPage.params({ questionId: question.id(), answerId: answer2.id() }).success(complete);
           });
 
           runs(function() {
             questionPage.params({ questionId: question.id() });
 
-            expect(questionPage.candidateDetails).not.toHaveClass('active');
+            expect(questionPage.answerDetails).not.toHaveClass('active');
             expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
-            expect(questionPage.rankedCandidates.rankings().tuples()).toEqual(currentUser.rankingsForQuestion(question).tuples());
-            expect(questionPage.currentConsensus.selectedCandidate()).toBeFalsy();
-            expect(questionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
-            expect(questionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
-            expect(questionPage.rankedCandidates).toBeVisible();
-            expect(questionPage.candidateDetails).not.toHaveClass('active');
+            expect(questionPage.rankedAnswers.rankings().tuples()).toEqual(currentUser.rankingsForQuestion(question).tuples());
+            expect(questionPage.currentConsensus.selectedAnswer()).toBeFalsy();
+            expect(questionPage.rankedAnswers.sortingEnabled()).toBeTruthy();
+            expect(questionPage.rankedAnswersHeader.text()).toBe("Your Ranking");
+            expect(questionPage.rankedAnswers).toBeVisible();
+            expect(questionPage.answerDetails).not.toHaveClass('active');
             expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
-            expect(questionPage.rankedCandidatesHeader.text()).toBe("Your Ranking");
+            expect(questionPage.rankedAnswersHeader.text()).toBe("Your Ranking");
           });
         });
       });
@@ -241,58 +241,58 @@ describe("Views.Pages.Question", function() {
         it("fetches the specified voter's rankings in addition to the current user's before assigning relations to the subviews and disables sorting because they won't be the current user", function() {
           waitsFor("fetch to complete", function(complete) {
             questionPage.params({ questionId: question.id(), voterId: otherUser.id() }).success(complete);
-            expect(questionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
-            expect(questionPage.currentConsensus.selectedCandidate()).toBeFalsy();
-            expect(questionPage.rankedCandidates.sortingEnabled()).toBeFalsy();
+            expect(questionPage.rankedAnswersHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
+            expect(questionPage.currentConsensus.selectedAnswer()).toBeFalsy();
+            expect(questionPage.rankedAnswers.sortingEnabled()).toBeFalsy();
 
-            expect(questionPage.rankedCandidates.loading()).toBeTruthy();
+            expect(questionPage.rankedAnswers.loading()).toBeTruthy();
             expect(questionPage.comments.loading()).toBeFalsy();
             expect(questionPage.votes.loading()).toBeFalsy();
           });
 
           runs(function() {
-            expect(questionPage.rankedCandidates.loading()).toBeFalsy();
+            expect(questionPage.rankedAnswers.loading()).toBeFalsy();
 
             expect(currentUser.rankings().size()).toBeGreaterThan(0);
-            expect(questionPage.rankedCandidates.rankings().tuples()).toEqual(otherUser.rankingsForQuestion(question).tuples());
-            expect(questionPage.rankedCandidates).toBeVisible();
-            expect(questionPage.candidateDetails).not.toHaveClass('active');
+            expect(questionPage.rankedAnswers.rankings().tuples()).toEqual(otherUser.rankingsForQuestion(question).tuples());
+            expect(questionPage.rankedAnswers).toBeVisible();
+            expect(questionPage.answerDetails).not.toHaveClass('active');
             expect(questionPage.votes.selectedVoterId()).toEqual(otherUser.id());
-            expect(questionPage.rankedCandidatesHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
+            expect(questionPage.rankedAnswersHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
           });
         });
 
         it("still enables sorting on the votes list and sets the correct header if the voter id matches the current user id", function() {
           stubAjax();
           questionPage.params({ questionId: question.id(), voterId: currentUser.id() });
-          expect(questionPage.rankedCandidates.sortingEnabled()).toBeTruthy();
-          expect(questionPage.rankedCandidatesHeader.text()).toBe('Your Ranking');
+          expect(questionPage.rankedAnswers.sortingEnabled()).toBeTruthy();
+          expect(questionPage.rankedAnswersHeader.text()).toBe('Your Ranking');
         });
       });
 
-      describe("if the candidateId is specified", function() {
-        it("assigns the selectedCandidate to the currentConsensus and candidateDetails, then fetches the candidates comments and assigns those later", function() {
+      describe("if the answerId is specified", function() {
+        it("assigns the selectedAnswer to the currentConsensus and answerDetails, then fetches the answers comments and assigns those later", function() {
           waitsFor("comments and commenters to be fetched", function(complete) {
-            questionPage.params({ questionId: question.id(), candidateId: candidate1.id() }).success(complete);
+            questionPage.params({ questionId: question.id(), answerId: answer1.id() }).success(complete);
 
-            expect(questionPage.candidateDetails.loading()).toBeTruthy();
+            expect(questionPage.answerDetails.loading()).toBeTruthy();
 
-            expect(questionPage.candidateDetails).toHaveClass('active');
-            expect(questionPage.currentConsensus.selectedCandidate()).toEqual(candidate1);
-            expect(questionPage.candidateDetails.candidate()).toEqual(candidate1);
+            expect(questionPage.answerDetails).toHaveClass('active');
+            expect(questionPage.currentConsensus.selectedAnswer()).toEqual(answer1);
+            expect(questionPage.answerDetails.answer()).toEqual(answer1);
             expect(questionPage.votes.selectedVoterId()).toBeFalsy();
 
-            expect(questionPage.rankedCandidates.loading()).toBeFalsy();
+            expect(questionPage.rankedAnswers.loading()).toBeFalsy();
             expect(questionPage.comments.loading()).toBeFalsy();
             expect(questionPage.votes.loading()).toBeFalsy();
           });
 
           runs(function() {
-            expect(questionPage.candidateDetails.loading()).toBeFalsy();
+            expect(questionPage.answerDetails.loading()).toBeFalsy();
             
-            expect(candidate1.comments().size()).toBeGreaterThan(0);
-            expect(candidate1.commenters().size()).toBe(candidate1.comments().size());
-            expect(questionPage.candidateDetails.comments.comments().tuples()).toEqual(candidate1.comments().tuples());
+            expect(answer1.comments().size()).toBeGreaterThan(0);
+            expect(answer1.commenters().size()).toBe(answer1.comments().size());
+            expect(questionPage.answerDetails.comments.comments().tuples()).toEqual(answer1.comments().tuples());
           });
         });
       });
@@ -309,32 +309,32 @@ describe("Views.Pages.Question", function() {
           });
         });
 
-        it("fetches the new user's rankings and displays them in the ranked candidates view", function() {
+        it("fetches the new user's rankings and displays them in the ranked answers view", function() {
           waitsFor("new rankings to be fetched", function(complete) {
             Application.currentUser(otherUser).success(complete);
           });
 
           runs(function() {
             expect(otherUser.rankings().size()).toBeGreaterThan(0);
-            expect(questionPage.rankedCandidates.rankings().tuples()).toEqual(otherUser.rankings().tuples());
+            expect(questionPage.rankedAnswers.rankings().tuples()).toEqual(otherUser.rankings().tuples());
           });
         });
       });
 
       describe("when not displaying the current user's ranking", function() {
         it("fetches the new user's rankings for this question but does not change the view", function() {
-          waitsFor("fetching of candidate data", function(complete) {
-            questionPage.params({ questionId: question.id(), candidateId: candidate1.id()}).success(complete);
+          waitsFor("fetching of answer data", function(complete) {
+            questionPage.params({ questionId: question.id(), answerId: answer1.id()}).success(complete);
           });
           
           waitsFor("new rankings to be fetched", function(complete) {
-            expect(questionPage.candidateDetails).toHaveClass('active');
+            expect(questionPage.answerDetails).toHaveClass('active');
             Application.currentUser(otherUser).success(complete);
           });
 
           runs(function() {
             expect(otherUser.rankings().size()).toBeGreaterThan(0);
-            expect(questionPage.candidateDetails).toHaveClass('active'); // we don't change the view
+            expect(questionPage.answerDetails).toHaveClass('active'); // we don't change the view
           });
         });
       });
@@ -343,26 +343,26 @@ describe("Views.Pages.Question", function() {
     describe("when the params hash differs by the time the fetch completes", function() {
       it("does not populate data for the old params", function() {
         waitsFor("fetch to complete", function(complete) {
-          questionPage.params({ questionId: question.id(), candidateId: candidate1.id() }).success(complete);
+          questionPage.params({ questionId: question.id(), answerId: answer1.id() }).success(complete);
           stubAjax();
           questionPage.params({ questionId: 999 });
         });
 
         runs(function() {
-          expect(questionPage.candidateDetails.candidate()).not.toBeDefined();
+          expect(questionPage.answerDetails.answer()).not.toBeDefined();
         });
       });
     });
   });
 
   describe("when the 'suggest an answer' button is clicked", function() {
-    it("navigates to the url for new candidates for the current question", function() {
+    it("navigates to the url for new answers for the current question", function() {
       Application.currentUser(User.createFromRemote({id: 1}));
       var question = Question.createFromRemote({id: 1, creatorId: 1, createdAt: 2345});
 
       questionPage.question(question);
-      questionPage.newCandidateLink.click();
-      expect(Path.routes.current).toBe(question.url() + "/candidates/new");
+      questionPage.newAnswerLink.click();
+      expect(Path.routes.current).toBe(question.url() + "/answers/new");
     });
   });
 

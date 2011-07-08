@@ -1,23 +1,23 @@
 require 'spec_helper'
 
 module Models
-  describe CandidateComment do
-    attr_reader :candidate, :organization, :candidate_creator, :comment_creator, :comment
+  describe AnswerComment do
+    attr_reader :answer, :organization, :answer_creator, :comment_creator, :comment
     before do
       @organization = Organization.make
       question = organization.questions.make
-      @candidate_creator = organization.make_member
+      @answer_creator = organization.make_member
       @comment_creator = organization.make_member
       set_current_user(comment_creator)
-      @candidate = question.candidates.make(:creator => candidate_creator)
-      @comment = candidate.comments.make(:creator => comment_creator)
+      @answer = question.answers.make(:creator => answer_creator)
+      @comment = answer.comments.make(:creator => comment_creator)
     end
     
     describe "before create" do
       it "assigns the creator to the Model::Record.current_user" do
         set_current_user(User.make)
         organization.memberships.make(:user => current_user)
-        comment = candidate.comments.create!(:body => "Terrible terrible candidate", :suppress_immediate_notifications => true)
+        comment = answer.comments.create!(:body => "Terrible terrible answer", :suppress_immediate_notifications => true)
         comment.creator.should == current_user
       end
 
@@ -27,11 +27,11 @@ module Models
 
         organization.update(:privacy => "private")
         expect do
-          candidate.comments.create!(:body => "foo")
+          answer.comments.create!(:body => "foo")
         end.should raise_error(SecurityError)
 
         organization.update(:privacy => "public")
-        candidate.comments.create!(:body => "foo")
+        answer.comments.create!(:body => "foo")
 
         current_user.memberships.where(:organization => organization).size.should == 1
       end
@@ -44,46 +44,46 @@ module Models
           job_params = params
         end
 
-        comment = candidate.comments.create!(:body => "Bullshit.")
-        job_params.should ==  { :class_name => "CandidateComment", :id => comment.id }
+        comment = answer.comments.create!(:body => "Bullshit.")
+        job_params.should ==  { :class_name => "AnswerComment", :id => comment.id }
       end
 
-      it "increments the candidate's comment_count" do
+      it "increments the answer's comment_count" do
         expect {
-          candidate.comments.make(:creator => comment_creator)
-        }.to change(candidate, :comment_count).by(1)
+          answer.comments.make(:creator => comment_creator)
+        }.to change(answer, :comment_count).by(1)
       end
     end
 
     describe "after destroy" do
-      it "decrements the candidate's comment_count" do
+      it "decrements the answer's comment_count" do
         expect {
           comment.destroy
-        }.to change(candidate, :comment_count).by(-1)
+        }.to change(answer, :comment_count).by(-1)
       end
     end
 
     describe "#users_to_notify_immediately" do
-      it "returns the members of the candidate's organization who either" +
-          "- have voted on the candidate and have :notify_of_new_comments_on_ranked_candidates set to 'immediately'" +
-          "- created the candidate and have :notify_of_new_comments_on_own_candidates set to 'immediately'" do
+      it "returns the members of the answer's organization who either" +
+          "- have voted on the answer and have :notify_of_new_comments_on_ranked_answers set to 'immediately'" +
+          "- created the answer and have :notify_of_new_comments_on_own_answers set to 'immediately'" do
         notify1 = User.make
         notify2 = User.make
         dont_notify = User.make
 
-        notify1.rankings.create!(:candidate => candidate, :position => 64)
-        notify2.rankings.create!(:candidate => candidate, :position => 64)
-        dont_notify.rankings.create!(:candidate => candidate, :position => 64)
-        comment_creator.rankings.create!(:candidate => candidate, :position => 64)
+        notify1.rankings.create!(:answer => answer, :position => 64)
+        notify2.rankings.create!(:answer => answer, :position => 64)
+        dont_notify.rankings.create!(:answer => answer, :position => 64)
+        comment_creator.rankings.create!(:answer => answer, :position => 64)
 
-        organization.memberships.make(:user => notify1, :notify_of_new_comments_on_ranked_candidates => 'immediately')
-        organization.memberships.make(:user => notify2, :notify_of_new_comments_on_ranked_candidates => 'immediately')
-        organization.memberships.make(:user => dont_notify, :notify_of_new_comments_on_ranked_candidates => 'hourly')
-        organization.memberships.find(:user => candidate_creator).update!(:notify_of_new_comments_on_own_candidates => 'immediately')
-        organization.memberships.find(:user => comment_creator).update!(:notify_of_new_comments_on_ranked_candidates => 'immediately')
-        comment.users_to_notify_immediately.all.should =~ [notify1, notify2, candidate_creator]
+        organization.memberships.make(:user => notify1, :notify_of_new_comments_on_ranked_answers => 'immediately')
+        organization.memberships.make(:user => notify2, :notify_of_new_comments_on_ranked_answers => 'immediately')
+        organization.memberships.make(:user => dont_notify, :notify_of_new_comments_on_ranked_answers => 'hourly')
+        organization.memberships.find(:user => answer_creator).update!(:notify_of_new_comments_on_own_answers => 'immediately')
+        organization.memberships.find(:user => comment_creator).update!(:notify_of_new_comments_on_ranked_answers => 'immediately')
+        comment.users_to_notify_immediately.all.should =~ [notify1, notify2, answer_creator]
 
-        organization.memberships.find(:user => candidate_creator).update!(:notify_of_new_comments_on_own_candidates => 'hourly')
+        organization.memberships.find(:user => answer_creator).update!(:notify_of_new_comments_on_own_answers => 'hourly')
         comment.users_to_notify_immediately.all.should =~ [notify1, notify2]
       end
     end
@@ -92,7 +92,7 @@ module Models
       describe "#can_create?" do
         attr_reader :comment
         before do
-          @comment = candidate.comments.make_unsaved
+          @comment = answer.comments.make_unsaved
         end
 
         context "if the organization is public" do

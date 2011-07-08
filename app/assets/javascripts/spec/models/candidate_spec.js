@@ -1,8 +1,8 @@
 //= require spec/spec_helper
 
-describe("Candidate", function() {
+describe("Answer", function() {
   describe("#editableByCurrentUser()", function() {
-    var organization, candidate, admin, owner, creator, otherUser, organization;
+    var organization, answer, admin, owner, creator, otherUser, organization;
     beforeEach(function() {
       organization = Organization.createFromRemote({id: 1});
       var question = organization.questions().createFromRemote({id: 1});
@@ -11,34 +11,34 @@ describe("Candidate", function() {
       admin = User.createFromRemote({id: 2, admin: true});
       otherUser = User.createFromRemote({id: 3});
       creator = User.createFromRemote({id: 4});
-      candidate = question.candidates().createFromRemote({id: 1, creatorId: creator.id()});
+      answer = question.answers().createFromRemote({id: 1, creatorId: creator.id()});
 
       attachLayout();
     });
 
-    it("returns true only if the current user is an admin, an owner of the candidate's organization, or the creator of the candidate", function() {
+    it("returns true only if the current user is an admin, an owner of the answer's organization, or the creator of the answer", function() {
       Application.currentUser(admin);
-      expect(candidate.editableByCurrentUser()).toBeTruthy();
+      expect(answer.editableByCurrentUser()).toBeTruthy();
 
       Application.currentUser(owner);
-      expect(candidate.editableByCurrentUser()).toBeTruthy();
+      expect(answer.editableByCurrentUser()).toBeTruthy();
 
       Application.currentUser(creator);
-      expect(candidate.editableByCurrentUser()).toBeTruthy();
+      expect(answer.editableByCurrentUser()).toBeTruthy();
 
       Application.currentUser(otherUser);
-      expect(candidate.editableByCurrentUser()).toBeFalsy();
+      expect(answer.editableByCurrentUser()).toBeFalsy();
     });
   });
 
   describe("#afterRemoteDestroy", function() {
     it("destroys any associated rankings locally, because that would have happened on the server but we may not have heard about it yet", function() {
-      var candidate = Candidate.createFromRemote({id: 1});
-      candidate.rankings().createFromRemote({id: 1});
-      candidate.rankings().createFromRemote({id: 2});
-      var ranking3 = Ranking.createFromRemote({id: 3, candidateId: 99});
+      var answer = Answer.createFromRemote({id: 1});
+      answer.rankings().createFromRemote({id: 1});
+      answer.rankings().createFromRemote({id: 2});
+      var ranking3 = Ranking.createFromRemote({id: 3, answerId: 99});
 
-      candidate.remotelyDestroyed();
+      answer.remotelyDestroyed();
 
       expect(Ranking.find(1)).toBeUndefined();
       expect(Ranking.find(2)).toBeUndefined();
@@ -48,7 +48,7 @@ describe("Candidate", function() {
 
   describe("#url", function() {
     it("returns the correct url", function() {
-      expect(Candidate.createFromRemote({id: 11, questionId: 22, body: "Fruitloops"}).url()).toEqual('/questions/22/candidates/11');
+      expect(Answer.createFromRemote({id: 11, questionId: 22, body: "Fruitloops"}).url()).toEqual('/questions/22/answers/11');
     });
   });
 });

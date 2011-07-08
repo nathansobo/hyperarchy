@@ -28,8 +28,8 @@ class Sandbox < Prequel::Sandbox
     questions.join_through(QuestionComment)
   end
 
-  expose :candidates do
-    questions.join_through(Candidate)
+  expose :answers do
+    questions.join_through(Answer)
   end
 
   expose :votes do
@@ -44,8 +44,8 @@ class Sandbox < Prequel::Sandbox
     questions.join_through(Ranking)
   end
 
-  expose :candidate_comments do
-    candidates.join_through(CandidateComment)
+  expose :answer_comments do
+    answers.join_through(AnswerComment)
   end
 
   def subscribe(*args)

@@ -7,7 +7,7 @@ module Views
         items = []
 
         items.push(pluralize(new_question_count, 'new question')) if new_question_count > 0
-        items.push(pluralize(new_candidate_count, 'new answer')) if new_candidate_count > 0
+        items.push(pluralize(new_answer_count, 'new answer')) if new_answer_count > 0
         items.push(pluralize(new_comment_count, 'new comment')) if new_comment_count > 0
 
         case items.length

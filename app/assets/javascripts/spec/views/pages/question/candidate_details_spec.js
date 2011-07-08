@@ -1,143 +1,143 @@
 //= require spec/spec_helper
 
-describe("Views.Pages.Question.CandidateDetails", function() {
-  var candidateDetails, candidate, creator, question, organization;
+describe("Views.Pages.Question.AnswerDetails", function() {
+  var answerDetails, answer, creator, question, organization;
 
   beforeEach(function() {
     renderLayout();
     Application.height(1000);
 
-    candidateDetails = Application.questionPage.candidateDetails;
+    answerDetails = Application.questionPage.answerDetails;
     organization = Organization.createFromRemote({id: 42});
     creator = organization.makeMember({id: 999, emailHash: 'blas', firstName: "Mr.", lastName: "Creator"});
     Application.currentUser(creator);
     question = organization.questions().createFromRemote({id: 1, creatorId: 999, createdAt: 12});
-    candidate = creator.candidates().createFromRemote({id: 1, questionId: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?", createdAt: 1308352736162});
+    answer = creator.answers().createFromRemote({id: 1, questionId: 1, body: "Mustard.", details: "Pardon me. Do you have any Gray Poupon?", createdAt: 1308352736162});
 
     Application.questionPage.show();
-    Application.questionPage.showCandidateDetails();
+    Application.questionPage.showAnswerDetails();
 
-    candidateDetails.candidate(candidate);
+    answerDetails.answer(answer);
   });
 
-  describe("when the candidate is assigned", function() {
+  describe("when the answer is assigned", function() {
     it("populates the body, details, and avatar", function() {
-      expect(candidateDetails.body.text()).toEqual(candidate.body());
-      expect(candidateDetails.details.text()).toEqual(candidate.details());
-      candidate.remotelyUpdated({body: "Catsup", details: "37 flavors"});
-      expect(candidateDetails.body.text()).toEqual(candidate.body());
-      expect(candidateDetails.details.text()).toEqual(candidate.details());
-      expect(candidateDetails.avatar.user()).toBe(candidate.creator());
-      expect(candidateDetails.creatorName.text()).toBe(creator.fullName());
-      expect(candidateDetails.createdAt.text()).toBe(candidate.formattedCreatedAt());
+      expect(answerDetails.body.text()).toEqual(answer.body());
+      expect(answerDetails.details.text()).toEqual(answer.details());
+      answer.remotelyUpdated({body: "Catsup", details: "37 flavors"});
+      expect(answerDetails.body.text()).toEqual(answer.body());
+      expect(answerDetails.details.text()).toEqual(answer.details());
+      expect(answerDetails.avatar.user()).toBe(answer.creator());
+      expect(answerDetails.creatorName.text()).toBe(creator.fullName());
+      expect(answerDetails.createdAt.text()).toBe(answer.formattedCreatedAt());
     });
 
-    it("removes subscriptions to the previous candidate", function() {
-      var candidate2 = Candidate.createFromRemote({id: 57, body: "soup.", questionId: question.id(), createdAt: 1111, creatorId: creator.id()});
-      var subscriptionsBefore = candidate.onDestroyNode.size();
+    it("removes subscriptions to the previous answer", function() {
+      var answer2 = Answer.createFromRemote({id: 57, body: "soup.", questionId: question.id(), createdAt: 1111, creatorId: creator.id()});
+      var subscriptionsBefore = answer.onDestroyNode.size();
 
-      candidateDetails.candidate(candidate2);
+      answerDetails.answer(answer2);
 
-      expect(candidate.onDestroyNode.size()).toBe(subscriptionsBefore - 1);
+      expect(answer.onDestroyNode.size()).toBe(subscriptionsBefore - 1);
 
       spyOn(History, 'pushState');
-      candidate.remotelyDestroyed();
+      answer.remotelyDestroyed();
       expect(History.pushState).not.toHaveBeenCalled();
     });
 
-    it("hides the form if it is showing, even if the candidate does not change", function() {
-      candidateDetails.candidate(candidate);
+    it("hides the form if it is showing, even if the answer does not change", function() {
+      answerDetails.answer(answer);
 
-      candidateDetails.editButton.click();
+      answerDetails.editButton.click();
 
-      expect(candidateDetails.form).toBeVisible();
-      expect(candidateDetails.nonEditableContent).toBeHidden();
+      expect(answerDetails.form).toBeVisible();
+      expect(answerDetails.nonEditableContent).toBeHidden();
 
-      candidateDetails.candidate(candidate);
+      answerDetails.answer(answer);
 
-      expect(candidateDetails.form).toBeHidden();
-      expect(candidateDetails.nonEditableContent).toBeVisible();
+      expect(answerDetails.form).toBeHidden();
+      expect(answerDetails.nonEditableContent).toBeVisible();
     });
 
-    it("handles null candidates", function() {
-      candidateDetails.candidate(null);
+    it("handles null answers", function() {
+      answerDetails.answer(null);
     });
   });
 
   describe("showing and hiding of the edit and destroy buttons", function() {
     var currentUserCanEdit;
     beforeEach(function() {
-      spyOn(Candidate.prototype, 'editableByCurrentUser').andCallFake(function() {
+      spyOn(Answer.prototype, 'editableByCurrentUser').andCallFake(function() {
         return currentUserCanEdit;
       });
     });
 
-    describe("on candidate assignment", function() {
+    describe("on answer assignment", function() {
       it("shows the edit link only if the current user can edit", function() {
-        var otherCandidate = Candidate.createFromRemote({id: 100, creatorId: creator.id(), createdAt: 234234});
+        var otherAnswer = Answer.createFromRemote({id: 100, creatorId: creator.id(), createdAt: 234234});
 
         currentUserCanEdit = false;
-        candidateDetails.candidate(otherCandidate);
-        expect(candidateDetails).not.toHaveClass('mutable');
-        expect(candidateDetails.editButton).toBeHidden();
-        expect(candidateDetails.destroyButton).toBeHidden();
+        answerDetails.answer(otherAnswer);
+        expect(answerDetails).not.toHaveClass('mutable');
+        expect(answerDetails.editButton).toBeHidden();
+        expect(answerDetails.destroyButton).toBeHidden();
 
 
         currentUserCanEdit = true;
-        candidateDetails.candidate(candidate);
-        expect(candidateDetails).toHaveClass('mutable');
-        expect(candidateDetails.editButton).toBeVisible();
-        expect(candidateDetails.destroyButton).toBeVisible();
+        answerDetails.answer(answer);
+        expect(answerDetails).toHaveClass('mutable');
+        expect(answerDetails.editButton).toBeVisible();
+        expect(answerDetails.destroyButton).toBeVisible();
       });
     });
 
     describe("on user switch", function() {
-      it("shows the edit button only when the current user is the creator of the candidate, an owner of the organization, or an admin", function() {
+      it("shows the edit button only when the current user is the creator of the answer, an owner of the organization, or an admin", function() {
         var otherUser = User.createFromRemote({id: 123});
 
         currentUserCanEdit = false;
         Application.currentUser(otherUser);
-        expect(candidateDetails.editButton).toBeHidden();
-        expect(candidateDetails.destroyButton).toBeHidden();
+        expect(answerDetails.editButton).toBeHidden();
+        expect(answerDetails.destroyButton).toBeHidden();
 
         currentUserCanEdit = true;
         Application.currentUser(creator);
-        expect(candidateDetails.editButton).toBeVisible();
-        expect(candidateDetails.destroyButton).toBeVisible();
+        expect(answerDetails.editButton).toBeVisible();
+        expect(answerDetails.destroyButton).toBeVisible();
       });
     });
   });
 
   describe("showing and hiding the new form", function() {
     it("hides comments and empties out and shows the form fields & create button when #showNewForm is called", function() {
-      candidateDetails.editableBody.val("woweee!");
-      candidateDetails.editableDetails.val("cocooo!");
-      candidateDetails.cancelEdit();
+      answerDetails.editableBody.val("woweee!");
+      answerDetails.editableDetails.val("cocooo!");
+      answerDetails.cancelEdit();
 
       var now = new Date();
       spyOn(window, 'Date').andReturn(now);
 
-      expect(candidateDetails.createButton).toBeHidden();
-      candidateDetails.showNewForm();
-      expect(candidateDetails.form).toBeVisible();
-      expect(candidateDetails.editableBody.val()).toBe('');
-      expect(candidateDetails.editableDetails.val()).toBe('');
-      expect(candidateDetails.createButton).toBeVisible();
-      expect(candidateDetails.cancelEditButton).toBeHidden();
-      expect(candidateDetails.updateButton).toBeHidden();
-      expect(candidateDetails.comments).toBeHidden();
+      expect(answerDetails.createButton).toBeHidden();
+      answerDetails.showNewForm();
+      expect(answerDetails.form).toBeVisible();
+      expect(answerDetails.editableBody.val()).toBe('');
+      expect(answerDetails.editableDetails.val()).toBe('');
+      expect(answerDetails.createButton).toBeVisible();
+      expect(answerDetails.cancelEditButton).toBeHidden();
+      expect(answerDetails.updateButton).toBeHidden();
+      expect(answerDetails.comments).toBeHidden();
 
-      expect(candidateDetails.avatar.user()).toBe(Application.currentUser());
-      expect(candidateDetails.creatorName.text()).toBe(Application.currentUser().fullName());
-      expect(candidateDetails.createdAt.text()).toBe($.PHPDate("M j, Y @ g:ia", now));
+      expect(answerDetails.avatar.user()).toBe(Application.currentUser());
+      expect(answerDetails.creatorName.text()).toBe(Application.currentUser().fullName());
+      expect(answerDetails.createdAt.text()).toBe($.PHPDate("M j, Y @ g:ia", now));
 
-      candidateDetails.candidate(candidate);
+      answerDetails.answer(answer);
 
-      expect(candidateDetails.form).toBeHidden();
-      expect(candidateDetails.createButton).toBeHidden();
-      expect(candidateDetails.cancelEditButton).toBeHidden();
-      expect(candidateDetails.updateButton).toBeHidden();
-      expect(candidateDetails.comments).toBeVisible();
+      expect(answerDetails.form).toBeHidden();
+      expect(answerDetails.createButton).toBeHidden();
+      expect(answerDetails.cancelEditButton).toBeHidden();
+      expect(answerDetails.updateButton).toBeHidden();
+      expect(answerDetails.comments).toBeVisible();
     });
   });
 
@@ -147,20 +147,20 @@ describe("Views.Pages.Question.CandidateDetails", function() {
     beforeEach(function() {
       Application.questionPage.question(question);
       useFakeServer();
-      candidateDetails.showNewForm();
+      answerDetails.showNewForm();
       fieldValues = {
         body: "Relish",
         details: "That green stuff..."
       };
 
-      candidateDetails.editableBody.val(fieldValues.body);
-      candidateDetails.editableDetails.val(fieldValues.details);
+      answerDetails.editableBody.val(fieldValues.body);
+      answerDetails.editableDetails.val(fieldValues.details);
     });
 
     describe("when the current user is a member", function() {
       describe("when the body field is filled in", function() {
-        it("creates a new candidates with the given body and details on the server and hides the form", function() {
-          candidateDetails.createButton.click();
+        it("creates a new answers with the given body and details on the server and hides the form", function() {
+          answerDetails.createButton.click();
 
           expect(Server.creates.length).toBe(1);
 
@@ -171,7 +171,7 @@ describe("Views.Pages.Question.CandidateDetails", function() {
         });
 
         it("wires the form submit event to save", function() {
-          candidateDetails.form.submit();
+          answerDetails.form.submit();
           expect(Server.updates.length).toBe(1);
         });
       });
@@ -179,8 +179,8 @@ describe("Views.Pages.Question.CandidateDetails", function() {
       describe("when the body field is empty", function() {
         it("does nothing", function() {
           spyOn(History, 'pushState');
-          candidateDetails.editableBody.val('                  ');
-          candidateDetails.createButton.click();
+          answerDetails.editableBody.val('                  ');
+          answerDetails.createButton.click();
           expect(Server.creates.length).toBe(0);
           expect(History.pushState).not.toHaveBeenCalled();
         });
@@ -191,19 +191,19 @@ describe("Views.Pages.Question.CandidateDetails", function() {
       var guest, member;
 
       beforeEach(function() {
-        spyOn(candidate, 'editableByCurrentUser').andReturn(true);
+        spyOn(answer, 'editableByCurrentUser').andReturn(true);
         guest = organization.makeMember({id: 5, guest: true});
         member = organization.makeMember({id: 6});
         Application.currentUser(guest);
 
-        candidateDetails.show();
-        candidateDetails.showNewForm();
-        candidateDetails.editableBody.val(fieldValues.body);
-        candidateDetails.editableDetails.val(fieldValues.details);
+        answerDetails.show();
+        answerDetails.showNewForm();
+        answerDetails.editableBody.val(fieldValues.body);
+        answerDetails.editableDetails.val(fieldValues.details);
       });
 
-      it("prompts for signup, and creates a candidate only if they sign up", function() {
-        candidateDetails.createButton.click();
+      it("prompts for signup, and creates a answer only if they sign up", function() {
+        answerDetails.createButton.click();
 
         expect(Server.creates.length).toBe(0);
         expect(Application.signupForm).toBeVisible();
@@ -218,11 +218,11 @@ describe("Views.Pages.Question.CandidateDetails", function() {
 
         expect(Server.creates.length).toBe(1);
 
-        var createdCandidate = Server.lastCreate.record;
+        var createdAnswer = Server.lastCreate.record;
 
-        expect(createdCandidate.question()).toBe(question);
-        expect(createdCandidate.body()).toBe(fieldValues.body);
-        expect(createdCandidate.details()).toBe(fieldValues.details);
+        expect(createdAnswer.question()).toBe(question);
+        expect(createdAnswer.body()).toBe(fieldValues.body);
+        expect(createdAnswer.details()).toBe(fieldValues.details);
 
         Server.lastCreate.simulateSuccess();
 
@@ -237,51 +237,51 @@ describe("Views.Pages.Question.CandidateDetails", function() {
       useFakeServer();
     });
 
-    it("creates the candidate when the new form is showing", function() {
-      candidateDetails.showNewForm();
-      candidateDetails.editableBody.val("Blah");
-      candidateDetails.editableBody.trigger({ type : 'keydown', which : 13 });
+    it("creates the answer when the new form is showing", function() {
+      answerDetails.showNewForm();
+      answerDetails.editableBody.val("Blah");
+      answerDetails.editableBody.trigger({ type : 'keydown', which : 13 });
       expect(Server.creates.length).toBe(1);
     });
 
-    it("updates the candidate when the edit form is showing", function() {
-      candidateDetails.editButton.click();
-      candidateDetails.editableBody.val("Blah");
-      candidateDetails.editableBody.trigger({ type : 'keydown', which : 13 });
+    it("updates the answer when the edit form is showing", function() {
+      answerDetails.editButton.click();
+      answerDetails.editableBody.val("Blah");
+      answerDetails.editableBody.trigger({ type : 'keydown', which : 13 });
       expect(Server.updates.length).toBe(1);
     });
   });
 
   describe("showing and hiding of the edit form", function() {
     it("shows and populates the form fields and sets focus when edit is clicked and hides them when cancel is clicked", function() {
-      expect(candidateDetails.form).toBeHidden();
-      expect(candidateDetails.nonEditableContent).toBeVisible();
+      expect(answerDetails.form).toBeHidden();
+      expect(answerDetails.nonEditableContent).toBeVisible();
 
-      candidateDetails.editButton.click();
+      answerDetails.editButton.click();
 
-      expect(candidateDetails.form).toBeVisible();
-      expect(candidateDetails.updateButton).toBeVisible();
-      expect(candidateDetails.cancelEditButton).toBeVisible();
-      expect(candidateDetails.nonEditableContent).toBeHidden();
+      expect(answerDetails.form).toBeVisible();
+      expect(answerDetails.updateButton).toBeVisible();
+      expect(answerDetails.cancelEditButton).toBeVisible();
+      expect(answerDetails.nonEditableContent).toBeHidden();
 
-      expect(candidateDetails.editableBody.val()).toBe(candidate.body());
-      expect(candidateDetails.editableBody[0]).toBe(document.activeElement);
-      expect(candidateDetails.charsRemaining.text()).toBe((140 - candidate.body().length).toString());
-      expect(candidateDetails.editableDetails.val()).toBe(candidate.details());
+      expect(answerDetails.editableBody.val()).toBe(answer.body());
+      expect(answerDetails.editableBody[0]).toBe(document.activeElement);
+      expect(answerDetails.charsRemaining.text()).toBe((140 - answer.body().length).toString());
+      expect(answerDetails.editableDetails.val()).toBe(answer.details());
 
-      candidateDetails.cancelEditButton.click();
+      answerDetails.cancelEditButton.click();
 
-      expect(candidateDetails.form).toBeHidden();
-      expect(candidateDetails.updateButton).toBeHidden();
-      expect(candidateDetails.cancelEditButton).toBeHidden();
-      expect(candidateDetails.nonEditableContent).toBeVisible();
+      expect(answerDetails.form).toBeHidden();
+      expect(answerDetails.updateButton).toBeHidden();
+      expect(answerDetails.cancelEditButton).toBeHidden();
+      expect(answerDetails.nonEditableContent).toBeVisible();
     });
 
     it("does not show the comments if they are still loading", function() {
-      candidateDetails.comments.loading(true);
-      candidateDetails.editButton.click();
-      candidateDetails.cancelEditButton.click();
-      expect(candidateDetails.comments).toBeHidden();
+      answerDetails.comments.loading(true);
+      answerDetails.editButton.click();
+      answerDetails.cancelEditButton.click();
+      expect(answerDetails.comments).toBeHidden();
     });
   });
 
@@ -290,40 +290,40 @@ describe("Views.Pages.Question.CandidateDetails", function() {
 
     beforeEach(function() {
       useFakeServer();
-      candidateDetails.editButton.click();
+      answerDetails.editButton.click();
       fieldValues = {
         body: "Relish",
         details: "That green stuff..."
       }
 
-      candidateDetails.editableBody.val(fieldValues.body);
-      candidateDetails.editableDetails.val(fieldValues.details);
+      answerDetails.editableBody.val(fieldValues.body);
+      answerDetails.editableDetails.val(fieldValues.details);
     });
 
     it("updates the record's body and details on the server and hides the form", function() {
-      candidateDetails.updateButton.click();
+      answerDetails.updateButton.click();
   
       expect(Server.updates.length).toBe(1);
 
       expect(Server.lastUpdate.dirtyFieldValues).toEqual(fieldValues);
       Server.lastUpdate.simulateSuccess();
 
-      expect(candidateDetails.form).toBeHidden();
-      expect(candidateDetails.nonEditableContent).toBeVisible();
+      expect(answerDetails.form).toBeHidden();
+      expect(answerDetails.nonEditableContent).toBeVisible();
       
-      expect(candidateDetails.body.text()).toBe(fieldValues.body);
-      expect(candidateDetails.details.text()).toBe(fieldValues.details);
+      expect(answerDetails.body.text()).toBe(fieldValues.body);
+      expect(answerDetails.details.text()).toBe(fieldValues.details);
     });
 
     it("wires the form submit event to save", function() {
-      candidateDetails.form.submit();
+      answerDetails.form.submit();
       expect(Server.updates.length).toBe(1);
     });
 
     it("does not allow a blank body", function() {
       spyOn(History, 'pushState');
-      candidateDetails.editableBody.val('  ');
-      candidateDetails.updateButton.click();
+      answerDetails.editableBody.val('  ');
+      answerDetails.updateButton.click();
       expect(Server.updates.length).toBe(0);
       expect(History.pushState).not.toHaveBeenCalled();
     });
@@ -335,8 +335,8 @@ describe("Views.Pages.Question.CandidateDetails", function() {
       });
 
       spyOn(History, 'pushState');
-      candidateDetails.editableBody.val(longBody);
-      candidateDetails.updateButton.click();
+      answerDetails.editableBody.val(longBody);
+      answerDetails.updateButton.click();
       expect(Server.updates.length).toBe(0);
       expect(History.pushState).not.toHaveBeenCalled();
     });
@@ -348,30 +348,30 @@ describe("Views.Pages.Question.CandidateDetails", function() {
     });
 
     describe("if the user accepts the confirmation", function() {
-      it("deletes the candidate", function() {
+      it("deletes the answer", function() {
         spyOn(window, 'confirm').andReturn(true);
 
-        candidateDetails.destroyButton.click();
+        answerDetails.destroyButton.click();
 
         expect(Server.destroys.length).toBe(1);
-        expect(Server.lastDestroy.record).toBe(candidate);
+        expect(Server.lastDestroy.record).toBe(answer);
       });
     });
 
     describe("if the user rejects the confirmation", function() {
-      it("does not delete the candidate", function() {
+      it("does not delete the answer", function() {
         spyOn(window, 'confirm').andReturn(false);
 
-        candidateDetails.destroyButton.click();
+        answerDetails.destroyButton.click();
 
         expect(Server.destroys.length).toBe(0);
       });
     });
   });
 
-  describe("when the candidate is destroyed", function() {
+  describe("when the answer is destroyed", function() {
     it("navigates to the question url", function() {
-      candidate.remotelyDestroyed();
+      answer.remotelyDestroyed();
       expect(Path.routes.current).toBe(question.url());
     });
   });
@@ -382,65 +382,65 @@ describe("Views.Pages.Question.CandidateDetails", function() {
     beforeEach(function() {
       longText = "";
       for (var i = 0; i < 10; i++) longText += "Bee bee boo boo ";
-      spyOn(candidateDetails.comments, 'enableOrDisableFullHeight');
+      spyOn(answerDetails.comments, 'enableOrDisableFullHeight');
     });
 
     describe("when the details/body are assigned and when they change", function() {
       it("adjusts the comments to fill the remaining available height", function() {
-        Application.questionPage.showCandidateDetails();
+        Application.questionPage.showAnswerDetails();
         expectCommentsToHaveFullHeight();
 
-        candidate.remotelyUpdated({body: longText});
+        answer.remotelyUpdated({body: longText});
         expectCommentsToHaveFullHeight();
 
-        candidate.remotelyUpdated({details: longText});
+        answer.remotelyUpdated({details: longText});
         expectCommentsToHaveFullHeight();
-        expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+        expect(answerDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
       });
     });
 
     describe("when the form is shown and hidden", function() {
       it("adjusts the comments to fill the remaining available height", function() {
-        candidateDetails.editButton.click();
+        answerDetails.editButton.click();
         expectCommentsToHaveFullHeight();
         
-        candidateDetails.cancelEditButton.click();
+        answerDetails.cancelEditButton.click();
         expectCommentsToHaveFullHeight();
-        expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+        expect(answerDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
       });
     });
 
     describe("when the window is resized", function() {
       it("adjusts the comments to fill the remaining available height", function() {
         Application.questionPage.width(1200);
-        candidate.remotelyUpdated({details: longText});
+        answer.remotelyUpdated({details: longText});
 
         Application.questionPage.width(800);
         $(window).resize();
         expectCommentsToHaveFullHeight();
-        expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+        expect(answerDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
       });
     });
 
     describe("when the body or details textareas resize elastically", function() {
       it("adjusts the comments to fill the remaining available height", function() {
-        candidateDetails.editButton.click();
+        answerDetails.editButton.click();
 
-        candidateDetails.editableBody.val(longText);
-        candidateDetails.editableBody.keyup();
+        answerDetails.editableBody.val(longText);
+        answerDetails.editableBody.keyup();
         expectCommentsToHaveFullHeight();
 
-        candidateDetails.editableDetails.val(longText);
-        candidateDetails.editableDetails.keyup();
+        answerDetails.editableDetails.val(longText);
+        answerDetails.editableDetails.keyup();
 
         expectCommentsToHaveFullHeight();
-        expect(candidateDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
+        expect(answerDetails.comments.enableOrDisableFullHeight).toHaveBeenCalled();
       });
     });
 
     function expectCommentsToHaveFullHeight() {
-      var commentsBottom = candidateDetails.comments.position().top + candidateDetails.comments.outerHeight();
-      expect(commentsBottom).toBe(candidateDetails.outerHeight() - parseInt(candidateDetails.css('padding-bottom')));
+      var commentsBottom = answerDetails.comments.position().top + answerDetails.comments.outerHeight();
+      expect(commentsBottom).toBe(answerDetails.outerHeight() - parseInt(answerDetails.css('padding-bottom')));
     }
   });
 
@@ -452,10 +452,10 @@ describe("Views.Pages.Question.CandidateDetails", function() {
     describe("when the view is in 'new' mode", function() {
       it("routes to the question's url", function() {
         Application.questionPage.question(question);
-        candidateDetails.candidate(null);
-        candidateDetails.showNewForm();
+        answerDetails.answer(null);
+        answerDetails.showNewForm();
         spyOn(Application, 'showPage');
-        candidateDetails.closeLink.click();
+        answerDetails.closeLink.click();
         expect(Path.routes.current).toBe(question.url());
       });
     });
@@ -463,7 +463,7 @@ describe("Views.Pages.Question.CandidateDetails", function() {
     describe("when the view is in 'details' mode", function() {
       it("routes to the question's url", function() {
         spyOn(Application, 'showPage');
-        candidateDetails.closeLink.click();
+        answerDetails.closeLink.click();
         expect(Path.routes.current).toBe(question.url());
       });
     });
@@ -471,10 +471,10 @@ describe("Views.Pages.Question.CandidateDetails", function() {
 
   describe("loading", function() {
     it("assigns loading to the comments", function() {
-      candidateDetails.loading(true);
-      expect(candidateDetails.comments.loading()).toBeTruthy();
-      candidateDetails.loading(false);
-      expect(candidateDetails.comments.loading()).toBeFalsy();
+      answerDetails.loading(true);
+      expect(answerDetails.comments.loading()).toBeTruthy();
+      answerDetails.loading(false);
+      expect(answerDetails.comments.loading()).toBeFalsy();
     });
   });
 });

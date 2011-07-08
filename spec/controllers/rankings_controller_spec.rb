@@ -6,8 +6,8 @@ describe RankingsController do
   before do
     @organization = Organization.make
     @question = organization.questions.make
-    @c1 = question.candidates.make
-    @c2 = question.candidates.make
+    @c1 = question.answers.make
+    @c2 = question.answers.make
     @member = organization.make_member
     @non_member = User.make
   end
@@ -17,14 +17,14 @@ describe RankingsController do
       login_as member
     end
 
-    context "when no ranking for the specified candidate exists for the current user" do
+    context "when no ranking for the specified answer exists for the current user" do
       it "creates a ranking" do
-        Ranking.find(:user => member, :candidate => c1).should be_nil
+        Ranking.find(:user => member, :answer => c1).should be_nil
 
-        post :create, :candidate_id => c1.to_param, :position => '64'
+        post :create, :answer_id => c1.to_param, :position => '64'
         response.should be_success
 
-        c1_ranking = Ranking.find(:user => member, :candidate => c1)
+        c1_ranking = Ranking.find(:user => member, :answer => c1)
         c1_ranking.position.should == 64
 
         response_json['data'].should == { 'ranking_id' => c1_ranking.id }
@@ -32,11 +32,11 @@ describe RankingsController do
       end
     end
 
-    context "when a ranking for the specified candidate already exists for the current user" do
+    context "when a ranking for the specified answer already exists for the current user" do
       it "updates its position" do
-        c1_ranking = Ranking.create!(:user => member, :candidate => c1, :position => 32)
+        c1_ranking = Ranking.create!(:user => member, :answer => c1, :position => 32)
 
-        post :create, :candidate_id => c1.id, :position => 64
+        post :create, :answer_id => c1.id, :position => 64
         response.should be_success
 
         c1_ranking.position.should == 64
@@ -58,15 +58,15 @@ describe RankingsController do
       end
 
       it "makes the user a member of the organization before proceeding and includes the new membership in the returned records" do
-        Ranking.find(:user => member, :candidate => c1).should be_nil
+        Ranking.find(:user => member, :answer => c1).should be_nil
         non_member.memberships.where(:organization => organization).should be_empty
 
-        post :create, :candidate_id => c1.id, :position => 64
+        post :create, :answer_id => c1.id, :position => 64
         response.should be_success
 
         new_membership = non_member.memberships.find(:organization => organization)
         new_membership.should be
-        c1_ranking = Ranking.find(:user => non_member, :candidate => c1)
+        c1_ranking = Ranking.find(:user => non_member, :answer => c1)
         c1_ranking.position.should == 64
 
         response_json['data'].should == { 'ranking_id' => c1_ranking.id }
@@ -81,7 +81,7 @@ describe RankingsController do
       end
 
       it "returns a security error" do
-        post :create, :candidate_id => c1.id, :position => 64
+        post :create, :answer_id => c1.id, :position => 64
         response.status.should == 403
       end
     end

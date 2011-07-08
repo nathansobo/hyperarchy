@@ -1,4 +1,4 @@
-_.constructor("Candidate", Model.Record, {
+_.constructor("Answer", Model.Record, {
   constructorInitialize: function() {
     this.columns({
       questionId: 'key',
@@ -13,11 +13,11 @@ _.constructor("Candidate", Model.Record, {
     this.defaultOrderBy('position asc');
 
     this.hasMany('rankings');
-    this.hasMany('comments', {constructorName: "CandidateComment"});
+    this.hasMany('comments', {constructorName: "AnswerComment"});
     this.belongsTo('question');
     this.belongsTo('creator', {constructorName: "User"});
     this.relatesToMany('commenters', function() {
-      return this.comments().join(User).on(CandidateComment.creatorId.eq(User.id));
+      return this.comments().join(User).on(AnswerComment.creatorId.eq(User.id));
     });
   },
 
@@ -59,6 +59,6 @@ _.constructor("Candidate", Model.Record, {
   },
 
   url: function() {
-    return "/questions/" + this.questionId() + "/candidates/" + this.id();
+    return "/questions/" + this.questionId() + "/answers/" + this.id();
   }
 });

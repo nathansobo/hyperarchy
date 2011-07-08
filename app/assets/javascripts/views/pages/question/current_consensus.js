@@ -2,8 +2,8 @@ _.constructor('Views.Pages.Question.CurrentConsensus', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "current-consensus"}, function() {
       subview('list', Views.Components.SortedList, {
-        buildElement: function(candidate) {
-          return Views.Pages.Question.CandidateLi.toView({candidate: candidate});
+        buildElement: function(answer) {
+          return Views.Pages.Question.AnswerLi.toView({answer: answer});
         },
 
         onUpdate: function(element, record) {
@@ -22,17 +22,17 @@ _.constructor('Views.Pages.Question.CurrentConsensus', Monarch.View.Template, {
     },
 
     handleCurrentUserChange: function() {
-      if (! this.candidates()) return;
+      if (! this.answers()) return;
       this.updateStatuses();
       this.observeCurrentUserRankings();
     },
 
-    candidates: {
-      change: function(candidates) {
-        this.list.relation(candidates);
+    answers: {
+      change: function(answers) {
+        this.list.relation(answers);
         this.updateStatuses();
         this.observeCurrentUserRankings();
-        this.observeCandidates();
+        this.observeAnswers();
       }
     },
 
@@ -43,38 +43,38 @@ _.constructor('Views.Pages.Question.CurrentConsensus', Monarch.View.Template, {
       this.registerInterest('rankings', currentUserRankings, 'onRemove', this.hitch('clearStatus'));
     },
 
-    observeCandidates: function() {
-      this.registerInterest('candidates', this.candidates(), 'onUpdate', function(candidate, changeset) {
+    observeAnswers: function() {
+      this.registerInterest('answers', this.answers(), 'onUpdate', function(answer, changeset) {
         if (changeset.commentCount || changeset.details) {
-          this.list.elementForRecord(candidate).showOrHideEllipsis();
+          this.list.elementForRecord(answer).showOrHideEllipsis();
         }
       }, this);
     },
 
-    selectedCandidate: {
-      change: function(selectedCandidate) {
+    selectedAnswer: {
+      change: function(selectedAnswer) {
         this.list.find('li').removeClass('selected');
-        if (selectedCandidate) this.list.elementForRecord(selectedCandidate).addClass('selected');
+        if (selectedAnswer) this.list.elementForRecord(selectedAnswer).addClass('selected');
       }
     },
 
     updateStatuses: function() {
       var currentUserRankings = Application.currentUser().rankings();
-      this.candidates().each(function(candidate) {
-        var ranking = currentUserRankings.find({candidateId: candidate.id()});
-        this.list.elementForRecord(candidate).ranking(ranking);
+      this.answers().each(function(answer) {
+        var ranking = currentUserRankings.find({answerId: answer.id()});
+        this.list.elementForRecord(answer).ranking(ranking);
       }, this);
     },
 
     updateStatus: function(ranking) {
-      var candidate = ranking.candidate();
-      this.list.elementForRecord(candidate).ranking(ranking);
+      var answer = ranking.answer();
+      this.list.elementForRecord(answer).ranking(ranking);
     },
 
     clearStatus: function(ranking) {
-      var candidate = ranking.candidate();
-      if (!candidate) return;
-      this.list.elementForRecord(candidate).ranking(null);
+      var answer = ranking.answer();
+      if (!answer) return;
+      this.list.elementForRecord(answer).ranking(null);
     }
   }
 });

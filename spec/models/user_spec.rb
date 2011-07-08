@@ -166,19 +166,19 @@ module Models
           User.users_to_notify('hourly').all.map(&:id).should =~ [m1, m2, m3, m4].map(&:user).map(&:id)
         end
 
-        def make_membership(questions, candidates, comments_on_ranked, comments_on_own, additional_attrs = {})
+        def make_membership(questions, answers, comments_on_ranked, comments_on_own, additional_attrs = {})
           Membership.make(additional_attrs.merge(
             :notify_of_new_questions => questions,
-            :notify_of_new_candidates => candidates,
-            :notify_of_new_comments_on_own_candidates => comments_on_ranked,
-            :notify_of_new_comments_on_ranked_candidates => comments_on_own
+            :notify_of_new_answers => answers,
+            :notify_of_new_comments_on_own_answers => comments_on_ranked,
+            :notify_of_new_comments_on_ranked_answers => comments_on_own
           ))
         end
 
         describe "#memberships_to_notify(period)" do
           it "returns those memberships with at least one notification preference set to the given period, with social memberships first" do
             social_membership = user.memberships.first
-            social_membership.update(:notify_of_new_candidates => 'hourly')
+            social_membership.update(:notify_of_new_answers => 'hourly')
 
             m1 = make_membership('hourly', 'never', 'never', 'never')
             m2 = make_membership('never', 'hourly', 'never', 'never')

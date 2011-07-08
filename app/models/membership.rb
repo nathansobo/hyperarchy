@@ -5,9 +5,9 @@ class Membership < Prequel::Record
   column :role, :string, :default => "member"
   column :last_visited, :datetime
   column :notify_of_new_questions, :string, :default => "daily"
-  column :notify_of_new_candidates, :string, :default => "daily"
-  column :notify_of_new_comments_on_own_candidates, :string, :default => "daily"
-  column :notify_of_new_comments_on_ranked_candidates, :string, :default => "daily"
+  column :notify_of_new_answers, :string, :default => "daily"
+  column :notify_of_new_comments_on_own_answers, :string, :default => "daily"
+  column :notify_of_new_comments_on_ranked_answers, :string, :default => "daily"
   column :created_at, :datetime
   column :updated_at, :datetime
 
@@ -33,21 +33,21 @@ class Membership < Prequel::Record
 
   def create_whitelist
     [:organization_id, :user_id, :role, :first_name, :last_name, :email_address,
-     :notify_of_new_questions, :notify_of_new_candidates,
-     :notify_of_new_comments_on_ranked_candidates,
-     :notify_of_new_comments_on_own_candidates]
+     :notify_of_new_questions, :notify_of_new_answers,
+     :notify_of_new_comments_on_ranked_answers,
+     :notify_of_new_comments_on_own_answers]
   end
 
   def update_whitelist
     if current_user_is_admin_or_organization_owner?
       [:first_name, :last_name, :role, :last_visited,
-       :notify_of_new_questions, :notify_of_new_candidates,
-       :notify_of_new_comments_on_ranked_candidates,
-       :notify_of_new_comments_on_own_candidates]
+       :notify_of_new_questions, :notify_of_new_answers,
+       :notify_of_new_comments_on_ranked_answers,
+       :notify_of_new_comments_on_own_answers]
     else
-      [:last_visited, :notify_of_new_questions, :notify_of_new_candidates,
-       :notify_of_new_comments_on_ranked_candidates,
-       :notify_of_new_comments_on_own_candidates]
+      [:last_visited, :notify_of_new_questions, :notify_of_new_answers,
+       :notify_of_new_comments_on_ranked_answers,
+       :notify_of_new_comments_on_own_answers]
     end
   end
 
@@ -91,26 +91,26 @@ class Membership < Prequel::Record
 
   def wants_notifications?(period)
      wants_question_notifications?(period) ||
-       wants_candidate_notifications?(period) ||
-       wants_ranked_candidate_comment_notifications?(period) ||
-       wants_own_candidate_comment_notifications?(period)
+       wants_answer_notifications?(period) ||
+       wants_ranked_answer_comment_notifications?(period) ||
+       wants_own_answer_comment_notifications?(period)
 
   end
 
-  def wants_candidate_notifications?(period)
-    notify_of_new_candidates == period
+  def wants_answer_notifications?(period)
+    notify_of_new_answers == period
   end
 
   def wants_question_notifications?(period)
     notify_of_new_questions == period
   end
 
-  def wants_ranked_candidate_comment_notifications?(period)
-    notify_of_new_comments_on_ranked_candidates == period
+  def wants_ranked_answer_comment_notifications?(period)
+    notify_of_new_comments_on_ranked_answers == period
   end
 
-  def wants_own_candidate_comment_notifications?(period)
-    notify_of_new_comments_on_own_candidates == period
+  def wants_own_answer_comment_notifications?(period)
+    notify_of_new_comments_on_own_answers == period
   end
 
   def new_questions_in_period(period)
@@ -119,30 +119,30 @@ class Membership < Prequel::Record
       where(Question[:creator_id].neq(user_id))
   end
 
-  def new_candidates_in_period(period)
+  def new_answers_in_period(period)
     user.votes.
       join(organization.questions).
-      join_through(Candidate).
-      where(Candidate[:created_at].gt(last_notified_or_visited_at(period))).
-      where(Candidate[:creator_id].neq(user_id))
+      join_through(Answer).
+      where(Answer[:created_at].gt(last_notified_or_visited_at(period))).
+      where(Answer[:creator_id].neq(user_id))
   end
 
-  def new_comments_on_ranked_candidates_in_period(period)
+  def new_comments_on_ranked_answers_in_period(period)
     organization.questions.
       join(user.rankings).
-      join(Candidate, Ranking[:candidate_id] => Candidate[:id]).
-      where(Candidate[:creator_id].neq(user_id)).
-      join_through(CandidateComment).
-      where(CandidateComment[:created_at].gt(last_notified_or_visited_at(period))).
-      where(CandidateComment[:creator_id].neq(user_id))
+      join(Answer, Ranking[:answer_id] => Answer[:id]).
+      where(Answer[:creator_id].neq(user_id)).
+      join_through(AnswerComment).
+      where(AnswerComment[:created_at].gt(last_notified_or_visited_at(period))).
+      where(AnswerComment[:creator_id].neq(user_id))
   end
 
-  def new_comments_on_own_candidates_in_period(period)
+  def new_comments_on_own_answers_in_period(period)
     organization.questions.
-      join(user.candidates).
-      join_through(CandidateComment).
-      where(CandidateComment[:created_at].gt((last_notified_or_visited_at(period)))).
-      where(CandidateComment[:creator_id].neq(user_id))
+      join(user.answers).
+      join_through(AnswerComment).
+      where(AnswerComment[:created_at].gt((last_notified_or_visited_at(period)))).
+      where(AnswerComment[:creator_id].neq(user_id))
   end
 
   protected

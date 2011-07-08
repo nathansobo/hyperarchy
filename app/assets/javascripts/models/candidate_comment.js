@@ -1,14 +1,14 @@
-_.constructor("CandidateComment", Model.Record, {
+_.constructor("AnswerComment", Model.Record, {
   constructorInitialize: function() {
     this.columns({
-      candidateId: 'key',
+      answerId: 'key',
       creatorId: 'key',
       body: 'string',
       updatedAt: 'datetime',
       createdAt: 'datetime'
     });
 
-    this.belongsTo('candidate');
+    this.belongsTo('answer');
     this.belongsTo('creator', {constructorName: "User"});
   },
 
@@ -25,7 +25,7 @@ _.constructor("CandidateComment", Model.Record, {
   },
 
   question: function() {
-    return this.candidate().question();
+    return this.answer().question();
   },
 
   formattedCreatedAt: function() {

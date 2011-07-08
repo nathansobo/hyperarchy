@@ -20,7 +20,7 @@ Path.map('/questions/:questionId').to(function() {
   Application.showPage('question', this.params);
 });
                                            // also handles 'new'
-Path.map('/questions/:questionId/candidates/:candidateId').to(function() {
+Path.map('/questions/:questionId/answers/:answerId').to(function() {
   Application.showPage('question', this.params);
 });
 

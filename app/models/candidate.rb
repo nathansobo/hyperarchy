@@ -1,4 +1,4 @@
-class Candidate < Prequel::Record
+class Answer < Prequel::Record
   column :id, :integer
   column :body, :string
   column :details, :string, :default => ""
@@ -12,7 +12,7 @@ class Candidate < Prequel::Record
   belongs_to :question
   belongs_to :creator, :class_name => "User"
   has_many :rankings
-  has_many :comments, :class_name => "CandidateComment"
+  has_many :comments, :class_name => "AnswerComment"
 
   include SupportsNotifications
 
@@ -57,16 +57,16 @@ class Candidate < Prequel::Record
   end
 
   def after_create
-    update(:position => 1) if other_candidates.empty?
-    other_candidates.each do |other_candidate|
-      Majority.create({:winner => self, :loser => other_candidate, :question_id => question_id})
-      Majority.create({:winner => other_candidate, :loser => self, :question_id => question_id})
+    update(:position => 1) if other_answers.empty?
+    other_answers.each do |other_answer|
+      Majority.create({:winner => self, :loser => other_answer, :question_id => question_id})
+      Majority.create({:winner => other_answer, :loser => self, :question_id => question_id})
     end
 
-    victories_over(question.negative_candidate_ranking_counts).update(:pro_count => :times_ranked)
-    victories_over(question.positive_candidate_ranking_counts).update(:con_count => :times_ranked)
-    defeats_by(question.positive_candidate_ranking_counts).update(:pro_count => :times_ranked)
-    defeats_by(question.negative_candidate_ranking_counts).update(:con_count => :times_ranked)
+    victories_over(question.negative_answer_ranking_counts).update(:pro_count => :times_ranked)
+    victories_over(question.positive_answer_ranking_counts).update(:con_count => :times_ranked)
+    defeats_by(question.positive_answer_ranking_counts).update(:pro_count => :times_ranked)
+    defeats_by(question.negative_answer_ranking_counts).update(:con_count => :times_ranked)
 
     question.compute_global_ranking
     question.unlock
@@ -89,18 +89,18 @@ class Candidate < Prequel::Record
     question.unlock
   end
 
-  def other_candidates
-    question.candidates.where(Candidate[:id].neq(id))
+  def other_answers
+    question.answers.where(Answer[:id].neq(id))
   end
 
-  def victories_over(other_candidate_ranking_counts)
+  def victories_over(other_answer_ranking_counts)
     winning_majorities.
-      join(other_candidate_ranking_counts, :loser_id => :candidate_id)
+      join(other_answer_ranking_counts, :loser_id => :answer_id)
   end
 
-  def defeats_by(other_candidate_ranking_counts)
+  def defeats_by(other_answer_ranking_counts)
     losing_majorities.
-      join(other_candidate_ranking_counts, :winner_id => :candidate_id)
+      join(other_answer_ranking_counts, :winner_id => :answer_id)
   end
 
   def winning_majorities
@@ -114,7 +114,7 @@ class Candidate < Prequel::Record
   def users_to_notify_immediately
     question.votes.
       join(Membership.where(:organization_id => question.organization_id), Vote[:user_id].eq(Membership[:user_id])).
-      where(:notify_of_new_candidates => "immediately").
+      where(:notify_of_new_answers => "immediately").
       where(Membership[:user_id].neq(creator_id)).
       join_through(User)
   end
