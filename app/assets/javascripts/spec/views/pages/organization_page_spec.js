@@ -37,7 +37,7 @@ describe("Views.Pages.Organization", function() {
 
   describe("when the organization is assigned", function() {
     it("fetches the and renders the organization's elections, and fetches more when the view scrolls", function() {
-      var user, organization, election1, election2, remainingScrollHeight;
+      var user, organization1, election1, election2, remainingScrollHeight;
 
       $('#jasmine_content').html(Application);
       Application.organizationPage.show();
@@ -45,30 +45,33 @@ describe("Views.Pages.Organization", function() {
       enableAjax();
       user = login();
       usingBackdoor(function() {
-        organization = Organization.create();
-        user.memberships().create({organizationId: organization.id()});
+        organization1 = Organization.create();
+        organization2 = Organization.create();
+        user.memberships().create({organizationId: organization1.id()});
+        user.memberships().create({organizationId: organization2.id()});
         createMultiple({
           count: 33,
           tableName: 'elections',
-          fieldValues: { organizationId: organization.id() }
+          fieldValues: { organizationId: organization1.id() }
         });
-        organization.fetch();
+        organization2.elections().create();
+        Organization.fetch(); // fetch counts
         Election.clear();
       });
 
       waitsFor("elections to be fetched", function(complete) {
-        organizationPage.organization(organization).success(complete);
-        expect(organization.elections().size()).toBe(0);
+        organizationPage.organization(organization1).success(complete);
+        expect(organization1.elections().size()).toBe(0);
       });
 
       runs(function() {
-        expect(organization.elections().size()).toBe(16);
+        expect(organization1.elections().size()).toBe(16);
         var electionsList = organizationPage.electionsList;
-        organization.elections().each(function(election) {
+        organization1.elections().each(function(election) {
           expect(electionsList).toContain("li:contains('" + election.body() + "')");
         });
 
-        var election = organization.elections().first();
+        var election = organization1.elections().first();
 
         spyOn(Application, 'showPage');
 
@@ -80,7 +83,7 @@ describe("Views.Pages.Organization", function() {
       });
 
       waitsFor("more elections to be fetched after scrolling", function() {
-        return organization.elections().size() === 32;
+        return organization1.elections().size() === 32;
       });
 
       runs(function() {
@@ -88,11 +91,24 @@ describe("Views.Pages.Organization", function() {
       });
 
       waitsFor("more elections to be fetched after scrolling again", function() {
-        return organization.elections().size() === 33;
+        return organization1.elections().size() === 33;
       });
 
       runs(function() {
         expect(organizationPage.listBottom).toBeHidden();
+      });
+
+      // switch to org 2
+
+      waitsFor("organization 2 elections to be fetched", function(complete) {
+        organizationPage.organization(organization2).success(complete);
+        expect(organizationPage.electionsList.find('li')).not.toExist();
+        expect(organizationPage.loading()).toBeTruthy();
+      })
+
+      runs(function() {
+        expect(organizationPage.electionsList.find('li').length).toBe(1);
+        expect(organizationPage.loading()).toBeFalsy();
       });
     });
   });

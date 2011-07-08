@@ -24,7 +24,9 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
         }
       });
 
-      div({id: "list-bottom"}).ref("listBottom");
+      div({id: "list-bottom"}, function() {
+        subview('spinner', Views.Components.Spinner);
+      }).ref("listBottom");
     });
   }},
 
@@ -36,8 +38,13 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
     organization: {
       change: function(organization) {
         Application.currentOrganizationId(organization.id());
+
+        this.electionsList.empty();
+        this.loading(true);
+
         return organization.fetchMoreElections()
           .success(this.bind(function() {
+            this.stopLoadingIfNeeded();
             this.electionsList.relation(organization.elections());
           }));
       }
@@ -58,12 +65,26 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
       if (!this.is(':visible')) return;
       if (!this.electionsList.relation()) return;
       if (this.remainingScrollHeight() < this.listBottom.height() * 2) {
-        this.organization().fetchMoreElections().success(this.hitch('hideListBottomIfNeeded'));
+        this.organization().fetchMoreElections().success(this.hitch('stopLoadingIfNeeded'));
       }
     },
 
-    hideListBottomIfNeeded: function() {
-      if (this.organization().numElectionsFetched >= this.organization().electionCount()) this.listBottom.hide()
+    stopLoadingIfNeeded: function() {
+      if (this.organization().numElectionsFetched >= this.organization().electionCount()) {
+        this.loading(false);
+      }
+    },
+
+    loading: {
+      change: function(loading) {
+        if (loading) {
+          this.spinner.show();
+          this.listBottom.show();
+        } else {
+          this.spinner.hide();
+          this.listBottom.hide();
+        }
+      }
     },
 
     remainingScrollHeight: function() {
