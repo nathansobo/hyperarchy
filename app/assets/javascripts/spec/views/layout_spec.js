@@ -193,4 +193,12 @@ describe("Views.Layout", function() {
       expect(Path.routes.current).toBe(org.url());
     });
   });
+
+  describe("when the feedback link is clicked", function() {
+    it("shows the feedback form", function() {
+      $("#jasmine_content").html(Application);
+      Application.feedbackLink.click();
+      expect(Application.feedbackForm).toBeVisible();
+    });
+  });
 });

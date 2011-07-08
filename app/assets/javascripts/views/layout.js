@@ -12,6 +12,7 @@ _.constructor("Views.Layout", View.Template, {
           }).ref('logoAndTitle').click('navigateToCurrentOrganization');
 
           div({id: "menu-items"}, function() {
+            a({id: "feedback-link"}, "Feedback").ref('feedbackLink').click('showFeedbackForm');
             subview('organizationsMenu', Views.Layout.OrganizationsMenu);
             subview('accountMenu', Views.Layout.AccountMenu);
           });
@@ -27,6 +28,7 @@ _.constructor("Views.Layout", View.Template, {
 
       div({id: "lightboxes"}, function() {
         subview("loginForm", Views.Lightboxes.LoginForm);
+        subview("feedbackForm", Views.Lightboxes.FeedbackForm);
         subview("signupForm", Views.Lightboxes.SignupForm);
         subview("newQuestion", Views.Lightboxes.NewQuestion);
         subview("disconnectDialog", Views.Lightboxes.DisconnectDialog);
@@ -177,6 +179,10 @@ _.constructor("Views.Layout", View.Template, {
 
     navigateToCurrentOrganization: function() {
       History.pushState(null, null, this.currentOrganization().url());
+    },
+
+    showFeedbackForm: function() {
+      this.feedbackForm.show();
     }
   }
 });
