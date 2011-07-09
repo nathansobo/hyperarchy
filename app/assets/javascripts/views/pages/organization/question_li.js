@@ -29,12 +29,6 @@ _.constructor('Views.Pages.Organization.QuestionLi', Monarch.View.Template, {
       this.body.bindText(this.question, 'body');
       this.answers.relation(this.question.answers().limit(6));
       this.avatar.user(this.question.creator());
-    },
-
-    attach: function() {
-      var lineHeight = Application.lineHeight
-      var quantizedBodyHeight = Math.ceil(this.body.height() / lineHeight) * lineHeight;
-      this.body.css('height', quantizedBodyHeight);
     }
   }
 });
