@@ -122,6 +122,8 @@ describe("Views.Pages.Question.AnswerDetails", function() {
       expect(answerDetails.form).toBeVisible();
       expect(answerDetails.editableBody.val()).toBe('');
       expect(answerDetails.editableDetails.val()).toBe('');
+      expect(answerDetails.charsRemaining.text()).toBe('140');
+
       expect(answerDetails.createButton).toBeVisible();
       expect(answerDetails.cancelEditButton).toBeHidden();
       expect(answerDetails.updateButton).toBeHidden();

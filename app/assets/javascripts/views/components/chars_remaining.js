@@ -23,7 +23,6 @@ _.constructor('Views.Components.CharsRemaining', Monarch.View.Template, {
       }
     },
 
-
     updateContent: function() {
       var remaining = this.limit - this.field().val().length;
       this.text(remaining);

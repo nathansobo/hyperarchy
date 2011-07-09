@@ -117,6 +117,7 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
       this.comments.hide();
       this.edit();
       this.editableBody.val('');
+      this.editableBody.keyup();
       this.editableDetails.val('');
       this.cancelEditButton.hide();
       this.updateButton.hide();
