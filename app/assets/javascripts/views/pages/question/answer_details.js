@@ -146,7 +146,7 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
 
     adjustCommentsHeight: function() {
       this.comments.fillVerticalSpace(this);
-      this.comments.enableOrDisableFullHeight();
+      this.comments.adjustHeightAndScroll();
     },
 
     commentsTopPosition: function() {

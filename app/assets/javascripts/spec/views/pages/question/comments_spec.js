@@ -134,39 +134,33 @@ describe("Views.Pages.Question.Comments", function() {
       });
     });
   });
-  
-  describe("rendering", function() {
-    describe("enabling / disabling of 'full-height' mode", function() {
-      describe("when comments are inserted and removed", function() {
-        it("enables full-height mode to avoid overflow and disables it if no longer needed", function() {
-          expect(commentsView).not.toHaveClass('full-height');
-          var longComment = commentsRelation.createFromRemote({id: 13, body: longCommentBody, creatorId: creator1.id(), createdAt: 2345234})
-          expect(commentsView).toHaveClass('full-height');
-          expectListScrolledToBottom();
-          longComment.remotelyDestroyed();
-          expect(commentsView).not.toHaveClass('full-height');
-          expectListScrolledToBottom();
-        });
-      });
 
-      function expectListScrolledToBottom() {
-        var list = commentsView.list;
-        expect(list.attr('scrollTop') + list.height()).toBe(list.attr('scrollHeight'));
-      }
+  describe("auto-scrolling", function() {
+    describe("when comments are inserted and removed", function() {
+      it("scrolls to the end", function() {
+        var longComment = commentsRelation.createFromRemote({id: 13, body: longCommentBody, creatorId: creator1.id(), createdAt: 2345234})
+        expectListScrolledToBottom();
+        longComment.remotelyDestroyed();
+        expectListScrolledToBottom();
+      });
     });
 
-    describe("when the textarea resizes in full height mode", function() {
-      it("adjusts the bottom of the list so its always above the textarea", function() {
-        var longComment = commentsRelation.createFromRemote({id: 13, body: longCommentBody, creatorId: creator1.id(), createdAt: 2345234})
-        expect(commentsView).toHaveClass('full-height');
+    function expectListScrolledToBottom() {
+      var list = commentsView.list;
+      expect(list.attr('scrollTop') + list.height()).toBe(list.attr('scrollHeight'));
+    }
+  });
 
-        commentsView.textarea.val(longCommentBody);
-        commentsView.textarea.keyup();
+  describe("when the textarea resizes", function() {
+    it("adjusts the height of the list so it does not push the textarea beyond the height of the comments div", function() {
+      var longComment = commentsRelation.createFromRemote({id: 13, body: longCommentBody, creatorId: creator1.id(), createdAt: 2345234})
 
-        var list = commentsView.list;
-        var listBottom = list.position().top + list.height();
-        expect(listBottom).toBeLessThan(commentsView.textareaAndButton.position().top);
-      });
+      commentsView.textarea.val(longCommentBody);
+      commentsView.textarea.keyup();
+
+      var list = commentsView.list;
+      var listBottom = list.position().top + list.height();
+      expect(listBottom).toBeLessThan(commentsView.textareaAndButton.position().top);
     });
   });
 

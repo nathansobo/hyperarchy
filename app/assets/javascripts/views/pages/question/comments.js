@@ -1,7 +1,7 @@
 _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({'class': "comments"}, function() {
-      h2("Discussion");
+      h2("Discussion").ref('header');
       subview('list', Views.Components.SortedList, {
         buildElement: function(comment) {
           return Views.Pages.Question.CommentLi.toView({comment: comment});
@@ -20,8 +20,12 @@ _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
     comments: {
       change: function(comments) {
         this.list.relation(comments);
-        this.defer(this.adjustHeightAndScroll);
+        this.delay(this.adjustHeightAndScroll, 200);
       }
+    },
+
+    afterShow: function() {
+      this.adjustHeightAndScroll();
     },
 
     create: function() {
@@ -38,53 +42,27 @@ _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
     },
 
     attach: function() {
-      this.list.onInsert = this.hitch('adjustHeightAndScroll');
-      this.list.onRemove = this.hitch('enableOrDisableFullHeight');
       this.textarea.elastic();
-      this.textarea.bind('elastic', this.hitch('adjustListBottom'));
+      this.list.onInsert = this.hitch('adjustHeightAndScroll');
+      this.list.onRemove = this.hitch('adjustHeightAndScroll');
+      this.textarea.bind('elastic', this.hitch('adjustHeightAndScroll'));
     },
 
     adjustHeightAndScroll: function() {
-      this.enableOrDisableFullHeight();
+      this.list.css('max-height', this.height() - this.headerHeight() - this.textareaAndButtonHeight() - 2);
       this.scrollToBottom();
     },
 
-    fullHeight: {
-      change: function(fullHeight) {
-        if (fullHeight) {
-          this.addClass('full-height');
-        } else {
-          this.removeClass('full-height');
-        }
-      }
+    headerHeight: function() {
+      return this.header.height() + parseInt(this.header.css('margin-bottom'));
     },
 
-    enableOrDisableFullHeight: function() {
-      if (this.fullHeight()) {
-        this.tryToDisableFullHeight();
-      } else {
-        this.tryToEnableFullHeight();
-      }
-    },
-
-    tryToEnableFullHeight: function() {
-      var contentHeight = this.textareaAndButton.position().top + this.textareaAndButton.height();
-      var overflow = contentHeight - this.height();
-      this.fullHeight(overflow >= 0);
-    },
-    
-    tryToDisableFullHeight: function() {
-      this.fullHeight(this.list.attr('scrollHeight') > this.list.height());
+    textareaAndButtonHeight: function() {
+      return this.textareaAndButton.height() + parseInt(this.list.css('margin-bottom'));
     },
 
     scrollToBottom: function(animate) {
-      if (this.fullHeight()) this.list.scrollTop(this.list.attr('scrollHeight') - this.list.height());
-    },
-
-    adjustListBottom: function() {
-      var bottomOfList = this.textareaAndButton.height();
-      this.list.css('bottom', bottomOfList);
-      this.scrollToBottom();
+      this.list.scrollTop(this.list.attr('scrollHeight') - this.list.height());
     },
 
     loading: {
