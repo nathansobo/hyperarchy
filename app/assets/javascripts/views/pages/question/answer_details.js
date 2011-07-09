@@ -16,14 +16,14 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
 
 
       form(function() {
-        textarea({name: "body", 'class': "body", tabindex: 101}).ref("editableBody");
+        textarea({name: "body", 'class': "body", tabindex: 201}).ref("editableBody");
         subview('charsRemaining', Views.Components.CharsRemaining, {limit: 140});
         label({'for': "details"}, "Further Details");
-        textarea({name: 'details', 'class': "details", tabindex: 102}).ref("editableDetails");
+        textarea({name: 'details', 'class': "details", tabindex: 202}).ref("editableDetails");
       }).submit('update')
         .ref('form');
-      a({'class': 'update button', tabindex: 103}, "Save").ref('updateButton').click('update');
-      a({'class': 'cancel button', tabindex: 104}, "Cancel").ref('cancelEditButton').click('cancelEdit');
+      a({'class': 'update button', tabindex: 203}, "Save").ref('updateButton').click('update');
+      a({'class': 'cancel button', tabindex: 204}, "Cancel").ref('cancelEditButton').click('cancelEdit');
       a({'class': 'create button'}, "Add Answer").ref('createButton').click('create');
 
       div({'class': "creator"}, function() {
