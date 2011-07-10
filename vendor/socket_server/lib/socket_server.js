@@ -10,7 +10,7 @@ private.use(express.bodyParser());
 
 var public, socket;
 
-exports.listen = function(publicPort, privatePort, callback, nonSecure) {
+exports.listen = function(publicPort, privatePort, nonSecure, callback) {
   if (nonSecure) {
     public = http.createServer();
   } else {
