@@ -5,20 +5,17 @@ class Provision < Thor
 
   desc 'production', 'provision the production server'
   def production
-    require 'deploy'
-    AppServer.new('production').provision
+    provision('production')
   end
 
   desc 'demo', 'provision the demo server'
   def demo
-    require 'deploy'
-    AppServer.new('demo').provision
+    provision('demo')
   end
 
   desc 'vm', 'provision the vm'
   def vm
-    require 'deploy'
-    AppServer.new('vm').provision
+    provision('vm')
   end
 
   desc 'install_public_key [env=demo]', 'install the public ssh key after entering the root password'
@@ -38,6 +35,13 @@ class Provision < Thor
     require 'deploy'
     AppServer.new(env).reinstall_services
   end
+
+  protected
+
+  def provision(env)
+    require 'deploy'
+    AppServer.new(env).provision
+  end
 end
 
 class Deploy < Thor
@@ -45,14 +49,17 @@ class Deploy < Thor
 
   desc 'production [ref=origin/master]', 'deploy the specified revision to production'
   def production(ref='origin/master')
-    require 'deploy'
-    AppServer.new('production').deploy(ref)
+    deploy('production', ref)
   end
 
   desc 'production [ref=origin/master]', 'deploy the specified revision to demo'
   def demo(ref='origin/master')
-    require 'deploy'
-    AppServer.new('demo').deploy(ref)
+    deploy('demo', ref)
+  end
+
+  desc 'production [ref=origin/master]', 'deploy the specified revision to the vm'
+  def vm(ref='origin/master')
+    deploy('vm', ref)
   end
 
   desc "minify_js [env=demo]", "minify javascript for upload."
@@ -63,5 +70,12 @@ class Deploy < Thor
     GiftWrapper.clear_package_dir
     GiftWrapper.combine_js("underscore", "jquery-1.5.2")
     GiftWrapper.combine_js('app')
+  end
+
+  protected
+
+  def deploy(env, ref)
+    require 'deploy'
+    AppServer.new(env).deploy(ref)
   end
 end

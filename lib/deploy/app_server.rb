@@ -2,7 +2,6 @@ class AppServer
   attr_reader :stage, :rails_env
   def initialize(stage)
     @stage = stage
-    @rails_env = stage
   end
 
   def hostname
@@ -12,7 +11,15 @@ class AppServer
       when :production
         'hyperarchy.com'
       when :vm
-        '192.168.0.193'
+        '172.16.104.128'
+    end
+  end
+
+  def rails_env
+    if stage == 'vm'
+      'production'
+    else
+      stage
     end
   end
 
@@ -137,7 +144,7 @@ class AppServer
   end
 
   def create_hyperarchy_user
-    run "groupadd ssl-cert"
+    run! "groupadd ssl-cert"
     run "chown root:ssl-cert /etc/ssl/private"
     run "mkdir -p /home/hyperarchy"
     unless run?('id hyperarchy')
@@ -250,6 +257,7 @@ class AppServer
   end
 
   def install_rvm
+    install_package 'curl'
     run "bash < <(curl -s https://rvm.beginrescueend.com/install/rvm)"
     run "source /usr/local/rvm/scripts/rvm"
     run "rvm get latest"
@@ -305,7 +313,7 @@ class AppServer
   end
 
   def nuke_remote_assets
-    run "mkdir -p public/assets"
+    run "mkdir -p /app/public/assets"
     run "rm -rf /app/public/assets/*"
   end
 
