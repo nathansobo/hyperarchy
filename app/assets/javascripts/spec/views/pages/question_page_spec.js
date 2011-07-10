@@ -384,7 +384,7 @@ describe("Views.Pages.Question", function() {
 
       questionPage.question(question);
     });
-
+    
     describe("when an question is assigned", function() {
       it("assigns the question's body, details, avatar, and comments relation, and keeps the body and details up to date when they change", function() {
         expect(questionPage.body.text()).toEqual(question.body());
@@ -610,14 +610,14 @@ describe("Views.Pages.Question", function() {
         expect(Path.routes.current).toBe(organization.url());
       });
     });
-
+    
     describe("adjustment of the columns' top position", function() {
       beforeEach(function() {
         questionPage.question(question);
       });
 
       describe("when the question is assigned", function() {
-        it("calls #adjustColumnTop", function() {
+        it("adjusts the top position of the columns ", function() {
           questionPage.question(question2);
           expectColumnTopCorrectlyAdjusted();
 
@@ -627,18 +627,27 @@ describe("Views.Pages.Question", function() {
       });
 
       describe("when the question body changes", function() {
-        it("calls #adjustColumnTop after assigning it to the body div", function() {
+        it("adjusts the top position of the columns after assigning it to the body div", function() {
           question.remotelyUpdated({body: "this is a longer body?"});
           expectColumnTopCorrectlyAdjusted();
         });
       });
 
       describe("when the edit button is clicked or the elastic textarea resizes", function() {
-        it("calls #adjustColumnTop after assigning it to the body div", function() {
+        it("adjusts the top position of the columns after assigning the question body to the body div", function() {
           questionPage.editButton.click();
           expectColumnTopCorrectlyAdjusted();
 
           questionPage.editableBody.trigger('elastic');
+          expectColumnTopCorrectlyAdjusted();
+        });
+      });
+      
+      describe("after the page is shown", function() {
+        it("adjusts the top position of the columns in case it was mis-adjusted while the question was hidden", function() {
+          questionPage.hide();
+          question.remotelyUpdated({body: "this is a longer body?"});
+          questionPage.show();
           expectColumnTopCorrectlyAdjusted();
         });
       });

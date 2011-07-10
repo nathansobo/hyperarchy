@@ -101,12 +101,8 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       }, this);
     },
 
-    beforeShow: function() {
-      Application.addClass('fixed-height');
-    },
-
-    afterHide: function() {
-      Application.removeClass('fixed-height');
+    afterShow: function() {
+      this.adjustColumnTop();
     },
 
     params: {
