@@ -11,6 +11,8 @@ class AppServer
         'demo.hyperarchy.com'
       when :production
         'hyperarchy.com'
+      when :vm
+        '192.168.0.193'
     end
   end
 

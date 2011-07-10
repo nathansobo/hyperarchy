@@ -15,6 +15,12 @@ class Provision < Thor
     AppServer.new('demo').provision
   end
 
+  desc 'vm', 'provision the vm'
+  def vm
+    require 'deploy'
+    AppServer.new('vm').provision
+  end
+
   desc 'install_public_key [env=demo]', 'install the public ssh key after entering the root password'
   def install_public_key(env='demo')
     require 'deploy'
