@@ -34,15 +34,7 @@ Hyperarchy::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :domain               => 'hyperarchy.com',
-    :user_name            => 'admin@hyperarchy.com',
-    :password             => 'eltortuga',
-    :authentication       => 'plain',
-    :enable_starttls_auto => true
-  }
+  config.action_mailer.smtp_settings = YAML.load_file(Rails.root.join('config/smtp_settings/demo.yml')).symbolize_keys
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false

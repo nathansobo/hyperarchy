@@ -11,3 +11,7 @@
 /public/assets
 /public/stylesheets
 /tmp
+/config/secrets.tar
+/config/smtp_settings
+/config/passwords.yml
+/keys/servers

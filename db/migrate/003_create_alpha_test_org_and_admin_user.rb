@@ -5,7 +5,7 @@ Sequel.migration do
       :first_name => "Hyperarchy",
       :last_name => "Admin",
       :email_address => "admin@hyperarchy.com",
-      :encrypted_password => BCrypt::Password.create("tortuga").to_s
+      :encrypted_password => BCrypt::Password.create(PASSWORDS[:admin]).to_s
     )
 
     alpha_testers_id = self[:organizations].insert(:name => "Alpha Testers")

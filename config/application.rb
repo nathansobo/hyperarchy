@@ -8,6 +8,7 @@ require 'action_mailer/railtie'
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 require 'erector/rails/railtie'
+PASSWORDS = YAML.load_file(File.expand_path('../passwords.yml', __FILE__)).symbolize_keys
 
 module Hyperarchy
   class Application < Rails::Application
