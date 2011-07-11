@@ -9,15 +9,15 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
         }},
         menuContent: function() { with(this.builder) {
           li(function() {
-            a("Logout").
-              ref("logoutLink").
-              click('logout');
-          });
+            a("Logout")
+          }).ref('logoutLink')
+            .click('logout');
           li(function() {
-            a("Account Preferences").ref('accountLink').click(function() {
+            a("Account Preferences")
+          }).ref('accountLink')
+            .click(function() {
               History.pushState(null, null, '/account');
-            });
-          });
+            });;
         }}
       });
     });
