@@ -725,47 +725,68 @@ describe("Views.Pages.Question", function() {
       }
     });
 
-    describe("when empty space is clicked", function() {
+    describe("showing and hiding of answer details based on clicking on different elements of the page", function() {
+      var answer1Li, answer2Li;
+
       beforeEach(function() {
         question.answers().createFromRemote({id: 1, body: "Answer 1", position: 1, creatorId: creator.id(), createdAt: 2345});
+        question.answers().createFromRemote({id: 2, body: "Answer 2", position: 2, creatorId: creator.id(), createdAt: 2345});
+        answer1Li = questionPage.find('li.answer:contains("Answer 1")');
+        answer2Li = questionPage.find('li.answer:contains("Answer 2")');
+        expect(answer1Li).toExist();
+        expect(answer2Li).toExist();
       });
 
-      it("navigates back to the base question url to hide any currently displayed ranking / answer details", function() {
-        spyOn(History, 'replaceState');
-        var selectionString = "";
-        spyOn(window, 'getSelection').andReturn({ toString: function() { return selectionString }});
+      describe("when clicking outside of the answers", function() {
+        it("navigates back to the base question url to hide any currently displayed ranking / answer details", function() {
+          spyOn(History, 'replaceState');
+          var selectionString = "";
+          spyOn(window, 'getSelection').andReturn({ toString: function() { return selectionString }});
 
-        questionPage.click();
-        expect(History.replaceState).toHaveBeenCalledWith(null, null, question.url());
-        History.replaceState.reset();
+          questionPage.click();
+          expect(History.replaceState).toHaveBeenCalledWith(null, null, question.url());
+          History.replaceState.reset();
 
-        questionPage.editButton.click();
-        expect(History.replaceState).not.toHaveBeenCalled();
+          questionPage.editButton.click();
+          expect(History.replaceState).not.toHaveBeenCalled();
 
-        questionPage.editableBody.click();
-        expect(History.replaceState).not.toHaveBeenCalled();
+          questionPage.editableBody.click();
+          expect(History.replaceState).not.toHaveBeenCalled();
 
-        var answerLi = questionPage.find('li.answer');
-        expect(answerLi).toExist();
-        answerLi.click();
-        expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
-        History.replaceState.reset();
+          answer1Li.click();
+          expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
+          History.replaceState.reset();
 
-        answerLi.children().click();
-        expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
-        History.replaceState.reset();
+          answer2Li.click();
+          expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
+          History.replaceState.reset();
 
-        questionPage.answerDetails.click();
-        expect(History.replaceState).not.toHaveBeenCalled();
+          answer1Li.children().click();
+          expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
+          History.replaceState.reset();
 
-        questionPage.answerDetails.find(':not(.close,.destroy)').click();
-        expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
-        History.replaceState.reset();
+          questionPage.answerDetails.click();
+          expect(History.replaceState).not.toHaveBeenCalled();
 
-        // does not navigate when selecting text
-        selectionString = "foooo";
-        questionPage.click();
-        expect(History.replaceState).not.toHaveBeenCalled();
+          questionPage.answerDetails.find(':not(.close,.destroy)').click();
+          expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
+          History.replaceState.reset();
+
+          // does not navigate when selecting text
+          selectionString = "foooo";
+          questionPage.click();
+          expect(History.replaceState).not.toHaveBeenCalled();
+        });
+      });
+
+      describe("when clicking on a selected answer a second time", function() {
+        it("navigates back to the base question url to hide the answer details", function() {
+          answer1Li.click();
+
+          spyOn(History, 'replaceState');
+          answer1Li.click();
+          expect(History.replaceState).toHaveBeenCalledWith(null, null, question.url());
+        });
       });
     });
   });

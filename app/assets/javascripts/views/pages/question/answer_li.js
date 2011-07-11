@@ -25,7 +25,11 @@ _.constructor('Views.Pages.Question.AnswerLi', Monarch.View.Template, {
       });
 
       this.click(this.bind(function() {
-        History.replaceState(null, null, this.answer.url());
+        if (this.is('.selected')) {
+          History.replaceState(null, null, this.answer.question().url());
+        } else {
+          History.replaceState(null, null, this.answer.url());
+        }
       }));
 
       this.showOrHideEllipsis();
