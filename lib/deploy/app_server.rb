@@ -32,7 +32,7 @@ class AppServer
     run_locally "env RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
 
     as('hyperarchy', '/app') do
-      run "git fetch origin"
+      run "git fetch --depth=0 origin #{ref.gsub('origin/', '')}"
     end
 
     stop_service "socket_server"
@@ -286,7 +286,7 @@ class AppServer
   def install_node
     install_package 'libssl-dev'
     run "cd /opt"
-    run "git clone -b v0.4.8 --depth 1 https://github.com/joyent/node.git"
+    run "git clone -b v0.4.8 --depth 0 https://github.com/joyent/node.git"
     run "cd node"
     run "export JOBS=2" # optional, sets number of parallel commands.
     run "./configure --prefix=/opt/node"
@@ -309,7 +309,7 @@ class AppServer
     run "chown hyperarchy:hyperarchy /app"
     run "su - hyperarchy"
     run! "ssh -o StrictHostKeyChecking=no git@github.com"
-    run "yes | git clone", repository, "/app"
+    run "yes | git clone --depth 0", repository, "/app"
     run "ln -s /log /app/log"
     run "rvm rvmrc trust /app"
     run "exit"
