@@ -15,3 +15,4 @@
 /config/smtp_settings
 /config/passwords.yml
 /keys/servers
+/lib/deploy/resources/nginx/nginx.conf
