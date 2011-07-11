@@ -382,7 +382,8 @@ describe("Views.Pages.Question", function() {
         return editableByCurrentUser;
       });
 
-      questionPage.question(question);
+      questionPage.params({questionId: question.id()});
+      Server.lastFetch.simulateSuccess();
     });
     
     describe("when an question is assigned", function() {
@@ -722,6 +723,47 @@ describe("Views.Pages.Question", function() {
         var commentsBottom = questionPage.comments.position().top + questionPage.comments.height();
         expect(commentsBottom).toBe(expectedBottom || questionPage.find('#column1').height());
       }
+    });
+
+    describe("when empty space is clicked", function() {
+      beforeEach(function() {
+        question.answers().createFromRemote({id: 1, body: "Answer 1", position: 1, creatorId: creator.id(), createdAt: 2345});
+      });
+
+      it("navigates back to the base question url to hide any currently displayed ranking / answer details", function() {
+        spyOn(History, 'replaceState');
+        var selectionString = "";
+        spyOn(window, 'getSelection').andReturn({ toString: function() { return selectionString }});
+
+        questionPage.click();
+        expect(History.replaceState).toHaveBeenCalledWith(null, null, question.url());
+        History.replaceState.reset();
+
+        questionPage.editButton.click();
+        expect(History.replaceState).not.toHaveBeenCalled();
+
+        questionPage.editableBody.click();
+        expect(History.replaceState).not.toHaveBeenCalled();
+
+        var answerLi = questionPage.find('li.answer');
+        expect(answerLi).toExist();
+        answerLi.click();
+        expect(History.replaceState).not.toHaveBeenCalled();
+
+        answerLi.children().click();
+        expect(History.replaceState).not.toHaveBeenCalled();
+
+        questionPage.answerDetails.click();
+        expect(History.replaceState).not.toHaveBeenCalled();
+
+        questionPage.answerDetails.children().click();
+        expect(History.replaceState).not.toHaveBeenCalled();
+
+        // does not navigate when selecting text
+        selectionString = "foooo";
+        questionPage.click();
+        expect(History.replaceState).not.toHaveBeenCalled();
+      });
     });
   });
 

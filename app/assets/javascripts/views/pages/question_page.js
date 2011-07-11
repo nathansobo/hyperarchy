@@ -31,7 +31,11 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       }).ref('columns');
 
       subview('spinner', Views.Components.Spinner);
-    });
+    }).click(function(e) {
+        if ($(e.target).is('a,textarea,li,li *,#answer-details,#answer-details *')) return;
+        if (window.getSelection().toString() !== "") return;
+        History.replaceState(null, null, this.question().url());
+      });
   }},
 
   column1: function() { with(this.builder) {
