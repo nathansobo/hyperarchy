@@ -1,2 +1,4 @@
 var socketServer = require('./lib/socket_server');
-socketServer.listen(8081, 8082);
+
+var noSsl = process.env.NO_SSL;
+socketServer.listen(8081, 8082, noSsl);

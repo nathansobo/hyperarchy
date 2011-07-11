@@ -159,7 +159,7 @@ class AppServer
   end
 
   def upload_bashrc
-    upload! 'lib/deploy/resources/.bashrc', '/root/.bashrc'
+    upload 'lib/deploy/resources/.bashrc', '/root/.bashrc'
     run 'cp /root/.bashrc /home/hyperarchy/'
     run 'cp /root/.profile /home/hyperarchy/'
     run 'chown -R hyperarchy:hyperarchy /home/hyperarchy'
@@ -184,7 +184,7 @@ class AppServer
     run "patch -p1 < /usr/local/djb/patches/daemontools-0.76.sigq12.patch"
     run "patch -p3 < /usr/local/djb/patches/daemontools-0.76-setuidgid-initgroups.patch"
     run "package/install"
-    upload! 'lib/deploy/resources/daemontools/svscanboot.conf', '/etc/init/svscanboot.conf'
+    upload 'lib/deploy/resources/daemontools/svscanboot.conf', '/etc/init/svscanboot.conf'
     run "start svscanboot" unless run("status svscanboot") =~ /start\/running/
   end
 
@@ -202,9 +202,9 @@ class AppServer
     run "cd /usr/local/djb/dist"
     run "wget http://cr.yp.to/daemontools/daemontools-0.76.tar.gz"
     run "cd /usr/local/djb/patches"
-    upload! 'lib/deploy/resources/daemontools/daemontools-0.76.errno.patch', '/usr/local/djb/patches/daemontools-0.76.errno.patch'
-    upload! 'lib/deploy/resources/daemontools/daemontools-0.76.sigq12.patch', '/usr/local/djb/patches/daemontools-0.76.sigq12.patch'
-    upload! 'lib/deploy/resources/daemontools/daemontools-0.76-setuidgid-initgroups.patch', '/usr/local/djb/patches/daemontools-0.76-setuidgid-initgroups.patch'
+    upload 'lib/deploy/resources/daemontools/daemontools-0.76.errno.patch', '/usr/local/djb/patches/daemontools-0.76.errno.patch'
+    upload 'lib/deploy/resources/daemontools/daemontools-0.76.sigq12.patch', '/usr/local/djb/patches/daemontools-0.76.sigq12.patch'
+    upload 'lib/deploy/resources/daemontools/daemontools-0.76-setuidgid-initgroups.patch', '/usr/local/djb/patches/daemontools-0.76-setuidgid-initgroups.patch'
   end
 
   def install_postgres
@@ -228,18 +228,19 @@ class AppServer
     run "make install"
     run "adduser --system --no-create-home --disabled-login --disabled-password --group nginx"
     run "ln -s /opt/nginx/sbin/nginx /usr/local/sbin/nginx"
-    upload! 'lib/deploy/resources/nginx/nginx.conf', '/opt/nginx/conf/nginx.conf'
-    upload! 'lib/deploy/resources/nginx/htpasswd', '/opt/nginx/conf/htpasswd'
-    upload! 'lib/deploy/resources/nginx/hyperarchy.crt', '/etc/ssl/certs/hyperarchy.crt'
-    upload! 'lib/deploy/resources/nginx/hyperarchy.key', '/etc/ssl/private/hyperarchy.key'
-    upload! 'lib/deploy/resources/nginx/nginx_upstart.conf', '/etc/init/nginx.conf'
+    upload_template 'lib/deploy/resources/nginx/nginx.conf.erb', '/opt/nginx/conf/nginx.conf'
+    upload 'lib/deploy/resources/nginx/nginx.conf', '/opt/nginx/conf/nginx.conf'
+    upload 'lib/deploy/resources/nginx/htpasswd', '/opt/nginx/conf/htpasswd'
+    upload 'lib/deploy/resources/nginx/hyperarchy.crt', '/etc/ssl/certs/hyperarchy.crt'
+    upload 'lib/deploy/resources/nginx/hyperarchy.key', '/etc/ssl/private/hyperarchy.key'
+    upload 'lib/deploy/resources/nginx/nginx_upstart.conf', '/etc/init/nginx.conf'
     run "chmod 640 /etc/ssl/private/hyperarchy.key"
     run "chown root:ssl-cert /etc/ssl/private/hyperarchy.key"
     run "start nginx"
   end
 
   def reload_nginx_config
-    upload! 'lib/deploy/resources/nginx/nginx.conf', '/opt/nginx/conf/nginx.conf'
+    upload_template 'lib/deploy/resources/nginx/nginx.conf.erb', '/opt/nginx/conf/nginx.conf'
     run "nginx -s reload" if run? "nginx -t"
   end
 
@@ -248,7 +249,7 @@ class AppServer
   end
 
   def update_nginx_config
-    upload! 'lib/deploy/resources/nginx/nginx.conf', '/opt/nginx/conf/nginx.conf'
+    upload 'lib/deploy/resources/nginx/nginx.conf', '/opt/nginx/conf/nginx.conf'
     if run? "nginx -t"
       run "nginx -s reload"
     else
@@ -287,8 +288,8 @@ class AppServer
   end
 
   def upload_deploy_keys
-    upload! "keys/deploy", "/root/.ssh/id_rsa"
-    upload! "keys/deploy.pub", "/root/.ssh/id_rsa.pub"
+    upload "keys/deploy", "/root/.ssh/id_rsa"
+    upload "keys/deploy.pub", "/root/.ssh/id_rsa.pub"
     run "chmod 600 /root/.ssh/id_rsa*"
     run "cp /root/.ssh/id_rsa* /home/hyperarchy/.ssh"
     run "chown -R hyperarchy /home/hyperarchy/.ssh"
@@ -308,7 +309,7 @@ class AppServer
 
   def upload_assets
     Dir["public/assets/*"].each do |path|
-      upload! path, "/app/public/assets/#{File.basename(path)}"
+      upload path, "/app/public/assets/#{File.basename(path)}"
     end
   end
 
@@ -323,7 +324,11 @@ class AppServer
 
   def install_services
     install_service 'unicorn'
-    install_service 'socket_server'
+    if stage == 'vm'
+      install_service 'socket_server', :NO_SSL => true
+    else
+      install_service 'socket_server'
+    end
     install_service 'resque_worker', :QUEUE => '*', :VVERBOSE => 1
     install_service 'resque_scheduler'
     install_service 'resque_web', :HOME => '/home/hyperarchy'
@@ -346,7 +351,7 @@ class AppServer
       run "rm -rf /var/svc.d/#{service_name}"
     end
     run "mkdir -p /log/#{service_name}"
-    upload! "lib/deploy/resources/services/#{service_name}", "/var/svc.d/#{service_name}"
+    upload "lib/deploy/resources/services/#{service_name}", "/var/svc.d/#{service_name}"
     run "chmod 755 /var/svc.d/#{service_name}/run"
     run "chmod 755 /var/svc.d/#{service_name}/#{service_name}.sh"
     run "chmod 755 /var/svc.d/#{service_name}/log/run"
@@ -440,8 +445,15 @@ class AppServer
     end
   end
 
-  def upload!(from, to)
+  def upload(from, to)
     sftp_session.upload!(from, to, :progress => UploadProgressHandler.new)
+  end
+
+  def upload_template(template_path, to)
+    require 'erb'
+    file_content = ERB.new(File.read(template_path)).result(binding)
+    file_handle = sftp_session.open!(to, 'w')
+    sftp_session.write!(file_handle, 0, file_content)
   end
 
   def shell
