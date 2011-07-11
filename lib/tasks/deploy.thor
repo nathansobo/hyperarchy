@@ -7,7 +7,7 @@ class Provision < Thor
     desc env, "provision the #{env} server"
     define_method env, do
       require 'deploy'
-      AppServer.new(env).provision
+      AppServer.new(env.to_s).provision
     end
   end
 
@@ -38,7 +38,7 @@ class Deploy < Thor
     method_options :unpack_secrets => :boolean
     define_method env do |ref='origin/master'|
       require 'deploy'
-      AppServer.new(env).deploy(ref, options)
+      AppServer.new(env.to_s).deploy(ref, options)
     end
   end
 
