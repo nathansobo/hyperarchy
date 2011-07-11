@@ -25,7 +25,7 @@ _.constructor('Views.Pages.Question.AnswerLi', Monarch.View.Template, {
       });
 
       this.click(this.bind(function() {
-        History.pushState(null, null, this.answer.url());
+        History.replaceState(null, null, this.answer.url());
       }));
 
       this.showOrHideEllipsis();
@@ -38,7 +38,7 @@ _.constructor('Views.Pages.Question.AnswerLi', Monarch.View.Template, {
     },
 
     handleDragStart: function() {
-      History.pushState(null, null, this.answer.question().url());
+      History.replaceState(null, null, this.answer.question().url());
     },
 
     ranking: {

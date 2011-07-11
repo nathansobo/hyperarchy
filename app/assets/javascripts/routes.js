@@ -39,7 +39,7 @@ Path.map('/account').to(function() {
     Application.promptLogin()
       .success(showAccountPage)
       .invalid(function() {
-        History.pushState(null, null, currentUser.defaultOrganization().url());
+        History.replaceState(null, null, currentUser.defaultOrganization().url());
       });
   } else {
     showAccountPage();

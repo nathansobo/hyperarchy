@@ -748,16 +748,19 @@ describe("Views.Pages.Question", function() {
         var answerLi = questionPage.find('li.answer');
         expect(answerLi).toExist();
         answerLi.click();
-        expect(History.replaceState).not.toHaveBeenCalled();
+        expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
+        History.replaceState.reset();
 
         answerLi.children().click();
-        expect(History.replaceState).not.toHaveBeenCalled();
+        expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
+        History.replaceState.reset();
 
         questionPage.answerDetails.click();
         expect(History.replaceState).not.toHaveBeenCalled();
 
-        questionPage.answerDetails.children().click();
-        expect(History.replaceState).not.toHaveBeenCalled();
+        questionPage.answerDetails.find(':not(.close,.destroy)').click();
+        expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
+        History.replaceState.reset();
 
         // does not navigate when selecting text
         selectionString = "foooo";

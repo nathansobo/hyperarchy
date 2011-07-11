@@ -4,7 +4,7 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
       a({'class': "close"}, "×")
         .ref('closeLink')
         .click(function() {
-          History.pushState(null, null, this.parentView.question().url());
+          History.replaceState(null, null, this.parentView.question().url());
         });
 
       div(function() {

@@ -11,7 +11,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       div({id: "headline"}, function() {
         a({'class': "new button"}, "Add An Answer")
           .ref('newAnswerLink')
-          .click('routeToNewQuestionForm');
+          .click('navigateToNewAnswerForm');
         div({'class': "body"}).ref('body');
         textarea({name: "body", 'class': "body"}).ref("editableBody");
         subview('charsRemaining', Views.Components.CharsRemaining, { limit: 140 });
@@ -306,8 +306,8 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       }
     },
 
-    routeToNewQuestionForm: function() {
-      History.pushState(null, null, this.question().newAnswerUrl());
+    navigateToNewAnswerForm: function() {
+      History.replaceState(null, null, this.question().newAnswerUrl());
     },
 
     adjustColumnTop: function() {

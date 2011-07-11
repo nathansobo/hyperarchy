@@ -6,7 +6,7 @@ _.constructor('Views.Pages.Question.VoteLi', Monarch.View.Template, {
         div({'class': "name"}).ref('name');
         div({'class': "date"}).ref('date');
       }).click(function() {
-        History.pushState(null, null, params.vote.url());
+        History.replaceState(null, null, params.vote.url());
       });
     });
   }},
