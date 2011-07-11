@@ -25,7 +25,7 @@ gem 'sass-rails', :path => 'vendor/sass-rails'
 gem 'compass', :path => 'vendor/compass'
 gem 'uglifier', :path => 'vendor/uglifier'
 gem 'jquery-rails'
-gem 'monarch', :path => 'lib/monarch'
+gem 'monarch', :path => 'vendor/monarch'
 
 group :development, :test, :jasmine do
   gem 'rspec', '2.6.0'
