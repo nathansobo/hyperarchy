@@ -11,7 +11,7 @@ class AppServer
       when :production
         'hyperarchy.com'
       when :vm
-        '172.16.104.128'
+        '172.17.3.50'
     end
   end
 

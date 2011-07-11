@@ -131,7 +131,8 @@ _.constructor("Views.Layout", View.Template, {
     connectToSocketServer: function() {
       this.socketConnectionFuture = new Monarch.Http.AjaxFuture();
       var socketServerHost = window.location.hostname;
-      var socket = new io.Socket(socketServerHost, {rememberTransport: false, secure: true, port: 8081});
+      var secure = (window.location.protocol === 'https:')
+      var socket = new io.Socket(socketServerHost, {rememberTransport: false, secure: secure, port: 8081});
       socket.on('connect', this.bind(function() {
         this.socketConnectionFuture.triggerSuccess(socket.transport.sessionid);
       }));
