@@ -27,7 +27,7 @@ class AppServer
     "git@github.com:nathansobo/hyperarchy.git"
   end
 
-  def deploy(ref)
+  def deploy(ref, options={})
     nuke_local_assets
     run_locally "env RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
 
@@ -41,6 +41,7 @@ class AppServer
     upload_assets
     as 'hyperarchy', '/app' do
       run "git checkout --force", ref
+      unpack_secrets # if options[:unpack_secrets]
       run "source .rvmrc"
       run "bundle install --deployment --without development test deploy"
       run "bundle exec thor db:migrate #{rails_env}"
@@ -81,7 +82,7 @@ class AppServer
   def install_public_key
     system "chmod 0600 #{private_key_path}"
     puts "enter root password for #{hostname}:"
-    password = $stdin.gets.chomp
+    password = no_echo { $stdin.gets.chomp }
     ssh_session('root', password)
     run 'mkdir -p ~/.ssh'
     run "echo '#{File.read(public_key_path).chomp}' >> ~/.ssh/authorized_keys"
@@ -89,12 +90,19 @@ class AppServer
     system "ssh-add #{private_key_path}"
   end
 
+  def no_echo
+    system "stty -echo"
+    yield
+  ensure
+    system "stty echo"
+  end
+
   def private_key_path
-    File.expand_path('keys/id_rsa')
+    File.expand_path('keys/servers')
   end
 
   def public_key_path
-    File.expand_path('keys/id_rsa.pub')
+    File.expand_path('keys/servers.pub')
   end
 
   def restart_service(service_name)
@@ -390,6 +398,13 @@ class AppServer
     sleep 1 until port_listening?(8080)
   end
 
+  def unpack_secrets
+    puts "Enter password to unpack secrets:"
+    password = no_echo { $stdin.gets.chomp } 
+    puts "running thor secrets:unpack <password>"
+    run_silently "thor secrets:unpack #{password}"
+  end
+
   protected
 
   def install_packages(*packages)
@@ -418,6 +433,13 @@ class AppServer
   def run?(*command_fragments)
     run_command(command_fragments.join(' '))
     run_command("echo $?") == '0'
+  end
+
+  def run_silently(*command_fragments)
+    command = command_fragments.join(' ')
+    result = run_command(command, true)
+    raise "Command failed: #{command}" unless run_command('echo $?', true) == '0'
+    result
   end
 
   def run_command(command, silent=false)
