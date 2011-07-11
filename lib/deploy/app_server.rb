@@ -41,7 +41,7 @@ class AppServer
     upload_assets
     as 'hyperarchy', '/app' do
       run "git checkout --force", ref
-      unpack_secrets # if options[:unpack_secrets]
+      unpack_secrets if options[:unpack_secrets]
       run "source .rvmrc"
       run "bundle install --deployment --without development test deploy"
       run "bundle exec thor db:migrate #{rails_env}"
@@ -401,8 +401,8 @@ class AppServer
   def unpack_secrets
     puts "Enter password to unpack secrets:"
     password = no_echo { $stdin.gets.chomp } 
-    puts "running thor secrets:unpack <password>"
-    run_silently "thor secrets:unpack #{password}"
+    puts "running 'bundle exec thor secrets:unpack <password>'"
+    run_silently "bundle exec thor secrets:unpack #{password}"
   end
 
   protected
@@ -438,7 +438,7 @@ class AppServer
   def run_silently(*command_fragments)
     command = command_fragments.join(' ')
     result = run_command(command, true)
-    raise "Command failed: #{command}" unless run_command('echo $?', true) == '0'
+    raise "Command failed: <silenced>" unless run_command('echo $?', true) == '0'
     result
   end
 

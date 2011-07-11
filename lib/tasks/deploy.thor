@@ -3,19 +3,12 @@ require File.expand_path('../thor_helper', __FILE__)
 class Provision < Thor
   default_task :demo
 
-  desc 'production', 'provision the production server'
-  def production
-    provision('production')
-  end
-
-  desc 'demo', 'provision the demo server'
-  def demo
-    provision('demo')
-  end
-
-  desc 'vm', 'provision the vm'
-  def vm
-    provision('vm')
+  [:production, :demo, :vm].each do |env|
+    desc env, "provision the #{env} server"
+    define_method env, do
+      require 'deploy'
+      AppServer.new(env).provision
+    end
   end
 
   desc 'install_public_key [env=demo]', 'install the public ssh key after entering the root password'
@@ -35,31 +28,18 @@ class Provision < Thor
     require 'deploy'
     AppServer.new(env).reinstall_services
   end
-
-  protected
-
-  def provision(env)
-    require 'deploy'
-    AppServer.new(env).provision
-  end
 end
 
 class Deploy < Thor
   default_task :demo
 
-  desc 'production [ref=origin/master]', 'deploy the specified revision to production'
-  def production(ref='origin/master')
-    deploy('production', ref)
-  end
-
-  desc 'production [ref=origin/master]', 'deploy the specified revision to demo'
-  def demo(ref='origin/master')
-    deploy('demo', ref)
-  end
-
-  desc 'production [ref=origin/master]', 'deploy the specified revision to the vm'
-  def vm(ref='origin/master')
-    deploy('vm', ref)
+  [:production, :demo, :vm].each do |env|
+    desc "#{env} [ref=origin/master] [--unpack_secrets]", "deploy to the specified environment"
+    method_options :unpack_secrets => :boolean
+    define_method env do |ref='origin/master'|
+      require 'deploy'
+      AppServer.new(env).deploy(ref, options)
+    end
   end
 
   desc "minify_js [env=demo]", "minify javascript for upload."
@@ -70,12 +50,5 @@ class Deploy < Thor
     GiftWrapper.clear_package_dir
     GiftWrapper.combine_js("underscore", "jquery-1.5.2")
     GiftWrapper.combine_js('app')
-  end
-
-  protected
-
-  def deploy(env, ref)
-    require 'deploy'
-    AppServer.new(env).deploy(ref)
   end
 end
