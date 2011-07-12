@@ -17,7 +17,7 @@ module Views
           #{store_in_repository(current_user.initial_repository_contents)}
           window.Application = Views.Layout.toView();
           Application.environment = #{Rails.env.to_json};
-          $('body').html(Application);
+          $('body').append(Application);
           Application.attach();
           Application.currentUserId(#{current_user_id});
           Path.listen();
