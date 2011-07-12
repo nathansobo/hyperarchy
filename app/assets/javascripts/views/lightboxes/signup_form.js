@@ -7,6 +7,7 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
       h1("Add your organization:").ref('addOrganizationHeader');
       ul({'class': "errors"}).ref("errors");
 
+      a("Log in with Facebook").ref('facebookLoginButton').click('facebookLogin');
       div(function() {
         label("Organization Name");
         input({name: "organization[name]"}).ref('organizationName');
@@ -66,6 +67,25 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
         this.trigger('success');
         promise.triggerSuccess();
       }, this);
+    },
+
+    facebookLogin: function() {
+      var promise = new Monarch.Promise();
+
+      FB.login(this.bind(function(response) {
+        if (response.session) {
+          $.ajax({
+            type: 'post',
+            url: '/facebook_sessions',
+            dataType: 'data+records',
+            success: this.hitch('handleSuccess', promise)
+          });
+        } else {
+          this.close();
+        }
+      }), {perms: "email"});
+
+      return promise;
     },
 
     handleError: function(promise, xhr) {
