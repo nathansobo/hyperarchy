@@ -10,6 +10,7 @@ Hyperarchy::Application.configure do
   config.action_controller.perform_caching = true
 
   config.action_mailer.default_url_options = { :host => "demo.hyperarchy.com" }
+  
 
   # Specifies the header that your server uses for sending files
   config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect'
