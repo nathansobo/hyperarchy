@@ -9,6 +9,9 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 require 'erector/rails/railtie'
 
+FB_ID = '207827675895197'
+FB_SECRET = '1cdc8ebd9c410a0ca605504eef38413c'
+
 module Hyperarchy
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.

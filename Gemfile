@@ -26,6 +26,8 @@ gem 'compass', :path => 'vendor/compass'
 gem 'uglifier', :path => 'vendor/uglifier'
 gem 'jquery-rails'
 gem 'monarch', :path => 'vendor/monarch'
+gem 'fb_graph'
+
 
 group :development, :test, :jasmine do
   gem 'rspec', '2.6.0'

@@ -25,10 +25,12 @@ Hyperarchy::Application.routes.draw do
   post '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#create'
   delete '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#destroy'
 
+  resources :facebook_sessions
+
+  # TODO: delete?
   resources :organizations do
     resources :questions
   end
-
 
   resources :users
   resources :memberships do

@@ -22,6 +22,10 @@ module Models
         user.should be_valid
         User.make_unsaved(:email_address => user.email_address).should_not be_valid
       end
+
+      it "allows there to be no encrypted_password if there is a facebook_uid" do
+        User.make_unsaved(:password => "", :facebook_uid => "uid").should be_valid
+      end
     end
 
     describe "#after_create" do

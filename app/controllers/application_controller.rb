@@ -82,4 +82,12 @@ class ApplicationController < ActionController::Base
   def user_agent
     request.env["HTTP_USER_AGENT"]
   end
+
+  def fb_auth
+    @fb_auth ||= FbGraph::Auth.new(FB_ID, FB_SECRET, :cookie => cookies)
+  end
+
+  def fb_user
+    fb_auth.user
+  end
 end
