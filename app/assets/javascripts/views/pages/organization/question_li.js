@@ -17,6 +17,7 @@ _.constructor('Views.Pages.Organization.QuestionLi', Monarch.View.Template, {
           },
           onUpdate: function(li, record) {
             li.position.text(record.position());
+            li.body.markdown(record.body());
           }
         });
         div({'class': "fadeout"});

@@ -66,19 +66,27 @@ _.constructor('Views.Pages.Question.RankedAnswers', Monarch.View.Template, {
     },
 
     observeListUpdates: function() {
+
+
       this.rankingsSubscriptions.destroy();
 
-      this.rankingsSubscriptions.add(this.positiveRankings().onInsert(this.hitch('insertAtIndex')));
-      this.rankingsSubscriptions.add(this.positiveRankings().onUpdate(this.hitch('insertAtIndex')));
-      this.rankingsSubscriptions.add(this.negativeRankings().onInsert(this.hitch('insertAtIndex')));
-      this.rankingsSubscriptions.add(this.negativeRankings().onUpdate(this.hitch('insertAtIndex')));
-      this.rankingsSubscriptions.add(this.rankings().onRemove(this.hitch('removeRanking')));
+//      this.rankingsSubscriptions.add(this.positiveRankings().onInsert(this.hitch('insertAtIndex')));
+//      this.rankingsSubscriptions.add(this.positiveRankings().onUpdate(this.hitch('insertAtIndex')));
+//      this.rankingsSubscriptions.add(this.negativeRankings().onInsert(this.hitch('insertAtIndex')));
+//      this.rankingsSubscriptions.add(this.negativeRankings().onUpdate(this.hitch('insertAtIndex')));
+//      this.rankingsSubscriptions.add(this.rankings().onRemove(this.hitch('removeRanking')));
+
+      this.registerInterest('positiveRankings', this.positiveRankings(), 'onInsert', this.insertAtIndex);
+      this.registerInterest('positiveRankings', this.positiveRankings(), 'onUpdate', this.insertAtIndex);
+      this.registerInterest('negativeRankings', this.negativeRankings(), 'onInsert', this.insertAtIndex);
+      this.registerInterest('negativeRankings', this.negativeRankings(), 'onUpdate', this.insertAtIndex);
+      this.registerInterest('rankings', this.rankings(), 'onRemove', this.removeRanking);
     },
 
     handleListUpdate: function(event, ui) {
       if (ui.item.hasClass('ui-draggable')) return; // received from other list, handle there
       if (!ui.item.view()) return;
-
+      
       this.detachDragTargets();
       ui.item.view().handleListDrop();
       this.showOrHideDragTargets();

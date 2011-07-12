@@ -22,11 +22,11 @@ describe("Views.Pages.Question.AnswerDetails", function() {
 
   describe("when the answer is assigned", function() {
     it("populates the body, details, and avatar", function() {
-      expect(answerDetails.body.text()).toEqual(answer.body());
-      expect(answerDetails.details.text()).toEqual(answer.details());
+      expect(answerDetails.body.html()).toEqual($.markdown(answer.body()));
+      expect(answerDetails.details.html()).toEqual($.markdown(answer.details()));
       answer.remotelyUpdated({body: "Catsup", details: "37 flavors"});
-      expect(answerDetails.body.text()).toEqual(answer.body());
-      expect(answerDetails.details.text()).toEqual(answer.details());
+      expect(answerDetails.body.html()).toEqual($.markdown(answer.body()));
+      expect(answerDetails.details.html()).toEqual($.markdown(answer.details()));
       expect(answerDetails.avatar.user()).toBe(answer.creator());
       expect(answerDetails.creatorName.text()).toBe(creator.fullName());
       expect(answerDetails.createdAt.text()).toBe(answer.formattedCreatedAt());

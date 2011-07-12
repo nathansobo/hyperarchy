@@ -815,6 +815,15 @@ describe("Views.Pages.Question.RankedAnswers", function() {
     });
   });
 
+  describe("when an answer's body is updated", function() {
+    it("updates it in the list", function() {
+      rankedAnswers.rankings(rankingsRelation);
+      var ranking1Li = rankedAnswers.list.find('li:contains("Answer 1")').view();
+      answer1.remotelyUpdated({body: "*New* Answer 1"});
+      expect(ranking1Li.body.html()).toBe("<p><em>New</em> Answer 1</p>");
+    });
+  });
+
   describe("showing and hiding of drag targets", function() {
     describe("when the rankings relation is initially assigned", function() {
       describe("when there are no rankings", function() {

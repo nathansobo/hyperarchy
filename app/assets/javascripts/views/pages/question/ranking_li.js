@@ -12,7 +12,7 @@ _.constructor('Views.Pages.Question.RankingLi', Monarch.View.Template, {
         this.answer = this.ranking.answer();
         this.observeRankingPosition();
       }
-      this.body.markdown(this.answer.body());
+      this.body.bindMarkdown(this.answer, 'body');
       this.outstandingRequests = 0;
     },
     

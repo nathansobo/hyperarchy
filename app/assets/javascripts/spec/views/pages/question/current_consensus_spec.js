@@ -57,11 +57,11 @@ describe("Views.Pages.Question.CurrentConsensus", function() {
       it("updates the body in the answer li", function() {
         var answer1Li = currentConsensusView.find('li:contains("' + answer1.body() + '")').view();
 
-        expect(answer1Li.body.text()).toBe("Cheese");
+        expect(answer1Li.body.html()).toBe($.markdown(answer1.body()));
 
         answer1.remotelyUpdated({body: 'rockets!'});
 
-        expect(answer1Li.body.text()).toBe("rockets!");
+        expect(answer1Li.body.html()).toBe($.markdown(answer1.body()));
       });
     });
   });

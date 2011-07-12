@@ -23,10 +23,9 @@ describe("Views.Pages.Question.CommentLi", function() {
     it("populates the avatar, name, body, and createdAt date", function() {
       expect(commentLi.avatar.user()).toBe(creator);
       expect(commentLi.creatorName.text()).toBe(creator.fullName());
-      expect(commentLi.body.text()).toBe(comment.body());
+      expect(commentLi.body.html()).toBe($.markdown(comment.body()));
       expect(commentLi.createdAt.text()).toBe(comment.formattedCreatedAt());
     });
-
   });
   
   describe("comment deletion", function() {
