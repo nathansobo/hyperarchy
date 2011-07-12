@@ -32,7 +32,7 @@ class AppServer
     run_locally "env RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
 
     as('hyperarchy', '/app') do
-      run "git fetch origin #{ref.gsub('origin/', '')}"
+      run "git fetch origin"
     end
 
     stop_service "socket_server"
@@ -238,7 +238,6 @@ class AppServer
     run "adduser --system --no-create-home --disabled-login --disabled-password --group nginx"
     run "ln -s /opt/nginx/sbin/nginx /usr/local/sbin/nginx"
     upload_template 'lib/deploy/resources/nginx/nginx.conf.erb', '/opt/nginx/conf/nginx.conf'
-    upload 'lib/deploy/resources/nginx/nginx.conf', '/opt/nginx/conf/nginx.conf'
     upload 'lib/deploy/resources/nginx/htpasswd', '/opt/nginx/conf/htpasswd'
     upload 'lib/deploy/resources/nginx/hyperarchy.crt', '/etc/ssl/certs/hyperarchy.crt'
     upload 'lib/deploy/resources/nginx/hyperarchy.key', '/etc/ssl/private/hyperarchy.key'
