@@ -6,7 +6,10 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
       h1("Log in to participate:");
       ul({'class': "errors"}).ref("errors");
 
-      a("Sign in with Facebook").ref('facebookLoginButton').click("facebookLogin");
+      a("Sign in with Facebook").ref('facebookLoginButton').click(function() {
+        Application.facebookLogin();
+      });
+
       label("Email Address");
       input({name: "user[emailAddress]", tabindex: 101}).ref('emailAddress');
 
@@ -55,39 +58,12 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
         url: "/login",
         data: fieldValues,
         dataType: 'data+records',
-        success: this.hitch('userEstablished', promise),
+        success: Application.hitch('currentUserEstablished', promise),
         error: this.hitch('handleErrors', promise)
       });
       return promise;
     },
 
-    facebookLogin: function() {
-      var promise = new Monarch.Promise();
-
-      FB.login(this.bind(function(response) {
-        if (response.session) {
-          $.ajax({
-            type: 'post',
-            url: '/facebook_sessions',
-            dataType: 'data+records',
-            success: this.hitch('userEstablished', promise)
-          });
-        } else {
-          this.close();
-        }
-      }), {perms: "email"});
-
-      return promise;
-    },
-
-    userEstablished: function(promise, data) {
-      this.hide();
-      Application.currentUserId(data.current_user_id).success(function() {
-        this.trigger('success');
-        promise.triggerSuccess();
-      }, this);
-    },
-        
     handleErrors: function(promise, xhr) {
       var errors = this.getValidationErrors(xhr);
       this.errors.empty();

@@ -59,6 +59,42 @@ _.constructor("Views.Layout", View.Template, {
       });
     },
 
+    currentUserEstablished: function(promise, data) {
+      this.loginForm.hide();
+      this.signupForm.hide();
+
+      var newOrganizationId = data.new_organization_id;
+      if (newOrganizationId) {
+        History.pushState(null, null, Organization.find(newOrganizationId).url());
+      }
+
+      Application.currentUserId(data.current_user_id).success(function() {
+        this.loginForm.trigger('success');
+        this.signupForm.trigger('success');
+        promise.triggerSuccess();
+      }, this);
+    },
+
+    facebookLogin: function() {
+      var promise = new Monarch.Promise();
+
+      FB.login(this.bind(function(response) {
+        if (response.session) {
+          $.ajax({
+            type: 'post',
+            url: '/facebook_sessions',
+            dataType: 'data+records',
+            success: this.hitch('currentUserEstablished', promise)
+          });
+        } else {
+          this.signupForm.close();
+          this.loginForm.close();
+        }
+      }), {perms: "email"});
+
+      return promise;
+    },
+
     currentUser: {
       change: function(user) {
         this.currentUserId(user.id());

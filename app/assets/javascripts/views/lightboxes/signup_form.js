@@ -7,7 +7,9 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
       h1("Add your organization:").ref('addOrganizationHeader');
       ul({'class': "errors"}).ref("errors");
 
-      a("Log in with Facebook").ref('facebookLoginButton').click('facebookLogin');
+      a("Log in with Facebook").ref('facebookLoginButton').click(function() {
+        Application.facebookLogin();
+      });
       div(function() {
         label("Organization Name");
         input({name: "organization[name]"}).ref('organizationName');
@@ -49,42 +51,9 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
         url: "/signup",
         data: fieldValues,
         dataType: 'data+records',
-        success: this.hitch('handleSuccess', promise),
+        success: Application.hitch('currentUserEstablished', promise),
         error: this.hitch('handleError', promise)
       });
-      return promise;
-    },
-
-    handleSuccess: function(promise, data) {
-      this.hide();
-
-      var newOrganizationId = data.new_organization_id;
-      if (newOrganizationId) {
-        History.pushState(null, null, Organization.find(newOrganizationId).url());
-      }
-
-      Application.currentUserId(data.current_user_id).success(function() {
-        this.trigger('success');
-        promise.triggerSuccess();
-      }, this);
-    },
-
-    facebookLogin: function() {
-      var promise = new Monarch.Promise();
-
-      FB.login(this.bind(function(response) {
-        if (response.session) {
-          $.ajax({
-            type: 'post',
-            url: '/facebook_sessions',
-            dataType: 'data+records',
-            success: this.hitch('handleSuccess', promise)
-          });
-        } else {
-          this.close();
-        }
-      }), {perms: "email"});
-
       return promise;
     },
 
