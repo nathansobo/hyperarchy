@@ -32,7 +32,7 @@ class AppServer
     run_locally "env RAILS_ENV=#{rails_env} bundle exec rake assets:precompile"
 
     as('hyperarchy', '/app') do
-      run "git fetch --depth=0 origin #{ref.gsub('origin/', '')}"
+      run "git fetch origin #{ref.gsub('origin/', '')}"
     end
 
     stop_service "socket_server"
@@ -309,7 +309,7 @@ class AppServer
     run "chown hyperarchy:hyperarchy /app"
     run "su - hyperarchy"
     run! "ssh -o StrictHostKeyChecking=no git@github.com"
-    run "yes | git clone --depth 0", repository, "/app"
+    run "yes | git clone", repository, "/app"
     run "ln -s /log /app/log"
     run "rvm rvmrc trust /app"
     run "exit"
