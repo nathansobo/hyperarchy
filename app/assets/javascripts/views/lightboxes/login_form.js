@@ -6,6 +6,7 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
       h1("Log in to participate:");
       ul({'class': "errors"}).ref("errors");
 
+      a("Sign in with Facebook").ref('facebookLoginButton').click("facebookLogin");
       label("Email Address");
       input({name: "user[emailAddress]", tabindex: 101}).ref('emailAddress');
 
@@ -57,6 +58,25 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
         success: this.hitch('userEstablished', promise),
         error: this.hitch('handleErrors', promise)
       });
+      return promise;
+    },
+
+    facebookLogin: function() {
+      var promise = new Monarch.Promise();
+
+      FB.login(this.bind(function(response) {
+        if (response.session) {
+          $.ajax({
+            type: 'post',
+            url: '/facebook_sessions',
+            dataType: 'data+records',
+            success: this.hitch('userEstablished', promise)
+          });
+        } else {
+          this.close();
+        }
+      }), {perms: "email"});
+
       return promise;
     },
 

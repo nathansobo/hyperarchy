@@ -101,5 +101,51 @@ describe("Views.Lightboxes.LoginForm", function() {
       });
     });
   });
+
+  describe("when the facebook login link is clicked", function() {
+    var successTriggered, cancelTriggered;
+    beforeEach(function() {
+      loginForm.bind('success', function() {
+        successTriggered = true;
+      });
+      loginForm.bind('cancel', function() {
+        cancelTriggered = true;
+      });
+    });
+
+    describe("when facebook login succeeds", function() {
+      it("posts to the facebook_sessions controller and sets the current user based on the response", function() {
+        spyOn(FB, 'login');
+        loginForm.facebookLoginButton.click();
+        expect(FB.login).toHaveBeenCalled();
+        expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email"});
+        var loginCallback = FB.login.mostRecentCall.args[0];
+        loginCallback({ session: {} }); // simulate successful FB login
+
+        expect($.ajax).toHaveBeenCalled();
+        expect(mostRecentAjaxRequest.url).toBe('/facebook_sessions');
+        expect(mostRecentAjaxRequest.type).toBe('post');
+
+        var user = User.createFromRemote({id: 1});
+        mostRecentAjaxRequest.success({current_user_id: user.id()});
+        expect(Application.currentUser()).toBe(user);
+        expect(successTriggered).toBeTruthy();
+      });
+    });
+
+    describe("when login fails", function() {
+      it("hides the login form and triggers failure on the form", function() {
+        spyOn(FB, 'login');
+        loginForm.facebookLoginButton.click();
+        expect(FB.login).toHaveBeenCalled();
+        expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email"});
+        var loginCallback = FB.login.mostRecentCall.args[0];
+        loginCallback({ session: null }); // simulate unsuccessful FB login
+
+        expect(loginForm).toBeHidden();
+        expect(cancelTriggered).toBeTruthy();
+      });
+    });
+  });
 });
 

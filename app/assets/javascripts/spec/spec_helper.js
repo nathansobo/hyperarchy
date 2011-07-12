@@ -83,3 +83,7 @@ function simulateAjaxSuccess(data) {
   if (mostRecentAjaxRequest.success) mostRecentAjaxRequest.success(data);
   mostRecentAjaxDeferred.resolve(data);
 }
+
+var FB = {
+  login: function() {}
+}

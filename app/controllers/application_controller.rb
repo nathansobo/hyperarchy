@@ -88,6 +88,10 @@ class ApplicationController < ActionController::Base
   end
 
   def fb_user
-    fb_auth.user
+    @fb_user ||= fb_auth.user
+  end
+
+  def fetch_fb_user
+    @fb_user = fb_user.fetch
   end
 end

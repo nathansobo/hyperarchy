@@ -1,11 +1,12 @@
 class FacebookSessionsController < ApplicationController
   def create
     unless user = User.find(:facebook_uid => fb_user.identifier)
-
+      fetch_fb_user
       if user = User.find(:email_address => fb_user.email)
         user.update!(:facebook_uid => fb_user.identifier)
       else
-        user = User.create!(:first_name => fb_user.first_name, :last_name => fb_user.last_name, :email_address => fb_user.email, :facebook_uid => fb_user.identifier)
+        attrs = { :first_name => fb_user.first_name, :last_name => fb_user.last_name, :email_address => fb_user.email, :facebook_uid => fb_user.identifier }
+        user = User.create!(attrs)
       end
     end
 
