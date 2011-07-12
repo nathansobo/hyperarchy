@@ -50,8 +50,12 @@ _.constructor('Views.Layout.OrganizationsMenu', View.Template, {
     },
 
     showAddOrganizationForm: function() {
-      Application.signupForm.show();
-      Application.signupForm.showOrganizationSection();
+      if (Application.currentUser().guest()) {
+        Application.signupForm.show();
+        Application.signupForm.showOrganizationSection();
+      } else {
+        Application.addOrganizationForm.show();
+      }
     }
   }
 });

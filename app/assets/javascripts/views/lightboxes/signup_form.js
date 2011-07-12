@@ -6,8 +6,9 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
       div({'class': "fb-logo"});
       text("Sign Up With Facebook");
     }).ref('facebookLoginButton').click(function() {
-      Application.facebookLogin();
-    });
+        var addOrgAfterward = this.organizationSection.is(':visible')
+        Application.facebookLogin(addOrgAfterward);
+      });
 
     h2("Or…").ref('participateHeader');
     h2("Add your organization:").ref('addOrganizationHeader');

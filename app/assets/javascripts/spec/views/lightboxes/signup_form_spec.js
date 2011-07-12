@@ -135,7 +135,7 @@ describe("Views.Lightboxes.SignupForm", function() {
     });
   });
 
-    describe("when the facebook login link is clicked", function() {
+  describe("when the facebook login link is clicked", function() {
     var successTriggered, cancelTriggered;
     beforeEach(function() {
       signupForm.bind('success', function() {
@@ -146,23 +146,45 @@ describe("Views.Lightboxes.SignupForm", function() {
       });
     });
 
-    describe("when facebook login succeeds", function() {
-      it("posts to the facebook_sessions controller and sets the current user based on the response", function() {
-        spyOn(FB, 'login');
-        signupForm.facebookLoginButton.click();
-        expect(FB.login).toHaveBeenCalled();
-        expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email"});
-        var loginCallback = FB.login.mostRecentCall.args[0];
-        loginCallback({ session: {} }); // simulate successful FB login
+    describe("when in 'normal' mode", function() {
+      describe("when facebook login succeeds", function() {
+        it("posts to the facebook_sessions controller and sets the current user based on the response", function() {
+          spyOn(FB, 'login');
+          signupForm.facebookLoginButton.click();
+          expect(FB.login).toHaveBeenCalled();
+          expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email"});
+          var loginCallback = FB.login.mostRecentCall.args[0];
+          loginCallback({ session: {} }); // simulate successful FB login
 
-        expect($.ajax).toHaveBeenCalled();
-        expect(mostRecentAjaxRequest.url).toBe('/facebook_sessions');
-        expect(mostRecentAjaxRequest.type).toBe('post');
+          expect($.ajax).toHaveBeenCalled();
+          expect(mostRecentAjaxRequest.url).toBe('/facebook_sessions');
+          expect(mostRecentAjaxRequest.type).toBe('post');
 
-        var user = User.createFromRemote({id: 1});
-        mostRecentAjaxRequest.success({current_user_id: user.id()});
-        expect(Application.currentUser()).toBe(user);
-        expect(successTriggered).toBeTruthy();
+          var user = User.createFromRemote({id: 1});
+          mostRecentAjaxRequest.success({current_user_id: user.id()});
+          expect(Application.currentUser()).toBe(user);
+          expect(successTriggered).toBeTruthy();
+        });
+      });
+    });
+
+    describe("when in 'add organization' mode", function() {
+      beforeEach(function() {
+        signupForm.showOrganizationSection();
+      });
+
+      describe("when facebook login succeeds", function() {
+        it("shows the add organization form", function() {
+          spyOn(FB, 'login');
+          signupForm.facebookLoginButton.click();
+          var loginCallback = FB.login.mostRecentCall.args[0];
+          loginCallback({ session: {} }); // simulate successful FB login
+
+          var user = User.createFromRemote({id: 1});
+          mostRecentAjaxRequest.success({current_user_id: user.id()});
+
+          expect(Application.addOrganizationForm).toBeVisible();
+        });
       });
     });
 

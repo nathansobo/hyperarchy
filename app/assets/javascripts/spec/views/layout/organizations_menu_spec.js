@@ -64,26 +64,44 @@ describe("Views.Layout.OrganizationsMenu", function() {
   });
 
   describe("when the Add Organization link is clicked", function() {
-    it("shows the signup form with the organization name field visible and a relevant title", function() {
-      organizationsMenu.addOrganizationLink.click();
-      expect(Application.signupForm).toBeVisible();
-      expect(Application.signupForm.organizationSection).toBeVisible();
-      expect(Application.signupForm.participateHeader).toBeHidden();
-      expect(Application.signupForm.addOrganizationHeader).toBeVisible();
-      expect(Application.signupForm).toHaveClass('add-organization');
-      expect(Application.signupForm.organizationName[0]).toBe(document.activeElement);
+    describe("when the current user is a guest", function() {
+      beforeEach(function() {
+        Application.currentUser(User.createFromRemote({id: 1, guest: true}));
+      });
+
+      it("shows the signup form with the organization name field visible and a relevant title", function() {
+        organizationsMenu.addOrganizationLink.click();
+        expect(Application.signupForm).toBeVisible();
+        expect(Application.signupForm.organizationSection).toBeVisible();
+        expect(Application.signupForm.participateHeader).toBeHidden();
+        expect(Application.signupForm.addOrganizationHeader).toBeVisible();
+        expect(Application.signupForm).toHaveClass('add-organization');
+        expect(Application.signupForm.organizationName[0]).toBe(document.activeElement);
+      });
+    });
+
+    describe("when the current user is a member", function() {
+      beforeEach(function() {
+        Application.currentUser(User.createFromRemote({id: 1, guest: false}));
+      });
+
+      it("shows the add organization form", function() {
+        organizationsMenu.dropdownMenu.addOrganizationLink.click();
+
+        expect(Application.addOrganizationForm).toBeVisible();
+      });
     });
   });
 
   describe("when the add organization link is clicked inside the dropdown", function() {
-    it("shows the signup form with the organization name field visible and a relevant title", function() {
+    beforeEach(function() {
+      Application.currentUser(User.createFromRemote({id: 1, guest: false}));
+    });
+
+    it("shows the add organization form", function() {
       organizationsMenu.dropdownMenu.addOrganizationLink.click();
-      expect(Application.signupForm).toBeVisible();
-      expect(Application.signupForm.organizationSection).toBeVisible();
-      expect(Application.signupForm.participateHeader).toBeHidden();
-      expect(Application.signupForm.addOrganizationHeader).toBeVisible();
-      expect(Application.signupForm).toHaveClass('add-organization');
-      expect(Application.signupForm.organizationName[0]).toBe(document.activeElement);
+
+      expect(Application.addOrganizationForm).toBeVisible();
     });
   });
 

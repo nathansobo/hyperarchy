@@ -1,5 +1,3 @@
-//= require ./lightbox
-
 _.constructor('Views.Lightboxes.DisconnectDialog', Views.Lightboxes.Lightbox, {
   id: "disconnect-dialog",
 

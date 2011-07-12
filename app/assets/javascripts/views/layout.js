@@ -37,6 +37,7 @@ _.constructor("Views.Layout", View.Template, {
         subview("newQuestion", Views.Lightboxes.NewQuestion);
         subview("disconnectDialog", Views.Lightboxes.DisconnectDialog);
         subview("inviteBox", Views.Lightboxes.InviteBox);
+        subview("addOrganizationForm", Views.Lightboxes.AddOrganizationForm);
       }).ref("lightboxes");
 
       div({id: "darkened-background"}).ref("darkenedBackground");
@@ -75,7 +76,7 @@ _.constructor("Views.Layout", View.Template, {
       }, this);
     },
 
-    facebookLogin: function() {
+    facebookLogin: function(addOrgAfter) {
       var promise = new Monarch.Promise();
 
       FB.login(this.bind(function(response) {
@@ -84,7 +85,10 @@ _.constructor("Views.Layout", View.Template, {
             type: 'post',
             url: '/facebook_sessions',
             dataType: 'data+records',
-            success: this.hitch('currentUserEstablished', promise)
+            success: this.bind(function(data) {
+              this.currentUserEstablished(promise, data);
+              if (addOrgAfter) this.addOrganizationForm.show();
+            })
           });
         } else {
           this.signupForm.close();
