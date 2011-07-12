@@ -11,7 +11,7 @@ class AppServer
       when :production
         'hyperarchy.com'
       when :vm
-        '172.17.3.50'
+        '192.168.0.192'
     end
   end
 
@@ -73,7 +73,6 @@ class AppServer
     install_rvm
     install_ruby
     install_node
-    upload_deploy_keys
     clone_repository
     install_services
     puts
@@ -124,7 +123,7 @@ class AppServer
   end
 
   def as(username, dir=nil)
-    run "su - #{username}"
+    run "ssh -AY -o StrictHostKeyChecking=no hyperarchy@localhost"
     run "cd #{dir}" if dir
     yield
     run! "exit"
@@ -147,8 +146,9 @@ class AppServer
   end
 
   def update_packages
+    run "echo udev hold | dpkg --set-selections" if stage == 'vm' # workaround bug in turnkey linux
     run "yes | apt-get update"
-    run "yes | apt-get upgrade"
+    run "DEBIAN_FRONTEND=noninteractive apt-get upgrade -q -y"
   end
 
   def create_hyperarchy_user
@@ -159,6 +159,7 @@ class AppServer
       run "useradd -G ssl-cert -d /home/hyperarchy -s /bin/bash hyperarchy"
     end
     run "cp -r /root/.ssh /home/hyperarchy/.ssh"
+    run "chown -R hyperarchy:hyperarchy /home/hyperarchy/.ssh"
   end
 
   def create_log_directory
@@ -307,12 +308,13 @@ class AppServer
   def clone_repository
     run "mkdir -p /app"
     run "chown hyperarchy:hyperarchy /app"
-    run "su - hyperarchy"
-    run! "ssh -o StrictHostKeyChecking=no git@github.com"
-    run "yes | git clone", repository, "/app"
-    run "ln -s /log /app/log"
-    run "rvm rvmrc trust /app"
-    run "exit"
+
+    as "hyperarchy" do
+      run! "ssh -o StrictHostKeyChecking=no git@github.com"
+      run "yes | git clone", repository, "/app"
+      run "ln -s /log /app/log"
+      run "rvm rvmrc trust /app"
+    end
   end
 
   def upload_assets
