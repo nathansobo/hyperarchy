@@ -31,7 +31,7 @@ describe FacebookSessionsController do
           let(:user_attrs) { User.plan }
 
           before do
-            mock(controller.fb_user).fetch
+            mock(controller).fetch_fb_user
             stub(controller.fb_user).email { user_attrs[:email_address] }
             stub(controller.fb_user).first_name { user_attrs[:first_name] }
             stub(controller.fb_user).last_name { user_attrs[:last_name] }
