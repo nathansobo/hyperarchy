@@ -218,11 +218,10 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
     question: {
       change: function(question) {
         this.avatar.user(question.creator());
-        this.body.bindText(question, 'body');
+        this.body.bindMarkdown(question, 'body');
         Application.currentOrganizationId(question.organizationId());
 
-        this.body.bindText(question, 'body');
-        this.details.bindText(question, 'details');
+        this.details.bindMarkdown(question, 'details');
         this.comments.comments(question.comments());
         this.avatar.user(question.creator());
         this.creatorName.bindText(question.creator(), 'fullName');

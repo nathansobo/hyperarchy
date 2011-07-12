@@ -9,7 +9,9 @@ _.constructor('Views.Pages.Organization.QuestionLi', Monarch.View.Template, {
             return Monarch.View.build(function(b) { with(b) {
               li({'class': "answer"}, function() {
                 div({'class': "position"}, answer.position()).ref('position');
-                div({'class': "body"}, answer.body()).ref('body');
+                div({'class': "body"}, function() {
+                  raw($.markdown(answer.body()));
+                }).ref('body');
               });
             }});
           },
@@ -26,7 +28,7 @@ _.constructor('Views.Pages.Organization.QuestionLi', Monarch.View.Template, {
 
   viewProperties: {
     initialize: function() {
-      this.body.bindText(this.question, 'body');
+      this.body.bindMarkdown(this.question, 'body');
       this.answers.relation(this.question.answers().limit(6));
       this.avatar.user(this.question.creator());
     }

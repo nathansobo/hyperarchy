@@ -4,13 +4,15 @@ _.constructor('Views.Pages.Question.AnswerLi', Monarch.View.Template, {
       div({'class': "more"}, '…').ref('ellipsis');
       div({'class': "status "}).ref('status');
       div({'class': "position"}, params.answer.position()).ref('position');
-      div({'class': "body"}, params.answer.body()).ref('body');
+      div({'class': "body"}).ref('body');
     });
   }},
 
   viewProperties: {
     initialize: function() {
       this.data('answerId', this.answer.id());
+
+      this.body.markdown(this.answer.body());
 
       this.draggable({
         connectToSortable: '#ranked-answers ol',

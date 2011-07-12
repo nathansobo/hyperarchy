@@ -390,7 +390,7 @@ describe("Views.Pages.Question", function() {
       it("assigns the question's body, details, avatar, and comments relation, and keeps the body and details up to date when they change", function() {
         expect(questionPage.body.text()).toEqual(question.body());
         expect(questionPage.details.text()).toEqual(question.details());
-        question.remotelyUpdated({body: "what would satan & <damien> do?", details: "Isdf"});
+        question.remotelyUpdated({body: "what would satan & damien do?", details: "Isdf"});
         expect(questionPage.body.text()).toEqual(question.body());
         expect(questionPage.details.text()).toEqual(question.details());
         expect(questionPage.avatar.user()).toBe(question.creator());

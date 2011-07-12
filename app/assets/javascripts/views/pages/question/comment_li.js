@@ -15,7 +15,7 @@ _.constructor('Views.Pages.Question.CommentLi', Monarch.View.Template, {
     initialize: function() {
       this.avatar.user(this.comment.creator());
       this.creatorName.bindText(this.comment.creator(), 'fullName');
-      this.body.text(this.comment.body());
+      this.body.markdown(this.comment.body());
       this.createdAt.text(this.comment.formattedCreatedAt());
       this.registerInterest(Application.signal('currentUser'), 'change', this.hitch('enableOrDisableDestruction'));
       this.enableOrDisableDestruction();

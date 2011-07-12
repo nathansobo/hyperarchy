@@ -54,8 +54,8 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
     answer: {
       change: function(answer) {
         if (!answer) return;
-        this.body.bindText(answer, 'body');
-        this.details.bindText(answer, 'details');
+        this.body.bindMarkdown(answer, 'body');
+        this.details.bindMarkdown(answer, 'details');
         this.avatar.user(answer.creator());
         this.creatorName.bindText(answer.creator(), 'fullName');
         this.createdAt.text(answer.formattedCreatedAt());

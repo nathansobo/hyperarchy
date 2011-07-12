@@ -8,7 +8,7 @@ _.constructor('Views.Pages.Question.CurrentConsensus', Monarch.View.Template, {
 
         onUpdate: function(element, record) {
           element.position.text(record.position());
-          element.body.text(record.body());
+          element.body.markdown(record.body());
         }
       });
     })

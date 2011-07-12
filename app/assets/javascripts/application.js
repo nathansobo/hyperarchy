@@ -18,6 +18,8 @@
 //= require jquery.caret
 //= require jquery.tooltip.v.1.1
 //= require jquery.hotkeys
+//= require showdown
+//= require jquery.markdown
 //= require socket.io
 //= require history
 //= require history.adaptor.jquery
