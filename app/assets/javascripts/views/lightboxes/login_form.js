@@ -2,13 +2,16 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
   id: "login-form",
 
   lightboxContent: function() { with(this.builder) {
-    form(function() {
-      h1("Log in to participate:");
-      ul({'class': "errors"}).ref("errors");
+    a({'class': "facebook button"}, function() {
+      div({'class': "fb-logo"});
+      text("Sign In With Facebook");
+    }).ref('facebookLoginButton').click(function() {
+      Application.facebookLogin();
+    });
 
-      a("Sign in with Facebook").ref('facebookLoginButton').click(function() {
-        Application.facebookLogin();
-      });
+    h2("Or…");
+    form(function() {
+      ul({'class': "errors"}).ref("errors");
 
       label("Email Address");
       input({name: "user[emailAddress]", tabindex: 101}).ref('emailAddress');

@@ -60,8 +60,35 @@
     padding: ($s1/2 - 1) $s1
     margin-top: 0
 
+#login-form, #signup-form
+  .facebook.button
+    border: 2px solid #bbb
+    @include border-radius(5)
+    padding-left: $s1/2
+    float: none
+    margin-bottom: $s1
+    font-size: $s2
+    line-height: 2*$s1
+
+    .fb-logo
+      float: left
+      background-image: url(/images/facebook_46.png)
+      height: $s1*2
+      width: $s1*2
+      margin-right: $s1/2 + 5
+  h2
+    font-size: $s1
+    font-weight: normal
+    margin-left: $s1/2
+    margin-bottom: $s1
+  form
+    @include background-image(linear-gradient(top, #fafafa, #f8f8f8))
+    padding: $s1/2
+    border: 1px solid #ddd
+    @include border-radius(5)
+
 #login-form
-  margin-top: -8 * $s1
+  margin-top: -220px
   #forgot-password
     float: right
     font-size: $s0

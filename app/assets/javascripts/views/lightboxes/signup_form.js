@@ -2,14 +2,19 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
   id: "signup-form",
 
   lightboxContent: function() { with(this.builder) {
+    a({'class': "facebook button"}, function() {
+      div({'class': "fb-logo"});
+      text("Sign Up With Facebook");
+    }).ref('facebookLoginButton').click(function() {
+      Application.facebookLogin();
+    });
+
+    h2("Or…").ref('participateHeader');
+    h2("Add your organization:").ref('addOrganizationHeader');
+
     form(function() {
-      h1("Sign up to participate:").ref('participateHeader');
-      h1("Add your organization:").ref('addOrganizationHeader');
       ul({'class': "errors"}).ref("errors");
 
-      a("Log in with Facebook").ref('facebookLoginButton').click(function() {
-        Application.facebookLogin();
-      });
       div(function() {
         label("Organization Name");
         input({name: "organization[name]"}).ref('organizationName');
