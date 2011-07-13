@@ -118,9 +118,9 @@ describe("Views.Lightboxes.LoginForm", function() {
         spyOn(FB, 'login');
         loginForm.facebookLoginButton.click();
         expect(FB.login).toHaveBeenCalled();
-        expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email"});
+        expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email,publish_stream"});
         var loginCallback = FB.login.mostRecentCall.args[0];
-        loginCallback({ session: {} }); // simulate successful FB login
+        loginCallback({ session: { uid: '123'} }); // simulate successful FB login
 
         expect($.ajax).toHaveBeenCalled();
         expect(mostRecentAjaxRequest.url).toBe('/facebook_sessions');
@@ -138,7 +138,7 @@ describe("Views.Lightboxes.LoginForm", function() {
         spyOn(FB, 'login');
         loginForm.facebookLoginButton.click();
         expect(FB.login).toHaveBeenCalled();
-        expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email"});
+        expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email,publish_stream"});
         var loginCallback = FB.login.mostRecentCall.args[0];
         loginCallback({ session: null }); // simulate unsuccessful FB login
 

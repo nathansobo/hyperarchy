@@ -230,4 +230,44 @@ describe("Views.Layout", function() {
       expect(Application.inviteLink).toBeVisible();
     });
   });
+
+  describe("#facebookLogin", function() {
+    beforeEach(function() {
+      spyOn(FB, 'login');
+    });
+
+    describe("when the facebook uid matches that of the current user", function() {
+      it("triggers the success promise immediately", function() {
+        Application.currentUser(User.createFromRemote({id: 1, facebookUid: '123'}));
+        var promise = Application.facebookLogin()
+
+        expect(FB.login).toHaveBeenCalled();
+        var callback = FB.login.mostRecentCall.args[0];
+        callback({session: { uid: '123' }});
+
+        expect(promise.successTriggerred).toBeTruthy();
+      });
+    });
+
+    describe("when the facebook uid does not match that of the current user", function() {
+      it("triggers the success promise after posting to /facebook_sessions and switching the current user", function() {
+        var otherUser = User.createFromRemote({id: 2, facebookUid: '123'});
+        Application.currentUser(User.createFromRemote({id: 1, facebookUid: 'xxx'}));
+        var promise = Application.facebookLogin()
+
+        expect(FB.login).toHaveBeenCalled();
+        var callback = FB.login.mostRecentCall.args[0];
+        callback({session: { uid: '123' }});
+
+        expect(promise.successTriggerred).toBeFalsy();
+
+        expect($.ajax).toHaveBeenCalled();
+        expect(mostRecentAjaxRequest.url).toBe('/facebook_sessions');
+        mostRecentAjaxRequest.success({ current_user_id: otherUser.id() });
+
+        expect(promise.successTriggerred).toBeTruthy();
+        expect(Application.currentUser()).toBe(otherUser);
+      });
+    });
+  });
 });

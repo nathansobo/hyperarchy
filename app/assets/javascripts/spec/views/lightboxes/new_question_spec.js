@@ -5,6 +5,7 @@ describe("Views.Lightboxes.NewQuestion", function() {
   beforeEach(function() {
     renderLayout();
     newQuestionForm = Application.newQuestion.show();
+    newQuestionForm.shareOnFacebook.attr('checked', false);
     organization = Organization.createFromRemote({id: 1});
     member = organization.makeMember({id: 1});
     guest =  organization.makeMember({id: 2, guest: true});
@@ -14,99 +15,179 @@ describe("Views.Lightboxes.NewQuestion", function() {
   });
 
   describe("when the form is submitted", function() {
-    describe("when the current user is a member", function() {
-      describe("when the body field is not blank", function() {
-        it("creates an question, hides the form, and navigates to its url", function() {
-          spyOn(Application, 'showPage');
-
-          newQuestionForm.body.val("What are you doing saturday night?");
-          newQuestionForm.details.val("I am very lonely.");
-          newQuestionForm.form.submit();
-
-          expect(Server.creates.length).toBe(1);
-
-          var createdQuestion = Server.lastCreate.record;
-          expect(createdQuestion.organization()).toBe(organization);
-          expect(createdQuestion.body()).toBe("What are you doing saturday night?");
-          expect(createdQuestion.details()).toBe("I am very lonely.");
-
-          Server.lastCreate.simulateSuccess();
-
-          expect(newQuestionForm).toBeHidden();
-          expect(Path.routes.current).toBe(createdQuestion.url());
-        });
-      });
-
-      describe("when the body field is blank", function() {
-        it("does not create an question or hide the form", function() {
-          newQuestionForm.body.val("    ");
-          newQuestionForm.form.submit();
-          expect(Server.creates.length).toBe(0);
-          expect(newQuestionForm).toBeVisible();
-        });
-      });
-
-      describe("when the body field exceeds 140 characters", function() {
-
-        it("does not create the question or hide the form", function() {
-          var longBody = ""
-          _.times(141, function() {
-            longBody += "X"
-          });
-          newQuestionForm.body.val(longBody);
-          newQuestionForm.form.submit();
-          expect(Server.creates.length).toBe(0);
-          expect(newQuestionForm).toBeVisible();
-        });
-      });
-
+    beforeEach(function() {
+      spyOn(Application, 'showPage');
     });
-    
-    describe("when the current user is a guest", function() {
-      beforeEach(function() {
-        Application.currentUser(guest);
-      });
-      
-      describe("when the user logs in / signs up at the prompt", function() {
-        it("creates the question and navigates to it", function() {
-          newQuestionForm.body.val("What is your favorite vegatable?");
-          newQuestionForm.form.submit();
-          expect(Server.creates.length).toBe(0);
-          expect(Application.signupForm).toBeVisible();
-          Application.signupForm.firstName.val("Dude");
-          Application.signupForm.lastName.val("Richardson");
-          Application.signupForm.emailAddress.val("dude@example.com");
-          Application.signupForm.password.val("wicked");
-          Application.signupForm.form.submit();
-          expect($.ajax).toHaveBeenCalled();
 
-          $.ajax.mostRecentCall.args[0].success({ current_user_id: member.id() });
+    describe("when the 'share on facebook' box is checked", function() {
+      beforeEach(function() {
+        spyOn(FB, 'login');
+        newQuestionForm.shareOnFacebook.attr('checked', true);
+        useFakeServer();
+      });
+
+      describe("when the user successfully logs into facebook", function() {
+        it("creates the question and posts it to the user's facebook feed", function() {
+          newQuestionForm.body.val("Should I use facebook or diaspora?");
+          newQuestionForm.submit.click();
+
+          expect(FB.login).toHaveBeenCalled();
+          expect(FB.login.mostRecentCall.args[1].perms).toContain("publish_stream");
+          var callback = FB.login.mostRecentCall.args[0];
+          callback({session: {}});
 
           expect(Server.creates.length).toBe(1);
-          var createdRecord = Server.lastCreate.record
-          expect(createdRecord.body()).toBe("What is your favorite vegatable?");
-
-          spyOn(Application, 'showPage');
+          var question = Server.lastCreate.record;
+          spyOn(question, 'shareOnFacebook');
           Server.lastCreate.simulateSuccess();
-          expect(Path.routes.current).toBe(createdRecord.url());
+          expect(question.shareOnFacebook).toHaveBeenCalled();
         });
       });
-      
-      describe("when the user dismisses the prompt", function() {
-        it("does not create a question but leaves the lightbox visible", function() {
-          newQuestionForm.body.val("What is your favorite vegatable?");
-          newQuestionForm.details.val("mine's chard.");
-          newQuestionForm.form.submit();
-          expect(Server.creates.length).toBe(0);
-          expect(Application.signupForm).toBeVisible();
-          Application.signupForm.close();
-          expect(Server.creates.length).toBe(0);
-          expect(newQuestionForm).toBeVisible();
-          expect(Application.darkenedBackground).toBeVisible();
-          expect(newQuestionForm.body.val()).toBe("What is your favorite vegatable?");
-          expect(newQuestionForm.details.val()).toBe("mine's chard.");
+
+      describe("when the user does not successfully log into facebook", function() {
+        describe("if the user is a guest", function() {
+          beforeEach(function() {
+            Application.currentUser(guest);
+          });
+
+          it("does not create the question and prompts them for normal signup", function() {
+            newQuestionForm.body.val("Should I use facebook or diaspora?");
+            newQuestionForm.submit.click();
+
+            expect(FB.login).toHaveBeenCalled();
+            var callback = FB.login.mostRecentCall.args[0];
+            callback({session: null});
+
+            expect(Application.signupForm).toBeVisible();
+            expect(Server.creates).toBeEmpty();
+
+            // simulate successful signin
+            Application.currentUser(member);
+            Application.signupForm.trigger('success');
+
+            expect(Server.creates.length).toBe(1);
+            var record = Server.lastCreate.record;
+            expect(record.body()).toBe("Should I use facebook or diaspora?");
+
+            Server.lastCreate.simulateSuccess();
+            expect(Path.routes.current).toBe(record.url());
+          });
+        });
+
+        describe("if the user is a member", function() {
+          it("creates the question and does not post it to facebook", function() {
+            newQuestionForm.body.val("Should I use facebook or diaspora?");
+            newQuestionForm.submit.click();
+
+            expect(FB.login).toHaveBeenCalled();
+            var callback = FB.login.mostRecentCall.args[0];
+            callback({session: null});
+
+            expect(Server.creates.length).toBe(1);
+            var record = Server.lastCreate.record;
+            expect(record.body()).toBe("Should I use facebook or diaspora?");
+
+            Server.lastCreate.simulateSuccess();
+            expect(Path.routes.current).toBe(record.url());
+          });
         });
       });
+    });
+
+    describe("when the 'share on facebook' box is NOT checked", function() {
+      describe("when the current user is a member", function() {
+        describe("when the body field is not blank", function() {
+          it("creates a question, hides the form, and navigates to its url", function() {
+
+            newQuestionForm.body.val("What are you doing saturday night?");
+            newQuestionForm.details.val("I am very lonely.");
+            newQuestionForm.form.submit();
+
+            expect(Server.creates.length).toBe(1);
+
+            var createdQuestion = Server.lastCreate.record;
+            expect(createdQuestion.organization()).toBe(organization);
+            expect(createdQuestion.body()).toBe("What are you doing saturday night?");
+            expect(createdQuestion.details()).toBe("I am very lonely.");
+
+            Server.lastCreate.simulateSuccess();
+
+            expect(newQuestionForm).toBeHidden();
+            expect(Path.routes.current).toBe(createdQuestion.url());
+          });
+        });
+
+        describe("when the body field is blank", function() {
+          it("does not create an question or hide the form", function() {
+            newQuestionForm.body.val("    ");
+            newQuestionForm.form.submit();
+            expect(Server.creates.length).toBe(0);
+            expect(newQuestionForm).toBeVisible();
+          });
+        });
+
+        describe("when the body field exceeds 140 characters", function() {
+
+          it("does not create the question or hide the form", function() {
+            var longBody = ""
+            _.times(141, function() {
+              longBody += "X"
+            });
+            newQuestionForm.body.val(longBody);
+            newQuestionForm.form.submit();
+            expect(Server.creates.length).toBe(0);
+            expect(newQuestionForm).toBeVisible();
+          });
+        });
+
+      });
+
+      describe("when the current user is a guest", function() {
+        beforeEach(function() {
+          Application.currentUser(guest);
+        });
+
+        describe("when the user logs in / signs up at the prompt", function() {
+          it("creates the question and navigates to it", function() {
+            newQuestionForm.body.val("What is your favorite vegatable?");
+            newQuestionForm.form.submit();
+            expect(Server.creates.length).toBe(0);
+            expect(Application.signupForm).toBeVisible();
+            Application.signupForm.firstName.val("Dude");
+            Application.signupForm.lastName.val("Richardson");
+            Application.signupForm.emailAddress.val("dude@example.com");
+            Application.signupForm.password.val("wicked");
+            Application.signupForm.form.submit();
+            expect($.ajax).toHaveBeenCalled();
+
+            $.ajax.mostRecentCall.args[0].success({ current_user_id: member.id() });
+
+            expect(Server.creates.length).toBe(1);
+            var createdRecord = Server.lastCreate.record
+            expect(createdRecord.body()).toBe("What is your favorite vegatable?");
+
+            Server.lastCreate.simulateSuccess();
+            expect(Path.routes.current).toBe(createdRecord.url());
+          });
+        });
+
+        describe("when the user dismisses the prompt", function() {
+          it("does not create a question but leaves the lightbox visible", function() {
+            newQuestionForm.body.val("What is your favorite vegatable?");
+            newQuestionForm.details.val("mine's chard.");
+            newQuestionForm.form.submit();
+            expect(Server.creates.length).toBe(0);
+            expect(Application.signupForm).toBeVisible();
+            Application.signupForm.close();
+            expect(Server.creates.length).toBe(0);
+            expect(newQuestionForm).toBeVisible();
+            expect(Application.darkenedBackground).toBeVisible();
+            expect(newQuestionForm.body.val()).toBe("What is your favorite vegatable?");
+            expect(newQuestionForm.details.val()).toBe("mine's chard.");
+          });
+        });
+      });
+
     });
   });
 

@@ -40,7 +40,7 @@
     margin-bottom: 0
     display: block
 
-  textarea, input:not([type="submit"])
+  textarea, input[type="input"], input[type="textarea"]
     height: $s1 * 2
     line-height: $s1
     font-size: $s1
@@ -49,6 +49,10 @@
     width: 100%
     margin: 0
     margin-bottom: $s1
+
+  input[type="checkbox"] ~ label
+    margin-bottom: $s1
+
   input:not([type="submit"])
     padding-top: 0
     padding-bottom: 0

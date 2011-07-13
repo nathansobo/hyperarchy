@@ -69,11 +69,15 @@ _.constructor("Views.Layout", View.Template, {
         History.pushState(null, null, Organization.find(newOrganizationId).url());
       }
 
-      Application.currentUserId(data.current_user_id).success(function() {
-        this.loginForm.trigger('success');
-        this.signupForm.trigger('success');
+      if (Application.currentUserId() !== data.current_user_id) {
+        Application.currentUserId(data.current_user_id).success(function() {
+          this.loginForm.trigger('success');
+          this.signupForm.trigger('success');
+          promise.triggerSuccess();
+        }, this);
+      } else {
         promise.triggerSuccess();
-      }, this);
+      }
     },
 
     facebookLogin: function(addOrgAfter) {
@@ -81,34 +85,43 @@ _.constructor("Views.Layout", View.Template, {
 
       FB.login(this.bind(function(response) {
         if (response.session) {
-          $.ajax({
-            type: 'post',
-            url: '/facebook_sessions',
-            dataType: 'data+records',
-            success: this.bind(function(data) {
-              this.currentUserEstablished(promise, data);
-              if (addOrgAfter) this.addOrganizationForm.show();
-            })
-          });
+          if (response.session.uid === Application.currentUser().facebookUid()) {
+            promise.triggerSuccess();
+          } else {
+            $.ajax({
+              type: 'post',
+              url: '/facebook_sessions',
+              dataType: 'data+records', // do not use records!, because a non-fb-connected member might switch to an fb-connected member and we don't want to nuke needed data
+              success: this.bind(function(data) {
+                this.currentUserEstablished(promise, data);
+                if (addOrgAfter) this.addOrganizationForm.show();
+              })
+            });
+          }
         } else {
           this.signupForm.close();
           this.loginForm.close();
+          promise.triggerInvalid();
         }
-      }), {perms: "email"});
+      }), {perms: "email,publish_stream"});
 
       return promise;
     },
 
     currentUser: {
-      change: function(user) {
-        this.currentUserId(user.id());
-        this.recordOrganizationVisit();
-        return this.currentUserChangeNode.publishForPromise(user);
+      write: function(newUser, oldUser) {
+        if (newUser === oldUser) {
+          return new Monarch.Promise().triggerSuccess();
+        } else {
+          this.currentUserId(newUser.id());
+          this.recordOrganizationVisit();
+          return this.currentUserChangeNode.publishForPromise(newUser);
+        }
       }
     },
 
     currentUserId: {
-      change: function(currentUserId) {
+      write: function(currentUserId) {
         return this.currentUser(User.find(currentUserId));
       }
     },
@@ -243,6 +256,10 @@ _.constructor("Views.Layout", View.Template, {
       } else {
         this.inviteLink.hide();
       }
+    },
+
+    origin: function() {
+      return window.location.origin;
     }
   }
 });

@@ -38,18 +38,21 @@ _.constructor("Monarch.Promise", {
     this.successTriggerred = true;
     this.data = arguments;
     this.successNode.publishArgs(arguments);
+    return this;
   },
 
   triggerInvalid: function() {
     this.invalidTriggerred = true;
     this.data = arguments;
     this.invalidNode.publishArgs(arguments);
+    return this;
   },
 
   triggerError: function() {
     this.errorTriggerred = true;
     this.data = arguments;
     this.errorNode.publishArgs(arguments);
+    return this;
   }
 });
 

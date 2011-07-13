@@ -85,5 +85,6 @@ function simulateAjaxSuccess(data) {
 }
 
 var FB = {
-  login: function() {}
+  login: function() {},
+  api: function() {}
 }

@@ -123,7 +123,17 @@ _.constructor("Question", Model.Record, {
     return "/questions/" + this.id();
   },
 
+  absoluteUrl: function() {
+    return Application.origin() + this.url();
+  },
+
   newAnswerUrl: function() {
     return this.url() + "/answers/new";
+  },
+
+  shareOnFacebook: function() {
+    FB.api('/me/feed', 'post', { message: this.body(), name: "Help " + this.creator().fullName() + " answer this question on Hyperarchy.", link: this.absoluteUrl()}, function(response) {
+      console.debug(response);
+    });
   }
 });
