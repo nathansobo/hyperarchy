@@ -41,10 +41,14 @@ _.constructor("User", Model.Record, {
 
   avatarUrl: function(size) {
     if (this.facebookUid()) {
-      return "https://graph.facebook.com/" + this.facebookUid() + "/picture?type=square";
+      return this.facebookPhotoUrl();
     } else {
       return this.gravatarUrl(size);
     }
+  },
+
+  facebookPhotoUrl: function() {
+    return "https://graph.facebook.com/" + this.facebookUid() + "/picture?type=square";
   },
 
   gravatarUrl: function(size) {

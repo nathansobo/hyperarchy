@@ -1,7 +1,6 @@
 //= require spec/spec_helper
 
 describe("Views.Components.Avatar", function() {
-
   var avatar;
   beforeEach(function() {
     window.Application = Views.Layout.toView();
@@ -23,7 +22,7 @@ describe("Views.Components.Avatar", function() {
 
     it("sets the src attribute to the url for that user's gravatar", function() {
       avatar.user(user);
-      expect(avatar.img.attr('src')).toBe(user.gravatarUrl(25));
+      expect(avatar.img.attr('src')).toBe(user.avatarUrl(25));
     });
 
     describe("if the user's gravatar image loads successfully", function() {
@@ -32,13 +31,13 @@ describe("Views.Components.Avatar", function() {
         expect(avatar).not.toContain('img');
         avatar.img.trigger("load");
         expect(avatar).toContain('img');
-        expect(avatar).toHaveClass('valid-gravatar');
+        expect(avatar).toHaveClass('valid-avatar');
 
         var otherUser = User.createFromRemote({id: 2, emailHash: "oaneuth"})
         avatar.user(otherUser);
-        expect(avatar).not.toHaveClass('valid-gravatar');
+        expect(avatar).not.toHaveClass('valid-avatar');
         avatar.img.trigger("load");
-        expect(avatar).toHaveClass('valid-gravatar');
+        expect(avatar).toHaveClass('valid-avatar');
       });
     });
   });

@@ -12,7 +12,7 @@ _.constructor("Views.Components.Avatar", View.Template, {
 
     user: {
       change: function(user) {
-        this.removeClass("valid-gravatar");
+        this.removeClass("valid-avatar");
         this.empty();
         this.img = $(new Image());
         this.img.height(this.imageSize);
@@ -24,7 +24,7 @@ _.constructor("Views.Components.Avatar", View.Template, {
     },
 
     imageLoaded: function() {
-      this.addClass("valid-gravatar")
+      this.addClass("valid-avatar")
       this.append(this.img);
     }
   }
