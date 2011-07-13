@@ -8,17 +8,19 @@ _.constructor('Views.Lightboxes.AddOrganizationForm', Views.Lightboxes.Lightbox,
       h2("What is your organization's name?");
       input().ref("name");
       input({value: "Add Organization", 'class': "button", type: "submit"}).ref("createButton");
-    }).submit('create');
+    }).ref('form').submit('create');
   }},
 
   viewProperties: {
-    create: function() {
+    create: function(e) {
+      e.preventDefault();
       if ($.trim(this.name.val()) === "") return false;
-      Organization.create({name: this.name.val()}).success(function(organization) {
-        History.pushState(null, null, organization.url());
-        this.close();
+      return Organization.create({name: this.name.val()}).success(function(organization) {
+        organization.memberships({userId: Application.currentUserId()}).fetch().success(function() {
+          History.pushState(null, null, organization.url());
+          this.close();
+        }, this);
       }, this);
-      return false;
     }
   }
 });
