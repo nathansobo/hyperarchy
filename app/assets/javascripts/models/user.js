@@ -8,7 +8,8 @@ _.constructor("User", Model.Record, {
       admin: 'boolean',
       guest: 'boolean',
       defaultGuest: 'boolean',
-      emailEnabled: 'boolean'
+      emailEnabled: 'boolean',
+      facebookUid: 'string'
     });
 
     this.syntheticColumn('fullName', function() {
@@ -38,9 +39,13 @@ _.constructor("User", Model.Record, {
     return Application.currentUserId == this.id();
   },
 
-//  fullName: function() {
-//    return this.firstName() + " " + this.lastName();
-//  },
+  avatarUrl: function(size) {
+    if (this.facebookUid()) {
+      return "https://graph.facebook.com/" + this.facebookUid() + "/picture?type=square";
+    } else {
+      return this.gravatarUrl(size);
+    }
+  },
 
   gravatarUrl: function(size) {
     if (!size) size = 40;

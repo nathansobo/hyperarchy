@@ -15,9 +15,11 @@ _.constructor("Views.Components.Avatar", View.Template, {
         this.removeClass("valid-gravatar");
         this.empty();
         this.img = $(new Image());
+        this.img.height(this.imageSize);
+        this.img.width(this.imageSize);
         this.img
           .load(this.hitch('imageLoaded'))
-          .attr('src', user.gravatarUrl(this.imageSize));
+          .attr('src', user.avatarUrl(this.imageSize));
       }
     },
 

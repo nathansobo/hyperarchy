@@ -2,7 +2,7 @@ _.constructor('Views.Pages.Organization.QuestionLi', Monarch.View.Template, {
   content: function() { with(this.builder) {
     li({'class': "question"}, function() {
       div(function() {
-        subview('avatar', Views.Components.Avatar, {imageSize: Application.lineHeight * 3});
+        subview('avatar', Views.Components.Avatar, {imageSize: 50});
         div({'class': "body"}).ref('body')
         subview('answers', Views.Components.SortedList, {
           buildElement: function(answer, index) {
