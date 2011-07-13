@@ -2,7 +2,7 @@ module Prequel
   module Relations
     class Union < Relation
       attr_reader :left, :right
-      delegate :new, :infer_join_columns, :to => :left
+      delegate :new, :infer_join_columns, :secure_create, :to => :left
 
       def initialize(left, right)
         @left, @right= left, right
