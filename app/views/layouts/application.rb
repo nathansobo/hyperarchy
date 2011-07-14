@@ -20,6 +20,7 @@ module Views
 
             stylesheet_link_tag 'application'
             link :rel => "shortcut icon", :href => "/images/icon.png"
+            meta :property => "og:image", :content => "https://hyperarchy.com/images/logo.png"
 
             csrf_meta_tag
             head_content
