@@ -11,7 +11,6 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
       });
 
     h2("Or…").ref('participateHeader');
-    h2("Add your organization:").ref('addOrganizationHeader');
 
     form(function() {
       ul({'class': "errors"}).ref("errors");
@@ -75,16 +74,12 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
 
     showOrganizationSection: function() {
       this.organizationSection.show();
-      this.addOrganizationHeader.show();
-      this.participateHeader.hide();
       this.addClass('add-organization');
       this.organizationName.focus();
     },
 
     hideOrganizationSection: function() {
       this.organizationSection.hide();
-      this.addOrganizationHeader.hide();
-      this.participateHeader.show();
       this.removeClass('add-organization');
     },
     

@@ -24,9 +24,7 @@ describe("Views.Lightboxes.SignupForm", function() {
       signupForm.show();
 
       expect(signupForm.errors).toBeHidden();
-      expect(signupForm.addOrganizationHeader).toBeHidden();
       expect(signupForm.organizationSection).toBeHidden();
-      expect(signupForm.participateHeader).toBeVisible();
       expect(darkenedBackground).toBeVisible();
 
       expect(Application.signupForm.firstName[0]).toBe(document.activeElement);
