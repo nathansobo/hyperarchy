@@ -30,51 +30,55 @@ _.constructor('Views.Lightboxes.NewQuestion', Views.Lightboxes.Lightbox, {
     },
 
     create: function() {
-      if ($.trim(this.body.val()) === "") return false;
-      if (this.body.val().length > 140) return false;
-
       var fieldValues = this.fieldValues();
-      var shareOnFacebook = this.shareOnFacebook.attr('checked');
+      if ($.trim(fieldValues.body) === "") return false;
+      if (fieldValues.body.length > 140) return false;
 
-      var authenticateUser = Application.currentUser().guest() ? Application.facebookLogin : Application.promptSignup();
+      this.ensureLoggedIn(fieldValues)
+        .success(function(fbConnected) {
+          Application.currentOrganization().questions().create(fieldValues)
+            .success(function(question) {
+              this.hide();
+              History.pushState(null, null, question.url());
+              if (this.shareOnFacebook.attr('checked') && fbConnected) question.shareOnFacebook();
+            }, this);
+        }, this);
+      return false;
+    },
 
-      var beforeCreateWithFacebookSharing = this.bind(function() {
-        Application.facebookLogin()
-          .success(actuallyPerformCreate)
-          .invalid(function() {
-            shareOnFacebook = false;
-            beforeCreateWithoutFacebookSharing();
-          });
-      });
+    ensureLoggedIn: function(fieldValues) {
+      var currentUser = Application.currentUser();
+      var promise = new Monarch.Promise();
 
-      var beforeCreateWithoutFacebookSharing = this.bind(function() {
-        if (Application.currentUser().guest()) {
-          Application.promptSignup().success(actuallyPerformCreate).invalid(function() {
-            this.show();
-            this.body.val(fieldValues.body);
-            this.details.val(fieldValues.details);
-          }, this);
+      var ensureLoggedIn = this.bind(function() {
+        if (this.shareOnFacebook.attr('checked')) {
+          Application.facebookLogin()
+            .success(function() {
+              promise.triggerSuccess(true)
+            })
+            .invalid(function() {
+              if (currentUser.guest()) {
+                this.shareOnFacebook.attr('checked', false);
+                ensureLoggedIn();
+              } else {
+                promise.triggerSuccess(false);
+              }
+            }, this);
         } else {
-          actuallyPerformCreate();
+          Application.promptSignup()
+            .success(promise.hitch('triggerSuccess'))
+            .invalid(function() {
+              if (currentUser.guest()) {
+                this.show();
+                this.body.val(fieldValues.body);
+                this.details.val(fieldValues.details);
+              }
+            }, this);
         }
       });
 
-      var actuallyPerformCreate = this.bind(function() {
-        Application.currentOrganization().questions().create(fieldValues)
-          .success(function(question) {
-            this.hide();
-            History.pushState(null, null, question.url());
-            if (shareOnFacebook) question.shareOnFacebook();
-          }, this);
-      });
-
-      if (shareOnFacebook) {
-        beforeCreateWithFacebookSharing();
-      } else {
-        beforeCreateWithoutFacebookSharing();
-      }
-
-      return false;
+      ensureLoggedIn();
+      return promise;
     }
   }
 });

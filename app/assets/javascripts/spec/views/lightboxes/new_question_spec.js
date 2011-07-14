@@ -86,8 +86,10 @@ describe("Views.Lightboxes.NewQuestion", function() {
             expect(Server.creates.length).toBe(1);
             var record = Server.lastCreate.record;
             expect(record.body()).toBe("Should I use facebook or diaspora?");
+            spyOn(record, 'shareOnFacebook')
 
             Server.lastCreate.simulateSuccess();
+            expect(record.shareOnFacebook).not.toHaveBeenCalled();
             expect(Path.routes.current).toBe(record.url());
           });
         });

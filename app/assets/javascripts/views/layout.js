@@ -206,6 +206,11 @@ _.constructor("Views.Layout", View.Template, {
     promptSignup: function() {
       var promise = new Monarch.Promise();
 
+      if (!Application.currentUser().guest()) {
+        promise.triggerSuccess();
+        return promise;
+      }
+
       function onSuccess() {
         promise.triggerSuccess();
         unbindHandlers();
