@@ -13,14 +13,28 @@ module Views
         "development" => 'a946479bf02e338e4da47b2f0fac1fec'
       }
 
+      def html_attributes
+        {
+          :class => "#{controller_name} #{action_name}",
+          :xmlns => "http://www.w3.org/1999/xhtml",
+          'xmlns:og' => "http://ogp.me/ns#",
+          'xmlns:fb' => "http://www.facebook.com/2008/fbml",
+          'xml:lang' => "en"
+        }
+      end
+
+
       def content
-        html :class => "#{controller_name} #{action_name}", :xmlns => "http://www.w3.org/1999/xhtml", 'xmlns:og' => "http://ogp.me/ns#", "xml:lang" => "en" do
+        html(html_attributes)  do
           head do
             title "Hyperarchy"
 
             stylesheet_link_tag 'application'
             link :rel => "shortcut icon", :href => "/images/icon.png"
-            meta :property => "og:image", :content => "#{request.protocol}#{request.host_with_port}/images/logo.png"
+
+            open_graph_properties.each do |property, content|
+              meta :property => property, :content => content
+            end
 
             csrf_meta_tag
             head_content
@@ -72,6 +86,17 @@ module Views
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
           })();
         ]
+      end
+
+      def open_graph_properties
+        {
+          'og:title' => "Hyperarchy",
+          'og:type' => "article",
+          'og:image' => "#{request.protocol}#{request.host_with_port}/images/logo.png",
+          'og:url' => request.url,
+          'og:site_name' => "Hyperarchy",
+          'fb:app_id' => FB_ID
+        }
       end
 
       def analytics_enabled?
