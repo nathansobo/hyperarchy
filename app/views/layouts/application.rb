@@ -89,7 +89,7 @@ module Views
       end
 
       def logo_image_url
-        "http://#{request.host_with_port}/images/logo.png"
+        "http://#{request.host_with_port}/images/logo_108.png"
       end
 
       def open_graph_properties
