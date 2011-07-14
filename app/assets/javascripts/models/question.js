@@ -63,6 +63,10 @@ _.constructor("Question", Model.Record, {
     return this.rankingsForUser(Application.currentUser());
   },
 
+  positiveRankingsForCurrentUser: function() {
+    return this.rankingsForCurrentUser().where(Ranking.position.gt(0));
+  },
+
   rankedAnswersForUser: function(user) {
     var userId = user.id();
     if (this.rankedAnswersByUserId[userId]) return this.rankedAnswersByUserId[userId];
@@ -132,8 +136,37 @@ _.constructor("Question", Model.Record, {
   },
 
   shareOnFacebook: function() {
-    FB.api('/me/feed', 'post', { message: this.body(), name: "Help " + this.creator().fullName() + " answer this question on Hyperarchy.", link: this.absoluteUrl()}, function(response) {
-      console.debug(response);
+    var answers = this.positiveRankingsForCurrentUser().limit(3).joinThrough(Answer);
+    var numAnswers = answers.size();
+    var currentUserName = Application.currentUser().fullName();
+
+    var caption, description;
+    switch (numAnswers) {
+      case 0:
+        caption = this.noRankingsShareCaption;
+        break;
+      case 1:
+        caption = currentUserName + "'s top answer:";
+        break;
+      default:
+        caption = currentUserName + "'s top answers:";
+    }
+
+    if (numAnswers > 0) {
+      var numerals = ["⑴", "⑵", "⑶"];
+      description = answers.inject("", function(description, answer, i) {
+        return description + " " + numerals[i] + " " + answer.body();
+      });
+    }
+
+    FB.ui({
+      method: 'feed',
+      name: this.body(),
+      link: this.absoluteUrl(),
+      caption: caption,
+      description: description
     });
-  }
+  },
+
+  noRankingsShareCaption: "Click on this question to suggest and rank answers."
 });

@@ -114,6 +114,10 @@ _.constructor("Monarch.Model.Relations.Relation", {
     return _.map(this.tuples(), fn, context);
   },
 
+  inject: function(initial, fn, context) {
+    return _.inject(this.tuples(), initial, fn, context);
+  },
+
   any: function(fn, context) {
     return _.any(this.tuples(), fn, context);
   },
