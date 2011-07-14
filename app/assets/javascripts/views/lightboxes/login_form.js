@@ -3,7 +3,7 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
 
   lightboxContent: function() { with(this.builder) {
     a({'class': "facebook button"}, function() {
-      div({'class': "fb-logo"});
+      div({'class': "facebook-logo"});
       text("Sign In With Facebook");
     }).ref('facebookLoginButton').click(function() {
       Application.facebookLogin();

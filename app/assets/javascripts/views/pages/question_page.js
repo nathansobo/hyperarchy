@@ -9,9 +9,15 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       });
 
       div({id: "headline"}, function() {
-        a({'class': "new button"}, "Add An Answer")
-          .ref('newAnswerLink')
+        a({'class': "new button"}, function() {
+          div({'class': "plus"}, "+");
+          text("Add An Answer");
+        }).ref('newAnswerLink')
           .click('navigateToNewAnswerForm');
+        a({'class': "facebook button"}, function() {
+          div({'class': "facebook-logo"});
+          span("Share This Question");
+        }).ref('facebookButton');
         div({'class': "body"}).ref('body');
         textarea({name: "body", 'class': "body"}).ref("editableBody");
         subview('charsRemaining', Views.Components.CharsRemaining, { limit: 140 });
@@ -94,6 +100,8 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
           this.showOrHideMutateButtons();
         }
 
+        this.keepFacebookButtonUpdated();
+
         var params = this.params();
         if (params) {
           return currentUser
@@ -103,6 +111,18 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
             .success(this.hitch('populateContentAfterFetch', params));
         }
       }, this);
+    },
+
+    keepFacebookButtonUpdated: function() {
+      if (!this.question()) return;
+      this.registerInterest(this.question().positiveRankingsForCurrentUser(), 'onInsert', this.updateFacebookButtonText);
+      this.registerInterest(this.question().positiveRankingsForCurrentUser(), 'onRemove', this.updateFacebookButtonText);
+      this.updateFacebookButtonText();
+    },
+
+    updateFacebookButtonText: function() {
+      var currentUserHasRankings = !this.question().positiveRankingsForCurrentUser().empty()
+      this.facebookButton.find('span').text(currentUserHasRankings ? "Share Your Ranking" : "Share This Question");
     },
 
     afterShow: function() {
@@ -229,6 +249,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
 
         this.showOrHideMutateButtons();
         this.cancelEdit();
+        this.keepFacebookButtonUpdated();
 
 
         if (this.questionUpdateSubscription) this.questionUpdateSubscription.destroy();

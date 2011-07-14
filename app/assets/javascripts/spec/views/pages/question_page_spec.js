@@ -355,27 +355,19 @@ describe("Views.Pages.Question", function() {
     });
   });
 
-  describe("when the 'suggest an answer' button is clicked", function() {
-    it("navigates to the url for new answers for the current question", function() {
-      Application.currentUser(User.createFromRemote({id: 1}));
-      var question = Question.createFromRemote({id: 1, creatorId: 1, createdAt: 2345});
-
-      questionPage.question(question);
-      questionPage.newAnswerLink.click();
-      expect(Path.routes.current).toBe(question.url() + "/answers/new");
-    });
-  });
-
   describe("local logic (no fetching)", function() {
-    var creator, question, question2, editableByCurrentUser;
+    var currentUser, creator, question, answer1, question2, editableByCurrentUser;
     var headlineTextWhenAdjustColumnTopWasCalled;
 
     beforeEach(function() {
-      useFakeServer();
       creator = User.createFromRemote({id: 1, firstName: "animal", lastName: "eater"});
       organization = Organization.createFromRemote({id: 1, name: "Neurotic designers"});
-      question = creator.questions().createFromRemote({id: 1, body: 'short body', details: "aoeu!", organizationId: 98, createdAt: 91234, organizationId: organization.id()});
+      question = creator.questions().createFromRemote({id: 1, body: "What's a body?", details: "aoeu!", organizationId: 98, createdAt: 91234, organizationId: organization.id()});
+      answer1 = question.answers().createFromRemote({id: 1, body: "Answer 1", position: 1, creatorId: creator.id(), createdAt: 2345});
       question2 = creator.questions().createFromRemote({id: 2, body: 'short body', details: "woo!", organizationId: 98, createdAt: 91234});
+      currentUser = organization.makeMember({id: 1, firstName: "John", lastName: "Five"});
+      Application.currentUser(currentUser);
+      useFakeServer();
 
       editableByCurrentUser = true;
       spyOn(Question.prototype, 'editableByCurrentUser').andCallFake(function() {
@@ -383,6 +375,8 @@ describe("Views.Pages.Question", function() {
       });
 
       questionPage.params({questionId: question.id()});
+      expect(Server.lastUpdate.record).toBe(organization.membershipForCurrentUser());
+      Server.lastUpdate.simulateSuccess();
       Server.lastFetch.simulateSuccess();
     });
     
@@ -604,6 +598,50 @@ describe("Views.Pages.Question", function() {
       });
     });
 
+    describe("when the 'suggest an answer' button is clicked", function() {
+      it("navigates to the url for new answers for the current question", function() {
+        questionPage.question(question);
+        questionPage.newAnswerLink.click();
+        expect(Path.routes.current).toBe(question.url() + "/answers/new");
+      });
+    });
+
+    describe("the facebook button", function() {
+      it("has the appropriate text based on whether the current user has positive rankings for the current question", function() {
+        expect(questionPage.facebookButton.text()).toBe("Share This Question");
+
+        // create rankings
+        var ranking = question.rankingsForCurrentUser().createFromRemote({id: 1, answerId: answer1.id(), position: 100});
+        expect(questionPage.facebookButton.text()).toBe("Share Your Ranking");
+
+        // change questions
+        expect(question2.answers().empty()).toBeTruthy();
+        questionPage.params({questionId: question2.id()});
+        Server.lastFetch.simulateSuccess();
+        expect(questionPage.facebookButton.text()).toBe("Share This Question");
+
+        questionPage.params({questionId: question.id()});
+        Server.lastFetch.simulateSuccess();
+        expect(questionPage.facebookButton.text()).toBe("Share Your Ranking");
+
+        // change users
+        Application.currentUser(User.find({defaultGuest: true}));
+        expect(questionPage.facebookButton.text()).toBe("Share This Question");
+
+        Application.currentUser(currentUser);
+        expect(questionPage.facebookButton.text()).toBe("Share Your Ranking");
+
+        // destroy rankings
+        ranking.remotelyDestroyed();
+        expect(questionPage.facebookButton.text()).toBe("Share This Question");
+
+        // negative rankings don't change it
+        question.rankingsForCurrentUser().createFromRemote({id: 1, answerId: answer1.id(), position: -100});
+        expect(questionPage.facebookButton.text()).toBe("Share This Question");
+        
+      });
+    });
+
     describe("when the 'back to questions' link is clicked", function() {
       it("navigates to the question's organization page", function() {
         spyOn(Application, 'showPage');
@@ -611,7 +649,7 @@ describe("Views.Pages.Question", function() {
         expect(Path.routes.current).toBe(organization.url());
       });
     });
-    
+
     describe("adjustment of the columns' top position", function() {
       beforeEach(function() {
         questionPage.question(question);
@@ -643,7 +681,7 @@ describe("Views.Pages.Question", function() {
           expectColumnTopCorrectlyAdjusted();
         });
       });
-      
+
       describe("after the page is shown", function() {
         it("adjusts the top position of the columns in case it was mis-adjusted while the question was hidden", function() {
           questionPage.hide();
@@ -729,7 +767,6 @@ describe("Views.Pages.Question", function() {
       var answer1Li, answer2Li;
 
       beforeEach(function() {
-        question.answers().createFromRemote({id: 1, body: "Answer 1", position: 1, creatorId: creator.id(), createdAt: 2345});
         question.answers().createFromRemote({id: 2, body: "Answer 2", position: 2, creatorId: creator.id(), createdAt: 2345});
         answer1Li = questionPage.find('li.answer:contains("Answer 1")');
         answer2Li = questionPage.find('li.answer:contains("Answer 2")');

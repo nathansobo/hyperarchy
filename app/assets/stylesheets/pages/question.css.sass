@@ -32,10 +32,36 @@
   > #headline
     position: relative
     padding: 0 ($padding-x + $line-height)
-    .new.button
+    .facebook.button, .new.button
       float: right
       font-size: $s0
-      padding: ($line-height / 2 + 2) ($line-height + 2)
+      padding: $line-height / 2
+      margin-left: $s0
+      position: relative
+      padding-left: $s1 + $line-height
+    .new.button
+      .plus
+        position: absolute
+        left: $line-height / 2
+        top: ((2 * $line-height) - $s1) / 2
+        font-weight: $semibold
+        font-size: $s2
+        color: white
+        background: darken(#409C3B, 5%)
+        width: $s1
+        height: $s1
+        @include border-radius(2)
+        line-height: $s1
+    .facebook.button
+      .facebook-logo
+        position: absolute
+        background-image: url(/images/facebook_23.png)
+        height: $s1
+        width: $s1
+        left: $line-height / 2
+        top: ((2 * $line-height) - $s1) / 2
+
+
     .body
       width: 600px
       line-height: 1.5 * $line-height
