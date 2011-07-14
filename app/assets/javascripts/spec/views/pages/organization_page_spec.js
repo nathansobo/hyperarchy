@@ -24,8 +24,9 @@ describe("Views.Pages.Organization", function() {
 
     describe("when the organization does not exist in the local repository", function() {
       it("navigates to the organization page for Hyperarchy Social", function() {
+        spyOn(Application, 'showPage');
         organizationPage.params({organizationId: -1});
-        expect(organizationPage.organization()).toBe(Organization.findSocial());
+        expect(Path.routes.current).toBe(Application.currentUser().defaultOrganization().url());
       });
     });
 

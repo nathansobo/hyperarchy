@@ -51,7 +51,8 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
 
     params: {
       change: function(params) {
-        var organization = Organization.find(params.organizationId) || Organization.findSocial();
+        var organization = Organization.find(params.organizationId);
+        if (!organization) History.replaceState(null,  null, Application.currentUser().defaultOrganization().url());
         this.organization(organization);
       }
     },

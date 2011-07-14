@@ -41,7 +41,8 @@ function attachLayout(render) {
   window.Application = Views.Layout.toView();
   if (render) $("#jasmine_content").html(window.Application = Views.Layout.toView());
   Application.attach();
-  var defaultGuest = User.createFromRemote({id: 999, guest: true, defaultGuest: true, firstName: "Default", lastName: "Guest"});
+  var socialOrg = Organization.createFromRemote({id: 999, social: true, name: "Hyperarchy Social"});
+  var defaultGuest = socialOrg.makeMember({id: 999, guest: true, defaultGuest: true, firstName: "Default", lastName: "Guest"});
   Application.currentUser(defaultGuest);
   Path.listen();
   return Application;

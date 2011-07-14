@@ -84,7 +84,10 @@ class AppServer
     password = no_echo { $stdin.gets.chomp }
     ssh_session('root', password)
     run 'mkdir -p ~/.ssh'
-    run "echo '#{File.read(public_key_path).chomp}' >> ~/.ssh/authorized_keys"
+    public_key = File.read(public_key_path).chomp
+    run "echo '#{public_key}' >> ~/.ssh/authorized_keys"
+    run "echo '#{public_key}' >> /home/hyperarchy/.ssh/authorized_keys"
+    run "chown -R hyperarchy:hyperarchy /home/hyperarchy"
     puts
     system "ssh-add #{private_key_path}"
   end
