@@ -31,7 +31,7 @@ module Views
 
             stylesheet_link_tag 'application'
             link :rel => "shortcut icon", :href => "/images/icon.png"
-            link :rel => "image_src", :type => "image/jpeg", :href => logo_image_url
+            link :rel => "image_src", :type => "image/png", :href => logo_image_url
 
             open_graph_properties.each do |property, content|
               meta :property => property, :content => content
@@ -45,8 +45,6 @@ module Views
 
           body :class => "#{controller_name} #{action_name}" do
             body_content
-
-            img :src => logo_image_url, :style => "display: none;"
           end
 
           below_body_content
@@ -92,7 +90,7 @@ module Views
       end
 
       def logo_image_url
-        "#{request.protocol}#{request.host_with_port}/images/logo.jpg"
+        "http://#{request.host_with_port}/images/logo.png"
       end
 
       def open_graph_properties
