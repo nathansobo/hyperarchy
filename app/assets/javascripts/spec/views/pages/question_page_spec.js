@@ -66,7 +66,6 @@ describe("Views.Pages.Question", function() {
       describe("if no voterId or answerId is specified", function() {
         it("fetches the question data before assigning relations to the subviews and the current org id", function() {
           waitsFor("fetch to complete", function(complete) {
-            questionPage.newAnswerLink.hide();
             questionPage.params({ questionId: question.id() }).success(complete);
             expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
 
@@ -88,7 +87,7 @@ describe("Views.Pages.Question", function() {
             expect(questionPage.answerDetails).not.toHaveClass('active');
             expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
             expect(questionPage.rankedAnswersHeader.text()).toBe("Your Ranking");
-            expect(questionPage.newAnswerLink).toBeVisible();
+            expect(questionPage.newAnswerLink).not.toHaveClass('active');
           });
         });
       });
@@ -96,7 +95,6 @@ describe("Views.Pages.Question", function() {
       describe("if the voterId is specified", function() {
         it("fetches the question data and the specified voter's rankings before assigning relations to the subviews", function() {
           waitsFor("fetch to complete", function(complete) {
-            questionPage.newAnswerLink.hide();
             questionPage.params({ questionId: question.id(), voterId: otherUser.id() }).success(complete);
             expect(questionPage.rankedAnswers.sortingEnabled()).toBeFalsy();
             expect(questionPage.votes.selectedVoterId()).toEqual(otherUser.id());
@@ -112,7 +110,7 @@ describe("Views.Pages.Question", function() {
             expect(questionPage.rankedAnswersHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
             expect(questionPage.rankedAnswers).toBeVisible();
             expect(questionPage.answerDetails).not.toHaveClass('active');
-            expect(questionPage.newAnswerLink).toBeVisible();
+            expect(questionPage.newAnswerLink).not.toHaveClass('active');
           });
         });
       });
@@ -120,7 +118,6 @@ describe("Views.Pages.Question", function() {
       describe("if the answerId is specified", function() {
         it("fetches the question data along with the answer's comments and commenters before assigning relations to the subviews and the selectedAnswer to the currentConsensus and answerDetails", function() {
           waitsFor("fetch to complete", function(complete) {
-            questionPage.newAnswerLink.hide();
             questionPage.params({ questionId: question.id(), answerId: answer1.id() }).success(complete);
             expect(questionPage.votes.selectedVoterId()).toBeFalsy();
           });
@@ -137,19 +134,18 @@ describe("Views.Pages.Question", function() {
             expect(questionPage.rankedAnswers).not.toHaveClass('active');
             expect(questionPage.answerDetails).toBeVisible();
             expect(questionPage.votes.selectedVoterId()).toBeFalsy();
-            expect(questionPage.newAnswerLink).toBeVisible();
+            expect(questionPage.newAnswerLink).not.toHaveClass('active');
           });
         });
       });
 
       describe("if 'new' is specified as the answerId", function() {
         it("fetches the question data assigning relations to the subviews and showing the answer details form in 'new' mode", function() {
-          spyOn(questionPage.answerDetails, 'showNewForm');
 
           waitsFor("fetch to complete", function(complete) {
-            expect(questionPage.newAnswerLink).toBeVisible();
+            expect(questionPage.newAnswerLink).not.toHaveClass('active');
             questionPage.params({ questionId: question.id(), answerId: 'new' }).success(complete);
-            expect(questionPage.newAnswerLink).toBeHidden();
+            expect(questionPage.newAnswerLink).toHaveClass('active');
             expect(questionPage.votes.selectedVoterId()).toBeFalsy();
           });
 
@@ -157,12 +153,24 @@ describe("Views.Pages.Question", function() {
             expectQuestionDataFetched();
             expectQuestionDataAssigned();
 
-            expect(questionPage.answerDetails.showNewForm).toHaveBeenCalled();
+            expect(questionPage.answerDetails).toHaveClass('active');
+            expect(questionPage.answerDetails.form).toBeVisible();
             expect(questionPage.answerDetails.answer()).toBeFalsy();
             expect(questionPage.currentConsensus.selectedAnswer()).toBeFalsy();
-            expect(questionPage.rankedAnswers).not.toHaveClass('active');
-            expect(questionPage.answerDetails).toBeVisible();
             expect(questionPage.votes.selectedVoterId()).toBeFalsy();
+
+            // now the new answer link actually submits the answer instead of showing the form
+            expect(questionPage.newAnswerLink).toHaveClass('active');
+            useFakeServer();
+
+            questionPage.answerDetails.editableBody.val("Answer Body");
+
+            questionPage.newAnswerLink.click();
+            expect(Server.creates.length).toBe(1);
+            expect(Server.lastCreate.record.body()).toBe("Answer Body");
+            Server.lastCreate.simulateSuccess();
+
+            expect(Path.routes.current).toBe(question.url());
           });
         });
       });
@@ -605,7 +613,6 @@ describe("Views.Pages.Question", function() {
         expect(Path.routes.current).toBe(question.url() + "/answers/new");
       });
     });
-
 
     describe("the facebook button", function() {
       it("shares the question when clicked", function() {

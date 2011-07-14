@@ -13,7 +13,13 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
           div({'class': "plus"}, "+");
           text("Add An Answer");
         }).ref('newAnswerLink')
-          .click('navigateToNewAnswerForm');
+          .click(function() {
+            if (this.params().answerId === 'new') {
+              this.answerDetails.createButton.click();
+            } else {
+              this.navigateToNewAnswerForm();
+            }
+          });
         a({'class': "facebook button"}, function() {
           div({'class': "facebook-logo"});
           span("Share This Question");
@@ -167,9 +173,9 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       }
 
       if (params.answerId === 'new') {
-        this.newAnswerLink.hide();
+        this.newAnswerLink.addClass('active');
       } else {
-        this.newAnswerLink.show();
+        this.newAnswerLink.removeClass('active');
       }
 
       this.votes.selectedVoterId(voterId);
