@@ -606,7 +606,14 @@ describe("Views.Pages.Question", function() {
       });
     });
 
+
     describe("the facebook button", function() {
+      it("shares the question when clicked", function() {
+        spyOn(question, 'shareOnFacebook');
+        questionPage.facebookButton.click();
+        expect(question.shareOnFacebook).toHaveBeenCalled();
+      });
+      
       it("has the appropriate text based on whether the current user has positive rankings for the current question", function() {
         expect(questionPage.facebookButton.text()).toBe("Share This Question");
 
@@ -638,7 +645,6 @@ describe("Views.Pages.Question", function() {
         // negative rankings don't change it
         question.rankingsForCurrentUser().createFromRemote({id: 1, answerId: answer1.id(), position: -100});
         expect(questionPage.facebookButton.text()).toBe("Share This Question");
-        
       });
     });
 

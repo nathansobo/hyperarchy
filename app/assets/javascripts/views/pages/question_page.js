@@ -17,7 +17,10 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         a({'class': "facebook button"}, function() {
           div({'class': "facebook-logo"});
           span("Share This Question");
-        }).ref('facebookButton');
+        }).ref('facebookButton')
+          .click(function() {
+            this.question().shareOnFacebook();
+          });
         div({'class': "body"}).ref('body');
         textarea({name: "body", 'class': "body"}).ref("editableBody");
         subview('charsRemaining', Views.Components.CharsRemaining, { limit: 140 });
