@@ -31,6 +31,7 @@ module Views
 
             stylesheet_link_tag 'application'
             link :rel => "shortcut icon", :href => "/images/icon.png"
+            link :rel => "image_src", :href => logo_image_url
 
             open_graph_properties.each do |property, content|
               meta :property => property, :content => content
@@ -88,11 +89,15 @@ module Views
         ]
       end
 
+      def logo_image_url
+        "#{request.protocol}#{request.host_with_port}/images/logo.png"
+      end
+
       def open_graph_properties
         {
           'og:title' => "Hyperarchy",
           'og:type' => "article",
-          'og:image' => "#{request.protocol}#{request.host_with_port}/images/logo.png",
+          'og:image' => logo_image_url,
           'og:url' => request.url,
           'og:site_name' => "Hyperarchy",
           'fb:app_id' => FB_ID
