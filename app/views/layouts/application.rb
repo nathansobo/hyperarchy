@@ -14,7 +14,7 @@ module Views
       }
 
       def content
-        html :class => "#{controller_name} #{action_name}", :xmlns => "http://www.w3.org/1999/xhtml", "xml:lang" => "en" do
+        html :class => "#{controller_name} #{action_name}", :xmlns => "http://www.w3.org/1999/xhtml", 'xmlns:og' => "http://ogp.me/ns#", "xml:lang" => "en" do
           head do
             title "Hyperarchy"
 
