@@ -195,40 +195,73 @@ describe("Views.Pages.Question.AnswerDetails", function() {
       beforeEach(function() {
         spyOn(answer, 'editableByCurrentUser').andReturn(true);
         guest = organization.makeMember({id: 5, guest: true});
-        member = organization.makeMember({id: 6});
+        member = organization.makeMember({id: 6, emailAddress: "member@example.com"});
         Application.currentUser(guest);
 
-        answerDetails.show();
-        answerDetails.showNewForm();
+        Application.questionPage.params({questionId: question.id(), answerId: 'new'});
+
         answerDetails.editableBody.val(fieldValues.body);
         answerDetails.editableDetails.val(fieldValues.details);
       });
 
-      it("prompts for signup, and creates a answer only if they sign up", function() {
-        answerDetails.createButton.click();
+      describe("when the guest signs up at the prompt", function() {
+        it("creates the answer", function() {
+          answerDetails.createButton.click();
 
-        expect(Server.creates.length).toBe(0);
-        expect(Application.signupForm).toBeVisible();
-        Application.signupForm.firstName.val("Dude");
-        Application.signupForm.lastName.val("Richardson");
-        Application.signupForm.emailAddress.val("dude@example.com");
-        Application.signupForm.password.val("wicked");
-        Application.signupForm.form.submit();
-        expect($.ajax).toHaveBeenCalled();
+          expect(Server.creates.length).toBe(0);
+          expect(Application.signupForm).toBeVisible();
+          Application.signupForm.firstName.val("Dude");
+          Application.signupForm.lastName.val("Richardson");
+          Application.signupForm.emailAddress.val("dude@example.com");
+          Application.signupForm.password.val("wicked");
+          Application.signupForm.form.submit();
+          expect($.ajax).toHaveBeenCalled();
 
-        $.ajax.mostRecentCall.args[0].success({ current_user_id: member.id() });
+          $.ajax.mostRecentCall.args[0].success({ current_user_id: member.id() });
+          Server.lastFetch.simulateSuccess(); // fetch member's rankings
 
-        expect(Server.creates.length).toBe(1);
+          expect(Server.creates.length).toBe(1);
 
-        var createdAnswer = Server.lastCreate.record;
+          var createdAnswer = Server.lastCreate.record;
 
-        expect(createdAnswer.question()).toBe(question);
-        expect(createdAnswer.body()).toBe(fieldValues.body);
-        expect(createdAnswer.details()).toBe(fieldValues.details);
+          expect(createdAnswer.question()).toBe(question);
+          expect(createdAnswer.body()).toBe(fieldValues.body);
+          expect(createdAnswer.details()).toBe(fieldValues.details);
 
-        Server.lastCreate.simulateSuccess();
+          Server.lastCreate.simulateSuccess();
 
-        expect(Path.routes.current).toBe(question.url());
+          expect(Path.routes.current).toBe(question.url());
+        });
+      });
+
+      describe("when the guest logs in", function() {
+        it("creates the answer", function() {
+          answerDetails.createButton.click();
+
+          expect(Server.creates.length).toBe(0);
+          expect(Application.signupForm).toBeVisible();
+          Application.signupForm.loginFormLink.click();
+
+          // simulate login
+          Application.loginForm.emailAddress.val("member@example.com");
+          Application.loginForm.password.val("password");
+          Application.loginForm.form.submit();
+          expect($.ajax).toHaveBeenCalled();
+          $.ajax.mostRecentCall.args[0].success({ current_user_id: member.id() });
+          Server.lastFetch.simulateSuccess(); // fetch new user rankings
+
+          expect(Server.creates.length).toBe(1);
+
+          var createdAnswer = Server.lastCreate.record;
+
+          expect(createdAnswer.question()).toBe(question);
+          expect(createdAnswer.body()).toBe(fieldValues.body);
+          expect(createdAnswer.details()).toBe(fieldValues.details);
+
+          Server.lastCreate.simulateSuccess();
+
+          expect(Path.routes.current).toBe(question.url());
+        });
       });
     });
   });

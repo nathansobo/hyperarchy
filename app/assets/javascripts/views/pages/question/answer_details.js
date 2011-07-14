@@ -48,6 +48,7 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
       this.editableDetails.bind('elastic', this.hitch('adjustCommentsHeight'));
       this.editableBody.bind('keydown', 'return', this.bind(function() {
         this.find(".create:visible, .update:visible").click();
+        return false;
       }));
     },
 
@@ -76,13 +77,11 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
     create: function() {
       if ($.trim(this.editableBody.val()) === '') return;
 
-      if (Application.currentUser().guest()) {
-        Application.promptSignup().success(this.hitch('create'));
-        return false;
-      }
-      this.parentView.question().answers().create(this.form.fieldValues());
-      History.pushState(null, null, this.parentView.question().url());
-
+      var fieldValues = this.form.fieldValues();
+      Application.promptSignup().success(function() {
+        this.parentView.question().answers().create(fieldValues);
+        History.pushState(null, null, this.parentView.question().url());
+      }, this);
       return false;
     },
 
