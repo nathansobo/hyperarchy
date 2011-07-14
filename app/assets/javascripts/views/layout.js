@@ -264,7 +264,7 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     origin: function() {
-      return window.location.origin;
+      return window.location.protocol + "//" + window.location.host;
     }
   }
 });
