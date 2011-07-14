@@ -35,12 +35,12 @@ _.constructor('Views.Lightboxes.NewQuestion', Views.Lightboxes.Lightbox, {
       if (fieldValues.body.length > 140) return false;
 
       this.ensureLoggedIn(fieldValues)
-        .success(function(fbConnected) {
+        .success(function(shareOnFacebook) {
           Application.currentOrganization().questions().create(fieldValues)
             .success(function(question) {
               this.hide();
               History.pushState(null, null, question.url());
-              if (this.shareOnFacebook.attr('checked') && fbConnected) question.shareOnFacebook();
+              if (shareOnFacebook) question.shareOnFacebook();
             }, this);
         }, this);
       return false;
@@ -49,16 +49,17 @@ _.constructor('Views.Lightboxes.NewQuestion', Views.Lightboxes.Lightbox, {
     ensureLoggedIn: function(fieldValues) {
       var currentUser = Application.currentUser();
       var promise = new Monarch.Promise();
+      var shareOnFacebook = this.shareOnFacebook.attr('checked');
 
       var ensureLoggedIn = this.bind(function() {
-        if (this.shareOnFacebook.attr('checked')) {
+        if (shareOnFacebook) {
           Application.facebookLogin()
             .success(function() {
               promise.triggerSuccess(true)
             })
             .invalid(function() {
               if (currentUser.guest()) {
-                this.shareOnFacebook.attr('checked', false);
+                shareOnFacebook = false;
                 ensureLoggedIn();
               } else {
                 promise.triggerSuccess(false);
@@ -66,7 +67,9 @@ _.constructor('Views.Lightboxes.NewQuestion', Views.Lightboxes.Lightbox, {
             }, this);
         } else {
           Application.promptSignup()
-            .success(promise.hitch('triggerSuccess'))
+            .success(function() {
+              promise.triggerSuccess(false);
+            })
             .invalid(function() {
               if (currentUser.guest()) {
                 this.show();
