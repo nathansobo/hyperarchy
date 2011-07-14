@@ -23,7 +23,6 @@ module Views
         }
       end
 
-
       def content
         html(html_attributes)  do
           head do
