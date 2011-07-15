@@ -180,7 +180,6 @@
     .edit.button, .destroy.button
       display: block
 
-
 #answer-details, #column1
   .creator
     height: 2 * $line-height
@@ -314,17 +313,24 @@
       &.selected
         @include background-image(linear-gradient(left, rgb(255,235,113), rgb(255, 247, 203)))
 
+#column3
+  h2
+    display: inline
+  #back-to-your-ranking
+    padding-top: 2px
+    float: right
+    font-size: $s-1
 
-#rankings-and-details
-  overflow: hidden
-  @include box-sizing('border-box')
-  position: absolute
-  top: 1.5 * $line-height
-  bottom: 0
-  width: 100%
-  border: 1px solid #ccc
-  background: #f0f0f0
-  @include box-shadow(#aaa 0 0 3px inset)
+  #rankings-and-details
+    overflow: hidden
+    @include box-sizing('border-box')
+    position: absolute
+    top: 1.5 * $line-height
+    bottom: 0
+    width: 100%
+    border: 1px solid #ccc
+    background: #f0f0f0
+    @include box-shadow(#aaa 0 0 3px inset)
 
 #votes
   ol
@@ -413,8 +419,6 @@
           background: #333
           height: 5px
           @include border-top-radius(1)
-
-
 
 #question
   #headline

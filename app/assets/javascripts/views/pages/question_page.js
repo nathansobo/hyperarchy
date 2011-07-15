@@ -80,6 +80,9 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
   column3: function() { with(this.builder) {
     h2("Your Ranking").ref('rankedAnswersHeader');
     h2("Answer Details").ref('answerDetailsHeader');
+    a({id: "back-to-your-ranking", 'class': "link"}, "← Back").ref('backLink').click(function() {
+      History.replaceState(null,null,this.question().url());
+    });
 
     div({id: "rankings-and-details"}, function() {
       subview('answerDetails', Views.Pages.Question.AnswerDetails);
@@ -153,6 +156,13 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         this.currentConsensus.answers(question.answers());
       } else {
         this.loading(true);
+      }
+
+
+      if (params.voterId || params.answerId) {
+        this.backLink.show();
+      } else {
+        this.backLink.hide();
       }
 
       var voterId;

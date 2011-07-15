@@ -88,6 +88,7 @@ describe("Views.Pages.Question", function() {
             expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
             expect(questionPage.rankedAnswersHeader.text()).toBe("Your Ranking");
             expect(questionPage.newAnswerLink).not.toHaveClass('active');
+            expect(questionPage.backLink).toBeHidden();
           });
         });
       });
@@ -111,6 +112,7 @@ describe("Views.Pages.Question", function() {
             expect(questionPage.rankedAnswers).toBeVisible();
             expect(questionPage.answerDetails).not.toHaveClass('active');
             expect(questionPage.newAnswerLink).not.toHaveClass('active');
+            expect(questionPage.backLink).toBeVisible();
           });
         });
       });
@@ -135,6 +137,7 @@ describe("Views.Pages.Question", function() {
             expect(questionPage.answerDetails).toBeVisible();
             expect(questionPage.votes.selectedVoterId()).toBeFalsy();
             expect(questionPage.newAnswerLink).not.toHaveClass('active');
+            expect(questionPage.backLink).toBeVisible();
           });
         });
       });
@@ -158,6 +161,7 @@ describe("Views.Pages.Question", function() {
             expect(questionPage.answerDetails.answer()).toBeFalsy();
             expect(questionPage.currentConsensus.selectedAnswer()).toBeFalsy();
             expect(questionPage.votes.selectedVoterId()).toBeFalsy();
+            expect(questionPage.backLink).toBeVisible();
 
             // now the new answer link actually submits the answer instead of showing the form
             expect(questionPage.newAnswerLink).toHaveClass('active');
@@ -207,7 +211,7 @@ describe("Views.Pages.Question", function() {
           waitsFor("fetch to complete", function(complete) {
             questionPage.params({questionId: -27}).success(complete);
           });
-          
+
           runs(function() {
             expect(Path.routes.current).toBe(currentUser.defaultOrganization().url());
           });
@@ -221,7 +225,7 @@ describe("Views.Pages.Question", function() {
           questionPage.params({ questionId: question.id() }).success(complete);
         });
       });
-      
+
       describe("if no voterId or answerId is specified", function() {
         it("hides the answer details and assigns relations to the subviews, shows the current user's rankings and enables sorting", function() {
           waitsFor("fetch to complete", function(complete) {
@@ -241,6 +245,7 @@ describe("Views.Pages.Question", function() {
             expect(questionPage.answerDetails).not.toHaveClass('active');
             expect(questionPage.votes.selectedVoterId()).toBe(Application.currentUserId());
             expect(questionPage.rankedAnswersHeader.text()).toBe("Your Ranking");
+            expect(questionPage.backLink).toBeHidden();
           });
         });
       });
@@ -267,6 +272,7 @@ describe("Views.Pages.Question", function() {
             expect(questionPage.answerDetails).not.toHaveClass('active');
             expect(questionPage.votes.selectedVoterId()).toEqual(otherUser.id());
             expect(questionPage.rankedAnswersHeader.text()).toBe(otherUser.fullName() + "'s Ranking");
+            expect(questionPage.backLink).toBeVisible();
           });
         });
 
@@ -297,10 +303,11 @@ describe("Views.Pages.Question", function() {
 
           runs(function() {
             expect(questionPage.answerDetails.loading()).toBeFalsy();
-            
+
             expect(answer1.comments().size()).toBeGreaterThan(0);
             expect(answer1.commenters().size()).toBe(answer1.comments().size());
             expect(questionPage.answerDetails.comments.comments().tuples()).toEqual(answer1.comments().tuples());
+            expect(questionPage.backLink).toBeVisible();
           });
         });
       });
@@ -334,7 +341,7 @@ describe("Views.Pages.Question", function() {
           waitsFor("fetching of answer data", function(complete) {
             questionPage.params({ questionId: question.id(), answerId: answer1.id()}).success(complete);
           });
-          
+
           waitsFor("new rankings to be fetched", function(complete) {
             expect(questionPage.answerDetails).toHaveClass('active');
             Application.currentUser(otherUser).success(complete);
@@ -387,7 +394,7 @@ describe("Views.Pages.Question", function() {
       Server.lastUpdate.simulateSuccess();
       Server.lastFetch.simulateSuccess();
     });
-    
+
     describe("when an question is assigned", function() {
       it("assigns the question's body, details, avatar, and comments relation, and keeps the body and details up to date when they change", function() {
         expect(questionPage.body.html()).toEqual($.markdown(question.body()));
@@ -478,7 +485,7 @@ describe("Views.Pages.Question", function() {
         expectFieldsHidden();
       });
     });
-    
+
     describe("showing and hiding of the details", function() {
       describe("when an question is assigned", function() {
         it("shows the details if they aren't blank and hides them otherwise", function() {
@@ -510,7 +517,7 @@ describe("Views.Pages.Question", function() {
         });
       });
     });
-    
+
     describe("when the save is button is clicked", function() {
       var updates;
 
@@ -620,7 +627,7 @@ describe("Views.Pages.Question", function() {
         questionPage.facebookButton.click();
         expect(question.shareOnFacebook).toHaveBeenCalled();
       });
-      
+
       it("has the appropriate text based on whether the current user has positive rankings for the current question", function() {
         expect(questionPage.facebookButton.text()).toBe("Share This Question");
 
@@ -837,6 +844,15 @@ describe("Views.Pages.Question", function() {
           answer1Li.click();
           expect(History.replaceState).toHaveBeenCalledWith(null, null, question.url());
         });
+      });
+    });
+
+    describe("when the back link is clicked", function() {
+      it("navigates to the question's url", function() {
+        spyOn(History, 'replaceState');
+        questionPage.backLink.click();
+
+        expect(History.replaceState).toHaveBeenCalledWith(null,null,question.url());
       });
     });
   });
