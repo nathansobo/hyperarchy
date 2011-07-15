@@ -103,7 +103,7 @@ _.constructor("Views.Layout", View.Template, {
           this.loginForm.close();
           promise.triggerInvalid();
         }
-      }), {perms: "email,publish_stream"});
+      }), {perms: "email"});
 
       return promise;
     },

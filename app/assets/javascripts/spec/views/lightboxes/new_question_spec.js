@@ -32,7 +32,7 @@ describe("Views.Lightboxes.NewQuestion", function() {
           newQuestionForm.submit.click();
 
           expect(FB.login).toHaveBeenCalled();
-          expect(FB.login.mostRecentCall.args[1].perms).toContain("publish_stream");
+          expect(FB.login.mostRecentCall.args[1].perms).toContain("email");
           var callback = FB.login.mostRecentCall.args[0];
           callback({session: {}});
 
