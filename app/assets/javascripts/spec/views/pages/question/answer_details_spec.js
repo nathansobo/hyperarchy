@@ -479,31 +479,6 @@ describe("Views.Pages.Question.AnswerDetails", function() {
     }
   });
 
-  describe("when the close link is clicked", function() {
-    beforeEach(function() {
-      Application.questionPage.question(question);
-    });
-
-    describe("when the view is in 'new' mode", function() {
-      it("routes to the question's url", function() {
-        Application.questionPage.question(question);
-        answerDetails.answer(null);
-        answerDetails.showNewForm();
-        spyOn(Application, 'showPage');
-        answerDetails.closeLink.click();
-        expect(Path.routes.current).toBe(question.url());
-      });
-    });
-
-    describe("when the view is in 'details' mode", function() {
-      it("routes to the question's url", function() {
-        spyOn(Application, 'showPage');
-        answerDetails.closeLink.click();
-        expect(Path.routes.current).toBe(question.url());
-      });
-    });
-  });
-
   describe("loading", function() {
     it("assigns loading to the comments", function() {
       answerDetails.loading(true);

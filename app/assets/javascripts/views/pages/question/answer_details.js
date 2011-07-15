@@ -1,12 +1,6 @@
 _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "answer-details"}, function() {
-      a({'class': "close"}, "×")
-        .ref('closeLink')
-        .click(function() {
-          History.replaceState(null, null, this.parentView.question().url());
-        });
-
       div(function() {
         div({'class': "body"}).ref("body");
         div({'class': "details"}).ref("details");
