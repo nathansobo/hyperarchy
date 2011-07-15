@@ -30,6 +30,37 @@ describe("Views.Pages.Organization", function() {
       });
     });
 
+    describe("when the page was previously scrolled down", function() {
+      var organization1, organization2, previousScrollTop;
+
+      beforeEach(function() {
+        organization1 = Organization.createFromRemote({id: 101, name: "Big Spenders"});
+        organization2 = Organization.createFromRemote({id: 102, name: "Number Theorists"});
+        organizationPage.params({organizationId: organization1.id()});
+        previousScrollTop = 400;
+        spyOn(Application, 'scrollTop').andReturn(previousScrollTop)
+        organizationPage.hide();
+        expect(Application.scrollTop).toHaveBeenCalled();
+        Application.scrollTop.reset();
+      });
+
+      describe("when the user to returns to the SAME organization's page", function() {
+        it("restores the previous scroll position", function() {
+          organizationPage.show();
+          organizationPage.params({organizationId: organization1.id()});
+          expect(Application.scrollTop).toHaveBeenCalledWith(previousScrollTop);
+        });
+      });
+
+      describe("when the user views a DIFFERENT organization's page", function() {
+        it("returns to the top of the page", function() {
+          organizationPage.show();
+          organizationPage.params({organizationId: organization2.id()});
+          expect(Application.scrollTop).toHaveBeenCalledWith(0);
+        });
+      });
+    });
+
     it("assigns the currentOrganizationId on the layout", function() {
       organizationPage.params({organizationId: organization.id()});
       expect(Application.currentOrganizationId()).toBe(organization.id());

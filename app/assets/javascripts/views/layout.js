@@ -203,6 +203,10 @@ _.constructor("Views.Layout", View.Template, {
       window.location.reload();
     },
 
+    scrollTop: function(top) {
+      return $(window).scrollTop(top);
+    },
+
     promptSignup: function() {
       var promise = new Monarch.Promise();
 

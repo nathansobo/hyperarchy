@@ -50,11 +50,23 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
     },
 
     params: {
+      write: function(newParams, oldParams) {
+        if (oldParams && newParams.organizationId === oldParams.organizationId) {
+          Application.scrollTop(this.previousScrollPosition || 0);
+        } else {
+          Application.scrollTop(0);
+        }
+      },
+
       change: function(params) {
         var organization = Organization.find(params.organizationId);
         if (!organization) History.replaceState(null,  null, Application.currentUser().defaultOrganization().url());
         this.organization(organization);
       }
+    },
+
+    beforeHide: function() {
+      this.previousScrollPosition = Application.scrollTop();
     },
 
     newQuestion: function() {
