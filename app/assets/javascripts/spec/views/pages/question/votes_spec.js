@@ -92,4 +92,18 @@ describe("Views.Pages.Question.Votes", function() {
       expect(votesView).toBeVisible();
     });
   });
+  
+  describe("mixpanel tracking", function() {
+    describe("when the selectedVoterId is assigned", function() {
+      it("pushes a 'view vote' event to the mixpanel queue", function() {
+        votesView.votes(votesRelation);
+        votesView.selectedVoterId(otherUser.id());
+
+        expect(mpq.length).toBe(1);
+        var event = mpq.pop();
+        expect(event[0]).toBe('track');
+        expect(event[1]).toBe("View Ranking");
+      });
+    });
+  });
 });

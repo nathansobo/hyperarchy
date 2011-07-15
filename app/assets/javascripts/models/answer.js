@@ -60,5 +60,32 @@ _.constructor("Answer", Model.Record, {
 
   url: function() {
     return "/questions/" + this.questionId() + "/answers/" + this.id();
+  },
+
+  trackView: function() {
+    mpq.push(['track', "View Answer", {
+      answerId: this.id(),
+      body: this.body(),
+      questionId: this.questionId(),
+      creatorId: this.creatorId()
+    }]);
+  },
+
+  trackCreate: function() {
+    mpq.push(["track", "Create Answer", {
+      answerId: this.id(),
+      body: this.body(),
+      questionId: this.questionId(),
+      creatorId: this.creatorId()
+    }]);
+  },
+
+  trackUpdate: function() {
+    mpq.push(["track", "Update Answer", {
+      answerId: this.id(),
+      body: this.body(),
+      questionId: this.questionId(),
+      creatorId: this.creatorId()
+    }]);
   }
 });

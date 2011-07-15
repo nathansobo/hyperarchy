@@ -46,12 +46,15 @@ _.constructor('Views.Pages.Question.RankingLi', Monarch.View.Template, {
       this.outstandingRequests++;
       Ranking.createOrUpdate(Application.currentUser(), answer, position)
         .success(function(ranking) {
-          this.outstandingRequests--;
-          if (this.outstandingRequests === 0) this.loading(false);
-          if (!this.ranking) {
+          if (this.ranking) {
+            ranking.trackUpdate();
+          } else {
+            ranking.trackCreate();
             this.ranking = ranking;
             this.observeRankingPosition();
           }
+          this.outstandingRequests--;
+          if (this.outstandingRequests === 0) this.loading(false);
         }, this);
     },
 

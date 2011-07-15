@@ -36,7 +36,10 @@ _.constructor('Views.Pages.Question.Votes', Monarch.View.Template, {
     highlightSelectedVote: function() {
       this.list.children().removeClass('selected');
       var vote = this.votes().find({userId: this.selectedVoterId()});
-      if (vote) this.list.elementForRecord(vote).addClass('selected');
+      if (vote) {
+        this.list.elementForRecord(vote).addClass('selected');
+        vote.trackView();
+      }
     },
 
     adjustVoteCount: function() {

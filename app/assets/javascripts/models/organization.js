@@ -145,5 +145,19 @@ _.constructor("Organization", Model.Record, {
 
   secretUrl: function() {
     return 'https://' + window.location.hostname + "/access/" + this.id() + "/" + this.membershipCode();
+  },
+
+  trackView: function() {
+    mpq.push(["track", "View Organization", {
+      organizationId: this.id(),
+      name: this.name()
+    }]);
+  },
+
+  trackCreate: function() {
+    mpq.push(["track", "Create Organization", {
+      organizationId: this.id(),
+      name: this.name()
+    }]);
   }
 });

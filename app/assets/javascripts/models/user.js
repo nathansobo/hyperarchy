@@ -64,4 +64,10 @@ _.constructor("User", Model.Record, {
   rankingsForQuestion: function(question) {
     return this.rankings().where({questionId: question.id()});
   },
+
+  trackIdentity: function() {
+    if (this.guest()) return;
+    mpq.push(['identify', this.id()]);
+    mpq.push(['name_tag', this.fullName()]);
+  }
 });

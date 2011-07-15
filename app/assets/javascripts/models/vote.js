@@ -21,5 +21,12 @@ _.constructor("Vote", Model.Record, {
     var url = "/questions/" + this.questionId();
     if (this.userId() !== Application.currentUserId()) url += '/votes/' + this.userId();
     return url;
+  },
+
+  trackView: function() {
+    mpq.push(['track', "View Ranking", {
+      questionId: this.questionId(),
+      userId: this.userId()
+    }]);
   }
 });

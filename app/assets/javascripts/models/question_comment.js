@@ -26,5 +26,13 @@ _.constructor("QuestionComment", Model.Record, {
 
   formattedCreatedAt: function() {
     return $.PHPDate("n/j/y g:ia", this.createdAt());
+  },
+
+  trackCreate: function() {
+    mpq.push(['track', "Create QuestionComment", {
+      body: this.body(),
+      creatorId: this.creatorId(),
+      questionId: this.questionId()
+    }]);
   }
 });

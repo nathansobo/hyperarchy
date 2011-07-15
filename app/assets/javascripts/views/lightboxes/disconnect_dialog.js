@@ -10,7 +10,14 @@ _.constructor('Views.Lightboxes.DisconnectDialog', Views.Lightboxes.Lightbox, {
   }},
 
   viewProperties: {
-    afterHide: function() {
+    beforeShow: function($super) {
+      $super();
+      mpq.push(['track', "Disconnect"]);
+    },
+
+    afterHide: function($super) {
+      $super();
+      mpq.push(['track', "Reconnect"]);
       Application.reload();
     }
   }

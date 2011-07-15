@@ -487,4 +487,59 @@ describe("Views.Pages.Question.AnswerDetails", function() {
       expect(answerDetails.comments.loading()).toBeFalsy();
     });
   });
+
+  describe("mixpanel tracking", function() {
+    beforeEach(function() {
+      useFakeServer();
+      mpq = [];
+    });
+
+    describe("when the answer is assigned", function() {
+      beforeEach(function() {
+        answerDetails.answer(null);
+      });
+
+      it("pushes a 'view answer' event to the mixpanel queue", function() {
+        answerDetails.answer(answer);
+        expect(mpq.length).toBe(1);
+        var event = mpq.pop();
+        expect(event[0]).toBe('track');
+        expect(event[1]).toBe('View Answer');
+      });
+    });
+
+    describe("when an answer is created", function() {
+      beforeEach(function() {
+        Application.questionPage.question(question);
+        answerDetails.showNewForm();
+        answerDetails.editableBody.val("muesli");
+        answerDetails.editableDetails.val("non-vegan, plz");
+        mpq = [];
+      });
+
+      it("pushes a 'create answer' event to the mixpanel queue", function() {
+        answerDetails.createButton.click();
+        Server.lastCreate.simulateSuccess();
+
+        expect(mpq.length).toBe(1);
+        var event = mpq.pop();
+        expect(event[0]).toBe('track');
+        expect(event[1]).toBe('Create Answer');
+      });
+    });
+
+    describe("when an answer is updated", function() {
+      it("pushes an 'update answer' event to the mixpanel queue", function() {
+        answerDetails.editButton.click();
+        answerDetails.editableBody.val("i have changed my mind.");
+        answerDetails.updateButton.click();
+        Server.lastUpdate.simulateSuccess();
+
+        expect(mpq.length).toBe(1);
+        var event = mpq.pop();
+        expect(event[0]).toBe('track');
+        expect(event[1]).toBe('Update Answer');
+      });
+    });
+  });
 });

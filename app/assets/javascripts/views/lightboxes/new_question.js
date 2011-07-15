@@ -38,6 +38,7 @@ _.constructor('Views.Lightboxes.NewQuestion', Views.Lightboxes.Lightbox, {
         .success(function(shareOnFacebook) {
           Application.currentOrganization().questions().create(fieldValues)
             .success(function(question) {
+              question.trackCreate();
               this.hide();
               History.pushState(null, null, question.url());
               if (shareOnFacebook) question.shareOnFacebook();

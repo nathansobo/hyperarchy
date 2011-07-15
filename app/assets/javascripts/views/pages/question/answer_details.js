@@ -56,6 +56,8 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
         this.createdAt.text(answer.formattedCreatedAt());
         this.showOrHideMutateButtons();
 
+        answer.trackView();
+
         this.registerInterest(answer, 'onDestroy', function() {
           History.pushState(null, null, answer.question().url());
         });
@@ -73,7 +75,9 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
 
       var fieldValues = this.form.fieldValues();
       Application.promptSignup().success(function() {
-        this.parentView.question().answers().create(fieldValues);
+        this.parentView.question().answers().create(fieldValues).success(function(answer) {
+          answer.trackCreate();
+        });
         History.pushState(null, null, this.parentView.question().url());
       }, this);
       return false;
@@ -83,7 +87,10 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
       e.preventDefault();
       if ($.trim(this.editableBody.val()) === '') return;
       if (this.editableBody.val().length > 140) return;
-      this.answer().update(this.form.fieldValues()).success(this.hitch('cancelEdit'));
+      this.answer().update(this.form.fieldValues()).success(this.bind(function(answer) {
+        answer.trackUpdate();
+        this.cancelEdit();
+      }));
     },
 
     destroy: function() {

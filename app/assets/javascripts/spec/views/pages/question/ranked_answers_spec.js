@@ -87,7 +87,7 @@ describe("Views.Pages.Question.RankedAnswers", function() {
 
   describe("drag and drop of rankings", function() {
     describe("sorting existing rankings", function() {
-      var ranking3, ranking3Li;
+      var ranking3, ranking1Li, ranking2Li, ranking3Li;
 
       beforeEach(function() {
         ranking2.remotelyUpdated({position: 32});
@@ -994,6 +994,49 @@ describe("Views.Pages.Question.RankedAnswers", function() {
 
       expect(rankedAnswers.list).toBeVisible();
       expect(rankedAnswers.spinner).toBeHidden();
+    });
+  });
+  
+  describe("mixpanel events", function() {
+    var ranking3, ranking1Li, ranking2Li, ranking3Li;
+
+    beforeEach(function() {
+      questionPage.params({questionId: question.id()});
+      ranking2.remotelyUpdated({position: 32});
+      ranking3 = currentUser.rankings().createFromRemote({id: 3, questionId: question.id(), answerId: answer3.id(), position: -64});
+      rankedAnswers.rankings(rankingsRelation);
+
+      ranking1Li = rankedAnswers.list.find('li:eq(0)').view();
+      ranking2Li = rankedAnswers.list.find('li:eq(1)').view();
+      ranking3Li = rankedAnswers.list.find('li:eq(3)').view();
+      mpq = [];
+    });
+
+    describe("when a ranking is updated", function() {
+      it("pushes an event to the mixpanel queue", function() {
+        ranking2Li.dragAbove(ranking1Li);
+
+        lastCreateOrUpdatePromise.triggerSuccess(ranking2);
+        expect(mpq.length).toBe(1);
+        var updateEvent = mpq.pop();
+        expect(updateEvent[0]).toBe('track');
+        expect(updateEvent[1]).toContain('Ranking');
+      });
+    });
+    
+    describe("when a ranking is created", function() {
+      it("pushes an event to the mixpanel queue", function() {
+        ranking3.remotelyDestroyed();
+        var answer3Li = questionPage.currentConsensus.find('li:contains("Answer 3")');
+        expect(answer3Li).toExist();
+        answer3Li.dragAbove(rankedAnswers.separator);
+        var ranking4 = Application.currentUser().rankings().createFromRemote({answerId: answer3.id(), position: 8});
+
+        lastCreateOrUpdatePromise.triggerSuccess(ranking4);
+        var createEvent = mpq.pop();
+        expect(createEvent[0]).toBe('track');
+        expect(createEvent[1]).toContain('Ranking');
+      });
     });
   });
 });

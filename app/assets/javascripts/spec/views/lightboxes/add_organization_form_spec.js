@@ -35,6 +35,12 @@ describe("Views.Lightboxes.AddOrganizationForm", function() {
       runs(function() {
         expect(addOrganizationForm).toBeHidden();
         expect(Path.routes.current).toBe(organization.url());
+
+        expect(mpq.length).toBeGreaterThan(0);
+        var event = _.select(mpq, function(event) { return event[0] === 'track'; })[0];
+        expect(event).toBeTruthy();
+        expect(event[0]).toBe('track');
+        expect(event[1]).toBe('Create Organization');
       });
     });
   });

@@ -174,4 +174,29 @@ describe("Views.Pages.Question.Comments", function() {
       expect(commentsView).toBeVisible();
     });
   });
+
+  describe("mixpanel tracking", function() {
+    beforeEach(function() {
+      useFakeServer();
+      Application.currentUser(creator1);
+      mpq = [];
+    });
+
+    describe("when a comment is created", function() {
+      it("pushes a 'create comment' event to the mixpanel queue", function() {
+        commentsView.textarea.val("wicked data, bro.");
+        commentsView.createButton.click();
+        spyOn(Server.lastCreate.record, 'creator').andReturn(creator1);
+        spyOn(Server.lastCreate.record, 'createdAt').andReturn(new Date());
+
+        Server.lastCreate.simulateSuccess();
+
+        expect(mpq.length).toBe(1);
+        var event = mpq.pop();
+        expect(event[0]).toBe('track');
+        expect(event[1]).toContain('Create');
+        expect(event[1]).toContain('Comment');
+      });
+    });
+  });
 });

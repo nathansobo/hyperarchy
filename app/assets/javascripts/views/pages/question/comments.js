@@ -35,7 +35,10 @@ _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
         return false;
       }
 
-      this.comments().create({body: this.textarea.val()});
+      this.comments().create({body: this.textarea.val()}).success(function(comment) {
+        comment.trackCreate();
+      });
+
       this.textarea.val("");
       this.textarea.keyup();
       return false;

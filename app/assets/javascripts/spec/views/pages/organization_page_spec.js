@@ -154,4 +154,22 @@ describe("Views.Pages.Organization", function() {
       expect(Application.newQuestion).toBeVisible();
     });
   });
+
+  describe("mixpanel tracking", function() {
+    var organization;
+
+    beforeEach(function() {
+      organization = Organization.createFromRemote({id: 1, name: "Whales"});
+    });
+
+    describe("when the organization changes", function() {
+      it("pushes a 'view organization' event to the mixpanel queue", function() {
+        organizationPage.organization(organization);
+        expect(mpq.length).toBe(1);
+        var event = mpq.pop();
+        expect(event[0]).toBe('track');
+        expect(event[1]).toBe('View Organization');
+      });
+    });
+  });
 });

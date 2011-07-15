@@ -41,6 +41,8 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
         this.questionsList.relation(null);
         this.loading(true);
 
+        organization.trackView();
+
         return organization.fetchMoreQuestions()
           .success(this.bind(function() {
             this.stopLoadingIfNeeded();

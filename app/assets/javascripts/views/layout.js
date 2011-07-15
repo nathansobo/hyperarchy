@@ -115,6 +115,7 @@ _.constructor("Views.Layout", View.Template, {
         } else {
           this.currentUserId(newUser.id());
           this.recordOrganizationVisit();
+          newUser.trackIdentity();
           return this.currentUserChangeNode.publishForPromise(newUser);
         }
       }

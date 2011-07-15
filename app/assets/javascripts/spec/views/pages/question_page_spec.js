@@ -895,6 +895,44 @@ describe("Views.Pages.Question", function() {
     });
   });
 
+  describe("mixpanel tracking", function() {
+    var creator, question;
+
+    beforeEach(function() {
+      creator = User.createFromRemote({id: 1});
+      question = creator.questions().createFromRemote({id: 1, body: "What's the best kind of mate?", createdAt: 1234, organizationId: Organization.findSocial().id()});
+    });
+
+    describe("when the question changes", function() {
+      it("pushes a 'view question' event to the mixpanel queue", function() {
+        questionPage.question(question);
+        expect(mpq.length).toBe(1);
+        var event = mpq.pop();
+        expect(event[0]).toBe('track');
+        expect(event[1]).toBe('View Question');
+      });
+    });
+
+    describe("when the question is updated", function() {
+      beforeEach(function() {
+        useFakeServer();
+        questionPage.question(question);
+        mpq = [];
+        questionPage.editButton.click();
+        questionPage.editableBody.val("Artichokes: what's your take?");
+      });
+
+      it("pushes an 'update question' event to the mixpanel queue", function() {
+        questionPage.updateButton.click();
+        Server.lastUpdate.simulateSuccess();
+        expect(mpq.length).toBe(1);
+        var event = mpq.pop();
+        expect(event[0]).toBe('track');
+        expect(event[1]).toBe('Update Question');
+      });
+    });
+  });
+
   function expectColumnTopCorrectlyAdjusted() {
     expect(questionPage.columns.position().top).toBe(questionPage.columnTopPosition());
   }

@@ -270,4 +270,37 @@ describe("Views.Layout", function() {
       });
     });
   });
+  
+  describe("mixpanel tracking", function() {
+    describe("when the current user changes", function() {
+      var organization, member, guest;
+
+      beforeEach(function() {
+        organization = Organization.createFromRemote({id: 1, name: "Data Miners"});
+        member = organization.makeMember({guest: false, firstName: "Phillip", lastName: "Seymour", id: 1});
+        guest  = organization.makeMember({guest: true, id: 2});
+      });
+
+      describe("if the user is NOT a guest", function() {
+        it("identifies the user for mixpanel tracking", function() {
+          Application.currentUser(member);
+          expect(mpq.length).toBe(2);
+          var identifyEvent = _.select(mpq, function(event) { return event[0] === 'identify'})[0];
+          var nameTagEvent = _.select(mpq, function(event) { return event[0] === 'name_tag'})[0];
+
+          expect(identifyEvent).toBeTruthy();
+          expect(nameTagEvent).toBeTruthy();
+          expect(identifyEvent[1]).toBe(member.id());
+          expect(nameTagEvent[1]).toBe(member.fullName());
+        });
+      });
+
+      describe("if the current user is a guest", function() {
+        it("does not push to the mixpanel queue", function() {
+          Application.currentUser(guest);
+          expect(mpq.length).toBe(0);
+        });
+      });
+    });
+  });
 });

@@ -168,5 +168,29 @@ _.constructor("Question", Model.Record, {
     });
   },
 
+  trackView: function() {
+    mpq.push(["track", "View Question", {
+      questionId: this.id(),
+      organizationId: this.organizationId(),
+      creatorId: this.creatorId()
+    }]);
+  },
+
+  trackCreate: function() {
+    mpq.push(["track", "Create Question", {
+      body: this.body(),
+      organizationId: this.organizationId(),
+      creatorId: this.creatorId()
+    }]);
+  },
+
+  trackUpdate: function() {
+    mpq.push(["track", "Update Question", {
+      body: this.body(),
+      organizationId: this.organizationId(),
+      creatorId: this.creatorId()
+    }]);
+  },
+
   noRankingsShareCaption: "Click on this question to suggest and rank answers."
 });

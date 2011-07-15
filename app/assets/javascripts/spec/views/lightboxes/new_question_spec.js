@@ -225,5 +225,26 @@ describe("Views.Lightboxes.NewQuestion", function() {
 
     });
   });
+
+  describe("mixpanel tracking", function() {
+    describe("when the form is submitted", function() {
+      beforeEach(function() {
+        spyOn(Application, 'showPage');
+        mpq = [];
+      });
+
+      it("pushes a 'create question' event to the mixpanel queue", function() {
+        newQuestionForm.body.val("What are you doing saturday night?");
+        newQuestionForm.details.val("I am very lonely.");
+        newQuestionForm.form.submit();
+        Server.lastCreate.simulateSuccess();
+
+        expect(mpq.length).toBe(1);
+        var event = mpq.pop();
+        expect(event[0]).toBe('track');
+        expect(event[1]).toBe('Create Question');
+      });
+    });
+  });
 });
 

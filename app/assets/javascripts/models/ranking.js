@@ -36,5 +36,19 @@ _.constructor("Ranking", Model.Record, {
 
       return future;
     }
+  },
+
+  trackCreate: function() {
+    mpq.push(['track', "Create Ranking", {
+      answerId: this.answerId(),
+      userId: this.userId()
+    }]);
+  },
+
+  trackUpdate: function() {
+    mpq.push(['track', "Update Ranking", {
+      answerId: this.answerId(),
+      userId: this.userId()
+    }]);
   }
 });

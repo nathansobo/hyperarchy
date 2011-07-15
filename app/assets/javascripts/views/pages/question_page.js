@@ -285,6 +285,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         }));
 
         this.adjustCommentsHeight();
+        question.trackView();
       }
     },
 
@@ -306,7 +307,10 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       e.preventDefault();
       if ($.trim(this.editableBody.val()) === "") return false;
       if (this.editableBody.val().length > 140) return false;
-      this.question().update({body: this.editableBody.val(), details: this.editableDetails.val()}).success(this.hitch('cancelEdit'));
+      this.question().update({body: this.editableBody.val(), details: this.editableDetails.val()}).success(this.bind(function(question) {
+        question.trackUpdate();
+        this.cancelEdit();
+      }));
     },
 
     destroy: function() {

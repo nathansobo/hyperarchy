@@ -14,6 +14,8 @@ var originalServer = window.Server;
 
 Views.Pages.Question.AnswerLi.prototype.viewProperties.dragDelay = null;
 
+var mpq;
+
 beforeEach(function() {
   ajaxRequests = [];
   jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
@@ -21,6 +23,7 @@ beforeEach(function() {
   Repository.clear();
   stubAjax();
   spyOn(Question, 'updateScoresPeriodically');
+  mpq = []
 });
 
 afterEach(function() {
