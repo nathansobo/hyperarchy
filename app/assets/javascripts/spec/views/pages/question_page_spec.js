@@ -118,26 +118,45 @@ describe("Views.Pages.Question", function() {
       });
 
       describe("if the answerId is specified", function() {
-        it("fetches the question data along with the answer's comments and commenters before assigning relations to the subviews and the selectedAnswer to the currentConsensus and answerDetails", function() {
-          waitsFor("fetch to complete", function(complete) {
-            questionPage.params({ questionId: question.id(), answerId: answer1.id() }).success(complete);
-            expect(questionPage.votes.selectedVoterId()).toBeFalsy();
+        describe("if the answer exists", function() {
+          it("fetches the question data along with the answer's comments and commenters before assigning relations to the subviews and the selectedAnswer to the currentConsensus and answerDetails", function() {
+            waitsFor("fetch to complete", function(complete) {
+              questionPage.params({ questionId: question.id(), answerId: answer1.id() }).success(complete);
+              expect(questionPage.votes.selectedVoterId()).toBeFalsy();
+            });
+
+            runs(function() {
+              expectQuestionDataFetched();
+              expect(answer1.comments().size()).toBeGreaterThan(0);
+              expect(answer1.commenters().size()).toBe(answer1.comments().size());
+
+              expectQuestionDataAssigned();
+
+              expect(questionPage.currentConsensus.selectedAnswer()).toEqual(answer1);
+              expect(questionPage.answerDetails.answer()).toEqual(answer1);
+              expect(questionPage.rankedAnswers).not.toHaveClass('active');
+              expect(questionPage.answerDetails).toBeVisible();
+              expect(questionPage.votes.selectedVoterId()).toBeFalsy();
+              expect(questionPage.newAnswerLink).not.toHaveClass('active');
+              expect(questionPage.backLink).toBeVisible();
+            });
           });
+        });
 
-          runs(function() {
-            expectQuestionDataFetched();
-            expect(answer1.comments().size()).toBeGreaterThan(0);
-            expect(answer1.commenters().size()).toBe(answer1.comments().size());
+        describe("if the answer does NOT exist", function() {
+          it("navigates to the current user's ranking", function() {
+            beforeEach(function() {
+              spyOn(Application, 'showPage');
+            });
 
-            expectQuestionDataAssigned();
+            waitsFor("fetch to complete", function(complete) {
+              var nonExistentAnswerId = 1029341234;
+              questionPage.params({ questionId: question.id(), answerId: nonExistentAnswerId }).success(complete);
+            });
 
-            expect(questionPage.currentConsensus.selectedAnswer()).toEqual(answer1);
-            expect(questionPage.answerDetails.answer()).toEqual(answer1);
-            expect(questionPage.rankedAnswers).not.toHaveClass('active');
-            expect(questionPage.answerDetails).toBeVisible();
-            expect(questionPage.votes.selectedVoterId()).toBeFalsy();
-            expect(questionPage.newAnswerLink).not.toHaveClass('active');
-            expect(questionPage.backLink).toBeVisible();
+            runs(function() {
+              expect(Path.routes.current).toBe(question.url());
+            });
           });
         });
       });
@@ -285,29 +304,48 @@ describe("Views.Pages.Question", function() {
       });
 
       describe("if the answerId is specified", function() {
-        it("assigns the selectedAnswer to the currentConsensus and answerDetails, then fetches the answers comments and assigns those later", function() {
-          waitsFor("comments and commenters to be fetched", function(complete) {
-            questionPage.params({ questionId: question.id(), answerId: answer1.id() }).success(complete);
+        describe("if the answer exists", function() {
+          it("assigns the selectedAnswer to the currentConsensus and answerDetails, then fetches the answers comments and assigns those later", function() {
+            waitsFor("comments and commenters to be fetched", function(complete) {
+              questionPage.params({ questionId: question.id(), answerId: answer1.id() }).success(complete);
 
-            expect(questionPage.answerDetails.loading()).toBeTruthy();
+              expect(questionPage.answerDetails.loading()).toBeTruthy();
 
-            expect(questionPage.answerDetails).toHaveClass('active');
-            expect(questionPage.currentConsensus.selectedAnswer()).toEqual(answer1);
-            expect(questionPage.answerDetails.answer()).toEqual(answer1);
-            expect(questionPage.votes.selectedVoterId()).toBeFalsy();
+              expect(questionPage.answerDetails).toHaveClass('active');
+              expect(questionPage.currentConsensus.selectedAnswer()).toEqual(answer1);
+              expect(questionPage.answerDetails.answer()).toEqual(answer1);
+              expect(questionPage.votes.selectedVoterId()).toBeFalsy();
 
-            expect(questionPage.rankedAnswers.loading()).toBeFalsy();
-            expect(questionPage.comments.loading()).toBeFalsy();
-            expect(questionPage.votes.loading()).toBeFalsy();
+              expect(questionPage.rankedAnswers.loading()).toBeFalsy();
+              expect(questionPage.comments.loading()).toBeFalsy();
+              expect(questionPage.votes.loading()).toBeFalsy();
+            });
+
+            runs(function() {
+              expect(questionPage.answerDetails.loading()).toBeFalsy();
+
+              expect(answer1.comments().size()).toBeGreaterThan(0);
+              expect(answer1.commenters().size()).toBe(answer1.comments().size());
+              expect(questionPage.answerDetails.comments.comments().tuples()).toEqual(answer1.comments().tuples());
+              expect(questionPage.backLink).toBeVisible();
+            });
+          });
+        });
+
+        describe("if the answer does NOT exist", function() {
+          beforeEach(function() {
+            spyOn(Application, 'showPage');
           });
 
-          runs(function() {
-            expect(questionPage.answerDetails.loading()).toBeFalsy();
+          it("navigates to the current user's ranking", function() {
+            waitsFor("fetch to complete", function(complete) {
+              var nonExistentAnswerId = 102934;
+              questionPage.params({ questionId: question.id(), answerId: nonExistentAnswerId }).success(complete);
+            });
 
-            expect(answer1.comments().size()).toBeGreaterThan(0);
-            expect(answer1.commenters().size()).toBe(answer1.comments().size());
-            expect(questionPage.answerDetails.comments.comments().tuples()).toEqual(answer1.comments().tuples());
-            expect(questionPage.backLink).toBeVisible();
+            runs(function() {
+              expect(Path.routes.current).toBe(question.url());
+            });
           });
         });
       });

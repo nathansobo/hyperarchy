@@ -244,8 +244,13 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         var answer = Answer.find(params.answerId);
         this.currentConsensus.selectedAnswer(answer);
         this.answerDetails.answer(answer);
-        if (answer) this.answerDetails.comments.comments(answer.comments());
-        if (params.answerId === 'new') this.answerDetails.showNewForm();
+        if (answer) {
+          this.answerDetails.comments.comments(answer.comments());
+        } else if (params.answerId === 'new') {
+          this.answerDetails.showNewForm();
+        } else {
+          History.replaceState(null, null, question.url());
+        }
       } else {
         var rankings = Ranking.where({questionId: params.questionId, userId: params.voterId || Application.currentUserId()});
         this.showRankedAnswers();
