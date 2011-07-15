@@ -321,5 +321,41 @@ describe("Views.Layout", function() {
         expect(disconnectEvent[1]).toBe('Disconnect');
       });
     });
+
+    describe("when the user logs into facebook", function() {
+      beforeEach(function() {
+        spyOn(FB, 'login');
+      });
+
+      describe("when the facebook uid matches that of the current user", function() {
+        it("pushes a 'facebook login' event to the mixpanel queue", function() {
+          Application.currentUser(User.createFromRemote({id: 1, facebookUid: '123'}));
+          mpq = [];
+          Application.facebookLogin();
+          var callback = FB.login.mostRecentCall.args[0];
+          callback({session: { uid: '123' }});
+
+          var facebookLoginEvent = mpq.pop();
+          expect(facebookLoginEvent[0]).toBe('track');
+          expect(facebookLoginEvent[1]).toBe('Facebook Login');
+        });
+      });
+
+      describe("when the facebook uid does not match that of the current user", function() {
+        it("pushes a 'connect facebook account' event to the mixpanel queue", function() {
+          var otherUser = User.createFromRemote({id: 2, facebookUid: '123'});
+          Application.currentUser(User.createFromRemote({id: 1, facebookUid: 'xxx'}));
+          mpq = [];
+          Application.facebookLogin();
+          var callback = FB.login.mostRecentCall.args[0];
+          callback({session: { uid: '123' }});
+          mostRecentAjaxRequest.success({ current_user_id: otherUser.id() });
+
+          var facebookConnectEvent = mpq[0];
+          expect(facebookConnectEvent[0]).toBe('track');
+          expect(facebookConnectEvent[1]).toBe('Connect Facebook Account');
+        });
+      });
+    });
   });
 });
