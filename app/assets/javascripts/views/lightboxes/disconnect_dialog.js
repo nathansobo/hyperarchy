@@ -15,9 +15,7 @@ _.constructor('Views.Lightboxes.DisconnectDialog', Views.Lightboxes.Lightbox, {
       mpq.push(['track', "Disconnect"]);
     },
 
-    afterHide: function($super) {
-      $super();
-      mpq.push(['track', "Reconnect"]);
+    afterHide: function() {
       Application.reload();
     }
   }

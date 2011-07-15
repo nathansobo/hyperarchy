@@ -188,12 +188,14 @@ _.constructor("Views.Layout", View.Template, {
       var secure = (window.location.protocol === 'https:')
       var socket = new io.Socket(socketServerHost, {rememberTransport: false, secure: secure, port: 8081, connectTimeout: 10000});
       socket.on('connect', this.bind(function() {
+        mpq.push(['track', "Connect"]);
         this.socketConnectionFuture.triggerSuccess(socket.transport.sessionid);
       }));
       socket.on('message', function(m) {
         Repository.mutate([JSON.parse(m)]);
       });
       socket.on('disconnect', this.bind(function() {
+        mpq.push(['track', "Disconnect"]);
         this.disconnectDialog.show();
       }));
 

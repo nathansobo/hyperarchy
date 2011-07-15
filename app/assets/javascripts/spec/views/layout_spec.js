@@ -302,5 +302,24 @@ describe("Views.Layout", function() {
         });
       });
     });
+
+    describe("when the connection to the socket server is made", function() {
+      it("pushes a 'connect' event to the mixpanel queue", function() {
+        socketClient.onConnect();
+        var connectEvent = mpq.pop();
+        expect(connectEvent[0]).toBe('track');
+        expect(connectEvent[1]).toBe('Connect');
+      });
+    });
+
+    describe("when the connection to the socket server is lost", function() {
+      it("pushes a 'connect' event to the mixpanel queue", function() {
+        socketClient.onConnect();
+        socketClient.onDisconnect();
+        var disconnectEvent = mpq.pop();
+        expect(disconnectEvent[0]).toBe('track');
+        expect(disconnectEvent[1]).toBe('Disconnect');
+      });
+    });
   });
 });

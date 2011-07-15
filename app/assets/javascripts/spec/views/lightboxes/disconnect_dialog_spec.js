@@ -24,19 +24,5 @@ describe("Views.Lightboxes.DisconnectDialog", function() {
       expect(disconnectDialog).toBeHidden();
     });
   });
-
-  describe("mixpanel events", function() {
-    it("pushes events to the mixpanel queue when the dialog appears and when the user refreshes", function() {
-      var disconnectEvent = mpq.pop();
-      expect(disconnectEvent[0]).toBe('track');
-      expect(disconnectEvent[1]).toBe('Disconnect');
-
-      disconnectDialog.refreshButton.click();
-
-      var reconnectEvent = mpq.pop();
-      expect(reconnectEvent[0]).toBe('track');
-      expect(reconnectEvent[1]).toBe('Reconnect');
-    });
-  });
 });
 
