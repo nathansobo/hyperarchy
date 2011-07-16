@@ -37,7 +37,7 @@ Hyperarchy::Application.configure do
   config.action_mailer.smtp_settings = YAML.load_file(Rails.root.join('config/smtp_settings/demo.yml')).symbolize_keys
 
   # Disable delivery errors, bad email addresses will be ignored
-  # config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = false
 
   # Enable threaded mode
   # config.threadsafe!
