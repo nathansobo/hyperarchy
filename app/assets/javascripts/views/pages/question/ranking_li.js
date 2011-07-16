@@ -47,9 +47,9 @@ _.constructor('Views.Pages.Question.RankingLi', Monarch.View.Template, {
       Ranking.createOrUpdate(Application.currentUser(), answer, position)
         .success(function(ranking) {
           if (this.ranking) {
-//            ranking.trackUpdate();
+            ranking.trackUpdate();
           } else {
-//            ranking.trackCreate();
+            ranking.trackCreate();
             this.ranking = ranking;
             this.observeRankingPosition();
           }
