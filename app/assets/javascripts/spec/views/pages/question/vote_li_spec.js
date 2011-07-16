@@ -65,6 +65,7 @@ describe("Views.Pages.Question.VoteLi", function() {
   describe("when clicked", function() {
     it("navigates to the url for the given vote", function() {
       attachLayout();
+      spyOn(Application, 'showPage');
       Application.currentUser(user);
       voteLi.find('a').click();
       expect(Path.routes.current).toBe(vote.url());

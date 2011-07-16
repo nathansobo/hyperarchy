@@ -191,7 +191,7 @@ describe("Views.Pages.Question", function() {
             questionPage.newAnswerLink.click();
             expect(Server.creates.length).toBe(1);
             expect(Server.lastCreate.record.body()).toBe("Answer Body");
-            Server.lastCreate.simulateSuccess();
+            Server.lastCreate.simulateSuccess({creatorId: Application.currentUser().id()});
 
             expect(Path.routes.current).toBe(question.url());
           });
@@ -409,15 +409,15 @@ describe("Views.Pages.Question", function() {
   });
 
   describe("local logic (no fetching)", function() {
-    var currentUser, creator, question, answer1, question2, editableByCurrentUser;
+    var currentUser, creator, organization, question, answer1, question2, editableByCurrentUser;
     var headlineTextWhenAdjustColumnTopWasCalled;
 
     beforeEach(function() {
       creator = User.createFromRemote({id: 1, firstName: "animal", lastName: "eater"});
       organization = Organization.createFromRemote({id: 1, name: "Neurotic designers"});
-      question = creator.questions().createFromRemote({id: 1, body: "What's a body?", details: "aoeu!", organizationId: 98, createdAt: 91234, organizationId: organization.id()});
+      question = creator.questions().createFromRemote({id: 1, body: "What's a body?", details: "aoeu!", createdAt: 91234, organizationId: organization.id()});
       answer1 = question.answers().createFromRemote({id: 1, body: "Answer 1", position: 1, creatorId: creator.id(), createdAt: 2345});
-      question2 = creator.questions().createFromRemote({id: 2, body: 'short body', details: "woo!", organizationId: 98, createdAt: 91234});
+      question2 = creator.questions().createFromRemote({id: 2, body: 'short body', details: "woo!", organizationId: organization.id(), createdAt: 91234});
       currentUser = organization.makeMember({id: 1, firstName: "John", lastName: "Five"});
       Application.currentUser(currentUser);
       useFakeServer();

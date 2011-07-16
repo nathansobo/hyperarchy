@@ -35,9 +35,12 @@ _.constructor("AnswerComment", Model.Record, {
   trackCreate: function() {
     mpq.push(['track', "Create AnswerComment", {
       mp_note: this.body(),
+      id: this.id(),
       body: this.body(),
+      answerId: this.answerId(),
+      answer: this.answer().body(),
       creatorId: this.creatorId(),
-      answerId: this.answerId()
+      creator: this.creator().fullName()
     }]);
   }
 });

@@ -32,8 +32,11 @@ _.constructor("QuestionComment", Model.Record, {
     mpq.push(['track', "Create QuestionComment", {
       mp_note: this.body(),
       body: this.body(),
-      creatorId: this.creatorId(),
-      questionId: this.questionId()
+      id: this.id(),
+      question: this.question().body(),
+      questionId: this.questionId(),
+      creator: this.creator().fullName(),
+      creatorId: this.creatorId()
     }]);
   }
 });

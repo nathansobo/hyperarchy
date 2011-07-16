@@ -22,6 +22,7 @@ describe("Views.Pages.Question.AnswerLi", function() {
 
   describe("#handleDragStart (having trouble simulating it getting called without triggering the click handler)", function() {
     it("navigates to the question's bare url to cause the user's rankings to be revealed", function() {
+      spyOn(Application, 'showPage');
       answerLi.handleDragStart();
       expect(Path.routes.current).toBe(question.url());
     });

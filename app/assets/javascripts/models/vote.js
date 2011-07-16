@@ -26,7 +26,9 @@ _.constructor("Vote", Model.Record, {
   trackView: function() {
     mpq.push(['track', "View Ranking", {
       mp_note: this.user().fullName(),
+      question: this.question().body(),
       questionId: this.questionId(),
+      user: this.user().fullName(),
       userId: this.userId()
     }]);
   }

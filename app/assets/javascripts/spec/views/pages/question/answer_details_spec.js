@@ -74,7 +74,7 @@ describe("Views.Pages.Question.AnswerDetails", function() {
 
     describe("on answer assignment", function() {
       it("shows the edit link only if the current user can edit", function() {
-        var otherAnswer = Answer.createFromRemote({id: 100, creatorId: creator.id(), createdAt: 234234});
+        var otherAnswer = question.answers().createFromRemote({id: 100, creatorId: creator.id(), createdAt: 234234});
 
         currentUserCanEdit = false;
         answerDetails.answer(otherAnswer);
@@ -167,7 +167,7 @@ describe("Views.Pages.Question.AnswerDetails", function() {
           expect(Server.creates.length).toBe(1);
 
           expect(Server.lastCreate.record.dirtyWireRepresentation()).toEqual(_.extend(fieldValues, {question_id: question.id()}));
-          Server.lastCreate.simulateSuccess();
+          Server.lastCreate.simulateSuccess({creatorId: Application.currentUser().id()});
 
           expect(Path.routes.current).toBe(question.url());
         });
@@ -228,7 +228,7 @@ describe("Views.Pages.Question.AnswerDetails", function() {
           expect(createdAnswer.body()).toBe(fieldValues.body);
           expect(createdAnswer.details()).toBe(fieldValues.details);
 
-          Server.lastCreate.simulateSuccess();
+          Server.lastCreate.simulateSuccess({creatorId: Application.currentUser().id()});
 
           expect(Path.routes.current).toBe(question.url());
         });
@@ -258,7 +258,7 @@ describe("Views.Pages.Question.AnswerDetails", function() {
           expect(createdAnswer.body()).toBe(fieldValues.body);
           expect(createdAnswer.details()).toBe(fieldValues.details);
 
-          Server.lastCreate.simulateSuccess();
+          Server.lastCreate.simulateSuccess({creatorId: Application.currentUser().id()});
 
           expect(Path.routes.current).toBe(question.url());
         });
@@ -519,7 +519,7 @@ describe("Views.Pages.Question.AnswerDetails", function() {
 
       it("pushes a 'create answer' event to the mixpanel queue", function() {
         answerDetails.createButton.click();
-        Server.lastCreate.simulateSuccess();
+        Server.lastCreate.simulateSuccess({creatorId: Application.currentUser().id()});
 
         expect(mpq.length).toBe(1);
         var event = mpq.pop();

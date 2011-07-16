@@ -171,8 +171,11 @@ _.constructor("Question", Model.Record, {
   trackView: function() {
     mpq.push(["track", "View Question", {
       mp_note: this.body(),
-      questionId: this.id(),
+      body: this.body(),
+      id: this.id(),
+      organization: this.organization().name(),
       organizationId: this.organizationId(),
+      creator: this.creator().fullName(),
       creatorId: this.creatorId()
     }]);
   },
@@ -181,7 +184,10 @@ _.constructor("Question", Model.Record, {
     mpq.push(["track", "Create Question", {
       mp_note: this.body(),
       body: this.body(),
+      id: this.id(),
+      organization: this.organization().name(),
       organizationId: this.organizationId(),
+      creator: this.creator().fullName(),
       creatorId: this.creatorId()
     }]);
   },
@@ -190,7 +196,10 @@ _.constructor("Question", Model.Record, {
     mpq.push(["track", "Update Question", {
       mp_note: this.body(),
       body: this.body(),
+      id: this.id(),
+      organization: this.organization().name(),
       organizationId: this.organizationId(),
+      creator: this.creator().fullName(),
       creatorId: this.creatorId()
     }]);
   },
