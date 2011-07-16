@@ -40,6 +40,7 @@ _.constructor("Ranking", Model.Record, {
 
   trackCreate: function() {
     mpq.push(['track', "Create Ranking", {
+      mp_note: this.answer().body(),
       answerId: this.answerId(),
       userId: this.userId()
     }]);
@@ -47,6 +48,7 @@ _.constructor("Ranking", Model.Record, {
 
   trackUpdate: function() {
     mpq.push(['track', "Update Ranking", {
+      mp_note: this.answer().body(),
       answerId: this.answerId(),
       userId: this.userId()
     }]);

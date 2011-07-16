@@ -170,6 +170,7 @@ _.constructor("Question", Model.Record, {
 
   trackView: function() {
     mpq.push(["track", "View Question", {
+      mp_note: this.body(),
       questionId: this.id(),
       organizationId: this.organizationId(),
       creatorId: this.creatorId()
@@ -178,6 +179,7 @@ _.constructor("Question", Model.Record, {
 
   trackCreate: function() {
     mpq.push(["track", "Create Question", {
+      mp_note: this.body(),
       body: this.body(),
       organizationId: this.organizationId(),
       creatorId: this.creatorId()
@@ -186,6 +188,7 @@ _.constructor("Question", Model.Record, {
 
   trackUpdate: function() {
     mpq.push(["track", "Update Question", {
+      mp_note: this.body(),
       body: this.body(),
       organizationId: this.organizationId(),
       creatorId: this.creatorId()

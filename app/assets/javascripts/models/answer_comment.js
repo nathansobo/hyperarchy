@@ -34,6 +34,7 @@ _.constructor("AnswerComment", Model.Record, {
 
   trackCreate: function() {
     mpq.push(['track', "Create AnswerComment", {
+      mp_note: this.body(),
       body: this.body(),
       creatorId: this.creatorId(),
       answerId: this.answerId()

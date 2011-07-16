@@ -64,6 +64,7 @@ _.constructor("Answer", Model.Record, {
 
   trackView: function() {
     mpq.push(['track', "View Answer", {
+      mp_note: this.body(),
       answerId: this.id(),
       body: this.body(),
       questionId: this.questionId(),
@@ -73,6 +74,7 @@ _.constructor("Answer", Model.Record, {
 
   trackCreate: function() {
     mpq.push(["track", "Create Answer", {
+      mp_note: this.body(),
       answerId: this.id(),
       body: this.body(),
       questionId: this.questionId(),
@@ -82,6 +84,7 @@ _.constructor("Answer", Model.Record, {
 
   trackUpdate: function() {
     mpq.push(["track", "Update Answer", {
+      mp_note: this.body(),
       answerId: this.id(),
       body: this.body(),
       questionId: this.questionId(),

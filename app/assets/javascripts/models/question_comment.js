@@ -30,6 +30,7 @@ _.constructor("QuestionComment", Model.Record, {
 
   trackCreate: function() {
     mpq.push(['track', "Create QuestionComment", {
+      mp_note: this.body(),
       body: this.body(),
       creatorId: this.creatorId(),
       questionId: this.questionId()

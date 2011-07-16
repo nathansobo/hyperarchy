@@ -149,6 +149,7 @@ _.constructor("Organization", Model.Record, {
 
   trackView: function() {
     mpq.push(["track", "View Organization", {
+      mp_note: this.name(),
       organizationId: this.id(),
       name: this.name()
     }]);
@@ -156,6 +157,7 @@ _.constructor("Organization", Model.Record, {
 
   trackCreate: function() {
     mpq.push(["track", "Create Organization", {
+      mp_note: this.name(),
       organizationId: this.id(),
       name: this.name()
     }]);
