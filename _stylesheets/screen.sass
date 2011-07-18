@@ -1,0 +1,135 @@
+/*
+  Welcome to Compass.
+  In this file you should write your main styles. (or centralize your imports)
+  Import this file using the following HTML or equivalent:
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" />
+
+@import compass/reset
+@import compass/reset
+@import compass/css3/gradient
+@import compass/css3/box-shadow
+@import compass/css3/box-sizing
+@import scale
+@import fonts
+
+$min-width: 888px
+$max-width: 1200px
+$header-height: $line-height * 4
+
+body, textarea
+  font-family: "proxima-nova-1", Helvetica, Arial, sans-serif
+  font-size: $s0
+  line-height: $line-height
+
+p
+  margin-bottom: $line-height
+
+strong
+  font-weight: bold
+
+em
+  font-style: italic
+
+#gradient-background
+  position: fixed
+  height: 100%
+  width: 100%
+  @include background-image(linear-gradient(top, #aaa, #999))
+  z-index: -1
+
+#site
+  margin: 0 auto
+  background: white
+  min-width: $min-width
+  max-width: $max-width
+  @include box-shadow(#666 0 0 5px)
+
+#header
+  height: $header-height
+  line-height: $header-height
+  font-size: $s3
+  min-width: $min-width
+  max-width: $max-width
+  @include background-image(linear-gradient(top, #4c4c4c, #333))
+  @include box-sizing('border-box')
+  padding: 0 (3 * $line-height)
+  color: transparentize(white, 0.15)
+
+  a
+    color: transparentize(white, 0.15)
+    text-decoration: none
+    
+  #logo
+    width: 42px
+    height: 42px
+    background-image: url(/images/logo_42.png)
+    float: left
+    margin-top: ($header-height - 42) / 2
+    margin-right: $s-2
+
+  h1
+    font-weight: $regular
+    float: left
+    letter-spacing: $s-6
+
+  h2
+    font-weight: $regular
+    float: left
+    margin: 0
+    margin-left: $s0
+    letter-spacing: $s-9
+
+
+#content
+  min-width: $min-width
+  padding: (2 * $line-height) (3 * $line-height)
+  position: relative
+  min-height: $line-height * 30
+
+  .post
+    .post-header
+      margin-bottom: $line-height / 2
+      a
+        color: black
+        text-decoration: none
+        &:hover
+          text-decoration: underline
+      h2
+        font-size: $s2
+        font-weight: $semibold
+
+    .post-subheader
+      margin-bottom: $line-height / 2
+
+      .social-media
+        margin-left: $s1
+        display: inline-block
+        > *
+          display: inline-block !important
+          position: static !important
+          vertical-align: top !important
+          iframe
+            vertical-align: top !important
+
+
+    h3
+      font-size: $s1
+      font-weight: $semibold
+      padding-top: $line-height
+      margin-bottom: $line-height
+
+    p
+      width: $s15
+
+    div.right
+      float: right
+      margin-left: $line-height * 2
+      margin-bottom: $line-height
+      width: 551px
+      &.delegation
+        margin-bottom: 2 * $line-height
+
+    img.screenshot
+      @include box-shadow(#444 0 0 6px)
+      margin-bottom: $s1
+      display: block

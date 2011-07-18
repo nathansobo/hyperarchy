@@ -1,0 +1,10 @@
+---
+layout: default
+title: Hyperarchy Blog
+---
+
+<ul class="posts">
+  {% for post in site.posts %}
+    <li class="post">{{ post.content }}</li>
+  {% endfor %}
+</ul>

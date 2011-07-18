@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <title>{{ page.title }}</title>
+   <meta name="author" content="Nathan Sobo" />
+
+   <!-- syntax highlighting CSS -->
+   <link rel="stylesheet" href="/stylesheets/syntax.css" type="text/css" />
+
+   <!-- Homepage CSS -->
+   <link rel="stylesheet" href="/stylesheets/screen.css" type="text/css" media="screen, projection" />
+
+   <!-- Typekit -->
+  <script type="text/javascript" src="http://use.typekit.com/tzv2czk.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+
+  <meta property="og:title" content="{{page.title}}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Hyperarchy Blog" />
+  <meta property="fb:admins" content="650539382" />
+  <meta property="og:url" content="{{site.base_url}}{{page.url}}" />
+  <meta property="og:image" content="{{site.base_url}}{{page.open_graph_image}}" />
+
+</head>
+<body>
+
+<div id="gradient-background" ></div>
+<div id="site">
+  <div id="header">
+    <a href="https://hyperarchy.com">
+      <div id="logo"></div>
+      <h1>HYPERARCHY</h1>
+    </a>
+    <h2>/</h2>
+    <a href="/">
+      <h2>Blog</h2>
+    </a>
+  </div>
+
+  <div id="content">
+    {{ content }}
+  </div>
+
+
+
+  <div class="footer">
+    <!--<div class="rss">-->
+      <!--<a href="http://feeds.feedburner.com/hyperarchy">-->
+        <!--<img src="/images/rss.png" alt="Subscribe to RSS Feed" />-->
+      <!--</a>-->
+    <!--</div>-->
+  </div>
+</div>
+<div id="fb-root"></div>
+<div id="twitter-root"></div>
+
+<script type="text/javascript">
+  window.fbAsyncInit = function() {
+    FB.init({appId: '207827675895197', status: true, cookie: true, xfbml: true});
+  };
+
+  (function() {
+    var e = document.createElement('script'); e.async = true;
+    e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+    document.getElementById('fb-root').appendChild(e);
+  }());
+
+  (function() {
+    var e = document.createElement('script'); e.async = true;
+    e.src = document.location.protocol + '//platform.twitter.com/widgets.js';
+    document.getElementById('twitter-root').appendChild(e);
+  }());
+</script>
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+</body>
+</html>
