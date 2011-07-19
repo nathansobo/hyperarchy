@@ -17,7 +17,7 @@ describe("jQuery markdown extensions", function() {
 
     it("converts raw urls into links (but not inside of a tags)", function() {
       view.markdown("http://poison.com");
-      expect(view.html()).toBe('<p><a href="http://poison.com">http://poison.com</a></p>');
+      expect(view.html()).toBe('<p><a class="link" href="http://poison.com">http://poison.com</a></p>');
     });
   });
 
