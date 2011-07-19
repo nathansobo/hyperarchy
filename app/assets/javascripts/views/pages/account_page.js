@@ -10,6 +10,11 @@ _.constructor('Views.Pages.Account', Monarch.View.Template, {
         label("Email Address");
         input({name: "emailAddress"}).ref('emailAddress');
 
+        div(function() {
+          text("If you aren't Facebook connected, you can associate a profile image with your email address at ");
+          a({href: "http://gravatar.com", 'class': "link", target: "gravatar"}, "gravatar.com");
+        });
+
         input({type: "submit", value: "Save", 'class': "update button"}).ref('updateButton');
       }).ref('personalDetails').submit('update');
 
