@@ -1,9 +1,23 @@
 describe("jQuery markdown extensions", function() {
   describe("jQuery.fn.markdown", function() {
+    var view;
+    beforeEach(function() {
+      view = $('<div></div>');
+    });
+
     it("populates html with the given string after converting it from markdown", function() {
-      var view = $('<div></div>');
       view.markdown("I just **love** your _cupcakes!_");
       expect(view.html()).toBe("<p>I just <strong>love</strong> your <em>cupcakes!</em></p>");
+    });
+
+    it("strips out any html tags before converting to markdown", function() {
+      view.markdown("I just **love** your <a href='http://poison.com'>poison</a> _cupcakes!_");
+      expect(view.html()).toBe("<p>I just <strong>love</strong> your poison <em>cupcakes!</em></p>");
+    });
+
+    it("converts raw urls into links (but not inside of a tags)", function() {
+      view.markdown("http://poison.com");
+      expect(view.html()).toBe('<p><a href="http://poison.com">http://poison.com</a></p>');
     });
   });
 
