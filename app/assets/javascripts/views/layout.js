@@ -209,7 +209,8 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     scrollTop: function(top) {
-      return $(window).scrollTop(top);
+      var win = $(window);
+      return win.scrollTop.apply(win, arguments);
     },
 
     promptSignup: function() {
