@@ -12,9 +12,10 @@ _.constructor("Views.Layout", View.Template, {
           }).ref('logoAndTitle').click('navigateToCurrentOrganization');
 
           div({id: "menu-items"}, function() {
+            a({id: "blog-link", href: "http://blog.hyperarchy.com"}, "Blog / About");
             a({id: "feedback-link"}, "Feedback").ref('feedbackLink').click('showFeedbackForm');
             a({id: "invite-link"}, "Invite Your Team").ref('inviteLink').click('showInviteBox');
-
+            
             div({id: "organization-and-account"}, function() {
               subview('organizationsMenu', Views.Layout.OrganizationsMenu);
               subview('accountMenu', Views.Layout.AccountMenu);

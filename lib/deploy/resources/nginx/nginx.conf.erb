@@ -34,11 +34,17 @@ http {
 
   server {
     listen 80;
-    server_name  *.hyperarchy.com;
+    server_name  hyperarchy.com;
     root /app/public;
     if (!-f $document_root/$document_uri) {
       rewrite ^(.*) https://$host$1 permanent;
     }
+  }
+
+  server {
+    listen 80;
+    server_name blog.hyperarchy.com;
+    root /blog;
   }
   <% end %>
 

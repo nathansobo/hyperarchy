@@ -4,19 +4,8 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
 
       div({id: "headline"}, function() {
         a({'class': "new button"}, "Ask A Question").ref('newQuestionButton').click('newQuestion');
-        h1("Questions Under Discussion");
+        h1("Choose A Question:");
       });
-
-
-      div({id: "introduction"}, function() {
-        h1("Introducing Hyperarchy");
-        h2("A new way to gather opinions online");
-        h3(function() {
-          span("Ask questions. Rank answers.");
-          text(" ")
-          span("Track results in real time.");
-        });
-      }).ref('introduction');
 
       subview("questionsList", Views.Components.SortedList, {
         buildElement: function(question) {
