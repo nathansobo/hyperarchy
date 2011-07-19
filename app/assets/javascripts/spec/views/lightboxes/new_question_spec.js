@@ -4,14 +4,15 @@ describe("Views.Lightboxes.NewQuestion", function() {
   var newQuestionForm, organization, member, guest;
   beforeEach(function() {
     renderLayout();
-    newQuestionForm = Application.newQuestion.show();
-    newQuestionForm.shareOnFacebook.attr('checked', false);
-    organization = Organization.createFromRemote({id: 1});
+    organization = Organization.createFromRemote({id: 1, privacy: "public"});
     member = organization.makeMember({id: 1});
     guest =  organization.makeMember({id: 2, guest: true});
     Application.currentUser(member);
     Application.currentOrganization(organization);
     useFakeServer();
+
+    newQuestionForm = Application.newQuestion.show();
+    newQuestionForm.shareOnFacebook.attr('checked', false);
   });
 
   describe("when the form is submitted", function() {
@@ -39,6 +40,7 @@ describe("Views.Lightboxes.NewQuestion", function() {
           expect(Server.creates.length).toBe(1);
           var question = Server.lastCreate.record;
           spyOn(question, 'shareOnFacebook');
+
           Server.lastCreate.simulateSuccess({creatorId: Application.currentUserId()});
           expect(question.shareOnFacebook).toHaveBeenCalled();
         });
@@ -205,6 +207,22 @@ describe("Views.Lightboxes.NewQuestion", function() {
       newQuestionForm.show();
       expect(newQuestionForm.body.val()).toBe("");
       expect(newQuestionForm.details.val()).toBe("");
+    });
+
+    it("only shows the checkbox if the current organization is public, otherwise it hides it and unchecks it", function() {
+      expect(newQuestionForm.shareOnFacebook).toBeVisible();
+      newQuestionForm.close();
+
+      organization.remotelyUpdated({privacy: "private"});
+      newQuestionForm.show();
+
+      expect(newQuestionForm.shareOnFacebook.attr('checked')).toBeFalsy();
+      expect(newQuestionForm.shareOnFacebook).toBeHidden();
+      newQuestionForm.close();
+
+      organization.remotelyUpdated({privacy: "public"});
+      newQuestionForm.show();
+      expect(newQuestionForm.shareOnFacebook.attr('checked')).toBeTruthy();
     });
   });
 
