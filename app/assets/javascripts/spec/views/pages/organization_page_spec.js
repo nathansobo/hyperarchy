@@ -34,6 +34,8 @@ describe("Views.Pages.Organization", function() {
       var organization1, organization2, previousScrollTop;
 
       beforeEach(function() {
+        $("#jasmine_content").html(organizationPage);
+        organizationPage.show();
         organization1 = Organization.createFromRemote({id: 101, name: "Big Spenders"});
         organization2 = Organization.createFromRemote({id: 102, name: "Number Theorists"});
         organizationPage.params({organizationId: organization1.id()});

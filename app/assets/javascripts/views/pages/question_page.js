@@ -158,11 +158,16 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         this.loading(true);
       }
 
-
       if (params.voterId || params.answerId) {
         this.backLink.show();
       } else {
         this.backLink.hide();
+      }
+
+      if (Application.currentOrganization().isPublic()) {
+        this.facebookButton.show();
+      } else {
+        this.facebookButton.hide();
       }
 
       var voterId;
