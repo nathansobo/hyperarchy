@@ -164,12 +164,6 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         this.backLink.hide();
       }
 
-      if (Application.currentOrganization().isPublic()) {
-        this.facebookButton.show();
-      } else {
-        this.facebookButton.hide();
-      }
-
       var voterId;
 
       if (params.answerId) {
@@ -268,7 +262,14 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       change: function(question) {
         this.avatar.user(question.creator());
         this.body.bindMarkdown(question, 'body');
-        Application.currentOrganizationId(question.organizationId());
+
+        var organization = question.organization();
+        Application.currentOrganization(organization);
+        if (organization.isPublic()) {
+          this.facebookButton.show();
+        } else {
+          this.facebookButton.hide();
+        }
 
         this.details.bindMarkdown(question, 'details');
         this.comments.comments(question.comments());

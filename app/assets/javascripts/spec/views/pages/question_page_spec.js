@@ -19,7 +19,6 @@ describe("Views.Pages.Question", function() {
       usingBackdoor(function() {
         var questionCreator = User.create();
         var organization = Organization.create({privacy: "public"});
-        Application.currentOrganization(organization);
         organization.memberships().create({userId: Application.currentUserId()});
         question = organization.questions().create();
         question.update({creatorId: questionCreator.id()});
@@ -436,28 +435,6 @@ describe("Views.Pages.Question", function() {
       Server.lastFetch.simulateSuccess();
     });
 
-    describe("when the params are assigned", function() {
-      var privateOrg, privateOrgQuestion;
-
-      beforeEach(function() {
-        privateOrg = Organization.createFromRemote({id: 2, name: "Private Org", privacy: "private"});
-        var member = privateOrg.makeMember({id: 3});
-        privateOrgQuestion = privateOrg.questions().createFromRemote({id: 3, body: "Nobody knows", createdAt: 932, creatorId: member.id()});
-      });
-
-      it("hides the facebook button if the current org is private, and shows it otherwise", function() {
-        expect(questionPage.facebookButton).toBeVisible();
-
-        questionPage.params({questionId: privateOrgQuestion.id()});
-
-        expect(questionPage.facebookButton).toBeHidden();
-
-        questionPage.params({questionId: question.id()});
-
-        expect(questionPage.facebookButton).toBeVisible();
-      });
-    });
-
     describe("when an question is assigned", function() {
       it("assigns the question's body, details, avatar, and comments relation, and keeps the body and details up to date when they change", function() {
         expect(questionPage.body.html()).toEqual($.markdown(question.body()));
@@ -485,6 +462,28 @@ describe("Views.Pages.Question", function() {
         expect(question2.onUpdateNode.size()).toBeGreaterThan(subCountBefore);
         questionPage.question(question);
         expect(question2.onUpdateNode.size()).toBe(subCountBefore);
+      });
+
+      describe("showing and hiding the facebook button", function() {
+        var privateOrg, privateOrgQuestion;
+
+        beforeEach(function() {
+          privateOrg = Organization.createFromRemote({id: 2, name: "Private Org", privacy: "private"});
+          var member = privateOrg.makeMember({id: 3});
+          privateOrgQuestion = privateOrg.questions().createFromRemote({id: 3, body: "Nobody knows", createdAt: 932, creatorId: member.id()});
+        });
+
+        it("hides the facebook button if the current org is private, and shows it otherwise", function() {
+          expect(questionPage.facebookButton).toBeVisible();
+
+          questionPage.params({questionId: privateOrgQuestion.id()});
+
+          expect(questionPage.facebookButton).toBeHidden();
+
+          questionPage.params({questionId: question.id()});
+
+          expect(questionPage.facebookButton).toBeVisible();
+        });
       });
     });
 
