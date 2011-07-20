@@ -136,11 +136,11 @@ _.constructor("Views.Layout", View.Template, {
 
     currentOrganizationId: {
       change: function(currentOrganizationId) {
+        var organization = Organization.find(currentOrganizationId);
         this.socketConnectionFuture.success(function(sessionId) {
-          $.post('/channel_subscriptions/organizations/' + currentOrganizationId, { session_id: sessionId });
+          organization.subscribe({session_id: sessionId});
         });
-
-        this.currentOrganization(Organization.find(currentOrganizationId));
+        this.currentOrganization(organization);
       }
     },
 
@@ -190,16 +190,26 @@ _.constructor("Views.Layout", View.Template, {
       var socketServerHost = window.location.hostname;
       var secure = (window.location.protocol === 'https:')
       var socket = new io.Socket(socketServerHost, {rememberTransport: false, secure: secure, port: 8081, connectTimeout: 10000});
+
       socket.on('connect', this.bind(function() {
-        mpq.push(['track', "Connect"]);
-        this.socketConnectionFuture.triggerSuccess(socket.transport.sessionid);
+        if (this.reconnectTimeout) {
+          clearTimeout(this.reconnectTimeout);
+          Application.currentOrganization().subscribe({ session_id: socket.transport.sessionid, reconnecting: 1 });
+        } else {
+          this.socketConnectionFuture.triggerSuccess(socket.transport.sessionid);
+        }
       }));
+
       socket.on('message', function(m) {
         Repository.mutate(JSON.parse(m));
       });
+
+
       socket.on('disconnect', this.bind(function() {
-        mpq.push(['track', "Disconnect"]);
-        this.disconnectDialog.show();
+        this.reconnectTimeout = this.delay(function() {
+          this.disconnectDialog.show();
+          mpq.push(['track', "Reconnect Timeout"]);
+        });
       }));
 
       socket.connect();

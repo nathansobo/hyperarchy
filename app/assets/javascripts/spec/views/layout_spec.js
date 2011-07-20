@@ -172,14 +172,51 @@ describe("Views.Layout", function() {
   });
 
   describe("when the socket client is disconnected", function() {
-    it("shows the disconnect lightbox", function() {
+    beforeEach(function() {
       $("#jasmine_content").html(Application);
+      Application.currentOrganization(Organization.createFromRemote({id: 1}));
 
       expect(Application.disconnectDialog).toBeHidden();
       expect(Application.darkenedBackground).toBeHidden();
+
+      spyOn(window, 'setTimeout').andReturn('timeoutHandle');
+      spyOn(window, 'clearTimeout');
+
+      socketClient.transport.sessionid = 'fake-session-id';
+      socketClient.emit('connect');
+
       socketClient.emit('disconnect');
-      expect(Application.disconnectDialog).toBeVisible();
-      expect(Application.darkenedBackground).toBeVisible();
+      expect(window.setTimeout).toHaveBeenCalled();
+
+      expect(Application.disconnectDialog).toBeHidden();
+      expect(Application.darkenedBackground).toBeHidden();
+    });
+
+    describe("if the client reconnects before the timeout occurs", function() {
+      it("cancels the timeout and resubscribes to the current organization with the reconnecting=1 param", function() {
+        socketClient.emit('connect');
+
+        expect(jQuery.ajax).toHaveBeenCalledWith({
+          type : 'post',
+          url : '/channel_subscriptions/organizations/' + Application.currentOrganizationId(),
+          data : { session_id : 'fake-session-id', reconnecting: 1 },
+          success: undefined,
+          dataType: undefined
+        });
+
+        expect(window.clearTimeout).toHaveBeenCalledWith('timeoutHandle');
+      });
+    });
+
+    describe("if the timeout occurs before the client reconnects", function() {
+      it("shows the disconnect lightbox and sends an event to mixpanel", function() {
+        window.setTimeout.mostRecentCall.args[0]();
+
+        expect(mpq.pop()).toEqual(["track", "Reconnect Timeout"]);
+
+        expect(Application.disconnectDialog).toBeVisible();
+        expect(Application.darkenedBackground).toBeVisible();
+      });
     });
   });
 
@@ -300,25 +337,6 @@ describe("Views.Layout", function() {
           Application.currentUser(guest);
           expect(mpq.length).toBe(0);
         });
-      });
-    });
-
-    describe("when the connection to the socket server is made", function() {
-      it("pushes a 'connect' event to the mixpanel queue", function() {
-        socketClient.onConnect();
-        var connectEvent = mpq.pop();
-        expect(connectEvent[0]).toBe('track');
-        expect(connectEvent[1]).toBe('Connect');
-      });
-    });
-
-    describe("when the connection to the socket server is lost", function() {
-      it("pushes a 'connect' event to the mixpanel queue", function() {
-        socketClient.onConnect();
-        socketClient.onDisconnect();
-        var disconnectEvent = mpq.pop();
-        expect(disconnectEvent[0]).toBe('track');
-        expect(disconnectEvent[1]).toBe('Disconnect');
       });
     });
 

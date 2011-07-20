@@ -21,7 +21,7 @@ _.constructor("Organization", Model.Record, {
         return this.questions().joinThrough(Vote);
       });
 
-      this.hasMany("memberships", {orderBy: ["firstName asc", "emailAddress asc"]});
+      this.hasMany("memberships", {orderBy: ["firstName asc", "emailAddress asc"]});asc
       this.relatesToMany("members", function() {
         return this.memberships().joinThrough(User);
       });
@@ -34,6 +34,10 @@ _.constructor("Organization", Model.Record, {
 
   afterInitialize: function() {
     this.numQuestionsFetched = 0;
+  },
+
+  subscribe: function(data) {
+    $.post('/channel_subscriptions/organizations/' + this.id(), data);
   },
 
   fetchMoreQuestions: function() {
