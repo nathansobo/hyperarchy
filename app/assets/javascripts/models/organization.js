@@ -21,7 +21,7 @@ _.constructor("Organization", Model.Record, {
         return this.questions().joinThrough(Vote);
       });
 
-      this.hasMany("memberships", {orderBy: ["firstName asc", "emailAddress asc"]});asc
+      this.hasMany("memberships", {orderBy: ["firstName asc", "emailAddress asc"]});
       this.relatesToMany("members", function() {
         return this.memberships().joinThrough(User);
       });

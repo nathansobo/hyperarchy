@@ -4,8 +4,8 @@ class ChannelSubscriptionsController < ApplicationController
   def create
     organization = Organization.find(params[:id])
     raise SecurityError, "You do not have read permissions for org #{params[:id]}" unless organization.current_user_can_read?
-      
-    post(organization.subscribe_url, :params => {:session_id => params[:session_id]})
+
+    post(organization.subscribe_url, :params => params.slice(:session_id, :reconnecting))
     head :ok
   end
 

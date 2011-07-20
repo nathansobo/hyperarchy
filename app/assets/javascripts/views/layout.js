@@ -209,7 +209,7 @@ _.constructor("Views.Layout", View.Template, {
         this.reconnectTimeout = this.delay(function() {
           this.disconnectDialog.show();
           mpq.push(['track', "Reconnect Timeout"]);
-        });
+        }, 10000);
       }));
 
       socket.connect();
