@@ -57,6 +57,7 @@ Socket.prototype.send = function (data) {
 Socket.prototype.disconnect = function () {
   if (this.open) {
     this.conn.close();
+    this.sessionId = null;
   }
 };
 
