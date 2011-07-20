@@ -887,7 +887,7 @@ describe("Views.Pages.Question", function() {
           questionPage.answerDetails.click();
           expect(History.replaceState).not.toHaveBeenCalled();
 
-          questionPage.answerDetails.find(':not(.close,.destroy)').click();
+          questionPage.answerDetails.find(':not(.close,.destroy,.more,.less)').click();
           expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
           History.replaceState.reset();
 

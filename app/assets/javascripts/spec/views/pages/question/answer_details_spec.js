@@ -108,6 +108,101 @@ describe("Views.Pages.Question.AnswerDetails", function() {
     });
   });
 
+  describe("handling of long details", function() {
+    var longDetails = "It is ", longAnswer;
+
+    beforeEach(function() {
+      _.times(100, function() { longDetails += "so " });
+      longDetails += "good.";
+      longAnswer = creator.answers().createFromRemote({id: 1, questionId: 1, body: "Sourkraut", details: longDetails, createdAt: 1308352736162});
+    });
+
+    describe("when an answer is assigned or updated", function() {
+      it("truncates the details and shows and hides the expand button as appropriate", function() {
+        expect(answerDetails.expandedDetails).toBeHidden();
+        expect(answerDetails.details).toBeVisible();
+
+        // assign answer w/ long details
+        answerDetails.answer(longAnswer);
+
+        expect(answerDetails.expandButton).toBeVisible();
+        expect(answerDetails.details.text()).toContain(longAnswer.details().substring(0, 100));
+        expect(answerDetails.details.text()).toContain("…");
+
+        // update answer w/ short details
+        longAnswer.remotelyUpdated({details: "I like it."});
+
+        expect(answerDetails.expandButton).toBeHidden();
+        expect(answerDetails.details.text()).toContain(longAnswer.details());
+        expect(answerDetails.details.text()).not.toContain("…");
+
+        // update answer w/ long details
+        longDetails = "I just ";
+        _.times(100, function() { longDetails += "really " });
+        longDetails += "love it.";
+        longAnswer.remotelyUpdated({details: longDetails});
+
+        expect(answerDetails.expandButton).toBeVisible();
+        expect(answerDetails.details.text()).toContain(longAnswer.details().substring(0, 100));
+        expect(answerDetails.details.text()).toContain("…");
+
+        // assign answer w/ short details
+        answerDetails.answer(answer);
+
+        expect(answerDetails.expandButton).toBeHidden();
+        expect(answerDetails.details.text()).toContain(answer.details());
+        expect(answerDetails.details.text()).not.toContain("…");
+      });
+
+      it("exits expanded mode when a different answer is assigned", function() {
+        answerDetails.answer(answer);
+        answerDetails.expandButton.click();
+
+        answerDetails.answer(longAnswer);
+
+        expect(answerDetails.details).toBeVisible();
+        expect(answerDetails.expandButton).toBeVisible();
+        expect(answerDetails.expandedDetails).toBeHidden();
+        expect(answerDetails.contractButton).toBeHidden();
+        expect(answerDetails).not.toHaveClass('expanded');
+      });
+    });
+    
+    describe("when the 'more' and 'less' buttons are clicked", function() {
+      it("switches between the expanded and non-expanded details, and shows and hides the 'more' and 'less' buttons as appropriate", function() {
+        answerDetails.answer(longAnswer);
+
+        expect(answerDetails.details).toBeVisible();
+        expect(answerDetails.expandButton).toBeVisible();
+        expect(answerDetails.expandedDetails).toBeHidden();
+        expect(answerDetails.contractButton).toBeHidden();
+
+        answerDetails.expandButton.click();
+
+        expect(answerDetails.details).toBeHidden();
+        expect(answerDetails.expandButton).toBeHidden();
+        expect(answerDetails.expandedDetails).toBeVisible();
+        expect(answerDetails.contractButton).toBeVisible();
+        expect(answerDetails).toHaveClass('expanded');
+
+        answerDetails.contractButton.click();
+
+        expect(answerDetails.details).toBeVisible();
+        expect(answerDetails.expandButton).toBeVisible();
+        expect(answerDetails.expandedDetails).toBeHidden();
+        expect(answerDetails.contractButton).toBeHidden();
+        expect(answerDetails).not.toHaveClass('expanded');
+
+        // when you contract after the answer gets shorter in background while expanded, the expand button is hidden
+        answerDetails.expandButton.click();
+        longAnswer.remotelyUpdated({details: "I like it."});
+        answerDetails.contractButton.click();
+        expect(answerDetails.expandButton).toBeHidden();
+        expect(answerDetails.contractButton).toBeHidden();
+      });
+    });
+  });
+
   describe("showing and hiding the new form", function() {
     it("hides comments and empties out and shows the form fields & create button when #showNewForm is called", function() {
       answerDetails.editableBody.val("woweee!");

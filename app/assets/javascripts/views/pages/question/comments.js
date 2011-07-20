@@ -52,6 +52,7 @@ _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
     },
 
     adjustHeightAndScroll: function() {
+      if (this.expanded()) return;
       this.list.css('max-height', this.height() - this.headerHeight() - this.textareaAndButtonHeight() - 2);
       this.scrollToBottom();
     },
@@ -61,10 +62,10 @@ _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
     },
 
     textareaAndButtonHeight: function() {
-      return this.textareaAndButton.height() + parseInt(this.list.css('margin-bottom'));
+      return this.textareaAndButton.outerHeight() + parseInt(this.list.css('margin-bottom'));
     },
 
-    scrollToBottom: function(animate) {
+    scrollToBottom: function() {
       this.list.scrollTop(this.list.attr('scrollHeight') - this.list.height());
     },
 
@@ -74,6 +75,17 @@ _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
           this.hide();
         } else {
           this.show();
+        }
+      }
+    },
+
+    expanded: {
+      change: function(isExpanded) {
+        if (isExpanded) {
+          this.css('height', 'auto');
+          this.list.css('max-height', 'none');
+        } else {
+          this.adjustHeightAndScroll();
         }
       }
     }

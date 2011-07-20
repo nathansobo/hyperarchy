@@ -1,13 +1,24 @@
 _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
   content: function() { with(this.builder) {
     div({id: "answer-details"}, function() {
-      div(function() {
+      div({'class': "non-editable"}, function() {
         div({'class': "body"}).ref("body");
-        div({'class': "details"}).ref("details");
-        a({'class': "edit button"}, "Edit").ref('editButton').click('edit');
-        a({'class': "destroy button"}, "Delete").ref('destroyButton').click('destroy');
+        span({'class': "details"}).ref("details");
+        span({'class': "details"}).ref("expandedDetails");
+        a({'class': "more link"}, "more ↓").
+          ref("expandButton").
+          click(function() {
+            this.expanded(true);
+          });
+        a({'class': "less link"}, "less ↑ ").
+          ref("contractButton").
+          click(function() {
+            this.expanded(false);
+          });
+        div({'class': "clear"});
+        a({'class': "edit"}, "✎ edit").ref('editButton').click('edit');
+        a({'class': "destroy"}, "✕ delete").ref('destroyButton').click('destroy');
       }).ref('nonEditableContent');
-
 
       form(function() {
         textarea({name: "body", 'class': "body", tabindex: 201}).ref("editableBody");
@@ -50,7 +61,6 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
       change: function(answer) {
         if (!answer) return;
         this.body.bindMarkdown(answer, 'body');
-        this.details.bindMarkdown(answer, 'details');
         this.avatar.user(answer.creator());
         this.creatorName.bindText(answer.creator(), 'fullName');
         this.createdAt.text(answer.formattedCreatedAt());
@@ -61,8 +71,9 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
         this.registerInterest(answer, 'onDestroy', function() {
           History.pushState(null, null, answer.question().url());
         });
-        this.registerInterest(answer, 'onUpdate', this.hitch('adjustCommentsHeight'));
-        this.adjustCommentsHeight();
+        this.registerInterest(answer, 'onUpdate', this.hitch('handleAnswerUpdate'));
+        this.handleAnswerUpdate();
+        this.expanded(false);
       },
 
       write: function(answer) {
@@ -145,17 +156,69 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
       }
     },
 
+    expanded: {
+      change: function(isExpanded) {
+        this.comments.expanded(isExpanded);
+        if (isExpanded) {
+          this.addClass('expanded');
+          this.details.hide();
+          this.expandedDetails.show();
+          this.contractButton.show();
+          this.expandButton.hide();
+        } else {
+          this.removeClass('expanded');
+          this.expandedDetails.hide();
+          this.details.show();
+          this.contractButton.hide();
+          this.scrollTop(0);
+          this.showOrHideMoreButton();
+          this.adjustCommentsHeight();
+        }
+      }
+    },
+
+    showOrHideMoreButton: function() {
+      if (!this.answer()) debugger;
+      var details = this.answer().details();
+      if (!this.expanded() && details && details.length > this.maxDetailsLength) {
+        this.expandButton.show();
+      } else {
+        this.expandButton.hide();
+      }
+    },
+
+    truncate: function(string, maxChars) {
+      if (string.length < maxChars) {
+        return string
+      } else {
+        var lastSpacePosition = string.lastIndexOf(" ", maxChars);
+        return string.substring(0, lastSpacePosition) + "…";
+      }
+    },
+
+    maxDetailsLength: 200,
+
+    handleAnswerUpdate: function() {
+      var answer = this.answer();
+      this.details.markdown(this.truncate(answer.details() || "", this.maxDetailsLength));
+      this.expandedDetails.markdown(answer.details());
+      this.adjustCommentsHeight();
+      this.showOrHideMoreButton();
+    },
+
     adjustCommentsHeight: function() {
+      if (this.expanded()) return;
       this.comments.fillVerticalSpace(this);
       this.comments.adjustHeightAndScroll();
     },
 
-    commentsTopPosition: function() {
-      return this.creator.position().top + this.creator.height() + Application.lineHeight * 2;
-    },
-
     loading: function(loading) {
       return this.comments.loading.apply(this.comments, arguments);
+    },
+
+    scrollToBottom: function() {
+      console.log(this.height(), this.attr('scrollHeight'));
+      this.scrollTop(this.attr('scrollHeight') - this.height());
     }
   }
 });

@@ -174,7 +174,25 @@ describe("Views.Pages.Question.Comments", function() {
       expect(commentsView).toBeVisible();
     });
   });
+  
+  describe("#expanded(true/false)", function() {
+    it("adjusts css properties to auto-expand when in expanded mode or remain contain when collapsed", function() {
+      expect(commentsView.expanded()).toBeFalsy();
+      commentsView.height(150);
+      commentsView.adjustHeightAndScroll();
 
+      // when expanded, no longer contains itself in previously assigned height
+      commentsView.expanded(true);
+      expect(commentsView.height()).toBeGreaterThan(150);
+      expect(commentsView.list.css('max-height')).toBe('none');
+      commentsView.adjustHeightAndScroll();
+      expect(commentsView.list.css('max-height')).toBe('none');
+
+      commentsView.expanded(false);
+      expect(commentsView.list.css('max-height')).not.toBe('none'); // resize the list to fit
+    });
+  });
+  
   describe("mixpanel tracking", function() {
     beforeEach(function() {
       useFakeServer();
