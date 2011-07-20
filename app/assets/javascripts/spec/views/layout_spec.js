@@ -10,16 +10,16 @@ describe("Views.Layout", function() {
       expect(socketClient.connect).toHaveBeenCalled();
 
       var createCommand = ['create', 'questions', {id: 1, body: "What up now?"}];
-      socketClient.emit('message', [JSON.stringify(createCommand)]);
+      socketClient.emit('message', [JSON.stringify([createCommand])]);
 
       expect(Question.find(1).body()).toBe("What up now?");
 
       var updateCommand = ['update', 'questions', 1, {body: "What up later?"}];
-      socketClient.emit('message', [JSON.stringify(updateCommand)]);
+      socketClient.emit('message', [JSON.stringify([updateCommand])]);
       expect(Question.find(1).body()).toBe("What up later?");
 
       var updateCommand = ['destroy', 'questions', 1];
-      socketClient.emit('message', [JSON.stringify(updateCommand)]);
+      socketClient.emit('message', [JSON.stringify([updateCommand])]);
       expect(Question.find(1)).toBeUndefined();
     });
 

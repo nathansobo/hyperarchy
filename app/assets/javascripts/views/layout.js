@@ -195,7 +195,7 @@ _.constructor("Views.Layout", View.Template, {
         this.socketConnectionFuture.triggerSuccess(socket.transport.sessionid);
       }));
       socket.on('message', function(m) {
-        Repository.mutate([JSON.parse(m)]);
+        Repository.mutate(JSON.parse(m));
       });
       socket.on('disconnect', this.bind(function() {
         mpq.push(['track', "Disconnect"]);
