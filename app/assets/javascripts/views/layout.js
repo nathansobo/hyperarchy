@@ -183,6 +183,7 @@ _.constructor("Views.Layout", View.Template, {
       var page = this[name + 'Page'];
       if (!page.fixedHeight) this.addClass('normal-height');
       page.show().params(parsedParams);
+      _gaq.push(['_trackPageview']);
     },
 
     connectToSocketServer: function() {
