@@ -86,7 +86,7 @@ _.constructor("Views.Layout", View.Template, {
 
       FB.login(this.bind(function(response) {
         if (response.session) {
-          if (response.session.uid === Application.currentUser().facebookUid()) {
+          if (response.session.uid === Application.currentUser().facebookId()) {
             mpq.push(['track', "Facebook Login"]);
             promise.triggerSuccess();
           } else {

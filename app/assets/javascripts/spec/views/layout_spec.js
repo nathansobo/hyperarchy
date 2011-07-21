@@ -275,7 +275,7 @@ describe("Views.Layout", function() {
 
     describe("when the facebook uid matches that of the current user", function() {
       it("triggers the success promise immediately", function() {
-        Application.currentUser(User.createFromRemote({id: 1, facebookUid: '123'}));
+        Application.currentUser(User.createFromRemote({id: 1, facebookId: '123'}));
         var promise = Application.facebookLogin()
 
         expect(FB.login).toHaveBeenCalled();
@@ -288,8 +288,8 @@ describe("Views.Layout", function() {
 
     describe("when the facebook uid does not match that of the current user", function() {
       it("triggers the success promise after posting to /facebook_sessions and switching the current user", function() {
-        var otherUser = User.createFromRemote({id: 2, facebookUid: '123'});
-        Application.currentUser(User.createFromRemote({id: 1, facebookUid: 'xxx'}));
+        var otherUser = User.createFromRemote({id: 2, facebookId: '123'});
+        Application.currentUser(User.createFromRemote({id: 1, facebookId: 'xxx'}));
         var promise = Application.facebookLogin()
 
         expect(FB.login).toHaveBeenCalled();
@@ -347,7 +347,7 @@ describe("Views.Layout", function() {
 
       describe("when the facebook uid matches that of the current user", function() {
         it("pushes a 'facebook login' event to the mixpanel queue", function() {
-          Application.currentUser(User.createFromRemote({id: 1, facebookUid: '123'}));
+          Application.currentUser(User.createFromRemote({id: 1, facebookId: '123'}));
           mpq = [];
           Application.facebookLogin();
           var callback = FB.login.mostRecentCall.args[0];
@@ -361,8 +361,8 @@ describe("Views.Layout", function() {
 
       describe("when the facebook uid does not match that of the current user", function() {
         it("pushes a 'connect facebook account' event to the mixpanel queue", function() {
-          var otherUser = User.createFromRemote({id: 2, facebookUid: '123'});
-          Application.currentUser(User.createFromRemote({id: 1, facebookUid: 'xxx'}));
+          var otherUser = User.createFromRemote({id: 2, facebookId: '123'});
+          Application.currentUser(User.createFromRemote({id: 1, facebookId: 'xxx'}));
           mpq = [];
           Application.facebookLogin();
           var callback = FB.login.mostRecentCall.args[0];
