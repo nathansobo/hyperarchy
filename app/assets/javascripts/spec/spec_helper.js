@@ -15,6 +15,7 @@ var originalServer = window.Server;
 Views.Pages.Question.AnswerLi.prototype.viewProperties.dragDelay = null;
 
 var mpq;
+var _gaq;
 
 beforeEach(function() {
   ajaxRequests = [];
@@ -24,6 +25,7 @@ beforeEach(function() {
   stubAjax();
   spyOn(Question, 'updateScoresPeriodically');
   mpq = []
+  _gaq = [];
 });
 
 afterEach(function() {
