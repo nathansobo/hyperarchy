@@ -24,6 +24,16 @@ describe("Views.Pages.Account", function() {
     it("assigns the current organization to the user's default org", function() {
       expect(Application.currentOrganization()).toBe(currentUser.defaultOrganization());
     });
+
+    it("disables the membership preferences if the user has email disabled", function() {
+      organization.makeMember({id: 2, emailEnabled: false});
+      Application.showPage('account', {userId: 2})
+      
+      expect(accountPage.membershipPreferences).toHaveClass('disabled');
+
+      console.log(accountPage.membershipPreferences.find('select'));
+      expect(accountPage.membershipPreferences.find('select')).toMatchSelector(':disabled');
+    });
   });
 
   describe("editing and saving of details", function() {

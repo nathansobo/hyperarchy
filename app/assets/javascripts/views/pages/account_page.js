@@ -47,6 +47,7 @@ _.constructor('Views.Pages.Account', Monarch.View.Template, {
         this.enableOrDisableUpdateButton();
         this.personalDetails.find('input').bind('keyup paste cut change', this.hitch('enableOrDisableUpdateButton'));
         this.membershipPreferences.relation(user.memberships());
+        this.enableOrDisableMembershipPreferences();
       }
     },
 
