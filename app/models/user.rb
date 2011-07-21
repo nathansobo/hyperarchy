@@ -12,7 +12,7 @@ class User < Prequel::Record
   column :password_reset_token_generated_at, :datetime
   column :guest, :boolean, :default => false
   column :default_guest, :boolean, :default => false
-  column :facebook_uid, :string
+  column :facebook_id, :string
   synthetic_column :email_hash, :string
 
   has_many :memberships
@@ -144,7 +144,7 @@ class User < Prequel::Record
     errors.add(:first_name, "You must enter a first name.") if first_name.blank?
     errors.add(:last_name, "You must enter a last name.") if last_name.blank?
     errors.add(:email_address, "You must enter an email address.") if email_address.blank?
-    if encrypted_password.blank? && facebook_uid.blank?
+    if encrypted_password.blank? && facebook_id.blank?
       errors.add(:password, "You must enter a password.")
     end
   end
