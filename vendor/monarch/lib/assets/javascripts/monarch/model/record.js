@@ -1,7 +1,7 @@
 (function(Monarch) {_.constructor("Monarch.Model.Record", {
   constructorProperties: {
     initialize: function() {
-      this.delegateConstructorMethods('find', 'fetch', 'findOrFetch', 'tuples', 'first', 'each', 'onEach', 'map', 'any',
+      this.delegateConstructorMethods('find', 'fetch', 'findOrFetch', 'tuples', 'first', 'last', 'each', 'onEach', 'map', 'any',
                                       'onInsert', 'onUpdate', 'onRemove', 'onDirty', 'onClean', 'onInvalid', 'defaultOrderBy',
                                       'onValid', 'where', 'offset', 'contains', 'orderBy', 'project', 'union', 'difference',
                                       'empty', 'build', 'create', 'createFromRemote', 'fixture', 'clear', 'wireRepresentation',

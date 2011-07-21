@@ -774,13 +774,11 @@ describe("Views.Pages.Question", function() {
       });
     })
 
-    describe("adjustment of the comments top position", function() {
+    describe("adjustment of the comments height", function() {
       var longDetails = "";
       beforeEach(function() {
         longDetails = "";
         for (var i = 0; i < 10; i++) longDetails += "Bee bee boo boo ";
-
-        spyOn(questionPage.comments, 'adjustHeightAndScroll');
       });
 
       describe("when the details and creator div are populated or when the details change", function() {
@@ -788,7 +786,6 @@ describe("Views.Pages.Question", function() {
           expectCommentsToHaveFullHeight();
           question.remotelyUpdated({details: longDetails});
           expectCommentsToHaveFullHeight();
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
         });
       });
 
@@ -800,7 +797,6 @@ describe("Views.Pages.Question", function() {
           Application.width(700);
           $(window).resize();
           expectCommentsToHaveFullHeight();
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
         });
       });
 
@@ -808,7 +804,6 @@ describe("Views.Pages.Question", function() {
         it("adjusts comments to fill remaining vertical space", function() {
           questionPage.editButton.click();
           expectCommentsToHaveFullHeight();
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
         });
       });
 
@@ -816,26 +811,18 @@ describe("Views.Pages.Question", function() {
         it("adjusts comments to fill remaining vertical space", function() {
           questionPage.editButton.click();
           expectCommentsToHaveFullHeight();
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
 
-          questionPage.comments.adjustHeightAndScroll.reset();
           var columnHeightBeforeElastic = questionPage.find('#column1').height();
           questionPage.editableDetails.val(longDetails + longDetails);
           questionPage.editableDetails.keyup();
           expectCommentsToHaveFullHeight(columnHeightBeforeElastic);
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
 
-          questionPage.comments.adjustHeightAndScroll.reset();
           questionPage.editableDetails.val("");
           questionPage.editableDetails.keyup();
           expectCommentsToHaveFullHeight(columnHeightBeforeElastic);
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
 
-
-          questionPage.comments.adjustHeightAndScroll.reset();
           questionPage.editableBody.val(longDetails);
           questionPage.editableBody.keyup();
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
         });
       });
 

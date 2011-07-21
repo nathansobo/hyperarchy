@@ -514,7 +514,6 @@ describe("Views.Pages.Question.AnswerDetails", function() {
     beforeEach(function() {
       longText = "";
       for (var i = 0; i < 10; i++) longText += "Bee bee boo boo ";
-      spyOn(answerDetails.comments, 'adjustHeightAndScroll');
     });
 
     describe("when the details/body are assigned and when they change", function() {
@@ -527,7 +526,6 @@ describe("Views.Pages.Question.AnswerDetails", function() {
 
         answer.remotelyUpdated({details: longText});
         expectCommentsToHaveFullHeight();
-        expect(answerDetails.comments.adjustHeightAndScroll).toHaveBeenCalled();
       });
     });
 
@@ -539,7 +537,6 @@ describe("Views.Pages.Question.AnswerDetails", function() {
         Application.questionPage.width(800);
         $(window).resize();
         expectCommentsToHaveFullHeight();
-        expect(answerDetails.comments.adjustHeightAndScroll).toHaveBeenCalled();
       });
     });
 

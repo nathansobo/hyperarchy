@@ -44,7 +44,7 @@ describe("Views.Pages.Question.Comments", function() {
 
     describe("when the current user is a member", function() {
       describe("when the create comment button is clicked", function() {
-        it("clears the textarea, resizes it and submits a comment to the server", function() {
+        it("clears and resizes the textarea, scrolls list to bottom, and submits a comment to the server", function() {
           var originalTextareaHeight = commentsView.textarea.height();
 
           commentsView.textarea.val(longCommentBody);
@@ -136,67 +136,113 @@ describe("Views.Pages.Question.Comments", function() {
   });
 
   describe("auto-scrolling", function() {
+    beforeEach(function() {
+      _.times(20, function(i) {
+        commentsRelation.createFromRemote({id: 100 + i, body: "This is a comment to make the thing overflow", creatorId: creator1.id(), createdAt: 12345});
+      });
+    });
 
     describe("when the user has not scrolled the comments list", function() {
-      describe("when a comment is inserted by anyone", function() {
+      describe("when a comment is inserted/destroyed by anyone", function() {
         it("auto-scrolls to the end of the list", function() {
-
+          var longComment = commentsRelation.createFromRemote({id: 13, body: longCommentBody, creatorId: creator1.id(), createdAt: 2345234})
+          expectListScrolledToBottom();
+          longComment.remotelyDestroyed();
+          expectListScrolledToBottom();
         });
       });
 
-      describe("when adjustListHeight is called", function() {
+      describe("when the height is changed", function() {
         it("auto-scrolls to the end of the list", function() {
+          commentsView.height(600);
+          expectListScrolledToBottom();
 
+          commentsView.height(300);
+          expectListScrolledToBottom();
         });
       });
     });
 
     describe("when the user has scrolled the comments list up intentionally", function() {
-      describe("when a comment is inserted by the current user", function() {
-        it("auto-scrolls to the end of the list", function() {
+      var initialScrollTop;
+      beforeEach(function() {
+        initialScrollTop = commentsView.list.scrollTop() - 200;
+        commentsView.list.scrollTop(initialScrollTop);
+        commentsView.list.trigger('scroll');
+      });
 
+      describe("when a comment is inserted", function() {
+        it("does not change the scroll position", function() {
+          commentsRelation.createFromRemote({id: 200, body: "Another comment", creatorId: creator1.id(), createdAt: 12345});
+          expect(commentsView.list.scrollTop()).toBe(initialScrollTop);
         });
       });
 
-      describe("when a comment is inserted by someone else", function() {
+      describe("when the height is changed", function() {
         it("does not change the scroll position", function() {
-
+          commentsView.height(400);
+          expectListNotScrolledToBottom();
+          commentsView.height(300);
+          expectListNotScrolledToBottom();
         });
       });
 
-      describe("when adjustListHeight is called", function() {
-        it("does not change the scroll position", function() {
+      describe("when a comment is submitted", function() {
+        it("scrolls back to the bottom and re-enables autoscroll", function() {
+          useFakeServer();
 
+          commentsView.textarea.val("We are liiiving, in a material world");
+          commentsView.createButton.click();
+
+          expectListScrolledToBottom();
+
+          console.log(Server.lastCreate.record.inspect());
+
+          Server.lastCreate.simulateSuccess({creatorId: creator1.id(), createdAt: 12345});
+
+          expectListScrolledToBottom();
         });
       });
     });
 
     describe("when the user previously scrolled up, but then scrolled back to the bottom", function() {
-      describe("when a comment is inserted by anyone", function() {
-        it("auto-scrolls to the end of the list", function() {
+      beforeEach(function() {
+        var list = commentsView.list;
+        initialScrollTop = list.scrollTop() - 200;
+        list.scrollTop(initialScrollTop);
+        list.trigger('scroll');
+        commentsView.scrollToBottom();
+        list.trigger('scroll');
+      });
 
+      describe("when a comment is inserted/destroyed by anyone", function() {
+        it("auto-scrolls to the end of the list", function() {
+          var longComment = commentsRelation.createFromRemote({id: 13, body: longCommentBody, creatorId: creator1.id(), createdAt: 2345234})
+          expectListScrolledToBottom();
+          longComment.remotelyDestroyed();
+          expectListScrolledToBottom();
         });
       });
 
-      describe("when adjustListHeight is called", function() {
+      describe("when the height is changed", function() {
         it("auto-scrolls to the end of the list", function() {
+          commentsView.height(600);
+          expectListScrolledToBottom();
 
+          commentsView.height(300);
+          expectListScrolledToBottom();
         });
-      });
-    });
-
-    describe("when comments are inserted and removed", function() {
-      it("scrolls to the end", function() {
-        var longComment = commentsRelation.createFromRemote({id: 13, body: longCommentBody, creatorId: creator1.id(), createdAt: 2345234})
-        expectListScrolledToBottom();
-        longComment.remotelyDestroyed();
-        expectListScrolledToBottom();
       });
     });
 
     function expectListScrolledToBottom() {
       var list = commentsView.list;
       expect(list.attr('scrollTop') + list.height()).toBe(list.attr('scrollHeight'));
+    }
+
+    function expectListNotScrolledToBottom() {
+      var list = commentsView.list;
+      expect(list.attr('scrollTop') + list.height()).toBeLessThan(list.attr('scrollHeight'));
     }
   });
 
@@ -228,13 +274,10 @@ describe("Views.Pages.Question.Comments", function() {
     it("adjusts css properties to auto-expand when in expanded mode or remain contain when collapsed", function() {
       expect(commentsView.expanded()).toBeFalsy();
       commentsView.height(150);
-      commentsView.adjustHeightAndScroll();
 
       // when expanded, no longer contains itself in previously assigned height
       commentsView.expanded(true);
       expect(commentsView.height()).toBeGreaterThan(150);
-      expect(commentsView.list.css('max-height')).toBe('none');
-      commentsView.adjustHeightAndScroll();
       expect(commentsView.list.css('max-height')).toBe('none');
 
       commentsView.expanded(false);

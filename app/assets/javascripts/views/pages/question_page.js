@@ -384,7 +384,6 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
 
     adjustCommentsHeight: function() {
       this.comments.fillVerticalSpace(this.columns);
-      this.comments.adjustHeightAndScroll();
     },
 
     showOrHideMutateButtons: function() {
