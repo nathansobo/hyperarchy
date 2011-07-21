@@ -6,12 +6,12 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
         span({'class': "details"}).ref("details");
         span({'class': "details"}).ref("expandedDetails");
         a({'class': "more link"}, "more ↓").
-          ref("expandButton").
+          ref("moreLink").
           click(function() {
             this.expanded(true);
           });
         a({'class': "less link"}, "less ↑ ").
-          ref("contractButton").
+          ref("lessLink").
           click(function() {
             this.expanded(false);
           });
@@ -111,6 +111,7 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
     },
 
     edit: function() {
+      this.expanded(true);
       this.nonEditableContent.hide();
       this.form.show();
       this.updateButton.show();
@@ -139,6 +140,7 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
     },
 
     cancelEdit: function() {
+      this.expanded(false);
       this.nonEditableContent.show();
       if (!this.comments.loading()) this.comments.show();
       this.form.hide();
@@ -163,13 +165,13 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
           this.addClass('expanded');
           this.details.hide();
           this.expandedDetails.show();
-          this.contractButton.show();
-          this.expandButton.hide();
+          this.lessLink.show();
+          this.moreLink.hide();
         } else {
           this.removeClass('expanded');
           this.expandedDetails.hide();
           this.details.show();
-          this.contractButton.hide();
+          this.lessLink.hide();
           this.scrollTop(0);
           this.showOrHideMoreButton();
           this.adjustCommentsHeight();
@@ -178,13 +180,18 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
     },
 
     showOrHideMoreButton: function() {
-      if (!this.answer()) debugger;
-      var details = this.answer().details();
-      if (!this.expanded() && details && details.length > this.maxDetailsLength) {
-        this.expandButton.show();
+      if (this.shouldShowMoreLink()) {
+        this.moreLink.show();
       } else {
-        this.expandButton.hide();
+        this.moreLink.hide();
       }
+    },
+
+    shouldShowMoreLink: function() {
+      if (this.expanded()) return false;
+      if (!(this.answer() && this.answer().details())) return false;
+
+      return this.answer().details().length > this.maxDetailsLength;
     },
 
     truncate: function(string, maxChars) {

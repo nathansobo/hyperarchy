@@ -125,14 +125,14 @@ describe("Views.Pages.Question.AnswerDetails", function() {
         // assign answer w/ long details
         answerDetails.answer(longAnswer);
 
-        expect(answerDetails.expandButton).toBeVisible();
+        expect(answerDetails.moreLink).toBeVisible();
         expect(answerDetails.details.text()).toContain(longAnswer.details().substring(0, 100));
         expect(answerDetails.details.text()).toContain("…");
 
         // update answer w/ short details
         longAnswer.remotelyUpdated({details: "I like it."});
 
-        expect(answerDetails.expandButton).toBeHidden();
+        expect(answerDetails.moreLink).toBeHidden();
         expect(answerDetails.details.text()).toContain(longAnswer.details());
         expect(answerDetails.details.text()).not.toContain("…");
 
@@ -142,28 +142,28 @@ describe("Views.Pages.Question.AnswerDetails", function() {
         longDetails += "love it.";
         longAnswer.remotelyUpdated({details: longDetails});
 
-        expect(answerDetails.expandButton).toBeVisible();
+        expect(answerDetails.moreLink).toBeVisible();
         expect(answerDetails.details.text()).toContain(longAnswer.details().substring(0, 100));
         expect(answerDetails.details.text()).toContain("…");
 
         // assign answer w/ short details
         answerDetails.answer(answer);
 
-        expect(answerDetails.expandButton).toBeHidden();
+        expect(answerDetails.moreLink).toBeHidden();
         expect(answerDetails.details.text()).toContain(answer.details());
         expect(answerDetails.details.text()).not.toContain("…");
       });
 
       it("exits expanded mode when a different answer is assigned", function() {
         answerDetails.answer(answer);
-        answerDetails.expandButton.click();
+        answerDetails.moreLink.click();
 
         answerDetails.answer(longAnswer);
 
         expect(answerDetails.details).toBeVisible();
-        expect(answerDetails.expandButton).toBeVisible();
+        expect(answerDetails.moreLink).toBeVisible();
         expect(answerDetails.expandedDetails).toBeHidden();
-        expect(answerDetails.contractButton).toBeHidden();
+        expect(answerDetails.lessLink).toBeHidden();
         expect(answerDetails).not.toHaveClass('expanded');
       });
     });
@@ -173,32 +173,32 @@ describe("Views.Pages.Question.AnswerDetails", function() {
         answerDetails.answer(longAnswer);
 
         expect(answerDetails.details).toBeVisible();
-        expect(answerDetails.expandButton).toBeVisible();
+        expect(answerDetails.moreLink).toBeVisible();
         expect(answerDetails.expandedDetails).toBeHidden();
-        expect(answerDetails.contractButton).toBeHidden();
+        expect(answerDetails.lessLink).toBeHidden();
 
-        answerDetails.expandButton.click();
+        answerDetails.moreLink.click();
 
         expect(answerDetails.details).toBeHidden();
-        expect(answerDetails.expandButton).toBeHidden();
+        expect(answerDetails.moreLink).toBeHidden();
         expect(answerDetails.expandedDetails).toBeVisible();
-        expect(answerDetails.contractButton).toBeVisible();
+        expect(answerDetails.lessLink).toBeVisible();
         expect(answerDetails).toHaveClass('expanded');
 
-        answerDetails.contractButton.click();
+        answerDetails.lessLink.click();
 
         expect(answerDetails.details).toBeVisible();
-        expect(answerDetails.expandButton).toBeVisible();
+        expect(answerDetails.moreLink).toBeVisible();
         expect(answerDetails.expandedDetails).toBeHidden();
-        expect(answerDetails.contractButton).toBeHidden();
+        expect(answerDetails.lessLink).toBeHidden();
         expect(answerDetails).not.toHaveClass('expanded');
 
         // when you contract after the answer gets shorter in background while expanded, the expand button is hidden
-        answerDetails.expandButton.click();
+        answerDetails.moreLink.click();
         longAnswer.remotelyUpdated({details: "I like it."});
-        answerDetails.contractButton.click();
-        expect(answerDetails.expandButton).toBeHidden();
-        expect(answerDetails.contractButton).toBeHidden();
+        answerDetails.lessLink.click();
+        expect(answerDetails.moreLink).toBeHidden();
+        expect(answerDetails.lessLink).toBeHidden();
       });
     });
   });
@@ -398,6 +398,7 @@ describe("Views.Pages.Question.AnswerDetails", function() {
       expect(answerDetails.editableBody[0]).toBe(document.activeElement);
       expect(answerDetails.charsRemaining.text()).toBe((140 - answer.body().length).toString());
       expect(answerDetails.editableDetails.val()).toBe(answer.details());
+      expect(answerDetails.expanded()).toBeTruthy();
 
       answerDetails.cancelEditButton.click();
 
@@ -405,6 +406,7 @@ describe("Views.Pages.Question.AnswerDetails", function() {
       expect(answerDetails.updateButton).toBeHidden();
       expect(answerDetails.cancelEditButton).toBeHidden();
       expect(answerDetails.nonEditableContent).toBeVisible();
+      expect(answerDetails.expanded()).toBeFalsy();
     });
 
     it("does not show the comments if they are still loading", function() {
@@ -529,17 +531,6 @@ describe("Views.Pages.Question.AnswerDetails", function() {
       });
     });
 
-    describe("when the form is shown and hidden", function() {
-      it("adjusts the comments to fill the remaining available height", function() {
-        answerDetails.editButton.click();
-        expectCommentsToHaveFullHeight();
-        
-        answerDetails.cancelEditButton.click();
-        expectCommentsToHaveFullHeight();
-        expect(answerDetails.comments.adjustHeightAndScroll).toHaveBeenCalled();
-      });
-    });
-
     describe("when the window is resized", function() {
       it("adjusts the comments to fill the remaining available height", function() {
         Application.questionPage.width(1200);
@@ -547,22 +538,6 @@ describe("Views.Pages.Question.AnswerDetails", function() {
 
         Application.questionPage.width(800);
         $(window).resize();
-        expectCommentsToHaveFullHeight();
-        expect(answerDetails.comments.adjustHeightAndScroll).toHaveBeenCalled();
-      });
-    });
-
-    describe("when the body or details textareas resize elastically", function() {
-      it("adjusts the comments to fill the remaining available height", function() {
-        answerDetails.editButton.click();
-
-        answerDetails.editableBody.val(longText);
-        answerDetails.editableBody.keyup();
-        expectCommentsToHaveFullHeight();
-
-        answerDetails.editableDetails.val(longText);
-        answerDetails.editableDetails.keyup();
-
         expectCommentsToHaveFullHeight();
         expect(answerDetails.comments.adjustHeightAndScroll).toHaveBeenCalled();
       });
