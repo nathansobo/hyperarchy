@@ -136,6 +136,55 @@ describe("Views.Pages.Question.Comments", function() {
   });
 
   describe("auto-scrolling", function() {
+
+    describe("when the user has not scrolled the comments list", function() {
+      describe("when a comment is inserted by anyone", function() {
+        it("auto-scrolls to the end of the list", function() {
+
+        });
+      });
+
+      describe("when adjustListHeight is called", function() {
+        it("auto-scrolls to the end of the list", function() {
+
+        });
+      });
+    });
+
+    describe("when the user has scrolled the comments list up intentionally", function() {
+      describe("when a comment is inserted by the current user", function() {
+        it("auto-scrolls to the end of the list", function() {
+
+        });
+      });
+
+      describe("when a comment is inserted by someone else", function() {
+        it("does not change the scroll position", function() {
+
+        });
+      });
+
+      describe("when adjustListHeight is called", function() {
+        it("does not change the scroll position", function() {
+
+        });
+      });
+    });
+
+    describe("when the user previously scrolled up, but then scrolled back to the bottom", function() {
+      describe("when a comment is inserted by anyone", function() {
+        it("auto-scrolls to the end of the list", function() {
+
+        });
+      });
+
+      describe("when adjustListHeight is called", function() {
+        it("auto-scrolls to the end of the list", function() {
+
+        });
+      });
+    });
+
     describe("when comments are inserted and removed", function() {
       it("scrolls to the end", function() {
         var longComment = commentsRelation.createFromRemote({id: 13, body: longCommentBody, creatorId: creator1.id(), createdAt: 2345234})
