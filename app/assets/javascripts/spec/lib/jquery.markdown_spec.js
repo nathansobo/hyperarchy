@@ -15,9 +15,16 @@ describe("jQuery markdown extensions", function() {
       expect(view.html()).toBe("<p>I just <strong>love</strong> your poison <em>cupcakes!</em></p>");
     });
 
-    it("converts raw urls into links (but not inside of a tags)", function() {
+    it("converts raw urls into links", function() {
       view.markdown("http://poison.com");
       expect(view.html()).toBe('<p><a class="link" href="http://poison.com">http://poison.com</a></p>');
+    });
+
+    it("correctly deals with markdown links", function() {
+      view.markdown('[Delicious Poison](http://poison.com)');
+
+
+      expect(view.html()).toBe('<p><a href="http://poison.com">Delicious Poison</a></p>');
     });
   });
 
