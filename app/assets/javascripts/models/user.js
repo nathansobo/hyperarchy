@@ -40,16 +40,29 @@ _.constructor("User", Model.Record, {
     return Application.currentUserId == this.id();
   },
 
-  avatarUrl: function(size) {
+  fetchAvatarUrl: function(size) {
     if (this.facebookId()) {
-      return this.facebookPhotoUrl();
+      return new Monarch.Promise().triggerSuccess(this.facebookAvatarUrl());
+    } else if (this.twitterId()) {
+      return this.fetchTwitterAvatarUrl();
     } else {
-      return this.gravatarUrl(size);
+      return new Monarch.Promise().triggerSuccess(this.gravatarUrl());
     }
   },
 
-  facebookPhotoUrl: function() {
+  facebookAvatarUrl: function() {
     return "https://graph.facebook.com/" + this.facebookId() + "/picture?type=square";
+  },
+
+  fetchTwitterAvatarUrl: function() {
+    if (this.fetchTwitterAvatarUrlPromise) return this.fetchTwitterAvatarUrlPromise;
+    var promise = new Monarch.Promise();
+    this.fetchTwitterAvatarUrlPromise = promise
+    $.get('https://api.twitter.com/1/users/lookup.json', { user_id: this.twitterId() }, function(response) {
+      var biggerUrl = response[0].profile_image_url_https.replace("normal", "bigger");
+      promise.triggerSuccess(biggerUrl);
+    });
+    return promise;
   },
 
   gravatarUrl: function(size) {

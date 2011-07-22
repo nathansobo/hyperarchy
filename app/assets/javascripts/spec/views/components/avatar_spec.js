@@ -15,21 +15,32 @@ describe("Views.Components.Avatar", function() {
   });
 
   describe("#user", function() {
-    var user;
+    var user, avatarUrlPromise;
     beforeEach(function() {
       user = User.createFromRemote({id: 1, emailHash: "asf"});
+      avatarUrlPromise = new Monarch.Promise();
+      spyOn(user, 'fetchAvatarUrl').andReturn(avatarUrlPromise);
     });
 
-    it("sets the src attribute to the url for that user's gravatar", function() {
+    it("sets the src attribute to the url for that user's avatar", function() {
       avatar.user(user);
-      expect(avatar.img.attr('src')).toBe(user.avatarUrl(25));
+
+      expect(user.fetchAvatarUrl).toHaveBeenCalled();
+
+      avatarUrlPromise.triggerSuccess("https://twitter.com/image")
+      expect(avatar.img.attr('src')).toBe("https://twitter.com/image");
     });
 
-    describe("if the user's gravatar image loads successfully", function() {
+    describe("if the user's avatar image loads successfully", function() {
       it("appends the image to the view", function() {
         avatar.user(user);
+        avatarUrlPromise.triggerSuccess("https://twitter.com/image")
+
         expect(avatar).not.toContain('img');
+        expect(avatar).not.toHaveClass('valid-avatar');
+
         avatar.img.trigger("load");
+
         expect(avatar).toContain('img');
         expect(avatar).toHaveClass('valid-avatar');
 

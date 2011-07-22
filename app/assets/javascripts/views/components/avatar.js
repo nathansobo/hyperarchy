@@ -17,9 +17,13 @@ _.constructor("Views.Components.Avatar", View.Template, {
         this.img = $(new Image());
         this.img.height(this.imageSize);
         this.img.width(this.imageSize);
-        this.img
-          .load(this.hitch('imageLoaded'))
-          .attr('src', user.avatarUrl(this.imageSize));
+
+        user.fetchAvatarUrl(this.imageSize)
+          .success(function(avatarUrl) {
+            this.img
+              .attr('src', avatarUrl)
+              .load(this.hitch('imageLoaded'));
+          }, this);
       }
     },
 

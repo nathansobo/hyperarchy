@@ -107,7 +107,7 @@ _.constructor("Views.Layout", View.Template, {
       return promise;
     },
 
-    twitterLogin: function(addOrgAfter) {
+    twitterLogin: function() {
       var promise = new Monarch.Promise();
 
       T.one('authComplete', this.bind(function(e, user) {
@@ -122,7 +122,6 @@ _.constructor("Views.Layout", View.Template, {
             success: this.bind(function(data) {
 //            mpq.push(['track', "Connect Twitter Account"]);
               this.currentUserEstablished(promise, data);
-//            if (addOrgAfter) this.addOrganizationForm.show();
             })
           });
         }
