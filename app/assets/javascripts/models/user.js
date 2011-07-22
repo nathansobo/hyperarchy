@@ -9,7 +9,8 @@ _.constructor("User", Model.Record, {
       guest: 'boolean',
       defaultGuest: 'boolean',
       emailEnabled: 'boolean',
-      facebookId: 'string'
+      facebookId: 'string',
+      twitterId: 'integer'
     });
 
     this.syntheticColumn('fullName', function() {

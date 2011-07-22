@@ -2,6 +2,13 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
   id: "login-form",
 
   lightboxContent: function() { with(this.builder) {
+    a({'class': "twitter button"}, function() {
+      div({'class': "twitter-logo"});
+      text("Sign In With Twitter");
+    }).ref('twitterLoginButton').click(function() {
+      Application.twitterLogin();
+    });
+
     a({'class': "facebook button"}, function() {
       div({'class': "facebook-logo"});
       text("Sign In With Facebook");

@@ -12,6 +12,9 @@ require 'erector/rails/railtie'
 FB_ID = '207827675895197'
 FB_SECRET = '1cdc8ebd9c410a0ca605504eef38413c'
 
+TWITTER_ID = 'ksD9F3aSHfzGAK3wgpRm1A'
+TWITTER_SECRET = 'sDSCpag7203JPANNH1HDnV0NdEqbVzDSSsjYZwFTvw'
+
 module Hyperarchy
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.

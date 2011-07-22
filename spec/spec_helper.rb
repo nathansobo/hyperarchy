@@ -13,8 +13,11 @@ Spork.prefork do
   require 'faker'
 
   # required for spork + rubymine
-  $:.unshift(File.expand_path("/Applications/RubyMine 3.1.1.app") + "/rb/testing/patch/bdd")
-  $:.unshift(File.expand_path("/Applications/RubyMine 3.1.1.app") + "/rb/testing/patch/common")
+  $:.unshift(File.expand_path("/Applications/RubyMine 3.2.1.app") + "/rb/testing/patch/bdd")
+  $:.unshift(File.expand_path("/Applications/RubyMine 3.2.1.app") + "/rb/testing/patch/common")
+
+  $:.unshift(File.expand_path("/Applications/RubyMine 3.2.2.app") + "/rb/testing/patch/bdd")
+  $:.unshift(File.expand_path("/Applications/RubyMine 3.2.2.app") + "/rb/testing/patch/common")
 end
 
 Spork.each_run do

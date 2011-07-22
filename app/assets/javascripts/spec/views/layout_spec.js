@@ -307,7 +307,47 @@ describe("Views.Layout", function() {
       });
     });
   });
-  
+
+  describe("#twitterLogin", function() {
+    beforeEach(function() {
+      spyOn(T, 'signIn');
+    });
+
+    describe("when the twitter id matches that of the current user", function() {
+      it("triggers the success promise immediately", function() {
+        Application.currentUser(User.createFromRemote({id: 1, twitterId: 123}));
+        var promise = Application.twitterLogin()
+
+        expect(T.signIn).toHaveBeenCalled();
+        T.trigger('authComplete', {}, { id: 123, name: "Max Brunsfeld" });
+
+        expect(promise.successTriggerred).toBeTruthy();
+      });
+    });
+
+    describe("when the twitter_id does not match that of the current user", function() {
+      it("triggers the success promise after posting to /facebook_sessions and switching the current user", function() {
+        var otherUser = User.createFromRemote({id: 2, twitterId: '123'});
+        Application.currentUser(User.createFromRemote({id: 1, twitterId: '456'}));
+        var promise = Application.twitterLogin()
+
+        expect(T.signIn).toHaveBeenCalled();
+
+        T.trigger('authComplete', {}, { id: 123, name: "Max Brunsfeld" });
+
+        expect(promise.successTriggerred).toBeFalsy();
+
+        expect($.ajax).toHaveBeenCalled();
+        expect(mostRecentAjaxRequest.url).toBe('/twitter_sessions');
+        expect(mostRecentAjaxRequest.data).toEqual({name: "Max Brunsfeld"});
+        mostRecentAjaxRequest.success({ current_user_id: otherUser.id() });
+
+        expect(promise.successTriggerred).toBeTruthy();
+        expect(Application.currentUser()).toBe(otherUser);
+      });
+    });
+  });
+
   describe("mixpanel tracking", function() {
     describe("when the current user changes", function() {
       var organization, member, guest;

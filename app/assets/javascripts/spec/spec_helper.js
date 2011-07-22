@@ -26,6 +26,7 @@ beforeEach(function() {
   spyOn(Question, 'updateScoresPeriodically');
   mpq = []
   _gaq = [];
+  T.reset();
 });
 
 afterEach(function() {
@@ -94,4 +95,38 @@ var FB = {
   login: function() {},
   api: function() {},
   ui: function() {}
-}
+};
+
+var T = {
+  signIn: function() {},
+
+  reset: function() {
+    this.subscriptionNodes = {};
+  },
+
+  bind: function(eventName, callback) {
+    this.getEventNode(eventName).subscribe(callback);
+  },
+
+  one: function(eventName, callback) {
+    var subscription = this.getEventNode(eventName).subscribe(function() {
+      callback.apply(window, arguments);
+      subscription.destroy();
+    });
+  },
+
+  getEventNode: function(eventName) {
+    var node = this.subscriptionNodes[eventName];
+    if (node) {
+      return node;
+    } else {
+      return this.subscriptionNodes[eventName] = new Monarch.SubscriptionNode();
+    }
+  },
+
+  trigger: function() {
+    var args = _.toArray(arguments);
+    var eventName = args.shift();
+    this.getEventNode(eventName).publishArgs(args);
+  }
+};

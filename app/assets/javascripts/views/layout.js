@@ -111,6 +111,32 @@ _.constructor("Views.Layout", View.Template, {
       return promise;
     },
 
+    twitterLogin: function(addOrgAfter) {
+      var promise = new Monarch.Promise();
+
+      T.one('authComplete', this.bind(function(e, user) {
+        if (user.id === Application.currentUser().twitterId()) {
+          promise.triggerSuccess();
+        } else {
+          $.ajax({
+            type: 'post',
+            url: '/twitter_sessions',
+            dataType: 'data+records', // do not use records!, because a non-twitter-connected member might switch to a twitter-connected member and we don't want to nuke needed data
+            data: { name: user.name },
+            success: this.bind(function(data) {
+//            mpq.push(['track', "Connect Twitter Account"]);
+              this.currentUserEstablished(promise, data);
+//            if (addOrgAfter) this.addOrganizationForm.show();
+            })
+          });
+        }
+      }));
+
+      T.signIn();
+
+      return promise;
+    },
+
     currentUser: {
       write: function(newUser, oldUser) {
         if (newUser === oldUser) {
