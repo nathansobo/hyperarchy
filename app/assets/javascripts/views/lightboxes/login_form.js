@@ -6,7 +6,14 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
       div({'class': "twitter-logo"});
       text("Sign In With Twitter");
     }).ref('twitterLoginButton').click(function() {
-      Application.twitterLogin();
+      Application.twitterLogin()
+        .success(function() {
+          this.trigger('success');
+          this.hide();
+        }, this)
+        .invalid(function() {
+          this.close();
+        }, this);
     });
 
     a({'class': "facebook button"}, function() {

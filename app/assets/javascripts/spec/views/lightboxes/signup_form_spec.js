@@ -188,6 +188,7 @@ describe("Views.Lightboxes.SignupForm", function() {
           expect(successTriggered).toBeTruthy();
           expect(signupForm).toBeHidden();
           expect(Application.addOrganizationForm).toBeVisible();
+          expect(Application.darkenedBackground).toBeVisible();
         });
       });
 
@@ -201,6 +202,55 @@ describe("Views.Lightboxes.SignupForm", function() {
           expect(cancelTriggered).toBeTruthy();
           expect(signupForm).toBeHidden();
           expect(Application.addOrganizationForm).toBeHidden();
+        });
+      });
+    });
+  });
+  
+  describe("when the twitter login link is clicked", function() {
+    var successTriggered, cancelTriggered, twitterLoginPromise;
+    beforeEach(function() {
+      signupForm.bind('success', function() {
+        successTriggered = true;
+      });
+      signupForm.bind('cancel', function() {
+        cancelTriggered = true;
+      });
+
+      twitterLoginPromise = new Monarch.Promise();
+      spyOn(Application, 'twitterLogin').andReturn(twitterLoginPromise);
+    });
+
+    describe("when in 'normal' mode", function() {
+      describe("when twitter login succeeds", function() {
+        it("calls Application.twitterLogin and triggers success / hides itself when it succeeds", function() {
+          signupForm.twitterLoginButton.click();
+
+          expect(Application.twitterLogin).toHaveBeenCalled();
+          twitterLoginPromise.triggerSuccess();
+
+          expect(successTriggered).toBeTruthy();
+          expect(signupForm).toBeHidden();
+        });
+      });
+    });
+
+    describe("when in 'add organization' mode", function() {
+      beforeEach(function() {
+        signupForm.showOrganizationSection();
+      });
+
+      describe("when twitter login succeeds", function() {
+        it("shows the add organization form", function() {
+          signupForm.twitterLoginButton.click();
+
+          expect(Application.twitterLogin).toHaveBeenCalled();
+          twitterLoginPromise.triggerSuccess();
+
+          expect(successTriggered).toBeTruthy();
+          expect(signupForm).toBeHidden();
+          expect(Application.addOrganizationForm).toBeVisible();
+          expect(Application.darkenedBackground).toBeVisible();
         });
       });
     });

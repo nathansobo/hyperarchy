@@ -140,5 +140,32 @@ describe("Views.Lightboxes.LoginForm", function() {
       });
     });
   });
+
+  describe("when the twitter login link is clicked", function() {
+    var successTriggered, cancelTriggered, twitterLoginPromise;
+    beforeEach(function() {
+      loginForm.bind('success', function() {
+        successTriggered = true;
+      });
+      loginForm.bind('cancel', function() {
+        cancelTriggered = true;
+      });
+
+      twitterLoginPromise = new Monarch.Promise();
+      spyOn(Application, 'twitterLogin').andReturn(twitterLoginPromise);
+    });
+
+    describe("when twitter login succeeds", function() {
+      it("calls Application.twitterLogin and triggers success / hides itself when it succeeds", function() {
+        loginForm.twitterLoginButton.click();
+
+        expect(Application.twitterLogin).toHaveBeenCalled();
+        twitterLoginPromise.triggerSuccess();
+
+        expect(successTriggered).toBeTruthy();
+        expect(loginForm).toBeHidden();
+      });
+    });
+  });
 });
 

@@ -6,6 +6,10 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
       div({'class': "facebook-logo"});
       text("Sign Up With Facebook");
     }).ref('facebookLoginButton').click('facebookLogin');
+    a({'class': "twitter button"}, function() {
+      div({'class': "twitter-logo"});
+      text("Sign Up With twitter");
+    }).ref('twitterLoginButton').click('twitterLogin');
     h2("Or…").ref('participateHeader');
 
     form(function() {
@@ -69,14 +73,25 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
     },
 
     facebookLogin: function() {
+      var addOrganization = this.organizationSection.is(':visible');
       Application.facebookLogin()
         .success(function() {
-          if (this.organizationSection.is(':visible')) Application.addOrganizationForm.show();
           this.trigger('success');
           this.hide();
+          if (addOrganization) Application.addOrganizationForm.show();
         }, this)
         .invalid(function() {
           this.close();
+        }, this);
+    },
+
+    twitterLogin: function() {
+      var addOrganization = this.organizationSection.is(':visible');
+      Application.twitterLogin()
+        .success(function() {
+          this.trigger('success');
+          this.hide();
+          if (addOrganization) Application.addOrganizationForm.show();
         }, this);
     },
 
