@@ -5,39 +5,40 @@ module Views
         true
       end
 
-      def below_body_content
-        facebook_javascript
-        twitter_javascript
-        javascript_include_tag("application", :debug => Rails.env.development?)
-        javascript %[
-        $(function() {
-          window.WEB_SOCKET_SWF_LOCATION = '/WebSocketMain.swf';
-          Question.SCORE_EXTRA_VOTES = #{Question::SCORE_EXTRA_VOTES};
-          Question.SCORE_EXTRA_HOURS = #{Question::SCORE_EXTRA_HOURS};
-          Question.SCORE_GRAVITY = #{Question::SCORE_GRAVITY};
-          #{store_in_repository(current_user.initial_repository_contents)}
-          window.Application = Views.Layout.toView();
-          Application.environment = #{Rails.env.to_json};
-          $('body').append(Application);
-          Application.attach();
-          Application.currentUserId(#{current_user_id});
-          Path.listen();
-        });
-      ]
-      end
-
       def body_content
+        div :id => "fb-root"
+        facebook_javascript
         div :id => "loadingPage" do
           div :id => "mediumLogo"
           div :class => "bigLoading matchesBodyBackground"
         end
-        div :id => "fb-root"
+      end
+
+      def below_body_content
+        javascript_include_tag("application", :debug => Rails.env.development?)
+        javascript %[
+          $(function() {
+            window.WEB_SOCKET_SWF_LOCATION = '/WebSocketMain.swf';
+            Question.SCORE_EXTRA_VOTES = #{Question::SCORE_EXTRA_VOTES};
+            Question.SCORE_EXTRA_HOURS = #{Question::SCORE_EXTRA_HOURS};
+            Question.SCORE_GRAVITY = #{Question::SCORE_GRAVITY};
+            #{store_in_repository(current_user.initial_repository_contents)}
+            window.Application = Views.Layout.toView();
+            Application.environment = #{Rails.env.to_json};
+            $('body').append(Application);
+            Application.attach();
+            Application.currentUserId(#{current_user_id});
+            Path.listen();
+          });
+        ]
+        twitter_javascript
       end
 
       def facebook_javascript
         javascript %[
           window.fbAsyncInit = function() {
             FB.init({appId: '207827675895197', status: true, cookie: true, xfbml: false});
+            $(".facebook").addClass('enabled');
           };
           (function() {
             var e = document.createElement('script'); e.async = true;
@@ -53,6 +54,7 @@ module Views
         javascript %[
           twttr.anywhere(function (T) {
             window.T = T;
+            $(".twitter").addClass('enabled');
           });
         ]
       end
