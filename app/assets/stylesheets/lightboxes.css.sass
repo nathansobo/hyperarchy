@@ -65,7 +65,7 @@
     margin-top: 0
 
 #login-form, #signup-form
-  .facebook.button
+  .facebook.button, .twitter.button
     border: 2px solid #bbb
     @include border-radius(5)
     padding-left: $s1/2
@@ -73,10 +73,20 @@
     margin-bottom: $s1
     font-size: $s2
     line-height: 2*$s1
+    width: 356px
 
     .facebook-logo
       float: left
+      background-color: white
       background-image: url(/images/facebook_46.png)
+      height: $s1*2
+      width: $s1*2
+      margin-right: $s1/2 + 5
+      @include border-radius(3)
+    .twitter-logo
+      float: left
+      background-image: url(/images/twitter_46.png)
+      @include border-radius(3)
       height: $s1*2
       width: $s1*2
       margin-right: $s1/2 + 5
