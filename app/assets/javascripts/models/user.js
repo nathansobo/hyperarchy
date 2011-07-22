@@ -58,9 +58,15 @@ _.constructor("User", Model.Record, {
     if (this.fetchTwitterAvatarUrlPromise) return this.fetchTwitterAvatarUrlPromise;
     var promise = new Monarch.Promise();
     this.fetchTwitterAvatarUrlPromise = promise
-    $.get('https://api.twitter.com/1/users/lookup.json', { user_id: this.twitterId() }, function(response) {
-      var biggerUrl = response[0].profile_image_url_https.replace("normal", "bigger");
-      promise.triggerSuccess(biggerUrl);
+    $.ajax({
+      type: 'get',
+      dataType: 'jsonp',
+      url: 'https://api.twitter.com/1/users/lookup.json',
+      data: { user_id: this.twitterId() },
+      success: function(response) {
+        var biggerUrl = response[0].profile_image_url_https.replace("normal", "bigger");
+        promise.triggerSuccess(biggerUrl);
+      }
     });
     return promise;
   },

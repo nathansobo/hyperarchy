@@ -70,6 +70,7 @@ describe("User", function() {
 
         expect(mostRecentAjaxRequest.url).toBe("https://api.twitter.com/1/users/lookup.json");
         expect(mostRecentAjaxRequest.data).toEqual({user_id: user.twitterId()});
+        expect(mostRecentAjaxRequest.dataType).toBe('jsonp');
 
         $.ajax.reset();
 
