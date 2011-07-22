@@ -28,6 +28,37 @@ describe("Views.Layout", function() {
     });
   });
 
+  describe("#attach", function() {
+    describe("if FB is defined when attach is called", function() {
+      it("triggers facebookInitialized", function() {
+        expect(FB).toBeDefined();
+        spyOn(Application, 'facebookInitialized');
+        Application.attach();
+        expect(Application.facebookInitialized).toHaveBeenCalledWith(); // calling with no args triggers it, but with args registers callbacks
+      });
+    });
+
+    describe("if FB is not defined when attach is called", function() {
+      var fb;
+
+      beforeEach(function() {
+        fb = window.FB;
+        window.FB = undefined;
+      });
+
+      afterEach(function() {
+        window.FB = fb;
+      });
+
+      it("does not trigger facebookInitialized", function() {
+        expect(window.FB).not.toBeDefined();
+        spyOn(Application, 'facebookInitialized');
+        Application.attach();
+        expect(Application.facebookInitialized).not.toHaveBeenCalledWith(); // calling with no args triggers it, but with args registers callbacks
+      });
+    });
+  });
+
   describe("#currentUser and #currentUserId", function() {
     var organization, user1, user2
 

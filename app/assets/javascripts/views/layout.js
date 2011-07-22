@@ -59,6 +59,14 @@ _.constructor("Views.Layout", View.Template, {
       $(document).bind('keydown', 'ctrl+shift+g', function() {
         $('body').toggleClass('grid-offset');
       });
+
+      this.facebookInitializedNode = new Monarch.SubscriptionNode();
+      this.twitterInitializedNode = new Monarch.SubscriptionNode();
+    },
+
+    attach: function($super) {
+      $super();
+      if (window.FB) this.facebookInitialized();
     },
 
     currentUserEstablished: function(promise, data) {
@@ -80,6 +88,25 @@ _.constructor("Views.Layout", View.Template, {
         promise.triggerSuccess();
       }
     },
+
+    facebookInitialized: {
+      reader: function() {
+        this.facebookInitializedNode.publish();
+      },
+      writer: function(callback, ctx) {
+        return this.facebookInitializedNode.subscribe(callback, ctx);
+      }
+    },
+
+    twitterInitialized: {
+      reader: function() {
+        this.twitterInitializedNode.publish();
+      },
+      writer: function(callback, ctx) {
+        return this.twitterInitializedNode.subscribe(callback, ctx);
+      }
+    },
+
 
     facebookLogin: function() {
       var promise = new Monarch.Promise();

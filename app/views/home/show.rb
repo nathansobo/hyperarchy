@@ -38,7 +38,7 @@ module Views
         javascript %[
           window.fbAsyncInit = function() {
             FB.init({appId: '207827675895197', status: true, cookie: true, xfbml: false});
-            $(".facebook").addClass('enabled');
+            if (window.Application) Application.facebookInitialized();
           };
           (function() {
             var e = document.createElement('script'); e.async = true;
@@ -54,7 +54,7 @@ module Views
         javascript %[
           twttr.anywhere(function (T) {
             window.T = T;
-            $(".twitter").addClass('enabled');
+            Application.twitterInitialized();
           });
         ]
       end

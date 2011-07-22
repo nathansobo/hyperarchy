@@ -2,33 +2,8 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
   id: "login-form",
 
   lightboxContent: function() { with(this.builder) {
-    a({'class': "twitter button"}, function() {
-      div({'class': "twitter-logo"});
-      text("Sign In With Twitter");
-    }).ref('twitterLoginButton').click(function() {
-      Application.twitterLogin()
-        .success(function() {
-          this.trigger('success');
-          this.hide();
-        }, this)
-        .invalid(function() {
-          this.close();
-        }, this);
-    });
-
-    a({'class': "facebook button"}, function() {
-      div({'class': "facebook-logo"});
-      text("Sign In With Facebook");
-    }).ref('facebookLoginButton').click(function() {
-      Application.facebookLogin()
-        .success(function() {
-          this.trigger('success');
-          this.hide();
-        }, this)
-        .invalid(function() {
-          this.close();
-        }, this);
-    });
+    subview('twitterLoginButton', Views.Components.SocialLoginButton, {service: 'twitter'});
+    subview('facebookLoginButton', Views.Components.SocialLoginButton, {service: 'facebook'});
 
     h2("Or…");
     form(function() {
@@ -51,6 +26,11 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
   }},
 
   viewProperties: {
+    initialize: function() {
+      this.twitterLoginButton.click(this.hitch('socialLogin', 'twitterLogin'));
+      this.facebookLoginButton.click(this.hitch('socialLogin', 'facebookLogin'));
+    },
+
     showSignupForm: function() {
       Application.signupForm.show();
     },
@@ -86,6 +66,14 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
         error: this.hitch('handleErrors', promise)
       });
       return promise;
+    },
+
+    socialLogin: function(loginMethod) {
+      Application[loginMethod]()
+        .success(function() {
+          this.trigger('success');
+          this.hide();
+        }, this);
     },
 
     handleErrors: function(promise, xhr) {

@@ -159,18 +159,6 @@ describe("Views.Lightboxes.SignupForm", function() {
           expect(signupForm).toBeHidden();
         });
       });
-
-      describe("when facebook login fails", function() {
-        it("hides the signup form and triggers cancel on it", function() {
-          signupForm.facebookLoginButton.click();
-
-          expect(Application.facebookLogin).toHaveBeenCalled();
-          facebookLoginPromise.triggerInvalid();
-
-          expect(cancelTriggered).toBeTruthy();
-          expect(signupForm).toBeHidden();
-        });
-      });
     });
 
     describe("when in 'add organization' mode", function() {
@@ -189,19 +177,6 @@ describe("Views.Lightboxes.SignupForm", function() {
           expect(signupForm).toBeHidden();
           expect(Application.addOrganizationForm).toBeVisible();
           expect(Application.darkenedBackground).toBeVisible();
-        });
-      });
-
-      describe("when facebook login fails", function() {
-        it("hides the signup form and does not show the add organization form", function() {
-          signupForm.facebookLoginButton.click();
-
-          expect(Application.facebookLogin).toHaveBeenCalled();
-          facebookLoginPromise.triggerInvalid();
-
-          expect(cancelTriggered).toBeTruthy();
-          expect(signupForm).toBeHidden();
-          expect(Application.addOrganizationForm).toBeHidden();
         });
       });
     });

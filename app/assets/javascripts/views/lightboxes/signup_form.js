@@ -2,14 +2,9 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
   id: "signup-form",
 
   lightboxContent: function() { with(this.builder) {
-    a({'class': "facebook button"}, function() {
-      div({'class': "facebook-logo"});
-      text("Sign Up With Facebook");
-    }).ref('facebookLoginButton').click('facebookLogin');
-    a({'class': "twitter button"}, function() {
-      div({'class': "twitter-logo"});
-      text("Sign Up With twitter");
-    }).ref('twitterLoginButton').click('twitterLogin');
+    subview('twitterLoginButton', Views.Components.SocialLoginButton, {service: 'twitter'});
+    subview('facebookLoginButton', Views.Components.SocialLoginButton, {service: 'facebook'});
+
     h2("Or…").ref('participateHeader');
 
     form(function() {
@@ -37,6 +32,11 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
   }},
 
   viewProperties: {
+    initialize: function() {
+      this.twitterLoginButton.click(this.hitch('socialLogin', 'twitterLogin'));
+      this.facebookLoginButton.click(this.hitch('socialLogin', 'facebookLogin'));
+    },
+
     showLoginForm: function() {
       Application.loginForm.show();
     },
@@ -72,22 +72,9 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
       promise.triggerError();
     },
 
-    facebookLogin: function() {
+    socialLogin: function(loginMethod) {
       var addOrganization = this.organizationSection.is(':visible');
-      Application.facebookLogin()
-        .success(function() {
-          this.trigger('success');
-          this.hide();
-          if (addOrganization) Application.addOrganizationForm.show();
-        }, this)
-        .invalid(function() {
-          this.close();
-        }, this);
-    },
-
-    twitterLogin: function() {
-      var addOrganization = this.organizationSection.is(':visible');
-      Application.twitterLogin()
+      Application[loginMethod]()
         .success(function() {
           this.trigger('success');
           this.hide();

@@ -127,18 +127,6 @@ describe("Views.Lightboxes.LoginForm", function() {
         expect(loginForm).toBeHidden();
       });
     });
-
-    describe("when facebook login fails", function() {
-      it("hides the login form and triggers cancel on it", function() {
-        loginForm.facebookLoginButton.click();
-
-        expect(Application.facebookLogin).toHaveBeenCalled();
-        facebookLoginPromise.triggerInvalid();
-
-        expect(cancelTriggered).toBeTruthy();
-        expect(loginForm).toBeHidden();
-      });
-    });
   });
 
   describe("when the twitter login link is clicked", function() {

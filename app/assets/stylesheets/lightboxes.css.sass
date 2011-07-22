@@ -75,21 +75,45 @@
     line-height: 2*$s1
     width: 356px
 
-    .facebook-logo
+    .logo
+      position: relative
       float: left
       background-color: white
-      background-image: url(/images/facebook_46.png)
       height: $s1*2
       width: $s1*2
       margin-right: $s1/2 + 5
       @include border-radius(3)
-    .twitter-logo
-      float: left
-      background-image: url(/images/twitter_46.png)
-      @include border-radius(3)
-      height: $s1*2
-      width: $s1*2
-      margin-right: $s1/2 + 5
+
+    .spinner
+      float: right
+      position: static
+      width: 2 * $s1
+      height: 2 * $s1
+      display: none
+      .spoke
+        width: 4px
+        left: (2 * $s1 - 4) / 2
+        .solid
+          background: #333
+          height: 13px
+          @include border-top-radius(1)
+
+    &.disabled
+      cursor: default
+      background: white
+      &:hover
+        background: inherit
+      .spinner
+        display: inline-block
+
+  .facebook .logo
+    background-image: url(/images/facebook_46.png)
+
+  .twitter .logo
+    background-image: url(/images/twitter_46.png)
+
+
+
   h2
     font-size: $s1
     font-weight: normal
