@@ -5,11 +5,7 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
     a({'class': "facebook button"}, function() {
       div({'class': "facebook-logo"});
       text("Sign Up With Facebook");
-    }).ref('facebookLoginButton').click(function() {
-        var addOrgAfterward = this.organizationSection.is(':visible')
-        Application.facebookLogin(addOrgAfterward);
-      });
-
+    }).ref('facebookLoginButton').click('facebookLogin');
     h2("Or…").ref('participateHeader');
 
     form(function() {
@@ -70,6 +66,18 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
         this.errors.append("<li>" + error + "</li>");
       }, this);
       promise.triggerError();
+    },
+
+    facebookLogin: function() {
+      Application.facebookLogin()
+        .success(function() {
+          if (this.organizationSection.is(':visible')) Application.addOrganizationForm.show();
+          this.trigger('success');
+          this.hide();
+        }, this)
+        .invalid(function() {
+          this.close();
+        }, this);
     },
 
     showOrganizationSection: function() {

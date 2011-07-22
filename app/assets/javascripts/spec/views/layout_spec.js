@@ -273,37 +273,51 @@ describe("Views.Layout", function() {
       spyOn(FB, 'login');
     });
 
-    describe("when the facebook uid matches that of the current user", function() {
-      it("triggers the success promise immediately", function() {
-        Application.currentUser(User.createFromRemote({id: 1, facebookId: '123'}));
-        var promise = Application.facebookLogin()
+    describe("when facebook login succeeds", function() {
+      describe("when the facebook uid matches that of the current user", function() {
+        it("triggers the success promise immediately", function() {
+          Application.currentUser(User.createFromRemote({id: 1, facebookId: '123'}));
+          var promise = Application.facebookLogin();
 
-        expect(FB.login).toHaveBeenCalled();
-        var callback = FB.login.mostRecentCall.args[0];
-        callback({session: { uid: '123' }});
+          expect(FB.login).toHaveBeenCalled();
+          var callback = FB.login.mostRecentCall.args[0];
+          callback({session: { uid: '123' }});
 
-        expect(promise.successTriggerred).toBeTruthy();
+          expect(promise.successTriggerred).toBeTruthy();
+        });
+      });
+
+      describe("when the facebook uid does not match that of the current user", function() {
+        it("triggers the success promise after posting to /facebook_sessions and switching the current user", function() {
+          var otherUser = User.createFromRemote({id: 2, facebookId: '123'});
+          Application.currentUser(User.createFromRemote({id: 1, facebookId: 'xxx'}));
+          var promise = Application.facebookLogin();
+
+          expect(FB.login).toHaveBeenCalled();
+          var callback = FB.login.mostRecentCall.args[0];
+          callback({session: { uid: '123' }});
+
+          expect(promise.successTriggerred).toBeFalsy();
+
+          expect($.ajax).toHaveBeenCalled();
+          expect(mostRecentAjaxRequest.url).toBe('/facebook_sessions');
+          mostRecentAjaxRequest.success({ current_user_id: otherUser.id() });
+
+          expect(promise.successTriggerred).toBeTruthy();
+          expect(Application.currentUser()).toBe(otherUser);
+        });
       });
     });
 
-    describe("when the facebook uid does not match that of the current user", function() {
-      it("triggers the success promise after posting to /facebook_sessions and switching the current user", function() {
-        var otherUser = User.createFromRemote({id: 2, facebookId: '123'});
-        Application.currentUser(User.createFromRemote({id: 1, facebookId: 'xxx'}));
-        var promise = Application.facebookLogin()
-
+    describe("when facebook login fails", function() {
+      it("triggers invalid on the promise and does not change the current user", function() {
+        var promise = Application.facebookLogin();
         expect(FB.login).toHaveBeenCalled();
-        var callback = FB.login.mostRecentCall.args[0];
-        callback({session: { uid: '123' }});
+        var loginCallback = FB.login.mostRecentCall.args[0];
+        loginCallback({ session: null }); // simulate unsuccessful FB login
 
-        expect(promise.successTriggerred).toBeFalsy();
-
-        expect($.ajax).toHaveBeenCalled();
-        expect(mostRecentAjaxRequest.url).toBe('/facebook_sessions');
-        mostRecentAjaxRequest.success({ current_user_id: otherUser.id() });
-
-        expect(promise.successTriggerred).toBeTruthy();
-        expect(Application.currentUser()).toBe(otherUser);
+        expect(promise.invalidTriggerred).toBeTruthy();
+        expect(Application.currentUser().defaultGuest()).toBeTruthy();
       });
     });
   });
@@ -359,14 +373,16 @@ describe("Views.Layout", function() {
       });
 
       describe("if the user is NOT a guest", function() {
-        it("identifies the user for mixpanel tracking", function() {
+        it("identifies the user for mixpanel tracking and sends a Login event", function() {
           Application.currentUser(member);
-          expect(mpq.length).toBe(2);
+          expect(mpq.length).toBe(3);
           var identifyEvent = _.select(mpq, function(event) { return event[0] === 'identify'})[0];
           var nameTagEvent = _.select(mpq, function(event) { return event[0] === 'name_tag'})[0];
+          var loginEvent = _.select(mpq, function(event) { return event[1] === 'Login'})[0];
 
           expect(identifyEvent).toBeTruthy();
           expect(nameTagEvent).toBeTruthy();
+          expect(loginEvent).toBeTruthy();
           expect(identifyEvent[1]).toBe(member.id());
           expect(nameTagEvent[1]).toBe(member.fullName());
         });
@@ -386,21 +402,19 @@ describe("Views.Layout", function() {
       });
 
       describe("when the facebook uid matches that of the current user", function() {
-        it("pushes a 'facebook login' event to the mixpanel queue", function() {
+        it("does not send events to mixpanel", function() {
           Application.currentUser(User.createFromRemote({id: 1, facebookId: '123'}));
           mpq = [];
           Application.facebookLogin();
           var callback = FB.login.mostRecentCall.args[0];
           callback({session: { uid: '123' }});
 
-          var facebookLoginEvent = mpq.pop();
-          expect(facebookLoginEvent[0]).toBe('track');
-          expect(facebookLoginEvent[1]).toBe('Facebook Login');
+          expect(mpq.length).toBe(0);
         });
       });
 
       describe("when the facebook uid does not match that of the current user", function() {
-        it("pushes a 'connect facebook account' event to the mixpanel queue", function() {
+        it("pushes a 'Facebook Login' event to the mixpanel queue", function() {
           var otherUser = User.createFromRemote({id: 2, facebookId: '123'});
           Application.currentUser(User.createFromRemote({id: 1, facebookId: 'xxx'}));
           mpq = [];
@@ -411,7 +425,7 @@ describe("Views.Layout", function() {
 
           var facebookConnectEvent = mpq[0];
           expect(facebookConnectEvent[0]).toBe('track');
-          expect(facebookConnectEvent[1]).toBe('Connect Facebook Account');
+          expect(facebookConnectEvent[1]).toBe('Facebook Login');
         });
       });
     });

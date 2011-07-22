@@ -81,13 +81,12 @@ _.constructor("Views.Layout", View.Template, {
       }
     },
 
-    facebookLogin: function(addOrgAfter) {
+    facebookLogin: function() {
       var promise = new Monarch.Promise();
 
       FB.login(this.bind(function(response) {
         if (response.session) {
           if (response.session.uid === Application.currentUser().facebookId()) {
-            mpq.push(['track', "Facebook Login"]);
             promise.triggerSuccess();
           } else {
             $.ajax({
@@ -95,15 +94,12 @@ _.constructor("Views.Layout", View.Template, {
               url: '/facebook_sessions',
               dataType: 'data+records', // do not use records!, because a non-fb-connected member might switch to an fb-connected member and we don't want to nuke needed data
               success: this.bind(function(data) {
-                mpq.push(['track', "Connect Facebook Account"]);
+                mpq.push(['track', "Facebook Login"]);
                 this.currentUserEstablished(promise, data);
-                if (addOrgAfter) this.addOrganizationForm.show();
               })
             });
           }
         } else {
-          this.signupForm.close();
-          this.loginForm.close();
           promise.triggerInvalid();
         }
       }), {perms: "email"});
@@ -144,6 +140,7 @@ _.constructor("Views.Layout", View.Template, {
         } else {
           this.currentUserId(newUser.id());
           this.recordOrganizationVisit();
+          newUser.trackLogin();
           newUser.trackIdentity();
           return this.currentUserChangeNode.publishForPromise(newUser);
         }

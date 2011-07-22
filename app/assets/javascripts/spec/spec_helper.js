@@ -91,6 +91,12 @@ function simulateAjaxSuccess(data) {
   mostRecentAjaxDeferred.resolve(data);
 }
 
+function expectMixpanelAction(action, name) {
+  var events = _.select(mpq, function(event) { return event[0] === action && event[1] === name});
+  expect(events.length).toBe(1);
+  return events[0];
+}
+
 var FB = {
   login: function() {},
   api: function() {},

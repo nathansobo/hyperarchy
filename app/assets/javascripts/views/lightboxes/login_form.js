@@ -13,7 +13,14 @@ _.constructor('Views.Lightboxes.LoginForm', Views.Lightboxes.Lightbox, {
       div({'class': "facebook-logo"});
       text("Sign In With Facebook");
     }).ref('facebookLoginButton').click(function() {
-      Application.facebookLogin();
+      Application.facebookLogin()
+        .success(function() {
+          this.trigger('success');
+          this.hide();
+        }, this)
+        .invalid(function() {
+          this.close();
+        }, this);
     });
 
     h2("Or…");

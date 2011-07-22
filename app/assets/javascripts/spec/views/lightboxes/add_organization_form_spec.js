@@ -13,6 +13,7 @@ describe("Views.Lightboxes.AddOrganizationForm", function() {
 
   describe("when the form is submitted", function() {
     it("creates an organization, then fetches the current user's membership, hides the form, and navigates to the organization's page", function() {
+      mpq = [];
       spyOn(Application, 'showPage');
 
       addOrganizationForm.name.val("Facebook Users");
@@ -36,11 +37,7 @@ describe("Views.Lightboxes.AddOrganizationForm", function() {
         expect(addOrganizationForm).toBeHidden();
         expect(Path.routes.current).toBe(organization.url());
 
-        expect(mpq.length).toBeGreaterThan(0);
-        var event = _.select(mpq, function(event) { return event[0] === 'track'; })[0];
-        expect(event).toBeTruthy();
-        expect(event[0]).toBe('track');
-        expect(event[1]).toBe('Create Organization');
+        expectMixpanelAction('track', 'Create Organization');
       });
     });
   });

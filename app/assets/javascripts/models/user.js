@@ -70,5 +70,14 @@ _.constructor("User", Model.Record, {
     if (this.guest()) return;
     mpq.push(['identify', this.id()]);
     mpq.push(['name_tag', this.fullName()]);
+  },
+
+  trackLogin: function() {
+    if (this.guest()) return;
+    mpq.push(['track', 'Login', this.mixpanelProperties()]);
+  },
+  
+  mixpanelNote: function() {
+    return this.fullName();
   }
 });
