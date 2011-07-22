@@ -10,6 +10,7 @@ describe("Routes", function() {
     spyOn(defaultGuest, 'defaultOrganization').andReturn(defaultOrganization);
     spyOn(member, 'defaultOrganization').andReturn(defaultOrganization);
     Application.currentUser(defaultGuest);
+    Application.currentOrganization(defaultOrganization);
   });
 
   describe("/", function() {

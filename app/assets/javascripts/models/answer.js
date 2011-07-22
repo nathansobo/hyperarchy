@@ -62,39 +62,7 @@ _.constructor("Answer", Model.Record, {
     return "/questions/" + this.questionId() + "/answers/" + this.id();
   },
 
-  trackView: function() {
-    mpq.push(['track', "View Answer", {
-      mp_note: this.body(),
-      id: this.id(),
-      body: this.body(),
-      questionId: this.questionId(),
-      question: this.question().body(),
-      creatorId: this.creatorId(),
-      creator: this.creator().fullName()
-    }]);
-  },
-
-  trackCreate: function() {
-    mpq.push(["track", "Create Answer", {
-      mp_note: this.body(),
-      id: this.id(),
-      body: this.body(),
-      questionId: this.questionId(),
-      question: this.question().body(),
-      creatorId: this.creatorId(),
-      creator: this.creator().fullName()
-    }]);
-  },
-
-  trackUpdate: function() {
-    mpq.push(["track", "Update Answer", {
-      mp_note: this.body(),
-      id: this.id(),
-      body: this.body(),
-      questionId: this.questionId(),
-      question: this.question().body(),
-      creatorId: this.creatorId(),
-      creator: this.creator().fullName()
-    }]);
+  mixpanelNote: function() {
+    return this.body();
   }
 });

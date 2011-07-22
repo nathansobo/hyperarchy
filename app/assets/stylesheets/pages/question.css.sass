@@ -153,32 +153,24 @@
   @include transition('right left', 150ms, 'ease-in')
   overflow: hidden
   padding: $line-height/2
+  padding-bottom: 0
   z-index: 1
   background-color: white
-  .close
-    float: right
-    font-size: $s1
-    color: #888
-    margin-left: $s0
-    margin-bottom: $line-height
-    margin-right: 2
-    margin-top: 0
-  [class="close"]:hover // help firefox
-    color: #333
+  &.active
+    right: 0
+    left: 0
+  &.expanded
+    overflow-y: auto
+
   .chars-remaining
     position: relative
     top: -$line-height - 4px
     right: 5px
     font-size: $s-1
 
-  .edit.button, .destroy.button
-    display: none
-  &.active
-    right: 0
-    left: 0
-  &.mutable
-    .edit.button, .destroy.button
-      display: block
+  .comments .textarea-and-button // padding on answer-details div itself causes chrome problems when it scrolls and comments resizes
+    padding-bottom: $line-height/2
+
 
 #answer-details, #column1
   .creator
@@ -196,11 +188,62 @@
     margin-bottom: $line-height
   .details
     font-size: 15px
-
-  .edit.button
+    p:last-child
+      display: inline
+      //margin: 0
+      
+  .more, .less
+    margin-left: $s-2
     font-size: $s-1
+    cursor: pointer
+    word-spacing: -1px
+    &:hover
+      text-decoration: none
+  .more
+    color: #888
+    &:hover
+      color: #333
+  .less
+    margin-top: $line-height
     float: right
-    @include clearfix
+
+  .clear
+    clear: both
+    height: $line-height
+
+  // showing and hiding edit links based on mutability, styling below
+  .non-editable
+    .edit,.destroy
+      display: none
+  &.mutable
+    .non-editable
+      .edit, .destroy
+        display: block
+
+  .non-editable
+    .edit, .destroy
+      line-height: $line-height
+      height: $line-height
+      float: right
+      font-size: $s-1
+      border-color: white
+      background: white
+      margin-left: 6px
+      color: #888
+      word-spacing: -1px
+      @include border-radius(2px)
+      &:hover
+        color: black
+    .edit
+      padding: 0 4px
+      &:hover
+        background: $pale-blue
+    .destroy
+      padding-left: 1px
+      padding-right: 2px
+      &:hover
+        background: $pale-red
+
 
   form
     display: none
@@ -314,7 +357,7 @@
         @include background-image(linear-gradient(left, rgb(255,235,113), rgb(255, 247, 203)))
 
 #column3
-  h2
+  > h2
     display: inline
   #back-to-your-ranking
     padding-top: 2px
@@ -408,6 +451,9 @@
     border: 1px solid #ccc
     @include box-shadow(#aaa 0 0 3px)
     cursor: default
+    a
+      pointer-events: none
+      cursor: default
     .spinner
       width: $line-height
       height: $line-height
@@ -427,13 +473,8 @@
     .chars-remaining
       display: none
   #column1
-    #details-header, textarea.details, .update.button, .cancel.button, .edit.button, .destroy.button
+    #details-header, textarea.details, .update.button, .cancel.button
       display: none
-
-#question.mutable
-  #column1
-    .edit.button, .destroy.button
-      display: block
 
 #question.edit-mode
   #headline
@@ -448,7 +489,7 @@
       display: block
     div.details
       display: none !important
-    .edit.button, .destroy.button
+    .edit, .destroy
       display: none
     textarea.details, .update.button, .cancel.button
       display: block

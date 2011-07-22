@@ -26,6 +26,7 @@ Hyperarchy::Application.routes.draw do
   delete '/channel_subscriptions/organizations/:id' => 'channel_subscriptions#destroy'
 
   resources :facebook_sessions
+  resources :twitter_sessions
 
   # TODO: delete?
   resources :organizations do

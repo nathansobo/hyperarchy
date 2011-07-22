@@ -10,8 +10,10 @@ _.constructor('Views.Lightboxes.NewQuestion', Views.Lightboxes.Lightbox, {
       label({'for': "details"}, "Further Details")
       textarea({'class': "details", name: "details", tabindex: 102}).ref('details');
 
-      input({type: "checkbox", checked: true}).ref('shareOnFacebook');
-      label("Share this question on Facebook")
+      div(function() {
+        input({type: "checkbox", checked: true, id: "share-question-on-facebook"}).ref('shareOnFacebook');
+        label({'for': "share-question-on-facebook"}, "Share this question on Facebook");
+      }).ref('share');
 
       input({'type': 'submit', 'class': "button", value: "Ask Question", tabindex: 103}).ref('submit');
     }).ref('form').submit('create');
@@ -27,6 +29,13 @@ _.constructor('Views.Lightboxes.NewQuestion', Views.Lightboxes.Lightbox, {
     afterShow: function($super) {
       $super();
       this.find('textarea').val("").keyup();
+      if (Application.currentOrganization().isPublic()) {
+        this.shareOnFacebook.attr('checked', true);
+        this.share.show();
+      } else {
+        this.shareOnFacebook.attr('checked', false);
+        this.share.hide();
+      }
     },
 
     create: function() {

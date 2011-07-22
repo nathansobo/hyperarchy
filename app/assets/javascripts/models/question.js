@@ -165,43 +165,17 @@ _.constructor("Question", Model.Record, {
       link: this.absoluteUrl(),
       caption: caption,
       description: description
-    });
+    }, this.bind(function(response) {
+      if (response && response.post_id) {
+        mpq.push(['track', 'Facebook Post', this.mixpanelProperties()])
+      } else {
+        mpq.push(['track', 'Cancel Facebook Post', this.mixpanelProperties()])
+      }
+    }));
   },
 
-  trackView: function() {
-    mpq.push(["track", "View Question", {
-      mp_note: this.body(),
-      body: this.body(),
-      id: this.id(),
-      organization: this.organization().name(),
-      organizationId: this.organizationId(),
-      creator: this.creator().fullName(),
-      creatorId: this.creatorId()
-    }]);
-  },
-
-  trackCreate: function() {
-    mpq.push(["track", "Create Question", {
-      mp_note: this.body(),
-      body: this.body(),
-      id: this.id(),
-      organization: this.organization().name(),
-      organizationId: this.organizationId(),
-      creator: this.creator().fullName(),
-      creatorId: this.creatorId()
-    }]);
-  },
-
-  trackUpdate: function() {
-    mpq.push(["track", "Update Question", {
-      mp_note: this.body(),
-      body: this.body(),
-      id: this.id(),
-      organization: this.organization().name(),
-      organizationId: this.organizationId(),
-      creator: this.creator().fullName(),
-      creatorId: this.creatorId()
-    }]);
+  mixpanelNote: function() {
+    return this.body()
   },
 
   noRankingsShareCaption: "Click on this question to suggest and rank answers."

@@ -17,6 +17,7 @@ describe("Views.Pages.Question.RankedAnswers", function() {
     spyOn(Application, 'showPage');
 
     Application.currentUser(currentUser);
+    Application.currentOrganization(organization);
     Application.height(640);
     questionPage = Application.questionPage;
     rankedAnswers = questionPage.rankedAnswers;

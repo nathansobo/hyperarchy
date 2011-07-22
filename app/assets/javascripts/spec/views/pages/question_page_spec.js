@@ -18,7 +18,9 @@ describe("Views.Pages.Question", function() {
       currentUser = login();
       usingBackdoor(function() {
         var questionCreator = User.create();
-        question = Question.create();
+        var organization = Organization.create({privacy: "public"});
+        organization.memberships().create({userId: Application.currentUserId()});
+        question = organization.questions().create();
         question.update({creatorId: questionCreator.id()});
         otherUser = User.create();
         otherUser2 = User.create();
@@ -414,7 +416,7 @@ describe("Views.Pages.Question", function() {
 
     beforeEach(function() {
       creator = User.createFromRemote({id: 1, firstName: "animal", lastName: "eater"});
-      organization = Organization.createFromRemote({id: 1, name: "Neurotic designers"});
+      organization = Organization.createFromRemote({id: 1, name: "Neurotic designers", privacy: "public"});
       question = creator.questions().createFromRemote({id: 1, body: "What's a body?", details: "aoeu!", createdAt: 91234, organizationId: organization.id()});
       answer1 = question.answers().createFromRemote({id: 1, body: "Answer 1", position: 1, creatorId: creator.id(), createdAt: 2345});
       question2 = creator.questions().createFromRemote({id: 2, body: 'short body', details: "woo!", organizationId: organization.id(), createdAt: 91234});
@@ -460,6 +462,28 @@ describe("Views.Pages.Question", function() {
         expect(question2.onUpdateNode.size()).toBeGreaterThan(subCountBefore);
         questionPage.question(question);
         expect(question2.onUpdateNode.size()).toBe(subCountBefore);
+      });
+
+      describe("showing and hiding the facebook button", function() {
+        var privateOrg, privateOrgQuestion;
+
+        beforeEach(function() {
+          privateOrg = Organization.createFromRemote({id: 2, name: "Private Org", privacy: "private"});
+          var member = privateOrg.makeMember({id: 3});
+          privateOrgQuestion = privateOrg.questions().createFromRemote({id: 3, body: "Nobody knows", createdAt: 932, creatorId: member.id()});
+        });
+
+        it("hides the facebook button if the current org is private, and shows it otherwise", function() {
+          expect(questionPage.facebookButton).toBeVisible();
+
+          questionPage.params({questionId: privateOrgQuestion.id()});
+
+          expect(questionPage.facebookButton).toBeHidden();
+
+          questionPage.params({questionId: question.id()});
+
+          expect(questionPage.facebookButton).toBeVisible();
+        });
       });
     });
 
@@ -750,13 +774,11 @@ describe("Views.Pages.Question", function() {
       });
     })
 
-    describe("adjustment of the comments top position", function() {
+    describe("adjustment of the comments height", function() {
       var longDetails = "";
       beforeEach(function() {
         longDetails = "";
         for (var i = 0; i < 10; i++) longDetails += "Bee bee boo boo ";
-
-        spyOn(questionPage.comments, 'adjustHeightAndScroll');
       });
 
       describe("when the details and creator div are populated or when the details change", function() {
@@ -764,7 +786,6 @@ describe("Views.Pages.Question", function() {
           expectCommentsToHaveFullHeight();
           question.remotelyUpdated({details: longDetails});
           expectCommentsToHaveFullHeight();
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
         });
       });
 
@@ -776,7 +797,6 @@ describe("Views.Pages.Question", function() {
           Application.width(700);
           $(window).resize();
           expectCommentsToHaveFullHeight();
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
         });
       });
 
@@ -784,7 +804,6 @@ describe("Views.Pages.Question", function() {
         it("adjusts comments to fill remaining vertical space", function() {
           questionPage.editButton.click();
           expectCommentsToHaveFullHeight();
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
         });
       });
 
@@ -792,26 +811,18 @@ describe("Views.Pages.Question", function() {
         it("adjusts comments to fill remaining vertical space", function() {
           questionPage.editButton.click();
           expectCommentsToHaveFullHeight();
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
 
-          questionPage.comments.adjustHeightAndScroll.reset();
           var columnHeightBeforeElastic = questionPage.find('#column1').height();
           questionPage.editableDetails.val(longDetails + longDetails);
           questionPage.editableDetails.keyup();
           expectCommentsToHaveFullHeight(columnHeightBeforeElastic);
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
 
-          questionPage.comments.adjustHeightAndScroll.reset();
           questionPage.editableDetails.val("");
           questionPage.editableDetails.keyup();
           expectCommentsToHaveFullHeight(columnHeightBeforeElastic);
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
 
-
-          questionPage.comments.adjustHeightAndScroll.reset();
           questionPage.editableBody.val(longDetails);
           questionPage.editableBody.keyup();
-          expect(questionPage.comments.adjustHeightAndScroll).toHaveBeenCalled();
         });
       });
 
@@ -863,7 +874,7 @@ describe("Views.Pages.Question", function() {
           questionPage.answerDetails.click();
           expect(History.replaceState).not.toHaveBeenCalled();
 
-          questionPage.answerDetails.find(':not(.close,.destroy)').click();
+          questionPage.answerDetails.find(':not(.close,.destroy,.more,.less)').click();
           expect(History.replaceState).not.toHaveBeenCalledWith(null, null, question.url());
           History.replaceState.reset();
 

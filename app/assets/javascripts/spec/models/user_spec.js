@@ -9,7 +9,7 @@ describe("User", function() {
   describe("#avatarUrl(size)", function() {
     describe("if the user has a facebook uid", function() {
       beforeEach(function() {
-        user.facebookUid("1234");
+        user.facebookId("1234");
       });
 
       it("returns the facebook profile picture url", function() {

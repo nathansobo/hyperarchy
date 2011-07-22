@@ -99,10 +99,10 @@ describe("Views.Pages.Question.Votes", function() {
         votesView.votes(votesRelation);
         votesView.selectedVoterId(otherUser.id());
 
-        expect(mpq.length).toBe(1);
+        expect(mpq.length).toBe(2);
         var event = mpq.pop();
         expect(event[0]).toBe('track');
-        expect(event[1]).toBe("View Ranking");
+        expect(event[1]).toBe("View Vote");
       });
     });
   });

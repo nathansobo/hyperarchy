@@ -23,8 +23,12 @@ module Models
         User.make_unsaved(:email_address => user.email_address).should_not be_valid
       end
 
-      it "allows there to be no encrypted_password if there is a facebook_uid" do
-        User.make_unsaved(:password => "", :facebook_uid => "uid").should be_valid
+      it "allows there to be no encrypted_password if there is a facebook_id" do
+        User.make_unsaved(:password => "", :facebook_id => "uid").should be_valid
+      end
+
+      it "allows there to be no encrypted_password, last_name, or email_address if there is a twitter_id" do
+        User.make_unsaved(:password => nil, :last_name => nil, :email_address => nil, :twitter_id => 1969).should be_valid
       end
     end
 
@@ -149,6 +153,13 @@ module Models
         it "returns nil" do
           User.make.guest_organization.should be_nil
         end
+      end
+    end
+
+    describe "#email_hash" do
+      it "returns nil if email_address is nil" do
+        user.update!(:twitter_id => 123, :email_address => nil)
+        user.email_hash.should be_nil
       end
     end
 

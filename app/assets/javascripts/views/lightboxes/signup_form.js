@@ -5,11 +5,11 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
     a({'class': "facebook button"}, function() {
       div({'class': "facebook-logo"});
       text("Sign Up With Facebook");
-    }).ref('facebookLoginButton').click(function() {
-        var addOrgAfterward = this.organizationSection.is(':visible')
-        Application.facebookLogin(addOrgAfterward);
-      });
-
+    }).ref('facebookLoginButton').click('facebookLogin');
+    a({'class': "twitter button"}, function() {
+      div({'class': "twitter-logo"});
+      text("Sign Up With twitter");
+    }).ref('twitterLoginButton').click('twitterLogin');
     h2("Or…").ref('participateHeader');
 
     form(function() {
@@ -70,6 +70,29 @@ _.constructor('Views.Lightboxes.SignupForm', Views.Lightboxes.Lightbox, {
         this.errors.append("<li>" + error + "</li>");
       }, this);
       promise.triggerError();
+    },
+
+    facebookLogin: function() {
+      var addOrganization = this.organizationSection.is(':visible');
+      Application.facebookLogin()
+        .success(function() {
+          this.trigger('success');
+          this.hide();
+          if (addOrganization) Application.addOrganizationForm.show();
+        }, this)
+        .invalid(function() {
+          this.close();
+        }, this);
+    },
+
+    twitterLogin: function() {
+      var addOrganization = this.organizationSection.is(':visible');
+      Application.twitterLogin()
+        .success(function() {
+          this.trigger('success');
+          this.hide();
+          if (addOrganization) Application.addOrganizationForm.show();
+        }, this);
     },
 
     showOrganizationSection: function() {

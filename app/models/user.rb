@@ -12,7 +12,8 @@ class User < Prequel::Record
   column :password_reset_token_generated_at, :datetime
   column :guest, :boolean, :default => false
   column :default_guest, :boolean, :default => false
-  column :facebook_uid, :string
+  column :facebook_id, :string
+  column :twitter_id, :integer
   synthetic_column :email_hash, :string
 
   has_many :memberships
@@ -133,7 +134,7 @@ class User < Prequel::Record
   end
 
   def email_hash
-    Digest::MD5.hexdigest(email_address.downcase)
+    Digest::MD5.hexdigest(email_address.downcase) if email_address
   end
 
   def full_name
@@ -142,10 +143,16 @@ class User < Prequel::Record
 
   def validate
     errors.add(:first_name, "You must enter a first name.") if first_name.blank?
-    errors.add(:last_name, "You must enter a last name.") if last_name.blank?
-    errors.add(:email_address, "You must enter an email address.") if email_address.blank?
-    if encrypted_password.blank? && facebook_uid.blank?
-      errors.add(:password, "You must enter a password.")
+
+    unless twitter_id
+      errors.add(:last_name, "You must enter a last name.") if last_name.blank?
+      errors.add(:email_address, "You must enter an email address.") if email_address.blank?
+    end
+
+    unless twitter_id || facebook_id
+      if encrypted_password.blank?
+        errors.add(:password, "You must enter a password.")
+      end
     end
   end
 

@@ -11,8 +11,8 @@ describe ChannelSubscriptionsController do
         user = organization.make_member
         login_as(user)
 
-        mock(controller).post(organization.subscribe_url, :params => {:session_id => "fake_session_id"})
-        post :create, :id => organization.id, :session_id => "fake_session_id"
+        mock(controller).post(organization.subscribe_url, :params => {:session_id => "fake_session_id", :reconnecting => '1'})
+        post :create, :id => organization.id, :session_id => "fake_session_id", :reconnecting => '1'
         response.should be_success
       end
     end

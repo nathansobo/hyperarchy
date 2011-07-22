@@ -81,13 +81,12 @@ _.constructor("Views.Layout", View.Template, {
       }
     },
 
-    facebookLogin: function(addOrgAfter) {
+    facebookLogin: function() {
       var promise = new Monarch.Promise();
 
       FB.login(this.bind(function(response) {
         if (response.session) {
-          if (response.session.uid === Application.currentUser().facebookUid()) {
-            mpq.push(['track', "Facebook Login"]);
+          if (response.session.uid === Application.currentUser().facebookId()) {
             promise.triggerSuccess();
           } else {
             $.ajax({
@@ -95,18 +94,41 @@ _.constructor("Views.Layout", View.Template, {
               url: '/facebook_sessions',
               dataType: 'data+records', // do not use records!, because a non-fb-connected member might switch to an fb-connected member and we don't want to nuke needed data
               success: this.bind(function(data) {
-                mpq.push(['track', "Connect Facebook Account"]);
+                mpq.push(['track', "Facebook Login"]);
                 this.currentUserEstablished(promise, data);
-                if (addOrgAfter) this.addOrganizationForm.show();
               })
             });
           }
         } else {
-          this.signupForm.close();
-          this.loginForm.close();
           promise.triggerInvalid();
         }
       }), {perms: "email"});
+
+      return promise;
+    },
+
+    twitterLogin: function(addOrgAfter) {
+      var promise = new Monarch.Promise();
+
+      T.one('authComplete', this.bind(function(e, user) {
+        if (user.id === Application.currentUser().twitterId()) {
+          promise.triggerSuccess();
+        } else {
+          $.ajax({
+            type: 'post',
+            url: '/twitter_sessions',
+            dataType: 'data+records', // do not use records!, because a non-twitter-connected member might switch to a twitter-connected member and we don't want to nuke needed data
+            data: { name: user.name },
+            success: this.bind(function(data) {
+//            mpq.push(['track', "Connect Twitter Account"]);
+              this.currentUserEstablished(promise, data);
+//            if (addOrgAfter) this.addOrganizationForm.show();
+            })
+          });
+        }
+      }));
+
+      T.signIn();
 
       return promise;
     },
@@ -118,6 +140,7 @@ _.constructor("Views.Layout", View.Template, {
         } else {
           this.currentUserId(newUser.id());
           this.recordOrganizationVisit();
+          newUser.trackLogin();
           newUser.trackIdentity();
           return this.currentUserChangeNode.publishForPromise(newUser);
         }
@@ -136,11 +159,11 @@ _.constructor("Views.Layout", View.Template, {
 
     currentOrganizationId: {
       change: function(currentOrganizationId) {
+        var organization = Organization.find(currentOrganizationId);
         this.socketConnectionFuture.success(function(sessionId) {
-          $.post('/channel_subscriptions/organizations/' + currentOrganizationId, { session_id: sessionId });
+          organization.subscribe({session_id: sessionId});
         });
-
-        this.currentOrganization(Organization.find(currentOrganizationId));
+        this.currentOrganization(organization);
       }
     },
 
@@ -183,6 +206,7 @@ _.constructor("Views.Layout", View.Template, {
       var page = this[name + 'Page'];
       if (!page.fixedHeight) this.addClass('normal-height');
       page.show().params(parsedParams);
+      _gaq.push(['_trackPageview']);
     },
 
     connectToSocketServer: function() {
@@ -190,16 +214,26 @@ _.constructor("Views.Layout", View.Template, {
       var socketServerHost = window.location.hostname;
       var secure = (window.location.protocol === 'https:')
       var socket = new io.Socket(socketServerHost, {rememberTransport: false, secure: secure, port: 8081, connectTimeout: 10000});
+
       socket.on('connect', this.bind(function() {
-        mpq.push(['track', "Connect"]);
-        this.socketConnectionFuture.triggerSuccess(socket.transport.sessionid);
+        if (this.reconnectTimeout) {
+          clearTimeout(this.reconnectTimeout);
+          Application.currentOrganization().subscribe({ session_id: socket.transport.sessionid, reconnecting: 1 });
+        } else {
+          this.socketConnectionFuture.triggerSuccess(socket.transport.sessionid);
+        }
       }));
+
       socket.on('message', function(m) {
-        Repository.mutate([JSON.parse(m)]);
+        Repository.mutate(JSON.parse(m));
       });
+
+
       socket.on('disconnect', this.bind(function() {
-        mpq.push(['track', "Disconnect"]);
-        this.disconnectDialog.show();
+        this.reconnectTimeout = this.delay(function() {
+          this.disconnectDialog.show();
+          mpq.push(['track', "Reconnect Timeout"]);
+        }, 10000);
       }));
 
       socket.connect();
@@ -210,7 +244,8 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     scrollTop: function(top) {
-      return $(window).scrollTop(top);
+      var win = $(window);
+      return win.scrollTop.apply(win, arguments);
     },
 
     promptSignup: function() {

@@ -40,7 +40,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
                 div({style: "height: 0"}, function() { raw("&nbsp;") }); // hack to allow textareas first
                 template['column' + i]();
               });
-            });
+            }).ref('column' + i);
           }
         });
       }).ref('columns');
@@ -55,13 +55,16 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
 
   column1: function() { with(this.builder) {
     h2({id: "details-header"}, "Details").ref('detailsHeader');
-    div({'class': 'details'}).ref('details');
     textarea({name: 'details', 'class': "details"}).ref("editableDetails");
-
     a({'class': 'update button'}, "Save").ref('updateButton').click('update');
     a({'class': 'cancel button'}, "Cancel").ref('cancelEditButton').click('cancelEdit');
-    a({'class': "destroy button"}, "Delete").ref('destroyButton').click('destroy');
-    a({'class': "edit button"}, "Edit").ref('editButton').click('edit');
+
+    div({'class': "non-editable"}, function() {
+      div({'class': 'details'}).ref('details');
+
+      a({'class': "edit"}, "✎ edit").ref('editButton').click('edit');
+      a({'class': "destroy"}, "✕ delete").ref('destroyButton').click('destroy');
+    });
 
     div({'class': 'creator'}, function() {
       subview('avatar', Views.Components.Avatar, {imageSize: 34});
@@ -78,11 +81,11 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
   }},
 
   column3: function() { with(this.builder) {
-    h2("Your Ranking").ref('rankedAnswersHeader');
-    h2("Answer Details").ref('answerDetailsHeader');
     a({id: "back-to-your-ranking", 'class': "link"}, "← Back").ref('backLink').click(function() {
       History.replaceState(null,null,this.question().url());
     });
+    h2("Your Ranking").ref('rankedAnswersHeader');
+    h2("Answer Details").ref('answerDetailsHeader');
 
     div({id: "rankings-and-details"}, function() {
       subview('answerDetails', Views.Pages.Question.AnswerDetails);
@@ -157,7 +160,6 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       } else {
         this.loading(true);
       }
-
 
       if (params.voterId || params.answerId) {
         this.backLink.show();
@@ -263,7 +265,14 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       change: function(question) {
         this.avatar.user(question.creator());
         this.body.bindMarkdown(question, 'body');
-        Application.currentOrganizationId(question.organizationId());
+
+        var organization = question.organization();
+        Application.currentOrganization(organization);
+        if (organization.isPublic()) {
+          this.facebookButton.show();
+        } else {
+          this.facebookButton.hide();
+        }
 
         this.details.bindMarkdown(question, 'details');
         this.comments.comments(question.comments());
@@ -375,14 +384,15 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
 
     adjustCommentsHeight: function() {
       this.comments.fillVerticalSpace(this.columns);
-      this.comments.adjustHeightAndScroll();
     },
 
     showOrHideMutateButtons: function() {
       if (this.question().editableByCurrentUser()) {
         this.addClass('mutable');
+        this.column1.addClass('mutable');
       } else {
         this.removeClass('mutable');
+        this.column1.removeClass('mutable');
       }
     },
 

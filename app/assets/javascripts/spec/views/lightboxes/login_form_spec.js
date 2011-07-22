@@ -103,7 +103,7 @@ describe("Views.Lightboxes.LoginForm", function() {
   });
 
   describe("when the facebook login link is clicked", function() {
-    var successTriggered, cancelTriggered;
+    var successTriggered, cancelTriggered, facebookLoginPromise;
     beforeEach(function() {
       loginForm.bind('success', function() {
         successTriggered = true;
@@ -111,39 +111,59 @@ describe("Views.Lightboxes.LoginForm", function() {
       loginForm.bind('cancel', function() {
         cancelTriggered = true;
       });
+
+      facebookLoginPromise = new Monarch.Promise();
+      spyOn(Application, 'facebookLogin').andReturn(facebookLoginPromise);
     });
 
     describe("when facebook login succeeds", function() {
-      it("posts to the facebook_sessions controller and sets the current user based on the response", function() {
-        spyOn(FB, 'login');
+      it("calls Application.facebookLogin and triggers success / hides itself when it succeeds", function() {
         loginForm.facebookLoginButton.click();
-        expect(FB.login).toHaveBeenCalled();
-        expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email"});
-        var loginCallback = FB.login.mostRecentCall.args[0];
-        loginCallback({ session: { uid: '123'} }); // simulate successful FB login
 
-        expect($.ajax).toHaveBeenCalled();
-        expect(mostRecentAjaxRequest.url).toBe('/facebook_sessions');
-        expect(mostRecentAjaxRequest.type).toBe('post');
+        expect(Application.facebookLogin).toHaveBeenCalled();
+        facebookLoginPromise.triggerSuccess();
 
-        var user = User.createFromRemote({id: 1});
-        mostRecentAjaxRequest.success({current_user_id: user.id()});
-        expect(Application.currentUser()).toBe(user);
         expect(successTriggered).toBeTruthy();
+        expect(loginForm).toBeHidden();
       });
     });
 
-    describe("when login fails", function() {
-      it("hides the login form and triggers failure on the form", function() {
-        spyOn(FB, 'login');
+    describe("when facebook login fails", function() {
+      it("hides the login form and triggers cancel on it", function() {
         loginForm.facebookLoginButton.click();
-        expect(FB.login).toHaveBeenCalled();
-        expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email"});
-        var loginCallback = FB.login.mostRecentCall.args[0];
-        loginCallback({ session: null }); // simulate unsuccessful FB login
 
-        expect(loginForm).toBeHidden();
+        expect(Application.facebookLogin).toHaveBeenCalled();
+        facebookLoginPromise.triggerInvalid();
+
         expect(cancelTriggered).toBeTruthy();
+        expect(loginForm).toBeHidden();
+      });
+    });
+  });
+
+  describe("when the twitter login link is clicked", function() {
+    var successTriggered, cancelTriggered, twitterLoginPromise;
+    beforeEach(function() {
+      loginForm.bind('success', function() {
+        successTriggered = true;
+      });
+      loginForm.bind('cancel', function() {
+        cancelTriggered = true;
+      });
+
+      twitterLoginPromise = new Monarch.Promise();
+      spyOn(Application, 'twitterLogin').andReturn(twitterLoginPromise);
+    });
+
+    describe("when twitter login succeeds", function() {
+      it("calls Application.twitterLogin and triggers success / hides itself when it succeeds", function() {
+        loginForm.twitterLoginButton.click();
+
+        expect(Application.twitterLogin).toHaveBeenCalled();
+        twitterLoginPromise.triggerSuccess();
+
+        expect(successTriggered).toBeTruthy();
+        expect(loginForm).toBeHidden();
       });
     });
   });

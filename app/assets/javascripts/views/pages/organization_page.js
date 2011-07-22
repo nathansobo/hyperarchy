@@ -57,6 +57,7 @@ _.constructor('Views.Pages.Organization', Monarch.View.Template, {
     },
 
     beforeHide: function() {
+      if (!this.is(":visible")) return;
       this.previousScrollPosition = Application.scrollTop();
     },
 

@@ -15,7 +15,7 @@ describe FacebookSessionsController do
           attr_reader :fb_user, :user
 
           before do
-            @user = User.make(:facebook_uid => 'fake-fb-uid')
+            @user = User.make(:facebook_id => 'fake-fb-uid')
           end
 
           it "sets the current user to the user with this uid and returns their initial dataset" do
@@ -47,7 +47,7 @@ describe FacebookSessionsController do
               current_user.should == new_user
               new_user.first_name.should == user_attrs[:first_name]
               new_user.last_name.should == user_attrs[:last_name]
-              new_user.facebook_uid.should == fb_user.identifier
+              new_user.facebook_id.should == fb_user.identifier
 
               response_json['data']['current_user_id'].should == new_user.id
               response_records.should include(new_user.initial_repository_contents)
@@ -68,7 +68,7 @@ describe FacebookSessionsController do
               current_user.should == user
               user.first_name.should == user_attrs[:first_name]
               user.last_name.should == user_attrs[:last_name]
-              user.facebook_uid.should == fb_user.identifier
+              user.facebook_id.should == fb_user.identifier
 
               response_json['data']['current_user_id'].should == user.id
               response_records.should include(user.initial_repository_contents)

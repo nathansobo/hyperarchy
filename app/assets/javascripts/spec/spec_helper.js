@@ -15,6 +15,7 @@ var originalServer = window.Server;
 Views.Pages.Question.AnswerLi.prototype.viewProperties.dragDelay = null;
 
 var mpq;
+var _gaq;
 
 beforeEach(function() {
   ajaxRequests = [];
@@ -24,6 +25,8 @@ beforeEach(function() {
   stubAjax();
   spyOn(Question, 'updateScoresPeriodically');
   mpq = []
+  _gaq = [];
+  T.reset();
 });
 
 afterEach(function() {
@@ -88,8 +91,48 @@ function simulateAjaxSuccess(data) {
   mostRecentAjaxDeferred.resolve(data);
 }
 
+function expectMixpanelAction(action, name) {
+  var events = _.select(mpq, function(event) { return event[0] === action && event[1] === name});
+  expect(events.length).toBe(1);
+  return events[0];
+}
+
 var FB = {
   login: function() {},
   api: function() {},
   ui: function() {}
-}
+};
+
+var T = {
+  signIn: function() {},
+
+  reset: function() {
+    this.subscriptionNodes = {};
+  },
+
+  bind: function(eventName, callback) {
+    this.getEventNode(eventName).subscribe(callback);
+  },
+
+  one: function(eventName, callback) {
+    var subscription = this.getEventNode(eventName).subscribe(function() {
+      callback.apply(window, arguments);
+      subscription.destroy();
+    });
+  },
+
+  getEventNode: function(eventName) {
+    var node = this.subscriptionNodes[eventName];
+    if (node) {
+      return node;
+    } else {
+      return this.subscriptionNodes[eventName] = new Monarch.SubscriptionNode();
+    }
+  },
+
+  trigger: function() {
+    var args = _.toArray(arguments);
+    var eventName = args.shift();
+    this.getEventNode(eventName).publishArgs(args);
+  }
+};

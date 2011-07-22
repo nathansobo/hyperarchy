@@ -84,6 +84,29 @@ describe("Question", function() {
         expect(uiOptions.description).not.toContain(answer4.body());
       });
     });
+
+    describe("mixpanel tracking", function() {
+      var callback;
+      beforeEach(function() {
+        question.shareOnFacebook();
+        callback = FB.ui.mostRecentCall.args[1];
+        mpq = [];
+      });
+
+      describe("when the user shares to their wall successfully", function() {
+        it("pushes a 'Facebook Post' event", function() {
+          callback({post_id: 1});
+          expect(mpq.pop()).toEqual(['track', 'Facebook Post', question.mixpanelProperties()]);
+        });
+      });
+
+      describe("when the user cancels the share", function() {
+        it("pushes a 'Cancel Facebook Post'", function() {
+          callback({});
+          expect(mpq.pop()).toEqual(['track', 'Cancel Facebook Post', question.mixpanelProperties()]);
+        });
+      });
+    });
   });
 
   describe("#updateScore", function() {

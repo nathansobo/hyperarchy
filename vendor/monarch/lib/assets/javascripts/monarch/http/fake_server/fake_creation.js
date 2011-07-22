@@ -10,7 +10,9 @@ _.constructor("Monarch.Http.FakeServer.FakeCreation", {
   simulateSuccess: function(optionalFieldsFromServer) {
     if (!optionalFieldsFromServer) optionalFieldsFromServer = {};
     this.fakeServer.removeRequest(this);
-    var fields = _.extend({id: this.fakeServer.idCounter++ }, this.record.dirtyWireRepresentation(), optionalFieldsFromServer);
+    var lastRecord = this.record.constructor.last();
+    var nextId = lastRecord ? lastRecord.id() + 1 : 1;
+    var fields = _.extend({id: nextId }, this.record.dirtyWireRepresentation(), optionalFieldsFromServer);
     this.record.remotelyCreated(fields);
     this.promise.triggerSuccess(this.record);
   }

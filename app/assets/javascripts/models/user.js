@@ -9,7 +9,8 @@ _.constructor("User", Model.Record, {
       guest: 'boolean',
       defaultGuest: 'boolean',
       emailEnabled: 'boolean',
-      facebookUid: 'string'
+      facebookId: 'string',
+      twitterId: 'integer'
     });
 
     this.syntheticColumn('fullName', function() {
@@ -40,7 +41,7 @@ _.constructor("User", Model.Record, {
   },
 
   avatarUrl: function(size) {
-    if (this.facebookUid()) {
+    if (this.facebookId()) {
       return this.facebookPhotoUrl();
     } else {
       return this.gravatarUrl(size);
@@ -48,7 +49,7 @@ _.constructor("User", Model.Record, {
   },
 
   facebookPhotoUrl: function() {
-    return "https://graph.facebook.com/" + this.facebookUid() + "/picture?type=square";
+    return "https://graph.facebook.com/" + this.facebookId() + "/picture?type=square";
   },
 
   gravatarUrl: function(size) {
@@ -69,5 +70,14 @@ _.constructor("User", Model.Record, {
     if (this.guest()) return;
     mpq.push(['identify', this.id()]);
     mpq.push(['name_tag', this.fullName()]);
+  },
+
+  trackLogin: function() {
+    if (this.guest()) return;
+    mpq.push(['track', 'Login', this.mixpanelProperties()]);
+  },
+  
+  mixpanelNote: function() {
+    return this.fullName();
   }
 });

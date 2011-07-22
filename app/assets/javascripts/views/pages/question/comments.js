@@ -17,15 +17,20 @@ _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
   }},
 
   viewProperties: {
+    initialize: function() {
+      this.list.scroll(this.hitch('enableOrDisableAutoScroll'));
+      this.autoScroll = true;
+    },
+
     comments: {
       change: function(comments) {
         this.list.relation(comments);
-        this.delay(this.adjustHeightAndScroll, 200);
+        this.defer(this.adjustListHeight);
       }
     },
 
     afterShow: function() {
-      this.adjustHeightAndScroll();
+      this.adjustListHeight();
     },
 
     create: function() {
@@ -35,6 +40,8 @@ _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
         return false;
       }
 
+      this.scrollToBottom();
+      this.autoScroll = true;
       this.comments().create({body: this.textarea.val()}).success(function(comment) {
         comment.trackCreate();
       });
@@ -46,14 +53,33 @@ _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
 
     attach: function() {
       this.textarea.elastic();
-      this.list.onInsert = this.hitch('adjustHeightAndScroll');
-      this.list.onRemove = this.hitch('adjustHeightAndScroll');
-      this.textarea.bind('elastic', this.hitch('adjustHeightAndScroll'));
+      this.list.onInsert = this.hitch('scrollToBottomIfEnabled');
+      this.list.onRemove = this.hitch('scrollToBottomIfEnabled');
+      this.textarea.bind('elastic', this.hitch('adjustListHeight'));
     },
 
-    adjustHeightAndScroll: function() {
+    height: function($super, height) {
+      if (height) {
+        if (this.expanded()) {
+          console.log("Ignoring height in expanded mode");
+          return $super();
+        }
+
+        var val = $super(height);
+        this.adjustListHeight();
+        return val;
+      } else {
+        return $super();
+      }
+    },
+
+    enableOrDisableAutoScroll: function() {
+      this.autoScroll = (this.list.scrollTop() === this.list.attr('scrollHeight') - this.list.height());
+    },
+
+    adjustListHeight: function() {
       this.list.css('max-height', this.height() - this.headerHeight() - this.textareaAndButtonHeight() - 2);
-      this.scrollToBottom();
+      this.scrollToBottomIfEnabled();
     },
 
     headerHeight: function() {
@@ -61,10 +87,14 @@ _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
     },
 
     textareaAndButtonHeight: function() {
-      return this.textareaAndButton.height() + parseInt(this.list.css('margin-bottom'));
+      return this.textareaAndButton.outerHeight() + parseInt(this.list.css('margin-bottom'));
     },
 
-    scrollToBottom: function(animate) {
+    scrollToBottomIfEnabled: function() {
+      if (this.autoScroll) this.scrollToBottom();
+    },
+
+    scrollToBottom: function(force) {
       this.list.scrollTop(this.list.attr('scrollHeight') - this.list.height());
     },
 
@@ -74,6 +104,17 @@ _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
           this.hide();
         } else {
           this.show();
+        }
+      }
+    },
+
+    expanded: {
+      change: function(isExpanded) {
+        if (isExpanded) {
+          this.css('height', 'auto');
+          this.list.css('max-height', 'none');
+        } else {
+          this.adjustListHeight();
         }
       }
     }

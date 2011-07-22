@@ -134,7 +134,7 @@ describe("Views.Lightboxes.SignupForm", function() {
   });
 
   describe("when the facebook login link is clicked", function() {
-    var successTriggered, cancelTriggered;
+    var successTriggered, cancelTriggered, facebookLoginPromise;
     beforeEach(function() {
       signupForm.bind('success', function() {
         successTriggered = true;
@@ -142,26 +142,33 @@ describe("Views.Lightboxes.SignupForm", function() {
       signupForm.bind('cancel', function() {
         cancelTriggered = true;
       });
+
+      facebookLoginPromise = new Monarch.Promise();
+      spyOn(Application, 'facebookLogin').andReturn(facebookLoginPromise);
     });
 
     describe("when in 'normal' mode", function() {
       describe("when facebook login succeeds", function() {
-        it("posts to the facebook_sessions controller and sets the current user based on the response", function() {
-          spyOn(FB, 'login');
+        it("calls Application.facebookLogin and triggers success / hides itself when it succeeds", function() {
           signupForm.facebookLoginButton.click();
-          expect(FB.login).toHaveBeenCalled();
-          expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email"});
-          var loginCallback = FB.login.mostRecentCall.args[0];
-          loginCallback({ session: {uid: "123"} }); // simulate successful FB login
 
-          expect($.ajax).toHaveBeenCalled();
-          expect(mostRecentAjaxRequest.url).toBe('/facebook_sessions');
-          expect(mostRecentAjaxRequest.type).toBe('post');
+          expect(Application.facebookLogin).toHaveBeenCalled();
+          facebookLoginPromise.triggerSuccess();
 
-          var user = User.createFromRemote({id: 1});
-          mostRecentAjaxRequest.success({current_user_id: user.id()});
-          expect(Application.currentUser()).toBe(user);
           expect(successTriggered).toBeTruthy();
+          expect(signupForm).toBeHidden();
+        });
+      });
+
+      describe("when facebook login fails", function() {
+        it("hides the signup form and triggers cancel on it", function() {
+          signupForm.facebookLoginButton.click();
+
+          expect(Application.facebookLogin).toHaveBeenCalled();
+          facebookLoginPromise.triggerInvalid();
+
+          expect(cancelTriggered).toBeTruthy();
+          expect(signupForm).toBeHidden();
         });
       });
     });
@@ -173,31 +180,79 @@ describe("Views.Lightboxes.SignupForm", function() {
 
       describe("when facebook login succeeds", function() {
         it("shows the add organization form", function() {
-          spyOn(FB, 'login');
           signupForm.facebookLoginButton.click();
-          var loginCallback = FB.login.mostRecentCall.args[0];
-          loginCallback({ session: { uid: "123"} }); // simulate successful FB login
 
-          var user = User.createFromRemote({id: 1});
-          mostRecentAjaxRequest.success({current_user_id: user.id()});
+          expect(Application.facebookLogin).toHaveBeenCalled();
+          facebookLoginPromise.triggerSuccess();
 
+          expect(successTriggered).toBeTruthy();
+          expect(signupForm).toBeHidden();
           expect(Application.addOrganizationForm).toBeVisible();
+          expect(Application.darkenedBackground).toBeVisible();
+        });
+      });
+
+      describe("when facebook login fails", function() {
+        it("hides the signup form and does not show the add organization form", function() {
+          signupForm.facebookLoginButton.click();
+
+          expect(Application.facebookLogin).toHaveBeenCalled();
+          facebookLoginPromise.triggerInvalid();
+
+          expect(cancelTriggered).toBeTruthy();
+          expect(signupForm).toBeHidden();
+          expect(Application.addOrganizationForm).toBeHidden();
+        });
+      });
+    });
+  });
+  
+  describe("when the twitter login link is clicked", function() {
+    var successTriggered, cancelTriggered, twitterLoginPromise;
+    beforeEach(function() {
+      signupForm.bind('success', function() {
+        successTriggered = true;
+      });
+      signupForm.bind('cancel', function() {
+        cancelTriggered = true;
+      });
+
+      twitterLoginPromise = new Monarch.Promise();
+      spyOn(Application, 'twitterLogin').andReturn(twitterLoginPromise);
+    });
+
+    describe("when in 'normal' mode", function() {
+      describe("when twitter login succeeds", function() {
+        it("calls Application.twitterLogin and triggers success / hides itself when it succeeds", function() {
+          signupForm.twitterLoginButton.click();
+
+          expect(Application.twitterLogin).toHaveBeenCalled();
+          twitterLoginPromise.triggerSuccess();
+
+          expect(successTriggered).toBeTruthy();
+          expect(signupForm).toBeHidden();
         });
       });
     });
 
-    describe("when login fails", function() {
-      it("hides the login form and triggers failure on the form", function() {
-        spyOn(FB, 'login');
-        signupForm.facebookLoginButton.click();
-        expect(FB.login).toHaveBeenCalled();
-        expect(FB.login.mostRecentCall.args[1]).toEqual({perms: "email"});
-        var loginCallback = FB.login.mostRecentCall.args[0];
-        loginCallback({ session: null }); // simulate unsuccessful FB login
+    describe("when in 'add organization' mode", function() {
+      beforeEach(function() {
+        signupForm.showOrganizationSection();
+      });
 
-        expect(signupForm).toBeHidden();
-        expect(cancelTriggered).toBeTruthy();
+      describe("when twitter login succeeds", function() {
+        it("shows the add organization form", function() {
+          signupForm.twitterLoginButton.click();
+
+          expect(Application.twitterLogin).toHaveBeenCalled();
+          twitterLoginPromise.triggerSuccess();
+
+          expect(successTriggered).toBeTruthy();
+          expect(signupForm).toBeHidden();
+          expect(Application.addOrganizationForm).toBeVisible();
+          expect(Application.darkenedBackground).toBeVisible();
+        });
       });
     });
-  })
+  });
 });
