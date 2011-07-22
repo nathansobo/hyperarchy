@@ -32,15 +32,7 @@ _.constructor("AnswerComment", Model.Record, {
     return $.PHPDate("n/j/y g:ia", this.createdAt());
   },
 
-  trackCreate: function() {
-    mpq.push(['track', "Create AnswerComment", {
-      mp_note: this.body(),
-      id: this.id(),
-      body: this.body(),
-      answerId: this.answerId(),
-      answer: this.answer().body(),
-      creatorId: this.creatorId(),
-      creator: this.creator().fullName()
-    }]);
+  mixpanelNote: function() {
+    return this.body();
   }
 });

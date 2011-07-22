@@ -38,23 +38,7 @@ _.constructor("Ranking", Model.Record, {
     }
   },
 
-  trackCreate: function() {
-    mpq.push(['track', "Create Ranking", {
-      mp_note: this.answer().body(),
-      answer: this.answer().body(),
-      answerId: this.answerId(),
-      user: this.user().fullName(),
-      userId: this.userId()
-    }]);
-  },
-
-  trackUpdate: function() {
-    mpq.push(['track', "Update Ranking", {
-      mp_note: this.answer().body(),
-      answer: this.answer().body(),
-      answerId: this.answerId(),
-      user: this.user().fullName(),
-      userId: this.userId()
-    }]);
+  mixpanelNote: function() {
+    return this.answer().body();
   }
 });

@@ -23,13 +23,13 @@ _.constructor("Vote", Model.Record, {
     return url;
   },
 
+
   trackView: function() {
-    mpq.push(['track', "View Ranking", {
-      mp_note: this.user().fullName(),
-      question: this.question().body(),
-      questionId: this.questionId(),
-      user: this.user().fullName(),
-      userId: this.userId()
-    }]);
+    mpq.push(["track", "View Ranking", this.mixpanelProperties()]); // keeping this around for retention on early users. will retire in a few months
+    mpq.push(["track", "View Vote", this.mixpanelProperties()]);
+  },
+
+  mixpanelNote: function() {
+    return this.user().fullName();
   }
 });
