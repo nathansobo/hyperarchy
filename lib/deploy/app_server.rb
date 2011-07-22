@@ -387,7 +387,7 @@ class AppServer
 
   def download_database(source_server)
     dump_file_path = source_server.dump_database
-    run "scp #{source_server.hostname}:#{dump_file_path} #{dump_file_path}"
+    run "scp -o StrictHostKeyChecking=no #{source_server.hostname}:#{dump_file_path} #{dump_file_path}"
     run "gunzip #{dump_file_path}"
     dump_file_path = dump_file_path.gsub(/\.gz$/, '')
 
