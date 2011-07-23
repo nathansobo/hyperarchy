@@ -9,10 +9,11 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
         }},
         menuContent: function() { with(this.builder) {
           li(function() {
-            a("Connect With Twitter")
-          }).ref('twitterConnectLink');
+            a("Connect With Twitter");
+          }).ref('twitterConnectLink')
+            .click('twitterConnect');
           li(function() {
-            a("Account Preferences")
+            a("Account Preferences");
           }).ref('accountLink')
             .click(function() {
               History.pushState(null, null, '/account');
@@ -29,6 +30,7 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
   viewProperties: {
     initialize: function() {
       this.dropdownMenu.logout = this.hitch('logout');
+      this.dropdownMenu.twitterConnect = this.hitch('twitterConnect');
     },
 
     attach: function() {
@@ -86,6 +88,18 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
       } else {
         this.dropdownMenu.twitterConnectLink.show();
       }
+    },
+
+    twitterConnect: function() {
+      T.one('authComplete', this.bind(function(e, user) {
+        $.ajax({
+          type: 'post',
+          url: '/twitter_connections',
+          dataType: 'records'
+        });
+      }));
+
+      T.signIn();
     }
   }
 });

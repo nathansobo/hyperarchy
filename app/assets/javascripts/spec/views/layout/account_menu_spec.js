@@ -37,7 +37,7 @@ describe("Views.Layout.AccountMenu", function() {
     });
   });
 
-  describe("showing and hiding of the twitter connectw link", function() {
+  describe("showing and hiding of the twitter connect link", function() {
     it("shows only for users who do not have a twitter id", function() {
       var userWithTwitterId = User.createFromRemote({id: 1, firstName: "Twitty", lastName: "Twosome", twitter_id: 2345});
       var userWithoutTwitterId = User.createFromRemote({id: 2, firstName: "Sad", lastName: "Facebookuser", twitter_id: null});
@@ -60,7 +60,29 @@ describe("Views.Layout.AccountMenu", function() {
   });
 
   describe("when the twitter connect link is clicked", function() {
+    var userWithoutTwitterId;
 
+    beforeEach(function() {
+      spyOn(T, 'signIn');
+      userWithoutTwitterId = User.createFromRemote({id: 2, firstName: "Sad", lastName: "Facebookuser", twitter_id: null});
+      Application.currentUser(userWithoutTwitterId);
+      accountMenu.dropdownMenu.link.click();
+      accountMenu.dropdownMenu.twitterConnectLink.click();
+
+      expect(T.signIn).toHaveBeenCalled();
+    });
+
+    describe("when the user successfully logs into twitter", function() {
+      it("posts to /twitter_connects", function() {
+        var twitterId = 123;
+        T.trigger('authComplete', {}, { id: twitterId, name: "Max Brunsfeld" });
+
+        expect($.ajax).toHaveBeenCalled();
+        expect(mostRecentAjaxRequest.url).toBe('/twitter_connections');
+
+        // response records should be user, with new twitterId value
+      });
+    });
   });
 
   describe("when the login link is clicked", function() {

@@ -31,7 +31,7 @@ describe TwitterConnectionsController do
           end
 
           it "associates the current user with the twitter id and sets the other user records twitter id to 0" do
-            post :create, :twitter_id => twitter_id
+            post :create
             current_user.twitter_id.should == twitter_id
             other_user.twitter_id.should == 0
           end
