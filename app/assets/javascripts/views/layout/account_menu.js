@@ -9,15 +9,18 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
         }},
         menuContent: function() { with(this.builder) {
           li(function() {
-            a("Logout")
-          }).ref('logoutLink')
-            .click('logout');
+            a("Connect With Twitter")
+          }).ref('twitterConnectLink');
           li(function() {
             a("Account Preferences")
           }).ref('accountLink')
             .click(function() {
               History.pushState(null, null, '/account');
-            });;
+            });
+          li(function() {
+            a("Logout")
+          }).ref('logoutLink')
+            .click('logout');
         }}
       });
     });
@@ -42,6 +45,9 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
         this.dropdownMenu.name.html(user.fullName());
         this.loginLink.hide();
         this.dropdownMenu.show();
+
+        this.registerInterest(user, 'onUpdate', this.showOrHideTwitterConnectLink);
+        this.showOrHideTwitterConnectLink();
       }
     },
 
@@ -72,6 +78,14 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
           Application.reload();
         }
       });
+    },
+
+    showOrHideTwitterConnectLink: function() {
+      if (Application.currentUser().twitterId()) {
+        this.dropdownMenu.twitterConnectLink.hide();
+      } else {
+        this.dropdownMenu.twitterConnectLink.show();
+      }
     }
   }
 });

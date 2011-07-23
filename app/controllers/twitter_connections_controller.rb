@@ -3,7 +3,7 @@ class TwitterConnectionsController < ApplicationController
     raise SecurityError if current_user.guest?
 
     if existing_user = User.find(:twitter_id => twitter_id)
-      existing_user.update!(:twitter_id => -1)
+      existing_user.update!(:twitter_id => 0)
     end
 
     current_user.update!(:twitter_id => twitter_id)

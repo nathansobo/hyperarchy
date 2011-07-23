@@ -30,10 +30,10 @@ describe TwitterConnectionsController do
             @other_user = User.make(:twitter_id => twitter_id)
           end
 
-          it "associates the current user with the twitter id and sets the other user records twitter id to -1" do
+          it "associates the current user with the twitter id and sets the other user records twitter id to 0" do
             post :create, :twitter_id => twitter_id
             current_user.twitter_id.should == twitter_id
-            other_user.twitter_id.should == -1
+            other_user.twitter_id.should == 0
           end
         end
       end
