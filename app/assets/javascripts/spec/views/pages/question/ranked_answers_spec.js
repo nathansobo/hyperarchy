@@ -342,6 +342,9 @@ describe("Views.Pages.Question.RankedAnswers", function() {
 
           expect(Application.currentUserId()).toBeDefined();
           expect(Application.currentUser()).toBeDefined();
+          expect(Application.currentUser().defaultGuest()).toBeTruthy();
+          expect(organization.social()).toBeTruthy();
+          expect(organization.isPublic()).toBeTruthy();
 
           synchronously(function() {
             questionPage.params({questionId: question.id()});
@@ -363,10 +366,12 @@ describe("Views.Pages.Question.RankedAnswers", function() {
 
           describe("and then signs up at the prompt", function() {
             it("creates a positive ranking once they have signed up", function() {
-              Application.signupForm.firstName.val("Max");
-              Application.signupForm.lastName.val("Brunsfeld");
-              Application.signupForm.emailAddress.val("maxbruns@example.com");
-              Application.signupForm.password.val("password");
+              runs(function() {
+                Application.signupForm.firstName.val("Max");
+                Application.signupForm.lastName.val("Brunsfeld");
+                Application.signupForm.emailAddress.val("maxbruns@example.com");
+                Application.signupForm.password.val("password");
+              });
 
               waitsFor("signup to succeed", function(complete) {
                 Application.signupForm.form.trigger('submit', complete);
@@ -600,7 +605,6 @@ describe("Views.Pages.Question.RankedAnswers", function() {
         });
       });
     });
-
   });
 
   describe("handling of remote events on rankings", function() {

@@ -30,8 +30,6 @@ describe("Views.Pages.Account", function() {
       Application.showPage('account', {userId: 2})
       
       expect(accountPage.membershipPreferences).toHaveClass('disabled');
-
-      console.log(accountPage.membershipPreferences.find('select'));
       expect(accountPage.membershipPreferences.find('select')).toMatchSelector(':disabled');
     });
   });
