@@ -36,7 +36,7 @@ module Prequel
         if lathe.object.valid?
           lathe.object.save
         else
-          raise("Save failed: #{lathe.object.validation_errors.inspect}")
+          raise("Save failed: #{lathe.object.errors.full_messages}")
         end
       end
       lathe.object(&block)
