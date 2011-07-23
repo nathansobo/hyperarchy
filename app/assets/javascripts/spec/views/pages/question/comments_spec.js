@@ -196,8 +196,6 @@ describe("Views.Pages.Question.Comments", function() {
 
           expectListScrolledToBottom();
 
-          console.log(Server.lastCreate.record.inspect());
-
           Server.lastCreate.simulateSuccess({creatorId: creator1.id(), createdAt: 12345});
 
           expectListScrolledToBottom();
