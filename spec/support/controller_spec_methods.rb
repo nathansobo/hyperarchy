@@ -21,7 +21,13 @@ module ControllerSpecMethods
   end
 
   def response_records
-    @response_records ||= RecordsWrapper.new(response_json['records'])
+    if response_json['records']
+      records = response_json['records']
+    else
+      records = response_json
+    end
+
+    @response_records ||= RecordsWrapper.new(records)
   end
 
   class RecordsWrapper

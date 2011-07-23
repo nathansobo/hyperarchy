@@ -27,6 +27,7 @@ Hyperarchy::Application.routes.draw do
 
   resources :facebook_sessions
   resources :twitter_sessions
+  resources :twitter_connections
 
   # TODO: delete?
   resources :organizations do
