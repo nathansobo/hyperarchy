@@ -13,6 +13,10 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
           }).ref('twitterConnectLink')
             .click('twitterConnect');
           li(function() {
+            a("Connect With Facebook");
+          }).ref('facebookConnectLink')
+            .click('facebookConnect');
+          li(function() {
             a("Account Preferences");
           }).ref('accountLink')
             .click(function() {
@@ -31,6 +35,7 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
     initialize: function() {
       this.dropdownMenu.logout = this.hitch('logout');
       this.dropdownMenu.twitterConnect = this.hitch('twitterConnect');
+      this.dropdownMenu.facebookConnect = this.hitch('facebookConnect');
     },
 
     attach: function() {
@@ -48,8 +53,8 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
         this.loginLink.hide();
         this.dropdownMenu.show();
 
-        this.registerInterest(user, 'onUpdate', this.showOrHideTwitterConnectLink);
-        this.showOrHideTwitterConnectLink();
+        this.registerInterest(user, 'onUpdate', this.showOrHideSocialConnectLinks);
+        this.showOrHideSocialConnectLinks();
       }
     },
 
@@ -82,12 +87,31 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
       });
     },
 
-    showOrHideTwitterConnectLink: function() {
-      if (Application.currentUser().twitterId()) {
+    showOrHideSocialConnectLinks: function() {
+      var user = Application.currentUser();
+
+      if (user.twitterId()) {
         this.dropdownMenu.twitterConnectLink.hide();
       } else {
         this.dropdownMenu.twitterConnectLink.show();
       }
+      if (user.facebookId()) {
+        this.dropdownMenu.facebookConnectLink.hide();
+      } else {
+        this.dropdownMenu.facebookConnectLink.show();
+      }
+    },
+
+    facebookConnect: function() {
+      FB.login(this.bind(function(response) {
+        if (response.session) {
+          $.ajax({
+            type: 'post',
+            url: '/facebook_connections',
+            dataType: 'records'
+          });
+        }
+      }), {perms: "email"});
     },
 
     twitterConnect: function() {
