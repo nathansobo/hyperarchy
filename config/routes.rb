@@ -30,6 +30,8 @@ Hyperarchy::Application.routes.draw do
   resources :twitter_sessions
   resources :twitter_connections
 
+  resources :shares
+
   # TODO: delete?
   resources :organizations do
     resources :questions
