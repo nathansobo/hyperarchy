@@ -174,6 +174,35 @@ _.constructor("Question", Model.Record, {
     }));
   },
 
+  shareOnTwitter: function() {
+    var options = {
+      width: 550,
+      height: 450,
+      left: ($(window).width() / 2) - (550 / 2),
+      top: ($(window).height() / 2) - (450 / 2),
+      status: 0,
+      toolbar: 0,
+      location: 0,
+      menubar: 0,
+      directories: 0,
+      resizable: 0,
+      scrollbars: 0
+    };
+
+    var optionsString = _.map(options, function(value, key) {
+      return key + "=" + value;
+    }).join(", ")
+
+
+    var queryString = $.param({
+      url: this.absoluteUrl(),
+      related: "hyperarchy",
+      text: this.body()
+    });
+
+    window.open("https://twitter.com/share?" + queryString, "Tweet This Question", optionsString);
+  },
+
   mixpanelNote: function() {
     return this.body()
   },

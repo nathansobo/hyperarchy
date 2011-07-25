@@ -21,12 +21,21 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
             }
           });
         a({'class': "facebook button"}, function() {
-          div({'class': "facebook-logo"});
-          span("Share This Question");
+          div({'class': "logo"});
+          span("Share");
         }).ref('facebookButton')
           .click(function() {
             this.question().shareOnFacebook();
           });
+
+        a({'class': "twitter button"}, function() {
+          div({'class': "logo"});
+          span("Tweet");
+        }).ref('twitterButton')
+          .click(function() {
+          this.question().shareOnTwitter();
+        });
+
         div({'class': "body"}).ref('body');
         textarea({name: "body", 'class': "body"}).ref("editableBody");
         subview('charsRemaining', Views.Components.CharsRemaining, { limit: 140 });
@@ -115,8 +124,6 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
           this.showOrHideMutateButtons();
         }
 
-        this.keepFacebookButtonUpdated();
-
         var params = this.params();
         if (params) {
           return currentUser
@@ -126,18 +133,6 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
             .success(this.hitch('populateContentAfterFetch', params));
         }
       }, this);
-    },
-
-    keepFacebookButtonUpdated: function() {
-      if (!this.question()) return;
-      this.registerInterest(this.question().positiveRankingsForCurrentUser(), 'onInsert', this.updateFacebookButtonText);
-      this.registerInterest(this.question().positiveRankingsForCurrentUser(), 'onRemove', this.updateFacebookButtonText);
-      this.updateFacebookButtonText();
-    },
-
-    updateFacebookButtonText: function() {
-      var currentUserHasRankings = !this.question().positiveRankingsForCurrentUser().empty()
-      this.facebookButton.find('span').text(currentUserHasRankings ? "Share Your Ranking" : "Share This Question");
     },
 
     afterShow: function() {
@@ -282,8 +277,6 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
 
         this.showOrHideMutateButtons();
         this.cancelEdit();
-        this.keepFacebookButtonUpdated();
-
 
         if (this.questionUpdateSubscription) this.questionUpdateSubscription.destroy();
         this.questionUpdateSubscription = question.onUpdate(this.hitch('handleQuestionUpdate'));

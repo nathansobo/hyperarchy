@@ -689,38 +689,13 @@ describe("Views.Pages.Question", function() {
         questionPage.facebookButton.click();
         expect(question.shareOnFacebook).toHaveBeenCalled();
       });
+    });
 
-      it("has the appropriate text based on whether the current user has positive rankings for the current question", function() {
-        expect(questionPage.facebookButton.text()).toBe("Share This Question");
-
-        // create rankings
-        var ranking = question.rankingsForCurrentUser().createFromRemote({id: 1, answerId: answer1.id(), position: 100});
-        expect(questionPage.facebookButton.text()).toBe("Share Your Ranking");
-
-        // change questions
-        expect(question2.answers().empty()).toBeTruthy();
-        questionPage.params({questionId: question2.id()});
-        Server.lastFetch.simulateSuccess();
-        expect(questionPage.facebookButton.text()).toBe("Share This Question");
-
-        questionPage.params({questionId: question.id()});
-        Server.lastFetch.simulateSuccess();
-        expect(questionPage.facebookButton.text()).toBe("Share Your Ranking");
-
-        // change users
-        Application.currentUser(User.find({defaultGuest: true}));
-        expect(questionPage.facebookButton.text()).toBe("Share This Question");
-
-        Application.currentUser(currentUser);
-        expect(questionPage.facebookButton.text()).toBe("Share Your Ranking");
-
-        // destroy rankings
-        ranking.remotelyDestroyed();
-        expect(questionPage.facebookButton.text()).toBe("Share This Question");
-
-        // negative rankings don't change it
-        question.rankingsForCurrentUser().createFromRemote({id: 1, answerId: answer1.id(), position: -100});
-        expect(questionPage.facebookButton.text()).toBe("Share This Question");
+    describe("the twitter button", function() {
+      it("shares the question when clicked", function() {
+        spyOn(question, 'shareOnTwitter');
+        questionPage.twitterButton.click();
+        expect(question.shareOnTwitter).toHaveBeenCalled();
       });
     });
 

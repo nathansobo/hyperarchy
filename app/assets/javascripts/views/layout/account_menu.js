@@ -9,6 +9,12 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
         }},
         menuContent: function() { with(this.builder) {
           li(function() {
+            a("Account Preferences");
+          }).ref('accountLink')
+            .click(function() {
+              History.pushState(null, null, '/account');
+            });
+          li(function() {
             a("Connect With Twitter");
           }).ref('twitterConnectLink')
             .click('twitterConnect');
@@ -16,12 +22,6 @@ _.constructor('Views.Layout.AccountMenu', View.Template, {
             a("Connect With Facebook");
           }).ref('facebookConnectLink')
             .click('facebookConnect');
-          li(function() {
-            a("Account Preferences");
-          }).ref('accountLink')
-            .click(function() {
-              History.pushState(null, null, '/account');
-            });
           li(function() {
             a("Logout")
           }).ref('logoutLink')

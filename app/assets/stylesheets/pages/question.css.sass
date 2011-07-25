@@ -32,7 +32,7 @@
   > #headline
     position: relative
     padding: 0 ($padding-x + $line-height)
-    .facebook.button, .new.button
+    .facebook.button, .twitter.button, .new.button
       float: right
       font-size: $s0
       padding: $line-height / 2
@@ -56,14 +56,18 @@
         height: $s1
         @include border-radius(2)
         line-height: $s1
-    .facebook.button
-      .facebook-logo
+    .facebook.button, .twitter.button
+      .logo
         position: absolute
-        background-image: url(/images/facebook_23.png)
         height: $s1
         width: $s1
         left: $line-height / 2
         top: ((2 * $line-height) - $s1) / 2
+    .facebook.button .logo
+      background-image: url(/images/facebook_23.png)
+    .twitter.button .logo
+      background-image: url(/images/twitter_23.png)
+
 
 
     .body
