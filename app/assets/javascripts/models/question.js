@@ -169,12 +169,7 @@ _.constructor("Question", Model.Record, {
       description: description
     }, this.bind(function(response) {
       if (response && response.post_id) {
-        $.post("/shares", {
-          question_id: this.id(),
-          service: "facebook",
-          code: shareCode
-        });
-
+        this.recordShare('facebook', shareCode);
         mpq.push(['track', 'Facebook Post', this.mixpanelProperties()]);
       } else {
         mpq.push(['track', 'Cancel Facebook Post', this.mixpanelProperties()]);
@@ -182,33 +177,23 @@ _.constructor("Question", Model.Record, {
     }));
   },
 
-  shareOnTwitter: function() {
-    var options = {
-      width: 550,
-      height: 450,
-      left: ($(window).width() / 2) - (550 / 2),
-      top: ($(window).height() / 2) - (450 / 2),
-      status: 0,
-      toolbar: 0,
-      location: 0,
-      menubar: 0,
-      directories: 0,
-      resizable: 0,
-      scrollbars: 0
-    };
-
-    var optionsString = _.map(options, function(value, key) {
-      return key + "=" + value;
-    }).join(", ")
-
-
+  twitterIntentsUrlAndCode: function() {
+    var shareCode = Application.randomString();
     var queryString = $.param({
-      url: this.absoluteUrl(),
+      url: this.absoluteUrl() + "?s=" + shareCode,
       related: "hyperarchy",
       text: this.body()
     });
 
-    window.open("https://twitter.com/share?" + queryString, "Tweet This Question", optionsString);
+    return ["https://twitter.com/intent/tweet?" + queryString, shareCode];
+  },
+
+  recordShare: function(service, shareCode) {
+    $.post("/shares", {
+      question_id: this.id(),
+      service: service,
+      code: shareCode
+    });
   },
 
   mixpanelNote: function() {

@@ -67,7 +67,7 @@ _.constructor("Views.Layout", View.Template, {
     attach: function($super) {
       $super();
       if (window.FB) this.facebookInitialized();
-    },
+   },
 
     currentUserEstablished: function(promise, data) {
       this.loginForm.hide();
@@ -340,6 +340,29 @@ _.constructor("Views.Layout", View.Template, {
 
     randomString: function() {
       return b64_md5(new Date().getTime().toString() + Math.random().toString(16)).substr(0, 8);
+    },
+
+    loadTwitterJs: function() {
+      var anywhereLoaded, widgetsLoaded;
+
+      $.getScript("https://platform.twitter.com/anywhere.js?v=1&id=" + this.TWITTER_ID, function() {
+        twttr.anywhere(function (T) {
+          window.T = T;
+          anywhereLoaded = true;
+          if (widgetsLoaded) {
+            console.log("widgets loaded, initializing");
+            Application.twitterInitialized();
+          }
+        });
+      });
+
+      $.getScript("http://platform.twitter.com/widgets.js", function() {
+        widgetsLoaded = true;
+        if (anywhereLoaded) {
+          console.log("anywhere loaded, initializing");
+          Application.twitterInitialized();
+        }
+      });
     }
   }
 });

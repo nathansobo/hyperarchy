@@ -27,6 +27,7 @@ beforeEach(function() {
   mpq = []
   _gaq = [];
   T.reset();
+  twttr.events.reset();
 });
 
 afterEach(function() {
@@ -136,3 +137,20 @@ var T = {
     this.getEventNode(eventName).publishArgs(args);
   }
 };
+
+var twttr = {
+  events: {
+    reset: function() {
+      this.nodes = {};
+    },
+
+    bind: function(type, callback) {
+      if (!this.nodes[type]) this.nodes[type] = new Monarch.SubscriptionNode();
+      this.nodes[type].subscribe(callback);
+    },
+
+    trigger: function(type, data) {
+      if (this.nodes[type]) this.nodes[type].publish(data);
+    }
+  }
+}

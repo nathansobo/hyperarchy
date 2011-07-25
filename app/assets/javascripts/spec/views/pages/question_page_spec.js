@@ -411,7 +411,7 @@ describe("Views.Pages.Question", function() {
   });
 
   describe("local logic (no fetching)", function() {
-    var currentUser, creator, organization, question, answer1, question2, editableByCurrentUser;
+    var currentUser, creator, organization, question, answer1, question2, editableByCurrentUser, mockedRandomString;
     var headlineTextWhenAdjustColumnTopWasCalled;
 
     beforeEach(function() {
@@ -429,13 +429,18 @@ describe("Views.Pages.Question", function() {
         return editableByCurrentUser;
       });
 
+      mockedRandomString  = "sharecode1";
+      spyOn(Application, 'randomString').andCallFake(function() {
+        return mockedRandomString;
+      });
+
       questionPage.params({questionId: question.id()});
       expect(Server.lastUpdate.record).toBe(organization.membershipForCurrentUser());
       Server.lastUpdate.simulateSuccess();
       Server.lastFetch.simulateSuccess();
     });
 
-    describe("when an question is assigned", function() {
+    describe("when a question is assigned", function() {
       it("assigns the question's body, details, avatar, and comments relation, and keeps the body and details up to date when they change", function() {
         expect(questionPage.body.html()).toEqual($.markdown(question.body()));
         expect(questionPage.details.html()).toEqual($.markdown(question.details()));
@@ -462,6 +467,16 @@ describe("Views.Pages.Question", function() {
         expect(question2.onUpdateNode.size()).toBeGreaterThan(subCountBefore);
         questionPage.question(question);
         expect(question2.onUpdateNode.size()).toBe(subCountBefore);
+      });
+
+      it("assigns the question's twitter intents url to the twitter button and the share code to the view, and keeps them updated if the question changes", function() {
+        expect(questionPage.twitterButton.attr('href')).toBe(question.twitterIntentsUrlAndCode()[0]);
+        expect(questionPage.twitterShareCode).toBe("sharecode1");
+
+        mockedRandomString = "sharecode2";
+        question.remotelyUpdated({body: "Hello???"});
+        expect(questionPage.twitterButton.attr('href')).toBe(question.twitterIntentsUrlAndCode()[0]);
+        expect(questionPage.twitterShareCode).toBe("sharecode2");
       });
 
       describe("showing and hiding the facebook button", function() {
@@ -691,14 +706,6 @@ describe("Views.Pages.Question", function() {
       });
     });
 
-    describe("the twitter button", function() {
-      it("shares the question when clicked", function() {
-        spyOn(question, 'shareOnTwitter');
-        questionPage.twitterButton.click();
-        expect(question.shareOnTwitter).toHaveBeenCalled();
-      });
-    });
-
     describe("when the 'back to questions' link is clicked", function() {
       it("navigates to the question's organization page", function() {
         spyOn(Application, 'showPage');
@@ -877,6 +884,24 @@ describe("Views.Pages.Question", function() {
         questionPage.backLink.click();
 
         expect(History.replaceState).toHaveBeenCalledWith(null,null,question.url());
+      });
+    });
+    
+    describe("when there is a twitter tweet event", function() {
+      it("posts to /share for the 'twitter' service with the current question_id and share code, then refreshes the share code in case they tweet again", function() {
+        Application.twitterInitialized();
+        var shareCodeBefore = questionPage.twitterShareCode;
+        mockedRandomString = 'sharecode99';
+
+        twttr.events.trigger('tweet', {type: "tweet"});
+
+        expect($.ajax).toHaveBeenCalled();
+        expect(mostRecentAjaxRequest.type).toBe('post');
+        expect(mostRecentAjaxRequest.url).toBe('/shares');
+        expect(mostRecentAjaxRequest.data).toEqual({question_id: question.id(), code: shareCodeBefore, service: "twitter"});
+
+        expect(questionPage.twitterShareCode).not.toBe(shareCodeBefore);
+        expect(questionPage.twitterButton.attr('href')).toContain(questionPage.twitterShareCode);
       });
     });
   });

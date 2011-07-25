@@ -29,9 +29,10 @@ module Views
             Application.attach();
             Application.currentUserId(#{current_user_id});
             Path.listen();
+            Application.TWITTER_ID = '#{TWITTER_ID}';
+            Application.loadTwitterJs();
           });
         ]
-        twitter_javascript
       end
 
       def facebook_javascript
@@ -46,16 +47,6 @@ module Views
             //e.src = document.location.protocol + '//static.ak.fbcdn.net/connect/en_US/core.debug.js';
             document.getElementById('fb-root').appendChild(e);
           }());
-        ]
-      end
-
-      def twitter_javascript
-        script :type => "text/javascript", :src => "https://platform.twitter.com/anywhere.js?id=#{TWITTER_ID}&v=1"
-        javascript %[
-          twttr.anywhere(function (T) {
-            window.T = T;
-            Application.twitterInitialized();
-          });
         ]
       end
     end

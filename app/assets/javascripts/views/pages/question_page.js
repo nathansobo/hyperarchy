@@ -31,10 +31,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         a({'class': "twitter button"}, function() {
           div({'class': "logo"});
           span("Tweet");
-        }).ref('twitterButton')
-          .click(function() {
-          this.question().shareOnTwitter();
-        });
+        }).ref('twitterButton');
 
         div({'class': "body"}).ref('body');
         textarea({name: "body", 'class': "body"}).ref("editableBody");
@@ -132,6 +129,10 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
             .fetch()
             .success(this.hitch('populateContentAfterFetch', params));
         }
+      }, this);
+
+      Application.twitterInitialized(function() {
+        twttr.events.bind('tweet', this.hitch('recordTweet'));
       }, this);
     },
 
@@ -278,10 +279,8 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         this.showOrHideMutateButtons();
         this.cancelEdit();
 
-        if (this.questionUpdateSubscription) this.questionUpdateSubscription.destroy();
-        this.questionUpdateSubscription = question.onUpdate(this.hitch('handleQuestionUpdate'));
+        this.registerInterest(question, 'onUpdate', this.handleQuestionUpdate);
         this.handleQuestionUpdate();
-
         this.registerInterest(question, 'onDestroy', this.bind(function() {
           if (this.is(':visible')) History.pushState(null, null, Application.currentOrganization().url());
         }));
@@ -346,6 +345,18 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
     handleQuestionUpdate: function() {
       this.showOrHideDetails();
       this.adjustColumnTop();
+      this.updateTwitterIntentsUrl();
+    },
+
+    updateTwitterIntentsUrl: function() {
+      var urlAndCode = this.question().twitterIntentsUrlAndCode();
+      this.twitterButton.attr('href', urlAndCode[0]);
+      this.twitterShareCode = urlAndCode[1];
+    },
+
+    recordTweet: function() {
+      this.question().recordShare('twitter', this.twitterShareCode);
+      this.updateTwitterIntentsUrl();
     },
 
     showOrHideDetails: function() {
