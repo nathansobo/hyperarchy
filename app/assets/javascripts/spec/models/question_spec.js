@@ -20,8 +20,9 @@ describe("Question", function() {
     var currentUser;
 
     beforeEach(function() {
-      spyOn(FB, 'ui');
       attachLayout();
+      spyOn(FB, 'ui');
+      spyOn(Application, 'randomString').andReturn('sharecode');
 
       currentUser = User.createFromRemote({id: 1, firstName: "John", lastName: "Smith"});
       Application.currentUser(currentUser);
@@ -36,7 +37,7 @@ describe("Question", function() {
 
         expect(uiOptions.method).toBe('feed');
         expect(uiOptions.name).toBe(question.body());
-        expect(uiOptions.link).toBe(question.absoluteUrl());
+        expect(uiOptions.link).toBe(question.absoluteUrl() + "?s=sharecode");
         expect(uiOptions.caption).toBe(question.noRankingsShareCaption);
         expect(uiOptions.description).toBeUndefined();
       });
@@ -53,7 +54,7 @@ describe("Question", function() {
 
         expect(uiOptions.method).toBe('feed');
         expect(uiOptions.name).toBe(question.body());
-        expect(uiOptions.link).toBe(question.absoluteUrl());
+        expect(uiOptions.link).toBe(question.absoluteUrl() + "?s=sharecode");
         expect(uiOptions.caption).toContain(currentUser.fullName());
         expect(uiOptions.caption).toContain("answer");
         expect(uiOptions.caption).not.toContain("answers");
@@ -75,7 +76,7 @@ describe("Question", function() {
 
         expect(uiOptions.method).toBe('feed');
         expect(uiOptions.name).toBe(question.body());
-        expect(uiOptions.link).toBe(question.absoluteUrl());
+        expect(uiOptions.link).toBe(question.absoluteUrl() + "?s=sharecode");
         expect(uiOptions.caption).toContain(currentUser.fullName());
         expect(uiOptions.caption).toContain("answers");
         expect(uiOptions.description).toContain(answer1.body());
@@ -85,7 +86,7 @@ describe("Question", function() {
       });
     });
 
-    describe("mixpanel tracking", function() {
+    describe("mixpanel / virality tracking", function() {
       var callback;
       beforeEach(function() {
         question.shareOnFacebook();
@@ -94,9 +95,14 @@ describe("Question", function() {
       });
 
       describe("when the user shares to their wall successfully", function() {
-        it("pushes a 'Facebook Post' event", function() {
+        it("pushes a 'Facebook Post' event and records a share event", function() {
           callback({post_id: 1});
           expect(mpq.pop()).toEqual(['track', 'Facebook Post', question.mixpanelProperties()]);
+
+          expect($.ajax).toHaveBeenCalled();
+          expect(mostRecentAjaxRequest.type).toBe("post");
+          expect(mostRecentAjaxRequest.url).toBe("/shares");
+          expect(mostRecentAjaxRequest.data).toEqual({question_id: question.id(), service: "facebook", code: "sharecode"});
         });
       });
 
@@ -131,6 +137,13 @@ describe("Question", function() {
       question.updateScore();
       var score4 = question.score();
       expect(score4).toBeLessThan(score3);
+    });
+  });
+
+  describe("#absoluteUrl", function() {
+    it("appends the Application.origin to the url", function() {
+      spyOn(Application, 'origin').andReturn('https://hyperarchy.com')
+      expect(question.absoluteUrl()).toBe('https://hyperarchy.com/questions/22');
     });
   });
 

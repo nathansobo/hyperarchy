@@ -159,17 +159,25 @@ _.constructor("Question", Model.Record, {
       });
     }
 
+    var shareCode = Application.randomString();
+
     FB.ui({
       method: 'feed',
       name: this.body(),
-      link: this.absoluteUrl(),
+      link: this.absoluteUrl() + "?s=" + shareCode,
       caption: caption,
       description: description
     }, this.bind(function(response) {
       if (response && response.post_id) {
-        mpq.push(['track', 'Facebook Post', this.mixpanelProperties()])
+        $.post("/shares", {
+          question_id: this.id(),
+          service: "facebook",
+          code: shareCode
+        });
+
+        mpq.push(['track', 'Facebook Post', this.mixpanelProperties()]);
       } else {
-        mpq.push(['track', 'Cancel Facebook Post', this.mixpanelProperties()])
+        mpq.push(['track', 'Cancel Facebook Post', this.mixpanelProperties()]);
       }
     }));
   },

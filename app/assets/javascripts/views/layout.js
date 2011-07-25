@@ -336,6 +336,10 @@ _.constructor("Views.Layout", View.Template, {
 
     origin: function() {
       return window.location.protocol + "//" + window.location.host;
+    },
+
+    randomString: function() {
+      return b64_md5(new Date().getTime().toString() + Math.random().toString(16)).substr(0, 8);
     }
   }
 });
