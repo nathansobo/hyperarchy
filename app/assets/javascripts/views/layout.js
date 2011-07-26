@@ -350,7 +350,6 @@ _.constructor("Views.Layout", View.Template, {
           window.T = T;
           anywhereLoaded = true;
           if (widgetsLoaded) {
-            console.log("widgets loaded, initializing");
             Application.twitterInitialized();
           }
         });
@@ -359,7 +358,6 @@ _.constructor("Views.Layout", View.Template, {
       $.getScript("http://platform.twitter.com/widgets.js", function() {
         widgetsLoaded = true;
         if (anywhereLoaded) {
-          console.log("anywhere loaded, initializing");
           Application.twitterInitialized();
         }
       });
