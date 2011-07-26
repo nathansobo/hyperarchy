@@ -479,27 +479,6 @@ describe("Views.Pages.Question", function() {
         expect(questionPage.twitterShareCode).toBe("sharecode2");
       });
 
-      describe("showing and hiding the facebook button", function() {
-        var privateOrg, privateOrgQuestion;
-
-        beforeEach(function() {
-          privateOrg = Organization.createFromRemote({id: 2, name: "Private Org", privacy: "private"});
-          var member = privateOrg.makeMember({id: 3});
-          privateOrgQuestion = privateOrg.questions().createFromRemote({id: 3, body: "Nobody knows", createdAt: 932, creatorId: member.id()});
-        });
-
-        it("hides the facebook button if the current org is private, and shows it otherwise", function() {
-          expect(questionPage.facebookButton).toBeVisible();
-
-          questionPage.params({questionId: privateOrgQuestion.id()});
-
-          expect(questionPage.facebookButton).toBeHidden();
-
-          questionPage.params({questionId: question.id()});
-
-          expect(questionPage.facebookButton).toBeVisible();
-        });
-      });
     });
 
     describe("showing and hiding of the edit and destroy buttons", function() {
@@ -703,6 +682,31 @@ describe("Views.Pages.Question", function() {
         spyOn(question, 'shareOnFacebook');
         questionPage.facebookButton.click();
         expect(question.shareOnFacebook).toHaveBeenCalled();
+      });
+    });
+
+    describe("showing and hiding of the social buttons", function() {
+      var privateOrg, privateOrgQuestion;
+
+      beforeEach(function() {
+        privateOrg = Organization.createFromRemote({id: 2, name: "Private Org", privacy: "private"});
+        var member = privateOrg.makeMember({id: 3});
+        privateOrgQuestion = privateOrg.questions().createFromRemote({id: 3, body: "Nobody knows", createdAt: 932, creatorId: member.id()});
+      });
+
+      it("hides the facebook and twitter buttons if the current org is private, and shows it otherwise", function() {
+        expect(questionPage.facebookButton).toBeVisible();
+        expect(questionPage.twitterButton).toBeVisible();
+
+        questionPage.params({questionId: privateOrgQuestion.id()});
+
+        expect(questionPage.facebookButton).toBeHidden();
+        expect(questionPage.twitterButton).toBeHidden();
+
+        questionPage.params({questionId: question.id()});
+
+        expect(questionPage.facebookButton).toBeVisible();
+        expect(questionPage.twitterButton).toBeVisible();
       });
     });
 
@@ -940,6 +944,18 @@ describe("Views.Pages.Question", function() {
         var event = mpq.pop();
         expect(event[0]).toBe('track');
         expect(event[1]).toBe('Update Question');
+      });
+    });
+
+    describe("when there is a twitter tweet event", function() {
+      it("pushes a 'Tweet' event to the mixpanel queue", function() {
+        Application.twitterInitialized();
+        questionPage.question(question);
+        twttr.events.trigger('tweet', {type: "tweet"});
+        var event = mpq.pop();
+        expect(event[0]).toBe('track');
+        expect(event[1]).toBe('Tweet');
+        console.log(event[2]);
       });
     });
   });

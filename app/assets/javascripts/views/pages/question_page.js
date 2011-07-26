@@ -28,7 +28,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
             this.question().shareOnFacebook();
           });
 
-        a({'class': "twitter button"}, function() {
+        a({'class': "twitter button", 'data-text': "Check it out yo!", href: ""}, function() {
           div({'class': "logo"});
           span("Tweet");
         }).ref('twitterButton');
@@ -266,8 +266,10 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         Application.currentOrganization(organization);
         if (organization.isPublic()) {
           this.facebookButton.show();
+          this.twitterButton.show();
         } else {
           this.facebookButton.hide();
+          this.twitterButton.hide();
         }
 
         this.details.bindMarkdown(question, 'details');
@@ -357,6 +359,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
     recordTweet: function() {
       this.question().recordShare('twitter', this.twitterShareCode);
       this.updateTwitterIntentsUrl();
+      mpq.push(['track', 'Tweet', _.extend(this.question().mixpanelProperties(), {type: "Question"})])
     },
 
     showOrHideDetails: function() {
