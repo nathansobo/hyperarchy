@@ -5,10 +5,12 @@ module Prequel
       raise "No column #{column_name.inspect} to validate the uniqueness of" unless column
       validate do
         field_value = get_field_value(column_name)
-        relation = table.where(column_name => field_value)
-        relation = relation.where(:id.neq(id)) if persisted?
-        unless relation.empty?
-          errors.add(column_name, options[:message] || "#{column_name.to_s.humanize} must be unique")
+        unless field_value.nil?
+          relation = table.where(column_name => field_value)
+          relation = relation.where(:id.neq(id)) if persisted?
+          unless relation.empty?
+            errors.add(column_name, options[:message] || "#{column_name.to_s.humanize} must be unique")
+          end
         end
       end
     end

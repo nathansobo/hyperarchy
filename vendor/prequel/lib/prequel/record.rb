@@ -235,7 +235,7 @@ module Prequel
       if save
         true
       else
-        raise NotValid
+        raise NotValid, errors.full_messages.join(", ")
       end
     end
 

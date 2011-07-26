@@ -722,7 +722,7 @@ module Prequel
 
     describe "standard validations" do
       describe ".validates_uniqueness_of" do
-        it "ensures that the specified field is unique" do
+        it "ensures that the specified field is unique, but ignores null values" do
           Blog.create_table
           Blog.validates_uniqueness_of :title, :message => "Title is duplicated!"
           blog = Blog.create!(:title => "foo")
@@ -731,6 +731,13 @@ module Prequel
           blog2 = Blog.new(:title => "foo")
           blog2.should_not be_valid
           blog2.errors.should == { :title => ["Title is duplicated!"] }
+          Blog.new(:title => "bar").should be_valid
+
+          blog3 = Blog.create!(:title => nil)
+          blog.should be_valid
+
+          blog4 = Blog.new(:title => nil)
+          blog4.should be_valid
           Blog.new(:title => "bar").should be_valid
         end
 
