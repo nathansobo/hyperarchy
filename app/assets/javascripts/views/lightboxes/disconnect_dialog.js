@@ -10,7 +10,7 @@ _.constructor('Views.Lightboxes.DisconnectDialog', Views.Lightboxes.Lightbox, {
   }},
 
   viewProperties: {
-    afterHide: function() {
+    close: function() {
       Application.reload();
     }
   }

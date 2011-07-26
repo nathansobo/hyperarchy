@@ -39,14 +39,28 @@ describe("Routes", function() {
   });
 
   describe("/questions/:questionId", function() {
-    it("shows only the questionsPage, assigns the id on it, and assigns the current user's rankings relation on ranked answers list", function() {
-      Application.questionPage.show();
+    it("shows only the questionsPage and assigns the questionId param", function() {
+      Application.organizationPage.show();
       History.pushState(null, null, '/questions/12');
       expect(Application.organizationPage).toBeHidden();
       expect(Application.questionPage).toBeVisible();
 
       expect(Application.questionPage.params()).toEqual({
         questionId: 12
+      });
+    });
+  });
+
+  describe("/questions/:questionId/full_screen", function() {
+    it("shows only the questionsPage and assigns fullScreen = true, ", function() {
+      Application.organizationPage.show();
+      History.pushState(null, null, '/questions/12/full_screen');
+      expect(Application.organizationPage).toBeHidden();
+      expect(Application.questionPage).toBeVisible();
+
+      expect(Application.questionPage.params()).toEqual({
+        questionId: 12,
+        fullScreen: true
       });
     });
   });

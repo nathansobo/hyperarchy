@@ -185,3 +185,52 @@
   input
     font-size: $s0
     color: #666
+
+#full-screen-consensus
+  top: 5%
+  height: 85%
+  font-size: $s2
+  line-height: $s3 
+  width: $s16
+  margin-left: -($s16 / 2)
+  ol
+    overflow-y: auto
+    position: absolute
+    top: $s6
+    left: $s1
+    bottom: $s1
+    right: $s1
+    background: #f0f0f0
+    border: 1px solid #ccc
+    @include box-shadow(#aaa 0 0 3px inset)
+
+    li
+      @include clearfix
+      position: relative
+      padding: (ceil($s3/2) - 1) ($s3/2) ($s3/2) ($s3/2)
+      background: white
+      border-bottom: 1px solid #ccc
+      @include box-shadow(#aaa 0 0 3px)
+      cursor: default
+      a
+        pointer-events: none
+        cursor: default
+
+      .position
+        float: left
+        text-align: right
+        width: 28px
+        color: #888
+        letter-spacing: $s-11
+        font-weight: $semibold
+
+      .body
+        margin-left: $s3/2 + 28 + 16
+        margin-right: $s3
+
+      .more
+        font-size: $s3
+        color: #aaa
+        position: absolute
+        right: $s3/4
+        bottom: $s3/4

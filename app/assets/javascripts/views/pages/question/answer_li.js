@@ -2,7 +2,7 @@ _.constructor('Views.Pages.Question.AnswerLi', Monarch.View.Template, {
   content: function(params) { with(this.builder) {
     li({'class': "answer"}, function() {
       div({'class': "more"}, '…').ref('ellipsis');
-      div({'class': "status "}).ref('status');
+      if (!params.fullScreen) div({'class': "status "}).ref('status');
       div({'class': "position"}, params.answer.position()).ref('position');
       div({'class': "body"}).ref('body');
     });
@@ -14,25 +14,28 @@ _.constructor('Views.Pages.Question.AnswerLi', Monarch.View.Template, {
 
       this.body.markdown(this.answer.body());
 
-      this.draggable({
-        connectToSortable: '#ranked-answers ol',
-        appendTo: '#question',
-        revert: 'invalid',
-        delay: this.dragDelay,
-        revertDuration: 100,
-        helper: this.hitch('createFixedWidthClone'),
-        zIndex: 2,
-        start: this.hitch('handleDragStart'),
-        cancel: '.expandArrow, .tooltipIcon, .noDrag'
-      });
+      if (!this.fullScreen) {
+        this.draggable({
+          connectToSortable: '#ranked-answers ol',
+          appendTo: '#question',
+          revert: 'invalid',
+          delay: this.dragDelay,
+          revertDuration: 100,
+          helper: this.hitch('createFixedWidthClone'),
+          zIndex: 2,
+          start: this.hitch('handleDragStart'),
+          cancel: '.expandArrow, .tooltipIcon, .noDrag'
+        });
 
-      this.click(this.bind(function() {
-        if (this.is('.selected')) {
-          History.replaceState(null, null, this.answer.question().url());
-        } else {
-          History.replaceState(null, null, this.answer.url());
-        }
-      }));
+        this.click(this.bind(function() {
+          if (this.is('.selected')) {
+            History.replaceState(null, null, this.answer.question().url());
+          } else {
+            History.replaceState(null, null, this.answer.url());
+          }
+        }));
+      }
+
 
       this.showOrHideEllipsis();
     },

@@ -29,7 +29,7 @@ _.constructor("Views.Layout", View.Template, {
           subview('organizationSettingsPage', Views.Pages.OrganizationSettings);
           subview('questionPage', Views.Pages.Question);
         }).ref("body");
-      });
+      }).ref("bodyWrapper");
 
       div({id: "lightboxes"}, function() {
         subview("loginForm", Views.Lightboxes.LoginForm);
@@ -39,6 +39,8 @@ _.constructor("Views.Layout", View.Template, {
         subview("disconnectDialog", Views.Lightboxes.DisconnectDialog);
         subview("inviteBox", Views.Lightboxes.InviteBox);
         subview("addOrganizationForm", Views.Lightboxes.AddOrganizationForm);
+
+        subview("fullScreenConsensus", Views.Lightboxes.FullScreenConsensus);
       }).ref("lightboxes");
 
       div({id: "darkened-background"}).ref("darkenedBackground");
@@ -219,7 +221,9 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     showPage: function(name, params) {
-      this.lightboxes.children().hide();
+      this.lightboxes.children().each(function() {
+        $(this).view().hide();
+      });
       this.body.children().each(function() {
         $(this).view().hide();
       });
@@ -227,7 +231,8 @@ _.constructor("Views.Layout", View.Template, {
 
       var parsedParams = {};
       _.each(params, function(value, key) {
-        parsedParams[key] = (value !== 'new') ? parseInt(value) : value;
+        var intValue = parseInt(value);
+        parsedParams[key] = (intValue || intValue === 0) ? intValue : value;
       });
       var page = this[name + 'Page'];
       if (!page.fixedHeight) this.addClass('normal-height');

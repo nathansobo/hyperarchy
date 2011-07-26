@@ -82,6 +82,9 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
   }},
 
   column2: function() { with(this.builder) {
+    a({'class': "full-screen link"}, "Full Screen").click(function() {
+      History.replaceState(null, null, this.question().fullScreenUrl());
+    });
     h2("Current Consensus");
     subview('currentConsensus', Views.Pages.Question.CurrentConsensus);
   }},
@@ -255,6 +258,8 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         this.populateRankedAnswersHeader(params.voterId);
         this.rankedAnswers.rankings(rankings);
       }
+
+      if (params.fullScreen) this.showFullScreenConsensus();
     },
 
     question: {
@@ -401,6 +406,10 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         this.removeClass('mutable');
         this.column1.removeClass('mutable');
       }
+    },
+
+    showFullScreenConsensus: function() {
+      Application.fullScreenConsensus.show().question(this.question());
     },
 
     loading: {

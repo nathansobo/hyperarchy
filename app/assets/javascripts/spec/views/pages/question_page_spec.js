@@ -200,6 +200,22 @@ describe("Views.Pages.Question", function() {
         });
       });
 
+      describe("if the fullScreen param is true", function() {
+        it("shows the full screen consensus after fetching data", function() {
+          waitsFor("fetch to complete", function(complete) {
+            questionPage.params({ questionId: question.id(), fullScreen: true }).success(complete);
+          });
+
+          runs(function() {
+            expectQuestionDataFetched();
+            expectQuestionDataAssigned();
+
+            expect(Application.fullScreenConsensus).toBeVisible();
+            expect(Application.fullScreenConsensus.question()).toEqual(question);
+          });
+        });
+      });
+
       describe("if the question is already present in the repository", function() {
         it("assigns the question and answers before fetching additional data, and puts spinners on the ranking and votes", function() {
           synchronously(function() {

@@ -131,6 +131,10 @@ _.constructor("Question", Model.Record, {
     return Application.origin() + this.url();
   },
 
+  fullScreenUrl: function() {
+    return this.url() + "/full_screen";
+  },
+
   newAnswerUrl: function() {
     return this.url() + "/answers/new";
   },
