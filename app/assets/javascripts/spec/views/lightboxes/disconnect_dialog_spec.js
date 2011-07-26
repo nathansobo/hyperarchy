@@ -13,7 +13,7 @@ describe("Views.Lightboxes.DisconnectDialog", function() {
 
   describe("when the dialog is hidden", function() {
     it("reloads the page", function() {
-      disconnectDialog.hide();
+      disconnectDialog.close();
       expect(Application.reload).toHaveBeenCalled();
     });
   });
