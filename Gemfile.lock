@@ -177,6 +177,7 @@ GEM
     rack-test (0.6.0)
       rack (>= 1.0)
     rake (0.8.7)
+    rdiscount (1.6.8)
     redis (2.2.0)
     redis-lock (0.1.0)
       redis
@@ -278,6 +279,7 @@ DEPENDENCIES
   rack-chromeframe (= 1.0.0)
   rails!
   rake (= 0.8.7)
+  rdiscount (= 1.6.8)
   redis (= 2.2.0)
   redis-lock (= 0.1.0)
   resque (= 1.15.0)

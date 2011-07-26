@@ -10,7 +10,6 @@ gem 'pg', '0.9.0'
 gem 'bcrypt-ruby', :require => 'bcrypt'
 gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
 gem 'erector', :path => 'vendor/erector'
-gem 'pony', '1.1'
 gem 'resque', '1.15.0'
 gem 'resque-status', '0.2.3', :require => ['resque/status', 'resque/job_with_status']
 gem 'resque-scheduler', '1.9.9', :require => ['resque_scheduler']
@@ -40,6 +39,8 @@ group :development, :test, :jasmine do
   gem 'princess', :path => 'vendor/princess'
   gem 'foreman', '0.16.0'
   gem 'mailtrap', '0.2.1'
+  gem 'pony', '1.1'
+  gem 'rdiscount', '1.6.8'
 end
 
 group :deploy do
