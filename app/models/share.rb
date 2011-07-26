@@ -11,6 +11,6 @@ class Share < Prequel::Record
 
   def before_create
     raise "Service must be twitter or facebook" unless service =~ /^(twitter|facebook)$/
-    self.user = current_user
+    self.user_id ||= current_user.id
   end
 end

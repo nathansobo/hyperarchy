@@ -44,6 +44,19 @@ describe UsersController do
             response_json["records"]["memberships"][membership.to_param].should == membership.wire_representation
           end
         end
+
+        context "when there is a share code assigned in the session" do
+          it "associates the user with the referring share corresponding to the code" do
+            session[:share_code] = "sharecode87"
+            share = Share.create!(:code => "sharecode87", :question_id => 99, :service => "twitter", :user_id => User.make.id)
+
+            user_params = User.plan
+            xhr :post, :create, :user => user_params
+            response.should be_success
+
+            current_user.referring_share.should == share
+          end
+        end
       end
 
       context "when the user params are invalid" do

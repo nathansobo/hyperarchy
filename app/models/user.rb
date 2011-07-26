@@ -14,6 +14,7 @@ class User < Prequel::Record
   column :default_guest, :boolean, :default => false
   column :facebook_id, :string
   column :twitter_id, :integer
+  column :referring_share_id, :integer
   synthetic_column :email_hash, :string
 
   has_many :memberships
@@ -22,6 +23,7 @@ class User < Prequel::Record
   has_many :rankings
   has_many :questions
   has_many :answers, :foreign_key => :creator_id
+  belongs_to :referring_share, :class_name => "Share"
 
   def organizations
     memberships.join_through(Organization)
@@ -180,5 +182,9 @@ class User < Prequel::Record
 
   def member_of?(organization)
     !memberships.where(:organization => organization).empty?
+  end
+
+  def associate_referring_share(share_code)
+    update!(:referring_share => Share.find(:code => share_code))
   end
 end

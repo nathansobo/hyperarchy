@@ -25,7 +25,7 @@ class UsersController < ApplicationController
 
   def create_user(data, errors)
     user = User.secure_create(params[:user])
-
+    user.associate_referring_share(session[:share_code]) if session[:share_code]
     if user.valid?
       previous_user = current_user
       set_current_user(user)

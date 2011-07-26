@@ -29,33 +29,44 @@ describe TwitterSessionsController do
         end
 
         describe "when NO user with the given twitter id exists" do
-          describe "when no user exists with the same email address as the authenticating facebook account" do
-            it "creates and authenticates a new user with details from the facebook graph api" do
+          it "creates and authenticates a new user with details from the facebook graph api" do
+            expect {
+              post :create, :name => "Max Brunsfeld"
+            }.to change(User, :count).by(1)
+
+            new_user = User.find(:twitter_id => twitter_id)
+            current_user.should == new_user
+            new_user.first_name.should == "Max"
+            new_user.last_name.should == "Brunsfeld"
+
+            response_json['data']['current_user_id'].should == new_user.id
+            response_records.should include(new_user.initial_repository_contents)
+          end
+
+          it "handles names with no last name" do
+            post :create, :name => "Hyperarchy"
+            new_user = User.find(:twitter_id => twitter_id)
+            new_user.last_name.should == ""
+          end
+
+          it "handles names with a two-word last name" do
+            post :create, :name => "Max Van Heusenblossom"
+            new_user = User.find(:twitter_id => twitter_id)
+            new_user.last_name.should == "Van Heusenblossom"
+          end
+
+          describe "when a share code is assigned in the session" do
+            it "associates the user with the referring share corresponding to the code" do
+              session[:share_code] = "sharecode87"
+              share = Share.create!(:code => "sharecode87", :question_id => 99, :service => "twitter", :user_id => User.make.id)
+
               expect {
                 post :create, :name => "Max Brunsfeld"
               }.to change(User, :count).by(1)
-
-              new_user = User.find(:twitter_id => twitter_id)
-              current_user.should == new_user
-              new_user.first_name.should == "Max"
-              new_user.last_name.should == "Brunsfeld"
-
-              response_json['data']['current_user_id'].should == new_user.id
-              response_records.should include(new_user.initial_repository_contents)
+              
+              response.should be_success
+              current_user.referring_share.should == share
             end
-
-            it "handles names with no last name" do
-              post :create, :name => "Hyperarchy"
-              new_user = User.find(:twitter_id => twitter_id)
-              new_user.last_name.should == ""
-            end
-
-            it "handles names with a two-word last name" do
-              post :create, :name => "Max Van Heusenblossom"
-              new_user = User.find(:twitter_id => twitter_id)
-              new_user.last_name.should == "Van Heusenblossom"
-            end
-
           end
         end
       end

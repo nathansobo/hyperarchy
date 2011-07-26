@@ -6,6 +6,7 @@ class TwitterSessionsController < ApplicationController
       last_name = name_parts.join(" ")
       attrs = { :first_name => first_name, :last_name => last_name, :twitter_id => twitter_id }
       user = User.create!(attrs)
+      user.associate_referring_share(session[:share_code]) if session[:share_code]
     end
 
     set_current_user user
@@ -14,8 +15,6 @@ class TwitterSessionsController < ApplicationController
       :data => { :current_user_id => current_user_id },
       :records => build_client_dataset(current_user.initial_repository_contents)
     }
-  #rescue FbGraph::Auth::VerificationFailed => e
-  #  raise SecurityError
   end
 
   def twitter_id

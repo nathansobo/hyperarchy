@@ -7,6 +7,7 @@ class FacebookSessionsController < ApplicationController
       else
         attrs = { :first_name => fb_user.first_name, :last_name => fb_user.last_name, :email_address => fb_user.email, :facebook_id => fb_user.identifier }
         user = User.create!(attrs)
+        user.associate_referring_share(session[:share_code]) if session[:share_code]
       end
     end
 
