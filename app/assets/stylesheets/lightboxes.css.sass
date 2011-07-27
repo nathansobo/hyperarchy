@@ -196,9 +196,13 @@
 
 #full-screen-answer
 
-  .back.link
+  .nav.link
     font-size: $s0
     margin-left: $s1
+    &.prev, &.next
+      float: right
+    &.next
+      margin-right: $s1
     
   #answer-details
     top: 50px

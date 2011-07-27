@@ -26,16 +26,9 @@ describe("Views.Lightboxes.LoginForm", function() {
       expect(loginForm).toBeHidden();
     });
     
-    it("hides tho form if the darkened background is clicked", function() {
+    it("hides the form if the darkened background is clicked", function() {
       loginForm.show();
       darkenedBackground.click();
-      expect(loginForm).toBeHidden();
-      expect(darkenedBackground).toBeHidden();
-    });
-
-    it("hides the form if the 'x' is clicked", function() {
-      loginForm.show();
-      loginForm.closeX.click();
       expect(loginForm).toBeHidden();
       expect(darkenedBackground).toBeHidden();
     });

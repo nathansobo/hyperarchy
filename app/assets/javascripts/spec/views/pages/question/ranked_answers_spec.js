@@ -515,7 +515,7 @@ describe("Views.Pages.Question.RankedAnswers", function() {
             expect(Application.signupForm).toBeVisible();
 
             expect(rankedAnswers.list.find('li.answer')).toExist();
-            Application.signupForm.closeX.click();
+            Application.darkenedBackground.click();
             expect(rankedAnswers.list.find('li.answer')).not.toExist();
             expect(rankedAnswers.positiveDragTarget).toBeVisible();
             expect(Ranking.createOrUpdate).not.toHaveBeenCalled();
@@ -535,7 +535,7 @@ describe("Views.Pages.Question.RankedAnswers", function() {
             Application.signupForm.loginFormLink.click();
 
             expect(rankedAnswers.list.find('li.answer')).toExist();
-            Application.loginForm.closeX.click();
+            Application.darkenedBackground.click();
             expect(rankedAnswers.list.find('li.answer')).not.toExist();
             expect(rankedAnswers.positiveDragTarget).toBeVisible();
             expect(Ranking.createOrUpdate).not.toHaveBeenCalled();

@@ -68,5 +68,13 @@ _.constructor("Answer", Model.Record, {
 
   mixpanelNote: function() {
     return this.body();
+  },
+
+  previous: function() {
+    return this.question().answers().where(Answer.position.lt(this.position())).last();
+  },
+
+  next: function() {
+    return this.question().answers().where(Answer.position.gt(this.position())).first();
   }
 });
