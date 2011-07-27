@@ -363,7 +363,7 @@ _.constructor("Views.Layout", View.Template, {
         });
       });
 
-      $.getScript("http://platform.twitter.com/widgets.js", function() {
+      $.getScript("https://platform.twitter.com/widgets.js", function() {
         widgetsLoaded = true;
         if (anywhereLoaded) {
           Application.twitterInitialized();
