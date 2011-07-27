@@ -1,5 +1,5 @@
 _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
-  content: function() { with(this.builder) {
+  content: function(params) { with(this.builder) {
     div({id: "answer-details"}, function() {
       div({'class': "non-editable"}, function() {
         div({'class': "body"}).ref("body");
@@ -15,7 +15,7 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
           click(function() {
             this.expanded(false);
           });
-        div({'class': "clear"});
+        div({'class': "clear"}).ref('detailsClearDiv');
         a({'class': "edit"}, "✎ edit").ref('editButton').click('edit');
         a({'class': "destroy"}, "✕ delete").ref('destroyButton').click('destroy');
       }).ref('nonEditableContent');
@@ -32,12 +32,12 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
       a({'class': 'create button'}, "Add Answer").ref('createButton').click('create');
 
       div({'class': "creator"}, function() {
-        subview('avatar', Views.Components.Avatar, {imageSize: 34});
+        subview('avatar', Views.Components.Avatar, {imageSize: params.fullScreen ? 46 : 34});
         div({'class': "name"}).ref('creatorName');
         div({'class': "date"}).ref('createdAt');
       }).ref('creator');
 
-      subview('comments', Views.Pages.Question.Comments);
+      subview('comments', Views.Pages.Question.Comments, { fullScreen: params.fullScreen });
     });
   }},
 
@@ -211,6 +211,11 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
       this.expandedDetails.markdown(answer.details());
       this.adjustCommentsHeight();
       this.showOrHideMoreButton();
+      if (answer.details()) {
+        this.detailsClearDiv.show();
+      } else {
+        this.detailsClearDiv.hide();
+      }
     },
 
     adjustCommentsHeight: function() {

@@ -1,10 +1,10 @@
 _.constructor('Views.Pages.Question.Comments', Monarch.View.Template, {
-  content: function() { with(this.builder) {
+  content: function(params) { with(this.builder) {
     div({'class': "comments"}, function() {
       h2("Discussion").ref('header');
       subview('list', Views.Components.SortedList, {
         buildElement: function(comment) {
-          return Views.Pages.Question.CommentLi.toView({comment: comment});
+          return Views.Pages.Question.CommentLi.toView({comment: comment, fullScreen: params.fullScreen});
         }
       });
 

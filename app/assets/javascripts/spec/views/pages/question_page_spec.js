@@ -201,18 +201,38 @@ describe("Views.Pages.Question", function() {
       });
 
       describe("if the fullScreen param is true", function() {
-        it("shows the full screen consensus after fetching data", function() {
-          waitsFor("fetch to complete", function(complete) {
-            questionPage.params({ questionId: question.id(), fullScreen: true }).success(complete);
+        describe("if no answerId is specified", function() {
+          it("shows the full screen consensus after fetching data", function() {
+            waitsFor("fetch to complete", function(complete) {
+              questionPage.params({ questionId: question.id(), fullScreen: true }).success(complete);
+            });
+
+            runs(function() {
+              expectQuestionDataFetched();
+              expectQuestionDataAssigned();
+
+              expect(Application.fullScreenConsensus).toBeVisible();
+              expect(Application.fullScreenConsensus.question()).toEqual(question);
+            });
+          });
+        });
+
+        describe("if an answerId is specified", function() {
+          it("shows the full screen consensus after fetching data", function() {
+            waitsFor("fetch to complete", function(complete) {
+              questionPage.params({ questionId: question.id(), answerId: answer1.id(), fullScreen: true }).success(complete);
+            });
+
+            runs(function() {
+              expectQuestionDataFetched();
+              expectQuestionDataAssigned();
+
+              expect(Application.fullScreenAnswer).toBeVisible();
+              expect(Application.fullScreenAnswer.answer()).toEqual(answer1);
+              expect(Application.fullScreenAnswer.answer()).toEqual(answer1);
+            });
           });
 
-          runs(function() {
-            expectQuestionDataFetched();
-            expectQuestionDataAssigned();
-
-            expect(Application.fullScreenConsensus).toBeVisible();
-            expect(Application.fullScreenConsensus.question()).toEqual(question);
-          });
         });
       });
 

@@ -93,13 +93,27 @@ describe("Routes", function() {
 
   describe("/questions/:questionId/answers/:answerId", function() {
     it("shows only the questionsPage and assigns the id and selectedAnswerId on it", function() {
-      Application.questionPage.show();
+      Application.organizationPage.show();
       History.pushState(null, null, '/questions/12/answers/33');
       expect(Application.organizationPage).toBeHidden();
       expect(Application.questionPage).toBeVisible();
       expect(Application.questionPage.params()).toEqual({
         questionId: 12,
         answerId: 33
+      });
+    });
+  });
+
+  describe("/questions/:questionId/answers/:answerId/full_screen", function() {
+    it("shows only the questionsPage and assigns questionId, answerId, and fullScreen = true", function() {
+      Application.organizationPage.show();
+      History.pushState(null, null, '/questions/12/answers/33/full_screen');
+      expect(Application.organizationPage).toBeHidden();
+      expect(Application.questionPage).toBeVisible();
+      expect(Application.questionPage.params()).toEqual({
+        questionId: 12,
+        answerId: 33,
+        fullScreen: true
       });
     });
   });

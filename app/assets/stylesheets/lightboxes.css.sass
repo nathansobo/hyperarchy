@@ -186,13 +186,85 @@
     font-size: $s0
     color: #666
 
-#full-screen-consensus
+#full-screen-consensus, #full-screen-answer
   top: 5%
   height: 85%
-  font-size: $s2
-  line-height: $s3 
-  width: $s16
-  margin-left: -($s16 / 2)
+  font-size: $s1
+  line-height: 25px
+  width: 600
+  margin-left: -(600 / 2)
+
+#full-screen-answer
+
+  .back.link
+    font-size: $s0
+    margin-left: $s1
+    
+  #answer-details
+    top: $s6
+    left: $s1
+    bottom: $s1
+    right: $s1
+    font-size: $s1
+    padding: $s1
+
+    .creator
+      height: 50px
+      margin-bottom: 2 * 25px
+      .name
+        font-size: $s1
+      .avatar
+        margin-top: 1px
+        float: left
+        margin-right: 6px
+      .date
+        font-size: $s0
+        color: #999
+
+    .non-editable .body
+      font-size: $s2
+    .body, .details
+      margin-bottom: 25px
+    .details
+      font-size: $s1
+      p:last-child
+        display: inline
+
+    .more, .less
+      margin-left: $s-2
+      font-size: $s0
+      cursor: pointer
+      word-spacing: -1px
+      &:hover
+        text-decoration: none
+    .more
+      color: #888
+      &:hover
+        color: #333
+    .less
+      margin-top: $line-height
+      float: right
+
+    .clear
+      clear: both
+      height: 25px
+
+    .edit,.destroy
+      display: none
+
+    .non-editable
+    .button
+      float: right
+      margin-left: $s-3
+
+    .comment
+      .name, .body
+        font-size: $s1
+      .date
+        font-size: $s0
+
+
+#full-screen-consensus
   ol
     overflow-y: auto
     position: absolute

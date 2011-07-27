@@ -14,7 +14,11 @@ _.constructor('Views.Pages.Question.AnswerLi', Monarch.View.Template, {
 
       this.body.markdown(this.answer.body());
 
-      if (!this.fullScreen) {
+      if (this.fullScreen) {
+        this.click(this.bind(function() {
+          History.replaceState(null, null, this.answer.fullScreenUrl());
+        }));
+      } else {
         this.draggable({
           connectToSortable: '#ranked-answers ol',
           appendTo: '#question',

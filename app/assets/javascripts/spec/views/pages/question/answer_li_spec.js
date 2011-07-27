@@ -18,6 +18,15 @@ describe("Views.Pages.Question.AnswerLi", function() {
       answerLi.click();
       expect(Path.routes.current).toBe(answer.url());
     });
+    
+    describe("when in fullscreen mode", function() {
+      it("navigates to the answer's full screen url", function() {
+        spyOn(Application, 'showPage');
+        answerLi = Views.Pages.Question.AnswerLi.toView({answer: answer, fullScreen: true});
+        answerLi.click();
+        expect(Path.routes.current).toBe(answer.fullScreenUrl());
+      });
+    });
   });
 
   describe("#handleDragStart (having trouble simulating it getting called without triggering the click handler)", function() {

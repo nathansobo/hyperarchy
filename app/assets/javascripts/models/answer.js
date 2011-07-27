@@ -62,6 +62,10 @@ _.constructor("Answer", Model.Record, {
     return "/questions/" + this.questionId() + "/answers/" + this.id();
   },
 
+  fullScreenUrl: function() {
+    return this.url() + "/full_screen";
+  },
+
   mixpanelNote: function() {
     return this.body();
   }

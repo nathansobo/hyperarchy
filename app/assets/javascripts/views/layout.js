@@ -41,6 +41,7 @@ _.constructor("Views.Layout", View.Template, {
         subview("addOrganizationForm", Views.Lightboxes.AddOrganizationForm);
 
         subview("fullScreenConsensus", Views.Lightboxes.FullScreenConsensus);
+        subview("fullScreenAnswer", Views.Lightboxes.FullScreenAnswer);
       }).ref("lightboxes");
 
       div({id: "darkened-background"}).ref("darkenedBackground");
@@ -221,9 +222,11 @@ _.constructor("Views.Layout", View.Template, {
     },
 
     showPage: function(name, params) {
-      this.lightboxes.children().each(function() {
-        $(this).view().hide();
-      });
+      if (!params.fullScreen) {
+        this.lightboxes.children().each(function() {
+          $(this).view().hide();
+        });
+      }
       this.body.children().each(function() {
         $(this).view().hide();
       });

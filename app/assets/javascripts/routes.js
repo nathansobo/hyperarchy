@@ -28,6 +28,10 @@ Path.map('/questions/:questionId/answers/:answerId').to(function() {
   Application.showPage('question', this.params);
 });
 
+Path.map('/questions/:questionId/answers/:answerId/full_screen').to(function() {
+  Application.showPage('question', _.extend(this.params, {fullScreen: true}));
+});
+
 Path.map('/questions/:questionId/votes/:voterId').to(function() {
   Application.showPage('question', this.params);
 });

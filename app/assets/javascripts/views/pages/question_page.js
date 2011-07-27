@@ -259,7 +259,7 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
         this.rankedAnswers.rankings(rankings);
       }
 
-      if (params.fullScreen) this.showFullScreenConsensus();
+      if (params.fullScreen) this.enterFullScreenMode();
     },
 
     question: {
@@ -408,8 +408,14 @@ _.constructor('Views.Pages.Question', Monarch.View.Template, {
       }
     },
 
-    showFullScreenConsensus: function() {
-      Application.fullScreenConsensus.show().question(this.question());
+    enterFullScreenMode: function() {
+      if (this.params().answerId) {
+        Application.fullScreenAnswer.show();
+        Application.fullScreenAnswer.answer(this.answerDetails.answer());
+      } else {
+        Application.fullScreenConsensus.show();
+        Application.fullScreenConsensus.question(this.question());
+      }
     },
 
     loading: {

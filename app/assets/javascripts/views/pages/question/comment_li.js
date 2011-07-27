@@ -1,7 +1,7 @@
 _.constructor('Views.Pages.Question.CommentLi', Monarch.View.Template, {
-  content: function() { with(this.builder) {
+  content: function(params) { with(this.builder) {
     li({'class': "comment"}, function() {
-      subview('avatar', Views.Components.Avatar, {imageSize: 34});
+      subview('avatar', Views.Components.Avatar, {imageSize: params.fullScreen ? 46 : 34});
       a({'class': "destroy"}, "×").ref('destroyButton').click('destroy');
       div({'class': "date"}).ref('createdAt');
       div({'class': "text"}, function() {
