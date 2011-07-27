@@ -546,6 +546,14 @@ describe("Views.Pages.Question.AnswerDetails", function() {
     }
   });
 
+  describe("showing and hiding of the details clearing div", function() {
+    it("only shows the clearing div if there are details", function() {
+      expect(answerDetails.detailsClearDiv).toBeVisible();
+      answer.remotelyUpdated({details: ""});
+      expect(answerDetails.detailsClearDiv).toBeHidden();
+    });
+  });
+
   describe("loading", function() {
     it("assigns loading to the comments", function() {
       answerDetails.loading(true);
