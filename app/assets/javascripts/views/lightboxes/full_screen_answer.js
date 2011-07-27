@@ -7,6 +7,7 @@ _.constructor('Views.Lightboxes.FullScreenAnswer', Views.Lightboxes.Lightbox, {
     });
     a({'class': "next nav link"}, "Next →").ref('nextLink').click('goToNext');
     a({'class': "prev nav link"}, "← Previous").ref('prevLink').click('goToPrevious');
+    span({'class': "nav counter"}).ref('counter');
     subview('answerDetails', Views.Pages.Question.AnswerDetails, {fullScreen: true});
   }},
 
@@ -16,18 +17,22 @@ _.constructor('Views.Lightboxes.FullScreenAnswer', Views.Lightboxes.Lightbox, {
         this.answerDetails.answer(answer);
         this.answerDetails.comments.comments(answer.comments());
 
-        console.log(answer.previous());
-        if (answer.previous()) {
+        var question = answer.question();
+        var total = question.answers().size();
+
+        if (answer.position() > 1) {
           this.prevLink.show();
         } else {
           this.prevLink.hide();
         }
 
-        if (answer.next()) {
+        if (answer.position() < total) {
           this.nextLink.css('visibility', 'visible');
         } else {
           this.nextLink.css('visibility', 'hidden');
         }
+
+        this.counter.text(answer.position() +  " of " + total);
       }
     },
 

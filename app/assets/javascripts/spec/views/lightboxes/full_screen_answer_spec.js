@@ -34,18 +34,21 @@ describe("Views.Lightboxes.FullScreenAnswer", function() {
       expect(Path.routes.current).toBe(answer1.fullScreenUrl());
       expect(fullScreenAnswer.prevLink).toBeHidden();
       expect(fullScreenAnswer.nextLink).toBeVisible();
+      expect(fullScreenAnswer.counter.text()).toBe('1 of 3');
 
       fullScreenAnswer.nextLink.click();
 
       expect(Path.routes.current).toBe(answer2.fullScreenUrl());
       expect(fullScreenAnswer.prevLink).toBeVisible();
       expect(fullScreenAnswer.nextLink).toBeVisible();
+      expect(fullScreenAnswer.counter.text()).toBe('2 of 3');
 
       fullScreenAnswer.nextLink.click();
 
       expect(Path.routes.current).toBe(answer3.fullScreenUrl());
       expect(fullScreenAnswer.prevLink).toBeVisible();
       expect(fullScreenAnswer.nextLink).toBeHidden();
+      expect(fullScreenAnswer.counter.text()).toBe('3 of 3');
     });
   });
 });
