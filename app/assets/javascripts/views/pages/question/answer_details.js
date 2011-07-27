@@ -209,13 +209,13 @@ _.constructor('Views.Pages.Question.AnswerDetails', Monarch.View.Template, {
       var answer = this.answer();
       this.details.markdown(this.truncate(answer.details() || "", this.maxDetailsLength));
       this.expandedDetails.markdown(answer.details());
-      this.adjustCommentsHeight();
-      this.showOrHideMoreButton();
       if (answer.details()) {
         this.detailsClearDiv.show();
       } else {
         this.detailsClearDiv.hide();
       }
+      this.showOrHideMoreButton();
+      this.adjustCommentsHeight();
     },
 
     adjustCommentsHeight: function() {

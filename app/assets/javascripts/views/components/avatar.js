@@ -1,6 +1,9 @@
 _.constructor("Views.Components.Avatar", View.Template, {
   content: function() { with(this.builder) {
-    div({'class': "avatar"});
+    div({'class': "avatar"}, function() {
+      img({'src': '/images/logo_50.png'}).ref('placeholder');
+      img().ref('img');
+    });
   }},
 
   viewProperties: {
@@ -8,28 +11,33 @@ _.constructor("Views.Components.Avatar", View.Template, {
       if (!this.imageSize) throw new Error("No image size");
       this.css('height', this.imageSize);
       this.css('width', this.imageSize);
+      this.img.height(this.imageSize);
+      this.img.width(this.imageSize);
+      this.placeholder.height(this.imageSize);
+      this.placeholder.width(this.imageSize);
+      this.showPlaceholder();
     },
 
     user: {
       change: function(user) {
-        this.removeClass("valid-avatar");
-        this.empty();
-        this.img = $(new Image());
-        this.img.height(this.imageSize);
-        this.img.width(this.imageSize);
-
+        this.showPlaceholder();
         user.fetchAvatarUrl(this.imageSize)
           .success(function(avatarUrl) {
             this.img
               .attr('src', avatarUrl)
-              .load(this.hitch('imageLoaded'));
+              .load(this.hitch('showImage'));
           }, this);
       }
     },
 
-    imageLoaded: function() {
-      this.addClass("valid-avatar")
-      this.append(this.img);
+    showImage: function() {
+      this.placeholder.hide();
+      this.img.show();
+    },
+
+    showPlaceholder: function() {
+      this.img.hide();
+      this.placeholder.show();
     }
   }
 });
