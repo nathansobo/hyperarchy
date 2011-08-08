@@ -39,6 +39,7 @@ _.constructor("Views.Layout", View.Template, {
         subview("disconnectDialog", Views.Lightboxes.DisconnectDialog);
         subview("inviteBox", Views.Lightboxes.InviteBox);
         subview("addOrganizationForm", Views.Lightboxes.AddOrganizationForm);
+        subview("actionitemsPopup", Views.Lightboxes.ActionitemsPopup);
 
         subview("fullScreenConsensus", Views.Lightboxes.FullScreenConsensus);
         subview("fullScreenAnswer", Views.Lightboxes.FullScreenAnswer);
@@ -204,6 +205,11 @@ _.constructor("Views.Layout", View.Template, {
           this.organizationNameSeparator.hide();
           this.organizationName.hide();
         } else {
+          if (!Application.currentUser().sawActionitemsPopup()) {
+            Application.currentUser().update({sawActionitemsPopup: true});
+            this.actionitemsPopup.show();
+          }
+
           this.organizationNameSeparator.show();
           this.organizationName.show();
           this.organizationName.bindText(organization, 'name');

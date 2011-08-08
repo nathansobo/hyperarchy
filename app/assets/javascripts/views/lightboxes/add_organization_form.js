@@ -1,5 +1,3 @@
-//= require ./lightbox
-
 _.constructor('Views.Lightboxes.AddOrganizationForm', Views.Lightboxes.Lightbox, {
   id: "add-organization-form",
 
