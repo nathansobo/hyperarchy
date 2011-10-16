@@ -9,12 +9,6 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 require 'erector/rails/railtie'
 
-FB_ID = '207827675895197'
-FB_SECRET = '1cdc8ebd9c410a0ca605504eef38413c'
-
-TWITTER_ID = 'ksD9F3aSHfzGAK3wgpRm1A'
-TWITTER_SECRET = 'sDSCpag7203JPANNH1HDnV0NdEqbVzDSSsjYZwFTvw'
-
 module Hyperarchy
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -68,3 +62,10 @@ It lets you put any issue to a vote by raising questions, then allows members to
 As individuals change their rankings, Hyperarchy computes and broadcasts the evolving consensus in real time, making it easier to communicate and make decisions.}
 
 SOCKET_SERVER_HOST = 'localhost:8082'
+
+api_keys = YAML.load_file(Rails.root.join('config/api_keys.yml'))
+
+FB_ID = api_keys['facebook']['id']
+FB_SECRET = api_keys['facebook']['secret']
+TWITTER_ID = api_keys['twitter']['id']
+TWITTER_SECRET = api_keys['twitter']['secret']

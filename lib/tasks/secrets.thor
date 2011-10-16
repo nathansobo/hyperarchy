@@ -11,7 +11,7 @@ class Secrets < Thor
   desc 'pack', "Pack and encrypt the secrets file"
   def pack
     cd_to_rails_root
-    system "tar -f config/secrets.tar -c config/smtp_settings keys/servers"
+    system "tar -f config/secrets.tar -c config/smtp_settings config/api_keys.yml keys/servers"
     system "openssl enc -aes-256-cbc -e -in config/secrets.tar -out config/secrets.tar.enc"
   end
 
