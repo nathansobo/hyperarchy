@@ -38,7 +38,7 @@ module Views
       def facebook_javascript
         javascript %[
           window.fbAsyncInit = function() {
-            FB.init({appId: '207827675895197', status: true, cookie: true, xfbml: false});
+            FB.init({appId: #{FB_ID}, status: true, cookie: true, xfbml: false});
             if (window.Application) Application.facebookInitialized();
           };
           (function() {
