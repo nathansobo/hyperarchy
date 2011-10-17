@@ -1,5 +1,3 @@
-//= require ./lightbox
-
 _.constructor('Views.Lightboxes.ActionitemsPopup', Views.Lightboxes.Lightbox, {
   id: "actionitems-popup",
 
