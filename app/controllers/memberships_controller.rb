@@ -1,3 +1,7 @@
+#  Copyright (c) 2010-2011, Nathan Sobo and Max Brunsfeld.  This file is
+#  licensed under the Affero General Public License version 3 or later.  See
+#  the COPYRIGHT file.
+
 class MembershipsController < ApplicationController
   before_filter :require_authentication, :only => :confirm
 

@@ -1,3 +1,7 @@
+//  Copyright (c) 2010-2011, Nathan Sobo and Max Brunsfeld.  This file is
+//  licensed under the Affero General Public License version 3 or later.  See
+//  the COPYRIGHT file.
+
 describe("Views.Pages.Question.Comments", function() {
   var member, question, comment1, comment2, creator1, creator2, commentsRelation, commentsView, longCommentBody;
 

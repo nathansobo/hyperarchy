@@ -1,3 +1,7 @@
+//  Copyright (c) 2010-2011, Nathan Sobo and Max Brunsfeld.  This file is
+//  licensed under the Affero General Public License version 3 or later.  See
+//  the COPYRIGHT file.
+
 describe("Question", function() {
   var creator, question, answer1, answer2, answer3, answer4;
   beforeEach(function() {
