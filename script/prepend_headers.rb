@@ -20,17 +20,19 @@ HEADER_FILES = {
 }
 
 def prepend_headers_for_filetype(extension)
-  directories     = DIRECTORIES[extension].join(' ')
-  exclusion_flags = EXCLUSIONS[extension].reduce("") {|string, expression| string + " -v #{expression}"} if EXCLUSIONS[extension]
-  header_file     = "script/header.#{extension}"
+  directories = DIRECTORIES[extension].join(' ')
+  header_file = HEADER_FILES[extension]
+  if exclusions =  EXCLUSIONS[extension]
+    filter_command = exclusions.map {|expression| "grep -v #{expression}"}.join(' | ')
+  else
+    filter_command = 'cat'
+  end
 
   find_command    = "find #{directories} -name '*.#{extension}'"
-  filter_command  = exclusion_flags ? "grep #{exclusion_flags}" : "cat"
   prepend_command = "xargs -I file script/prepend #{header_file} file"
-
   command = "#{find_command} | #{filter_command} | #{prepend_command}"
   puts command
-  system command
+  # system command
 end
 
 prepend_headers_for_filetype('rb')
