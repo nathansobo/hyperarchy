@@ -3,8 +3,7 @@
 DIRECTORIES = {
   'rb' => ['app', 'lib', 'config'],
   'js' => ['app/assets/javascripts', 'vendor/princess/', 'vendor/socket_server'],
-  'sass' => ['app/assets/stylesheets'],
-  'erb' => ['app/views', 'lib/deploy/resources']
+  'sass' => ['app/assets/stylesheets']
 }
 
 EXCLUSIONS = {
@@ -39,5 +38,4 @@ end
 prepend_headers_for_filetype('rb')
 prepend_headers_for_filetype('js')
 prepend_headers_for_filetype('sass')
-prepend_headers_for_filetype('erb')
 
