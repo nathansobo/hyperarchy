@@ -9,7 +9,8 @@ DIRECTORIES = {
 
 EXCLUSIONS = {
   'rb' => ['vendor'],
-  'js' => ['node_modules', 'vendor']
+  'js' => ['node_modules', 'vendor', 'application.js', 'spec/index.js', 'models.js',
+           'views.js', 'spec/support', 'jquery.simulate.js', 'jquery_matchers.js', 'prettyprint.js']
 }
 
 HEADER_FILES = {
