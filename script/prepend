@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+
+preamble, target = ARGV[0], ARGV[1]
+system("cat #{preamble} #{target} | tee #{target} > /dev/null")
