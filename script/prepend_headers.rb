@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 DIRECTORIES = {
-  'rb' => ['app', 'lib', 'config'],
+  'rb' => ['app', 'lib'],
   'js' => ['app/assets/javascripts', 'vendor/princess/', 'vendor/socket_server'],
   'sass' => ['app/assets/stylesheets']
 }
