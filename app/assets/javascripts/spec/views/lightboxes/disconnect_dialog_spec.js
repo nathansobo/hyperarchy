@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Lightboxes.DisconnectDialog", function() {
   var disconnectDialog, darkenedBackground;
   beforeEach(function() {

@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Question.CommentLi", function() {
   var currentUser, question, comment, creator, commentLi, commentEditableByCurrentUser;
 

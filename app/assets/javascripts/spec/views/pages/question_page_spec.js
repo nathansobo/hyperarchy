@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Question", function() {
   var questionPage;
   beforeEach(function() {

@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Organization", function() {
 
   var organizationPage;

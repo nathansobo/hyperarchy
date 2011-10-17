@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Components.CharsRemaining", function() {
 
   var charsRemaining, limit, textarea;

@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Account", function() {
   var currentUser, membership, organization, accountPage;
 

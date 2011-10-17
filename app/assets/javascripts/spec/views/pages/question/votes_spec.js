@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Question.Votes", function() {
   var votesView, question, currentUser, otherUser, currentUserVote, otherUserVote, votesRelation;
 

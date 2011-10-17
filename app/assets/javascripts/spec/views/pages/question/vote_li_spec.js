@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Question.VoteLi", function() {
   var voteLi, vote, user, question;
   beforeEach(function() {

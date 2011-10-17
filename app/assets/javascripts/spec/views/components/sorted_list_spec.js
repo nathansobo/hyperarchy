@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Components.SortedList", function() {
   var view, relation, relation2;
 

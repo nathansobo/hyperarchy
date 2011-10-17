@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Question.CurrentConsensus", function() {
   var currentConsensusView, question, answer1, answer2, user1;
 

@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Components.Avatar", function() {
   var avatar;
   beforeEach(function() {

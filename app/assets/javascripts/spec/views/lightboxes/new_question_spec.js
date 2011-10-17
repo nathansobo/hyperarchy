@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Lightboxes.NewQuestion", function() {
   var newQuestionForm, organization, member, guest;
   beforeEach(function() {

@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Question.Comments", function() {
   var member, question, comment1, comment2, creator1, creator2, commentsRelation, commentsView, longCommentBody;
 

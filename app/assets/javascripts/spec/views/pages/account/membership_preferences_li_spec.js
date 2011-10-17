@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Account.MembershipPreferencesLi", function() {
   var membership, organization, preferencesLi;
 

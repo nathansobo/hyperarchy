@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Question.AnswerLi", function() {
   var question, answer, answerLi;
 

@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Lightboxes.FeedbackForm", function() {
   var feedbackForm;
 

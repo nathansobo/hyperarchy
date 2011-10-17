@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Lightboxes.AddOrganizationForm", function() {
   var addOrganizationForm;
   beforeEach(function() {

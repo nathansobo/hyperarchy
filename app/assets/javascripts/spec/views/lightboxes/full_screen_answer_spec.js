@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Lightboxes.FullScreenAnswer", function() {
   var fullScreenAnswer, organization, creator, question, answer1, answer2, answer3;
 

@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Layout.OrganizationsMenu", function() {
   var organizationsMenu;
   beforeEach(function() {

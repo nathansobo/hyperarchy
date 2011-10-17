@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.OrganizationSettings", function() {
   var settingsPage, org, owner, member1, member2;
 

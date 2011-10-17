@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Question.RankingLi", function() {
   var answer, ranking, rankedAnswerLi;
 

@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Routes", function() {
   var member, defaultGuest, defaultOrganization;
   beforeEach(function() {

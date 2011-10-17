@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Question.RankedAnswers", function() {
   var organization, questionPage, rankedAnswers, currentUser, question, answer1, answer2, answer3, ranking1, ranking2, rankingsRelation, lastCreateOrUpdatePromise;
   

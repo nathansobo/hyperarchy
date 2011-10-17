@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Organization", function() {
   var organization;
 

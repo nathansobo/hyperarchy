@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Question.AnswerDetails", function() {
   var answerDetails, answer, creator, question, organization;
 

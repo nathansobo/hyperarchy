@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("User", function() {
   var user;
   beforeEach(function() {

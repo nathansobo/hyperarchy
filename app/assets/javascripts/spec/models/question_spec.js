@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Question", function() {
   var creator, question, answer1, answer2, answer3, answer4;
   beforeEach(function() {

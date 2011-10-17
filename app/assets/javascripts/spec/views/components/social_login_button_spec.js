@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Components.SocialLoginButton", function() {
   var facebookButton, twitterButton, fb;
   beforeEach(function() {

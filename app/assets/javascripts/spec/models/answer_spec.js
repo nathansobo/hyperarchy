@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Answer", function() {
   describe("#editableByCurrentUser()", function() {
     var organization, answer, admin, owner, creator, otherUser, organization;

@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Pages.Organization.QuestionLi", function() {
   var questionLi, creator, question, answer1, answer2, answer1Li, answer2Li;
   beforeEach(function() {

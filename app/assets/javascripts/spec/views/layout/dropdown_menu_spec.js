@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Layout.DropdownMenu", function() {
   var dropdownMenu;
   beforeEach(function() {

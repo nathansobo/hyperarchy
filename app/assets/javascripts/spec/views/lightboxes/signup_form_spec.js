@@ -1,5 +1,3 @@
-//= require spec/spec_helper
-
 describe("Views.Lightboxes.SignupForm", function() {
   var signupForm, darkenedBackground;
   beforeEach(function() {
