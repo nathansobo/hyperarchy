@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
 preamble, target = ARGV[0], ARGV[1]
-system("cat #{preamble} #{target} | tee #{target} > /dev/null")
+system("cat #{preamble} #{target} > #{target}.tmp_prepend && mv #{target}.tmp_prepend #{target}")
