@@ -32,7 +32,7 @@ def prepend_headers_for_filetype(extension)
   prepend_command = "xargs -I file script/prepend #{header_file} file"
   command = "#{find_command} | #{filter_command} | #{prepend_command}"
   puts command
-  # system command
+  system command
 end
 
 prepend_headers_for_filetype('rb')
