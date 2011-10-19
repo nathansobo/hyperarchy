@@ -19,7 +19,6 @@ class User < Prequel::Record
   column :facebook_id, :string
   column :twitter_id, :integer
   column :referring_share_id, :integer
-  column :saw_actionitems_popup, :boolean, :default => false
 
   synthetic_column :email_hash, :string
 
@@ -78,7 +77,7 @@ class User < Prequel::Record
   end 
 
   def update_whitelist
-    list = [:first_name, :last_name, :email_address, :email_enabled, :saw_actionitems_popup]
+    list = [:first_name, :last_name, :email_address, :email_enabled]
     list.push(:admin) if current_user.admin?
     list
   end

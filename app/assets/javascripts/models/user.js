@@ -14,8 +14,7 @@ _.constructor("User", Model.Record, {
       defaultGuest: 'boolean',
       emailEnabled: 'boolean',
       facebookId: 'string',
-      twitterId: 'integer',
-      sawActionitemsPopup: 'boolean'
+      twitterId: 'integer'
     });
 
     this.syntheticColumn('fullName', function() {

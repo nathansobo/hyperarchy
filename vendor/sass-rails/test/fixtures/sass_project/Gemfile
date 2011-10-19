@@ -1,7 +1,0 @@
-source 'http://rubygems.org'
-
-gem 'rails'
-gem 'sqlite3'
-
-# Asset template engines
-gem 'sass-rails'
