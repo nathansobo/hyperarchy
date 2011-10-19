@@ -21,7 +21,7 @@ gem 'rack-chromeframe', '1.0.0', :require => 'rack/chrome_frame'
 gem 'run_later', :path => 'vendor/run_later'
 gem 'sass'
 gem 'sass-rails', '3.1.4'
-gem 'compass', :path => 'vendor/compass'
+gem 'compass', '0.11.5'
 gem 'uglifier', :path => 'vendor/uglifier'
 gem 'jquery-rails'
 gem 'monarch', :path => 'vendor/monarch'
@@ -48,3 +48,4 @@ group :deploy do
   gem 'net-ssh-telnet', :require => 'net/ssh/telnet'
   gem 'net-sftp', :require => 'net/sftp'
 end
+
