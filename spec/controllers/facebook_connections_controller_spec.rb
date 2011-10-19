@@ -41,7 +41,7 @@ describe FacebookConnectionsController do
 
       describe "when the session does not validate against its signature" do
         before do
-          mock(controller).fb_user { raise FbGraph::Auth::VerificationFailed.new(401, 'Facebook cookie signature invalid') }
+          mock(controller).fb_user { raise FbGraph::Auth::VerificationFailed.new(401, nil) }
         end
 
         it "returns 403 forbidden" do

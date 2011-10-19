@@ -5,7 +5,7 @@ describe TwitterSessionsController do
     let(:twitter_id) { 1234 }
 
     before do
-      cookies["twitter_anywhere_identity"] = "#{twitter_id}:#{twitter_signature}"
+      request.cookies["twitter_anywhere_identity"] = "#{twitter_id}:#{twitter_signature}"
     end
 
     describe "when the session validates against its signature" do
