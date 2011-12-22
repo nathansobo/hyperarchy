@@ -28,6 +28,12 @@ class Provision < Thor
     require 'deploy'
     AppServer.new(env).reinstall_services
   end
+
+  desc 'prepare_ssl_cert', 'concatenate startcom intermediate certs to a fresh SSL certificate'
+  def prepare_ssl_cert
+    require 'deploy'
+    AppServer.new('production').prepare_ssl_cert
+  end
 end
 
 class Deploy < Thor

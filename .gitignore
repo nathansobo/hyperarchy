@@ -14,5 +14,6 @@
 /config/secrets.tar
 /config/smtp_settings
 /keys/servers
+/keys/hyperarchy.key
 /config/api_keys.yml
 /lib/deploy/resources/nginx/nginx.conf

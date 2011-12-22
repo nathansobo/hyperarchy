@@ -96,6 +96,11 @@ class AppServer
     system "ssh-add #{private_key_path}"
   end
 
+  def prepare_ssl_cert
+    run_locally "curl http://www.startssl.com/certs/sub.class1.server.ca.pem >> keys/hyperarchy.crt"
+    run_locally "curl http://www.startssl.com/certs/ca.pem >> keys/hyperarchy.crt"
+  end
+
   def no_echo
     system "stty -echo"
     yield
@@ -246,8 +251,8 @@ class AppServer
     run "ln -s /opt/nginx/sbin/nginx /usr/local/sbin/nginx"
     upload_template 'lib/deploy/resources/nginx/nginx.conf.erb', '/opt/nginx/conf/nginx.conf'
     upload 'lib/deploy/resources/nginx/htpasswd', '/opt/nginx/conf/htpasswd'
-    upload 'lib/deploy/resources/nginx/hyperarchy.crt', '/etc/ssl/certs/hyperarchy.crt'
-    upload 'lib/deploy/resources/nginx/hyperarchy.key', '/etc/ssl/private/hyperarchy.key'
+    upload 'keys/hyperarchy.crt', '/etc/ssl/certs/hyperarchy.crt'
+    upload 'keys/hyperarchy.key', '/etc/ssl/private/hyperarchy.key'
     upload 'lib/deploy/resources/nginx/nginx_upstart.conf', '/etc/init/nginx.conf'
     run "chmod 640 /etc/ssl/private/hyperarchy.key"
     run "chown root:ssl-cert /etc/ssl/private/hyperarchy.key"
