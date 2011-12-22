@@ -119,8 +119,8 @@ _.constructor("Views.Layout", View.Template, {
       var promise = new Monarch.Promise();
 
       FB.login(this.bind(function(response) {
-        if (response.session) {
-          if (response.session.uid === Application.currentUser().facebookId()) {
+        if (response.authResponse) {
+          if (response.authResponse.uid === Application.currentUser().facebookId()) {
             promise.triggerSuccess();
           } else {
             $.ajax({
