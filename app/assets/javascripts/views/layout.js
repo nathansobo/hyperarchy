@@ -136,7 +136,7 @@ _.constructor("Views.Layout", View.Template, {
         } else {
           promise.triggerInvalid();
         }
-      }), {perms: "email"});
+      }), {scope: "email"});
 
       return promise;
     },
