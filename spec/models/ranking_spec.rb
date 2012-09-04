@@ -5,11 +5,11 @@ describe Ranking do
     attr_reader :user, :question, :answer_1, :answer_2, :answer_3
 
     before do
-      @user = User.make
-      @question = Question.make
-      @answer_1 = question.answers.make(:body => "1")
-      @answer_2 = question.answers.make(:body => "2")
-      @answer_3 = question.answers.make(:body => "3")
+      @user = User.make!
+      @question = Question.make!
+      @answer_1 = question.answers.make!(:body => "1")
+      @answer_2 = question.answers.make!(:body => "2")
+      @answer_3 = question.answers.make!(:body => "3")
     end
 
     specify "majorities are updated accordingly and #compute_global_ranking is called on the ranking's question" do
