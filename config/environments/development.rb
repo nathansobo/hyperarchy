@@ -30,7 +30,3 @@ Decider::Application.configure do
   config.assets.debug = true
 end
 
-Pusher.app_id = '26975'
-Pusher.key    = '3c1a3791ac3d0f08dc81'
-Pusher.secret = '490aadc4fdd34a1f6a02'
-
