@@ -12,4 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require underscore
+//= require monarch
+//= require space-pen
 //= require_tree .

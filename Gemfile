@@ -6,6 +6,8 @@ gem 'rails', '3.2.8'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'pusher'
+gem 'pg', '~> 0.11'
+gem 'prequel', :path => 'vendor/prequel'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -20,11 +22,13 @@ group :assets do
 end
 
 gem 'jquery-rails'
-
+gem 'underscore-rails'
+gem 'monarch', :path => 'vendor/monarch'
 
 group :test, :development do
   gem "rspec-rails", "~> 2.0"
   gem 'dotenv'
+  gem 'activerecord-postgresql-adapter'
 end
 
 # To use ActiveModel has_secure_password

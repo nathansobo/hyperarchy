@@ -1,0 +1,6 @@
+[submodule "vendor/monarch"]
+	path = vendor/monarch
+	url = git@github.com:nathansobo/monarch.git
+[submodule "vendor/prequel"]
+	path = vendor/prequel
+	url = https://github.com/nathansobo/prequel.git
