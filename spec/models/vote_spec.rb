@@ -5,10 +5,10 @@ describe Vote do
     attr_reader :user_1, :user_2, :question, :answer
 
     before do
-      @user_1 = User.make
-      @user_2 = User.make
-      @question = Question.make
-      @answer = question.answers.make
+      @user_1 = User.make!
+      @user_2 = User.make!
+      @question = Question.make!
+      @answer = question.answers.make!
     end
 
     specify "the vote count of the question is increment or decrement appropriately" do
