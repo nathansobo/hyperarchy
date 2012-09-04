@@ -8,6 +8,7 @@ gem 'rails', '3.2.8'
 gem 'pusher'
 gem 'pg', '~> 0.11'
 gem 'prequel', :path => 'vendor/prequel'
+gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -29,6 +30,9 @@ group :test, :development do
   gem "rspec-rails", "~> 2.0"
   gem 'dotenv'
   gem 'activerecord-postgresql-adapter'
+  gem 'rr'
+  gem 'machinist'
+  gem 'faker'
 end
 
 # To use ActiveModel has_secure_password

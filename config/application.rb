@@ -1,13 +1,12 @@
 require File.expand_path('../boot', __FILE__)
 
 # Pick the frameworks you want:
+require "active_record/railtie" # keep it for the db rake tasks only
 require "action_controller/railtie"
 require "action_mailer/railtie"
 require "active_resource/railtie"
 require "sprockets/railtie"
 require "rails/test_unit/railtie"
-# We just want ActiveRecord for its Rake tasks
-require "active_record/railtie" if Rails.env.development?
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line

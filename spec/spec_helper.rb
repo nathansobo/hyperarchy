@@ -8,14 +8,19 @@ require 'rspec/rails'
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
 RSpec.configure do |config|
+  config.treat_symbols_as_metadata_keys_with_true_values = true
+  config.include SpecMethods
+  config.include ModelSpecMethods, :type => :model
+  config.include ControllerSpecMethods, :type => :controller
+
   # == Mock Framework
   #
   # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
   #
   # config.mock_with :mocha
   # config.mock_with :flexmock
-  # config.mock_with :rr
-  config.mock_with :rspec
+  config.mock_with :rr
+  # config.mock_with :rspec
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -24,4 +29,12 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
+end
+
+def fit(description, &block)
+  it description, :focus, &block
+end
+
+def fdescribe(description, &block)
+  describe description, :focus, &block
 end
