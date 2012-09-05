@@ -16,6 +16,8 @@ class Question < Prequel::Record
 
   belongs_to :creator, :class_name => "User"
 
+  validates_presence_of :body
+
   def can_update_or_destroy?
     creator_id == current_user.id
   end
