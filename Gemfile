@@ -8,6 +8,9 @@ gem 'rails', '3.2.8'
 gem 'pusher'
 gem 'pg', '~> 0.11'
 gem 'prequel', :path => 'vendor/prequel'
+gem 'omniauth'
+gem 'omniauth-github', :git => 'https://github.com/intridea/omniauth-github.git'
+gem 'github_api', :require => 'github_api'
 gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
 
 # Gems used only for assets and not required

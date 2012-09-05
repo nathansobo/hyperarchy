@@ -1,8 +1,11 @@
+
 class User < Prequel::Record
   column :id, :integer
-  column :full_name, :string
-  column :email_address, :string
+  column :github_uid, :integer
   column :oauth_access_token, :string
+  column :email_address, :string
+  column :full_name, :string
+  column :github_avatar_url, :string
 
   synthetic_column :email_hash, :string
 
@@ -12,6 +15,35 @@ class User < Prequel::Record
   has_many :answers, :foreign_key => :creator_id
 
   validates_uniqueness_of :email_address, :message => "There is already an account with that email address."
+
+  def self.find_or_create_with_omniauth(auth)
+    oauth_access_token = auth.credentials.token
+    github_uid = auth.uid
+    return unless is_github_team_member?(oauth_access_token, auth.info.nickname)
+
+    if user = find(:github_uid => github_uid)
+      user.update!(
+        :oauth_access_token => oauth_access_token,
+        :full_name => auth.info.name,
+        :email_address => auth.info.email,
+        :github_avatar_url => auth.info.image,
+      )
+      user
+    else
+      create(
+        :github_uid => github_uid,
+        :oauth_access_token => oauth_access_token,
+        :full_name => auth.info.name,
+        :email_address => auth.info.email,
+        :github_avatar_url => auth.info.image,
+      )
+    end
+  end
+
+  def self.is_github_team_member?(oauth_access_token, github_username)
+    github = Github.new(:oauth_token => oauth_access_token)
+    github.orgs.teams.team_member? ENV['GITHUB_TEAM_ID'], github_username
+  end
 
   def can_update_or_destroy?
     current_user == self

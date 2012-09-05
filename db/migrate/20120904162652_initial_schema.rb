@@ -38,9 +38,11 @@ class InitialSchema < ActiveRecord::Migration
     end
 
     create_table :users do |t|
-      t.string :full_name
-      t.string :email_address
+      t.integer :github_uid
       t.string :oauth_access_token
+      t.string :email_address
+      t.string :full_name
+      t.string :github_avatar_url
     end
 
     create_table :votes do |t|

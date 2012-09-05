@@ -54,9 +54,11 @@ ActiveRecord::Schema.define(:version => 20120904162652) do
   end
 
   create_table "users", :force => true do |t|
-    t.string "full_name"
-    t.string "email_address"
-    t.string "oauth_access_token"
+    t.integer "github_uid"
+    t.string  "oauth_access_token"
+    t.string  "email_address"
+    t.string  "full_name"
+    t.string  "github_avatar_url"
   end
 
   create_table "votes", :force => true do |t|
