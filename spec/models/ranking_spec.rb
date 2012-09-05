@@ -276,10 +276,11 @@ describe Ranking do
   describe "security" do
     attr_reader :creator, :other_member, :ranking, :answer
     before do
-      question = Question.make
-      @answer = question.answers.make
-      @creator = answer.question.organization.make_member
-      @other_member = answer.question.organization.make_member
+      @creator = User.make!
+      @other_member = User.make!
+      set_current_user(creator)
+      question = Question.make!
+      @answer = question.answers.make!
       @ranking = Ranking.create!(:user => creator, :answer => answer, :position => 64)
     end
 
