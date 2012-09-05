@@ -4,6 +4,11 @@ Decider::Application.routes.draw do
   match '/auth/:provider/callback' => 'sessions#create'
   match '/sign-out' => 'sessions#destroy'
 
+  get '/sandbox' => 'sandbox#fetch'
+  post '/sandbox/:relation' => 'sandbox#create'
+  put '/sandbox/:relation/:id' => 'sandbox#update'
+  delete '/sandbox/:relation/:id' => 'sandbox#destroy'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
