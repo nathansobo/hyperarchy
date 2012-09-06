@@ -1,6 +1,7 @@
-$ ->
-  pusher = new Pusher(PUSHER_API_KEY)
-  channel = pusher.subscribe('global')
-  channel.bind 'operation', (data) -> console.log(data)
+window.initialize = ->
+  $ ->
+    pusher = new Pusher(PUSHER_API_KEY)
+    channel = pusher.subscribe('global')
+    channel.bind 'operation', (data) -> console.log(data)
 
-  $('body').append(new Views.Application)
+    $('body').append(new Views.Application)
