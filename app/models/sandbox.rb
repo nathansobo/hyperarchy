@@ -4,23 +4,23 @@ class Sandbox < Prequel::Sandbox
     @user = user
   end
 
-  expose :users do
+  expose :User do
     User.table
   end
 
-  expose :questions do
+  expose :Question do
     Question.table
   end
 
-  expose :answers do
+  expose :Answer do
     Answer.table
   end
 
-  expose :votes do
+  expose :Vote do
     Vote.table
   end
 
-  expose :rankings do
+  expose :Ranking do
     Ranking.table
   end
 end
