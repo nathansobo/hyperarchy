@@ -1,11 +1,8 @@
 class Question < Prequel::Record
   column :id, :integer
-  column :organization_id, :integer
   column :creator_id, :integer
   column :body, :string
-  column :details, :string
   column :vote_count, :integer, :default => 0
-  column :score, :float
   column :created_at, :datetime
   column :updated_at, :datetime
 

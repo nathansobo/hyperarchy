@@ -19,12 +19,9 @@ class InitialSchema < ActiveRecord::Migration
     end
 
     create_table :questions do |t|
-      t.integer :organization_id
       t.integer :creator_id
       t.string :body
-      t.string :details
       t.integer :vote_count
-      t.float :score
       t.timestamps
     end
 
