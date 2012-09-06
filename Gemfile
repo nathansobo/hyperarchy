@@ -36,6 +36,7 @@ group :test, :development do
   gem 'rr'
   gem 'machinist'
   gem 'faker'
+  gem 'jasminerice'
 end
 
 # To use ActiveModel has_secure_password
