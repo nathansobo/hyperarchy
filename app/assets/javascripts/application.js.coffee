@@ -21,3 +21,7 @@
 
 window.Models = {}
 window.Views = {}
+
+Monarch.snakeCase = true
+Monarch.resourceUrlRoot = '/sandbox'
+Monarch.resourceUrlSeparator = '_'
