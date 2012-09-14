@@ -22,6 +22,7 @@ class Views.QuestionView extends View
         )
 
   initialize: (@question) ->
+    @itemsByAnswerId = {}
     @body.text(question.body())
     @collectiveRanking.setRelation(question.answers())
 
@@ -44,6 +45,11 @@ class Views.QuestionView extends View
     )
 
   updateAnswerRanking: (item) ->
+    answerId = item.data('answer-id')
+    oldItem = @itemsByAnswerId[answerId]
+    oldItem?.remove() unless oldItem?[0] is item[0]
+    @itemsByAnswerId[answerId] = item
+
     lowerPosition = item.next()?.data('position') ? 0
     if item.prev().length
       upperPosition = item.prev().data('position')
@@ -53,8 +59,7 @@ class Views.QuestionView extends View
 
     item.data('position', position)
     Models.Ranking.createOrUpdate(
-      user: Models.User.getCurrent()
-      answer: Models.Answer.find(item.data('answer-id'))
+      answer: Models.Answer.find(answerId)
       position: position
     )
 

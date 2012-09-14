@@ -63,3 +63,14 @@ describe "Views.QuestionView", ->
         position: 1.75
       )
       Ranking.createOrUpdate.reset()
+
+      # drag another clone of item1 from collective ranking: it should not duplicate
+      item1b = questionView.collectiveRanking.find('[data-answer-id=1]').clone()
+      questionView.personalRanking.append(item1b)
+      questionView.updateAnswerRanking(item1b)
+      expect(questionView.personalRanking.find('.answer').length).toBe 3
+      expect(questionView.personalRanking.find('.answer:last').data('answer-id')).toBe 1
+      expect(Ranking.createOrUpdate).toHaveBeenCalledWith(
+        answer: answer1,
+        position: .75
+      )
