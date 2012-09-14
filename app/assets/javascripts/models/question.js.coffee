@@ -5,3 +5,5 @@ class Models.Question extends Monarch.Record
     creatorId: 'integer'
     body: 'string'
     voteCount: 'integer'
+
+  @hasMany 'answers'

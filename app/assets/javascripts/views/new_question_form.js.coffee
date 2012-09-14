@@ -17,6 +17,5 @@ class Views.NewQuestionForm extends View
   createQuestion: ->
     Models.Question.create(body: @textarea.val())
       .success (question) =>
-        console.log question
         @modal('hide')
 
