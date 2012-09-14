@@ -12,6 +12,8 @@
 #
 #= require jquery
 #= require jquery_ujs
+#= require jquery.ui.draggable
+#= require jquery.ui.sortable
 #= require twitter/bootstrap
 #= require underscore
 #= require monarch

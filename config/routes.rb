@@ -9,6 +9,8 @@ Decider::Application.routes.draw do
   put '/sandbox/:relation/:id' => 'sandbox#update'
   delete '/sandbox/:relation/:id' => 'sandbox#destroy'
 
+  resources :rankings
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

@@ -27,16 +27,17 @@ html, body {
   margin: 0;
   overflow-y: auto;
 
-  .answer {
-    list-style-position: inside;
-    padding: @baseLineHeight / 2 - 2px;
-    background: white;
-    border: 1px solid #ddd;
-    border-bottom-width: 0px;
-    .box-shadow(0px 1px 3px 0px rgba(0, 0, 0, .1));
-  }
+}
 
-  .answer:last-child {
-    border-bottom-width: 1px;
-  }
+.answer {
+  list-style-position: inside;
+  padding: @baseLineHeight / 2 - 2px;
+  background: white;
+  border: 1px solid #ddd;
+  border-bottom-width: 0px;
+  .box-shadow(0px 1px 3px 0px rgba(0, 0, 0, .1));
+}
+
+.answer:last-child {
+  border-bottom-width: 1px;
 }

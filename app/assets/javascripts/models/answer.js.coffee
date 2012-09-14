@@ -7,4 +7,6 @@ class Models.Answer extends Monarch.Record
     body: 'string'
     position: 'integer'
 
+  @defaultOrderBy 'position asc'
+
   @belongsTo 'question'

@@ -13,7 +13,7 @@ class Views.Application extends View
 
   initialize: ->
     @newQuestionForm = new Views.NewQuestionForm().appendTo($('body'))
-    Monarch.Remote.Server.fetch([Models.Question, Models.Answer])
+    Monarch.Remote.Server.fetch([Models.User, Models.Question, Models.Answer])
       .onSuccess =>
         Models.Question.each (question) =>
           @questions.append(new Views.QuestionView(question))
