@@ -7,10 +7,11 @@ class Views.QuestionView extends View
           @textarea rows: 2, outlet: 'newAnswerTextarea'
           @button "Suggest Answer", class: 'btn pull-right', click: 'createAnswer'
       @div class: 'span4', =>
+        @h5 "Collective Ranking"
         @subview 'collectiveRanking', new Views.RelationView(
-          attributes: { class: 'collective-ranking' }
+          attributes: { class: 'collective ranking' }
           buildItem: (answer, index) ->
-            $$ -> @li answer.body()
+            $$ -> @li answer.body(), class: 'answer'
         )
 
   initialize: (@question) ->
