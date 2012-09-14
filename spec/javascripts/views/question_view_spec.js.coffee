@@ -17,7 +17,7 @@ describe "Views.QuestionView", ->
     spyOn(Ranking, 'createOrUpdate')
 
   describe "when items are dragged into / within the personal ranking list", ->
-    it "creates / updates rankings on the current user", ->
+    it "creates / updates a ranking for the dragged answer", ->
       item1 = questionView.collectiveRanking.find('[data-answer-id=1]').clone()
       item2 = questionView.collectiveRanking.find('[data-answer-id=2]').clone()
       item3 = questionView.collectiveRanking.find('[data-answer-id=3]').clone()
@@ -27,7 +27,6 @@ describe "Views.QuestionView", ->
       questionView.updateAnswerRanking(item1)
 
       expect(Ranking.createOrUpdate).toHaveBeenCalledWith(
-        user: currentUser,
         answer: answer1,
         position: 1
       )
@@ -37,7 +36,6 @@ describe "Views.QuestionView", ->
       questionView.personalRanking.prepend(item2)
       questionView.updateAnswerRanking(item2)
       expect(Ranking.createOrUpdate).toHaveBeenCalledWith(
-        user: currentUser,
         answer: answer2,
         position: 2
       )
@@ -52,7 +50,6 @@ describe "Views.QuestionView", ->
       item2.after(item3)
       questionView.updateAnswerRanking(item3)
       expect(Ranking.createOrUpdate).toHaveBeenCalledWith(
-        user: currentUser,
         answer: answer3,
         position: 1.5
       )
@@ -62,7 +59,6 @@ describe "Views.QuestionView", ->
       item2.after(item1.detach())
       questionView.updateAnswerRanking(item1)
       expect(Ranking.createOrUpdate).toHaveBeenCalledWith(
-        user: currentUser,
         answer: answer1,
         position: 1.75
       )

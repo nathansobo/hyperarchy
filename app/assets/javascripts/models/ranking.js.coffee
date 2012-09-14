@@ -11,13 +11,12 @@ class Models.Ranking extends Monarch.Record
   @belongsTo 'question'
   @belongsTo 'answer'
 
-  @createOrUpdate: ({user, answer, position}) ->
+  @createOrUpdate: ({answer, position}) ->
     jQuery.ajax(
       type: 'post'
       url: '/rankings'
       dataType: 'data+records'
       data:
-        user_id: user.id()
         answer_id: answer.id()
         position: position
     ).pipe (data) ->
