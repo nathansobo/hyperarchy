@@ -8,15 +8,18 @@ class Views.Application extends View
             @ul class: 'nav pull-right', =>
               @li =>
                 @button "New Question", class: 'btn btn-primary', click: 'showNewQuestionForm'
-      @div id: 'questions', outlet: 'questions'
+      @subview 'questionsList', new Views.RelationView(
+        tag: 'div'
+        attributes: { id: 'questions' }
+        buildItem: (question) ->
+          new Views.QuestionView(question)
+      )
 
 
   initialize: ->
     @newQuestionForm = new Views.NewQuestionForm().appendTo($('body'))
     Monarch.Remote.Server.fetch([Models.User, Models.Question, Models.Answer, Models.Ranking])
-      .onSuccess =>
-        Models.Question.each (question) =>
-          @questions.append(new Views.QuestionView(question))
+      .onSuccess => @questionsList.setRelation(Models.Question.table)
 
   showNewQuestionForm: ->
     @newQuestionForm.modal('show')

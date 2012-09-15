@@ -6,4 +6,6 @@ class Models.Question extends Monarch.Record
     body: 'string'
     voteCount: 'integer'
 
+  @defaultOrderBy 'id desc'
+
   @hasMany 'answers'
