@@ -23,3 +23,11 @@ class Models.Ranking extends Monarch.Record
         position: position
     ).pipe (data) ->
       Ranking.find(data.ranking_id)
+
+  @destroyByAnswerId: (answerId) ->
+    jQuery.ajax(
+      type: 'delete'
+      url: '/rankings'
+      data:
+        answer_id: answer.id()
+    )

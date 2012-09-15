@@ -36,7 +36,7 @@ class Views.QuestionView extends View
       receive: -> removeItem = 0
       over: -> removeItem = 0
       out: -> removeItem = 1
-      beforeStop: (event, ui) -> ui.item.remove() if removeItem
+      beforeStop: (event, ui) -> ui.item.detach() if removeItem
       stop: (event, ui) => @updateAnswerRanking(ui.item)
     )
 
@@ -57,6 +57,13 @@ class Views.QuestionView extends View
 
   updateAnswerRanking: (item) ->
     answerId = item.data('answer-id')
+
+    unless item.parent().length
+      Models.Ranking.destroyByAnswerId(answerId)
+      delete @rankedItemsByAnswerId[answerId]
+      item.remove()
+      return
+
     existingItem = @rankedItemsByAnswerId[answerId]
     if existingItem and existingItem[0] != item[0]
       item.replaceWith(existingItem.detach())
@@ -82,4 +89,9 @@ class Views.QuestionView extends View
     body = @newAnswerTextarea.val()
     return unless body.match(/\S/)
     @question.answers().create({ body })
+
+  remove: ->
+    super
+    @collectiveRanking.remove()
+    @personalRanking.remove()
 

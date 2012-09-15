@@ -12,32 +12,35 @@ describe "Views.QuestionView", ->
     answer2 = question.answers().created(id: 2, body: "Green", position: 2)
     answer3 = question.answers().created(id: 3, body: "Blue", position: 3)
 
-    questionView = new Views.QuestionView(question)
-
     spyOn(Ranking, 'createOrUpdate')
+    spyOn(Ranking, 'destroyByAnswerId')
 
-  it "populates itself with current rankings when rendered", ->
-    currentUser.rankings().created(id: 1, answerId: 1, questionId: 1, position: .5)
-    currentUser.rankings().created(id: 2, answerId: 2, questionId: 1, position: 2)
   afterEach ->
     questionView?.remove()
 
-    questionView = new Views.QuestionView(question)
-    items = questionView.personalRanking.find('.answer')
-    expect(items.length).toBe 2
+  describe "when initally rendered", ->
+    it "populates itself with current rankings", ->
+      currentUser.rankings().created(id: 1, answerId: 1, questionId: 1, position: .5)
+      currentUser.rankings().created(id: 2, answerId: 2, questionId: 1, position: 2)
 
-    expect(items.eq(0).text()).toBe answer2.body()
-    expect(items.eq(0).data('position')).toBe 2
-    expect(items.eq(1).text()).toBe answer1.body()
-    expect(items.eq(1).data('position')).toBe .5
+      questionView = new Views.QuestionView(question)
+      items = questionView.personalRanking.find('.answer')
+      expect(items.length).toBe 2
 
-    item1 = questionView.collectiveRanking.find('[data-answer-id=1]').clone()
-    questionView.personalRanking.append(item1)
-    questionView.updateAnswerRanking(item1)
-    expect(questionView.personalRanking.find('.answer').length).toBe 2
+      expect(items.eq(0).text()).toBe answer2.body()
+      expect(items.eq(0).data('position')).toBe 2
+      expect(items.eq(1).text()).toBe answer1.body()
+      expect(items.eq(1).data('position')).toBe .5
+
+      item1 = questionView.collectiveRanking.find('[data-answer-id=1]').clone()
+      questionView.personalRanking.append(item1)
+      questionView.updateAnswerRanking(item1)
+      expect(questionView.personalRanking.find('.answer').length).toBe 2
 
   describe "when items are dragged into / within the personal ranking list", ->
     it "creates / updates a ranking for the dragged answer", ->
+      questionView = new Views.QuestionView(question)
+
       item1 = questionView.collectiveRanking.find('[data-answer-id=1]').clone()
       item2 = questionView.collectiveRanking.find('[data-answer-id=2]').clone()
       item3 = questionView.collectiveRanking.find('[data-answer-id=3]').clone()
@@ -96,3 +99,16 @@ describe "Views.QuestionView", ->
       ranking1.updated(position: .75)
       expect(questionView.personalRanking.find('.answer').length).toBe 3
 
+  describe "when items are dragged out of the list", ->
+    it "destroys the ranking for the dragged answer", ->
+      currentUser.rankings().created(id: 1, answerId: 1, questionId: 1, position: .5)
+      currentUser.rankings().created(id: 2, answerId: 2, questionId: 1, position: 2)
+      questionView = new Views.QuestionView(question)
+
+      console.log questionView.personalRanking
+      item = questionView.personalRanking.find('.answer[data-answer-id=2]')
+      console.log item
+      item.detach()
+      questionView.updateAnswerRanking(item)
+
+      expect(Ranking.destroyByAnswerId).toHaveBeenCalledWith(2)
