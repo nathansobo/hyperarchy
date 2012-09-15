@@ -30,7 +30,7 @@ class User < Prequel::Record
       )
       user
     else
-      create(
+      create!(
         :github_uid => github_uid,
         :oauth_access_token => oauth_access_token,
         :full_name => auth.info.name,
