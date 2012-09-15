@@ -38,8 +38,9 @@ class Views.RelationView extends View
       @onInsert?(element, record, index)
 
     @subscribe relation, 'onUpdate', (record, changes, newIndex, oldIndex) =>
-      element = @elementForRecord(record, newIndex)
-      @insertAtIndex(element, newIndex)
+      if newIndex != oldIndex
+        element = @elementForRecord(record, newIndex)
+        @insertAtIndex(element, newIndex)
       @onUpdate?(element, record, changes, newIndex, oldIndex);
 
     @subscribe relation, 'onRemove', (record, index) =>
