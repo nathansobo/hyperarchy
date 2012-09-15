@@ -90,8 +90,9 @@ class Views.QuestionView extends View
     return unless body.match(/\S/)
     @question.answers().create({ body })
 
-  remove: ->
+  remove: (selector, keepData) ->
     super
-    @collectiveRanking.remove()
-    @personalRanking.remove()
+    unless keepData
+      @collectiveRanking.remove()
+      @personalRanking.remove()
 
