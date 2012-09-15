@@ -33,14 +33,11 @@ ActiveRecord::Schema.define(:version => 20120904162652) do
   end
 
   create_table "questions", :force => true do |t|
-    t.integer  "organization_id"
     t.integer  "creator_id"
     t.string   "body"
-    t.string   "details"
     t.integer  "vote_count"
-    t.float    "score"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "rankings", :force => true do |t|
