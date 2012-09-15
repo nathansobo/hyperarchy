@@ -7,6 +7,8 @@ class Models.Ranking extends Monarch.Record
     answerId: 'integer'
     position: 'float'
 
+  @defaultOrderBy 'position desc'
+
   @belongsTo 'user'
   @belongsTo 'question'
   @belongsTo 'answer'

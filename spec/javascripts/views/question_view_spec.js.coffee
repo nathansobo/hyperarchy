@@ -16,6 +16,18 @@ describe "Views.QuestionView", ->
 
     spyOn(Ranking, 'createOrUpdate')
 
+  it "populates itself with current rankings when rendered", ->
+    currentUser.rankings().created(answerId: 1, questionId: 1, position: .5)
+    currentUser.rankings().created(answerId: 2, questionId: 1, position: 2)
+
+    questionView = new Views.QuestionView(question)
+    items = questionView.personalRanking.find('.answer')
+    expect(items.length).toBe 2
+    expect(items.eq(0).text()).toBe answer2.body()
+    expect(items.eq(0).data('position')).toBe 2
+    expect(items.eq(1).text()).toBe answer1.body()
+    expect(items.eq(1).data('position')).toBe .5
+
   describe "when items are dragged into / within the personal ranking list", ->
     it "creates / updates a ranking for the dragged answer", ->
       item1 = questionView.collectiveRanking.find('[data-answer-id=1]').clone()
