@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user_id
 
   def ensure_authenticated
-    redirect_to authenticate_url unless current_user_id
+    redirect_to authenticate_url unless current_user
   end
 
   def authenticate_url
