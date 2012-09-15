@@ -40,6 +40,11 @@ class Views.QuestionView extends View
       stop: (event, ui) => @updateAnswerRanking(ui.item)
     )
 
+    @newAnswerTextarea.keydown (e) =>
+      if e.keyCode == 13 # enter
+        @createAnswer()
+        false
+
   buildAnswerItem: (answer, options={}) ->
     item = $$ -> @li answer.body(), class: 'answer', 'data-answer-id': answer.id()
 
