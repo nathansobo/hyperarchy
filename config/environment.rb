@@ -5,6 +5,9 @@ require File.expand_path('../application', __FILE__)
 Decider::Application.initialize!
 
 require 'prequel_extensions'
+require 'event_observer'
+
+EventObserver.observe(User, Question, Answer, Ranking)
 
 class FakeRedis
   def lock(name)
