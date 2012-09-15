@@ -15,19 +15,19 @@ describe Sandbox, :type => :model do
 
   it "correctly interprets a join from answers on a given question to their users" do
     wire_reps = [
-      {"type" => "inner_join",
-       "left_operand" =>
-        {"type" => "selection",
-         "operand" => {"type" => "table", "name" => "answers"},
+      {"type" => "InnerJoin",
+       "leftOperand" =>
+        {"type" => "Selection",
+         "operand" => {"type" => "Table", "name" => "answers"},
          "predicate" =>
-          {"type" => "eq",
-           "left_operand" => {"type" => "column", "table" => "answers", "name" => "question_id"},
-           "right_operand" => {"type" => "scalar", "value" => question.id}}},
-       "right_operand" => {"type" => "table", "name" => "users"},
+          {"type" => "Eq",
+           "leftOperand" => {"type" => "Column", "table" => "answers", "name" => "question_id"},
+           "rightOperand" => {"type" => "Scalar", "value" => question.id}}},
+       "rightOperand" => {"type" => "Table", "name" => "users"},
        "predicate" =>
-        {"type" => "eq",
-         "left_operand" => {"type" => "column", "table" => "answers", "name" => "creator_id"},
-         "right_operand" => {"type" => "column", "table" => "users", "name" => "id"}}}
+        {"type" => "Eq",
+         "leftOperand" => {"type" => "Column", "table" => "answers", "name" => "creator_id"},
+         "rightOperand" => {"type" => "Column", "table" => "users", "name" => "id"}}}
     ]
 
     dataset = repository.fetch(*wire_reps)
