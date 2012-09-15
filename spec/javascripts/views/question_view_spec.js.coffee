@@ -37,6 +37,15 @@ describe "Views.QuestionView", ->
       questionView.updateAnswerRanking(item1)
       expect(questionView.personalRanking.find('.answer').length).toBe 2
 
+  describe "when a new answer is submitted", ->
+    it "adds that answer to the list and clears the textarea", ->
+      questionView = new Views.QuestionView(question)
+      questionView.newAnswerTextarea.val("Violet")
+      questionView.createAnswer()
+      expect(questionView.newAnswerTextarea.val()).toBe ""
+      Monarch.Remote.Server.lastCreate().succeed()
+      expect(questionView.collectiveRanking.find('.answer').length).toBe 4
+
   describe "when items are dragged into / within the personal ranking list", ->
     it "creates / updates a ranking for the dragged answer", ->
       questionView = new Views.QuestionView(question)

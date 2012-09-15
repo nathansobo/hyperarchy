@@ -14,10 +14,13 @@
 #= require jquery_ujs
 #= require jquery.ui.draggable
 #= require jquery.ui.sortable
+#= require jquery.effects.core
+#= require jquery.effects.highlight
 #= require twitter/bootstrap
 #= require underscore
 #= require monarch
 #= require space-pen
+#= require jquery.scrollTo-1.4.3.1
 #= require_self
 #= require_tree .
 

@@ -43,7 +43,7 @@ class Views.QuestionView extends View
     @newAnswerTextarea.keydown (e) =>
       if e.keyCode == 13 # enter
         @createAnswer()
-        false
+        e.preventDefault()
 
   buildAnswerItem: (answer, options={}) ->
     item = $$ -> @li answer.body(), class: 'answer', 'data-answer-id': answer.id()
@@ -62,9 +62,11 @@ class Views.QuestionView extends View
 
   updateAnswerRanking: (item) ->
     answerId = item.data('answer-id')
+    answer = Models.Answer.find(answerId)
 
     unless item.parent().length
       Models.Ranking.destroyByAnswerId(answerId)
+        .success => @highlightAnswerInCollectiveRanking(answer, true)
       delete @rankedItemsByAnswerId[answerId]
       item.remove()
       return
@@ -86,18 +88,35 @@ class Views.QuestionView extends View
     item.text(item.text().replace('undefined', position))
 
     Models.Ranking.createOrUpdate(
-      answer: Models.Answer.find(answerId)
+      answer: answer
       position: position
     )
+      .success =>
+        @highlightAnswerInCollectiveRanking(answer, true)
 
   createAnswer: ->
     body = @newAnswerTextarea.val()
     return unless body.match(/\S/)
+    @newAnswerTextarea.val('')
     @question.answers().create({ body })
+      .onSuccess (answer) => @highlightAnswerInCollectiveRanking(answer)
+
+  highlightAnswerInCollectiveRanking: (answer, delay) ->
+    if delay
+      subscription = @question.onUpdate =>
+        subscription.destroy()
+        fn = => @highlightAnswerInCollectiveRanking(answer)
+        _.delay(fn, 30)
+      return
+
+    item = @collectiveRanking.find(".answer[data-answer-id=#{answer.id()}]")
+
+    if item.position().top < 0 or item.position().top > @collectiveRanking.height()
+      @collectiveRanking.scrollTo(item, over: -.5)
+    item.effect('highlight')
 
   remove: (selector, keepData) ->
     super
     unless keepData
       @collectiveRanking.remove()
       @personalRanking.remove()
-
