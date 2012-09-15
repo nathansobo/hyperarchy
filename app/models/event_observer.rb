@@ -22,6 +22,6 @@ module EventObserver
   end
 
   def post_event(event)
-    Pusher[:global].trigger 'operation', event
+    Pusher[:global].trigger_async 'operation', event
   end
 end

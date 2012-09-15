@@ -7,6 +7,7 @@ gem 'thin'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'pusher'
+gem 'em-http-request'
 gem 'pg', '~> 0.11'
 gem 'prequel', :path => 'vendor/prequel'
 gem 'redis'
