@@ -28,6 +28,5 @@ class Models.Ranking extends Monarch.Record
     jQuery.ajax(
       type: 'delete'
       url: '/rankings'
-      data:
-        answer_id: answer.id()
+      data: { answer_id: answerId }
     )

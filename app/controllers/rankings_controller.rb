@@ -15,6 +15,9 @@ class RankingsController < ApplicationController
   end
 
   def destroy
+    ranking = Ranking.find(:user_id => current_user_id, :answer_id => params[:answer_id])
+    ranking.destroy()
+    head :ok
   end
 end
 
