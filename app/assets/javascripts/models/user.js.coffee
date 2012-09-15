@@ -11,3 +11,6 @@ class Models.User extends Monarch.Record
 
   @getCurrent: ->
     @find(@currentUserId)
+
+  rankingsForQuestion: (question) ->
+    @rankings().where(questionId: question.id())

@@ -17,16 +17,22 @@ describe "Views.QuestionView", ->
     spyOn(Ranking, 'createOrUpdate')
 
   it "populates itself with current rankings when rendered", ->
-    currentUser.rankings().created(answerId: 1, questionId: 1, position: .5)
-    currentUser.rankings().created(answerId: 2, questionId: 1, position: 2)
+    currentUser.rankings().created(id: 1, answerId: 1, questionId: 1, position: .5)
+    currentUser.rankings().created(id: 2, answerId: 2, questionId: 1, position: 2)
 
     questionView = new Views.QuestionView(question)
     items = questionView.personalRanking.find('.answer')
     expect(items.length).toBe 2
+
     expect(items.eq(0).text()).toBe answer2.body()
     expect(items.eq(0).data('position')).toBe 2
     expect(items.eq(1).text()).toBe answer1.body()
     expect(items.eq(1).data('position')).toBe .5
+
+    item1 = questionView.collectiveRanking.find('[data-answer-id=1]').clone()
+    questionView.personalRanking.append(item1)
+    questionView.updateAnswerRanking(item1)
+    expect(questionView.personalRanking.find('.answer').length).toBe 2
 
   describe "when items are dragged into / within the personal ranking list", ->
     it "creates / updates a ranking for the dragged answer", ->
@@ -38,42 +44,40 @@ describe "Views.QuestionView", ->
       questionView.personalRanking.append(item1)
       questionView.updateAnswerRanking(item1)
 
-      expect(Ranking.createOrUpdate).toHaveBeenCalledWith(
-        answer: answer1,
-        position: 1
-      )
+      expect(Ranking.createOrUpdate).toHaveBeenCalled()
+      expect(Ranking.createOrUpdate.argsForCall[0][0].answer.id()).toBe 1
+      expect(Ranking.createOrUpdate.argsForCall[0][0].position).toBe 1
       Ranking.createOrUpdate.reset()
 
       # drag/drop next item
       questionView.personalRanking.prepend(item2)
       questionView.updateAnswerRanking(item2)
-      expect(Ranking.createOrUpdate).toHaveBeenCalledWith(
-        answer: answer2,
-        position: 2
-      )
+      expect(Ranking.createOrUpdate).toHaveBeenCalled()
+      expect(Ranking.createOrUpdate.argsForCall[0][0].answer.id()).toBe 2
+      expect(Ranking.createOrUpdate.argsForCall[0][0].position).toBe 2
       Ranking.createOrUpdate.reset()
 
       # simulate the rankings completing on the server, out of order
-      Ranking.created(id: 2, userId: currentUser.id(), answerId: 2, position: 2)
-      Ranking.created(id: 1, userId: currentUser.id(), answerId: 1, position: 1)
+      ranking2 = Ranking.created(id: 2, userId: currentUser.id(), answerId: 2, position: 2)
+      ranking1 = Ranking.created(id: 1, userId: currentUser.id(), answerId: 1, position: 1)
       expect(questionView.personalRanking.find('.answer').length).toBe 2
 
       # drag/drop next item between the first two
-      item2.after(item3)
+      questionView.personalRanking.find('.answer:first').after(item3)
       questionView.updateAnswerRanking(item3)
-      expect(Ranking.createOrUpdate).toHaveBeenCalledWith(
-        answer: answer3,
-        position: 1.5
-      )
+      expect(Ranking.createOrUpdate).toHaveBeenCalled()
+      expect(Ranking.createOrUpdate.argsForCall[0][0].answer.id()).toBe 3
+      expect(Ranking.createOrUpdate.argsForCall[0][0].position).toBe 1.5
       Ranking.createOrUpdate.reset()
+      ranking3 = Ranking.created(id: 3, userId: currentUser.id(), answerId: 3, position: 1.5)
 
       # move item1 from bottom to the middle
-      item2.after(item1.detach())
+      item1 = questionView.personalRanking.find('.answer[data-answer-id=1]')
+      questionView.personalRanking.find('.answer:first').after(item1.detach())
       questionView.updateAnswerRanking(item1)
-      expect(Ranking.createOrUpdate).toHaveBeenCalledWith(
-        answer: answer1,
-        position: 1.75
-      )
+      expect(Ranking.createOrUpdate).toHaveBeenCalled()
+      expect(Ranking.createOrUpdate.argsForCall[0][0].answer.id()).toBe 1
+      expect(Ranking.createOrUpdate.argsForCall[0][0].position).toBe 1.75
       Ranking.createOrUpdate.reset()
 
       # drag another clone of item1 from collective ranking: it should not duplicate
@@ -82,7 +86,11 @@ describe "Views.QuestionView", ->
       questionView.updateAnswerRanking(item1b)
       expect(questionView.personalRanking.find('.answer').length).toBe 3
       expect(questionView.personalRanking.find('.answer:last').data('answer-id')).toBe 1
-      expect(Ranking.createOrUpdate).toHaveBeenCalledWith(
-        answer: answer1,
-        position: .75
-      )
+      expect(Ranking.createOrUpdate).toHaveBeenCalled()
+      expect(Ranking.createOrUpdate.argsForCall[0][0].answer.id()).toBe 1
+      expect(Ranking.createOrUpdate.argsForCall[0][0].position).toBe .75
+
+      # even when the operation completes on server, no duplication
+      ranking1.updated(position: .75)
+      expect(questionView.personalRanking.find('.answer').length).toBe 3
+

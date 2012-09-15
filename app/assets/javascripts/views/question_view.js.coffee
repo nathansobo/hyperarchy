@@ -10,29 +10,26 @@ class Views.QuestionView extends View
         @h5 "Collective Ranking"
         @subview 'collectiveRanking', new Views.RelationView(
           attributes: { class: 'collective ranking' }
-          buildItem: (answer, index) ->
-            $$ -> @li answer.body(), class: 'answer', 'data-answer-id': answer.id()
         )
       @div class: 'span4', =>
         @h5 "Your Ranking"
         @subview 'personalRanking', new Views.RelationView(
           attributes: { class: 'personal ranking' }
-          buildItem: (answer, index) -> @buildAnswerLi(answer)
         )
 
   initialize: (@question) ->
-    @itemsByAnswerId = {}
+    @rankedItemsByAnswerId = {}
     @body.text(question.body())
-    @collectiveRanking.setRelation(question.answers())
-    @initializeDragAndDrop()
-    @populatePersonalRankings()
 
-  initializeDragAndDrop: ->
-    @collectiveRanking.find('li').draggable(
-      helper: -> $(this).clone().width($(this).width())
-      appendTo: 'body'
-      connectToSortable: '.personal.ranking'
-    )
+    @collectiveRanking.buildItem = (answer) => @buildAnswerItem(answer, draggable: true)
+    @collectiveRanking.setRelation(question.answers())
+
+    @personalRanking.buildItem = (ranking) =>
+      @buildAnswerItem(ranking.answer(), position: ranking.position())
+    @personalRanking.onInsert = (item, ranking) =>
+      @rankedItemsByAnswerId[ranking.answerId()]?.remove()
+      @rankedItemsByAnswerId[ranking.answerId()] = item
+    @personalRanking.setRelation(Models.User.getCurrent().rankingsForQuestion(question))
 
     removeItem = null
     @personalRanking.sortable(
@@ -43,23 +40,28 @@ class Views.QuestionView extends View
       stop: (event, ui) => @updateAnswerRanking(ui.item)
     )
 
-  populatePersonalRankings: ->
-    Models.User.getCurrent().rankings().where(questionId: @question.id()).each (ranking, index) =>
-      @insertRanking(ranking)
+  buildAnswerItem: (answer, options={}) ->
+    item = $$ -> @li answer.body(), class: 'answer', 'data-answer-id': answer.id()
 
-  insertRanking: (ranking) ->
-    item = @buildAnswerLi(ranking.answer())
-    item.data('position', ranking.position())
-    @personalRanking.append(item)
+    if options.draggable
+      item.draggable(
+        helper: -> $(this).clone().width($(this).width())
+        appendTo: 'body'
+        connectToSortable: '.personal.ranking'
+      )
 
-  buildAnswerLi: (answer) ->
-    $$ -> @li answer.body(), class: 'answer', 'data-answer-id': answer.id()
+    if position = options.position
+      item.data('position', position)
+
+    item
 
   updateAnswerRanking: (item) ->
     answerId = item.data('answer-id')
-    oldItem = @itemsByAnswerId[answerId]
-    oldItem?.remove() unless oldItem?[0] is item[0]
-    @itemsByAnswerId[answerId] = item
+    existingItem = @rankedItemsByAnswerId[answerId]
+    if existingItem and existingItem[0] != item[0]
+      item.replaceWith(existingItem.detach())
+      item = existingItem
+    @rankedItemsByAnswerId[answerId] = item
 
     lowerPosition = item.next()?.data('position') ? 0
     if item.prev().length
@@ -69,6 +71,8 @@ class Views.QuestionView extends View
       position = lowerPosition + 1
 
     item.data('position', position)
+    item.text(item.text().replace('undefined', position))
+
     Models.Ranking.createOrUpdate(
       answer: Models.Answer.find(answerId)
       position: position
@@ -76,9 +80,6 @@ class Views.QuestionView extends View
 
   createAnswer: ->
     body = @newAnswerTextarea.val()
-    console.log body
-    unless body.match(/\S/)
-      console.log 'NO'
-      return
+    return unless body.match(/\S/)
     @question.answers().create({ body })
 

@@ -28,7 +28,9 @@ class Views.RelationView extends View
     @relation = relation
 
     @relation.each (record, index) =>
-      @append(@elementForRecord(record, index))
+      element = @elementForRecord(record, index)
+      @append(element)
+      @onInsert?(element, record, index)
 
     @subscribe relation, 'onInsert', (record, index) =>
       element = @elementForRecord(record, index)
