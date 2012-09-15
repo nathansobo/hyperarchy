@@ -19,6 +19,8 @@ describe "Views.QuestionView", ->
   it "populates itself with current rankings when rendered", ->
     currentUser.rankings().created(id: 1, answerId: 1, questionId: 1, position: .5)
     currentUser.rankings().created(id: 2, answerId: 2, questionId: 1, position: 2)
+  afterEach ->
+    questionView?.remove()
 
     questionView = new Views.QuestionView(question)
     items = questionView.personalRanking.find('.answer')

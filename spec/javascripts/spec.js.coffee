@@ -10,6 +10,10 @@ beforeEach ->
   $('#test-content').remove()
   $('body').append $$ -> @div id: 'test-content'
   Monarch.Remote.Server.reset()
+  Monarch.Repository.clear()
+
+afterEach ->
+  expect(Monarch.Repository.subscriptionCount()).toBe 0
 
 $.fn.attachToDom = ->
   @appendTo('#test-content')

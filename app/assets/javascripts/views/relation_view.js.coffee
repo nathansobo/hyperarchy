@@ -78,3 +78,6 @@ class Views.RelationView extends View
     subscription.destroy() for subscription in @subscriptions
     @subscriptions = []
 
+  remove: (keepData) ->
+    @unsubscribe() unless keepData
+    super
