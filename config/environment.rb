@@ -4,17 +4,10 @@ require File.expand_path('../application', __FILE__)
 # Initialize the rails application
 Decider::Application.initialize!
 
+redis_uri = URI.parse(ENV["REDISTOGO_URL"])
+$redis = Redis.new(:host => redis_uri.host, :port => redis_uri.port, :password => redis_uri.password)
+
 require 'prequel_extensions'
 require 'event_observer'
 
 EventObserver.observe(User, Question, Answer, Ranking)
-
-class FakeRedis
-  def lock(name)
-  end
-
-  def unlock(name)
-  end
-end
-
-$redis = FakeRedis.new

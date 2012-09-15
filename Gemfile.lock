@@ -153,6 +153,9 @@ GEM
     rake (0.9.2.2)
     rdoc (3.12)
       json (~> 1.4)
+    redis (2.2.0)
+    redis-lock (0.1.0)
+      redis
     rgl (0.4.0)
       rake
       stream (>= 0.5)
@@ -219,6 +222,8 @@ DEPENDENCIES
   prequel!
   pusher
   rails (= 3.2.8)
+  redis
+  redis-lock
   rgl
   rr
   rspec-rails (~> 2.0)
