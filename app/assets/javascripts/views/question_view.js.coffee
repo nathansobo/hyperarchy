@@ -15,10 +15,9 @@ class Views.QuestionView extends View
             attributes: { class: 'collective vote column' }
           )
         @div class: 'span4', =>
-          @h5 class: 'pull-left', =>
-            @a "Your Ranking", class: 'no-href disabled', click: 'showPersonalVote', outlet: 'showPersonalVoteLink'
-          @h5 "|", class: 'pull-left separator'
           @h5 =>
+            @a "Your Ranking", class: 'no-href disabled', click: 'showPersonalVote', outlet: 'showPersonalVoteLink'
+            @span "|", class: 'separator'
             @a "All Rankings", class: 'no-href', click: 'showAllVotes', outlet: 'showAllVotesLink'
 
           @subview 'personalVote', new Views.RelationView(
