@@ -5,6 +5,16 @@ html, body {
   height: 100%;
 }
 
+a.no-href {
+  cursor: pointer;
+}
+
+a.disabled {
+  color: black;
+  text-decoration: none;
+  cursor: text;
+}
+
 #new-question-form {
   textarea {
     width: 100%;
@@ -36,8 +46,8 @@ html, body {
     background: white;
     border: 0;
     border-bottom: 1px solid #C9CFD4;
-    padding: @baseLineHeight / 2 - 1px;
-    .box-shadow(0px 1px 3px 0px rgba(0, 0, 0, .1));
+  list-style-position: inside;
+  background: white;
   }
 }
 
@@ -51,6 +61,12 @@ html, body {
 
 .collective.vote {
   position: relative;
+}
+
+h5.separator {
+  margin-left: @baseLineHeight / 2;
+  margin-right: @baseLineHeight / 2;
+  color: #666;
 }
 
 .votes {

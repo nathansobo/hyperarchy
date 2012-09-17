@@ -15,16 +15,22 @@ class Views.QuestionView extends View
             attributes: { class: 'collective vote column' }
           )
         @div class: 'span4', =>
-          @h5 "Your Ranking"
+          @h5 class: 'pull-left', =>
+            @a "Your Ranking", class: 'no-href disabled', click: 'showPersonalVote', outlet: 'showPersonalVoteLink'
+          @h5 "|", class: 'pull-left separator'
+          @h5 =>
+            @a "All Rankings", class: 'no-href', click: 'showAllVotes', outlet: 'showAllVotesLink'
+
           @subview 'personalVote', new Views.RelationView(
             attributes: { class: 'personal vote column' }
           )
-        @div class: 'span4', =>
-          @h5 "Individual Rankings"
+
           @subview 'allVotes', new Views.RelationView(
-            attributes: { class: 'votes column' }
+            attributes: { class: 'votes column hide' }
             buildItem: (vote) -> new Views.VoteView(vote)
           )
+
+        @div class: 'span4', =>
 
   initialize: (@question) ->
     @rankedItemsByAnswerId = {}
@@ -70,6 +76,24 @@ class Views.QuestionView extends View
       item.data('position', position)
 
     item
+
+  showPersonalVote: ->
+    @enableLink(@showAllVotesLink)
+    @disableLink(@showPersonalVoteLink)
+    @allVotes.hide()
+    @personalVote.show()
+
+  showAllVotes: ->
+    @enableLink(@showPersonalVoteLink)
+    @disableLink(@showAllVotesLink)
+    @personalVote.hide()
+    @allVotes.show()
+
+  enableLink: (link) ->
+    link.removeClass('disabled')
+
+  disableLink: (link) ->
+    link.addClass('disabled')
 
   updateAnswerRanking: (item) ->
     answerId = item.data('answer-id')
