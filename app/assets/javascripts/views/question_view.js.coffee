@@ -31,6 +31,11 @@ class Views.QuestionView extends View
           )
 
         @div class: 'span4', =>
+          @h5 'Discussion'
+          @div class: 'discussion column', =>
+            @div class: 'text-entry', =>
+              @textarea rows: 2
+              @button "Submit Comment", class: 'btn pull-right'
 
   initialize: (@question) ->
     @rankedItemsByAnswerId = {}
