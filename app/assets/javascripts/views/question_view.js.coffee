@@ -70,7 +70,9 @@ class Views.QuestionView extends View
         helper: -> $(this).clone().width($(this).width())
         appendTo: 'body'
         connectToSortable: '.personal.vote'
+        delay: 1
       )
+      item.mousedown => @showPersonalVote()
 
     if position = options.position
       item.data('position', position)
