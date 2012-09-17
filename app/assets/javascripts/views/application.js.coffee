@@ -18,7 +18,7 @@ class Views.Application extends View
 
   initialize: ->
     @newQuestionForm = new Views.NewQuestionForm().appendTo($('body'))
-    Monarch.Remote.Server.fetch([Models.User, Models.Question, Models.Answer, Models.Ranking])
+    Monarch.Remote.Server.fetch([Models.User, Models.Question, Models.Answer, Models.Ranking, Models.Vote])
       .onSuccess => @questionsList.setRelation(Models.Question.table)
 
   showNewQuestionForm: ->

@@ -3,6 +3,7 @@ class Models.User extends Monarch.Record
 
   @columns
     fullName: 'string'
+    avatarUrl: 'string'
 
   @hasMany 'answers', foreignKey: 'creatorId'
   @hasMany 'rankings'

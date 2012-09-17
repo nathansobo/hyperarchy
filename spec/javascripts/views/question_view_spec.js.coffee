@@ -12,8 +12,9 @@ describe "Views.QuestionView", ->
     answer2 = question.answers().created(id: 2, body: "Green", position: 2)
     answer3 = question.answers().created(id: 3, body: "Blue", position: 3)
 
-    spyOn(Ranking, 'createOrUpdate')
-    spyOn(Ranking, 'destroyByAnswerId')
+    spyOn(Ranking, 'createOrUpdate').andCallFake -> $.Deferred().promise()
+    spyOn(Ranking, 'destroyByAnswerId').andCallFake -> $.Deferred().promise()
+    spyOn($.fn, 'effect') # animations break in spec environment, so disable them
 
   afterEach ->
     questionView?.remove()
@@ -24,7 +25,7 @@ describe "Views.QuestionView", ->
       currentUser.rankings().created(id: 2, answerId: 2, questionId: 1, position: 2)
 
       questionView = new Views.QuestionView(question)
-      items = questionView.personalRanking.find('.answer')
+      items = questionView.personalVote.find('.answer')
       expect(items.length).toBe 2
 
       expect(items.eq(0).text()).toBe answer2.body()
@@ -32,10 +33,10 @@ describe "Views.QuestionView", ->
       expect(items.eq(1).text()).toBe answer1.body()
       expect(items.eq(1).data('position')).toBe .5
 
-      item1 = questionView.collectiveRanking.find('[data-answer-id=1]').clone()
-      questionView.personalRanking.append(item1)
+      item1 = questionView.collectiveVote.find('[data-answer-id=1]').clone()
+      questionView.personalVote.append(item1)
       questionView.updateAnswerRanking(item1)
-      expect(questionView.personalRanking.find('.answer').length).toBe 2
+      expect(questionView.personalVote.find('.answer').length).toBe 2
 
   describe "when a new answer is submitted", ->
     it "adds that answer to the list and clears the textarea", ->
@@ -44,18 +45,18 @@ describe "Views.QuestionView", ->
       questionView.createAnswer()
       expect(questionView.newAnswerTextarea.val()).toBe ""
       Monarch.Remote.Server.lastCreate().succeed()
-      expect(questionView.collectiveRanking.find('.answer').length).toBe 4
+      expect(questionView.collectiveVote.find('.answer').length).toBe 4
 
   describe "when items are dragged into / within the personal ranking list", ->
     it "creates / updates a ranking for the dragged answer", ->
       questionView = new Views.QuestionView(question)
 
-      item1 = questionView.collectiveRanking.find('[data-answer-id=1]').clone()
-      item2 = questionView.collectiveRanking.find('[data-answer-id=2]').clone()
-      item3 = questionView.collectiveRanking.find('[data-answer-id=3]').clone()
+      item1 = questionView.collectiveVote.find('[data-answer-id=1]').clone()
+      item2 = questionView.collectiveVote.find('[data-answer-id=2]').clone()
+      item3 = questionView.collectiveVote.find('[data-answer-id=3]').clone()
 
       # drag/drop first item
-      questionView.personalRanking.append(item1)
+      questionView.personalVote.append(item1)
       questionView.updateAnswerRanking(item1)
 
       expect(Ranking.createOrUpdate).toHaveBeenCalled()
@@ -64,7 +65,7 @@ describe "Views.QuestionView", ->
       Ranking.createOrUpdate.reset()
 
       # drag/drop next item
-      questionView.personalRanking.prepend(item2)
+      questionView.personalVote.prepend(item2)
       questionView.updateAnswerRanking(item2)
       expect(Ranking.createOrUpdate).toHaveBeenCalled()
       expect(Ranking.createOrUpdate.argsForCall[0][0].answer.id()).toBe 2
@@ -74,10 +75,10 @@ describe "Views.QuestionView", ->
       # simulate the rankings completing on the server, out of order
       ranking2 = Ranking.created(id: 2, userId: currentUser.id(), answerId: 2, position: 2)
       ranking1 = Ranking.created(id: 1, userId: currentUser.id(), answerId: 1, position: 1)
-      expect(questionView.personalRanking.find('.answer').length).toBe 2
+      expect(questionView.personalVote.find('.answer').length).toBe 2
 
       # drag/drop next item between the first two
-      questionView.personalRanking.find('.answer:first').after(item3)
+      questionView.personalVote.find('.answer:first').after(item3)
       questionView.updateAnswerRanking(item3)
       expect(Ranking.createOrUpdate).toHaveBeenCalled()
       expect(Ranking.createOrUpdate.argsForCall[0][0].answer.id()).toBe 3
@@ -86,8 +87,8 @@ describe "Views.QuestionView", ->
       ranking3 = Ranking.created(id: 3, userId: currentUser.id(), answerId: 3, position: 1.5)
 
       # move item1 from bottom to the middle
-      item1 = questionView.personalRanking.find('.answer[data-answer-id=1]')
-      questionView.personalRanking.find('.answer:first').after(item1.detach())
+      item1 = questionView.personalVote.find('.answer[data-answer-id=1]')
+      questionView.personalVote.find('.answer:first').after(item1.detach())
       questionView.updateAnswerRanking(item1)
       expect(Ranking.createOrUpdate).toHaveBeenCalled()
       expect(Ranking.createOrUpdate.argsForCall[0][0].answer.id()).toBe 1
@@ -95,18 +96,18 @@ describe "Views.QuestionView", ->
       Ranking.createOrUpdate.reset()
 
       # drag another clone of item1 from collective ranking: it should not duplicate
-      item1b = questionView.collectiveRanking.find('[data-answer-id=1]').clone()
-      questionView.personalRanking.append(item1b)
+      item1b = questionView.collectiveVote.find('[data-answer-id=1]').clone()
+      questionView.personalVote.append(item1b)
       questionView.updateAnswerRanking(item1b)
-      expect(questionView.personalRanking.find('.answer').length).toBe 3
-      expect(questionView.personalRanking.find('.answer:last').data('answer-id')).toBe 1
+      expect(questionView.personalVote.find('.answer').length).toBe 3
+      expect(questionView.personalVote.find('.answer:last').data('answer-id')).toBe 1
       expect(Ranking.createOrUpdate).toHaveBeenCalled()
       expect(Ranking.createOrUpdate.argsForCall[0][0].answer.id()).toBe 1
       expect(Ranking.createOrUpdate.argsForCall[0][0].position).toBe .75
 
       # even when the operation completes on server, no duplication
       ranking1.updated(position: .75)
-      expect(questionView.personalRanking.find('.answer').length).toBe 3
+      expect(questionView.personalVote.find('.answer').length).toBe 3
 
   describe "when items are dragged out of the list", ->
     it "destroys the ranking for the dragged answer", ->
@@ -114,9 +115,7 @@ describe "Views.QuestionView", ->
       currentUser.rankings().created(id: 2, answerId: 2, questionId: 1, position: 2)
       questionView = new Views.QuestionView(question)
 
-      console.log questionView.personalRanking
-      item = questionView.personalRanking.find('.answer[data-answer-id=2]')
-      console.log item
+      item = questionView.personalVote.find('.answer[data-answer-id=2]')
       item.detach()
       questionView.updateAnswerRanking(item)
 

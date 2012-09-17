@@ -1,11 +1,10 @@
-
 class User < Prequel::Record
   column :id, :integer
   column :github_uid, :integer
   column :oauth_access_token, :string
   column :email_address, :string
   column :full_name, :string
-  column :github_avatar_url, :string
+  column :avatar_url, :string
 
   synthetic_column :email_hash, :string
 
@@ -28,7 +27,7 @@ class User < Prequel::Record
         :oauth_access_token => oauth_access_token,
         :full_name => auth.info.name,
         :email_address => auth.info.email,
-        :github_avatar_url => auth.info.image,
+        :avatar_url => auth.info.image,
       )
       user
     else
@@ -37,7 +36,7 @@ class User < Prequel::Record
         :oauth_access_token => oauth_access_token,
         :full_name => auth.info.name,
         :email_address => auth.info.email,
-        :github_avatar_url => auth.info.image,
+        :avatar_url => auth.info.image,
       )
     end
   end
@@ -52,7 +51,13 @@ class User < Prequel::Record
       user.update!(:full_name => auth.info.name)
       user
     else
-      create!(:full_name => auth.info.name, :email_address => auth.info.email)
+      require 'digest/md5'
+      email_digest = Digest::MD5.hexdigest(auth.info.email)
+      create!(
+        :full_name => auth.info.name,
+        :email_address => auth.info.email,
+        :avatar_url => "http://http://unicornify.appspot.com/avatar/#{email_digest}"
+      )
     end
   end
 

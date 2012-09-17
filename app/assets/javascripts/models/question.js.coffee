@@ -9,3 +9,4 @@ class Models.Question extends Monarch.Record
   @defaultOrderBy 'id desc'
 
   @hasMany 'answers'
+  @hasMany 'votes'
