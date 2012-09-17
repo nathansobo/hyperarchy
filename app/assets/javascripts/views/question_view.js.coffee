@@ -12,17 +12,17 @@ class Views.QuestionView extends View
         @div class: 'span4', =>
           @h5 "Collective Ranking"
           @subview 'collectiveVote', new Views.RelationView(
-            attributes: { class: 'collective vote' }
+            attributes: { class: 'collective vote column' }
           )
         @div class: 'span4', =>
           @h5 "Your Ranking"
           @subview 'personalVote', new Views.RelationView(
-            attributes: { class: 'personal vote' }
+            attributes: { class: 'personal vote column' }
           )
         @div class: 'span4', =>
           @h5 "Individual Rankings"
           @subview 'allVotes', new Views.RelationView(
-            attributes: { class: 'votes' }
+            attributes: { class: 'votes column' }
             buildItem: (vote) -> new Views.VoteView(vote)
           )
 
