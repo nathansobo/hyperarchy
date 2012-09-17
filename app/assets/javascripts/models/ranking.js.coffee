@@ -3,6 +3,7 @@ class Models.Ranking extends Monarch.Record
 
   @columns
     userId: 'integer'
+    voteId: 'integer'
     questionId: 'integer'
     answerId: 'integer'
     position: 'float'

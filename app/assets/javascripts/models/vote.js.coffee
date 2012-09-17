@@ -7,5 +7,8 @@ class Models.Vote extends Monarch.Record
     createdAt: 'datetime'
     updatedAt: 'datetime'
 
+  @defaultOrderBy 'updatedAt desc'
+
   @belongsTo 'user'
   @belongsTo 'question'
+  @hasMany 'rankings'

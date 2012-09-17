@@ -56,20 +56,31 @@ html, body {
     list-style-type: none;
     margin-bottom: @baseLineHeight;
 
-    .avatar {
-      margin-right: @baseLineHeight / 2;
-      height: @baseLineHeight * 2;
-      width: @baseLineHeight * 2;
-      float: left;
+    .header {
+      margin-bottom: @baseLineHeight / 4;
+
+      .avatar {
+        margin-right: @baseLineHeight / 2;
+        height: @baseLineHeight * 2;
+        width: @baseLineHeight * 2;
+        float: left;
+      }
+
+      .name {
+        vertical-align: top;
+      }
+
+      .updated-at {
+        color: #666;
+        font-size: @baseFontSize - 3px;
+      }
     }
 
-    .name {
-      vertical-align: top;
-    }
-
-    .updated-at {
-      color: #666;
-      font-size: @baseFontSize - 3px;
+    ol {
+      margin: 0;
+      li {
+        list-style-position: inside;
+      }
     }
   }
 }
