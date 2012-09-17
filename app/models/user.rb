@@ -17,6 +17,8 @@ class User < Prequel::Record
   validates_uniqueness_of :email_address, :message => "There is already an account with that email address."
 
   def self.find_or_create_with_omniauth(auth)
+    return find_or_create_with_dev_credentials(auth) if auth.provider == 'developer'
+
     oauth_access_token = auth.credentials.token
     github_uid = auth.uid
     return unless is_github_team_member?(oauth_access_token, auth.info.nickname)
@@ -43,6 +45,15 @@ class User < Prequel::Record
   def self.is_github_team_member?(oauth_access_token, github_username)
     github = Github.new(:oauth_token => oauth_access_token)
     github.orgs.teams.team_member? ENV['GITHUB_TEAM_ID'], github_username
+  end
+
+  def self.find_or_create_with_dev_credentials(auth)
+    if user = find(:email_address => auth.info.email)
+      user.update!(:full_name => auth.info.name)
+      user
+    else
+      create!(:full_name => auth.info.name, :email_address => auth.info.email)
+    end
   end
 
   def can_update_or_destroy?
