@@ -26,7 +26,7 @@ class Views.QuestionView extends View
           )
 
           @subview 'allVotes', new Views.RelationView(
-            attributes: { class: 'votes column hide' }
+            attributes: { class: 'all-votes column hide' }
             buildItem: (vote) -> new Views.VoteView(vote)
           )
 
