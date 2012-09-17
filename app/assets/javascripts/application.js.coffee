@@ -21,6 +21,7 @@
 #= require monarch
 #= require space-pen
 #= require jquery.scrollTo-1.4.3.1
+#= require jquery.timeago
 #= require_self
 #= require_tree .
 

@@ -63,7 +63,7 @@ class Views.QuestionView extends View
       item.draggable(
         helper: -> $(this).clone().width($(this).width())
         appendTo: 'body'
-        connectToSortable: '.personal.ranking'
+        connectToSortable: '.personal.vote'
       )
 
     if position = options.position

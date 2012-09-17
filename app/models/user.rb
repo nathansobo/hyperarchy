@@ -47,16 +47,20 @@ class User < Prequel::Record
   end
 
   def self.find_or_create_with_dev_credentials(auth)
+    require 'digest/md5'
+    email_digest = Digest::MD5.hexdigest(auth.info.email)
+    avatar_url = "http://unicornify.appspot.com/avatar/#{email_digest}?s=128"
+
     if user = find(:email_address => auth.info.email)
-      user.update!(:full_name => auth.info.name)
-      user
+      user.update!(
+        :full_name => auth.info.name,
+        :avatar_url => avatar_url
+      )
     else
-      require 'digest/md5'
-      email_digest = Digest::MD5.hexdigest(auth.info.email)
       create!(
         :full_name => auth.info.name,
         :email_address => auth.info.email,
-        :avatar_url => "http://http://unicornify.appspot.com/avatar/#{email_digest}"
+        :avatar_url => avatar_url
       )
     end
   end

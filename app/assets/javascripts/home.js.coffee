@@ -7,3 +7,5 @@ window.initialize = ->
       Monarch.Repository.update(operation)
 
     $('body').append(new Views.Application)
+
+    $('time').timeago()
