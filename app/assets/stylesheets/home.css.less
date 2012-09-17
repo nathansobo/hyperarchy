@@ -71,10 +71,13 @@ h5.separator {
 
 .votes {
   margin: 0;
+  background: white;
 
   .vote {
     list-style-type: none;
     padding: 0;
+
+    &:last-child { border-bottom: 0 }
 
     .header {
       padding: @baseLineHeight / 2;
