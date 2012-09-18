@@ -141,16 +141,12 @@ class Views.QuestionView extends View
         @highlightAnswerInCollectiveRanking(answer, true)
 
   addAnswer: ->
-    new Views.NewAnswerForm(@question)
-      .appendTo('body')
-      .modal('show')
-
-  createAnswer: ->
-    body = @newAnswerTextarea.val()
-    return unless body.match(/\S/)
-    @newAnswerTextarea.val('')
-    @question.answers().create({ body })
-      .onSuccess (answer) => @highlightAnswerInCollectiveRanking(answer)
+    new Views.ModalForm(
+      headingText: @question.body()
+      buttonText: "Add Answer"
+      onSubmit: (body) =>
+        @question.answers().create({body})
+    )
 
   highlightAnswerInCollectiveRanking: (answer, delay) ->
     if delay
