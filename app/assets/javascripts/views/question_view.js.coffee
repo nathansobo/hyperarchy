@@ -30,8 +30,10 @@ class Views.QuestionView extends View
           )
 
         @div class: 'span4', =>
-          @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right add-answer', click: 'addAnswer'
-          @h5 "Your Ranking"
+          @h5 =>
+            @button "+ Add Answer", class: 'btn btn-small btn-primary add-answer pull-right', click: 'addAnswer'
+            @text "Your Ranking"
+
           @subview 'personalVote', new Views.RelationView(
             attributes: { class: 'personal vote column' }
           )
