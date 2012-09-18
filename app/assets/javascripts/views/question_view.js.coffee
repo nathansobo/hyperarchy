@@ -71,6 +71,9 @@ class Views.QuestionView extends View
       @editButton.hide()
       @deleteButton.hide()
 
+    question.getField('body').onChange (body) =>
+      @body.text(body)
+
   buildAnswerItem: (answer, options={}) ->
     item = $$ -> @li answer.body(), class: 'answer', 'data-answer-id': answer.id()
 
