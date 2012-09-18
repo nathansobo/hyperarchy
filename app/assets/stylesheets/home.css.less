@@ -15,7 +15,7 @@ a.disabled {
   cursor: text;
 }
 
-#new-question-form {
+#new-question-form, #new-answer-form {
   textarea {
     width: 100%;
     box-sizing: border-box;
@@ -25,18 +25,21 @@ a.disabled {
 
 .question {
   margin-bottom: @baseLineHeight * 3;
-}
 
-.new-answer-form {
-  textarea {
-    width: 100%;
-    box-sizing: border-box;
-    resize: none;
+  > .header {
+    .body {
+      font-size: 32px;
+      line-height: @baseLineHeight * 2;
+    }
   }
 }
 
+.add-answer {
+  margin-top: 5px;
+}
+
 .column {
-  height: @baseLineHeight * 25;
+  height: @baseLineHeight * 20;
   margin: 0;
   overflow-y: auto;
   border: 1px solid #C9CFD4;
@@ -46,8 +49,8 @@ a.disabled {
     background: white;
     border: 0;
     border-bottom: 1px solid #C9CFD4;
-  list-style-position: inside;
-  background: white;
+    list-style-position: inside;
+    background: white;
   }
 }
 

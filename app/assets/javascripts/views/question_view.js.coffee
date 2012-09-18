@@ -1,15 +1,13 @@
 class Views.QuestionView extends View
   @content: ->
     @div class: 'question', =>
-      @div class: 'row', =>
-        @div class: 'span12', =>
+      @div class: 'row header', =>
+        @div class: 'span8', =>
           @div class: 'body lead', outlet: 'body'
-          @div class: 'new-answer-form hide', =>
-            @textarea rows: 2, outlet: 'newAnswerTextarea'
-            @button "Suggest Answer", class: 'btn pull-right', click: 'createAnswer'
 
       @div class: 'row', =>
         @div class: 'span4', =>
+          @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right add-answer', click: 'addAnswer'
           @h5 "Collective Ranking"
           @subview 'collectiveVote', new Views.RelationView(
             attributes: { class: 'collective vote column' }
@@ -61,10 +59,6 @@ class Views.QuestionView extends View
 
     @allVotes.setRelation(@question.votes())
 
-    @newAnswerTextarea.keydown (e) =>
-      if e.keyCode == 13 # enter
-        @createAnswer()
-        e.preventDefault()
 
   buildAnswerItem: (answer, options={}) ->
     item = $$ -> @li answer.body(), class: 'answer', 'data-answer-id': answer.id()
@@ -134,6 +128,11 @@ class Views.QuestionView extends View
     )
       .done =>
         @highlightAnswerInCollectiveRanking(answer, true)
+
+  addAnswer: ->
+    new Views.NewAnswerForm(@question)
+      .appendTo('body')
+      .modal('show')
 
   createAnswer: ->
     body = @newAnswerTextarea.val()

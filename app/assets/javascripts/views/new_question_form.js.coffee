@@ -11,8 +11,11 @@ class Views.NewQuestionForm extends View
         @button "Ask Question", class: 'btn btn-primary', click: 'createQuestion'
 
   initialize: ->
-    @on 'shown', =>
-      @textarea.focus()
+    @on 'shown', => @textarea.focus()
+    @textarea.keydown (e) =>
+      if e.keyCode == 13 # enter
+        e.preventDefault()
+        @createQuestion()
 
   createQuestion: ->
     Models.Question.create(body: @textarea.val())
