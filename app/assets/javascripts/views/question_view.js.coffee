@@ -15,24 +15,25 @@ class Views.QuestionView extends View
 
       @div class: 'row', =>
         @div class: 'span4', =>
-          @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right add-answer', click: 'addAnswer'
-          @h5 "Collective Ranking"
+          @h5 =>
+            @a "Collective Ranking", class: 'no-href disabled', click: 'showCollectiveVote', outlet: 'showCollectiveVoteLink'
+            @span "|", class: 'separator'
+            @a "Individual Rankings", class: 'no-href', click: 'showAllVotes', outlet: 'showAllVotesLink'
+
           @subview 'collectiveVote', new Views.RelationView(
             attributes: { class: 'collective vote column' }
-          )
-        @div class: 'span4', =>
-          @h5 =>
-            @a "Your Ranking", class: 'no-href disabled', click: 'showPersonalVote', outlet: 'showPersonalVoteLink'
-            @span "|", class: 'separator'
-            @a "All Rankings", class: 'no-href', click: 'showAllVotes', outlet: 'showAllVotesLink'
-
-          @subview 'personalVote', new Views.RelationView(
-            attributes: { class: 'personal vote column' }
           )
 
           @subview 'allVotes', new Views.RelationView(
             attributes: { class: 'all-votes column hide' }
             buildItem: (vote) -> new Views.VoteView(vote)
+          )
+
+        @div class: 'span4', =>
+          @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right add-answer', click: 'addAnswer'
+          @h5 "Your Ranking"
+          @subview 'personalVote', new Views.RelationView(
+            attributes: { class: 'personal vote column' }
           )
 
         @div class: 'span4', =>
@@ -91,16 +92,16 @@ class Views.QuestionView extends View
 
     item
 
-  showPersonalVote: ->
+  showCollectiveVote: ->
     @enableLink(@showAllVotesLink)
-    @disableLink(@showPersonalVoteLink)
+    @disableLink(@showCollectiveVoteLink)
     @allVotes.hide()
-    @personalVote.show()
+    @collectiveVote.show()
 
   showAllVotes: ->
-    @enableLink(@showPersonalVoteLink)
+    @enableLink(@showCollectiveVoteLink)
     @disableLink(@showAllVotesLink)
-    @personalVote.hide()
+    @collectiveVote.hide()
     @allVotes.show()
 
   enableLink: (link) ->
