@@ -5,7 +5,7 @@ class Views.QuestionView extends View
         @div class: 'span8', =>
           @div class: 'body lead', outlet: 'body'
         @div class: 'span4', =>
-          @button class: 'delete btn btn-link pull-right', outlet: 'deleteButton', =>
+          @button class: 'delete btn btn-link pull-right', outlet: 'deleteButton', click: 'deleteQuestion', =>
             @i class: 'icon-trash'
             @span "Delete"
 
@@ -159,6 +159,10 @@ class Views.QuestionView extends View
       onSubmit: (body) =>
         @question.update({body})
     )
+
+  deleteQuestion: ->
+    if confirm("Are you sure you want to delete this question?")
+      @question.destroy()
 
   highlightAnswerInCollectiveRanking: (answer, delay) ->
     if delay
