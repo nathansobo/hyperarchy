@@ -7,7 +7,7 @@ describe "Views.QuestionView", ->
   beforeEach ->
     currentUser = User.created(id: 1, fullName: "Current User")
     User.currentUserId = currentUser.id()
-    question = Question.created(id: 1, body: "What's your favorite color?")
+    question = Question.created(id: 1, body: "What's your favorite color?", creatorId: currentUser.id())
     answer1 = question.answers().created(id: 1, body: "Red", position: 1)
     answer2 = question.answers().created(id: 2, body: "Green", position: 2)
     answer3 = question.answers().created(id: 3, body: "Blue", position: 3)
@@ -37,6 +37,20 @@ describe "Views.QuestionView", ->
       questionView.personalVote.append(item1)
       questionView.updateAnswerRanking(item1)
       expect(questionView.personalVote.find('.answer').length).toBe 2
+
+    it "only shows the edit / delete buttons if the current user created the question", ->
+      questionView = new Views.QuestionView(question)
+      $('#test-content').append(questionView)
+      expect(questionView.deleteButton).toBeVisible()
+      expect(questionView.editButton).toBeVisible()
+      questionView.remove()
+
+      otherUser = User.created(id: 2)
+      User.currentUserId = 2
+      questionView = new Views.QuestionView(question)
+      $('#test-content').append(questionView)
+      expect(questionView.deleteButton).toBeHidden()
+      expect(questionView.editButton).toBeHidden()
 
   describe "when items are dragged into / within the personal ranking list", ->
     it "creates / updates a ranking for the dragged answer", ->

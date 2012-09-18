@@ -10,3 +10,6 @@ class Models.Question extends Monarch.Record
 
   @hasMany 'answers'
   @hasMany 'votes'
+
+  creator: ->
+    Models.User.find(@creatorId())

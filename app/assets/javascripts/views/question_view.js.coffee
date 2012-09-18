@@ -4,6 +4,14 @@ class Views.QuestionView extends View
       @div class: 'row header', =>
         @div class: 'span8', =>
           @div class: 'body lead', outlet: 'body'
+        @div class: 'span4', =>
+          @button class: 'delete btn btn-link pull-right', outlet: 'deleteButton', =>
+            @i class: 'icon-trash'
+            @span "Delete"
+
+          @button class: 'edit-body btn btn-link pull-right', outlet: 'editButton', =>
+            @i class: 'icon-edit'
+            @span "Edit"
 
       @div class: 'row', =>
         @div class: 'span4', =>
@@ -59,6 +67,9 @@ class Views.QuestionView extends View
 
     @allVotes.setRelation(@question.votes())
 
+    unless @question.creator() == Models.User.getCurrent()
+      @editButton.hide()
+      @deleteButton.hide()
 
   buildAnswerItem: (answer, options={}) ->
     item = $$ -> @li answer.body(), class: 'answer', 'data-answer-id': answer.id()
