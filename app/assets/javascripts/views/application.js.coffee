@@ -15,7 +15,6 @@ class Views.Application extends View
           new Views.QuestionView(question)
       )
 
-
   initialize: ->
     @newQuestionForm = new Views.NewQuestionForm().appendTo($('body'))
     Monarch.Remote.Server.fetch([Models.User, Models.Question, Models.Answer, Models.Ranking, Models.Vote])
