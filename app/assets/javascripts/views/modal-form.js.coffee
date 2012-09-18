@@ -10,9 +10,11 @@ class Views.ModalForm extends View
       @div class: 'modal-footer', =>
         @button buttonText, class: 'btn btn-primary', click: 'submit'
 
-  initialize: ({@onSubmit}) ->
+  initialize: ({text, @onSubmit}) ->
     @on 'shown', => @textarea.focus()
     @on 'hidden', => @remove()
+
+    @textarea.val(text or '')
 
     @textarea.keydown (e) =>
       if e.keyCode == 13 # enter

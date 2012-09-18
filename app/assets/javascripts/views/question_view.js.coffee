@@ -9,7 +9,7 @@ class Views.QuestionView extends View
             @i class: 'icon-trash'
             @span "Delete"
 
-          @button class: 'edit-body btn btn-link pull-right', outlet: 'editButton', =>
+          @button class: 'edit-body btn btn-link pull-right', outlet: 'editButton', click: 'editQuestionBody', =>
             @i class: 'icon-edit'
             @span "Edit"
 
@@ -146,6 +146,15 @@ class Views.QuestionView extends View
       buttonText: "Add Answer"
       onSubmit: (body) =>
         @question.answers().create({body})
+    )
+
+  editQuestionBody: ->
+    new Views.ModalForm(
+      text: @question.body()
+      headingText: 'Edit your question:'
+      buttonText: "Save Changes"
+      onSubmit: (body) =>
+        @question.update({body})
     )
 
   highlightAnswerInCollectiveRanking: (answer, delay) ->
