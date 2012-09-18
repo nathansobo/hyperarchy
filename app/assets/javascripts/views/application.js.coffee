@@ -26,4 +26,3 @@ class Views.Application extends View
       onSubmit: (body) =>
         Models.Question.create({body})
     )
-
