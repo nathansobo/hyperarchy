@@ -8,10 +8,26 @@ class Views.DiscussionView extends View
         @textarea rows: 2, outlet: 'commentTextarea'
         @button "Submit Comment", class: 'btn pull-right', click: 'createComment'
 
+  autoScroll: true
+
   initialize: (@comments) ->
+    @commentsList.scroll => @assignAutoscroll()
+    @commentsList.onInsert = => @scrollToBottom() if @autoScroll
     @commentsList.setRelation(@comments)
+
+  afterAttach: ->
+    @scrollToBottom()
 
   createComment: ->
     body = @commentTextarea.val()
     if /\S/.test(body)
-      @question.comments().create({body})
+      @comments.create({body})
+
+  scrollToBottom: ->
+    @commentsList.scrollTop(@maxScroll())
+
+  maxScroll: ->
+    @commentsList.scrollTop() + @commentsList.outerHeight()
+
+  assignAutoscroll: ->
+    @autoScroll = (@commentsList.prop('scrollHeight') == @maxScroll())

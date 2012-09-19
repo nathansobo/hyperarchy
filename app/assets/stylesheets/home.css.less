@@ -167,8 +167,14 @@ a.disabled {
   position: relative;
 
   ol {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 87px;
     margin: 0;
     padding-top: @baseLineHeight / 2;
+    overflow-y: auto;
 
     .comment {
       list-style-type: none;
