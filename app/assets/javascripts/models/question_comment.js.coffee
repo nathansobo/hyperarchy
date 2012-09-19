@@ -1,4 +1,5 @@
 class Models.QuestionComment extends Monarch.Record
+  @tableName = 'QuestionComment'
   @extended(this)
 
   @columns

@@ -1,4 +1,5 @@
 class Models.Question extends Monarch.Record
+  @tableName = 'Question'
   @extended(this)
 
   @columns

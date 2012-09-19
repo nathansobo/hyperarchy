@@ -1,4 +1,5 @@
 class Models.Ranking extends Monarch.Record
+  @tableName = 'Ranking'
   @extended(this)
 
   @columns

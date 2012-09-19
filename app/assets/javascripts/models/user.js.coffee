@@ -1,4 +1,5 @@
 class Models.User extends Monarch.Record
+  @tableName = 'User'
   @extended(this)
 
   @columns
