@@ -1,4 +1,4 @@
-Decider::Application.routes.draw do
+Hyperarchy::Application.routes.draw do
   root :to => 'home#index'
 
   match '/auth/:provider/callback' => 'sessions#create'

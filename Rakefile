@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-Decider::Application.load_tasks
+Hyperarchy::Application.load_tasks

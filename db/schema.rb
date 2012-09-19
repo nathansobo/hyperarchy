@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(:version => 20120919171223) do
   create_table "question_comments", :force => true do |t|
     t.integer  "question_id"
     t.integer  "creator_id"
-    t.string   "body"
+    t.text     "body"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end

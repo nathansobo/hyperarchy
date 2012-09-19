@@ -1,7 +1,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: decider_development
+  database: hyperarchy_development
   pool: 5
   username: nathansobo
   password:
@@ -9,7 +9,7 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: decider_test
+  database: hyperarchy_test
   pool: 5
   username: nathansobo
   password:
