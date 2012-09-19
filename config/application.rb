@@ -61,6 +61,8 @@ module Hyperarchy
 
     # Enable the asset pipeline
     config.assets.enabled = true
+
+    # Don't initialize rails when precompiling assets
     config.assets.initialize_on_precompile = false
 
     # Version of your assets, change this if you want to expire all your assets
