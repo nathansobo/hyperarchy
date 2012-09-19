@@ -4,7 +4,7 @@ class AddQuestionComments < ActiveRecord::Migration
         t.integer :id
         t.integer :question_id
         t.integer :creator_id
-        t.string :body
+        t.text :body
         t.timestamps
     end
   end
