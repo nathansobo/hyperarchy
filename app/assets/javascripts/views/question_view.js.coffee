@@ -1,5 +1,5 @@
 class Views.QuestionView extends View
-  @content: ->
+  @content: (question) ->
     @div class: 'question', =>
       @div class: 'row header', =>
         @div class: 'span8', =>
@@ -40,13 +40,7 @@ class Views.QuestionView extends View
 
         @div class: 'span4', =>
           @h5 'Discussion'
-          @div class: 'discussion column', =>
-            @subview 'comments', new Views.RelationView(
-              buildItem: (comment) -> new Views.CommentItem(comment)
-            )
-            @div class: 'text-entry', =>
-              @textarea rows: 2, outlet: 'commentTextarea'
-              @button "Submit Comment", class: 'btn pull-right', click: 'createComment'
+          @subview 'discussion', new Views.DiscussionView(question.comments())
 
   initialize: (@question) ->
     @rankedItemsByAnswerId = {}
@@ -72,8 +66,6 @@ class Views.QuestionView extends View
     )
 
     @allVotes.setRelation(@question.votes())
-
-    @comments.setRelation(@question.comments())
 
     unless @question.creator() == Models.User.getCurrent()
       @editButton.hide()
@@ -153,11 +145,6 @@ class Views.QuestionView extends View
       onSubmit: (body) =>
         @question.update({body})
     )
-
-  createComment: ->
-    body = @commentTextarea.val()
-    if /\S/.test(body)
-      @question.comments().create({body})
 
   deleteQuestion: ->
     if confirm("Are you sure you want to delete this question?")
