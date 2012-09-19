@@ -7,6 +7,9 @@ class Views.AnswerItem extends View
       @span answer.body(), outlet: 'body'
 
   initialize: (@answer, options={}) ->
+    if @answer.creator() == Models.User.getCurrent()
+      @addClass 'editable'
+
     if options.draggable
       @draggable(
         appendTo: 'body'
