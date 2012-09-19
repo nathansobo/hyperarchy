@@ -10,6 +10,6 @@ class Models.Question extends Monarch.Record
 
   @hasMany 'answers'
   @hasMany 'votes'
+  @hasMany 'comments', className: 'QuestionComment'
 
-  creator: ->
-    Models.User.find(@creatorId())
+  @belongsTo 'creator', className: 'User'

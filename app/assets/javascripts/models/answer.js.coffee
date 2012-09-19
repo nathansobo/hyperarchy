@@ -10,6 +10,4 @@ class Models.Answer extends Monarch.Record
   @defaultOrderBy 'position asc'
 
   @belongsTo 'question'
-
-  creator: ->
-    Models.User.find(@creatorId())
+  @belongsTo 'creator', className: 'User'
