@@ -5,7 +5,7 @@ class Views.DiscussionView extends View
         buildItem: (comment) -> new Views.CommentItem(comment)
       )
       @div class: 'text-entry', =>
-        @textarea rows: 2, outlet: 'commentTextarea'
+        @textarea rows: 2, outlet: 'textarea'
         @button "Submit Comment", class: 'btn pull-right', click: 'createComment'
 
   autoScroll: true
@@ -15,12 +15,18 @@ class Views.DiscussionView extends View
     @commentsList.onInsert = => @scrollToBottom() if @autoScroll
     @commentsList.setRelation(@comments)
 
+    @textarea.keydown (e) =>
+      if e.keyCode == 13 && !e.ctrlKey # enter (not ctrl-enter though)
+        e.preventDefault()
+        @createComment()
+
   afterAttach: ->
     @scrollToBottom()
 
   createComment: ->
-    body = @commentTextarea.val()
+    body = @textarea.val()
     if /\S/.test(body)
+      @textarea.val('')
       @comments.create({body})
 
   scrollToBottom: ->
