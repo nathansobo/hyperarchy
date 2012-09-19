@@ -10,4 +10,4 @@ $redis = Redis.new(:host => redis_uri.host, :port => redis_uri.port, :password =
 require 'prequel_extensions'
 require 'event_observer'
 
-EventObserver.observe(User, Question, Answer, Ranking, Vote)
+EventObserver.observe(User, Question, Answer, Ranking, Vote, QuestionComment)

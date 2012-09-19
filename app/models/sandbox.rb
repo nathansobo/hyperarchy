@@ -23,4 +23,8 @@ class Sandbox < Prequel::Sandbox
   expose :rankings do
     Ranking.table
   end
+
+  expose :question_comments do
+    QuestionComment.table
+  end
 end

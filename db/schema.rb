@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120904162652) do
+ActiveRecord::Schema.define(:version => 20120919171223) do
 
   create_table "answers", :force => true do |t|
     t.string   "body"
@@ -30,6 +30,14 @@ ActiveRecord::Schema.define(:version => 20120904162652) do
     t.integer  "pro_count",         :default => 0
     t.integer  "con_count",         :default => 0
     t.datetime "winner_created_at"
+  end
+
+  create_table "question_comments", :force => true do |t|
+    t.integer  "question_id"
+    t.integer  "creator_id"
+    t.string   "body"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "questions", :force => true do |t|

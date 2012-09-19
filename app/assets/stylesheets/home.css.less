@@ -166,6 +166,38 @@ a.disabled {
   border-width: 1px 0 0 0;
   position: relative;
 
+  ol {
+    margin: 0;
+    padding-top: @baseLineHeight / 2;
+
+    .comment {
+      list-style-type: none;
+      margin-bottom: @baseLineHeight / 2;
+
+      img {
+        height: @baseLineHeight * 2 - 2;
+        width: @baseLineHeight * 2 - 2;
+        background: #ccc;
+        float: left;
+        //margin: 0 (@baseLineHeight / 2) (@baseLineHeight / 2) 0;
+        margin-right: @baseLineHeight / 2;
+      }
+
+      .name {
+        font-weight: bold;
+        margin-right: 1ex;
+      }
+
+      time {
+        color: #888;
+        font-size: @baseFontSize - 2px;
+      }
+
+
+    }
+
+  }
+
   .text-entry {
     position: absolute;
     bottom: 0;
