@@ -11,6 +11,10 @@ a.no-href {
 
 i {
   font-size: @baseLineHeight;
+
+  &.small {
+    font-size: @baseFontSize;
+  }
 }
 
 a.disabled {
@@ -62,7 +66,6 @@ a.disabled {
   top: -2px;
 }
 
-
 .column {
   height: @baseLineHeight * 20;
   margin: 0;
@@ -85,6 +88,23 @@ a.disabled {
   border: 1px solid #ccc;
   padding: @baseLineHeight / 2 - 1px;
   .box-shadow(0px 1px 3px 0px rgba(0, 0, 0, .1));
+
+  i {
+    visibility: hidden;
+    display: none;
+    color: #888;
+    margin-left: 2px;
+
+    &:hover {
+      color: @linkColorHover;
+      cursor: pointer;
+    }
+  }
+
+  &:hover i {
+    display: inline;
+    visibility: visible;
+  }
 }
 
 .collective.vote {

@@ -77,22 +77,8 @@ class Views.QuestionView extends View
     question.getField('body').onChange (body) =>
       @body.text(body)
 
-  buildAnswerItem: (answer, options={}) ->
-    item = $$ -> @li answer.body(), class: 'answer', 'data-answer-id': answer.id()
-
-    if options.draggable
-      item.draggable(
-        helper: -> $(this).clone().width($(this).width())
-        appendTo: 'body'
-        connectToSortable: '.personal.vote'
-        delay: 1
-      )
-      item.mousedown => @showPersonalVote()
-
-    if position = options.position
-      item.data('position', position)
-
-    item
+  buildAnswerItem: (answer, options) ->
+    new Views.AnswerItem(answer, options)
 
   showCollectiveVote: ->
     @enableLink(@showAllVotesLink)
