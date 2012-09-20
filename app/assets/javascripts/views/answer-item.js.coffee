@@ -1,6 +1,9 @@
 class Views.AnswerItem extends View
-  @content: (answer) ->
+  @content: (answer, options={}) ->
     @li class: 'answer', 'data-answer-id': answer.id(), =>
+      if options.draggable
+        @div "", class: 'personal-rank pull-right', outlet: 'rankIndicator'
+
       @i class: 'small icon-remove pull-right', click: 'deleteAnswer'
       @i class: 'small icon-edit pull-right', click: 'editAnswer'
 
@@ -15,18 +18,27 @@ class Views.AnswerItem extends View
         appendTo: 'body'
         connectToSortable: '.personal.vote'
         delay: 1
-        helper: => @cloneDragHelper()
+        helper: => @buildDragHelper()
       )
+      @updateRankIndicator()
 
     if position = options.position
       @data('position', position)
 
     @answer.getField('body').onChange (body) => @body.text(body)
 
-  cloneDragHelper: ->
-    helper = $(this).clone().width($(this).width())
-    helper.find('.dropdown').remove()
-    helper
+  updateRankIndicator: (ranking) ->
+    if ranking = @answer.rankingForCurrentUser()
+      otherRankings = Models.Ranking.where(questionId: ranking.questionId(), userId: ranking.userId())
+      rank = otherRankings.indexOf(ranking) + 1
+      @rankIndicator.text(rank)
+      @rankIndicator.addClass('ranked')
+    else
+      @rankIndicator.text('')
+      @rankIndicator.removeClass('ranked')
+
+  buildDragHelper: ->
+    new Views.AnswerItem(@answer).width(@width())
 
   editAnswer: ->
     new Views.ModalForm(

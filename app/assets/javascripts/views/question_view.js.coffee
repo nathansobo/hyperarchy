@@ -49,11 +49,18 @@ class Views.QuestionView extends View
     @collectiveVote.buildItem = (answer) => @buildAnswerItem(answer, draggable: true)
     @collectiveVote.setRelation(question.answers())
 
+    @subscriptions = new Monarch.Util.SubscriptionBundle
+    personalRankings = Models.User.getCurrent().rankingsForQuestion(question)
+    @subscriptions.add personalRankings.onInsert => @updateRankIndicators()
+    @subscriptions.add personalRankings.onUpdate => @updateRankIndicators()
+    @subscriptions.add personalRankings.onRemove => @updateRankIndicators()
+
     @personalVote.buildItem = (ranking) =>
       @buildAnswerItem(ranking.answer(), position: ranking.position())
     @personalVote.onInsert = (item, ranking) =>
       @rankedItemsByAnswerId[ranking.answerId()]?.remove()
       @rankedItemsByAnswerId[ranking.answerId()] = item
+
     @personalVote.setRelation(Models.User.getCurrent().rankingsForQuestion(question))
 
     removeItem = null
@@ -120,7 +127,6 @@ class Views.QuestionView extends View
       position = lowerPosition + 1
 
     item.data('position', position)
-    item.text(item.text().replace('undefined', position))
 
     Models.Ranking.createOrUpdate(
       answer: answer
@@ -136,7 +142,7 @@ class Views.QuestionView extends View
       onSubmit: (body) =>
         @question.answers().create({body})
           .onSuccess (answer) =>
-            answerItem = @collectiveVote.find(".answer[data-answer-id=#{answer.id()}]").view().cloneDragHelper()
+            answerItem = @collectiveVote.find(".answer[data-answer-id=#{answer.id()}]").view().buildDragHelper()
             @personalVote.prepend(answerItem)
             @updateAnswerRanking(answerItem)
     )
@@ -168,9 +174,14 @@ class Views.QuestionView extends View
       @collectiveVote.scrollTo(item, over: -.5)
     item.effect('highlight')
 
+  updateRankIndicators: ->
+    @collectiveVote.find('.answer').each ->
+      $(this).view().updateRankIndicator()
+
   remove: (selector, keepData) ->
     super
     unless keepData
       @collectiveVote.remove()
       @personalVote.remove()
       @allVotes.remove()
+      @subscriptions.destroy()

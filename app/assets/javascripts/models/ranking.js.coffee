@@ -14,6 +14,7 @@ class Models.Ranking extends Monarch.Record
   @belongsTo 'user'
   @belongsTo 'question'
   @belongsTo 'answer'
+  @belongsTo 'vote'
 
   @createOrUpdate: ({answer, position}) ->
     jQuery.ajax(
