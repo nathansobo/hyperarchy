@@ -13,7 +13,9 @@ beforeEach ->
   Monarch.Repository.clear()
 
 afterEach ->
-  expect(Monarch.Repository.subscriptionCount()).toBe 0
+  for name, table of Monarch.Repository.tables
+    if table.subscriptionCount() > 0
+      throw new Error("Table #{name} has a subscription count of #{table.subscriptionCount()}")
 
 $.fn.attachToDom = ->
   @appendTo('#test-content')

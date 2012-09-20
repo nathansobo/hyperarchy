@@ -104,7 +104,6 @@ class Views.QuestionView extends View
   updateShowAllVotesLink: ->
     count = @question.votes().size()
 
-
     if count == 0
       @showAllVotesLink.addClass('double-disabled')
     else
@@ -203,4 +202,5 @@ class Views.QuestionView extends View
       @collectiveVote.remove()
       @personalVote.remove()
       @allVotes.remove()
+      @discussion.remove()
       @subscriptions.destroy()

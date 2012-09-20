@@ -37,3 +37,7 @@ class Views.DiscussionView extends View
 
   assignAutoscroll: ->
     @autoScroll = (@commentsList.prop('scrollHeight') == @maxScroll())
+
+  remove: (selector, keepData) ->
+    unless keepData
+      @commentsList.remove()
