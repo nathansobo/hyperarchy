@@ -135,6 +135,10 @@ class Views.QuestionView extends View
       buttonText: "Add Answer"
       onSubmit: (body) =>
         @question.answers().create({body})
+          .onSuccess (answer) =>
+            answerItem = @collectiveVote.find(".answer[data-answer-id=#{answer.id()}]").view().cloneDragHelper()
+            @personalVote.prepend(answerItem)
+            @updateAnswerRanking(answerItem)
     )
 
   editQuestionBody: ->

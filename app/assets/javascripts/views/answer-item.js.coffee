@@ -15,10 +15,7 @@ class Views.AnswerItem extends View
         appendTo: 'body'
         connectToSortable: '.personal.vote'
         delay: 1
-        helper: ->
-          helper = $(this).clone().width($(this).width())
-          helper.find('.dropdown').remove()
-          helper
+        helper: => @cloneDragHelper()
       )
 
     if position = options.position
@@ -26,6 +23,10 @@ class Views.AnswerItem extends View
 
     @answer.getField('body').onChange (body) => @body.text(body)
 
+  cloneDragHelper: ->
+    helper = $(this).clone().width($(this).width())
+    helper.find('.dropdown').remove()
+    helper
 
   editAnswer: ->
     new Views.ModalForm(
