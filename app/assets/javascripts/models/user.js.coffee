@@ -17,6 +17,3 @@ class Models.User extends Monarch.Record
 
   rankingsForQuestion: (question) ->
     @rankings().where(questionId: question.id())
-
-  voteForQuestion: (question) ->
-    @votes().find(questionId: question.id())
