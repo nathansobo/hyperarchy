@@ -16,6 +16,7 @@
 #= require jquery.ui.sortable
 #= require jquery.effects.core
 #= require jquery.effects.highlight
+#= require jquery.ui.touch-punch
 #= require twitter/bootstrap
 #= require underscore
 #= require monarch
