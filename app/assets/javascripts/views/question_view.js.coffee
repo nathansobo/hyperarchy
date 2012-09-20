@@ -17,7 +17,7 @@ class Views.QuestionView extends View
         @div class: 'span4', =>
           @h5 =>
             @a "Collective Ranking", class: 'no-href disabled', click: 'showCollectiveVote', outlet: 'showCollectiveVoteLink'
-            @span "|", class: 'separator'
+            @i class: 'separator small icon-caret-left'
             @a "Individual Rankings", class: 'no-href', click: 'showAllVotes', outlet: 'showAllVotesLink'
 
           @subview 'collectiveVote', new Views.RelationView(
@@ -74,6 +74,10 @@ class Views.QuestionView extends View
 
     @allVotes.setRelation(@question.votes())
 
+    @subscriptions.add @question.votes().onInsert => @updateShowAllVotesLink()
+    @subscriptions.add @question.votes().onRemove => @updateShowAllVotesLink()
+    @updateShowAllVotesLink()
+
     unless @question.creator() == Models.User.getCurrent()
       @editButton.hide()
       @deleteButton.hide()
@@ -91,10 +95,25 @@ class Views.QuestionView extends View
     @collectiveVote.show()
 
   showAllVotes: ->
+    return unless @question.votes().size()
     @enableLink(@showCollectiveVoteLink)
     @disableLink(@showAllVotesLink)
     @collectiveVote.hide()
     @allVotes.show()
+
+  updateShowAllVotesLink: ->
+    count = @question.votes().size()
+
+
+    if count == 0
+      @showAllVotesLink.addClass('double-disabled')
+    else
+      @showAllVotesLink.removeClass('double-disabled')
+
+    if count == 1
+      @showAllVotesLink.text("1 Individual Ranking")
+    else
+      @showAllVotesLink.text("#{count} Individual Rankings")
 
   enableLink: (link) ->
     link.removeClass('disabled')
