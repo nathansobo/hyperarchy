@@ -18,7 +18,7 @@ class Views.ModalForm extends View
     @textarea.val(text or '')
 
     @textarea.keydown (e) =>
-      if e.keyCode == 13 # enter
+      if e.keyCode == 13 and !e.ctrlKey # enter (ctrl-enter makes newline)
         e.preventDefault()
         @submit()
 
