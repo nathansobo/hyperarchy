@@ -15,6 +15,11 @@ i {
   &.small {
     font-size: @baseFontSize;
   }
+
+  &.large {
+    font-size: @baseFontSize * 3;
+    line-height: @baseLineHeight * 3;
+  }
 }
 
 a.disabled, a.double-disabled {
@@ -183,6 +188,42 @@ a.disabled, a.double-disabled {
       li {
         list-style-position: inside;
       }
+    }
+  }
+}
+
+.personal-vote-wrapper {
+  position: relative;
+
+  .voting-instructions {
+    text-align: center;
+    position: absolute;
+    left: @baseLineHeight;
+    right: @baseLineHeight;
+    padding: @baseLineHeight;
+    top: 50%;
+    margin-top: -100px;
+
+    .icons {
+      color: @linkColorHover;
+      background: fadeout(white, 30%);
+      display: table;
+      padding: 0 @baseLineHeight;
+      margin: 0 auto;
+
+      i {
+        position: relative;
+        top: 3px;
+      }
+
+      .icon-arrow-right {
+        margin-right: @baseLineHeight / 2;
+      }
+    }
+
+    .words {
+      margin-top: @baseLineHeight / 2;
+      margin-bottom: 0;
     }
   }
 }

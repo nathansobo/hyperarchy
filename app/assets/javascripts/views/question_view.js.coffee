@@ -34,9 +34,15 @@ class Views.QuestionView extends View
             @button "+ Add Answer", class: 'btn btn-small btn-primary add-answer pull-right', click: 'addAnswer'
             @text "Your Ranking"
 
-          @subview 'personalVote', new Views.RelationView(
-            attributes: { class: 'personal vote column' }
-          )
+          @div class: 'personal-vote-wrapper', =>
+            @subview 'personalVote', new Views.RelationView(
+              attributes: { class: 'personal vote column' }
+            )
+            @div class: 'voting-instructions', outlet: 'votingInstructions', =>
+              @div class: 'icons img-rounded', =>
+                @i class: 'large icon-arrow-right'
+                @i class: 'large icon-list-ol'
+              @div class: 'words lead', "Drag answers here to influence the collective ranking"
 
         @div class: 'span4', =>
           @h5 'Discussion', outlet: 'discussionHeader'
@@ -49,11 +55,20 @@ class Views.QuestionView extends View
     @collectiveVote.buildItem = (answer) => @buildAnswerItem(answer, draggable: true)
     @collectiveVote.setRelation(question.answers())
 
+    @updateVotingInstructions()
     @subscriptions = new Monarch.Util.SubscriptionBundle
     personalRankings = Models.User.getCurrent().rankingsForQuestion(question)
-    @subscriptions.add personalRankings.onInsert => @updateRankIndicators()
-    @subscriptions.add personalRankings.onUpdate => @updateRankIndicators()
-    @subscriptions.add personalRankings.onRemove => @updateRankIndicators()
+
+    @subscriptions.add personalRankings.onInsert =>
+      @updateRankIndicators()
+      @updateVotingInstructions()
+
+    @subscriptions.add personalRankings.onUpdate =>
+      @updateRankIndicators()
+
+    @subscriptions.add personalRankings.onRemove =>
+      @updateRankIndicators()
+      @updateVotingInstructions()
 
     @personalVote.buildItem = (ranking) =>
       @buildAnswerItem(ranking.answer(), position: ranking.position())
@@ -61,7 +76,7 @@ class Views.QuestionView extends View
       @rankedItemsByAnswerId[ranking.answerId()]?.remove()
       @rankedItemsByAnswerId[ranking.answerId()] = item
 
-    @personalVote.setRelation(Models.User.getCurrent().rankingsForQuestion(question))
+    @personalVote.setRelation(personalRankings)
 
     removeItem = null
     @personalVote.sortable(
@@ -206,6 +221,12 @@ class Views.QuestionView extends View
       @discussionHeader.text("1 Comment")
     else
       @discussionHeader.text("#{count} Comments")
+
+  updateVotingInstructions: ->
+    if Models.User.getCurrent().rankingsForQuestion(@question).isEmpty()
+      @votingInstructions.show()
+    else
+      @votingInstructions.hide()
 
   remove: (selector, keepData) ->
     super

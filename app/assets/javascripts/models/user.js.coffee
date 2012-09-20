@@ -8,6 +8,7 @@ class Models.User extends Monarch.Record
 
   @hasMany 'answers', foreignKey: 'creatorId'
   @hasMany 'rankings'
+  @hasMany 'votes'
 
   @currentUserId: null # assigned by Rails
 
@@ -16,3 +17,6 @@ class Models.User extends Monarch.Record
 
   rankingsForQuestion: (question) ->
     @rankings().where(questionId: question.id())
+
+  voteForQuestion: (question) ->
+    @votes().find(questionId: question.id())
