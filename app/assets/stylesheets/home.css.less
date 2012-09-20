@@ -28,6 +28,17 @@ a.disabled {
     width: 100%;
     box-sizing: border-box;
     resize: none;
+    margin-bottom: @baseLineHeight / 4;
+  }
+
+  .chars-remaining {
+    &.warning {
+      color: @red;
+    }
+
+    &.invalid {
+      color: lighten(@red, 20%);
+    }
   }
 }
 

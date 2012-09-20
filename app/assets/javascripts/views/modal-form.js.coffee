@@ -7,6 +7,7 @@ class Views.ModalForm extends View
         @span headingText, class: 'lead'
       @div class: 'modal-body', =>
         @textarea class: 'lead', rows: 3, outlet: 'textarea'
+        @div class: 'chars-remaining pull-right', outlet: 'charsRemainingIndicator'
       @div class: 'modal-footer', =>
         @button buttonText, class: 'btn btn-primary', click: 'submit'
 
@@ -24,6 +25,24 @@ class Views.ModalForm extends View
     @appendTo('body')
     @modal('show')
 
+    @textarea.on 'input', => @updateCharsRemainingIndicator()
+    @updateCharsRemainingIndicator()
+
+  charsRemaining: ->
+    140 - @textarea.val().length
+
+  updateCharsRemainingIndicator: ->
+    count = @charsRemaining()
+    @charsRemainingIndicator.text(count)
+
+    @charsRemainingIndicator.removeClass('invalid warning')
+    if count < 0
+      @charsRemainingIndicator.addClass('invalid')
+    else if count < 10
+      @charsRemainingIndicator.addClass('warning')
+
+
   submit: ->
+    return if @charsRemaining() < 0
     @onSubmit(@textarea.val())
     @modal('hide')
