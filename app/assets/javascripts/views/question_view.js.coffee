@@ -20,7 +20,7 @@ class Views.QuestionView extends View
 
       @div class: 'row', =>
         @div class: 'span4', =>
-          @h5 =>
+          @h5 class: 'collective column-header', =>
             @a "Collective Ranking", class: 'no-href disabled', click: 'showCollectiveVote', outlet: 'showCollectiveVoteLink'
             @i class: 'separator small icon-caret-left'
             @a "Individual Rankings", class: 'no-href', click: 'showAllVotes', outlet: 'showAllVotesLink'
@@ -35,7 +35,7 @@ class Views.QuestionView extends View
           )
 
         @div class: 'span4', =>
-          @h5 =>
+          @h5 class: 'column-header', =>
             @button "+ Add Answer", class: 'btn btn-small btn-primary add-answer pull-right', click: 'addAnswer'
             @text "Your Ranking"
 
@@ -50,7 +50,7 @@ class Views.QuestionView extends View
               @div class: 'words lead', "Drag answers here to influence the collective ranking"
 
         @div class: 'span4', =>
-          @h5 'Discussion', outlet: 'discussionHeader'
+          @h5 'Discussion', class: 'column-header', outlet: 'discussionHeader'
           @subview 'discussion', new Views.DiscussionView(question.comments())
 
   initialize: (@question) ->
