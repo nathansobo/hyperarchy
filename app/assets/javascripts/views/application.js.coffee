@@ -1,6 +1,6 @@
 class Views.Application extends View
   @content: ->
-    @div id: 'application', class: 'container', =>
+    @div id: 'application', =>
       @div class: 'navbar navbar-fixed-top navbar-inverse', =>
         @div class: 'navbar-inner', =>
           @div class: 'container', =>
@@ -10,10 +10,10 @@ class Views.Application extends View
                 @button "New Question", class: 'btn btn-primary', click: 'showNewQuestionForm'
       @subview 'questionsList', new Views.RelationView(
         tag: 'div'
-        attributes: { id: 'questions' }
+        attributes: { id: 'questions', class: 'container' }
         buildItem: (question) ->
           new Views.QuestionView(question)
-      )
+        )
 
   initialize: ->
     Monarch.Remote.Server.fetch([Models.User, Models.Question, Models.Answer, Models.Ranking, Models.Vote, Models.QuestionComment])
