@@ -22,6 +22,11 @@ class Views.AnswerItem extends View
       )
       @updateRankIndicator()
 
+      @rankIndicator.hover(
+        => @highlightAnswerInPersonalVote(),
+        => @unhighlightAnswerInPersonalVote()
+      )
+
     if position = options.position
       @data('position', position)
 
@@ -36,6 +41,15 @@ class Views.AnswerItem extends View
     else
       @rankIndicator.text('')
       @rankIndicator.removeClass('ranked')
+
+  personalVoteAnswerItem: ->
+    @parents('.question').find(".personal.vote .answer[data-answer-id=#{@answer.id()}]")
+
+  highlightAnswerInPersonalVote: ->
+    @personalVoteAnswerItem().addClass('highlighted')
+
+  unhighlightAnswerInPersonalVote: ->
+    @personalVoteAnswerItem().removeClass('highlighted')
 
   buildDragHelper: ->
     new Views.AnswerItem(@answer).width(@width())
