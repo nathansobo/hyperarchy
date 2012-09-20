@@ -39,7 +39,7 @@ class Views.QuestionView extends View
           )
 
         @div class: 'span4', =>
-          @h5 'Discussion'
+          @h5 'Discussion', outlet: 'discussionHeader'
           @subview 'discussion', new Views.DiscussionView(question.comments())
 
   initialize: (@question) ->
@@ -77,6 +77,10 @@ class Views.QuestionView extends View
     @subscriptions.add @question.votes().onInsert => @updateShowAllVotesLink()
     @subscriptions.add @question.votes().onRemove => @updateShowAllVotesLink()
     @updateShowAllVotesLink()
+
+    @subscriptions.add @question.comments().onInsert => @updateDiscussionHeader()
+    @subscriptions.add @question.comments().onRemove => @updateDiscussionHeader()
+    @updateDiscussionHeader()
 
     unless @question.creator() == Models.User.getCurrent()
       @editButton.hide()
@@ -195,6 +199,13 @@ class Views.QuestionView extends View
   updateRankIndicators: ->
     @collectiveVote.find('.answer').each ->
       $(this).view().updateRankIndicator()
+
+  updateDiscussionHeader: ->
+    count = @question.comments().size()
+    if count == 1
+      @discussionHeader.text("1 Comment")
+    else
+      @discussionHeader.text("#{count} Comments")
 
   remove: (selector, keepData) ->
     super
