@@ -228,6 +228,7 @@ DEPENDENCIES
   pg (~> 0.11)
   prequel!
   pusher
+  rack-ssl
   rails (= 3.2.8)
   redis
   redis-lock
