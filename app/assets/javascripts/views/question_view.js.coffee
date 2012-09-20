@@ -1,15 +1,20 @@
 class Views.QuestionView extends View
   @content: (question) ->
-    @div class: 'question', =>
+    @div class: 'question', 'data-question-id': question.id(), =>
       @div class: 'row header', =>
         @div class: 'span8', =>
           @div class: 'body lead', outlet: 'body'
         @div class: 'span4', =>
-          @button class: 'delete btn btn-link pull-right', outlet: 'deleteButton', click: 'deleteQuestion', =>
+
+          @a class: 'permalink btn btn-link pull-right', href: "/#{question.id()}", =>
+            @i class: 'icon-link'
+            @span "Link"
+
+          @a class: 'delete btn btn-link pull-right', outlet: 'deleteButton', click: 'deleteQuestion', =>
             @i class: 'icon-trash'
             @span "Delete"
 
-          @button class: 'edit-body btn btn-link pull-right', outlet: 'editButton', click: 'editQuestionBody', =>
+          @a class: 'edit-body btn btn-link pull-right', outlet: 'editButton', click: 'editQuestionBody', =>
             @i class: 'icon-edit'
             @span "Edit"
 

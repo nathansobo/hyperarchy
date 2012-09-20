@@ -17,7 +17,21 @@ class Views.Application extends View
 
   initialize: ->
     Monarch.Remote.Server.fetch([Models.User, Models.Question, Models.Answer, Models.Ranking, Models.Vote, Models.QuestionComment])
-      .onSuccess => @questionsList.setRelation(Models.Question.table)
+      .onSuccess =>
+        @questionsList.setRelation(Models.Question.table)
+        @buildAndStartRouter()
+
+  buildAndStartRouter: ->
+    view = this
+    Davis ->
+      @configure ->
+        @generateRequestOnPageLoad = true
+      @get '/:questionId', ({params}) ->
+        view.showQuestion(params.questionId)
+
+  showQuestion: (id) ->
+    questionView = @questionsList.find(".question[data-question-id=#{id}]")
+    $.scrollTo(questionView, offset: -60) if questionView.length
 
   showNewQuestionForm: ->
     new Views.ModalForm(

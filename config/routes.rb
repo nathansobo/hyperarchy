@@ -1,5 +1,5 @@
 Hyperarchy::Application.routes.draw do
-  root :to => 'home#index'
+
 
   match '/auth/:provider/callback' => 'sessions#create'
   match '/sign-out' => 'sessions#destroy'
@@ -11,6 +11,9 @@ Hyperarchy::Application.routes.draw do
 
   resources :rankings
   match '/rankings' => 'rankings#destroy', :via => :delete
+
+  root :to => 'home#index'
+  match '/:questionId' => 'home#index', :via => :get
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

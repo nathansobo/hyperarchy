@@ -9,8 +9,16 @@ a.no-href {
   cursor: pointer;
 }
 
+.btn i {
+  text-decoration: none;
+}
+
 i {
   font-size: @baseLineHeight;
+
+  &:hover {
+    text-decoration: none;
+  }
 
   &.small {
     font-size: @baseFontSize;
@@ -56,7 +64,7 @@ a.disabled, a.double-disabled {
       line-height: @baseLineHeight * 2;
     }
 
-    .edit-body, .delete {
+    .edit-body, .delete, .permalink {
       display: block;
       padding-right: 0;
       color: #888;
