@@ -7,7 +7,8 @@ class Views.AnswerItem extends View
       @i class: 'small icon-remove pull-right', click: 'deleteAnswer'
       @i class: 'small icon-edit pull-right', click: 'editAnswer'
 
-      @span answer.body(), outlet: 'body'
+      @span class: 'neuter-markdown', outlet: 'body', =>
+        @raw markdown.toHTML(answer.body())
 
   initialize: (@answer, options={}) ->
     if @answer.creator() == Models.User.getCurrent()
@@ -30,7 +31,7 @@ class Views.AnswerItem extends View
     if position = options.position
       @data('position', position)
 
-    @answer.getField('body').onChange (body) => @body.text(body)
+    @answer.getField('body').onChange (body) => @body.html(markdown.toHTML(body))
 
   updateRankIndicator: (ranking) ->
     if ranking = @answer.rankingForCurrentUser()

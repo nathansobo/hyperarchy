@@ -1,6 +1,6 @@
 class Views.CommentItem extends View
   @content: (comment) ->
-    @li class: 'comment', =>
+    @li class: 'comment neuter-markdown', =>
       @img src: comment.creator().avatarUrl()
 
       @div class: 'header', =>

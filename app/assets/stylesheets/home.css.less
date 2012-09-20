@@ -36,6 +36,15 @@ a.disabled, a.double-disabled {
   cursor: text;
 }
 
+.neuter-markdown {
+  h1, h2, h3, h4, h5, h6 {
+    line-height: @baseLineHeight;
+    font-size: @baseFontSize;
+    margin: 0;
+    margin-bottom: @baseLineHeight;
+  }
+}
+
 .modal-form {
   textarea {
     width: 100%;
@@ -266,13 +275,6 @@ a.disabled, a.double-disabled {
     .comment {
       list-style-type: none;
       margin-bottom: @baseLineHeight / 2;
-
-      h1, h2, h3, h4, h5, h6 {
-        line-height: @baseLineHeight;
-        font-size: @baseFontSize;
-        margin: 0;
-        margin-bottom: @baseLineHeight;
-      }
 
       img {
         height: @baseLineHeight * 2 - 2;
