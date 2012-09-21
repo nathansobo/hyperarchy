@@ -126,8 +126,7 @@ a.disabled, a.double-disabled {
   border: 1px solid #ccc;
   padding: @baseLineHeight / 2 - 1px;
   .box-shadow(0px 1px 3px 0px rgba(0, 0, 0, .1));
-  -webkit-transition-property: background;
-  -webkit-transition-duration: 400ms;
+  .transition(background 400ms);
   cursor: default;
 
   &.highlighted {
