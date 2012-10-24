@@ -53,35 +53,25 @@ class Views.QuestionView extends View
           @h5 'Discussion', class: 'column-header', outlet: 'discussionHeader'
           @subview 'discussion', new Views.DiscussionView(question.comments())
 
-  initialize: (@question) ->
-    @rankedItemsByAnswerId = {}
-    @body.text(question.body())
-
-    @collectiveVote.buildItem = (answer) => @buildAnswerItem(answer, draggable: true)
-    @collectiveVote.setRelation(question.answers())
-
-    @updateVotingInstructions()
+  initialize: (question) ->
     @subscriptions = new Monarch.Util.SubscriptionBundle
-    personalRankings = Models.User.getCurrent().rankingsForQuestion(question)
-
-    @subscriptions.add personalRankings.onInsert =>
-      @updateRankIndicators()
-      @updateVotingInstructions()
-
-    @subscriptions.add personalRankings.onUpdate =>
-      @updateRankIndicators()
-
-    @subscriptions.add personalRankings.onRemove =>
-      @updateRankIndicators()
-      @updateVotingInstructions()
+    @collectiveVote.buildItem = (answer) => @buildAnswerItem(answer, draggable: true)
 
     @personalVote.buildItem = (ranking) =>
       @buildAnswerItem(ranking.answer(), position: ranking.position())
+
     @personalVote.onInsert = (item, ranking) =>
       @rankedItemsByAnswerId[ranking.answerId()]?.remove()
       @rankedItemsByAnswerId[ranking.answerId()] = item
+      @updateRankIndicators()
+      @updateVotingInstructions()
 
-    @personalVote.setRelation(personalRankings)
+    @personalVote.onUpdate = =>
+      @updateRankIndicators()
+
+    @personalVote.onRemove = =>
+      @updateRankIndicators()
+      @updateVotingInstructions()
 
     removeItem = null
     @personalVote.sortable(
@@ -92,7 +82,20 @@ class Views.QuestionView extends View
       stop: (event, ui) => @updateAnswerRanking(ui.item)
     )
 
+    @setQuestion(question)
+
+  setQuestion: (@question) ->
+    @subscriptions.destroy()
+    @rankedItemsByAnswerId = {}
+
+    @body.text(question.body())
+    question.getField('body').onChange (body) => @body.text(body)
+
+    @collectiveVote.setRelation(question.answers())
+
+    @personalVote.setRelation(Models.User.getCurrent().rankingsForQuestion(question))
     @allVotes.setRelation(@question.votes())
+    @updateVotingInstructions()
 
     @subscriptions.add @question.votes().onInsert => @updateShowAllVotesLink()
     @subscriptions.add @question.votes().onRemove => @updateShowAllVotesLink()
@@ -105,9 +108,6 @@ class Views.QuestionView extends View
     unless @question.creator() == Models.User.getCurrent()
       @editButton.hide()
       @deleteButton.hide()
-
-    question.getField('body').onChange (body) =>
-      @body.text(body)
 
   buildAnswerItem: (answer, options) ->
     new Views.AnswerItem(answer, options)
