@@ -1,19 +1,13 @@
 class Views.QuestionView extends View
-  @content: (question) ->
-    @div class: 'question', 'data-question-id': question.id(), =>
+  @content: ->
+    @div class: 'question', =>
       @div class: 'row header', =>
         @div class: 'span8', =>
           @div class: 'body lead', outlet: 'body'
         @div class: 'span4', =>
-
-          @a class: 'permalink btn btn-link pull-right', href: "/#{question.id()}", =>
-            @i class: 'icon-link'
-            @span "Link"
-
           @a class: 'delete btn btn-link pull-right', outlet: 'deleteButton', click: 'deleteQuestion', =>
             @i class: 'icon-trash'
             @span "Delete"
-
           @a class: 'edit-body btn btn-link pull-right', outlet: 'editButton', click: 'editQuestionBody', =>
             @i class: 'icon-edit'
             @span "Edit"
@@ -51,7 +45,7 @@ class Views.QuestionView extends View
 
         @div class: 'span4', =>
           @h5 'Discussion', class: 'column-header', outlet: 'discussionHeader'
-          @subview 'discussion', new Views.DiscussionView(question.comments())
+          @subview 'discussion', new Views.DiscussionView()
 
   initialize: (question) ->
     @subscriptions = new Monarch.Util.SubscriptionBundle
@@ -85,10 +79,12 @@ class Views.QuestionView extends View
     @setQuestion(question)
 
   setQuestion: (@question) ->
+    return unless @question?
+
     @subscriptions.destroy()
     @rankedItemsByAnswerId = {}
 
-    @body.text(question.body())
+    @body.text(@question.body())
     question.getField('body').onChange (body) => @body.text(body)
 
     @collectiveVote.setRelation(question.answers())
@@ -104,6 +100,8 @@ class Views.QuestionView extends View
     @subscriptions.add @question.comments().onInsert => @updateDiscussionHeader()
     @subscriptions.add @question.comments().onRemove => @updateDiscussionHeader()
     @updateDiscussionHeader()
+
+    @discussion.setComments(@question.comments())
 
     unless @question.creator() == Models.User.getCurrent()
       @editButton.hide()

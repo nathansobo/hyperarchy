@@ -13,12 +13,13 @@ class Views.DiscussionView extends View
   initialize: (@comments) ->
     @commentsList.scroll => @assignAutoscroll()
     @commentsList.onInsert = => @scrollToBottom() if @autoScroll
-    @commentsList.setRelation(@comments)
-
     @textarea.keydown (e) =>
       if e.keyCode == 13 && !e.ctrlKey # enter (not ctrl-enter though)
         e.preventDefault()
         @createComment()
+
+  setComments: (@comments) ->
+    @commentsList.setRelation(@comments)
 
   afterAttach: ->
     @scrollToBottom()
