@@ -4,36 +4,15 @@ class Views.Application extends View
       @div class: 'navbar navbar-fixed-top navbar-inverse', =>
         @div class: 'navbar-inner', =>
           @div class: 'container', =>
-            @a "Hyperarchy", class: 'brand', href: '/'
-            @ul class: 'nav pull-right', =>
-              @li =>
-                @button "New Question", class: 'btn btn-primary', click: 'showNewQuestionForm'
+            @ul class: 'nav', =>
 
-      @div id: 'pages', =>
-        @div id: 'question-page', =>
-          @header =>
-            @div class: 'container', =>
-              @div class: 'row', =>
-                @div class: 'span3', =>
-                  @button class: "btn btn-large btn-info", =>
-                    @i class: "icon-chevron-left"
-                    @span "Other Questions"
+            @div class: 'pull-right', =>
+              @a class: 'brand', href: '/', =>
+                @i class: 'icon-list'
+                @span "Hyperarchy"
 
-                @div class: 'span9', =>
-                  @h1 "Where should the June 2013 GitHub destination be held?"
-
-          @div class: 'container', =>
-            @div class: 'row', =>
-              @div class: 'span3', =>
-                @ul class: 'nav nav-tabs nav-stacked', =>
-                  @li => @a "Collective Ranking"
-
-              @div class: 'span9', =>
-
-
-
-
-
+      @div id: 'pages', outlet: 'pages', =>
+        @subview 'questionPage', new Views.QuestionPage
 
 #       @div class: 'navbar navbar-fixed-top navbar-inverse', =>
 #         @div class: 'navbar-inner', =>
@@ -43,7 +22,7 @@ class Views.Application extends View
 #               @li =>
 #                 @button "New Question", class: 'btn btn-primary', click: 'showNewQuestionForm'
 #
-      @div outlet: 'pages', =>
+
 
 #         @div outlet: 'homePage', =>
 #           @div class: 'row', =>
@@ -62,7 +41,9 @@ class Views.Application extends View
   initialize: ->
     Monarch.Remote.Server.fetch([Models.User, Models.Question, Models.Answer, Models.Ranking, Models.Vote, Models.QuestionComment])
       .onSuccess =>
-        @questionsList.setRelation(Models.Question.table)
+#         @questionsList.setRelation(Models.Question.table)
+        @questionPage.setQuestion(Models.Question.first())
+        @showPage('questionPage')
         @buildAndStartRouter()
 
     @hidePages()
@@ -81,14 +62,15 @@ class Views.Application extends View
         view.showQuestion(params.questionId)
 
       @get '/', ->
-        view.showQuestionsList()
+        view.showQuestion(1)
+#         view.showQuestionsList()
 
   showQuestionsList: ->
     @showPage('questionsList')
 
   showQuestion: (id) ->
     @questionView.setQuestion(Models.Question.find(parseInt(id)))
-    @showPage('questionView')
+    @showPage('questionPage')
 
   hidePages: ->
     @pages.children().hide()
