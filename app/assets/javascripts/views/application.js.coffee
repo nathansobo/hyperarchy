@@ -42,7 +42,6 @@ class Views.Application extends View
     Monarch.Remote.Server.fetch([Models.User, Models.Question, Models.Answer, Models.Ranking, Models.Vote, Models.QuestionComment])
       .onSuccess =>
 #         @questionsList.setRelation(Models.Question.table)
-        @questionPage.setQuestion(Models.Question.first())
         @showPage('questionPage')
         @buildAndStartRouter()
 
@@ -69,7 +68,7 @@ class Views.Application extends View
     @showPage('questionsList')
 
   showQuestion: (id) ->
-    @questionView.setQuestion(Models.Question.find(parseInt(id)))
+    @questionPage.setQuestion(Models.Question.find(parseInt(id)))
     @showPage('questionPage')
 
   hidePages: ->

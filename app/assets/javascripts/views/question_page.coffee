@@ -4,23 +4,37 @@ class Views.QuestionPage extends View
       @header =>
         @div class: 'container', =>
           @div class: 'row', =>
-            @div class: 'span10', =>
+            @div class: 'span20', =>
               @img id: 'creator-avatar', class: 'img-rounded', outlet: 'creatorAvatar'
               @h1 outlet: 'body'
 
-            @div class: 'span2', =>
+            @div class: 'span4', =>
                 @button "+ Add Answer", class: 'btn btn-large btn-primary pull-right', click: 'addAnswer'
 
       @div class: 'container', =>
         @div class: 'row', =>
-          @div class: 'span4 nav-column', =>
-            @ul class: 'nav nav-tabs nav-stacked', =>
-              @li => @a "Collective Ranking"
-              @li => @a "Individual Rankings", class: 'no-href', click: 'showAllVotes', outlet: 'showAllVotesLink'
+          @div class: 'span6', =>
+            @ul class: 'nav nav-tabs nav-stacked left-nav', =>
+              @li =>
+                @a =>
+                  @i class: 'icon-chevron-right'
+                  @span "Combined Opinion"
+              @li =>
+                @a =>
+                  @i class: 'icon-chevron-right'
+                  @span "New Answers"
+              @li =>
+                @a =>
+                  @i class: 'icon-chevron-right'
+                  @span "Unranked Answers"
+              @li =>
+                @a =>
+                  @i class: 'icon-chevron-down'
+                  @span "Individual Opinions"
 
-          @div class: 'span4', =>
-            @h4 class: 'collective column-header', =>
-              @a "Combined Ranking", class: 'no-href disabled', click: 'showCollectiveVote', outlet: 'showCollectiveVoteLink'
+
+          @div class: 'span9', =>
+            @h4 "Combined Ranking", class: 'collective column-header'
 
             @subview 'collectiveVote', new Views.RelationView(
               attributes: { class: 'collective vote column' }
@@ -31,7 +45,7 @@ class Views.QuestionPage extends View
               buildItem: (vote) -> new Views.VoteView(vote)
             )
 
-          @div class: 'span4', =>
+          @div class: 'span9', =>
             @h4 "Your Ranking", class: 'column-header'
 
             @div class: 'personal-vote-wrapper', =>
@@ -106,20 +120,16 @@ class Views.QuestionPage extends View
     @allVotes.setRelation(@question.votes())
     @updateVotingInstructions()
 
-    @subscriptions.add @question.votes().onInsert => @updateShowAllVotesLink()
-    @subscriptions.add @question.votes().onRemove => @updateShowAllVotesLink()
-    @updateShowAllVotesLink()
-
 #     @subscriptions.add @question.comments().onInsert => @updateDiscussionHeader()
 #     @subscriptions.add @question.comments().onRemove => @updateDiscussionHeader()
 #     @updateDiscussionHeader()
 #
 #     @discussion.setComments(@question.comments())
 #
-    unless @question.creator() == Models.User.getCurrent()
-      @editButton.hide()
-      @deleteButton.hide()
-
+#     unless @question.creator() == Models.User.getCurrent()
+#       @editButton.hide()
+#       @deleteButton.hide()
+#
   buildAnswerItem: (answer, options) ->
     new Views.AnswerItem(answer, options)
 
