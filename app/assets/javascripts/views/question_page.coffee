@@ -31,19 +31,19 @@ class Views.QuestionPage extends View
 
 
           @div class: 'span9', =>
-            @h4 "Combined Ranking", class: 'collective column-header'
+            @h4 "Combined Ranking", class: 'collective list-header'
             @subview 'collectiveVote', new Views.RelationView(
-              attributes: { class: 'collective vote column' }
+              attributes: { class: 'collective answer-list' }
             )
 
           @div class: 'span9', =>
-            @h4 class: 'column-header', =>
+            @h4 class: 'list-header', =>
               @text "Your Ranking"
               @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right', click: 'addAnswer'
 
             @div class: 'personal-vote-wrapper', =>
               @subview 'personalVote', new Views.RelationView(
-                attributes: { class: 'personal vote column' }
+                attributes: { class: 'personal answer-list' }
               )
               @div class: 'voting-instructions', outlet: 'votingInstructions', =>
                 @div class: 'icons img-rounded', =>
