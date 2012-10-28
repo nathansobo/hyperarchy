@@ -1,13 +1,10 @@
 class Views.AnswerItem extends View
-  @content: (answer, options={}) ->
+  @content: (answer, index, options={}) ->
     @li class: 'answer', 'data-answer-id': answer.id(), =>
-      if options.draggable
-        @div "", class: 'personal-rank pull-right', outlet: 'rankIndicator'
-
+      @div index + 1, class: 'index'
       @i class: 'small icon-remove pull-right', click: 'deleteAnswer'
       @i class: 'small icon-edit pull-right', click: 'editAnswer'
-
-      @span class: 'neuter-markdown', outlet: 'body', =>
+      @div class: 'body neuter-markdown', outlet: 'body', =>
         @raw markdown.toHTML(answer.body())
 
   initialize: (@answer, options={}) ->

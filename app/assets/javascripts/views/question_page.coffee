@@ -4,12 +4,9 @@ class Views.QuestionPage extends View
       @header =>
         @div class: 'container', =>
           @div class: 'row', =>
-            @div class: 'span20', =>
-              @img id: 'creator-avatar', class: 'img-rounded', outlet: 'creatorAvatar'
-              @h1 outlet: 'body'
-
-            @div class: 'span4', =>
-                @button "+ Add Answer", class: 'btn btn-large btn-primary pull-right', click: 'addAnswer'
+            @div class: 'span24', =>
+              @img id: 'creator-avatar', class: 'img-rounded pull-right', outlet: 'creatorAvatar'
+              @h1 outlet: 'body', class: 'body'
 
       @div class: 'container', =>
         @div class: 'row', =>
@@ -35,18 +32,14 @@ class Views.QuestionPage extends View
 
           @div class: 'span9', =>
             @h4 "Combined Ranking", class: 'collective column-header'
-
             @subview 'collectiveVote', new Views.RelationView(
               attributes: { class: 'collective vote column' }
             )
 
-            @subview 'allVotes', new Views.RelationView(
-              attributes: { class: 'all-votes column hide' }
-              buildItem: (vote) -> new Views.VoteView(vote)
-            )
-
           @div class: 'span9', =>
-            @h4 "Your Ranking", class: 'column-header'
+            @h4 class: 'column-header', =>
+              @text "Your Ranking"
+              @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right', click: 'addAnswer'
 
             @div class: 'personal-vote-wrapper', =>
               @subview 'personalVote', new Views.RelationView(
@@ -58,7 +51,6 @@ class Views.QuestionPage extends View
                   @i class: 'large icon-list-ol'
                 @div class: 'words lead', "Drag answers here to influence the collective ranking"
 
-#
 #         @div class: 'span4', =>
 #           @a class: 'delete btn btn-link pull-right', outlet: 'deleteButton', click: 'deleteQuestion', =>
 #             @i class: 'icon-trash'
@@ -75,7 +67,7 @@ class Views.QuestionPage extends View
 #
   initialize: (question) ->
     @subscriptions = new Monarch.Util.SubscriptionBundle
-    @collectiveVote.buildItem = (answer) => @buildAnswerItem(answer, draggable: true)
+    @collectiveVote.buildItem = (answer, index) => @buildAnswerItem(answer, index, draggable: true)
 
     @personalVote.buildItem = (ranking) =>
       @buildAnswerItem(ranking.answer(), position: ranking.position())
@@ -130,8 +122,8 @@ class Views.QuestionPage extends View
 #       @editButton.hide()
 #       @deleteButton.hide()
 #
-  buildAnswerItem: (answer, options) ->
-    new Views.AnswerItem(answer, options)
+  buildAnswerItem: (answer, index, options) ->
+    new Views.AnswerItem(answer, index, options)
 
   showCollectiveVote: ->
     @enableLink(@showAllVotesLink)

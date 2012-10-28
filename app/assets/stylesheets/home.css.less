@@ -1,6 +1,10 @@
 @import "twitter/bootstrap/variables";
 @import "twitter/bootstrap/mixins";
 
+.clear-float {
+  clear: both;
+}
+
 .neuter-markdown {
   h1, h2, h3, h4, h5, h6 {
     line-height: @baseLineHeight;
@@ -32,6 +36,7 @@
 html, body {
   height: 100%;
   box-sizing: border-box;
+  background: #f5f5f5;
 }
 
 .navbar {
@@ -50,6 +55,7 @@ html, body {
     margin: 0;
     margin-bottom: 20px;
     background: #eee;
+    #gradient > .vertical(#eee, #ccc);
 
     @media (max-width: 980px) and (min-width: 768px) {
       margin-top: -20px;
@@ -64,25 +70,19 @@ html, body {
 
     img#creator-avatar {
       float: left;
-      margin-right: @baseLineHeight;
     }
 
-    h1 {
+    .body {
       margin-top: 0px;
-      margin-left: 100px;
-    }
-
-    .btn i {
-      margin-right: 1ex;
+      margin-left: @baseLineHeight * 5;
     }
   }
 
   .left-nav {
-    margin-top: @baseLineHeight * 2;
-
     li {
       a {
         position: relative;
+        background: fadeout(white, 30%);
 
         i {
           position: absolute;
@@ -108,13 +108,17 @@ html, body {
   }
 
   .column-header {
-//    background: #333;
-//    color: white;
-    padding: @baseLineHeight / 2 0;
+    background: #444;
+    #gradient > .vertical(#444, #333);
+    color: white;
+    padding: @baseLineHeight / 2;
     margin: 0;
   }
 
-  h4 { margin-top: 0px }
+  h4 {
+    margin-top: 0px;
+    font-weight: normal;
+  }
 }
 
 .question {
@@ -174,7 +178,7 @@ html, body {
 }
 
 .answer {
-  list-style-position: inside;
+  list-style-type: none;
   background: white;
   border: 1px solid #ccc;
   padding: @baseLineHeight / 2 - 1px;
