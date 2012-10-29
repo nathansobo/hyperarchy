@@ -9,7 +9,7 @@ class Views.RelationView extends View
   buildItem: null
 
   # optional methods that can be assigned on creation
-  updateIndices: null
+  updateIndex: null
   onInsert: null
   onUpdate: null
   onRemove: null
@@ -36,18 +36,21 @@ class Views.RelationView extends View
       element = @elementForRecord(record, index)
       @insertAtIndex(element, index)
       @onInsert?(element, record, index)
+      @updateIndices()
 
     @subscribe relation, 'onUpdate', (record, changes, newIndex, oldIndex) =>
       if newIndex != oldIndex
         element = @elementForRecord(record, newIndex)
         @insertAtIndex(element, newIndex)
       @onUpdate?(element, record, changes, newIndex, oldIndex);
+      @updateIndices()
 
     @subscribe relation, 'onRemove', (record, index) =>
       element = @elementForRecord(record, index);
       element.remove()
       delete @elementsById[record.id()]
       @onRemove?(element, record, index)
+      @updateIndices()
 
   insertAtIndex: (element, index) ->
     element.detach()
@@ -58,15 +61,14 @@ class Views.RelationView extends View
     else
       @append(element)
 
-    @updateIndices()
-
   elementForRecord: (record, index) ->
     @elementsById[record.id()] ?= @buildItem(record, index)
 
   updateIndices: ->
     if @updateIndex?
-      @children().each (index) =>
-        @updateIndex($(this), index)
+      view = this
+      @children().each (index) ->
+        view.updateIndex($(this), index)
 
   empty: ->
     element.remove() for id, element of @elementsById

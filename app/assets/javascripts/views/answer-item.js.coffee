@@ -1,7 +1,7 @@
 class Views.AnswerItem extends View
   @content: (answer, index, options={}) ->
     @li class: 'answer', 'data-answer-id': answer.id(), =>
-      @div index + 1, class: 'index' if index?
+      @div index + 1, class: 'index', outlet: 'index' if index?
       @i class: 'small icon-remove pull-right', click: 'deleteAnswer'
       @i class: 'small icon-edit pull-right', click: 'editAnswer'
       @div class: 'body neuter-markdown', outlet: 'body', =>

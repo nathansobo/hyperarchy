@@ -34,6 +34,8 @@ class Views.QuestionPage extends View
             @h4 "Combined Ranking", class: 'collective list-header'
             @subview 'answerList', new Views.RelationView(
               attributes: { class: 'collective answer-list' }
+              buildItem: (answer, index) -> new Views.AnswerItem(answer, index, draggable: true)
+              updateIndex: (item, index) -> item.find('.index').text(index + 1)
             )
 
           @div class: 'span9', =>
@@ -44,6 +46,8 @@ class Views.QuestionPage extends View
             @div class: 'personal-vote-wrapper', =>
               @subview 'personalVote', new Views.RelationView(
                 attributes: { class: 'personal answer-list' }
+                buildItem: (ranking, index) -> new Views.AnswerItem(ranking.answer(), index, position: ranking.position())
+                updateIndex: (item, index) -> item.find('.index').text(index + 1)
               )
               @div class: 'voting-instructions', outlet: 'votingInstructions', =>
                 @div class: 'icons img-rounded', =>
@@ -67,7 +71,6 @@ class Views.QuestionPage extends View
 #
   initialize: (question) ->
     @subscriptions = new Monarch.Util.SubscriptionBundle
-    @answerList.buildItem = (answer, index) => @buildAnswerItem(answer, index, draggable: true)
 
     @personalVote.buildItem = (ranking, index) =>
       @buildAnswerItem(ranking.answer(), index, position: ranking.position())
@@ -171,6 +174,7 @@ class Views.QuestionPage extends View
       position = lowerPosition + 1
 
     item.data('position', position)
+    @personalVote.updateIndices()
 
     Models.Ranking.createOrUpdate(
       answer: answer
