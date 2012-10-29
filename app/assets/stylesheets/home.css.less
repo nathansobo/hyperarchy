@@ -47,6 +47,32 @@ html, body {
   }
 }
 
+.answer {
+  list-style-type: none;
+  background: white;
+  border: 1px solid #bbb;
+  padding: @baseLineHeight / 2 - 1px;
+  .box-shadow(0px 1px 3px 0px rgba(0, 0, 0, .1));
+  .transition(background 400ms);
+  cursor: default;
+  font-size: 18px;
+
+  &.highlighted {
+    background: lighten(@yellow, 35%);
+  }
+
+  i { display: none }
+
+  &.editable:hover i {
+    display: inline;
+    visibility: visible;
+  }
+
+  .body {
+    p { margin: 0 }
+  }
+}
+
 #question-page {
   height: 100%;
 
@@ -113,37 +139,14 @@ html, body {
     color: white;
     padding: @baseLineHeight / 2;
     margin: 0;
-  }
 
-  .answer {
-    list-style-type: none;
-    background: white;
-    border: 1px solid #bbb;
-    padding: @baseLineHeight / 2 - 1px;
-    .box-shadow(0px 1px 3px 0px rgba(0, 0, 0, .1));
-    .transition(background 400ms);
-    cursor: default;
-
-    &.highlighted {
-      background: lighten(@yellow, 35%);
-    }
-
-    i { display: none }
-
-    &.editable:hover i {
-      display: inline;
-      visibility: visible;
-    }
-
-    .body {
-      p { margin: 0 }
+    .btn {
+      margin-top: -3px;
     }
   }
 
   .answer-list {
     margin: 0;
-    font-size: 18px;
-    line-height: @baseLineHeight * 1.5;
     height: 500px;
     overflow-y: auto;
     background: #ddd;
@@ -153,13 +156,17 @@ html, body {
     .answer {
       .clearfix();
 
+      &.ranked {
+        .index { background: lighten(@green, 42%); }
+      }
+
       .index {
         float: left;
         width: @baseLineHeight * 1.5;
         padding: @baseLineHeight / 4 0;
         text-align: center;
-        background: #f0f0f0;
-        border: 1px solid #ddd;
+        background: #eee;
+        //border: 1px solid #ddd;
         font-weight: bold;
       }
 

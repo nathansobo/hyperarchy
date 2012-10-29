@@ -32,7 +32,7 @@ class Views.QuestionPage extends View
 
           @div class: 'span9', =>
             @h4 "Combined Ranking", class: 'collective list-header'
-            @subview 'collectiveVote', new Views.RelationView(
+            @subview 'answerList', new Views.RelationView(
               attributes: { class: 'collective answer-list' }
             )
 
@@ -67,10 +67,10 @@ class Views.QuestionPage extends View
 #
   initialize: (question) ->
     @subscriptions = new Monarch.Util.SubscriptionBundle
-    @collectiveVote.buildItem = (answer, index) => @buildAnswerItem(answer, index, draggable: true)
+    @answerList.buildItem = (answer, index) => @buildAnswerItem(answer, index, draggable: true)
 
-    @personalVote.buildItem = (ranking) =>
-      @buildAnswerItem(ranking.answer(), position: ranking.position())
+    @personalVote.buildItem = (ranking, index) =>
+      @buildAnswerItem(ranking.answer(), index, position: ranking.position())
 
     @personalVote.onInsert = (item, ranking) =>
       @rankedItemsByAnswerId[ranking.answerId()]?.remove()
@@ -106,10 +106,8 @@ class Views.QuestionPage extends View
     @body.text(@question.body())
     question.getField('body').onChange (body) => @body.text(body)
 
-    @collectiveVote.setRelation(question.answers())
-
+    @answerList.setRelation(question.answers())
     @personalVote.setRelation(Models.User.getCurrent().rankingsForQuestion(question))
-    @allVotes.setRelation(@question.votes())
     @updateVotingInstructions()
 
 #     @subscriptions.add @question.comments().onInsert => @updateDiscussionHeader()
@@ -126,17 +124,8 @@ class Views.QuestionPage extends View
     new Views.AnswerItem(answer, index, options)
 
   showCollectiveVote: ->
-    @enableLink(@showAllVotesLink)
-    @disableLink(@showCollectiveVoteLink)
-    @allVotes.hide()
-    @collectiveVote.show()
 
   showAllVotes: ->
-    return unless @question.votes().size()
-    @enableLink(@showCollectiveVoteLink)
-    @disableLink(@showAllVotesLink)
-    @collectiveVote.hide()
-    @allVotes.show()
 
   updateShowAllVotesLink: ->
     count = @question.votes().size()
@@ -197,7 +186,7 @@ class Views.QuestionPage extends View
       onSubmit: (body) =>
         @question.answers().create({body})
           .onSuccess (answer) =>
-            answerItem = @collectiveVote.find(".answer[data-answer-id=#{answer.id()}]").view().buildDragHelper()
+            answerItem = @answerList.find(".answer[data-answer-id=#{answer.id()}]").view().buildDragHelper()
             @personalVote.prepend(answerItem)
             @updateAnswerRanking(answerItem)
     )
@@ -223,14 +212,14 @@ class Views.QuestionPage extends View
         _.delay(fn, 30)
       return
 
-    item = @collectiveVote.find(".answer[data-answer-id=#{answer.id()}]")
+    item = @answerList.find(".answer[data-answer-id=#{answer.id()}]")
 
-    if item.position().top < 0 or item.position().top > @collectiveVote.height()
-      @collectiveVote.scrollTo(item, over: -.5)
+    if item.position().top < 0 or item.position().top > @answerList.height()
+      @answerList.scrollTo(item, over: -.5)
     item.effect('highlight')
 
   updateRankIndicators: ->
-    @collectiveVote.find('.answer').each ->
+    @answerList.find('.answer').each ->
       $(this).view().updateRankIndicator()
 
   updateDiscussionHeader: ->
@@ -249,7 +238,7 @@ class Views.QuestionPage extends View
   remove: (selector, keepData) ->
     super
     unless keepData
-      @collectiveVote.remove()
+      @answerList.remove()
       @personalVote.remove()
       @allVotes.remove()
       @discussion.remove()
