@@ -19,7 +19,7 @@
 #= require jquery.ui.touch-punch
 #= require twitter/bootstrap
 #= require underscore
-#= require monarch
+#= require monarch/lib/monarch
 #= require space-pen
 #= require jquery.scrollTo-1.4.3.1
 #= require jquery.timeago
