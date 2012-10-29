@@ -1,5 +1,5 @@
 #= require 'application'
-#= require 'monarch_test_support'
+#= require 'monarch/lib/monarch_test_support'
 #= require_self
 #= require_tree .
 
