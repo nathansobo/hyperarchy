@@ -27,7 +27,6 @@ group :assets do
   gem 'underscore-rails'
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
-  gem 'monarch', :path => 'vendor/monarch'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
