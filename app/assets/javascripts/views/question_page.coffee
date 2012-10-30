@@ -20,7 +20,7 @@ class Views.QuestionPage extends View
           @div class: 'span6', =>
             @ul class: 'nav nav-tabs nav-stacked left-nav', =>
               @li =>
-                @a =>
+                @a class: 'selected', =>
                   @i class: 'icon-chevron-right'
                   @span "Combined Opinion"
               @li =>

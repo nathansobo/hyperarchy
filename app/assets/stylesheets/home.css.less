@@ -115,7 +115,13 @@ html, body {
     li {
       a {
         position: relative;
-        background: fadeout(white, 30%);
+        background: fadeout(white, 10%);
+
+        &.selected {
+          //background: fadeout(lighten(@blue, 30%), 30%);
+          background: fadeout(#0066cc, 20%);
+          color: white;
+        }
 
         i {
           position: absolute;
