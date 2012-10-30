@@ -5,6 +5,13 @@ class Views.QuestionPage extends View
         @div class: 'container', =>
           @div class: 'row', =>
             @div class: 'span24', =>
+              @div id: 'question-creator-links', class: 'pull-right hide', outlet: 'questionCreatorLinks', =>
+                @a class: 'delete pull-right', outlet: 'deleteButton', click: 'deleteQuestion', =>
+                  @i class: 'icon-trash'
+                  @text " Delete"
+                @a class: 'edit-body pull-right', outlet: 'editButton', click: 'editQuestionBody', =>
+                  @i class: 'icon-edit'
+                  @text " Edit"
               @img id: 'creator-avatar', class: 'img-rounded pull-right', outlet: 'creatorAvatar'
               @h1 outlet: 'body', class: 'body'
 
@@ -54,14 +61,6 @@ class Views.QuestionPage extends View
                   @i class: 'large icon-arrow-right'
                   @i class: 'large icon-list-ol'
                 @div class: 'words lead', "Drag answers here to influence the collective ranking"
-
-#         @div class: 'span4', =>
-#           @a class: 'delete btn btn-link pull-right', outlet: 'deleteButton', click: 'deleteQuestion', =>
-#             @i class: 'icon-trash'
-#             @span "Delete"
-#           @a class: 'edit-body btn btn-link pull-right', outlet: 'editButton', click: 'editQuestionBody', =>
-#             @i class: 'icon-edit'
-#             @span "Edit"
 #
 #       @div class: 'row', =>
 #
@@ -119,10 +118,11 @@ class Views.QuestionPage extends View
 #
 #     @discussion.setComments(@question.comments())
 #
-#     unless @question.creator() == Models.User.getCurrent()
-#       @editButton.hide()
-#       @deleteButton.hide()
-#
+    if @question.creator() == Models.User.getCurrent()
+      @questionCreatorLinks.show()
+    else
+      @questionCreatorLinks.hide()
+
   buildAnswerItem: (answer, index, options) ->
     new Views.AnswerItem(answer, index, options)
 
