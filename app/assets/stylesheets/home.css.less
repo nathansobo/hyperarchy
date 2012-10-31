@@ -55,7 +55,7 @@ html, body {
   .box-shadow(0px 1px 3px 0px rgba(0, 0, 0, .1));
   .transition(background 400ms);
   cursor: default;
-  font-size: 18px;
+  font-size: 16px;
 
   &.highlighted {
     background: lighten(@yellow, 35%);
@@ -116,6 +116,8 @@ html, body {
       a {
         position: relative;
         background: fadeout(white, 10%);
+        font-size: 16px;
+        padding: @baseLineHeight / 2;
 
         &.selected {
           //background: fadeout(lighten(@blue, 30%), 30%);
