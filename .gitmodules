@@ -1,6 +1,6 @@
 [submodule "vendor/prequel"]
 	path = vendor/prequel
-	url = https://github.com/nathansobo/prequel.git
+	url = git@github.com:nathansobo/prequel.git
 [submodule "vendor/assets/javascripts/monarch"]
 	path = vendor/assets/javascripts/monarch
 	url = git@github.com:nathansobo/monarch.git
