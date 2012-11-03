@@ -29,6 +29,9 @@ class Views.Application extends View
         @generateRequestOnPageLoad = true
 
       @get '/:questionId', ({params}) ->
+        Davis.location.assign("/questions/#{params.questionId}")
+
+      @get '/questions/:questionId', ({params}) ->
         view.showPage('questionPage').setQuestionId(params.questionId)
 
       @get '/', ->
