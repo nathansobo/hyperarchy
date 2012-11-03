@@ -12,41 +12,12 @@ class Views.Application extends View
                 @span "Hyperarchy"
 
       @div id: 'pages', outlet: 'pages', =>
+        @subview 'homePage', new Views.HomePage
         @subview 'questionPage', new Views.QuestionPage
 
-#       @div class: 'navbar navbar-fixed-top navbar-inverse', =>
-#         @div class: 'navbar-inner', =>
-#           @div class: 'container', =>
-#             @a "Hyperarchy", class: 'brand', href: '/'
-#             @ul class: 'nav pull-right', =>
-#               @li =>
-#                 @button "New Question", class: 'btn btn-primary', click: 'showNewQuestionForm'
-#
-
-
-#         @div outlet: 'homePage', =>
-#           @div class: 'row', =>
-#             @div class: 'span3 sidebar', =>
-#             @div class: 'span9', =>
-#
-# #         @subview 'questionsList', new Views.RelationView(
-#           tag: 'div'
-#           attributes: { id: 'questions', class: 'container' }
-#           buildItem: (question) ->
-#             $$ -> @div question.body(), class: 'question', 'data-question-id': question.id()
-#         )
-#
-#         @subview 'questionView', new Views.QuestionView
-
   initialize: ->
-    Monarch.Remote.Server.fetch([Models.User, Models.Question, Models.Answer, Models.Ranking, Models.Vote, Models.QuestionComment])
-      .onSuccess =>
-#         @questionsList.setRelation(Models.Question.table)
-        @showPage('questionPage')
-        @buildAndStartRouter()
-
     @hidePages()
-
+    @buildAndStartRouter()
     @on 'click', '#questions .question', (e) =>
       questionId = $(e.target).data('question-id')
       Davis.location.assign "/#{questionId}"
@@ -58,18 +29,10 @@ class Views.Application extends View
         @generateRequestOnPageLoad = true
 
       @get '/:questionId', ({params}) ->
-        view.showQuestion(params.questionId)
+        view.showPage('questionPage').setQuestionId(params.questionId)
 
       @get '/', ->
-        view.showQuestion(1)
-#         view.showQuestionsList()
-
-  showQuestionsList: ->
-    @showPage('questionsList')
-
-  showQuestion: (id) ->
-    @questionPage.setQuestion(Models.Question.find(parseInt(id)))
-    @showPage('questionPage')
+        view.showPage('homePage')
 
   hidePages: ->
     @pages.children().hide()

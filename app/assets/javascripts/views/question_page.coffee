@@ -1,3 +1,5 @@
+{ Question, Answer, User, Ranking, Vote, QuestionComment } = Models
+
 class Views.QuestionPage extends View
   @content: ->
     @div id: 'question-page', =>
@@ -97,6 +99,12 @@ class Views.QuestionPage extends View
     )
 
     @setQuestion(question)
+
+  setQuestionId: (questionId) ->
+    questionId = parseInt(questionId)
+    questionRelations = [Answer, Ranking, Vote].map (r) -> r.where({questionId})
+    Monarch.Remote.Server.fetch([User, Question.where(id: questionId), questionRelations...])
+      .onSuccess => @setQuestion(Question.find(questionId))
 
   setQuestion: (@question) ->
     return unless @question?
