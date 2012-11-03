@@ -7,6 +7,7 @@ class Models.Answer extends Monarch.Record
     creatorId: 'integer'
     body: 'string'
     position: 'integer'
+    createdAt: 'datetime'
 
   @defaultOrderBy 'position asc'
 

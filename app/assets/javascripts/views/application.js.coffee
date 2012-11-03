@@ -18,9 +18,6 @@ class Views.Application extends View
   initialize: ->
     @hidePages()
     @buildAndStartRouter()
-    @on 'click', '#questions .question', (e) =>
-      questionId = $(e.target).data('question-id')
-      Davis.location.assign "/#{questionId}"
 
   buildAndStartRouter: ->
     view = this
@@ -28,11 +25,14 @@ class Views.Application extends View
       @configure ->
         @generateRequestOnPageLoad = true
 
+      @get '/questions/:questionId', ({params}) ->
+        view.showQuestionPage(params.questionId).showCombinedRanking()
+
+      @get '/questions/:questionId/new', ({params}) ->
+        view.showQuestionPage(params.questionId).showNewAnswers()
+
       @get '/:questionId', ({params}) ->
         Davis.location.assign("/questions/#{params.questionId}")
-
-      @get '/questions/:questionId', ({params}) ->
-        view.showPage('questionPage').setQuestionId(params.questionId)
 
       @get '/', ->
         view.showPage('homePage')
@@ -44,10 +44,7 @@ class Views.Application extends View
     @hidePages()
     this[outletName].show()
 
-  showNewQuestionForm: ->
-    new Views.ModalForm(
-      headingText: "Ask an open-ended question:"
-      buttonText: "Ask Question"
-      onSubmit: (body) =>
-        Models.Question.create({body})
-    )
+  showQuestionPage: (questionId) ->
+    page = @showPage('questionPage')
+    page.setQuestionId(parseInt(questionId))
+    page

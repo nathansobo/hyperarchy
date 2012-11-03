@@ -14,3 +14,10 @@ class Models.Question extends Monarch.Record
   @hasMany 'comments', className: 'QuestionComment'
 
   @belongsTo 'creator', className: 'User'
+
+  newAnswers: ->
+    if @voteForCurrentUser()
+      @answers().where('createdAt >': @voteForCurrentUser().updatedAt())
+
+  voteForCurrentUser: ->
+    @votes().find(userId: Models.User.currentUserId)

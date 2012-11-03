@@ -20,19 +20,15 @@ class Views.QuestionPage extends View
       @div class: 'container', =>
         @div class: 'row', =>
           @div class: 'span6', =>
-            @ul class: 'nav nav-tabs nav-stacked left-nav', =>
+            @ul class: 'nav nav-tabs nav-stacked left-nav', outlet: 'leftNav', =>
               @li =>
-                @a class: 'selected', =>
+                @a outlet: 'combinedRankingLink', =>
                   @i class: 'icon-chevron-right'
                   @span "Combined Opinion"
               @li =>
-                @a =>
+                @a outlet: 'newAnswersLink', =>
                   @i class: 'icon-chevron-right'
                   @span "New Answers"
-              @li =>
-                @a =>
-                  @i class: 'icon-chevron-right'
-                  @span "Unranked Answers"
               @li =>
                 @a =>
                   @i class: 'icon-chevron-down'
@@ -73,9 +69,6 @@ class Views.QuestionPage extends View
   initialize: (question) ->
     @subscriptions = new Monarch.Util.SubscriptionBundle
 
-    @personalVote.buildItem = (ranking, index) =>
-      @buildAnswerItem(ranking.answer(), index, position: ranking.position())
-
     @personalVote.onInsert = (item, ranking) =>
       @rankedItemsByAnswerId[ranking.answerId()]?.remove()
       @rankedItemsByAnswerId[ranking.answerId()] = item
@@ -101,9 +94,10 @@ class Views.QuestionPage extends View
     @setQuestion(question)
 
   setQuestionId: (questionId) ->
-    questionId = parseInt(questionId)
+    return if @questionId == questionId
+    @questionId = questionId
     questionRelations = [Answer, Ranking, Vote].map (r) -> r.where({questionId})
-    Monarch.Remote.Server.fetch([User, Question.where(id: questionId), questionRelations...])
+    @fetchPromise = Monarch.Remote.Server.fetch([User, Question.where(id: questionId), questionRelations...])
       .onSuccess => @setQuestion(Question.find(questionId))
 
   setQuestion: (@question) ->
@@ -116,7 +110,6 @@ class Views.QuestionPage extends View
     @body.text(@question.body())
     question.getField('body').onChange (body) => @body.text(body)
 
-    @answerList.setRelation(question.answers())
     @personalVote.setRelation(Models.User.getCurrent().rankingsForQuestion(question))
     @updateVotingInstructions()
 
@@ -126,36 +119,28 @@ class Views.QuestionPage extends View
 #
 #     @discussion.setComments(@question.comments())
 #
+    @combinedRankingLink.attr('href', "/questions/#{@question.id()}")
+    @newAnswersLink.attr('href', "/questions/#{@question.id()}/new")
+
     if @question.creator() == Models.User.getCurrent()
       @questionCreatorLinks.show()
     else
       @questionCreatorLinks.hide()
 
-  buildAnswerItem: (answer, index, options) ->
-    new Views.AnswerItem(answer, index, options)
+  showCombinedRanking: ->
+    @fetchPromise.onSuccess =>
+      @highlightLeftNavLink(@combinedRankingLink)
+      @answerList.setRelation(@question.answers())
 
-  showCollectiveVote: ->
+  showNewAnswers: ->
+    @fetchPromise.onSuccess =>
+      @highlightLeftNavLink(@newAnswersLink)
+      if newAnswers = @question.newAnswers()
+        @answerList.setRelation(newAnswers)
 
-  showAllVotes: ->
-
-  updateShowAllVotesLink: ->
-    count = @question.votes().size()
-
-    if count == 0
-      @showAllVotesLink.addClass('double-disabled')
-    else
-      @showAllVotesLink.removeClass('double-disabled')
-
-    if count == 1
-      @showAllVotesLink.text("1 Individual Ranking")
-    else
-      @showAllVotesLink.text("#{count} Individual Rankings")
-
-  enableLink: (link) ->
-    link.removeClass('disabled')
-
-  disableLink: (link) ->
-    link.addClass('disabled')
+  highlightLeftNavLink: (link) ->
+    @leftNav.find('a').removeClass('selected')
+    link.addClass('selected')
 
   updateAnswerRanking: (item) ->
     answerId = item.data('answer-id')
