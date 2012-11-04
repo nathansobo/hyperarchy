@@ -30,10 +30,20 @@ class Views.QuestionPage extends View
                   @i class: 'icon-chevron-right'
                   @span "New Answers"
               @li =>
-                @a =>
+                @a click: 'showIndividualRankings', outlet: 'showIndividualRankingsLink', =>
                   @i class: 'icon-chevron-down'
                   @span "Individual Rankings"
 
+              @li id: 'individual-rankings', outlet: 'individualRankings', class: 'hide', =>
+                @a =>
+                  @subview 'individualRankingsList', new Views.RelationView(
+                    attributes: { id: 'individual-rankings-list' }
+                    buildItem: (vote) ->
+                      $$ ->
+                        @li => @a =>
+                          @img src: vote.user().avatarUrl()
+                          @span vote.user().fullName()
+                  )
 
           @div class: 'span9', =>
             @h4 "Combined Ranking", class: 'collective list-header', outlet: 'answerListHeader'
@@ -122,6 +132,8 @@ class Views.QuestionPage extends View
     @combinedRankingLink.attr('href', "/questions/#{@question.id()}")
     @newAnswersLink.attr('href', "/questions/#{@question.id()}/new")
 
+    @individualRankingsList.setRelation(@question.votes())
+
     if @question.creator() == Models.User.getCurrent()
       @questionCreatorLinks.show()
     else
@@ -139,6 +151,9 @@ class Views.QuestionPage extends View
       @answerListHeader.text("New Answers")
       if newAnswers = @question.newAnswers()
         @answerList.setRelation(newAnswers)
+
+  showIndividualRankings: ->
+    @individualRankings.show()
 
   highlightLeftNavLink: (link) ->
     @leftNav.find('a').removeClass('selected')
