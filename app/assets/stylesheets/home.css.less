@@ -185,6 +185,7 @@ html, body {
           li {
             a {
               display: block;
+              position: relative;
               padding: @baseLineHeight / 2;
               border-bottom: 1px solid #dadada;
               background: none;
@@ -195,6 +196,8 @@ html, body {
                 margin: 0;
                 margin-right: @baseLineHeight / 2;
               }
+
+              span { vertical-align: middle; }
             }
             &:last-child a {
               padding-bottom: @baseLineHeight / 2;

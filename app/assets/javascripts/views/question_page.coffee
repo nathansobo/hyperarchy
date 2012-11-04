@@ -42,6 +42,7 @@ class Views.QuestionPage extends View
                     buildItem: (vote) ->
                       $$ ->
                         @li => @a =>
+                          @i class: 'icon-chevron-right'
                           @img src: vote.user().avatarUrl()
                           @span vote.user().fullName()
                   )
