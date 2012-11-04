@@ -24,7 +24,7 @@ class Views.QuestionPage extends View
               @li =>
                 @a outlet: 'combinedRankingLink', =>
                   @i class: 'icon-chevron-right'
-                  @span "Combined Opinion"
+                  @span "Combined Ranking"
               @li =>
                 @a outlet: 'newAnswersLink', =>
                   @i class: 'icon-chevron-right'
@@ -32,11 +32,11 @@ class Views.QuestionPage extends View
               @li =>
                 @a =>
                   @i class: 'icon-chevron-down'
-                  @span "Individual Opinions"
+                  @span "Individual Rankings"
 
 
           @div class: 'span9', =>
-            @h4 "Combined Ranking", class: 'collective list-header'
+            @h4 "Combined Ranking", class: 'collective list-header', outlet: 'answerListHeader'
             @subview 'answerList', new Views.RelationView(
               attributes: { class: 'collective answer-list' }
               buildItem: (answer, index) -> new Views.AnswerItem(answer, index, draggable: true)
@@ -130,11 +130,13 @@ class Views.QuestionPage extends View
   showCombinedRanking: ->
     @fetchPromise.onSuccess =>
       @highlightLeftNavLink(@combinedRankingLink)
+      @answerListHeader.text("Combined Ranking")
       @answerList.setRelation(@question.answers())
 
   showNewAnswers: ->
     @fetchPromise.onSuccess =>
       @highlightLeftNavLink(@newAnswersLink)
+      @answerListHeader.text("New Answers")
       if newAnswers = @question.newAnswers()
         @answerList.setRelation(newAnswers)
 
