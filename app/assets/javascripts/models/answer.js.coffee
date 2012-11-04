@@ -15,5 +15,8 @@ class Models.Answer extends Monarch.Record
   @belongsTo 'creator', className: 'User'
   @hasMany 'rankings'
 
+  answer: ->
+    this
+
   rankingForCurrentUser: ->
     @rankings().find(userId: Models.User.getCurrent().id())

@@ -52,7 +52,8 @@ class Views.QuestionPage extends View
             @h4 "Combined Ranking", class: 'collective list-header', outlet: 'answerListHeader'
             @subview 'answerList', new Views.RelationView(
               attributes: { class: 'collective answer-list' }
-              buildItem: (answer, index) -> new Views.AnswerItem(answer, index, draggable: true)
+              buildItem: (answerOrRanking, index) ->
+                new Views.AnswerItem(answerOrRanking.answer(), index, draggable: true)
               updateIndex: (item, index) -> item.find('.index').text(index + 1)
             )
 
@@ -161,7 +162,7 @@ class Views.QuestionPage extends View
       @highlightLeftNavLink(@individualRankingsList.find("a[data-vote-id=#{voteId}]"))
       vote = Vote.find(voteId)
       @answerListHeader.text("#{vote.user().fullName()}'s Ranking")
-      @answerList.setRelation(vote.answers())
+      @answerList.setRelation(vote.rankings())
 
 
   toggleIndividualRankings: ->
