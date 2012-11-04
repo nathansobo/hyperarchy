@@ -18,7 +18,7 @@ class Views.QuestionPage extends View
               @h1 outlet: 'body', class: 'body'
 
       @div class: 'container', =>
-        @div class: 'row', =>
+        @div class: 'row', outlet: 'rankingRow', =>
           @div class: 'span6', =>
             @ul class: 'nav nav-tabs nav-stacked left-nav', outlet: 'leftNav', =>
               @li =>
@@ -30,8 +30,9 @@ class Views.QuestionPage extends View
                   @i class: 'icon-chevron-right'
                   @span "New Answers"
               @li =>
-                @a click: 'showIndividualRankings', outlet: 'showIndividualRankingsLink', =>
+                @a id: 'show-individual-rankings', click: 'toggleIndividualRankings', outlet: 'showIndividualRankingsLink', =>
                   @i class: 'icon-chevron-down'
+                  @i class: 'hide icon-chevron-up'
                   @span "Individual Rankings"
 
               @li id: 'individual-rankings', outlet: 'individualRankings', class: 'hide', =>
@@ -152,8 +153,18 @@ class Views.QuestionPage extends View
       if newAnswers = @question.newAnswers()
         @answerList.setRelation(newAnswers)
 
+  toggleIndividualRankings: ->
+    if @individualRankings.is(':visible')
+      @showIndividualRankingsLink.removeClass('showing')
+      @individualRankings.hide()
+    else
+      @showIndividualRankings()
+
   showIndividualRankings: ->
+    @showIndividualRankingsLink.addClass('showing')
+    @individualRankingsList.css('max-height', @rankingRow.height() - @showIndividualRankingsLink.position().top - @showIndividualRankingsLink.outerHeight() - 1)
     @individualRankings.show()
+    @individualRankingsList.scrollTop(0)
 
   highlightLeftNavLink: (link) ->
     @leftNav.find('a').removeClass('selected')

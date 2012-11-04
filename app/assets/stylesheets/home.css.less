@@ -126,6 +126,8 @@ html, body {
   }
 
   .left-nav {
+    position: relative;
+
     > li {
       > a {
         position: relative;
@@ -146,6 +148,15 @@ html, body {
           margin-top: -6.5px;
           right: 1ex;
         }
+
+        &#show-individual-rankings {
+          .icon-chevron-up { display: none; }
+        }
+
+        &#show-individual-rankings.showing {
+          .icon-chevron-down { display: none; }
+          .icon-chevron-up { display: inline-block; }
+        }
       }
 
       &:first-child {
@@ -161,12 +172,15 @@ html, body {
         }
       }
 
-      &#individual-rankings a {
+      &#individual-rankings > a {
         padding: 0;
+        box-sizing: border-box;
+        background: #f6f6f6;
 
         ol {
           list-style: none;
           margin: 0;
+          overflow-y: auto;
 
           li {
             a {
@@ -174,6 +188,7 @@ html, body {
               padding: @baseLineHeight / 2;
               border-bottom: 1px solid #dadada;
               background: none;
+              text-decoration: none;
 
               img {
                 .square(@baseLineHeight * 2);
