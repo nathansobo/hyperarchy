@@ -13,3 +13,4 @@ class Models.Vote extends Monarch.Record
   @belongsTo 'user'
   @belongsTo 'question'
   @hasMany 'rankings'
+  @hasMany 'answers', through: 'rankings'

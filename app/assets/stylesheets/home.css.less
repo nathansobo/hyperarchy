@@ -128,6 +128,13 @@ html, body {
   .left-nav {
     position: relative;
 
+    a.selected {
+      //background: fadeout(lighten(@blue, 30%), 30%);
+      background: fadeout(#0066cc, 20%);
+      color: white;
+    }
+
+
     > li {
       > a {
         position: relative;
@@ -135,12 +142,6 @@ html, body {
         font-size: 16px;
         padding: @baseLineHeight / 2;
         cursor: pointer;
-
-        &.selected {
-          //background: fadeout(lighten(@blue, 30%), 30%);
-          background: fadeout(#0066cc, 20%);
-          color: white;
-        }
 
         i {
           position: absolute;
@@ -188,7 +189,6 @@ html, body {
               position: relative;
               padding: @baseLineHeight / 2;
               border-bottom: 1px solid #dadada;
-              background: none;
               text-decoration: none;
 
               img {

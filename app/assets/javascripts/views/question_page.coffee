@@ -41,10 +41,11 @@ class Views.QuestionPage extends View
                     attributes: { id: 'individual-rankings-list' }
                     buildItem: (vote) ->
                       $$ ->
-                        @li => @a =>
-                          @i class: 'icon-chevron-right'
-                          @img src: vote.user().avatarUrl()
-                          @span vote.user().fullName()
+                        @li =>
+                          @a href: "/questions/#{vote.questionId()}/votes/#{vote.id()}", 'data-vote-id': vote.id(), =>
+                            @i class: 'icon-chevron-right'
+                            @img src: vote.user().avatarUrl()
+                            @span vote.user().fullName()
                   )
 
           @div class: 'span9', =>
@@ -154,6 +155,15 @@ class Views.QuestionPage extends View
       if newAnswers = @question.newAnswers()
         @answerList.setRelation(newAnswers)
 
+  showVote: (voteId) ->
+    @fetchPromise.onSuccess =>
+      @showIndividualRankings()
+      @highlightLeftNavLink(@individualRankingsList.find("a[data-vote-id=#{voteId}]"))
+      vote = Vote.find(voteId)
+      @answerListHeader.text("#{vote.user().fullName()}'s Ranking")
+      @answerList.setRelation(vote.answers())
+
+
   toggleIndividualRankings: ->
     if @individualRankings.is(':visible')
       @showIndividualRankingsLink.removeClass('showing')
@@ -163,9 +173,11 @@ class Views.QuestionPage extends View
 
   showIndividualRankings: ->
     @showIndividualRankingsLink.addClass('showing')
-    @individualRankingsList.css('max-height', @rankingRow.height() - @showIndividualRankingsLink.position().top - @showIndividualRankingsLink.outerHeight() - 1)
+    unless @individualRankings.is(':visible')
+      @individualRankingsList.css('max-height', @rankingRow.height() - @showIndividualRankingsLink.position().top - @showIndividualRankingsLink.outerHeight() - 1)
+      _.defer => @individualRankingsList.scrollTop(0)
     @individualRankings.show()
-    @individualRankingsList.scrollTop(0)
+
 
   highlightLeftNavLink: (link) ->
     @leftNav.find('a').removeClass('selected')

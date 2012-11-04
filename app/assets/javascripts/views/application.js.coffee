@@ -26,11 +26,18 @@ class Views.Application extends View
         @generateRequestOnPageLoad = true
 
       @get '/questions/:questionId', ({params}) ->
-        view.showQuestionPage(params.questionId).showCombinedRanking()
+        { questionId } = params
+        view.showQuestionPage(questionId).showCombinedRanking()
 
       @get '/questions/:questionId/new', ({params}) ->
-        view.showQuestionPage(params.questionId).showNewAnswers()
+        { questionId } = params
+        view.showQuestionPage(questionId).showNewAnswers()
 
+      @get '/questions/:questionId/votes/:voteId', ({params}) ->
+        { questionId, voteId } = params
+        view.showQuestionPage(questionId).showVote(parseInt(voteId))
+
+      # for backward-compatibility w/ old url scheme
       @get '/:questionId', ({params}) ->
         Davis.location.assign("/questions/#{params.questionId}")
 
