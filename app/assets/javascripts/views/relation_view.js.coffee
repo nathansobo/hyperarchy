@@ -21,10 +21,11 @@ class Views.RelationView extends View
     @subscriptions = []
 
   setRelation: (relation) ->
+    return if relation == @relation
     @unsubscribe()
     @empty()
 
-    return if !relation? or relation == @relation
+    return return unless relation
     @relation = relation
 
     @relation.each (record, index) =>
