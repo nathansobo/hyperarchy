@@ -19,36 +19,36 @@ class Views.QuestionPage extends View
 
       @div class: 'container', =>
         @div class: 'row', outlet: 'rankingRow', =>
-          @div class: 'span6', =>
-            @ul class: 'nav nav-tabs nav-stacked left-nav', outlet: 'leftNav', =>
+          @div class: 'span2', =>
+            @ul class: 'left-nav', outlet: 'leftNav', =>
               @li =>
                 @a outlet: 'combinedRankingLink', =>
-                  @i class: 'icon-chevron-right'
-                  @span "Combined Ranking"
-              @li =>
-                @a outlet: 'newAnswersLink', =>
-                  @i class: 'icon-chevron-right'
-                  @span "New Answers"
+                  @i class: 'icon-globe'
               @li =>
                 @a id: 'show-individual-rankings', click: 'toggleIndividualRankings', outlet: 'showIndividualRankingsLink', =>
-                  @i class: 'icon-chevron-down'
-                  @i class: 'hide icon-chevron-up'
-                  @span "Individual Rankings"
+                  @i class: 'icon-group'
+              @li =>
+                @a outlet: 'newAnswersLink', =>
+                  @i class: 'icon-asterisk'
+              @li =>
+                @a outlet: 'newAnswersLink', =>
+                  @i class: 'icon-random'
 
-              @li id: 'individual-rankings', outlet: 'individualRankings', class: 'hide', =>
-                @a =>
-                  @subview 'individualRankingsList', new Views.RelationView(
-                    attributes: { id: 'individual-rankings-list' }
-                    buildItem: (vote) ->
-                      $$ ->
-                        @li =>
-                          @a href: "/questions/#{vote.questionId()}/votes/#{vote.id()}", 'data-vote-id': vote.id(), =>
-                            @i class: 'icon-chevron-right'
-                            @img src: vote.user().avatarUrl()
-                            @span vote.user().fullName()
-                  )
 
-          @div class: 'span9', =>
+#               @li id: 'individual-rankings', outlet: 'individualRankings', class: 'hide', =>
+#                 @a =>
+#                   @subview 'individualRankingsList', new Views.RelationView(
+#                     attributes: { id: 'individual-rankings-list' }
+#                     buildItem: (vote) ->
+#                       $$ ->
+#                         @li =>
+#                           @a href: "/questions/#{vote.questionId()}/votes/#{vote.id()}", 'data-vote-id': vote.id(), =>
+#                             @i class: 'icon-chevron-right'
+#                             @img src: vote.user().avatarUrl()
+#                             @span vote.user().fullName()
+#                   )
+
+          @div class: 'span7', =>
             @h4 "Combined Ranking", class: 'collective list-header', outlet: 'answerListHeader'
             @subview 'answerList', new Views.RelationView(
               attributes: { class: 'collective answer-list' }
@@ -57,7 +57,7 @@ class Views.QuestionPage extends View
               updateIndex: (item, index) -> item.find('.index').text(index + 1)
             )
 
-          @div class: 'span9', =>
+          @div class: 'span7', =>
             @h4 class: 'list-header', =>
               @text "Your Ranking"
               @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right', click: 'addAnswer'
