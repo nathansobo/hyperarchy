@@ -153,6 +153,7 @@ class Views.QuestionPage extends View
         @answerList.setRelation(newAnswers)
 
   showVote: (userId) ->
+    @selectedVoteUserId = userId
     @fetchPromise.onSuccess =>
       @highlightLeftNavLink(@individualRankingsLink)
 
@@ -172,8 +173,10 @@ class Views.QuestionPage extends View
         @personalVote.sortable('disable')
 
   showIndividualRankings: ->
-    return unless firstVote = @question.votes().first()
-    Davis.location.assign("/questions/#{@question.id()}/rankings/#{firstVote.userId()}")
+    vote = @question.votes().find({userId: @selectedVoteUserId}) if @selectedVoteUserId
+    vote ?= @question.votes().first()
+    return unless vote
+    Davis.location.assign("/questions/#{@question.id()}/rankings/#{vote.userId()}")
 
   highlightLeftNavLink: (link) ->
     @leftNav.find('a').removeClass('selected')
