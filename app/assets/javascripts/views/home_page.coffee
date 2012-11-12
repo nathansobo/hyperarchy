@@ -14,6 +14,7 @@ class Views.HomePage extends View
           $$ ->
             @li =>
               @a class: 'question', href: "/questions/#{question.id()}", =>
+                @i class: 'icon-chevron-right icon-large'
                 @img src: question.creator().avatarUrl()
                 @div question.body(), class: "body"
       )
@@ -29,9 +30,7 @@ class Views.HomePage extends View
       @questionsList.setRelation(Models.Question.table)
 
   updateQuestionsHeader: ->
-
     size = Question.size()
-
     if size == 1
       @questionsHeader.text("1 Question")
     else

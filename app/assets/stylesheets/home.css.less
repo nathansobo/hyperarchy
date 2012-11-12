@@ -76,6 +76,7 @@ html, body {
   }
 
   .question {
+    position: relative;
     .clearfix();
     display: block;
     text-decoration: none;
@@ -85,15 +86,28 @@ html, body {
     margin-bottom: @baseLineHeight;
     .box-shadow(0px 1px 6px 0px rgba(0, 0, 0, .2));
 
+    &:hover {
+      .box-shadow(0px 1px 8px 0px rgba(0, 0, 0, .4));
+    }
+
     img {
       .square(@baseLineHeight * 4);
       float: left;
+    }
+
+    i {
+      position: absolute;
+      right: @baseLineHeight;
+      top: 50%;
+      margin-top: -10px;
+      color: #888;
     }
 
     .body {
       font-size: 27px;
       line-height: @baseLineHeight * 2;
       margin-left: @baseLineHeight * 5;
+      margin-right: @baseLineHeight * 3;
     }
 
   }
