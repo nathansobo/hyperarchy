@@ -84,6 +84,8 @@ class Views.QuestionPage extends View
 
     removeItem = null
     @personalVote.sortable(
+      appendTo: 'body'
+      helper: (e, item) -> item.view().buildDragHelper()
       receive: -> removeItem = 0
       over: -> removeItem = 0
       out: -> removeItem = 1
