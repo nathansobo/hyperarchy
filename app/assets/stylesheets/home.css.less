@@ -248,6 +248,40 @@ html, body {
     }
   }
 
+  .voting-instructions {
+    text-align: center;
+    position: absolute;
+    left: @baseLineHeight;
+    right: @baseLineHeight;
+    padding: @baseLineHeight;
+    top: 50%;
+    margin-top: -100px;
+
+    .icons {
+      color: @linkColorHover;
+      background: fadeout(white, 30%);
+      display: table;
+      padding: @baseLineHeight;
+      margin: 0 auto;
+
+      i {
+        position: relative;
+        font-size: 32px;
+        top: 3px;
+      }
+
+      .icon-arrow-right {
+        margin-right: @baseLineHeight / 2;
+      }
+    }
+
+    .words {
+      margin-top: @baseLineHeight / 2;
+      margin-bottom: 0;
+    }
+  }
+
+
   .discussion {
     position: absolute;
     width: 100%;
@@ -347,43 +381,6 @@ html, body {
   h4 {
     margin-top: 0px;
     font-weight: normal;
-  }
-}
-
-.personal-vote-wrapper {
-  position: relative;
-
-  .voting-instructions {
-    text-align: center;
-    position: absolute;
-    left: @baseLineHeight;
-    right: @baseLineHeight;
-    padding: @baseLineHeight;
-    top: 50%;
-    margin-top: -100px;
-
-    .icons {
-      color: @linkColorHover;
-      background: fadeout(white, 30%);
-      display: table;
-      padding: @baseLineHeight;
-      margin: 0 auto;
-
-      i {
-        position: relative;
-        font-size: 32px;
-        top: 3px;
-      }
-
-      .icon-arrow-right {
-        margin-right: @baseLineHeight / 2;
-      }
-    }
-
-    .words {
-      margin-top: @baseLineHeight / 2;
-      margin-bottom: 0;
-    }
   }
 }
 

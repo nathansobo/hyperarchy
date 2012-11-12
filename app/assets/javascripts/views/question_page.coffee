@@ -51,17 +51,16 @@ class Views.QuestionPage extends View
                 @text "Your Ranking"
                 @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right', click: 'addAnswer'
 
-              @div class: 'personal-vote-wrapper', =>
-                @subview 'personalVote', new Views.RelationView(
-                  attributes: { class: 'personal answer-list' }
-                  buildItem: (ranking, index) -> new Views.AnswerItem(ranking.answer(), index, position: ranking.position())
-                  updateIndex: (item, index) -> item.find('.index').text(index + 1)
-                )
-                @div class: 'voting-instructions', outlet: 'votingInstructions', =>
-                  @div class: 'icons img-rounded', =>
-                    @i class: 'large icon-arrow-right'
-                    @i class: 'large icon-list-ol'
-                  @div class: 'words lead', "Drag answers here to influence the collective ranking"
+              @subview 'personalVote', new Views.RelationView(
+                attributes: { class: 'personal answer-list' }
+                buildItem: (ranking, index) -> new Views.AnswerItem(ranking.answer(), index, position: ranking.position())
+                updateIndex: (item, index) -> item.find('.index').text(index + 1)
+              )
+              @div class: 'voting-instructions', outlet: 'votingInstructions', =>
+                @div class: 'icons img-rounded', =>
+                  @i class: 'large icon-arrow-right'
+                  @i class: 'large icon-list-ol'
+                @div class: 'words lead', "Drag answers here to influence the collective ranking"
 
             @div class: 'column', id: 'column3', =>
               @h4 'Discussion', id: 'discussion-header', outlet: 'discussionHeader'
