@@ -3,23 +3,24 @@
 class Views.QuestionPage extends View
   @content: ->
     @div id: 'question-page', =>
-      @header =>
-        @div class: 'container', =>
-          @div class: 'row', =>
-            @div class: 'span24', =>
-              @div id: 'question-creator-links', class: 'pull-right hide', outlet: 'questionCreatorLinks', =>
-                @a class: 'delete pull-right', outlet: 'deleteButton', click: 'deleteQuestion', =>
-                  @i class: 'icon-trash'
-                  @text " Delete"
-                @a class: 'edit-body pull-right', outlet: 'editButton', click: 'editQuestionBody', =>
-                  @i class: 'icon-edit'
-                  @text " Edit"
-              @img id: 'creator-avatar', class: 'img-rounded pull-right', outlet: 'creatorAvatar'
-              @h1 outlet: 'body', class: 'body'
 
       @div class: 'container', =>
-        @div class: 'row', outlet: 'rankingRow', =>
-          @div class: 'span2', =>
+        @header =>
+          @img id: 'creator-avatar', class: 'img-rounded pull-left', outlet: 'creatorAvatar'
+
+          @div id: 'question-creator-links', class: 'pull-right hide', outlet: 'questionCreatorLinks', =>
+            @a class: 'delete pull-right', outlet: 'deleteButton', click: 'deleteQuestion', =>
+              @i class: 'icon-trash'
+              @text " Delete"
+
+            @a class: 'edit-body pull-right', outlet: 'editButton', click: 'editQuestionBody', =>
+              @i class: 'icon-edit'
+              @text " Edit"
+
+          @h1 outlet: 'body', class: 'body'
+
+        @div id: 'body', =>
+          @div id: 'sidebar', =>
             @ul class: 'left-nav', outlet: 'leftNav', =>
               @li =>
                 @a outlet: 'combinedRankingLink', =>
@@ -31,8 +32,42 @@ class Views.QuestionPage extends View
                 @a outlet: 'newAnswersLink', =>
                   @i class: 'icon-asterisk'
               @li =>
-                @a outlet: 'newAnswersLink', =>
+                @a outlet: 'randomizeAnswersLink', =>
                   @i class: 'icon-random'
+
+
+          @div id: 'columns', =>
+            @div class: 'column', id: 'column1', =>
+              @h4 "Combined Ranking", class: 'collective list-header', outlet: 'answerListHeader'
+              @subview 'answerList', new Views.RelationView(
+                attributes: { class: 'collective answer-list' }
+                buildItem: (answerOrRanking, index) ->
+                  new Views.AnswerItem(answerOrRanking.answer(), index, draggable: true)
+                updateIndex: (item, index) -> item.find('.index').text(index + 1)
+              )
+
+            @div class: 'column', id: 'column2', =>
+              @h4 class: 'list-header', =>
+                @text "Your Ranking"
+                @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right', click: 'addAnswer'
+
+              @div class: 'personal-vote-wrapper', =>
+                @subview 'personalVote', new Views.RelationView(
+                  attributes: { class: 'personal answer-list' }
+                  buildItem: (ranking, index) -> new Views.AnswerItem(ranking.answer(), index, position: ranking.position())
+                  updateIndex: (item, index) -> item.find('.index').text(index + 1)
+                )
+                @div class: 'voting-instructions', outlet: 'votingInstructions', =>
+                  @div class: 'icons img-rounded', =>
+                    @i class: 'large icon-arrow-right'
+                    @i class: 'large icon-list-ol'
+                  @div class: 'words lead', "Drag answers here to influence the collective ranking"
+
+            @div class: 'column', id: 'column3'
+
+      @div class: 'container hide', =>
+        @div class: 'row', outlet: 'rankingRow', =>
+          @div class: 'span2', =>
 
 
 #               @li id: 'individual-rankings', outlet: 'individualRankings', class: 'hide', =>
@@ -49,31 +84,9 @@ class Views.QuestionPage extends View
 #                   )
 
           @div class: 'span7', =>
-            @h4 "Combined Ranking", class: 'collective list-header', outlet: 'answerListHeader'
-            @subview 'answerList', new Views.RelationView(
-              attributes: { class: 'collective answer-list' }
-              buildItem: (answerOrRanking, index) ->
-                new Views.AnswerItem(answerOrRanking.answer(), index, draggable: true)
-              updateIndex: (item, index) -> item.find('.index').text(index + 1)
-            )
 
           @div class: 'span7', =>
-            @h4 class: 'list-header', =>
-              @text "Your Ranking"
-              @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right', click: 'addAnswer'
-
-            @div class: 'personal-vote-wrapper', =>
-              @subview 'personalVote', new Views.RelationView(
-                attributes: { class: 'personal answer-list' }
-                buildItem: (ranking, index) -> new Views.AnswerItem(ranking.answer(), index, position: ranking.position())
-                updateIndex: (item, index) -> item.find('.index').text(index + 1)
-              )
-              @div class: 'voting-instructions', outlet: 'votingInstructions', =>
-                @div class: 'icons img-rounded', =>
-                  @i class: 'large icon-arrow-right'
-                  @i class: 'large icon-list-ol'
-                @div class: 'words lead', "Drag answers here to influence the collective ranking"
-#
+  #
 #       @div class: 'row', =>
 #
 #         @div class: 'span4', =>
@@ -130,13 +143,13 @@ class Views.QuestionPage extends View
 #     @subscriptions.add @question.comments().onInsert => @updateDiscussionHeader()
 #     @subscriptions.add @question.comments().onRemove => @updateDiscussionHeader()
 #     @updateDiscussionHeader()
-#
+
 #     @discussion.setComments(@question.comments())
-#
+
     @combinedRankingLink.attr('href', "/questions/#{@question.id()}")
     @newAnswersLink.attr('href', "/questions/#{@question.id()}/new")
 
-    @individualRankingsList.setRelation(@question.votes())
+#     @individualRankingsList.setRelation(@question.votes())
 
     if @question.creator() == Models.User.getCurrent()
       @questionCreatorLinks.show()
@@ -144,6 +157,7 @@ class Views.QuestionPage extends View
       @questionCreatorLinks.hide()
 
   showCombinedRanking: ->
+    console.log "show combined ranking"
     @fetchPromise.onSuccess =>
       @highlightLeftNavLink(@combinedRankingLink)
       @answerListHeader.text("Combined Ranking")
