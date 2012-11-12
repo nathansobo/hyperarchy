@@ -89,7 +89,7 @@ class Views.QuestionPage extends View
 
     removeItem = null
     @personalVote.sortable(
-      appendTo: 'body'
+      appendTo: '#question-page'
       helper: (e, item) -> item.view().buildDragHelper()
       receive: -> removeItem = 0
       over: -> removeItem = 0
@@ -128,8 +128,6 @@ class Views.QuestionPage extends View
 
     @combinedRankingLink.attr('href', "/questions/#{@question.id()}")
     @newAnswersLink.attr('href', "/questions/#{@question.id()}/new")
-
-#     @individualRankingsList.setRelation(@question.votes())
 
     if @question.creator() == Models.User.getCurrent()
       @questionCreatorLinks.show()

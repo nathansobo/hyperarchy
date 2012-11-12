@@ -13,7 +13,7 @@ class Views.AnswerItem extends View
 
     if options.draggable
       @draggable(
-        appendTo: 'body'
+        appendTo: '#question-page'
         connectToSortable: '.personal.answer-list'
         delay: 1
         helper: => @buildDragHelper()
