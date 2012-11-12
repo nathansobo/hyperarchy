@@ -16,7 +16,7 @@ Hyperarchy::Application.routes.draw do
   match '/:questionId' => 'home#index', :via => :get
   match '/questions/:questionId' => 'home#index', :via => :get
   match '/questions/:questionId/new' => 'home#index', :via => :get
-  match '/questions/:questionId/votes/:voteId' => 'home#index', :via => :get
+  match '/questions/:questionId/rankings/:voterId' => 'home#index', :via => :get
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

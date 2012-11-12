@@ -33,9 +33,9 @@ class Views.Application extends View
         { questionId } = params
         view.showQuestionPage(questionId).showNewAnswers()
 
-      @get '/questions/:questionId/votes/:voteId', ({params}) ->
-        { questionId, voteId } = params
-        view.showQuestionPage(questionId).showVote(parseInt(voteId))
+      @get '/questions/:questionId/rankings/:voterId', ({params}) ->
+        { questionId, voterId } = params
+        view.showQuestionPage(questionId).showVote(parseInt(voterId))
 
       # for backward-compatibility w/ old url scheme
       @get '/:questionId', ({params}) ->

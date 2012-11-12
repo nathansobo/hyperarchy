@@ -26,7 +26,7 @@ class Views.QuestionPage extends View
                 @a outlet: 'combinedRankingLink', =>
                   @i class: 'icon-globe'
               @li =>
-                @a click: 'showIndividualRankings', =>
+                @a outlet: 'individualRankingsLink', click: 'showIndividualRankings', =>
                   @i class: 'icon-group'
               @li =>
                 @a outlet: 'newAnswersLink', =>
@@ -37,7 +37,8 @@ class Views.QuestionPage extends View
 
           @div id: 'columns', =>
             @div class: 'column', id: 'column1', =>
-              @h4 "Combined Ranking", class: 'collective list-header', outlet: 'answerListHeader'
+              @h4 "Combined Ranking", class: 'collective list-header', outlet: 'column1Header'
+
               @subview 'answerList', new Views.RelationView(
                 attributes: { class: 'collective answer-list' }
                 buildItem: (answerOrRanking, index) ->
@@ -45,10 +46,15 @@ class Views.QuestionPage extends View
                 updateIndex: (item, index) -> item.find('.index').text(index + 1)
               )
 
+              @subview 'allVotes', new Views.RelationView(
+                attributes: { class: 'all-votes hide' }
+                buildItem: (vote, index) -> new Views.VoteItem(vote)
+              )
+
             @div class: 'column', id: 'column2', =>
-              @h4 class: 'list-header', =>
-                @text "Your Ranking"
-                @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right', click: 'addAnswer'
+              @h4 class: 'list-header', outlet: 'column2Header', =>
+                @span "Your Ranking", outlet: 'column2HeaderText'
+                @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right', click: 'addAnswer', outlet: 'addAnswerButton'
 
               @subview 'personalVote', new Views.RelationView(
                 attributes: { class: 'personal answer-list' }
@@ -130,29 +136,43 @@ class Views.QuestionPage extends View
       @questionCreatorLinks.hide()
 
   showCombinedRanking: ->
-    console.log "show combined ranking"
     @fetchPromise.onSuccess =>
       @highlightLeftNavLink(@combinedRankingLink)
-      @answerListHeader.text("Combined Ranking")
+      @column1Header.text("Combined Ranking")
       @answerList.setRelation(@question.answers())
 
   showNewAnswers: ->
     @fetchPromise.onSuccess =>
       @highlightLeftNavLink(@newAnswersLink)
-      @answerListHeader.text("New Answers")
+      @column1Header.text("New Answers")
       if newAnswers = @question.newAnswers()
         @answerList.setRelation(newAnswers)
 
-  showVote: (voteId) ->
+  showVote: (userId) ->
     @fetchPromise.onSuccess =>
-      @highlightLeftNavLink(@individualRankingsList.find("a[data-vote-id=#{voteId}]"))
-      vote = Vote.find(voteId)
-      @answerListHeader.text("#{vote.user().fullName()}'s Ranking")
-      @answerList.setRelation(vote.rankings())
+      @highlightLeftNavLink(@individualRankingsLink)
+
+      vote = Vote.find({userId})
+      @column1Header.text("Individual Rankings")
+
+      @answerList.hide()
+      @allVotes.show()
+      @allVotes.setRelation(@question.votes())
+
+      @allVotes.find(".selected").removeClass('selected')
+      @allVotes.find("[data-vote-id=#{vote.id()}]").addClass('selected')
+
+      @column2HeaderText.text("#{vote.user().fullName()}'s Ranking")
+      @addAnswerButton.hide()
+      @personalVote.setRelation(vote.rankings())
+      if vote.userId() == User.currentUserId
+        @personalVote.sortable('enable')
+      else
+        @personalVote.sortable('disable')
 
   showIndividualRankings: ->
     return unless firstVote = @question.votes().first()
-    Davis.location.assign("/questions/#{@question.id()}/votes/#{firstVote.id()}")
+    Davis.location.assign("/questions/#{@question.id()}/rankings/#{firstVote.userId()}")
 
   highlightLeftNavLink: (link) ->
     @leftNav.find('a').removeClass('selected')
