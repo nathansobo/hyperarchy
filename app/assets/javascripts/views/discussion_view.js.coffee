@@ -14,7 +14,7 @@ class Views.DiscussionView extends View
     @commentsList.scroll => @assignAutoscroll()
     @commentsList.onInsert = => @scrollToBottom() if @autoScroll
     @textarea.keydown (e) =>
-      if e.keyCode == 13 && !e.ctrlKey # enter (not ctrl-enter though)
+      if e.keyCode == 13 && (e.metaKey || e.ctrlKey)
         e.preventDefault()
         @createComment()
 
