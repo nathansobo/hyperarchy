@@ -26,15 +26,14 @@ class Views.QuestionPage extends View
                 @a outlet: 'combinedRankingLink', =>
                   @i class: 'icon-globe'
               @li =>
-                @a id: 'show-individual-rankings', click: 'toggleIndividualRankings', outlet: 'showIndividualRankingsLink', =>
+                @a click: 'showIndividualRankings', =>
                   @i class: 'icon-group'
               @li =>
                 @a outlet: 'newAnswersLink', =>
                   @i class: 'icon-asterisk'
-              @li =>
-                @a outlet: 'randomizeAnswersLink', =>
-                  @i class: 'icon-random'
-
+#               @li =>
+#                 @a outlet: 'randomizeAnswersLink', =>
+#                   @i class: 'icon-random'
 
           @div id: 'columns', =>
             @div class: 'column', id: 'column1', =>
@@ -146,27 +145,14 @@ class Views.QuestionPage extends View
 
   showVote: (voteId) ->
     @fetchPromise.onSuccess =>
-      @showIndividualRankings()
       @highlightLeftNavLink(@individualRankingsList.find("a[data-vote-id=#{voteId}]"))
       vote = Vote.find(voteId)
       @answerListHeader.text("#{vote.user().fullName()}'s Ranking")
       @answerList.setRelation(vote.rankings())
 
-
-  toggleIndividualRankings: ->
-    if @individualRankings.is(':visible')
-      @showIndividualRankingsLink.removeClass('showing')
-      @individualRankings.hide()
-    else
-      @showIndividualRankings()
-
   showIndividualRankings: ->
-    @showIndividualRankingsLink.addClass('showing')
-    unless @individualRankings.is(':visible')
-      @individualRankingsList.css('max-height', @rankingRow.height() - @showIndividualRankingsLink.position().top - @showIndividualRankingsLink.outerHeight() - 1)
-      _.defer => @individualRankingsList.scrollTop(0)
-    @individualRankings.show()
-
+    return unless firstVote = @question.votes().first()
+    Davis.location.assign("/questions/#{@question.id()}/votes/#{firstVote.id()}")
 
   highlightLeftNavLink: (link) ->
     @leftNav.find('a').removeClass('selected')
