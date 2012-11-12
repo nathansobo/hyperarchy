@@ -134,6 +134,11 @@ class Views.QuestionPage extends View
     else
       @questionCreatorLinks.hide()
 
+    @subscriptions.add @question.onDestroy =>
+      window.alert("This question has been deleted") unless @skipDestroyAlert
+      @skipDestroyAlert = false
+      Davis.location.assign('/')
+
   showCombinedRanking: ->
     @fetchPromise.onSuccess =>
       @showAnswerList()
@@ -251,6 +256,7 @@ class Views.QuestionPage extends View
 
   deleteQuestion: ->
     if confirm("Are you sure you want to delete this question?")
+      @skipDestroyAlert = true
       @question.destroy()
 
   highlightAnswerInCollectiveRanking: (answer, delay) ->
