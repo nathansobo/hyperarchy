@@ -139,6 +139,8 @@ class Views.QuestionPage extends View
       @skipDestroyAlert = false
       Davis.location.assign('/')
 
+    @selectedVoteUserId = null
+
   showCombinedRanking: ->
     @fetchPromise.onSuccess =>
       @showAnswerList()
