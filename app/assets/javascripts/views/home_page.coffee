@@ -25,6 +25,7 @@ class Views.HomePage extends View
 
   show: ->
     super
+    $('#all-questions-link').hide()
     @fetchPromise ?= Question.join(User, creatorId: 'User.id').fetch()
     @fetchPromise.onSuccess =>
       @questionsList.setRelation(Models.Question.table)

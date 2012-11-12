@@ -5,6 +5,10 @@ class Views.Application extends View
         @div class: 'navbar-inner', =>
           @div class: 'container', =>
             @ul class: 'nav', =>
+              @li =>
+                @a href: "/", id: 'all-questions-link', =>
+                  @i class: 'icon-chevron-left'
+                  @text " All Questions"
 
             @div class: 'pull-right', =>
               @a class: 'brand', href: '/', =>

@@ -141,6 +141,10 @@ class Views.QuestionPage extends View
 
     @selectedVoteUserId = null
 
+  show: ->
+    $('#all-questions-link').show()
+    super
+
   showCombinedRanking: ->
     @fetchPromise.onSuccess =>
       @showAnswerList()
