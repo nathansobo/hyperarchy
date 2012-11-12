@@ -1,6 +1,6 @@
 class Views.DiscussionView extends View
   @content: ->
-    @div class: 'discussion column', =>
+    @div class: 'discussion', =>
       @subview 'commentsList', new Views.RelationView(
         buildItem: (comment) -> new Views.CommentItem(comment)
       )

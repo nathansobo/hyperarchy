@@ -63,36 +63,10 @@ class Views.QuestionPage extends View
                     @i class: 'large icon-list-ol'
                   @div class: 'words lead', "Drag answers here to influence the collective ranking"
 
-            @div class: 'column', id: 'column3'
+            @div class: 'column', id: 'column3', =>
+              @h4 'Discussion', id: 'discussion-header', outlet: 'discussionHeader'
+              @subview 'discussion', new Views.DiscussionView()
 
-      @div class: 'container hide', =>
-        @div class: 'row', outlet: 'rankingRow', =>
-          @div class: 'span2', =>
-
-
-#               @li id: 'individual-rankings', outlet: 'individualRankings', class: 'hide', =>
-#                 @a =>
-#                   @subview 'individualRankingsList', new Views.RelationView(
-#                     attributes: { id: 'individual-rankings-list' }
-#                     buildItem: (vote) ->
-#                       $$ ->
-#                         @li =>
-#                           @a href: "/questions/#{vote.questionId()}/votes/#{vote.id()}", 'data-vote-id': vote.id(), =>
-#                             @i class: 'icon-chevron-right'
-#                             @img src: vote.user().avatarUrl()
-#                             @span vote.user().fullName()
-#                   )
-
-          @div class: 'span7', =>
-
-          @div class: 'span7', =>
-  #
-#       @div class: 'row', =>
-#
-#         @div class: 'span4', =>
-#           @h5 'Discussion', class: 'column-header', outlet: 'discussionHeader'
-#           @subview 'discussion', new Views.DiscussionView()
-#
   initialize: (question) ->
     @subscriptions = new Monarch.Util.SubscriptionBundle
 
@@ -123,7 +97,7 @@ class Views.QuestionPage extends View
   setQuestionId: (questionId) ->
     return if @questionId == questionId
     @questionId = questionId
-    questionRelations = [Answer, Ranking, Vote].map (r) -> r.where({questionId})
+    questionRelations = [Answer, Ranking, Vote, QuestionComment].map (r) -> r.where({questionId})
     @fetchPromise = Monarch.Remote.Server.fetch([User, Question.where(id: questionId), questionRelations...])
       .onSuccess => @setQuestion(Question.find(questionId))
 
@@ -140,11 +114,10 @@ class Views.QuestionPage extends View
     @personalVote.setRelation(Models.User.getCurrent().rankingsForQuestion(question))
     @updateVotingInstructions()
 
-#     @subscriptions.add @question.comments().onInsert => @updateDiscussionHeader()
-#     @subscriptions.add @question.comments().onRemove => @updateDiscussionHeader()
-#     @updateDiscussionHeader()
-
-#     @discussion.setComments(@question.comments())
+    @subscriptions.add @question.comments().onInsert => @updateDiscussionHeader()
+    @subscriptions.add @question.comments().onRemove => @updateDiscussionHeader()
+    @updateDiscussionHeader()
+    @discussion.setComments(@question.comments())
 
     @combinedRankingLink.attr('href', "/questions/#{@question.id()}")
     @newAnswersLink.attr('href', "/questions/#{@question.id()}/new")
