@@ -137,12 +137,16 @@ class Views.QuestionPage extends View
 
   showCombinedRanking: ->
     @fetchPromise.onSuccess =>
+      @showAnswerList()
+      @showPersonalVote()
       @highlightLeftNavLink(@combinedRankingLink)
       @column1Header.text("Combined Ranking")
       @answerList.setRelation(@question.answers())
 
   showNewAnswers: ->
     @fetchPromise.onSuccess =>
+      @showAnswerList()
+      @showPersonalVote()
       @highlightLeftNavLink(@newAnswersLink)
       @column1Header.text("New Answers")
       if newAnswers = @question.newAnswers()
@@ -155,10 +159,7 @@ class Views.QuestionPage extends View
       vote = Vote.find({userId})
       @column1Header.text("Individual Rankings")
 
-      @answerList.hide()
-      @allVotes.show()
-      @allVotes.setRelation(@question.votes())
-
+      @showAllVotes()
       @allVotes.find(".selected").removeClass('selected')
       @allVotes.find("[data-vote-id=#{vote.id()}]").addClass('selected')
 
@@ -177,6 +178,19 @@ class Views.QuestionPage extends View
   highlightLeftNavLink: (link) ->
     @leftNav.find('a').removeClass('selected')
     link.addClass('selected')
+
+  showAllVotes: ->
+    @answerList.hide()
+    @allVotes.show()
+    @allVotes.setRelation(@question.votes())
+
+  showAnswerList: ->
+    @allVotes.hide()
+    @answerList.show()
+
+  showPersonalVote: ->
+    @column2HeaderText.text("Your Ranking")
+    @addAnswerButton.show()
 
   updateAnswerRanking: (item) ->
     answerId = item.data('answer-id')
