@@ -5,7 +5,7 @@ class Views.QuestionPage extends View
     @div id: 'question-page', =>
 
       @div class: 'container', =>
-        @header =>
+        @header outlet: 'header', =>
           @img id: 'creator-avatar', class: 'img-rounded pull-left', outlet: 'creatorAvatar'
 
           @div id: 'question-creator-links', class: 'pull-right hide', outlet: 'questionCreatorLinks', =>
@@ -19,7 +19,7 @@ class Views.QuestionPage extends View
 
           @h1 outlet: 'body', class: 'body'
 
-        @div id: 'body', =>
+        @div id: 'main', outlet: 'mainDiv', =>
           @div id: 'sidebar', =>
             @ul class: 'left-nav', outlet: 'leftNav', =>
               @li =>
@@ -114,8 +114,9 @@ class Views.QuestionPage extends View
     @rankedItemsByAnswerId = {}
 
     @creatorAvatar.attr('src', @question.creator().avatarUrl())
-    @body.text(@question.body())
-    question.getField('body').onChange (body) => @body.text(body)
+    @updateQuestionBody()
+    question.getField('body').onChange => @updateQuestionBody()
+    $(window).on 'resize', => @adjustTopOfMainDiv()
 
     @personalVote.setRelation(Models.User.getCurrent().rankingsForQuestion(question))
     @updateVotingInstructions()
@@ -284,6 +285,13 @@ class Views.QuestionPage extends View
       @votingInstructions.show()
     else
       @votingInstructions.hide()
+
+  updateQuestionBody: ->
+    @body.text(@question.body())
+    @adjustTopOfMainDiv()
+
+  adjustTopOfMainDiv: ->
+    @mainDiv.css('top', @header.outerHeight())
 
   remove: (selector, keepData) ->
     super
