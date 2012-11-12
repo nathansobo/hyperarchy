@@ -41,7 +41,7 @@ class Views.AnswerItem extends View
     @personalVoteAnswerItem().removeClass('highlighted')
 
   buildDragHelper: ->
-    new Views.AnswerItem(@answer).width(@width())
+    new Views.AnswerItem(@answer).width(@width()).height(@height())
 
   editAnswer: ->
     new Views.ModalForm(
