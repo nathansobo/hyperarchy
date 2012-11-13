@@ -49,7 +49,9 @@ Hyperarchy::Application.configure do
   # config.assets.precompile += %w( search.js )
   # This is the new default in newer versions of Rails, but I don't want to upgrade right now
   config.assets.precompile = [ Proc.new { |path, fn| fn =~ /app\/assets/ && !%w(.js .css).include?(File.extname(path)) },
-                               /(?:\/|\\|\A)application\.(css|js)$/ ]
+                               /(?:\/|\\|\A)application\.(css|js)$/,
+                               /^.*\.(eot|woff|ttf|svg|png)/]
+
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
 
