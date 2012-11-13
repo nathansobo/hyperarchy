@@ -204,6 +204,8 @@ class Views.QuestionPage extends View
   showPersonalVote: ->
     @column2HeaderText.text("Your Ranking")
     @addAnswerButton.show()
+    @personalVote.sortable('enable')
+    @personalVote.setRelation(Models.User.getCurrent().rankingsForQuestion(@question))
 
   updateAnswerRanking: (item) ->
     answerId = item.data('answer-id')
