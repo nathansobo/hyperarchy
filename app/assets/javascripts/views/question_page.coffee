@@ -177,6 +177,7 @@ class Views.QuestionPage extends View
       @column2HeaderText.text("#{vote.user().fullName()}'s Ranking")
       @addAnswerButton.hide()
       @personalVote.setRelation(vote.rankings())
+      @votingInstructions.hide()
       if vote.userId() == User.currentUserId
         @personalVote.sortable('enable')
       else
@@ -206,6 +207,7 @@ class Views.QuestionPage extends View
     @addAnswerButton.show()
     @personalVote.sortable('enable')
     @personalVote.setRelation(Models.User.getCurrent().rankingsForQuestion(@question))
+    @updateVotingInstructions()
 
   updateAnswerRanking: (item) ->
     answerId = item.data('answer-id')
