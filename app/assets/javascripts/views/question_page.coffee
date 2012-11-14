@@ -167,7 +167,7 @@ class Views.QuestionPage extends View
     @fetchPromise.onSuccess =>
       @highlightLeftNavLink(@individualRankingsLink)
 
-      vote = Vote.find({userId})
+      vote = @question.votes().find({userId})
       @column1Header.text("Individual Rankings")
 
       @showAllVotes()
