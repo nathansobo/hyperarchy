@@ -13,14 +13,14 @@ describe Vote do
 
     specify "the vote count of the question is increment or decrement appropriately" do
       question.vote_count.should == 0
-      ranking_1 = question.rankings.create(:user => user_1, :answer => answer, :position => 64)
-      vote_1 = ranking_1.vote
+      preference_1 = question.preferences.create(:user => user_1, :answer => answer, :position => 64)
+      vote_1 = preference_1.vote
       vote_1.should_not be_nil
       vote_1.question.should == question
       question.vote_count.should == 1
 
-      ranking_2 = question.rankings.create(:user => user_2, :answer => answer, :position => 64)
-      vote_2 = ranking_2.vote
+      preference_2 = question.preferences.create(:user => user_2, :answer => answer, :position => 64)
+      vote_2 = preference_2.vote
       question.vote_count.should == 2
 
       vote_1.destroy

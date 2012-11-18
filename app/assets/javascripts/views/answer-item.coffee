@@ -25,8 +25,8 @@ class Views.AnswerItem extends View
 
     @answer.getField('body').onChange (body) => @body.html(markdown.toHTML(body))
 
-  updateRankIndicator: (ranking) ->
-    if ranking = @answer.rankingForCurrentUser()
+  updateRankIndicator: ->
+    if @answer.preferenceForCurrentUser()
       @addClass('ranked')
     else
       @removeClass('ranked')

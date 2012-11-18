@@ -5,7 +5,7 @@ describe EventObserver do
     let(:events) { Hash.new {|h,k| h[k] = [] }}
 
     before do
-      stub(Pusher[:global]).trigger do |channel, event|
+      stub(Pusher[:global]).trigger_async do |channel, event|
         events[channel].push(event)
       end
 

@@ -14,7 +14,7 @@ Answer.blueprint do
   body { Faker::Lorem.sentence.chop }
 end
 
-Ranking.blueprint do
+Preference.blueprint do
 end
 
 Vote.blueprint do

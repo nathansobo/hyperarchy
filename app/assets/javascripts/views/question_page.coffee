@@ -1,4 +1,4 @@
-{ Question, Answer, User, Ranking, Vote, QuestionComment } = Models
+{ Question, Answer, User, Preference, Vote, QuestionComment } = Models
 
 class Views.QuestionPage extends View
   @content: ->
@@ -41,8 +41,8 @@ class Views.QuestionPage extends View
 
               @subview 'answerList', new Views.RelationView(
                 attributes: { class: 'collective answer-list' }
-                buildItem: (answerOrRanking, index) ->
-                  new Views.AnswerItem(answerOrRanking.answer(), index, draggable: true)
+                buildItem: (answerOrPreference, index) ->
+                  new Views.AnswerItem(answerOrPreference.answer(), index, draggable: true)
                 updateIndex: (item, index) -> item.find('.index').text(index + 1)
               )
 
@@ -58,7 +58,7 @@ class Views.QuestionPage extends View
 
               @subview 'personalVote', new Views.RelationView(
                 attributes: { class: 'personal answer-list' }
-                buildItem: (ranking, index) -> new Views.AnswerItem(ranking.answer(), index, position: ranking.position())
+                buildItem: (preference, index) -> new Views.AnswerItem(preference.answer(), index, position: preference.position())
                 updateIndex: (item, index) -> item.find('.index').text(index + 1)
               )
               @div class: 'voting-instructions', outlet: 'votingInstructions', =>
@@ -74,9 +74,9 @@ class Views.QuestionPage extends View
   initialize: (question) ->
     @subscriptions = new Monarch.Util.SubscriptionBundle
 
-    @personalVote.onInsert = (item, ranking) =>
-      @rankedItemsByAnswerId[ranking.answerId()]?.remove()
-      @rankedItemsByAnswerId[ranking.answerId()] = item
+    @personalVote.onInsert = (item, preference) =>
+      @rankedItemsByAnswerId[preference.answerId()]?.remove()
+      @rankedItemsByAnswerId[preference.answerId()] = item
       @updateRankIndicators()
       @updateVotingInstructions()
 
@@ -95,7 +95,7 @@ class Views.QuestionPage extends View
       over: -> removeItem = 0
       out: -> removeItem = 1
       beforeStop: (event, ui) -> ui.item.detach() if removeItem
-      stop: (event, ui) => @updateAnswerRanking(ui.item)
+      stop: (event, ui) => @updateAnswerPreference(ui.item)
     )
 
     @setQuestion(question)
@@ -103,7 +103,7 @@ class Views.QuestionPage extends View
   setQuestionId: (questionId) ->
     return if @questionId == questionId
     @questionId = questionId
-    questionRelations = [Answer, Ranking, Vote, QuestionComment].map (r) -> r.where({questionId})
+    questionRelations = [Answer, Preference, Vote, QuestionComment].map (r) -> r.where({questionId})
     @fetchPromise = Monarch.Remote.Server.fetch([User, Question.where(id: questionId), questionRelations...])
       .onSuccess => @setQuestion(Question.find(questionId))
 
@@ -118,7 +118,7 @@ class Views.QuestionPage extends View
     question.getField('body').onChange => @updateQuestionBody()
     $(window).on 'resize', => @adjustTopOfMainDiv()
 
-    @personalVote.setRelation(Models.User.getCurrent().rankingsForQuestion(question))
+    @personalVote.setRelation(Models.User.getCurrent().preferencesForQuestion(question))
     @updateVotingInstructions()
 
     @subscriptions.add @question.comments().onInsert => @updateDiscussionHeader()
@@ -176,7 +176,7 @@ class Views.QuestionPage extends View
 
       @column2HeaderText.text("#{vote.user().fullName()}'s Ranking")
       @addAnswerButton.hide()
-      @personalVote.setRelation(vote.rankings())
+      @personalVote.setRelation(vote.preferences())
       @votingInstructions.hide()
       if vote.userId() == User.currentUserId
         @personalVote.sortable('enable')
@@ -206,15 +206,15 @@ class Views.QuestionPage extends View
     @column2HeaderText.text("Your Ranking")
     @addAnswerButton.show()
     @personalVote.sortable('enable')
-    @personalVote.setRelation(Models.User.getCurrent().rankingsForQuestion(@question))
+    @personalVote.setRelation(Models.User.getCurrent().preferencesForQuestion(@question))
     @updateVotingInstructions()
 
-  updateAnswerRanking: (item) ->
+  updateAnswerPreference: (item) ->
     answerId = item.data('answer-id')
     answer = Models.Answer.find(answerId)
 
     unless item.parent().length
-      Models.Ranking.destroyByAnswerId(answerId)
+      Preference.destroyByAnswerId(answerId)
         .done => @highlightAnswerInCollectiveRanking(answer, true)
       delete @rankedItemsByAnswerId[answerId]
       item.remove()
@@ -236,7 +236,7 @@ class Views.QuestionPage extends View
     item.data('position', position)
     @personalVote.updateIndices()
 
-    Models.Ranking.createOrUpdate(
+    Preference.createOrUpdate(
       answer: answer
       position: position
     )
@@ -252,7 +252,7 @@ class Views.QuestionPage extends View
           .onSuccess (answer) =>
             answerItem = @answerList.find(".answer[data-answer-id=#{answer.id()}]").view().buildDragHelper()
             @personalVote.prepend(answerItem)
-            @updateAnswerRanking(answerItem)
+            @updateAnswerPreference(answerItem)
     )
 
   editQuestionBody: ->
@@ -295,7 +295,7 @@ class Views.QuestionPage extends View
       @discussionHeader.text("#{count} Comments")
 
   updateVotingInstructions: ->
-    if Models.User.getCurrent().rankingsForQuestion(@question).isEmpty()
+    if Models.User.getCurrent().preferencesForQuestion(@question).isEmpty()
       @votingInstructions.show()
     else
       @votingInstructions.hide()

@@ -8,7 +8,7 @@ class Question < Prequel::Record
 
   has_many :answers
   has_many :votes
-  has_many :rankings
+  has_many :preferences
   has_many :majorities
 
   belongs_to :creator, :class_name => "User"
@@ -67,31 +67,31 @@ class Question < Prequel::Record
     update!(:updated_at => Time.now)
   end
 
-  def positive_rankings
-    rankings.where(Ranking[:position].gt(0))
+  def positive_preferences
+    preferences.where(Preference[:position].gt(0))
   end
 
-  def negative_rankings
-    rankings.where(Ranking[:position].lt(0))
+  def negative_preferences
+    preferences.where(Preference[:position].lt(0))
   end
 
-  def positive_answer_ranking_counts
-    times_each_answer_is_ranked(positive_rankings)
+  def positive_answer_preference_counts
+    times_each_answer_is_ranked(positive_preferences)
   end
 
-  def negative_answer_ranking_counts
-    times_each_answer_is_ranked(negative_rankings)
+  def negative_answer_preference_counts
+    times_each_answer_is_ranked(negative_preferences)
   end
 
   def times_each_answer_is_ranked(relation)
     relation.
       group_by(:answer_id).
-      project(:answer_id, Ranking[:id].count.as(:times_ranked))
+      project(:answer_id, Preference[:id].count.as(:times_ranked))
   end
 
   def ranked_answers
     answers.
-      join(rankings).
+      join(preferences).
       project(Answer)
   end
 end

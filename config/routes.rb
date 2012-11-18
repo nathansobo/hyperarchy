@@ -9,8 +9,8 @@ Hyperarchy::Application.routes.draw do
   put '/sandbox/:relation/:id' => 'sandbox#update'
   delete '/sandbox/:relation/:id' => 'sandbox#destroy'
 
-  resources :rankings
-  match '/rankings' => 'rankings#destroy', :via => :delete
+  resources :preferences
+  match '/preferences' => 'preferences#destroy', :via => :delete
 
   root :to => 'home#index'
   match '/:questionId' => 'home#index', :via => :get
