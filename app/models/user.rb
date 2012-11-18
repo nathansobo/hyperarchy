@@ -8,7 +8,7 @@ class User < Prequel::Record
 
   synthetic_column :email_hash, :string
 
-  has_many :votes
+  has_many :rankings
   has_many :preferences
   has_many :questions
   has_many :answers, :foreign_key => :creator_id

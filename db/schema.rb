@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121118014745) do
+ActiveRecord::Schema.define(:version => 20121118024604) do
 
   create_table "answers", :force => true do |t|
     t.string   "body"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(:version => 20121118014745) do
     t.integer  "user_id"
     t.integer  "question_id"
     t.integer  "answer_id"
-    t.integer  "vote_id"
+    t.integer  "ranking_id"
     t.float    "position"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
@@ -53,9 +53,16 @@ ActiveRecord::Schema.define(:version => 20121118014745) do
   create_table "questions", :force => true do |t|
     t.integer  "creator_id"
     t.string   "body"
-    t.integer  "vote_count"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.integer  "ranking_count"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "rankings", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "question_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "users", :force => true do |t|
@@ -64,13 +71,6 @@ ActiveRecord::Schema.define(:version => 20121118014745) do
     t.string  "email_address"
     t.string  "full_name"
     t.string  "avatar_url"
-  end
-
-  create_table "votes", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "question_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
   end
 
 end

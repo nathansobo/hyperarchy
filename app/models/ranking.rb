@@ -1,4 +1,4 @@
-class Vote < Prequel::Record
+class Ranking < Prequel::Record
   column :id, :integer
   column :user_id, :integer
   column :question_id, :integer
@@ -19,12 +19,12 @@ class Vote < Prequel::Record
   # but currently plan to serialize all operations per question so it's ok
   # we want to go through the record so the update gets broadcast
   def after_create
-    question.vote_count = question.vote_count + 1
+    question.ranking_count = question.ranking_count + 1
     question.save
   end
 
   def after_destroy
-    question.vote_count -= 1
+    question.ranking_count -= 1
     question.save
   end
 

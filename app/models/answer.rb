@@ -58,7 +58,7 @@ class Answer < Prequel::Record
   def before_destroy
     question.lock
     preferences.each do |preference|
-      preference.suppress_vote_update = true
+      preference.suppress_ranking_update = true
       preference.destroy
     end
     winning_majorities.each(&:destroy)

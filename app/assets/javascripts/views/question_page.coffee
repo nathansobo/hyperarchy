@@ -1,4 +1,4 @@
-{ Question, Answer, User, Preference, Vote, QuestionComment } = Models
+{ Question, Answer, User, Preference, Ranking, QuestionComment } = Models
 
 class Views.QuestionPage extends View
   @content: ->
@@ -46,9 +46,9 @@ class Views.QuestionPage extends View
                 updateIndex: (item, index) -> item.find('.index').text(index + 1)
               )
 
-              @subview 'allVotes', new Views.RelationView(
-                attributes: { class: 'all-votes hide' }
-                buildItem: (vote, index) -> new Views.VoteItem(vote)
+              @subview 'allRankings', new Views.RelationView(
+                attributes: { class: 'all-rankings hide' }
+                buildItem: (ranking, index) -> new Views.RankingItem(ranking)
               )
 
             @div class: 'column', id: 'column2', =>
@@ -56,7 +56,7 @@ class Views.QuestionPage extends View
                 @span "Your Ranking", outlet: 'column2HeaderText'
                 @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right', click: 'addAnswer', outlet: 'addAnswerButton'
 
-              @subview 'personalVote', new Views.RelationView(
+              @subview 'personalRanking', new Views.RelationView(
                 attributes: { class: 'personal answer-list' }
                 buildItem: (preference, index) -> new Views.AnswerItem(preference.answer(), index, position: preference.position())
                 updateIndex: (item, index) -> item.find('.index').text(index + 1)
@@ -74,21 +74,21 @@ class Views.QuestionPage extends View
   initialize: (question) ->
     @subscriptions = new Monarch.Util.SubscriptionBundle
 
-    @personalVote.onInsert = (item, preference) =>
+    @personalRanking.onInsert = (item, preference) =>
       @rankedItemsByAnswerId[preference.answerId()]?.remove()
       @rankedItemsByAnswerId[preference.answerId()] = item
       @updateRankIndicators()
       @updateVotingInstructions()
 
-    @personalVote.onUpdate = =>
+    @personalRanking.onUpdate = =>
       @updateRankIndicators()
 
-    @personalVote.onRemove = =>
+    @personalRanking.onRemove = =>
       @updateRankIndicators()
       @updateVotingInstructions()
 
     removeItem = null
-    @personalVote.sortable(
+    @personalRanking.sortable(
       appendTo: '#question-page'
       helper: (e, item) -> item.view().buildDragHelper()
       receive: -> removeItem = 0
@@ -103,7 +103,7 @@ class Views.QuestionPage extends View
   setQuestionId: (questionId) ->
     return if @questionId == questionId
     @questionId = questionId
-    questionRelations = [Answer, Preference, Vote, QuestionComment].map (r) -> r.where({questionId})
+    questionRelations = [Answer, Preference, Ranking, QuestionComment].map (r) -> r.where({questionId})
     @fetchPromise = Monarch.Remote.Server.fetch([User, Question.where(id: questionId), questionRelations...])
       .onSuccess => @setQuestion(Question.find(questionId))
 
@@ -118,7 +118,7 @@ class Views.QuestionPage extends View
     question.getField('body').onChange => @updateQuestionBody()
     $(window).on 'resize', => @adjustTopOfMainDiv()
 
-    @personalVote.setRelation(Models.User.getCurrent().preferencesForQuestion(question))
+    @personalRanking.setRelation(Models.User.getCurrent().preferencesForQuestion(question))
     @updateVotingInstructions()
 
     @subscriptions.add @question.comments().onInsert => @updateDiscussionHeader()
@@ -139,7 +139,7 @@ class Views.QuestionPage extends View
       @skipDestroyAlert = false
       Davis.location.assign('/')
 
-    @selectedVoteUserId = null
+    @selectedRankingUserId = null
 
   show: ->
     $('#all-questions-link').show()
@@ -148,7 +148,7 @@ class Views.QuestionPage extends View
   showCombinedRanking: ->
     @fetchPromise.onSuccess =>
       @showAnswerList()
-      @showPersonalVote()
+      @showPersonalRanking()
       @highlightLeftNavLink(@combinedRankingLink)
       @column1Header.text("Combined Ranking")
       @answerList.setRelation(@question.answers())
@@ -156,57 +156,57 @@ class Views.QuestionPage extends View
   showNewAnswers: ->
     @fetchPromise.onSuccess =>
       @showAnswerList()
-      @showPersonalVote()
+      @showPersonalRanking()
       @highlightLeftNavLink(@newAnswersLink)
       @column1Header.text("New Answers")
       if newAnswers = @question.newAnswers()
         @answerList.setRelation(newAnswers)
 
-  showVote: (userId) ->
-    @selectedVoteUserId = userId
+  showRanking: (userId) ->
+    @selectedRankingUserId = userId
     @fetchPromise.onSuccess =>
       @highlightLeftNavLink(@individualRankingsLink)
 
-      vote = @question.votes().find({userId})
+      ranking = @question.rankings().find({userId})
       @column1Header.text("Individual Rankings")
 
-      @showAllVotes()
-      @allVotes.find(".selected").removeClass('selected')
-      @allVotes.find("[data-vote-id=#{vote.id()}]").addClass('selected')
+      @showAllRankings()
+      @allRankings.find(".selected").removeClass('selected')
+      @allRankings.find("[data-ranking-id=#{ranking.id()}]").addClass('selected')
 
-      @column2HeaderText.text("#{vote.user().fullName()}'s Ranking")
+      @column2HeaderText.text("#{ranking.user().fullName()}'s Ranking")
       @addAnswerButton.hide()
-      @personalVote.setRelation(vote.preferences())
+      @personalRanking.setRelation(ranking.preferences())
       @votingInstructions.hide()
-      if vote.userId() == User.currentUserId
-        @personalVote.sortable('enable')
+      if ranking.userId() == User.currentUserId
+        @personalRanking.sortable('enable')
       else
-        @personalVote.sortable('disable')
+        @personalRanking.sortable('disable')
 
   showIndividualRankings: ->
-    vote = @question.votes().find({userId: @selectedVoteUserId}) if @selectedVoteUserId
-    vote ?= @question.votes().first()
-    return unless vote
-    Davis.location.assign("/questions/#{@question.id()}/rankings/#{vote.userId()}")
+    ranking = @question.rankings().find({userId: @selectedRankingUserId}) if @selectedRankingUserId
+    ranking ?= @question.rankings().first()
+    return unless ranking
+    Davis.location.assign("/questions/#{@question.id()}/rankings/#{ranking.userId()}")
 
   highlightLeftNavLink: (link) ->
     @leftNav.find('a').removeClass('selected')
     link.addClass('selected')
 
-  showAllVotes: ->
+  showAllRankings: ->
     @answerList.hide()
-    @allVotes.show()
-    @allVotes.setRelation(@question.votes())
+    @allRankings.show()
+    @allRankings.setRelation(@question.rankings())
 
   showAnswerList: ->
-    @allVotes.hide()
+    @allRankings.hide()
     @answerList.show()
 
-  showPersonalVote: ->
+  showPersonalRanking: ->
     @column2HeaderText.text("Your Ranking")
     @addAnswerButton.show()
-    @personalVote.sortable('enable')
-    @personalVote.setRelation(Models.User.getCurrent().preferencesForQuestion(@question))
+    @personalRanking.sortable('enable')
+    @personalRanking.setRelation(Models.User.getCurrent().preferencesForQuestion(@question))
     @updateVotingInstructions()
 
   updateAnswerPreference: (item) ->
@@ -234,7 +234,7 @@ class Views.QuestionPage extends View
       position = lowerPosition + 1
 
     item.data('position', position)
-    @personalVote.updateIndices()
+    @personalRanking.updateIndices()
 
     Preference.createOrUpdate(
       answer: answer
@@ -251,7 +251,7 @@ class Views.QuestionPage extends View
         @question.answers().create({body})
           .onSuccess (answer) =>
             answerItem = @answerList.find(".answer[data-answer-id=#{answer.id()}]").view().buildDragHelper()
-            @personalVote.prepend(answerItem)
+            @personalRanking.prepend(answerItem)
             @updateAnswerPreference(answerItem)
     )
 
@@ -311,7 +311,7 @@ class Views.QuestionPage extends View
     super
     unless keepData
       @answerList.remove()
-      @personalVote.remove()
-      @allVotes.remove()
+      @personalRanking.remove()
+      @allRankings.remove()
       @discussion.remove()
       @subscriptions.destroy()

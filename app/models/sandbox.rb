@@ -16,8 +16,8 @@ class Sandbox < Prequel::Sandbox
     Answer.table
   end
 
-  expose :votes do
-    Vote.table
+  expose :rankings do
+    Ranking.table
   end
 
   expose :preferences do

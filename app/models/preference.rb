@@ -3,7 +3,7 @@ class Preference < Prequel::Record
   column :user_id, :integer
   column :question_id, :integer
   column :answer_id, :integer
-  column :vote_id, :integer
+  column :ranking_id, :integer
   column :position, :float
   column :created_at, :datetime
   column :updated_at, :datetime
@@ -11,9 +11,9 @@ class Preference < Prequel::Record
   belongs_to :user
   belongs_to :answer
   belongs_to :question
-  belongs_to :vote
+  belongs_to :ranking
 
-  attr_accessor :suppress_vote_update
+  attr_accessor :suppress_ranking_update
 
   def can_create_or_update?
     false
@@ -28,8 +28,8 @@ class Preference < Prequel::Record
   def before_create
     self.question_id = answer.question_id
     question.lock
-    self.vote = question.votes.find_or_create(:user_id => user_id)
-    vote.updated
+    self.ranking = question.rankings.find_or_create(:user_id => user_id)
+    ranking.updated
   end
 
   def after_create
@@ -60,7 +60,7 @@ class Preference < Prequel::Record
       after_preference_moved_down(old_position)
     end
 
-    question.votes.find(:user_id => user_id).updated
+    question.rankings.find(:user_id => user_id).updated
     question.compute_global_ranking
     question.unlock
   end
@@ -104,9 +104,9 @@ class Preference < Prequel::Record
     end
 
     if preferences_by_same_user.empty?
-      vote.destroy
-    elsif !suppress_vote_update
-      vote.updated
+      ranking.destroy
+    elsif !suppress_ranking_update
+      ranking.updated
     end
     question.compute_global_ranking
     question.unlock

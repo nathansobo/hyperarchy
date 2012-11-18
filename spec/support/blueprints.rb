@@ -17,5 +17,5 @@ end
 Preference.blueprint do
 end
 
-Vote.blueprint do
+Ranking.blueprint do
 end

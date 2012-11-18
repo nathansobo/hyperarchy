@@ -25,7 +25,7 @@ module Models
     end
 
     describe "before destroy" do
-      it "destroys any answers and votes that belong to the question" do
+      it "destroys any answers and rankings that belong to the question" do
         question = Question.make!
         user_1 = User.make!
         user_2 = User.make!
@@ -37,10 +37,10 @@ module Models
         Preference.create!(:user => user_2, :answer => answer_1, :position => 64)
 
         question.answers.size.should == 2
-        question.votes.size.should == 2
+        question.rankings.size.should == 2
         question.destroy
         question.answers.should be_empty
-        question.votes.should be_empty
+        question.rankings.should be_empty
       end
     end
 

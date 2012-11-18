@@ -8,7 +8,7 @@ class Models.User extends Monarch.Record
 
   @hasMany 'answers', foreignKey: 'creatorId'
   @hasMany 'preferences'
-  @hasMany 'votes'
+  @hasMany 'rankings'
 
   @currentUserId: null # assigned by Rails
 

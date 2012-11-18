@@ -4,7 +4,7 @@ class Models.Preference extends Monarch.Record
 
   @columns
     userId: 'integer'
-    voteId: 'integer'
+    rankingId: 'integer'
     questionId: 'integer'
     answerId: 'integer'
     position: 'float'
@@ -14,7 +14,7 @@ class Models.Preference extends Monarch.Record
   @belongsTo 'user'
   @belongsTo 'question'
   @belongsTo 'answer'
-  @belongsTo 'vote'
+  @belongsTo 'ranking'
 
   @createOrUpdate: ({answer, position}) ->
     jQuery.ajax(

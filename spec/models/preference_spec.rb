@@ -235,41 +235,41 @@ describe Preference do
       find_majority(answer_3, answer_1).pro_count.should == 0
     end
 
-    specify "it creates, updates, or destroys the associated vote as appropriate" do
+    specify "it creates, updates, or destroys the associated ranking as appropriate" do
       freeze_time
-      users_votes = question.votes.where(:user => user)
+      users_rankings = question.rankings.where(:user => user)
 
-      users_votes.should be_empty
+      users_rankings.should be_empty
 
       preference_1 = question.preferences.create(:user => user, :answer => answer_1, :position => 64)
 
-      users_votes.size.should == 1
-      vote = question.votes.find(:user => user)
-      preference_1.vote.should == vote
-      vote.created_at.should == Time.now
-      vote.updated_at.should == Time.now
+      users_rankings.size.should == 1
+      ranking = question.rankings.find(:user => user)
+      preference_1.ranking.should == ranking
+      ranking.created_at.should == Time.now
+      ranking.updated_at.should == Time.now
 
       jump(1.minute)
 
       preference_2 = question.preferences.create(:user => user, :answer => answer_2, :position => 32)
-      users_votes.size.should == 1
-      preference_2.vote.should == vote
-      vote.updated_at.should == Time.now
+      users_rankings.size.should == 1
+      preference_2.ranking.should == ranking
+      ranking.updated_at.should == Time.now
 
       jump(1.minute)
 
       preference_1.update(:position => 16)
-      users_votes.size.should == 1
-      vote.updated_at.should == Time.now
+      users_rankings.size.should == 1
+      ranking.updated_at.should == Time.now
 
       jump(1.minute)
 
       preference_2.destroy
-      users_votes.size.should == 1
-      vote.updated_at.should == Time.now
+      users_rankings.size.should == 1
+      ranking.updated_at.should == Time.now
 
       preference_1.destroy
-      users_votes.should be_empty
+      users_rankings.should be_empty
     end
   end
 

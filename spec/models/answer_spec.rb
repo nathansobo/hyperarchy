@@ -111,7 +111,7 @@ module Models
       end
 
       describe "#before_destroy" do
-        it "destroys any preferences and majorities associated with the answer, but does not change the updated_at time of associated votes" do
+        it "destroys any preferences and majorities associated with the answer, but does not change the updated_at time of associated rankings" do
           user_1 = User.make!
           user_2 = User.make!
 
@@ -129,9 +129,9 @@ module Models
           Majority.where(:winner_id => answer_1.id).size.should == 1
           Majority.where(:loser_id => answer_1.id).size.should == 1
 
-          question.votes.size.should == 2
-          question.votes.each do |vote|
-            vote.updated_at.should == Time.now
+          question.rankings.size.should == 2
+          question.rankings.each do |ranking|
+            ranking.updated_at.should == Time.now
           end
 
           jump(1.minute)
@@ -142,8 +142,8 @@ module Models
           Majority.where(:winner_id => answer_1.id).should be_empty
           Majority.where(:loser_id => answer_1.id).should be_empty
 
-          question.votes.size.should == 1
-          question.votes.first.updated_at.should == voting_time
+          question.rankings.size.should == 1
+          question.rankings.first.updated_at.should == voting_time
         end
       end
     end

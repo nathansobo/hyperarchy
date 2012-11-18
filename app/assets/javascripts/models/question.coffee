@@ -5,19 +5,19 @@ class Models.Question extends Monarch.Record
   @columns
     creatorId: 'integer'
     body: 'string'
-    voteCount: 'integer'
+    rankingCount: 'integer'
 
   @defaultOrderBy 'id desc'
 
   @hasMany 'answers'
-  @hasMany 'votes'
+  @hasMany 'rankings'
   @hasMany 'comments', className: 'QuestionComment'
 
   @belongsTo 'creator', className: 'User'
 
   newAnswers: ->
-    if @voteForCurrentUser()
-      @answers().where('createdAt >': @voteForCurrentUser().updatedAt())
+    if @rankingForCurrentUser()
+      @answers().where('createdAt >': @rankingForCurrentUser().updatedAt())
 
-  voteForCurrentUser: ->
-    @votes().find(userId: Models.User.currentUserId)
+  rankingForCurrentUser: ->
+    @rankings().find(userId: Models.User.currentUserId)

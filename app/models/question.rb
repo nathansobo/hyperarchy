@@ -2,12 +2,12 @@ class Question < Prequel::Record
   column :id, :integer
   column :creator_id, :integer
   column :body, :string
-  column :vote_count, :integer, :default => 0
+  column :ranking_count, :integer, :default => 0
   column :created_at, :datetime
   column :updated_at, :datetime
 
   has_many :answers
-  has_many :votes
+  has_many :rankings
   has_many :preferences
   has_many :majorities
 

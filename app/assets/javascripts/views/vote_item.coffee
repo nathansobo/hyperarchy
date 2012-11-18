@@ -1,18 +1,18 @@
-class Views.VoteItem extends View
-  @content: (vote) ->
+class Views.RankingItem extends View
+  @content: (ranking) ->
     @li =>
-      @a class: 'vote', 'data-vote-id': vote.id(), href: "/questions/#{vote.questionId()}/rankings/#{vote.userId()}", =>
+      @a class: 'ranking', 'data-ranking-id': ranking.id(), href: "/questions/#{ranking.questionId()}/rankings/#{ranking.userId()}", =>
         @i class: 'icon-chevron-right'
         @img class: 'avatar', outlet: 'avatar'
         @div class: 'name', outlet: 'name'
         @time class: 'updated-at', outlet: 'updatedAt'
 
-  initialize: (@vote) ->
-    @avatar.attr('src', vote.user().avatarUrl())
-    @name.text(vote.user().fullName())
+  initialize: (@ranking) ->
+    @avatar.attr('src', ranking.user().avatarUrl())
+    @name.text(ranking.user().fullName())
     @refreshUpdatedAt()
-    @updatedAtSubscription = @vote.getField('updatedAt').onChange => @refreshUpdatedAt()
+    @updatedAtSubscription = @ranking.getField('updatedAt').onChange => @refreshUpdatedAt()
 
   refreshUpdatedAt: ->
-    @updatedAt.data('timeago', datetime: @vote.updatedAt())
-    @updatedAt.text($.timeago(@vote.updatedAt()))
+    @updatedAt.data('timeago', datetime: @ranking.updatedAt())
+    @updatedAt.text($.timeago(@ranking.updatedAt()))
