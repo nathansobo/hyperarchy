@@ -7,8 +7,7 @@ gem 'rack-ssl'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'pusher'
-gem 'em-http-request'
+gem 'pubnub'
 gem 'pg', '~> 0.11'
 gem 'prequel', :path => 'vendor/prequel'
 gem 'redis'

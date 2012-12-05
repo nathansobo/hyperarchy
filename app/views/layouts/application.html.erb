@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hyperarchy</title>
   <%= stylesheet_link_tag "application", :media => "all" %>
-  <%= javascript_include_tag "https://d3dy5gmtp8yhk7.cloudfront.net/1.12/pusher.min.js" %>
+  <div pub-key="<%= ENV['PUBNUB_PUBLISH_KEY'] %>" sub-key="<%= ENV['PUBNUB_SUBSCRIBE_KEY'] %>" ssl="on" origin="pubsub.pubnub.com" id="pubnub"></div>
+  <script src="http://cdn.pubnub.com/pubnub-3.3.min.js"></script>
   <%= javascript_include_tag "application" %>
   <script type="text/javascript">
-    window.PUSHER_API_KEY = "<%= Pusher.key %>";
+    window.PUBNUB_CHANNEL = "<%= PUBNUB_CHANNEL %>";
     Models.User.currentUserId = <%= current_user_id %>;
   </script>
   <%= csrf_meta_tags %>
