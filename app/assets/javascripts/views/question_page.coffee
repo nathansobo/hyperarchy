@@ -37,7 +37,9 @@ class Views.QuestionPage extends View
 
           @div id: 'columns', =>
             @div class: 'column', id: 'column1', =>
-              @h4 "Combined Ranking", class: 'collective list-header', outlet: 'column1Header'
+              @h4 "Combined Ranking", class: 'collective list-header hide', outlet: 'combinedRankingHeader'
+              @h4 "Individual Rankings", class: 'collective list-header hide', outlet: 'allRankingsHeader'
+              @h4 "New Answers", class: 'collective list-header hide', outlet: 'newAnswersHeader'
 
               @subview 'answerList', new Views.RelationView(
                 attributes: { class: 'collective answer-list' }
@@ -121,6 +123,11 @@ class Views.QuestionPage extends View
     @personalRanking.setRelation(Models.User.getCurrent().preferencesForQuestion(question))
     @updateVotingInstructions()
 
+
+    @subscriptions.add @question.rankings().onInsert => @updateAllRankingsHeader()
+    @subscriptions.add @question.rankings().onRemove => @updateAllRankingsHeader()
+    @updateAllRankingsHeader()
+
     @subscriptions.add @question.comments().onInsert => @updateDiscussionHeader()
     @subscriptions.add @question.comments().onRemove => @updateDiscussionHeader()
     @updateDiscussionHeader()
@@ -145,12 +152,16 @@ class Views.QuestionPage extends View
     $('#all-questions-link').show()
     super
 
+  showColumn1Header: (header) ->
+    @find('#column1 .list-header').hide()
+    header.show()
+
   showCombinedRanking: ->
     @fetchPromise.onSuccess =>
       @showAnswerList()
       @showPersonalRanking()
       @highlightLeftNavLink(@combinedRankingLink)
-      @column1Header.text("Combined Ranking")
+      @showColumn1Header(@combinedRankingHeader)
       @answerList.setRelation(@question.answers())
 
   showNewAnswers: ->
@@ -158,7 +169,7 @@ class Views.QuestionPage extends View
       @showAnswerList()
       @showPersonalRanking()
       @highlightLeftNavLink(@newAnswersLink)
-      @column1Header.text("New Answers")
+      @showColumn1Header(@newAnswersHeader)
       if newAnswers = @question.newAnswers()
         @answerList.setRelation(newAnswers)
 
@@ -168,7 +179,6 @@ class Views.QuestionPage extends View
       @highlightLeftNavLink(@individualRankingsLink)
 
       ranking = @question.rankings().find({userId})
-      @column1Header.text("Individual Rankings")
 
       @showAllRankings()
       @allRankings.find(".selected").removeClass('selected')
@@ -196,6 +206,7 @@ class Views.QuestionPage extends View
   showAllRankings: ->
     @answerList.hide()
     @allRankings.show()
+    @showColumn1Header(@allRankingsHeader)
     @allRankings.setRelation(@question.rankings())
 
   showAnswerList: ->
@@ -208,6 +219,13 @@ class Views.QuestionPage extends View
     @personalRanking.sortable('enable')
     @personalRanking.setRelation(Models.User.getCurrent().preferencesForQuestion(@question))
     @updateVotingInstructions()
+
+  updateAllRankingsHeader: ->
+    count = @question.rankings().size()
+    if count == 1
+      @allRankingsHeader.text("1 Individual Ranking")
+    else
+      @allRankingsHeader.text("#{count} Individual Rankings")
 
   updateAnswerPreference: (item) ->
     answerId = item.data('answer-id')
