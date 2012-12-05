@@ -6,7 +6,7 @@
   <title>Hyperarchy</title>
   <%= stylesheet_link_tag "application", :media => "all" %>
   <div pub-key="<%= ENV['PUBNUB_PUBLISH_KEY'] %>" sub-key="<%= ENV['PUBNUB_SUBSCRIBE_KEY'] %>" ssl="on" origin="pubsub.pubnub.com" id="pubnub"></div>
-  <script src="http://cdn.pubnub.com/pubnub-3.3.min.js"></script>
+  <script src="https://pubnub.s3.amazonaws.com/pubnub-3.3.min.js"></script>
   <%= javascript_include_tag "application" %>
   <script type="text/javascript">
     window.PUBNUB_CHANNEL = "<%= PUBNUB_CHANNEL %>";
