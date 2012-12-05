@@ -5,4 +5,4 @@ PUBNUB = Pubnub.new(
   :ssl => true
 )
 
-PUBNUB_CHANNEL = "#{Rails.application.name}_#{Rails.env}"
+PUBNUB_CHANNEL = ENV['PUBNUB_CHANNEL']
