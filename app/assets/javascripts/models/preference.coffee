@@ -1,10 +1,10 @@
-class Models.Ranking extends Monarch.Record
-  @tableName = 'Ranking'
+class Models.Preference extends Monarch.Record
+  @tableName = 'Preference'
   @extended(this)
 
   @columns
     userId: 'integer'
-    voteId: 'integer'
+    rankingId: 'integer'
     questionId: 'integer'
     answerId: 'integer'
     position: 'float'
@@ -14,12 +14,12 @@ class Models.Ranking extends Monarch.Record
   @belongsTo 'user'
   @belongsTo 'question'
   @belongsTo 'answer'
-  @belongsTo 'vote'
+  @belongsTo 'ranking'
 
   @createOrUpdate: ({answer, position}) ->
     jQuery.ajax(
       type: 'post'
-      url: '/rankings'
+      url: '/preferences'
       dataType: 'data+records'
       data:
         answer_id: answer.id()
@@ -29,6 +29,6 @@ class Models.Ranking extends Monarch.Record
   @destroyByAnswerId: (answerId) ->
     jQuery.ajax(
       type: 'delete'
-      url: '/rankings'
+      url: '/preferences'
       data: { answer_id: answerId }
     )

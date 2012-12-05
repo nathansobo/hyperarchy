@@ -9,7 +9,7 @@ class Answer < Prequel::Record
 
   belongs_to :question
   belongs_to :creator, :class_name => "User"
-  has_many :rankings
+  has_many :preferences
 
   def can_update_or_destroy?
     creator_id == current_user.id
@@ -46,10 +46,10 @@ class Answer < Prequel::Record
       Majority.create({:winner => other_answer, :loser => self, :question_id => question_id})
     end
 
-    victories_over(question.negative_answer_ranking_counts).update(:pro_count => :times_ranked)
-    victories_over(question.positive_answer_ranking_counts).update(:con_count => :times_ranked)
-    defeats_by(question.positive_answer_ranking_counts).update(:pro_count => :times_ranked)
-    defeats_by(question.negative_answer_ranking_counts).update(:con_count => :times_ranked)
+    victories_over(question.negative_answer_preference_counts).update(:pro_count => :times_ranked)
+    victories_over(question.positive_answer_preference_counts).update(:con_count => :times_ranked)
+    defeats_by(question.positive_answer_preference_counts).update(:pro_count => :times_ranked)
+    defeats_by(question.negative_answer_preference_counts).update(:con_count => :times_ranked)
 
     question.compute_global_ranking
     question.unlock
@@ -57,9 +57,9 @@ class Answer < Prequel::Record
 
   def before_destroy
     question.lock
-    rankings.each do |ranking|
-      ranking.suppress_vote_update = true
-      ranking.destroy
+    preferences.each do |preference|
+      preference.suppress_ranking_update = true
+      preference.destroy
     end
     winning_majorities.each(&:destroy)
     losing_majorities.each(&:destroy)
@@ -73,14 +73,14 @@ class Answer < Prequel::Record
     question.answers.where(Answer[:id].neq(id))
   end
 
-  def victories_over(other_answer_ranking_counts)
+  def victories_over(other_answer_preference_counts)
     winning_majorities.
-      join(other_answer_ranking_counts, :loser_id => :answer_id)
+      join(other_answer_preference_counts, :loser_id => :answer_id)
   end
 
-  def defeats_by(other_answer_ranking_counts)
+  def defeats_by(other_answer_preference_counts)
     losing_majorities.
-      join(other_answer_ranking_counts, :winner_id => :answer_id)
+      join(other_answer_preference_counts, :winner_id => :answer_id)
   end
 
   def winning_majorities

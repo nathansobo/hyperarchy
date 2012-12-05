@@ -25,59 +25,59 @@ module Models
     end
 
     describe "before destroy" do
-      it "destroys any answers and votes that belong to the question" do
+      it "destroys any answers and rankings that belong to the question" do
         question = Question.make!
         user_1 = User.make!
         user_2 = User.make!
         answer_1 = question.answers.make!
         answer_2 = question.answers.make!
 
-        Ranking.create!(:user => user_1, :answer => answer_1, :position => 64)
-        Ranking.create!(:user => user_1, :answer => answer_2, :position => 32)
-        Ranking.create!(:user => user_2, :answer => answer_1, :position => 64)
+        Preference.create!(:user => user_1, :answer => answer_1, :position => 64)
+        Preference.create!(:user => user_1, :answer => answer_2, :position => 32)
+        Preference.create!(:user => user_2, :answer => answer_1, :position => 64)
 
         question.answers.size.should == 2
-        question.votes.size.should == 2
+        question.rankings.size.should == 2
         question.destroy
         question.answers.should be_empty
-        question.votes.should be_empty
+        question.rankings.should be_empty
       end
     end
 
     describe "#compute_global_ranking" do
-      it "uses the ranked-pairs algoritm to produce a global ranking, assigning a position of null to any unranked answers" do
+      it "uses the ranked-pairs algoritm to produce a global preference, assigning a position of null to any unranked answers" do
         jump(1.minute)
 
         4.times do
           user = User.make!
-          question.rankings.create(:user => user, :answer => memphis, :position => 4)
-          question.rankings.create(:user => user, :answer => nashville, :position => 3)
-          question.rankings.create(:user => user, :answer => chattanooga, :position => 2)
-          question.rankings.create(:user => user, :answer => knoxville, :position => 1)
+          question.preferences.create(:user => user, :answer => memphis, :position => 4)
+          question.preferences.create(:user => user, :answer => nashville, :position => 3)
+          question.preferences.create(:user => user, :answer => chattanooga, :position => 2)
+          question.preferences.create(:user => user, :answer => knoxville, :position => 1)
         end
 
         3.times do
           user = User.make!
-          question.rankings.create(:user => user, :answer => nashville, :position => 4)
-          question.rankings.create(:user => user, :answer => chattanooga, :position => 3)
-          question.rankings.create(:user => user, :answer => knoxville, :position => 2)
-          question.rankings.create(:user => user, :answer => memphis, :position => 1)
+          question.preferences.create(:user => user, :answer => nashville, :position => 4)
+          question.preferences.create(:user => user, :answer => chattanooga, :position => 3)
+          question.preferences.create(:user => user, :answer => knoxville, :position => 2)
+          question.preferences.create(:user => user, :answer => memphis, :position => 1)
         end
 
         1.times do
           user = User.make!
-          question.rankings.create(:user => user, :answer => chattanooga, :position => 4)
-          question.rankings.create(:user => user, :answer => knoxville, :position => 3)
-          question.rankings.create(:user => user, :answer => nashville, :position => 2)
-          question.rankings.create(:user => user, :answer => memphis, :position => 1)
+          question.preferences.create(:user => user, :answer => chattanooga, :position => 4)
+          question.preferences.create(:user => user, :answer => knoxville, :position => 3)
+          question.preferences.create(:user => user, :answer => nashville, :position => 2)
+          question.preferences.create(:user => user, :answer => memphis, :position => 1)
         end
 
         2.times do
           user = User.make!
-          question.rankings.create(:user => user, :answer => knoxville, :position => 4)
-          question.rankings.create(:user => user, :answer => chattanooga, :position => 3)
-          question.rankings.create(:user => user, :answer => nashville, :position => 2)
-          question.rankings.create(:user => user, :answer => memphis, :position => 1)
+          question.preferences.create(:user => user, :answer => knoxville, :position => 4)
+          question.preferences.create(:user => user, :answer => chattanooga, :position => 3)
+          question.preferences.create(:user => user, :answer => nashville, :position => 2)
+          question.preferences.create(:user => user, :answer => memphis, :position => 1)
         end
 
         question.compute_global_ranking

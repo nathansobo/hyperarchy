@@ -16,12 +16,12 @@ class Sandbox < Prequel::Sandbox
     Answer.table
   end
 
-  expose :votes do
-    Vote.table
-  end
-
   expose :rankings do
     Ranking.table
+  end
+
+  expose :preferences do
+    Preference.table
   end
 
   expose :question_comments do

@@ -25,20 +25,20 @@ class Views.AnswerItem extends View
 
     @answer.getField('body').onChange (body) => @body.html(markdown.toHTML(body))
 
-  updateRankIndicator: (ranking) ->
-    if ranking = @answer.rankingForCurrentUser()
+  updateRankIndicator: ->
+    if @answer.preferenceForCurrentUser()
       @addClass('ranked')
     else
       @removeClass('ranked')
 
-  personalVoteAnswerItem: ->
-    @parents('.question').find(".personal.vote .answer[data-answer-id=#{@answer.id()}]")
+  personalRankingAnswerItem: ->
+    @parents('.question').find(".personal.ranking .answer[data-answer-id=#{@answer.id()}]")
 
-  highlightAnswerInPersonalVote: ->
-    @personalVoteAnswerItem().addClass('highlighted')
+  highlightAnswerInPersonalRanking: ->
+    @personalRankingAnswerItem().addClass('highlighted')
 
-  unhighlightAnswerInPersonalVote: ->
-    @personalVoteAnswerItem().removeClass('highlighted')
+  unhighlightAnswerInPersonalRanking: ->
+    @personalRankingAnswerItem().removeClass('highlighted')
 
   buildDragHelper: ->
     new Views.AnswerItem(@answer).width(@width()).height(@height())

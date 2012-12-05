@@ -56,20 +56,20 @@ module Models
           _0_up_3_down = question.answers.make!(:body => "0 Up - 3 Down")
           unranked     = question.answers.make!(:body => "Unranked")
 
-          question.rankings.create(:user => user_1, :answer => _3_up_0_down, :position => 64)
-          question.rankings.create(:user => user_1, :answer => _2_up_1_down, :position => 32)
-          question.rankings.create(:user => user_1, :answer => _1_up_2_down, :position => 16)
-          question.rankings.create(:user => user_1, :answer => _0_up_3_down, :position => -64)
+          question.preferences.create(:user => user_1, :answer => _3_up_0_down, :position => 64)
+          question.preferences.create(:user => user_1, :answer => _2_up_1_down, :position => 32)
+          question.preferences.create(:user => user_1, :answer => _1_up_2_down, :position => 16)
+          question.preferences.create(:user => user_1, :answer => _0_up_3_down, :position => -64)
 
-          question.rankings.create(:user => user_2, :answer => _3_up_0_down, :position => 64)
-          question.rankings.create(:user => user_2, :answer => _2_up_1_down, :position => 32)
-          question.rankings.create(:user => user_2, :answer => _1_up_2_down, :position => -32)
-          question.rankings.create(:user => user_2, :answer => _0_up_3_down, :position => -64)
+          question.preferences.create(:user => user_2, :answer => _3_up_0_down, :position => 64)
+          question.preferences.create(:user => user_2, :answer => _2_up_1_down, :position => 32)
+          question.preferences.create(:user => user_2, :answer => _1_up_2_down, :position => -32)
+          question.preferences.create(:user => user_2, :answer => _0_up_3_down, :position => -64)
 
-          question.rankings.create(:user => user_3, :answer => _3_up_0_down, :position => 64)
-          question.rankings.create(:user => user_3, :answer => _2_up_1_down, :position => -16)
-          question.rankings.create(:user => user_3, :answer => _1_up_2_down, :position => -32)
-          question.rankings.create(:user => user_3, :answer => _0_up_3_down, :position => -64)
+          question.preferences.create(:user => user_3, :answer => _3_up_0_down, :position => 64)
+          question.preferences.create(:user => user_3, :answer => _2_up_1_down, :position => -16)
+          question.preferences.create(:user => user_3, :answer => _1_up_2_down, :position => -32)
+          question.preferences.create(:user => user_3, :answer => _0_up_3_down, :position => -64)
 
           mock.proxy(question).compute_global_ranking
           answer = question.answers.make!(:body => "Alpaca")
@@ -111,7 +111,7 @@ module Models
       end
 
       describe "#before_destroy" do
-        it "destroys any rankings and majorities associated with the answer, but does not change the updated_at time of associated votes" do
+        it "destroys any preferences and majorities associated with the answer, but does not change the updated_at time of associated rankings" do
           user_1 = User.make!
           user_2 = User.make!
 
@@ -121,29 +121,29 @@ module Models
           freeze_time
           voting_time = Time.now
 
-          question.rankings.create(:user => user_1, :answer => answer_1, :position => 64)
-          question.rankings.create(:user => user_1, :answer => answer_2, :position => 32)
-          question.rankings.create(:user => user_2, :answer => answer_1, :position => 32)
+          question.preferences.create(:user => user_1, :answer => answer_1, :position => 64)
+          question.preferences.create(:user => user_1, :answer => answer_2, :position => 32)
+          question.preferences.create(:user => user_2, :answer => answer_1, :position => 32)
 
-          Ranking.where(:answer_id => answer_1.id).size.should == 2
+          Preference.where(:answer_id => answer_1.id).size.should == 2
           Majority.where(:winner_id => answer_1.id).size.should == 1
           Majority.where(:loser_id => answer_1.id).size.should == 1
 
-          question.votes.size.should == 2
-          question.votes.each do |vote|
-            vote.updated_at.should == Time.now
+          question.rankings.size.should == 2
+          question.rankings.each do |ranking|
+            ranking.updated_at.should == Time.now
           end
 
           jump(1.minute)
 
           answer_1.destroy
 
-          Ranking.where(:answer_id => answer_1.id).should be_empty
+          Preference.where(:answer_id => answer_1.id).should be_empty
           Majority.where(:winner_id => answer_1.id).should be_empty
           Majority.where(:loser_id => answer_1.id).should be_empty
 
-          question.votes.size.should == 1
-          question.votes.first.updated_at.should == voting_time
+          question.rankings.size.should == 1
+          question.rankings.first.updated_at.should == voting_time
         end
       end
     end

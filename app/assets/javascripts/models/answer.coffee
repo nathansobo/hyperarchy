@@ -13,10 +13,10 @@ class Models.Answer extends Monarch.Record
 
   @belongsTo 'question'
   @belongsTo 'creator', className: 'User'
-  @hasMany 'rankings'
+  @hasMany 'preferences'
 
   answer: ->
     this
 
-  rankingForCurrentUser: ->
-    @rankings().find(userId: Models.User.getCurrent().id())
+  preferenceForCurrentUser: ->
+    @preferences().find(userId: Models.User.getCurrent().id())

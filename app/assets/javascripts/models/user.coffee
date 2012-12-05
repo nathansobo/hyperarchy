@@ -7,13 +7,13 @@ class Models.User extends Monarch.Record
     avatarUrl: 'string'
 
   @hasMany 'answers', foreignKey: 'creatorId'
+  @hasMany 'preferences'
   @hasMany 'rankings'
-  @hasMany 'votes'
 
   @currentUserId: null # assigned by Rails
 
   @getCurrent: ->
     @find(@currentUserId)
 
-  rankingsForQuestion: (question) ->
-    @rankings().where(questionId: question.id())
+  preferencesForQuestion: (question) ->
+    @preferences().where(questionId: question.id())

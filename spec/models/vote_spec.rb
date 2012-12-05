@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Vote do
+describe Ranking do
   describe "after create or destroy" do
     attr_reader :user_1, :user_2, :question, :answer
 
@@ -11,22 +11,22 @@ describe Vote do
       @answer = question.answers.make!
     end
 
-    specify "the vote count of the question is increment or decrement appropriately" do
-      question.vote_count.should == 0
-      ranking_1 = question.rankings.create(:user => user_1, :answer => answer, :position => 64)
-      vote_1 = ranking_1.vote
-      vote_1.should_not be_nil
-      vote_1.question.should == question
-      question.vote_count.should == 1
+    specify "the ranking count of the question is increment or decrement appropriately" do
+      question.ranking_count.should == 0
+      preference_1 = question.preferences.create(:user => user_1, :answer => answer, :position => 64)
+      ranking_1 = preference_1.ranking
+      ranking_1.should_not be_nil
+      ranking_1.question.should == question
+      question.ranking_count.should == 1
 
-      ranking_2 = question.rankings.create(:user => user_2, :answer => answer, :position => 64)
-      vote_2 = ranking_2.vote
-      question.vote_count.should == 2
+      preference_2 = question.preferences.create(:user => user_2, :answer => answer, :position => 64)
+      ranking_2 = preference_2.ranking
+      question.ranking_count.should == 2
 
-      vote_1.destroy
-      question.vote_count.should == 1
-      vote_2.destroy
-      question.vote_count.should == 0
+      ranking_1.destroy
+      question.ranking_count.should == 1
+      ranking_2.destroy
+      question.ranking_count.should == 0
     end
   end
 end

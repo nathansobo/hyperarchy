@@ -1,5 +1,5 @@
-class Models.Vote extends Monarch.Record
-  @tableName = 'Vote'
+class Models.Ranking extends Monarch.Record
+  @tableName = 'Ranking'
   @extended(this)
 
   @columns
@@ -12,5 +12,5 @@ class Models.Vote extends Monarch.Record
 
   @belongsTo 'user'
   @belongsTo 'question'
-  @hasMany 'rankings'
-  @hasMany 'answers', through: 'rankings'
+  @hasMany 'preferences'
+  @hasMany 'answers', through: 'preferences'
