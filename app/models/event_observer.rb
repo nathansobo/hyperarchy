@@ -22,10 +22,6 @@ module EventObserver
   end
 
   def post_event(event)
-    callback = lambda do |message|
-      Rails.logger.debug "Received reply from publish to #{PUBNUB_CHANNEL}: #{message}"
-    end
-    Rails.logger.debug "Publishing on channel #{PUBNUB_CHANNEL}: #{event.inspect}"
-    PUBNUB.publish(:channel => PUBNUB_CHANNEL, :message => event, :callback => callback )
+    Pusher[PUSHER_CHANNEL].trigger_async 'operation', event
   end
 end

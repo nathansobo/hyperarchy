@@ -69,9 +69,5 @@ module Hyperarchy
     config.assets.version = '1.0'
 
     config.middleware.use Rack::SSL if Rails.env.production?
-
-    def name
-      Rails.application.class.parent_name.underscore
-    end
   end
 end
