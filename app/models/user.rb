@@ -13,8 +13,6 @@ class User < Prequel::Record
   has_many :questions
   has_many :answers, :foreign_key => :creator_id
 
-  validates_uniqueness_of :email_address, :message => "There is already an account with that email address."
-
   def self.find_or_create_with_omniauth(auth)
     return find_or_create_with_dev_credentials(auth) if auth.provider == 'developer'
 
