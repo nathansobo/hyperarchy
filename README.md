@@ -4,52 +4,47 @@ Hyperarchy is a collaborative decision-making tool based on ranked-pairs voting.
 This version is a stripped-down prototype designed for internal use at GitHub.
 It's licensed under the AGPL, and I will be developing it gradually based on our
 needs and experience within GitHub over the coming months. Hyperarchy is a Rails
-app and is designed for easy deployment to Heroku. It currently authenticates
-against GitHub Oauth, requiring users to be a member of a GitHub team which is
-specified as an environment variable. This authentication scheme is based on
-OmniAuth, and should be straightforward to replace with a different
-authentication approach with a bit of hacking.
+app and is designed for easy deployment to Heroku. With exceptions noted below
+getting Hyperarchy running should be similar to any standard Rails application
+that you'd put on Heroku. In addition to the typical Postgres database requirement,
+Hyperarchy also requires Redis and a real-time messaging service called
+[Pusher](http://pusher.com). Configuring the application will require changes to
+environment variables in a `.env` file and entries in `database.yml`.
 
 ## Environment Variables
 
-Hyperarchy uses the [dotenv](https://github.com/bkeepers/dotenv) Gem to load
-various environment variables from a `.env` file located in the application's
-root in development. There's a .env.example file which lists various environment
-variables you'll need to run the application. Run `cp .env.example .env` and
-then edit the file to fill in relevant values for your variables.
+Hyperarchy loads various environment variables from a `.env` file located in the
+application's root in development. There's a .env.example file which lists various
+environment variables you'll need to run the application. Run `cp .env.example .env`
+and then edit the file to fill in relevant values for your variables.
 
 * `RAILS_SECRET_TOKEN`: This is any random string, 128 characters long. Rails uses
   it as a unique identifier of your app for security purposes.
 
 * `PUSHER_URL`: Hyperarchy uses a service called [Pusher](http://pusher.com) to
-  send real-time updates to clients. You'll need to setup an account with them
-  and fill in your key, secret, and app-number into the template from the
-  exmaple.
+  send real-time updates to clients. You'll need to setup an account with them,
+  then synthesize this URL based on the the API credentials. Don't follow the
+  instructions on their site, just find the page with a listing like the following
+  and use these values to construct a URL based on the example:
 
-* `GITHUB_KEY`, `GITHUB_SECRET`, and `GITHUB_TEAM_ID`: Hyperarchy currently
-  requires users to be members of a specific GitHub team, and it uses the
-  OmniAuth gem to implement GitHub authentication. It should be fairly
-  simple to change the authentication scheme by changing the OmniAuth strategy
-  as well as some changes in the sessions controller and user model  To work
-  with the existing authentication, you need to setup Hyperarchy in the 
-  [applications section](https://github.com/settings/applications) of your
-  GitHub account. Create two applications, one for local development with a URL
-  matching the URL you use to access the server on your machine (maybe
-  localhost), and one for production. Don't try to use the same application for
-  both. You'll also need to specify the GitHub team id that users are required
-  to be a member of.  authenticates needs to be a member of. More information
-  on GitHub teams can be found [here](http://developer.github.com/v3/orgs/teams/).
-  I expect a lot of people will want a different authentication rule, but this
-  is what we needed at GitHub so that's what there is for now.
+  Pusher.app_id = 'xxxx'
+  Pusher.key    = 'xxxxxxxxxxxxxxxxxxxx'
+  Pusher.secret = 'xxxxxxxxxxxxxxxxxxxx'
+
+* `PUSHER_CHANNEL`: This can be any name. Different environments should have
+  different channel names, like "hyperarchy_production", "hyperarchy_staging",
+  and "hyperarchy_development" so that messages stay separate.
 
 * REDISTOGO_URL: Hyperarchy requires a Redis server for synchronization
   purposes. You can install redis with homebrew: `brew install redis` and follow
-  the instructions to start the server on your machine.
+  the instructions to start the server on your machine. Make sure the URL
+  in the file matches your server's hostname and port.
 
-## Postgres
-You'll need to run a database server on your local system for Hyperarchy to
-store its data. If you're on a Mac, you can install it with
-[Homebrew](http://mxcl.github.com/homebrew/):
+## Database.yml
+
+Like most Rails apps, Hyperarchy depends on a relational database. Because it's
+designed for Heroku deployment, it uses PostgreSQL. If you're on a Mac, you can
+install Postgres with [Homebrew](http://mxcl.github.com/homebrew/):
 
 ```
 brew install postgres
@@ -61,4 +56,56 @@ and change the username from "nathansobo" to your username or a valid account
 for your Postgres server. You can create a new Postgres user with the
 `createuser` command.
 
-## To be continued...
+## Installing Ruby and Gems
+
+* Install Ruby 1.9
+
+* Install Bundler: You may need to prefix this command with `sudo` depending on
+  your Ruby installation.
+
+  ```
+  gem install bundler
+  ```
+
+* Install Hyperarchy's gems using Bundler:
+
+  ```
+  bundle install
+  ```
+
+## Creating and Migrating The Database
+
+Make sure your database server is started, then run `rake db:create db:migrate`
+to create and migrate the database. If you have problems here, it may be because
+you didn't change `database.yml` to connect to your database.
+
+
+## Running
+
+Finally, should should be able to start the application:
+
+```
+rails server
+```
+
+## Rough edges around authentication
+
+The basic authentication built into Hyperarchy is still pretty rough. We use
+a GitHub-specific scheme at GitHub, but I wanted to add something in there to
+make it easy to sign up and get started. Authentication is based on the
+[omniauth-identity](https://github.com/intridea/omniauth-identity) strategy, so
+reading its documentation may be a jumping off point for customizing the look of
+the login screen.
+
+Login errors don't display due to my custom ORM needing to implement ActiveModel.
+This will be fixed in a future revision.
+
+## Deployment
+
+The application is designed to be deployed to Heroku. You'll need to enable the
+Pusher and Redis To Go addons on your application in addition to the standard
+Postgres database. Also make sure you use `heroku config:set` to assign the
+RAILS_SECRET and the PUSHER_CHANNEL on your application. Then push and migrate
+the databases. There's a `deploy` rake task to handle putting up a maintenance
+page when you need to push app changes that are bundled with migrations, but you'll
+need to change the names of the heroku applications mentioned in the `--app` section.
