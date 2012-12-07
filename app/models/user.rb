@@ -50,7 +50,7 @@ class User < Prequel::Record
   def self.unicorn_avatar_for_email_address(email_address)
     require 'digest/md5'
     email_digest = Digest::MD5.hexdigest(email_address)
-    avatar_url = "http://unicornify.appspot.com/avatar/#{email_digest}?s=128"
+    avatar_url = "https://secure.gravatar.com/avatar/#{email_digest}"
   end
 
   def self.find_or_create_with_dev_credentials(auth)
