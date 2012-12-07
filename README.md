@@ -3,13 +3,18 @@
 Hyperarchy is a collaborative decision-making tool based on ranked-pairs voting.
 This version is a stripped-down prototype designed for internal use at GitHub.
 It's licensed under the AGPL, and I will be developing it gradually based on our
-needs and experience within GitHub over the coming months. Hyperarchy is a Rails
-app and is designed for easy deployment to Heroku. With exceptions noted below
-getting Hyperarchy running should be similar to any standard Rails application
-that you'd put on Heroku. In addition to the typical Postgres database requirement,
-Hyperarchy also requires Redis and a real-time messaging service called
-[Pusher](http://pusher.com). Configuring the application will require changes to
-environment variables in a `.env` file and entries in `database.yml`.
+needs and experience within GitHub over the coming months.
+
+![Questions List](http://f.cl.ly/items/1K0h2E101Q1X1C3z0n3J/Screen%20Shot%202012-12-06%20at%208.18.33%20PM.png)
+![Question Detail](http://f.cl.ly/items/1T162d3D2n2x1d2C3511/Screen%20Shot%202012-12-06%20at%208.19.32%20PM.png)
+
+Hyperarchy is a Rails app and is designed for easy deployment to Heroku.
+With exceptions noted below getting Hyperarchy running should be similar to any
+standard Rails application that you'd put on Heroku. In addition to the typical
+Postgres database requirement, Hyperarchy also requires Redis and a real-time
+messaging service called [Pusher](http://pusher.com). Configuring the application
+will require changes to environment variables in a `.env` file and entries in
+`database.yml`.
 
 ## Environment Variables
 
