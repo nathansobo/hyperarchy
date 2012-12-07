@@ -94,4 +94,8 @@ class Question < Prequel::Record
       join(preferences).
       project(Answer)
   end
+
+  def extra_records_for_create_events
+    [creator]
+  end
 end

@@ -26,7 +26,7 @@ class Views.HomePage extends View
   show: ->
     super
     $('#all-questions-link').hide()
-    @fetchPromise ?= Question.join(User, creatorId: 'User.id').fetch()
+    @fetchPromise ?= Monarch.Remote.Server.fetch([User.where(id: User.currentUserId), Question.join(User, creatorId: 'User.id')])
     @fetchPromise.onSuccess =>
       @questionsList.setRelation(Models.Question.table)
 
