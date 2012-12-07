@@ -48,6 +48,7 @@ GEM
       multi_json (~> 1.0)
     addressable (2.3.2)
     arel (3.0.2)
+    bcrypt-ruby (3.0.1)
     builder (3.0.3)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
@@ -121,6 +122,9 @@ GEM
     omniauth (1.1.1)
       hashie (~> 1.2)
       rack
+    omniauth-identity (1.1.0)
+      bcrypt-ruby (~> 3.0)
+      omniauth (~> 1.0)
     omniauth-oauth2 (1.1.0)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
@@ -219,6 +223,7 @@ DEPENDENCIES
   machinist
   omniauth
   omniauth-github!
+  omniauth-identity
   pg (~> 0.11)
   prequel!
   pusher

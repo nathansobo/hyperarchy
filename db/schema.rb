@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121118024604) do
+ActiveRecord::Schema.define(:version => 20121207003751) do
 
   create_table "answers", :force => true do |t|
     t.string   "body"
@@ -21,6 +21,14 @@ ActiveRecord::Schema.define(:version => 20121118024604) do
     t.integer  "comment_count"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+  end
+
+  create_table "identities", :force => true do |t|
+    t.string   "full_name"
+    t.string   "email_address"
+    t.string   "password_digest"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
   create_table "majorities", :force => true do |t|
@@ -66,11 +74,12 @@ ActiveRecord::Schema.define(:version => 20121118024604) do
   end
 
   create_table "users", :force => true do |t|
-    t.integer "github_uid"
-    t.string  "oauth_access_token"
-    t.string  "email_address"
-    t.string  "full_name"
-    t.string  "avatar_url"
+    t.string "uid"
+    t.string "oauth_access_token"
+    t.string "email_address"
+    t.string "full_name"
+    t.string "avatar_url"
+    t.string "provider"
   end
 
 end

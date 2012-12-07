@@ -1,6 +1,7 @@
 class User < Prequel::Record
   column :id, :integer
-  column :github_uid, :integer
+  column :uid, :string
+  column :provider, :string
   column :oauth_access_token, :string
   column :email_address, :string
   column :full_name, :string
@@ -13,29 +14,31 @@ class User < Prequel::Record
   has_many :questions
   has_many :answers, :foreign_key => :creator_id
 
-  def self.find_or_create_with_omniauth(auth)
-    return find_or_create_with_dev_credentials(auth) if auth.provider == 'developer'
+  def self.from_omniauth(auth)
+    provider = auth.provider
+    uid = auth.uid
+    email_address = auth.info.email
+    #     return find_or_create_with_dev_credentials(auth) if auth.provider == 'developer'
 
-    oauth_access_token = auth.credentials.token
-    github_uid = auth.uid
-    return unless is_github_team_member?(oauth_access_token, auth.info.nickname)
+    attributes = {
+      :provider => provider,
+      :uid => uid,
+      :full_name => auth.info.name,
+      :email_address => email_address,
+      :avatar_url => auth.info.image || unicorn_avatar_for_email_address(email_address),
+    }
 
-    if user = find(:github_uid => github_uid)
-      user.update!(
-        :oauth_access_token => oauth_access_token,
-        :full_name => auth.info.name,
-        :email_address => auth.info.email,
-        :avatar_url => auth.info.image,
-      )
+    if provider == 'github'
+      oauth_access_token = auth.credentials.token
+      return unless is_github_team_member?(oauth_access_token, auth.info.nickname)
+      attributes[:oauth_access_token] = oauth_access_token
+    end
+
+    if user = find(:provider => provider, :uid => uid)
+      user.update!(attributes)
       user
     else
-      create!(
-        :github_uid => github_uid,
-        :oauth_access_token => oauth_access_token,
-        :full_name => auth.info.name,
-        :email_address => auth.info.email,
-        :avatar_url => auth.info.image,
-      )
+      create!(attributes)
     end
   end
 
@@ -44,10 +47,13 @@ class User < Prequel::Record
     github.orgs.teams.team_member? ENV['GITHUB_TEAM_ID'], github_username
   end
 
-  def self.find_or_create_with_dev_credentials(auth)
+  def self.unicorn_avatar_for_email_address(email_address)
     require 'digest/md5'
-    email_digest = Digest::MD5.hexdigest(auth.info.email)
+    email_digest = Digest::MD5.hexdigest(email_address)
     avatar_url = "http://unicornify.appspot.com/avatar/#{email_digest}?s=128"
+  end
+
+  def self.find_or_create_with_dev_credentials(auth)
 
     if user = find(:email_address => auth.info.email)
       user.update!(

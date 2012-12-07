@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_url
-    '/auth/github'
+    "/auth/#{AUTH_SCHEME}"
   end
 
   def current_user
