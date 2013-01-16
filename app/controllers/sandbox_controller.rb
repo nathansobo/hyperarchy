@@ -24,4 +24,3 @@ class SandboxController < ApplicationController
     @sandbox ||= Sandbox.new(current_user)
   end
 end
-
