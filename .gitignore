@@ -16,3 +16,6 @@
 .DS_Store
 .env
 public/assets
+
+# Ignore rbenv version file
+/.ruby-version
