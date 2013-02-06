@@ -5,6 +5,7 @@ class Models.Question extends Monarch.Record
   @columns
     creatorId: 'integer'
     body: 'string'
+    state: 'string'
     rankingCount: 'integer'
 
   @defaultOrderBy 'id desc'

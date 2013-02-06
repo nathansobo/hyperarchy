@@ -2,6 +2,7 @@ class Question < Prequel::Record
   column :id, :integer
   column :creator_id, :integer
   column :body, :string
+  column :state, :string
   column :ranking_count, :integer, :default => 0
   column :created_at, :datetime
   column :updated_at, :datetime
