@@ -25,6 +25,6 @@ class Models.Question extends Monarch.Record
 
   oppositeState: ->
     if @state() == null || /open/i.test(@state())
-      'Archived'
+      'Archive'
     else
       'Open'
