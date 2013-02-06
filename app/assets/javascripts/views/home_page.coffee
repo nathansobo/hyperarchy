@@ -6,9 +6,7 @@ class Views.HomePage extends View
 
       @header =>
         @button "+ New Question", class: 'btn btn-large btn-primary pull-right', click: 'addQuestion'
-        @div class: 'btn-group pull-right', =>
-          @button "Open", class: 'btn btn-large', 'data-toggle': 'button'
-          @button "Archived", class: 'btn btn-large', 'data-toggle': 'button'
+        @button "Show archived", class: 'pull-right btn btn-large', 'data-toggle': 'button'
         @h1 "", outlet: 'questionsHeader'
 
       @subview 'questionsList', new Views.RelationView(
