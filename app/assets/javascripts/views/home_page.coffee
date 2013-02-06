@@ -33,7 +33,7 @@ class Views.HomePage extends View
       @questionsList.setRelation(Question.where(state: 'Open'))
 
   updateQuestionsHeader: ->
-    size = Question.size()
+    size = @questionsList.relation.size()
     if size == 1
       @questionsHeader.text("1 Question")
     else
