@@ -34,6 +34,7 @@ class Views.RelationView extends View
       @onInsert?(element, record, index)
 
     @subscribe relation, 'onInsert', (record, index) =>
+      console.log('insert')
       element = @elementForRecord(record, index)
       @insertAtIndex(element, index)
       @onInsert?(element, record, index)
