@@ -22,3 +22,9 @@ class Models.Question extends Monarch.Record
 
   rankingForCurrentUser: ->
     @rankings().find(userId: Models.User.currentUserId)
+
+  oppositeState: ->
+    if @state() == null || /open/i.test(@state())
+      'Archived'
+    else
+      'Open'

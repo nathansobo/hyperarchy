@@ -13,6 +13,10 @@ class Views.QuestionPage extends View
               @i class: 'icon-trash'
               @text " Delete"
 
+            @a class: 'pull-right', click: 'toggleQuestionState', =>
+              @i class: 'icon-flag'
+              @span outlet: 'toggleStateButtonText'
+
             @a class: 'edit-body pull-right', outlet: 'editButton', click: 'editQuestionBody', =>
               @i class: 'icon-edit'
               @text " Edit"
@@ -117,12 +121,12 @@ class Views.QuestionPage extends View
 
     @creatorAvatar.attr('src', @question.creator().avatarUrl())
     @updateQuestionBody()
+    @updateToggleQuestionStateButtonText()
     question.getField('body').onChange => @updateQuestionBody()
     $(window).on 'resize', => @adjustTopOfMainDiv()
 
     @personalRanking.setRelation(Models.User.getCurrent().preferencesForQuestion(question))
     @updateVotingInstructions()
-
 
     @subscriptions.add @question.rankings().onInsert => @updateAllRankingsHeader()
     @subscriptions.add @question.rankings().onRemove => @updateAllRankingsHeader()
@@ -227,6 +231,12 @@ class Views.QuestionPage extends View
     else
       @allRankingsHeader.text("#{count} Individual Rankings")
 
+  updateToggleQuestionStateButtonText: ->
+    if @question.state() == null
+      @toggleStateButtonText.text(' Archive')
+    else
+      @toggleStateButtonText.text(" #{@question.oppositeState()}")
+
   updateAnswerPreference: (item) ->
     answerId = item.data('answer-id')
     answer = Models.Answer.find(answerId)
@@ -286,6 +296,11 @@ class Views.QuestionPage extends View
     if confirm("Are you sure you want to delete this question?")
       @skipDestroyAlert = true
       @question.destroy()
+
+  toggleQuestionState: ->
+    @question.update({ state: @question.oppositeState() })
+      .onSuccess (question) =>
+        @updateToggleQuestionStateButtonText()
 
   highlightAnswerInCollectiveRanking: (answer, delay) ->
     if delay
