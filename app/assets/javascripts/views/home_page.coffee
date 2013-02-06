@@ -28,9 +28,9 @@ class Views.HomePage extends View
   show: ->
     super
     $('#all-questions-link').hide()
-    @fetchPromise ?= Monarch.Remote.Server.fetch([User.where(id: User.currentUserId), Question.join(User, creatorId: 'User.id').where('state': 'Open')])
+    @fetchPromise ?= Monarch.Remote.Server.fetch([User.where(id: User.currentUserId), Question.join(User, creatorId: 'User.id')])
     @fetchPromise.onSuccess =>
-      @questionsList.setRelation(Models.Question.table)
+      @questionsList.setRelation(Question.where(state: 'Open'))
 
   updateQuestionsHeader: ->
     size = Question.size()
@@ -40,13 +40,14 @@ class Views.HomePage extends View
       @questionsHeader.text("#{size} Questions")
 
   toggleArchived: ->
-    @questionsList.setRelation(Question.where(state: @toggleArchivedButtonTo))
+    relation = Question.where(state: @toggleArchivedButtonTo)
+    @questionsList.setRelation(relation)
+    console.log relation.map (r) -> r.fieldValues()
 
     if @toggleArchivedButtonTo == 'Archive'
       @toggleArchivedButtonTo = 'Open'
     else
       @toggleArchivedButtonTo = 'Archive'
-
 
   addQuestion: ->
     new Views.ModalForm(
