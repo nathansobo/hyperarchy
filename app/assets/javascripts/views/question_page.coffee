@@ -13,7 +13,7 @@ class Views.QuestionPage extends View
               @i class: 'icon-trash'
               @text " Delete"
 
-            @a class: 'pull-right', click: 'toggleQuestionState', =>
+            @a class: 'pull-right', click: 'toggleQuestionArchived', =>
               @i class: 'icon-flag'
               @span outlet: 'toggleStateButtonText'
 
@@ -121,7 +121,7 @@ class Views.QuestionPage extends View
 
     @creatorAvatar.attr('src', @question.creator().avatarUrl())
     @updateQuestionBody()
-    @updateToggleQuestionStateButtonText()
+    @updateToggleQuestionArchivedButton()
     question.getField('body').onChange => @updateQuestionBody()
     $(window).on 'resize', => @adjustTopOfMainDiv()
 
@@ -231,11 +231,11 @@ class Views.QuestionPage extends View
     else
       @allRankingsHeader.text("#{count} Individual Rankings")
 
-  updateToggleQuestionStateButtonText: ->
-    if @question.state() == null
-      @toggleStateButtonText.text(' Archive')
+  updateToggleQuestionArchivedButton: ->
+    if @question.archived()
+      @toggleStateButtonText.text(" Reopen")
     else
-      @toggleStateButtonText.text(" #{@question.oppositeState()}")
+      @toggleStateButtonText.text(' Archive')
 
   updateAnswerPreference: (item) ->
     answerId = item.data('answer-id')
@@ -297,10 +297,13 @@ class Views.QuestionPage extends View
       @skipDestroyAlert = true
       @question.destroy()
 
-  toggleQuestionState: ->
-    @question.update({ state: @question.oppositeState() })
-      .onSuccess (question) =>
-        @updateToggleQuestionStateButtonText()
+  toggleQuestionArchived: ->
+    if @question.archived()
+      query = @question.update({ archivedAt: null })
+    else
+      query = @question.update({ archivedAt: new Date() })
+
+    query.onSuccess (question) => @updateToggleQuestionArchivedButton()
 
   highlightAnswerInCollectiveRanking: (answer, delay) ->
     if delay

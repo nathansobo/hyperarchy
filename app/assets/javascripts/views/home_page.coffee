@@ -6,7 +6,7 @@ class Views.HomePage extends View
 
       @header =>
         @button "+ New Question", class: 'btn btn-large btn-primary pull-right', click: 'addQuestion'
-        @button "Show archived", class: 'pull-right btn btn-large', 'data-toggle': 'button', id: 'toggle-archived', click: 'toggleArchived', 'data-toggle-to': 'Archive'
+        @button "Show archived", class: 'pull-right btn btn-large', 'data-toggle': 'button', click: 'toggleArchived'
         @h1 "", outlet: 'questionsHeader'
 
       @subview 'questionsList', new Views.RelationView(
@@ -23,14 +23,11 @@ class Views.HomePage extends View
   initialize: ->
     @questionsList.onInsert = => @updateQuestionsHeader()
     @questionsList.onRemove = => @updateQuestionsHeader()
-    @toggleArchivedButtonTo = 'Archive'
 
   show: ->
     super
     $('#all-questions-link').hide()
-    @fetchPromise ?= Monarch.Remote.Server.fetch([User.where(id: User.currentUserId), Question.join(User, creatorId: 'User.id')])
-    @fetchPromise.onSuccess =>
-      @questionsList.setRelation(Question.where(state: 'Open'))
+    @fetchPromise ?= Monarch.Remote.Server.fetch([User.where(id: User.currentUserId), Question.join(User, creatorId: 'User.id')]).onSuccess => @toggleArchived()
 
   updateQuestionsHeader: ->
     size = @questionsList.relation.size()
@@ -40,12 +37,14 @@ class Views.HomePage extends View
       @questionsHeader.text("#{size} Questions")
 
   toggleArchived: ->
-    @questionsList.setRelation(Question.where(state: @toggleArchivedButtonTo))
-
-    if @toggleArchivedButtonTo == 'Archive'
-      @toggleArchivedButtonTo = 'Open'
+    if @showArchived
+      console.log('showing archived')
+      @questionsList.setRelation(Question.where('archivedAt >': null))
     else
-      @toggleArchivedButtonTo = 'Archive'
+      @questionsList.setRelation(Question.where(archivedAt: null))
+    @showArchived = !@showArchived
+
+    return true
 
   addQuestion: ->
     new Views.ModalForm(
