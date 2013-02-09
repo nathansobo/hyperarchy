@@ -299,9 +299,9 @@ class Views.QuestionPage extends View
 
   toggleQuestionArchived: ->
     if @question.archived()
-      query = @question.update({ archivedAt: null })
+      query = @question.update(archivedAt: 0)
     else
-      query = @question.update({ archivedAt: new Date() })
+      query = @question.update(archivedAt: new Date())
     query.onSuccess (question) => @updateToggleQuestionArchivedButton()
 
   highlightAnswerInCollectiveRanking: (answer, delay) ->

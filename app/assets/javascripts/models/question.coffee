@@ -17,7 +17,7 @@ class Models.Question extends Monarch.Record
   @belongsTo 'creator', className: 'User'
 
   @syntheticColumn 'archived', ->
-      @signal 'archivedAt', (archivedAt) -> !!archivedAt
+      @signal 'archivedAt', (archivedAt) -> archivedAt > 0
 
   newAnswers: ->
     if @rankingForCurrentUser()
