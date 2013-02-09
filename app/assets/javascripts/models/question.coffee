@@ -16,6 +16,9 @@ class Models.Question extends Monarch.Record
 
   @belongsTo 'creator', className: 'User'
 
+  @syntheticColumn 'archived', ->
+      @signal 'archivedAt', (archivedAt) -> !!archivedAt
+
   newAnswers: ->
     if @rankingForCurrentUser()
       @answers().where('createdAt >': @rankingForCurrentUser().updatedAt())
