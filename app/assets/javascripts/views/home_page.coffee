@@ -38,12 +38,10 @@ class Views.HomePage extends View
 
   toggleArchived: ->
     if @showArchived
-      console.log('showing archived')
       @questionsList.setRelation(Question.where('archivedAt >': null))
     else
       @questionsList.setRelation(Question.where(archivedAt: null))
     @showArchived = !@showArchived
-
     return true
 
   addQuestion: ->
