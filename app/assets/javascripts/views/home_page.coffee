@@ -40,9 +40,7 @@ class Views.HomePage extends View
       @questionsHeader.text("#{size} Questions")
 
   toggleArchived: ->
-    relation = Question.where(state: @toggleArchivedButtonTo)
-    @questionsList.setRelation(relation)
-    console.log relation.map (r) -> r.fieldValues()
+    @questionsList.setRelation(Question.where(state: @toggleArchivedButtonTo))
 
     if @toggleArchivedButtonTo == 'Archive'
       @toggleArchivedButtonTo = 'Open'
