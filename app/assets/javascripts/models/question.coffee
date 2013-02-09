@@ -5,7 +5,7 @@ class Models.Question extends Monarch.Record
   @columns
     creatorId: 'integer'
     body: 'string'
-    state: 'string'
+    archivedAt: 'datetime'
     rankingCount: 'integer'
 
   @defaultOrderBy 'id desc'
@@ -22,9 +22,3 @@ class Models.Question extends Monarch.Record
 
   rankingForCurrentUser: ->
     @rankings().find(userId: Models.User.currentUserId)
-
-  oppositeState: ->
-    if @state() == null || /open/i.test(@state())
-      'Archive'
-    else
-      'Open'
