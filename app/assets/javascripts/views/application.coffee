@@ -29,6 +29,9 @@ class Views.Application extends View
       @configure ->
         @generateRequestOnPageLoad = true
 
+      @get '/questions/archived', ->
+        view.showPage('homePage')
+
       @get '/questions/:questionId', ({params}) ->
         { questionId } = params
         view.showQuestionPage(questionId).showCombinedRanking()

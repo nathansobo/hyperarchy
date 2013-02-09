@@ -6,7 +6,7 @@ class Views.HomePage extends View
 
       @header =>
         @button "+ New Question", class: 'btn btn-large btn-primary pull-right', click: 'addQuestion'
-        @button "Show archived", class: 'pull-right btn btn-large', 'data-toggle': 'button', click: 'toggleArchived'
+        @a "Show archived", class: 'pull-right btn btn-large', 'data-toggle': 'button', click: 'toggleArchived', href: '/questions/archived', outlet: 'toggleArchivedButton'
         @h1 "", outlet: 'questionsHeader'
 
       @subview 'questionsList', new Views.RelationView(
@@ -37,13 +37,14 @@ class Views.HomePage extends View
       @questionsHeader.text("#{size} Questions")
 
   toggleArchived: ->
-    if @showArchived
-      @questionsList.setRelation(Question.where('archivedAt >': null))
+    [relation, href] = if @showArchived
+      [Question.where('archivedAt >': null), '/questions/archived']
     else
-      @questionsList.setRelation(Question.where('archivedAt <=': null))
+      [Question.where('archivedAt <=': null), '/']
     @showArchived = !@showArchived
+    @toggleArchivedButton.attr('href', href)
+    @questionsList.setRelation(relation)
     @updateQuestionsHeader()
-    return true
 
   addQuestion: ->
     new Views.ModalForm(
