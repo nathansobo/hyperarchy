@@ -42,6 +42,7 @@ class Views.HomePage extends View
     else
       @questionsList.setRelation(Question.where('archivedAt <=': null))
     @showArchived = !@showArchived
+    @updateQuestionsHeader()
     return true
 
   addQuestion: ->
