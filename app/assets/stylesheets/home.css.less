@@ -129,6 +129,20 @@ html, body {
   right: 0;
   bottom: 0;
 
+  &.archived {
+    .edit-body {
+      display: none;
+    }
+
+    #add-answer-button {
+      visibility: hidden;
+    }
+
+    .answer.editable:hover i {
+      display: none;
+    }
+  }
+
   // layout
   .container {
     position: relative;

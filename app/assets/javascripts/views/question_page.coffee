@@ -60,7 +60,7 @@ class Views.QuestionPage extends View
             @div class: 'column', id: 'column2', =>
               @h4 class: 'list-header', outlet: 'column2Header', =>
                 @span "Your Ranking", outlet: 'column2HeaderText'
-                @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right', click: 'addAnswer', outlet: 'addAnswerButton'
+                @button "+ Add Answer", id: 'add-answer-button', class: 'btn btn-small btn-primary pull-right', click: 'addAnswer', outlet: 'addAnswerButton'
 
               @subview 'personalRanking', new Views.RelationView(
                 attributes: { class: 'personal answer-list' }
@@ -151,6 +151,9 @@ class Views.QuestionPage extends View
       Davis.location.assign('/')
 
     @selectedRankingUserId = null
+
+    @question.getField('archived').onChange @updateArchivedClass
+    @updateArchivedClass()
 
   show: ->
     $('#all-questions-link').show()
@@ -341,6 +344,12 @@ class Views.QuestionPage extends View
 
   adjustTopOfMainDiv: ->
     @mainDiv.css('top', @header.outerHeight())
+
+  updateArchivedClass: =>
+    if @question.archived()
+      @addClass 'archived'
+    else
+      @removeClass 'archived'
 
   remove: (selector, keepData) ->
     super
