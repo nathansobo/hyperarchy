@@ -178,20 +178,35 @@ module Models
       end
 
       describe "#can_update? and #can_destroy?" do
-        specify "only the answer creator can destroy it or update its body and details" do
-          answer = Answer.make!
-          answer.creator.should == creator
+        describe "if the answer is not archived" do
+          specify "only the answer creator can destroy it or update its body and details" do
+            answer = Answer.make!
+            answer.creator.should == creator
 
-          set_current_user(non_owner)
-          answer.can_update?.should be_false
-          answer.can_destroy?.should be_false
+            set_current_user(non_owner)
+            answer.can_update?.should be_false
+            answer.can_destroy?.should be_false
 
-          set_current_user(creator)
-          answer.can_update?.should be_true
-          answer.can_destroy?.should be_true
+            set_current_user(creator)
+            answer.can_update?.should be_true
+            answer.can_destroy?.should be_true
 
-          # no one can update properties other than body and details
-          answer.can_update_columns?([:question_id, :creator_id, :position]).should be_false
+            # no one can update properties other than body and details
+            answer.can_update_columns?([:question_id, :creator_id, :position]).should be_false
+          end
+        end
+
+        describe "if the answer is archived", :focused => true do
+          specify "no one can create, update, or destroy answers" do
+            answer = question.answers.make!
+            answer.creator.should == creator
+            question.update(:archived_at => Time.now)
+
+            set_current_user(creator)
+            answer.can_create?.should be_false
+            answer.can_update?.should be_false
+            answer.can_destroy?.should be_false
+          end
         end
       end
     end

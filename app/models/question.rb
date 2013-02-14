@@ -35,6 +35,10 @@ class Question < Prequel::Record
     self.creator ||= current_user
   end
 
+  def archived?
+    !!archived_at
+  end
+
   def ensure_body_within_limit
     raise SecurityError, "Body exceeds 140 characters" if body.length > 140
   end

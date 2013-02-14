@@ -11,8 +11,16 @@ class Answer < Prequel::Record
   belongs_to :creator, :class_name => "User"
   has_many :preferences
 
+  def can_create?
+    !question.archived?
+  end
+
   def can_update_or_destroy?
-    creator_id == current_user.id
+    if question.archived?
+      false
+    else
+      creator_id == current_user.id
+    end
   end
   alias can_update? can_update_or_destroy?
   alias can_destroy? can_update_or_destroy?
