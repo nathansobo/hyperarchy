@@ -196,7 +196,7 @@ module Models
           end
         end
 
-        describe "if the answer is archived", :focused => true do
+        describe "if the answer is archived" do
           specify "no one can create, update, or destroy answers" do
             answer = question.answers.make!
             answer.creator.should == creator
