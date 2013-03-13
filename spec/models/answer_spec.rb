@@ -178,7 +178,7 @@ module Models
       end
 
       describe "#can_update? and #can_destroy?" do
-        describe "if the answer is not archived" do
+        describe "if the question is not archived" do
           specify "only the answer creator can destroy it or update its body and details" do
             answer = Answer.make!
             answer.creator.should == creator
@@ -196,7 +196,7 @@ module Models
           end
         end
 
-        describe "if the answer is archived" do
+        describe "if the question is archived" do
           specify "no one can create, update, or destroy answers" do
             answer = question.answers.make!
             answer.creator.should == creator
