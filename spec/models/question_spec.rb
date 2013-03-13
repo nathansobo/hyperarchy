@@ -114,17 +114,38 @@ module Models
       end
 
       describe "#can_update? and #can_destroy?" do
-        it "only allows the creator of the question itself to update or destroy it" do
-          other_user = User.make!
+        describe "if the question is not archived" do
+          it "only allows the creator of the question itself to update or destroy it" do
+            other_user = User.make!
 
-          set_current_user(other_user)
-          question.can_update?.should be_false
-          question.can_destroy?.should be_false
+            set_current_user(other_user)
+            question.can_update?.should be_false
+            question.can_destroy?.should be_false
 
 
-          set_current_user(creator)
-          question.can_update?.should be_true
-          question.can_destroy?.should be_true
+            set_current_user(creator)
+            question.can_update?.should be_true
+            question.can_destroy?.should be_true
+          end
+        end
+
+        describe "if the question is archived" do
+          it "only allows the creator of the question to exclusively unarchive or destroy" do
+            other_user = User.make!
+            question.update(:archived_at => Time.now)
+
+            set_current_user(other_user)
+            question.can_update?.should be_false
+            question.can_destroy?.should be_false
+
+
+            set_current_user(creator)
+            question.can_update?.should be_true
+            question.can_destroy?.should be_true
+
+            question.can_update_columns?([:archived_at]).should be_true
+            question.can_update_columns?([:body, :details]).should be_false
+          end
         end
       end
     end

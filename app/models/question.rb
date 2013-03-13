@@ -27,7 +27,11 @@ class Question < Prequel::Record
   end
 
   def update_whitelist
-    [:body, :details]
+    if archived?
+      [:archived_at]
+    else
+      [:body, :details, :archived_at]
+    end
   end
 
   def before_create
