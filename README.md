@@ -56,10 +56,10 @@ brew install postgres
 ```
 
 Then follow the instructions (available via `brew info postgres`) to create the
-initial database and start the server. You'll need to edit `config/database.yml`
-and change the username from "nathansobo" to your username or a valid account
-for your Postgres server. You can create a new Postgres user with the
-`createuser` command.
+initial database and start the server. You'll need to run `cp
+config/database.yml.example config/database.yml` and change the credentials for
+your Postgres server. You can create a new Postgres user with the `createuser`
+command.
 
 ## Installing Ruby and Gems
 
