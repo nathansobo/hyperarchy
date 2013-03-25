@@ -42,7 +42,7 @@ describe PreferencesController do
   end
 
   describe "DELETE" do
-    fit "destroys the preference for the current user with the specified answer id" do
+    it "destroys the preference for the current user with the specified answer id" do
       c1_preference = Preference.create!(:user => current_user, :answer => c1, :position => 32)
 
       delete :destroy, :answer_id => c1.id
