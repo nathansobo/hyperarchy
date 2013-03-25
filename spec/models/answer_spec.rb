@@ -177,6 +177,15 @@ module Models
         end
       end
 
+      describe "#can_create?" do
+        it "disallows creation if the question is archived" do
+          answer = Answer.make
+          answer.can_create?.should be_true
+          answer.question.archived_at = Time.now
+          answer.can_create?.should be_false
+        end
+      end
+
       describe "#can_update? and #can_destroy?" do
         describe "if the question is not archived" do
           specify "only the answer creator can destroy it or update its body and details" do
