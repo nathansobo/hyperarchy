@@ -13,6 +13,10 @@ class Views.QuestionPage extends View
               @i class: 'icon-trash'
               @text " Delete"
 
+            @a class: 'pull-right', click: 'toggleQuestionArchived', =>
+              @i class: 'icon-flag'
+              @span outlet: 'toggleStateButtonText'
+
             @a class: 'edit-body pull-right', outlet: 'editButton', click: 'editQuestionBody', =>
               @i class: 'icon-edit'
               @text " Edit"
@@ -56,7 +60,7 @@ class Views.QuestionPage extends View
             @div class: 'column', id: 'column2', =>
               @h4 class: 'list-header', outlet: 'column2Header', =>
                 @span "Your Ranking", outlet: 'column2HeaderText'
-                @button "+ Add Answer", class: 'btn btn-small btn-primary pull-right', click: 'addAnswer', outlet: 'addAnswerButton'
+                @button "+ Add Answer", id: 'add-answer-button', class: 'btn btn-small btn-primary pull-right', click: 'addAnswer', outlet: 'addAnswerButton'
 
               @subview 'personalRanking', new Views.RelationView(
                 attributes: { class: 'personal answer-list' }
@@ -123,7 +127,6 @@ class Views.QuestionPage extends View
     @personalRanking.setRelation(Models.User.getCurrent().preferencesForQuestion(question))
     @updateVotingInstructions()
 
-
     @subscriptions.add @question.rankings().onInsert => @updateAllRankingsHeader()
     @subscriptions.add @question.rankings().onRemove => @updateAllRankingsHeader()
     @updateAllRankingsHeader()
@@ -147,6 +150,12 @@ class Views.QuestionPage extends View
       Davis.location.assign('/')
 
     @selectedRankingUserId = null
+
+    @question.getField('archived').onChange =>
+      @updateArchivedClass()
+      @updateToggleQuestionArchivedButton()
+    @updateArchivedClass()
+    @updateToggleQuestionArchivedButton()
 
   show: ->
     $('#all-questions-link').show()
@@ -227,6 +236,12 @@ class Views.QuestionPage extends View
     else
       @allRankingsHeader.text("#{count} Individual Rankings")
 
+  updateToggleQuestionArchivedButton: ->
+    if @question.archived()
+      @toggleStateButtonText.text(" Reopen")
+    else
+      @toggleStateButtonText.text(' Archive')
+
   updateAnswerPreference: (item) ->
     answerId = item.data('answer-id')
     answer = Models.Answer.find(answerId)
@@ -287,6 +302,13 @@ class Views.QuestionPage extends View
       @skipDestroyAlert = true
       @question.destroy()
 
+  toggleQuestionArchived: ->
+    if @question.archived()
+      query = @question.update(archivedAt: 0)
+    else
+      query = @question.update(archivedAt: new Date())
+    query.onSuccess (question) => @updateToggleQuestionArchivedButton()
+
   highlightAnswerInCollectiveRanking: (answer, delay) ->
     if delay
       subscription = @question.onUpdate =>
@@ -324,6 +346,12 @@ class Views.QuestionPage extends View
 
   adjustTopOfMainDiv: ->
     @mainDiv.css('top', @header.outerHeight())
+
+  updateArchivedClass: =>
+    if @question.archived()
+      @addClass 'archived'
+    else
+      @removeClass 'archived'
 
   remove: (selector, keepData) ->
     super

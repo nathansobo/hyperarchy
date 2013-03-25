@@ -17,6 +17,7 @@ class Views.AnswerItem extends View
         connectToSortable: '.personal.answer-list'
         delay: 1
         helper: => @buildDragHelper()
+        start: (e) => false if @answer.question().archived()
       )
       @updateRankIndicator()
 
@@ -24,6 +25,8 @@ class Views.AnswerItem extends View
       @data('position', position)
 
     @answer.getField('body').onChange (body) => @body.html(markdown.toHTML(body))
+
+    @on 'mousedown', => false if @answer.question().archived()
 
   updateRankIndicator: ->
     if @answer.preferenceForCurrentUser()

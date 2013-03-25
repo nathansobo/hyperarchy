@@ -14,6 +14,7 @@ Hyperarchy::Application.routes.draw do
 
   root :to => 'home#index'
   match '/:questionId' => 'home#index', :via => :get
+  match '/questions/archived' => 'home#index', :via => :get
   match '/questions/:questionId' => 'home#index', :via => :get
   match '/questions/:questionId/new' => 'home#index', :via => :get
   match '/questions/:questionId/rankings/:voterId' => 'home#index', :via => :get

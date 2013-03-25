@@ -20,12 +20,12 @@ describe Sandbox, :type => :model do
         {"type" => "Selection",
          "operand" => {"type" => "Table", "name" => "answers"},
          "predicate" =>
-          {"type" => "Eq",
+          {"type" => "Equal",
            "leftOperand" => {"type" => "Column", "table" => "answers", "name" => "question_id"},
            "rightOperand" => {"type" => "Scalar", "value" => question.id}}},
        "rightOperand" => {"type" => "Table", "name" => "users"},
        "predicate" =>
-        {"type" => "Eq",
+        {"type" => "Equal",
          "leftOperand" => {"type" => "Column", "table" => "answers", "name" => "creator_id"},
          "rightOperand" => {"type" => "Column", "table" => "users", "name" => "id"}}}
     ]

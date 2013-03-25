@@ -1,4 +1,4 @@
-  @import "twitter/bootstrap/variables";
+@import "twitter/bootstrap/variables";
 @import "twitter/bootstrap/mixins";
 
 .clear-float {
@@ -70,6 +70,10 @@ html, body {
 
   header {
     margin: @baseLineHeight 0;
+
+    &> .btn + .btn {
+      margin-right: 20px;
+    }
   }
 
   #questions {
@@ -125,6 +129,20 @@ html, body {
   right: 0;
   bottom: 0;
 
+  &.archived {
+    .edit-body {
+      display: none;
+    }
+
+    #add-answer-button {
+      visibility: hidden;
+    }
+
+    .answer.editable:hover i {
+      display: none;
+    }
+  }
+
   // layout
   .container {
     position: relative;
@@ -133,6 +151,11 @@ html, body {
     header {
       padding: @baseLineHeight 0;
       .clearfix();
+
+      #creator-avatar {
+        height: 80px;
+        width: 80px;
+      }
 
       .body {
         margin: 0;

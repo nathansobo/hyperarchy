@@ -5,6 +5,7 @@ class Models.Question extends Monarch.Record
   @columns
     creatorId: 'integer'
     body: 'string'
+    archivedAt: 'datetime'
     rankingCount: 'integer'
 
   @defaultOrderBy 'id desc'
@@ -14,6 +15,9 @@ class Models.Question extends Monarch.Record
   @hasMany 'comments', className: 'QuestionComment'
 
   @belongsTo 'creator', className: 'User'
+
+  @syntheticColumn 'archived', ->
+      @signal 'archivedAt', (archivedAt) -> archivedAt > 0
 
   newAnswers: ->
     if @rankingForCurrentUser()

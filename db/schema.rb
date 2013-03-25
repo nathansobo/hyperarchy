@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121207003751) do
+ActiveRecord::Schema.define(:version => 20130209033728) do
 
   create_table "answers", :force => true do |t|
     t.string   "body"
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(:version => 20121207003751) do
     t.integer  "ranking_count"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.datetime "archived_at"
   end
 
   create_table "rankings", :force => true do |t|

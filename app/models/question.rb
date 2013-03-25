@@ -2,6 +2,7 @@ class Question < Prequel::Record
   column :id, :integer
   column :creator_id, :integer
   column :body, :string
+  column :archived_at, :datetime
   column :ranking_count, :integer, :default => 0
   column :created_at, :datetime
   column :updated_at, :datetime
@@ -26,12 +27,20 @@ class Question < Prequel::Record
   end
 
   def update_whitelist
-    [:body, :details]
+    if archived?
+      [:archived_at]
+    else
+      [:body, :details, :archived_at]
+    end
   end
 
   def before_create
     ensure_body_within_limit
     self.creator ||= current_user
+  end
+
+  def archived?
+    !!archived_at
   end
 
   def ensure_body_within_limit

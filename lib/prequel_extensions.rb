@@ -1,6 +1,10 @@
 module Prequel
   class Session
     attr_accessor :current_user
+
+    def lock_depth
+      @lock_depth ||= Hash.new {|h,k| h[k] = 0}
+    end
   end
 
   class Record
@@ -63,12 +67,6 @@ module Prequel
 
     def can_update_columns?(columns)
       (columns - (update_whitelist - update_blacklist)).empty?
-    end
-  end
-
-  class Session
-    def lock_depth
-      @lock_depth ||= Hash.new {|h,k| h[k] = 0}
     end
   end
 end
