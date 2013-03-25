@@ -5,3 +5,7 @@
 require File.expand_path('../config/application', __FILE__)
 
 Hyperarchy::Application.load_tasks
+
+task :nof do
+  system %{find . -name *spec.rb | xargs sed -E -i "" "s/f+(it|describe) +(['\\"])/\\1 \\2/g"}
+end
