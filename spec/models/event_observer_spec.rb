@@ -2,13 +2,17 @@ require "spec_helper"
 
 describe EventObserver do
   describe "#observe" do
+    include BuildClientDataset
+
     let(:events) { Hash.new {|h,k| h[k] = [] }}
+    let(:current_user) { User.create! }
 
     before do
-      stub(Pusher[:global]).trigger_async do |channel, event|
+      stub(Pusher[PUSHER_CHANNEL]).trigger_async do |channel, event|
         events[channel].push(event)
       end
 
+      Prequel.session.current_user = current_user
       EventObserver.observe(Question, Answer)
     end
 
@@ -16,7 +20,7 @@ describe EventObserver do
       freeze_time
 
       question = Question.make!
-      events['operation'].shift.should == ["create", "questions", question.wire_representation, {}]
+      events['operation'].shift.should == ["create", "questions", question.wire_representation, build_client_dataset(current_user)]
 
       question.update :body => "Hello?"
       events['operation'].shift.should == ["update", "questions", question.id, {"body"=>"Hello?"}]
@@ -26,13 +30,12 @@ describe EventObserver do
     end
 
     it "sends extra records for create events if desired" do
-      set_current_user(User.make!)
       question = Question.make!
       events['operation'].clear
 
       answer = question.answers.make!
       events['operation'].shift.should == [
-        "create", "answers", answer.wire_representation, { "users"=> { current_user.id.to_s => current_user.wire_representation } }
+        "create", "answers", answer.wire_representation, build_client_dataset(current_user)
       ]
     end
   end
