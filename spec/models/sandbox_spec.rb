@@ -25,7 +25,7 @@ describe Sandbox, :type => :model do
            "rightOperand" => {"type" => "Scalar", "value" => question.id}}},
        "rightOperand" => {"type" => "Table", "name" => "users"},
        "predicate" =>
-        {"type" => "Eq",
+        {"type" => "Equal",
          "leftOperand" => {"type" => "Column", "table" => "answers", "name" => "creator_id"},
          "rightOperand" => {"type" => "Column", "table" => "users", "name" => "id"}}}
     ]
