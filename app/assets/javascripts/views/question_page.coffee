@@ -121,7 +121,6 @@ class Views.QuestionPage extends View
 
     @creatorAvatar.attr('src', @question.creator().avatarUrl())
     @updateQuestionBody()
-    @updateToggleQuestionArchivedButton()
     question.getField('body').onChange => @updateQuestionBody()
     $(window).on 'resize', => @adjustTopOfMainDiv()
 
@@ -152,8 +151,11 @@ class Views.QuestionPage extends View
 
     @selectedRankingUserId = null
 
-    @question.getField('archived').onChange @updateArchivedClass
+    @question.getField('archived').onChange =>
+      @updateArchivedClass()
+      @updateToggleQuestionArchivedButton()
     @updateArchivedClass()
+    @updateToggleQuestionArchivedButton()
 
   show: ->
     $('#all-questions-link').show()
