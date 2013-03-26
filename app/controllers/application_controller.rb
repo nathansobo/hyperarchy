@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
 
   before_filter :ensure_authenticated
-  before_filter :set_current_user_on_model
+  around_filter :manage_prequel_session
 
   helper_method :current_user_id
 
@@ -34,7 +34,10 @@ class ApplicationController < ActionController::Base
     session[:current_user_id] = id
   end
 
-  def set_current_user_on_model
+  def manage_prequel_session
     Prequel.session.current_user = current_user
+    yield
+  ensure
+    Prequel.clear_session
   end
 end
