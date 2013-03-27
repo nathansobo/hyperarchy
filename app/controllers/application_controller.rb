@@ -5,10 +5,15 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery
 
+  before_filter :simulate_slowness
   before_filter :ensure_authenticated
   around_filter :manage_prequel_session
 
   helper_method :current_user_id
+
+  def simulate_slowness
+    sleep 0.5
+  end
 
   def ensure_authenticated
     redirect_to authenticate_url unless current_user

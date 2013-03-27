@@ -79,6 +79,7 @@ class Views.QuestionPage extends View
 
   initialize: (question) ->
     @subscriptions = new Monarch.Util.SubscriptionBundle
+    @fetchPromisesByQuestionId = {}
 
     @personalRanking.onInsert = (item, preference) =>
       @rankedItemsByAnswerId[preference.answerId()]?.remove()
@@ -105,13 +106,6 @@ class Views.QuestionPage extends View
     )
 
     @setQuestion(question)
-
-  setQuestionId: (questionId) ->
-    return if @questionId == questionId
-    @questionId = questionId
-    questionRelations = [Answer, Preference, Ranking, QuestionComment].map (r) -> r.where({questionId})
-    @fetchPromise = Monarch.Remote.Server.fetch([User, Question.where(id: questionId), questionRelations...])
-      .onSuccess => @setQuestion(Question.find(questionId))
 
   setQuestion: (@question) ->
     return unless @question?
@@ -157,50 +151,59 @@ class Views.QuestionPage extends View
     @updateArchivedClass()
     @updateToggleQuestionArchivedButton()
 
-  show: ->
+  fetchData: ({questionId}) ->
+    @fetchPromisesByQuestionId[questionId] ?= do ->
+      questionRelations = [Answer, Preference, Ranking, QuestionComment].map (r) -> r.where({questionId})
+      Monarch.Remote.Server.fetch([User, Question.where(id: questionId), questionRelations...])
+
+  navigate: (params) ->
     $('#all-questions-link').show()
-    super
+    @show()
+
+    {questionId, state} = params
+    @setQuestion(Question.find(questionId))
+    switch state
+      when 'combinedRanking' then @showCombinedRanking()
+      when 'newAnswers' then @showNewAnswers()
+      when 'singleRanking' then @showRanking(params.voterId)
 
   showColumn1Header: (header) ->
     @find('#column1 .list-header').hide()
     header.show()
 
   showCombinedRanking: ->
-    @fetchPromise.onSuccess =>
-      @showAnswerList()
-      @showPersonalRanking()
-      @highlightLeftNavLink(@combinedRankingLink)
-      @showColumn1Header(@combinedRankingHeader)
-      @answerList.setRelation(@question.answers())
+    @showAnswerList()
+    @showPersonalRanking()
+    @highlightLeftNavLink(@combinedRankingLink)
+    @showColumn1Header(@combinedRankingHeader)
+    @answerList.setRelation(@question.answers())
 
   showNewAnswers: ->
-    @fetchPromise.onSuccess =>
-      @showAnswerList()
-      @showPersonalRanking()
-      @highlightLeftNavLink(@newAnswersLink)
-      @showColumn1Header(@newAnswersHeader)
-      if newAnswers = @question.newAnswers()
-        @answerList.setRelation(newAnswers)
+    @showAnswerList()
+    @showPersonalRanking()
+    @highlightLeftNavLink(@newAnswersLink)
+    @showColumn1Header(@newAnswersHeader)
+    if newAnswers = @question.newAnswers()
+      @answerList.setRelation(newAnswers)
 
   showRanking: (userId) ->
     @selectedRankingUserId = userId
-    @fetchPromise.onSuccess =>
-      @highlightLeftNavLink(@individualRankingsLink)
+    @highlightLeftNavLink(@individualRankingsLink)
 
-      ranking = @question.rankings().find({userId})
+    ranking = @question.rankings().find({userId})
 
-      @showAllRankings()
-      @allRankings.find(".selected").removeClass('selected')
-      @allRankings.find("[data-ranking-id=#{ranking.id()}]").addClass('selected')
+    @showAllRankings()
+    @allRankings.find(".selected").removeClass('selected')
+    @allRankings.find("[data-ranking-id=#{ranking.id()}]").addClass('selected')
 
-      @column2HeaderText.text("#{ranking.user().fullName()}'s Ranking")
-      @addAnswerButton.hide()
-      @personalRanking.setRelation(ranking.preferences())
-      @votingInstructions.hide()
-      if ranking.userId() == User.currentUserId
-        @personalRanking.sortable('enable')
-      else
-        @personalRanking.sortable('disable')
+    @column2HeaderText.text("#{ranking.user().fullName()}'s Ranking")
+    @addAnswerButton.hide()
+    @personalRanking.setRelation(ranking.preferences())
+    @votingInstructions.hide()
+    if ranking.userId() == User.currentUserId
+      @personalRanking.sortable('enable')
+    else
+      @personalRanking.sortable('disable')
 
   showIndividualRankings: ->
     ranking = @question.rankings().find({userId: @selectedRankingUserId}) if @selectedRankingUserId

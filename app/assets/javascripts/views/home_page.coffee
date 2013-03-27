@@ -24,10 +24,15 @@ class Views.HomePage extends View
     @questionsList.onInsert = => @updateQuestionsHeader()
     @questionsList.onRemove = => @updateQuestionsHeader()
 
-  show: ->
-    super
-    $('#all-questions-link').hide()
+  fetchData: ({state}) ->
     @fetchPromise ?= Monarch.Remote.Server.fetch([User.where(id: User.currentUserId), Question.join(User, creatorId: 'User.id')])
+
+  navigate: ({state}) ->
+    $('#all-questions-link').hide()
+    @show()
+    switch state
+      when 'active' then @showActive()
+      when 'archived' then @showArchived()
 
   updateQuestionsHeader: ->
     size = @questionsList.relation.size()

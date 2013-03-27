@@ -30,22 +30,22 @@ class Views.Application extends View
         @generateRequestOnPageLoad = true
 
       @get '/questions/archived', ->
-        view.showPage('homePage').showArchived()
+        view.navigate('homePage', state: 'archived')
 
       @get '/questions/:questionId', ({params}) ->
         { questionId } = params
-        view.showQuestionPage(questionId).showCombinedRanking()
+        view.navigateToQuestion(questionId, state: 'combinedRanking')
 
       @get '/questions/:questionId/new', ({params}) ->
         { questionId } = params
-        view.showQuestionPage(questionId).showNewAnswers()
+        view.navigateToQuestion(questionId, state: 'newAnswers')
 
       @get '/questions/:questionId/rankings/:voterId', ({params}) ->
         { questionId, voterId } = params
-        view.showQuestionPage(questionId).showRanking(parseInt(voterId))
+        view.navigateToQuestion(questionId, state: 'singleRanking', voterId: parseInt(voterId))
 
       @get '/questions', ({params}) ->
-        view.showPage('homePage').showActive()
+        view.navigate('homePage', state: 'active')
 
       @get '/', ->
         Davis.location.assign("/questions")
@@ -53,12 +53,17 @@ class Views.Application extends View
   hidePages: ->
     @pages.children().hide()
 
-  showPage: (outletName) ->
-    @hidePages()
-    this[outletName].show()
-    this[outletName]
-
-  showQuestionPage: (questionId) ->
-    page = @showPage('questionPage')
-    page.setQuestionId(parseInt(questionId))
+  navigate: (outletName, params) ->
+    page = this[outletName]
+    throw new Error("No page named '#{outletName}'") unless page
+    if typeof page.fetchData is 'function'
+      page.fetchData(params).success =>
+        @hidePages()
+        page.navigate(params)
+    else
+      @hidePages()
+      page.navigate(params)
     page
+
+  navigateToQuestion: (questionId, params) ->
+    @navigate('questionPage', _.extend({}, params, questionId: parseInt(questionId)))
