@@ -57,7 +57,6 @@ class View extends jQuery
   constructor: (args...) ->
     [html, postProcessingSteps] = @constructor.buildHtml -> @content(args...)
     jQuery.fn.init.call(this, html)
-    @constructor = jQuery # sadly, jQuery assumes this.constructor == jQuery in pushStack
     throw new Error("View markup must have a single root element") if this.length != 1
     @wireOutlets(this)
     @bindEventHandlers(this)
