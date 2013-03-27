@@ -88,6 +88,18 @@ class View extends jQuery
         methodName = element.attr(eventName)
         element.on eventName, (event) -> view[methodName](event, element)
 
+  # `pushStack` and `end` are jQuery methods that construct new wrappers.
+  # we override them here to construct plain wrappers with `jQuery` rather
+  # than wrappers that are instances of our view class.
+  pushStack: (elems) ->
+    ret = jQuery.merge(jQuery(), elems)
+    ret.prevObject = this
+    ret.context = @context
+    ret
+
+  end: ->
+    @prevObject ? jQuery(null)
+
 class Builder
   constructor: ->
     @document = []
