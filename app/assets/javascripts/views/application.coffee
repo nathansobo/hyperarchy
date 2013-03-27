@@ -30,7 +30,7 @@ class Views.Application extends View
         @generateRequestOnPageLoad = true
 
       @get '/questions/archived', ->
-        view.showPage('homePage')
+        view.showPage('homePage').showArchived()
 
       @get '/questions/:questionId', ({params}) ->
         { questionId } = params
@@ -44,12 +44,11 @@ class Views.Application extends View
         { questionId, voterId } = params
         view.showQuestionPage(questionId).showRanking(parseInt(voterId))
 
-      # for backward-compatibility w/ old url scheme
-      @get '/:questionId', ({params}) ->
-        Davis.location.assign("/questions/#{params.questionId}")
+      @get '/questions', ({params}) ->
+        view.showPage('homePage').showActive()
 
       @get '/', ->
-        view.showPage('homePage')
+        Davis.location.assign("/questions")
 
   hidePages: ->
     @pages.children().hide()
@@ -57,6 +56,7 @@ class Views.Application extends View
   showPage: (outletName) ->
     @hidePages()
     this[outletName].show()
+    this[outletName]
 
   showQuestionPage: (questionId) ->
     page = @showPage('questionPage')
