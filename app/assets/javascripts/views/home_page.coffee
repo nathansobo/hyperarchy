@@ -37,14 +37,14 @@ class Views.HomePage extends View
       @questionsHeader.text("#{size} Questions")
 
   showActive: ->
-    @questionsList.setRelation(Question.where('archivedAt <=': null))
+    @questionsList.setRelation(Question.where('archivedAt': null))
     @updateQuestionsHeader()
     @toggleArchivedButton
       .removeClass('active')
       .attr('href', '/questions/archived')
 
   showArchived: ->
-    @questionsList.setRelation(Question.where('archivedAt >': null))
+    @questionsList.setRelation(Question.where('archivedAt !=': null))
     @updateQuestionsHeader()
     @toggleArchivedButton
       .addClass('active')

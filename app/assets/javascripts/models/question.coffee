@@ -17,7 +17,7 @@ class Models.Question extends Monarch.Record
   @belongsTo 'creator', className: 'User'
 
   @syntheticColumn 'archived', ->
-      @signal 'archivedAt', (archivedAt) -> archivedAt > 0
+    @signal 'archivedAt', (archivedAt) -> archivedAt?
 
   newAnswers: ->
     if @rankingForCurrentUser()
@@ -25,3 +25,9 @@ class Models.Question extends Monarch.Record
 
   rankingForCurrentUser: ->
     @rankings().find(userId: Models.User.currentUserId)
+
+  toggleArchived: ->
+    if @archived()
+      @update(archivedAt: null)
+    else
+      @update(archivedAt: new Date())
