@@ -122,6 +122,9 @@ GEM
     omniauth (1.1.1)
       hashie (~> 1.2)
       rack
+    omniauth-google-oauth2 (0.1.13)
+      omniauth (~> 1.0)
+      omniauth-oauth2
     omniauth-identity (1.1.0)
       bcrypt-ruby (~> 3.0)
       omniauth (~> 1.0)
@@ -224,6 +227,7 @@ DEPENDENCIES
   machinist
   omniauth
   omniauth-github!
+  omniauth-google-oauth2
   omniauth-identity
   pg (~> 0.11)
   prequel!

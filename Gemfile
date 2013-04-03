@@ -15,6 +15,7 @@ gem 'redis'
 gem 'redis-lock'
 gem 'omniauth'
 gem 'omniauth-github', :git => 'https://github.com/intridea/omniauth-github.git'
+gem "omniauth-google-oauth2"
 gem 'omniauth-identity'
 gem 'github_api', :require => 'github_api'
 gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
