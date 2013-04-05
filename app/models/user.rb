@@ -42,8 +42,11 @@ class User < Prequel::Record
 
     if provider == 'google_oauth2' && domain = auth.extra.raw_info.hd
       group = Group.find_or_create!(:domain => domain)
-      group.add_member(user)
+    elsif provider == 'github'
+      group = Group.find_or_create!(:domain => 'github.com')
+      group.update!(:name => 'GitHub')
     end
+    group.add_member(user) if group
 
     user
   end

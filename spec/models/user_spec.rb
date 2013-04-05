@@ -25,6 +25,39 @@ module Models
           end
         end
       end
+
+      describe "when the user authenticates with GitHub" do
+        describe "when the user is a member of the GitHub staff team" do
+          before do
+            mock(User).is_github_team_member?("token", "nathansobo") { true }
+          end
+
+          it "creates a user for them and automatically makes them a member of the GitHub group" do
+            user = User.from_omniauth(github_user_creds)
+            user.full_name.should == "Nathan Sobo"
+            user.email_address.should == "nathan@github.com"
+            user.uid.should == "1789"
+            user.memberships.count.should == 1
+            user.groups.first.domain.should == "github.com"
+            user.groups.first.name.should == "GitHub"
+          end
+        end
+
+        describe "when the user is not a member of the GitHub staff team" do
+          before do
+            mock(User).is_github_team_member?("token", "nathansobo") { false }
+          end
+
+          it "does not create a user for them" do
+            expect { User.from_omniauth(github_user_creds) }.to_not change User, :count
+          end
+
+          it "does not log them in even if they're an existing user" do
+            User.create(:uid => "1789")
+            User.from_omniauth(github_user_creds).should be_nil
+          end
+        end
+      end
     end
 
     describe "security" do
@@ -99,6 +132,65 @@ module Models
            "birthday"=>"0000-01-25",
            "locale"=>"en",
            "hd"=>"acme.com"}}})
+    end
+
+    let :github_user_creds do
+      Hashie::Mash.new({"provider"=>"github",
+       "uid"=>"1789",
+       "info"=>
+        {"nickname"=>"nathansobo",
+         "email"=>"nathan@github.com",
+         "name"=>"Nathan Sobo",
+         "image"=>
+          "https://secure.gravatar.com/avatar/bd964c4c26b160867008b423ae92b3e7?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+         "urls"=>{"GitHub"=>"https://github.com/nathansobo", "Blog"=>nil}},
+       "credentials"=>
+        {"token"=>"token", "expires"=>false},
+       "extra"=>
+        {"raw_info"=>
+          {"login"=>"nathansobo",
+           "id"=>1789,
+           "avatar_url"=>
+            "https://secure.gravatar.com/avatar/bd964c4c26b160867008b423ae92b3e7?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+           "gravatar_id"=>"bd964c4c26b160867008b423ae92b3e7",
+           "url"=>"https://api.github.com/users/nathansobo",
+           "html_url"=>"https://github.com/nathansobo",
+           "followers_url"=>"https://api.github.com/users/nathansobo/followers",
+           "following_url"=>"https://api.github.com/users/nathansobo/following",
+           "gists_url"=>"https://api.github.com/users/nathansobo/gists{/gist_id}",
+           "starred_url"=>
+            "https://api.github.com/users/nathansobo/starred{/owner}{/repo}",
+           "subscriptions_url"=>
+            "https://api.github.com/users/nathansobo/subscriptions",
+           "organizations_url"=>"https://api.github.com/users/nathansobo/orgs",
+           "repos_url"=>"https://api.github.com/users/nathansobo/repos",
+           "events_url"=>"https://api.github.com/users/nathansobo/events{/privacy}",
+           "received_events_url"=>
+            "https://api.github.com/users/nathansobo/received_events",
+           "type"=>"User",
+           "name"=>"Nathan Sobo",
+           "company"=>"GitHub",
+           "blog"=>nil,
+           "location"=>"Boulder, CO",
+           "email"=>"nathan@github.com",
+           "hireable"=>false,
+           "bio"=>"",
+           "public_repos"=>39,
+           "followers"=>153,
+           "following"=>1,
+           "created_at"=>"2008-02-29T18:26:45Z",
+           "updated_at"=>"2013-04-05T03:51:00Z",
+           "public_gists"=>9,
+           "total_private_repos"=>9,
+           "owned_private_repos"=>7,
+           "disk_usage"=>245892,
+           "collaborators"=>16,
+           "plan"=>
+            {"name"=>"small",
+             "space"=>1228800,
+             "collaborators"=>5,
+             "private_repos"=>10},
+           "private_gists"=>9}}})
     end
   end
 end
