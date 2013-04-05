@@ -9,6 +9,7 @@ class User < Prequel::Record
 
   synthetic_column :email_hash, :string
 
+  has_many :memberships
   has_many :rankings
   has_many :preferences
   has_many :questions
@@ -18,7 +19,6 @@ class User < Prequel::Record
     provider = auth.provider
     uid = auth.uid
     email_address = auth.info.email
-    #     return find_or_create_with_dev_credentials(auth) if auth.provider == 'developer'
 
     attributes = {
       :provider => provider,
@@ -36,10 +36,16 @@ class User < Prequel::Record
 
     if user = find(:provider => provider, :uid => uid)
       user.update!(attributes)
-      user
     else
-      create!(attributes)
+      user = create!(attributes)
     end
+
+    if provider == 'google_oauth2' && domain = auth.extra.raw_info.hd
+      group = Group.find_or_create!(:domain => domain)
+      group.add_member(user)
+    end
+
+    user
   end
 
   def self.is_github_team_member?(oauth_access_token, github_username)
@@ -67,6 +73,10 @@ class User < Prequel::Record
         :avatar_url => avatar_url
       )
     end
+  end
+
+  def groups
+    @groups ||= memberships.join_through(Group)
   end
 
   def can_update_or_destroy?

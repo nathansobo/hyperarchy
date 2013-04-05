@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130209033728) do
+ActiveRecord::Schema.define(:version => 20130405021827) do
 
   create_table "answers", :force => true do |t|
     t.string   "body"
@@ -21,6 +21,13 @@ ActiveRecord::Schema.define(:version => 20130209033728) do
     t.integer  "comment_count"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+  end
+
+  create_table "groups", :force => true do |t|
+    t.string   "name"
+    t.string   "domain"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "identities", :force => true do |t|
@@ -38,6 +45,13 @@ ActiveRecord::Schema.define(:version => 20130209033728) do
     t.integer  "pro_count",         :default => 0
     t.integer  "con_count",         :default => 0
     t.datetime "winner_created_at"
+  end
+
+  create_table "memberships", :force => true do |t|
+    t.integer  "group_id"
+    t.integer  "user_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "preferences", :force => true do |t|
