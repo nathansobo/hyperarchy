@@ -63,7 +63,6 @@ class User < Prequel::Record
   end
 
   def self.find_or_create_with_dev_credentials(auth)
-
     if user = find(:email_address => auth.info.email)
       user.update!(
         :full_name => auth.info.name,
@@ -96,7 +95,6 @@ class User < Prequel::Record
     [:full_name, :email_address, :password]
   end
 
-  # dont send email address to another user unless they are an admin or owner
   def read_blacklist
     [:oauth_access_token]
   end
