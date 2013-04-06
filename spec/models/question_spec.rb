@@ -2,19 +2,7 @@ require 'spec_helper'
 
 module Models
   describe Question do
-    attr_reader :question, :organization, :creator, :memphis, :knoxville, :chattanooga, :nashville, :unranked
-
-    before do
-      freeze_time
-
-      @creator = User.make!
-      @question = Question.make!(:body => "Where should the capital of Tennesee be?", :creator => creator)
-      @memphis = question.answers.make!(:body => "Memphis")
-      @knoxville = question.answers.make!(:body => "Knoxville")
-      @chattanooga = question.answers.make!(:body => "Chattanooga")
-      @nashville = question.answers.make!(:body => "Nashville")
-      @unranked = question.answers.make!(:body => "Unranked")
-    end
+    attr_reader :question
 
     describe ".generate_secret" do
       it "generates a random secret, ensuring no question with that secret already exists" do
@@ -66,6 +54,20 @@ module Models
     end
 
     describe "#compute_global_ranking" do
+      attr_reader :question, :organization, :creator, :memphis, :knoxville, :chattanooga, :nashville, :unranked
+
+      before do
+        freeze_time
+
+        @creator = User.make!
+        @question = Question.make!(:body => "Where should the capital of Tennesee be?", :creator => creator)
+        @memphis = question.answers.make!(:body => "Memphis")
+        @knoxville = question.answers.make!(:body => "Knoxville")
+        @chattanooga = question.answers.make!(:body => "Chattanooga")
+        @nashville = question.answers.make!(:body => "Nashville")
+        @unranked = question.answers.make!(:body => "Unranked")
+      end
+
       it "uses the ranked-pairs algoritm to produce a global preference, assigning a position of null to any unranked answers" do
         jump(1.minute)
 
@@ -135,6 +137,10 @@ module Models
       end
 
       describe "#can_update? and #can_destroy?" do
+        before do
+          @question = Question.make!(:creator => User.make!)
+        end
+
         describe "if the question is not archived" do
           it "only allows the creator of the question itself to update or destroy it" do
             other_user = User.make!
@@ -144,7 +150,7 @@ module Models
             question.can_destroy?.should be_false
 
 
-            set_current_user(creator)
+            set_current_user(question.creator)
             question.can_update?.should be_true
             question.can_destroy?.should be_true
           end
@@ -160,7 +166,7 @@ module Models
             question.can_destroy?.should be_false
 
 
-            set_current_user(creator)
+            set_current_user(question.creator)
             question.can_update?.should be_true
             question.can_destroy?.should be_true
 
