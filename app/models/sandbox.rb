@@ -17,7 +17,7 @@ class Sandbox < Prequel::Sandbox
   end
 
   expose :questions do
-    Question.table
+    user.visible_questions
   end
 
   expose :answers do

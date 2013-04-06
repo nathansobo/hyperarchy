@@ -81,6 +81,10 @@ class User < Prequel::Record
     @groups ||= memberships.join_through(Group)
   end
 
+  def visible_questions
+    groups.join_through(Question).where(:visibility => 'group')
+  end
+
   def can_update_or_destroy?
     current_user == self
   end
