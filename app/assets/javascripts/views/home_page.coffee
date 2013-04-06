@@ -58,7 +58,7 @@ class Views.HomePage extends View
   addQuestion: ->
     new Views.NewQuestionForm(
       onSubmit: ({body, visibility, groupId}) =>
-        Question.create({body})
+        Question.create({body, visibility, groupId})
           .onSuccess (question) =>
             Davis.location.assign("/questions/#{question.id()}")
     )

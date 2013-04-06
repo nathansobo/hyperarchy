@@ -5,6 +5,8 @@ class Models.Question extends Monarch.Record
   @columns
     creatorId: 'integer'
     body: 'string'
+    groupId: 'integer'
+    visibility: 'string'
     archivedAt: 'datetime'
     rankingCount: 'integer'
 

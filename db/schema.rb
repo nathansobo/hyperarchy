@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130405021827) do
+ActiveRecord::Schema.define(:version => 20130406220415) do
 
   create_table "answers", :force => true do |t|
     t.string   "body"
@@ -79,6 +79,8 @@ ActiveRecord::Schema.define(:version => 20130405021827) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
     t.datetime "archived_at"
+    t.string   "visibility"
+    t.integer  "group_id"
   end
 
   create_table "rankings", :force => true do |t|

@@ -2,6 +2,8 @@ class Question < Prequel::Record
   column :id, :integer
   column :creator_id, :integer
   column :body, :string
+  column :group_id, :integer
+  column :visibility, :string, :default => 'group'
   column :archived_at, :datetime
   column :ranking_count, :integer, :default => 0
   column :created_at, :datetime
@@ -23,14 +25,14 @@ class Question < Prequel::Record
   alias can_destroy? can_update_or_destroy?
 
   def create_whitelist
-    [:body, :details]
+    [:body, :group_id, :visibility]
   end
 
   def update_whitelist
     if archived?
-      [:archived_at]
+      [:archived_at, :group_id, :visibility]
     else
-      [:body, :details, :archived_at]
+      [:body, :group_id, :visibility, :archived_at]
     end
   end
 
