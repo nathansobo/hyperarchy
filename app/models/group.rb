@@ -16,6 +16,6 @@ class Group < Prequel::Record
   end
 
   def add_member(user)
-    memberships.create!(:user_id => user.id)
+    memberships.find_or_create!(:user_id => user.id)
   end
 end

@@ -1,5 +1,10 @@
 require "prequel/machinist_adaptor"
 
+Group.blueprint do
+  name { Faker::Company.name }
+  domain { Faker::Internet.domain_name }
+end
+
 User.blueprint do
   full_name { Faker::Name.name }
   email_address { Faker::Internet.email }
