@@ -33,6 +33,10 @@ RSpec.configure do |config|
   config.before do
     Prequel.clear_tables
   end
+
+  config.after do
+    Prequel.clear_session
+  end
 end
 
 def fit(description, &block)
