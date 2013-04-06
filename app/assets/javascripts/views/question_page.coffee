@@ -1,4 +1,4 @@
-{ Question, Answer, User, Preference, Ranking, QuestionComment } = Models
+{ Question, Answer, User, Group, Membership, Preference, Ranking, QuestionComment } = Models
 
 class Views.QuestionPage extends View
   @content: ->

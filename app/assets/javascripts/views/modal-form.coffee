@@ -4,12 +4,14 @@ class Views.ModalForm extends View
       @div class: 'modal-header', =>
         @button class: 'close', 'data-dismiss': 'modal', 'aria-hidden': 'true', =>
           @raw '&times;'
-        @span headingText, class: 'lead'
+        @span headingText ? @headingText, class: 'lead'
       @div class: 'modal-body', =>
         @textarea class: 'lead', rows: 3, outlet: 'textarea'
         @div class: 'chars-remaining pull-right', outlet: 'charsRemainingIndicator'
+        @belowTextArea?()
+
       @div class: 'modal-footer', =>
-        @button buttonText, class: 'btn btn-primary', click: 'submit'
+        @button buttonText ? @buttonText, class: 'btn btn-primary', click: 'submit'
 
   initialize: ({text, @onSubmit}) ->
     @on 'shown', => @textarea.focus()
@@ -41,8 +43,10 @@ class Views.ModalForm extends View
     else if count < 10
       @charsRemainingIndicator.addClass('warning')
 
-
   submit: ->
     return if @charsRemaining() < 0
-    @onSubmit(@textarea.val())
+    @onSubmit(@getValues())
     @modal('hide')
+
+  getValues: ->
+    @textarea.val()

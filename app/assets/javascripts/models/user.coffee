@@ -6,6 +6,8 @@ class Models.User extends Monarch.Record
     fullName: 'string'
     avatarUrl: 'string'
 
+  @hasMany 'memberships'
+  @hasMany 'groups', through: 'memberships'
   @hasMany 'answers', foreignKey: 'creatorId'
   @hasMany 'preferences'
   @hasMany 'rankings'

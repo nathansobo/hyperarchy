@@ -4,6 +4,14 @@ class Sandbox < Prequel::Sandbox
     @user = user
   end
 
+  expose :groups do
+    user.groups
+  end
+
+  expose :memberships do
+    user.memberships
+  end
+
   expose :users do
     User.table
   end

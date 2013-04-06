@@ -1,4 +1,4 @@
-{Question, User} = Models
+{Group, Membership, User, Question} = Models
 
 class Views.HomePage extends View
   @content: ->
@@ -25,7 +25,7 @@ class Views.HomePage extends View
     @questionsList.onRemove = => @updateQuestionsHeader()
 
   fetchData: ({state}) ->
-    @fetchPromise ?= Monarch.Remote.Server.fetch([User.where(id: User.currentUserId), Question.join(User, creatorId: 'User.id')])
+    @fetchPromise ?= Monarch.Remote.Server.fetch([Group, Membership, User.where(id: User.currentUserId), Question.join(User, creatorId: 'User.id')])
 
   navigate: ({state}) ->
     $('#all-questions-link').hide()
@@ -56,10 +56,8 @@ class Views.HomePage extends View
       .attr('href', '/questions')
 
   addQuestion: ->
-    new Views.ModalForm(
-      headingText: "Ask an open-ended question:"
-      buttonText: "Ask Question"
-      onSubmit: (body) =>
+    new Views.NewQuestionForm(
+      onSubmit: ({body, visibility, groupId}) =>
         Question.create({body})
           .onSuccess (question) =>
             Davis.location.assign("/questions/#{question.id()}")
