@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130406220415) do
+ActiveRecord::Schema.define(:version => 20130406224345) do
 
   create_table "answers", :force => true do |t|
     t.string   "body"
@@ -72,6 +72,12 @@ ActiveRecord::Schema.define(:version => 20130406220415) do
     t.datetime "updated_at",  :null => false
   end
 
+  create_table "question_permissions", :force => true do |t|
+    t.string  "secret"
+    t.integer "question_id"
+    t.integer "user_id"
+  end
+
   create_table "questions", :force => true do |t|
     t.integer  "creator_id"
     t.string   "body"
@@ -81,6 +87,7 @@ ActiveRecord::Schema.define(:version => 20130406220415) do
     t.datetime "archived_at"
     t.string   "visibility"
     t.integer  "group_id"
+    t.string   "secret"
   end
 
   create_table "rankings", :force => true do |t|

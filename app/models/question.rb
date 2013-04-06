@@ -1,5 +1,6 @@
 class Question < Prequel::Record
   column :id, :integer
+  column :secret, :string
   column :creator_id, :integer
   column :body, :string
   column :group_id, :integer
@@ -15,6 +16,15 @@ class Question < Prequel::Record
   has_many :majorities
 
   belongs_to :creator, :class_name => "User"
+
+  def self.generate_secret
+    secret = generate_random_string
+    Question.find(:secret => secret) ? generate_secret : secret
+  end
+
+  def self.generate_random_string
+    (0...8).map { (97 + rand(26)).chr }.join
+  end
 
   validates_presence_of :body
 
@@ -38,11 +48,16 @@ class Question < Prequel::Record
 
   def before_create
     ensure_body_within_limit
+    self.secret = self.class.generate_secret if private?
     self.creator ||= current_user
   end
 
   def archived?
     !!archived_at
+  end
+
+  def private?
+    visibility == 'private'
   end
 
   def ensure_body_within_limit

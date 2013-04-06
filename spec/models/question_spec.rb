@@ -16,11 +16,32 @@ module Models
       @unranked = question.answers.make!(:body => "Unranked")
     end
 
+    describe ".generate_secret" do
+      it "generates a random secret, ensuring no question with that secret already exists" do
+        secret = Question.generate_secret
+
+        Question.make!(:secret => secret)
+        mock(Question).generate_random_string { secret }
+        mock(Question).generate_random_string { "random" }
+
+        secret2 = Question.generate_secret
+        secret2.should == "random"
+      end
+    end
+
     describe "before create" do
       it "assigns the creator to the Model::Record.current_user" do
         set_current_user(User.make!)
         question = Question.make!
         question.creator.should == current_user
+      end
+
+      it "assigns a secret string if the question is private" do
+        question = Question.make!(:visibility => 'private')
+        question.secret.should match /[a-z]+/
+
+        question = Question.make!(:visibility => 'group')
+        question.secret.should be_nil
       end
     end
 
