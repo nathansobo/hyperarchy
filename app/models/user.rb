@@ -13,6 +13,7 @@ class User < Prequel::Record
   has_many :rankings
   has_many :preferences
   has_many :questions
+  has_many :question_permissions
   has_many :answers, :foreign_key => :creator_id
 
   def self.from_omniauth(auth)
@@ -82,7 +83,15 @@ class User < Prequel::Record
   end
 
   def visible_questions
-    groups.join_through(Question).where(:visibility => 'group')
+    private_questions | group_questions
+  end
+
+  def group_questions
+    @group_questions ||= groups.join_through(Question).where(:visibility => 'group')
+  end
+
+  def private_questions
+    @private_questions ||= question_permissions.join_through(Question)
   end
 
   def can_update_or_destroy?

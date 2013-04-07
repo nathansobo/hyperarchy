@@ -9,6 +9,7 @@ class Models.Question extends Monarch.Record
     visibility: 'string'
     archivedAt: 'datetime'
     rankingCount: 'integer'
+    secret: 'string'
 
   @defaultOrderBy 'id desc'
 
@@ -20,6 +21,17 @@ class Models.Question extends Monarch.Record
 
   @syntheticColumn 'archived', ->
     @signal 'archivedAt', (archivedAt) -> archivedAt?
+
+  @fetchData: (questionId) ->
+    {User, Answer, Preference, Ranking, QuestionComment} = Models
+    questionRelations = [Answer, Preference, Ranking, QuestionComment].map (r) -> r.where({questionId})
+    Monarch.Remote.Server.fetch([User, Models.Question.where(id: questionId), questionRelations...])
+
+  getUrl: ->
+    "/questions/#{@toParam()}"
+
+  toParam: ->
+    @secret() ? @id()
 
   newAnswers: ->
     if @rankingForCurrentUser()

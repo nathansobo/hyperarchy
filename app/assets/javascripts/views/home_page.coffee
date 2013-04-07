@@ -14,7 +14,7 @@ class Views.HomePage extends View
         buildItem: (question) ->
           $$ ->
             @li =>
-              @a class: 'question', href: "/questions/#{question.id()}", =>
+              @a class: 'question', href: question.getUrl(), =>
                 @i class: 'icon-chevron-right icon-large'
                 @img src: question.creator().avatarUrl()
                 @div question.body(), class: "body"
@@ -60,5 +60,5 @@ class Views.HomePage extends View
       onSubmit: ({body, visibility, groupId}) =>
         Question.create({body, visibility, groupId})
           .onSuccess (question) =>
-            Davis.location.assign("/questions/#{question.id()}")
+            Davis.location.assign(question.getUrl())
     )

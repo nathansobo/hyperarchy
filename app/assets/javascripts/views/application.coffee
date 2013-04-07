@@ -66,4 +66,10 @@ class Views.Application extends View
     page
 
   navigateToQuestion: (questionId, params) ->
-    @navigate('questionPage', _.extend({}, params, questionId: parseInt(questionId)))
+    if questionId.match(/^[a-z]/)
+      secret = questionId
+      questionId = null
+    else
+      questionId = parseInt(questionId)
+
+    @navigate('questionPage', _.extend({}, params, {questionId, secret}))

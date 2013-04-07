@@ -33,6 +33,14 @@ module Models
       end
     end
 
+    describe "after create" do
+      it "creates a question permission for the creator if the question is private" do
+        set_current_user(User.make!)
+        question = Question.make!(:visibility => 'private')
+        current_user.private_questions.all.should == [question]
+      end
+    end
+
     describe "before destroy" do
       it "destroys any answers and rankings that belong to the question" do
         question = Question.make!

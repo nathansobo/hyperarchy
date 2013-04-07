@@ -1,4 +1,4 @@
-{ Question, Answer, User, Group, Membership, Preference, Ranking, QuestionComment } = Models
+{ Question, QuestionPermission, Answer, User, Preference } = Models
 
 class Views.QuestionPage extends View
   @content: ->
@@ -118,7 +118,7 @@ class Views.QuestionPage extends View
     question.getField('body').onChange => @updateQuestionBody()
     $(window).on 'resize', => @adjustTopOfMainDiv()
 
-    @personalRanking.setRelation(Models.User.getCurrent().preferencesForQuestion(question))
+    @personalRanking.setRelation(User.getCurrent().preferencesForQuestion(question))
     @updateVotingInstructions()
 
     @subscriptions.add @question.rankings().onInsert => @updateAllRankingsHeader()
@@ -130,10 +130,10 @@ class Views.QuestionPage extends View
     @updateDiscussionHeader()
     @discussion.setComments(@question.comments())
 
-    @combinedRankingLink.attr('href', "/questions/#{@question.id()}")
-    @newAnswersLink.attr('href', "/questions/#{@question.id()}/new")
+    @combinedRankingLink.attr('href', @question.getUrl())
+    @newAnswersLink.attr('href', "#{@question.getUrl()}/new")
 
-    if @question.creator() == Models.User.getCurrent()
+    if @question.creator() == User.getCurrent()
       @questionCreatorLinks.show()
     else
       @questionCreatorLinks.hide()
@@ -151,17 +151,21 @@ class Views.QuestionPage extends View
     @updateArchivedClass()
     @updateToggleQuestionArchivedButton()
 
-  fetchData: ({questionId}) ->
+  fetchData: ({questionId, secret}) ->
     @fetchPromisesByQuestionId[questionId] ?= do ->
-      questionRelations = [Answer, Preference, Ranking, QuestionComment].map (r) -> r.where({questionId})
-      Monarch.Remote.Server.fetch([User, Question.where(id: questionId), questionRelations...])
+      $.ajax
+        type: 'get'
+        url: "/questions/#{questionId ? secret}"
+        dataType: 'records'
 
   navigate: (params) ->
     $('#all-questions-link').show()
     @show()
 
-    {questionId, state} = params
+    {questionId, secret, state} = params
+    questionId ?= QuestionPermission.find({secret}).questionId()
     @setQuestion(Question.find(questionId))
+
     switch state
       when 'combinedRanking' then @showCombinedRanking()
       when 'newAnswers' then @showNewAnswers()
@@ -209,7 +213,7 @@ class Views.QuestionPage extends View
     ranking = @question.rankings().find({userId: @selectedRankingUserId}) if @selectedRankingUserId
     ranking ?= @question.rankings().first()
     return unless ranking
-    Davis.location.assign("/questions/#{@question.id()}/rankings/#{ranking.userId()}")
+    Davis.location.assign("#{@question.getUrl()}/rankings/#{ranking.userId()}")
 
   highlightLeftNavLink: (link) ->
     @leftNav.find('a').removeClass('selected')
@@ -247,7 +251,7 @@ class Views.QuestionPage extends View
 
   updateAnswerPreference: (item) ->
     answerId = item.data('answer-id')
-    answer = Models.Answer.find(answerId)
+    answer = Answer.find(answerId)
 
     unless item.parent().length
       Preference.destroyByAnswerId(answerId)
@@ -334,7 +338,7 @@ class Views.QuestionPage extends View
       @discussionHeader.text("#{count} Comments")
 
   updateVotingInstructions: ->
-    if Models.User.getCurrent().preferencesForQuestion(@question).isEmpty()
+    if User.getCurrent().preferencesForQuestion(@question).isEmpty()
       @votingInstructions.show()
     else
       @votingInstructions.hide()

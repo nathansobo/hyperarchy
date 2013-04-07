@@ -4,7 +4,7 @@ class Question < Prequel::Record
   column :creator_id, :integer
   column :body, :string
   column :group_id, :integer
-  column :visibility, :string, :default => 'group'
+  column :visibility, :string
   column :archived_at, :datetime
   column :ranking_count, :integer, :default => 0
   column :created_at, :datetime
@@ -14,6 +14,8 @@ class Question < Prequel::Record
   has_many :rankings
   has_many :preferences
   has_many :majorities
+  has_many :comments, :class_name => "QuestionComment"
+  has_many :question_permissions
 
   belongs_to :creator, :class_name => "User"
 
@@ -50,6 +52,14 @@ class Question < Prequel::Record
     ensure_body_within_limit
     self.secret = self.class.generate_secret if private?
     self.creator ||= current_user
+  end
+
+  def after_create
+    QuestionPermission.create!(secret: secret) if private?
+  end
+
+  def client_data
+    [User.table, self, question_permissions.where(:user_id => current_user.id), answers, preferences, rankings, comments]
   end
 
   def archived?

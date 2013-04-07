@@ -20,6 +20,10 @@ class Sandbox < Prequel::Sandbox
     user.visible_questions
   end
 
+  expose :question_permissions do
+    user.question_permissions
+  end
+
   expose :answers do
     Answer.table
   end

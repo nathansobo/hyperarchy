@@ -12,6 +12,8 @@ Hyperarchy::Application.routes.draw do
   resources :preferences
   match '/preferences' => 'preferences#destroy', :via => :delete
 
+  match '/questions/:question_id' => 'questions#get', :via => :get, :constraints => lambda {|r| r.xhr?}
+
   root :to => 'home#index'
   match '/:questionId' => 'home#index', :via => :get
   match '/questions/archived' => 'home#index', :via => :get
