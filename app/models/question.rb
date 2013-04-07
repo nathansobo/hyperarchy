@@ -4,12 +4,13 @@ class Question < Prequel::Record
   column :creator_id, :integer
   column :body, :string
   column :group_id, :integer
-  column :visibility, :string
+  column :visibility, :string, :default => 'group'
   column :archived_at, :datetime
   column :ranking_count, :integer, :default => 0
   column :created_at, :datetime
   column :updated_at, :datetime
 
+  belongs_to :group
   has_many :answers
   has_many :rankings
   has_many :preferences
@@ -50,12 +51,16 @@ class Question < Prequel::Record
 
   def before_create
     ensure_body_within_limit
-    self.secret = self.class.generate_secret if private?
+    self.secret ||= self.class.generate_secret if private?
     self.creator ||= current_user
   end
 
   def after_create
     QuestionPermission.create!(secret: secret) if private?
+  end
+
+  def to_param
+    private?? secret : id.to_s
   end
 
   def client_data

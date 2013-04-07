@@ -1,13 +1,22 @@
 class QuestionsController < ApplicationController
-  def get
-    id = params[:question_id]
+  def show
+    id = params[:id]
 
     if id =~ /^[a-z]/
-      question = Question.find(:secret => id)
+
+      puts "secret is #{id}"
+      if QuestionPermission.find_or_create(:secret => id, :user_id => current_user_id)
+        puts "question permission is found"
+        question = current_user.private_questions.find(:secret => id)
+      end
     else
-      question = Question.find(id)
+      question = current_user.group_questions.find(id)
     end
 
-    render :json => build_client_dataset(question.client_data)
+    if question
+      render :json => build_client_dataset(question.client_data)
+    else
+      render :status => 404, :text => "Question #{id} not found"
+    end
   end
 end

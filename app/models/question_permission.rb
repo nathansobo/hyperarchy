@@ -10,7 +10,9 @@ class QuestionPermission < Prequel::Record
   validates_presence_of :question_id
 
   def after_initialize
-    self.question = Question.find(:secret => secret)
+    return unless question = Question.find(:secret => secret)
+    return if question.group && current_user && !question.group.has_member?(current_user)
+    self.question = question
     self.user = current_user
   end
 

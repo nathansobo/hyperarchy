@@ -5,10 +5,28 @@ module Models
     describe "#after_initialize" do
       it "assigns its question_id and user_id based on the question with a matching secret and the current user" do
         set_current_user(User.make!)
-        question = Question.make!(:secret => 'secret')
+        question = Question.make!(:visibility => 'private', :secret => 'secret')
         permission = QuestionPermission.create!(:secret => 'secret')
         permission.question.should == question
         permission.user.should == current_user
+      end
+
+      describe "if the question belongs to a group" do
+        it "only assigns the question_id and current_user if the user is a member of the group" do
+          group = Group.make!
+          member = User.make!
+          group.add_member(member)
+          non_member = User.make!
+          question = group.questions.make!(:visibility => 'private', :secret => 'secret')
+
+          set_current_user(member)
+          permission = QuestionPermission.create!(:secret => 'secret')
+          permission.question.should == question
+          permission.user.should == member
+
+          set_current_user(non_member)
+          expect { QuestionPermission.create!(:secret => 'secret') }.to raise_error
+        end
       end
     end
 
