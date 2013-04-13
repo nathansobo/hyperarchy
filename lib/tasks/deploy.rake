@@ -13,7 +13,7 @@ namespace :deploy do
     Bundler.with_clean_env do
       remote = "git@heroku.com:#{app}.git"
       system "heroku maintenance:on --app #{app}"
-      system "git push #{remote} master"
+      system "git push -f #{remote} master"
       system "heroku run rake db:migrate --app #{app}"
       system "heroku maintenance:off --app #{app}"
     end
