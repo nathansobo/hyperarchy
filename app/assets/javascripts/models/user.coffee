@@ -19,3 +19,12 @@ class Models.User extends Monarch.Record
 
   preferencesForQuestion: (question) ->
     @preferences().where(questionId: question.id())
+
+  afterCreate: ->
+    @subscribe() if @id() is @constructor.currentUserId
+
+  subscribe: ->
+    Monarch.subscribe(@getChannelName())
+
+  getChannelName: ->
+    "private-user-#{@id()}"
