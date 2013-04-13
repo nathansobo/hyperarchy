@@ -34,3 +34,9 @@ window.Views = {}
 Monarch.snakeCase = true
 Monarch.resourceUrlRoot = '/sandbox'
 Monarch.resourceUrlSeparator = '_'
+
+Monarch.subscribe = (channel) ->
+  channel = pusher.subscribe(channel)
+  channel.bind 'operation', (operation) ->
+    console.log "got operation", _.clone(operation)
+    Monarch.Repository.update(operation)

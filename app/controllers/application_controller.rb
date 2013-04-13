@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   before_filter :ensure_authenticated
   around_filter :manage_prequel_session
 
-  helper_method :current_user_id
+  helper_method :current_user_id, :current_user, :build_client_dataset
 
   def ensure_authenticated
     redirect_to authenticate_url unless current_user

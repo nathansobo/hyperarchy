@@ -82,6 +82,10 @@ class User < Prequel::Record
     @groups ||= memberships.join_through(Group)
   end
 
+  def initial_dataset
+    [self, groups, memberships]
+  end
+
   def visible_questions
     private_questions | group_questions
   end

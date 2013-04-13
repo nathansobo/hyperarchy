@@ -25,7 +25,7 @@ class Views.HomePage extends View
     @questionsList.onRemove = => @updateQuestionsHeader()
 
   fetchData: ({state}) ->
-    @fetchPromise ?= Monarch.Remote.Server.fetch([Group, Membership, User.where(id: User.currentUserId), Question.join(User, creatorId: 'User.id')])
+    @fetchPromise ?= Monarch.Remote.Server.fetch([Question.join(User, creatorId: 'User.id')])
 
   navigate: ({state}) ->
     $('#all-questions-link').hide()
