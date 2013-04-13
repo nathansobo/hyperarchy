@@ -22,6 +22,7 @@ module EventObserver
   end
 
   def post_event(channels, event)
+    return unless channels
     channels.each do |channel|
       Pusher[channel].trigger_async 'operation', event
     end

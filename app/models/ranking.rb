@@ -8,7 +8,7 @@ class Ranking < Prequel::Record
   belongs_to :user
   belongs_to :question
 
-  delegate :broadcast_channels, :to => :question
+  delegate :broadcast_channels, :to => :question, :allow_nil => true
 
   def can_mutate?
     false
