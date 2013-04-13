@@ -9,6 +9,8 @@ class QuestionComment < Prequel::Record
   belongs_to :creator, :class_name => "User"
   belongs_to :question
 
+  delegate :broadcast_channels, :to => :question
+
   validates_presence_of :body
 
   def before_create

@@ -11,6 +11,8 @@ class Answer < Prequel::Record
   belongs_to :creator, :class_name => "User"
   has_many :preferences
 
+  delegate :broadcast_channels, :to => :question
+
   def can_create?
     !question.archived?
   end

@@ -15,6 +15,8 @@ class Preference < Prequel::Record
 
   attr_accessor :suppress_ranking_update
 
+  delegate :broadcast_channels, :to => :question
+
   def can_create_or_update?
     false
   end

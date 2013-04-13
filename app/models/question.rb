@@ -59,6 +59,14 @@ class Question < Prequel::Record
     QuestionPermission.create!(secret: secret) if private?
   end
 
+  def broadcast_channels
+    if private?
+      []
+    else
+      group.broadcast_channels
+    end
+  end
+
   def to_param
     private?? secret : id.to_s
   end

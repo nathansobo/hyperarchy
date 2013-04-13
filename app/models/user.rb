@@ -78,6 +78,10 @@ class User < Prequel::Record
     end
   end
 
+  def broadcast_channels
+    groups.map(&:broadcast_channels).flatten
+  end
+
   def groups
     @groups ||= memberships.join_through(Group)
   end

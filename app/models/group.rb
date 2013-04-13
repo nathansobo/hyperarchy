@@ -8,6 +8,14 @@ class Group < Prequel::Record
   has_many :memberships
   has_many :questions
 
+  def channel_name
+    "private-group-#{id}"
+  end
+
+  def broadcast_channels
+    [channel_name]
+  end
+
   def members
     @members ||= memberships.join_through(User)
   end
