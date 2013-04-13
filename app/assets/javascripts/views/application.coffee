@@ -13,7 +13,7 @@ class Views.Application extends View
             @div class: 'pull-right', =>
               @a class: 'brand', href: '/', =>
                 @i class: 'icon-list'
-                @span "Hyperarchy"
+                @span APP_NAME
 
       @div id: 'pages', outlet: 'pages', =>
         @subview 'homePage', new Views.HomePage

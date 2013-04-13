@@ -9,6 +9,7 @@
   <%= javascript_include_tag "application" %>
   <script type="text/javascript">
     window.APP_MODE = "<%= ENV['APP_MODE'] %>";
+    window.APP_NAME = "<%= APP_NAME %>";
     window.PUSHER_API_KEY = "<%= Pusher.key %>";
     window.PUSHER_CHANNEL_PREFIX = "<%= PUSHER_CHANNEL_PREFIX %>";
     window.pusher = new Pusher(PUSHER_API_KEY);
