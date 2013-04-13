@@ -27,4 +27,4 @@ class Models.User extends Monarch.Record
     Monarch.subscribe(@getChannelName())
 
   getChannelName: ->
-    "private-user-#{@id()}"
+    "private-#{PUSHER_CHANNEL_PREFIX}-user-#{@id()}"

@@ -8,7 +8,7 @@ describe EventObserver do
     let(:current_user) { User.create! }
 
     before do
-      stub(Pusher[PUSHER_CHANNEL]).trigger_async do |channel, event|
+      stub(Pusher[PUSHER_CHANNEL_PREFIX]).trigger_async do |channel, event|
         events[channel].push(event)
       end
 
