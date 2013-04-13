@@ -1,7 +1,6 @@
 Hyperarchy::Application.routes.draw do
-
-
   match '/auth/:provider/callback' => 'sessions#create'
+  match '/pusher/auth' => 'pusher#auth', :via => :post
   match '/sign-out' => 'sessions#destroy'
 
   get '/sandbox' => 'sandbox#fetch'
