@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe QuestionsController, :f do
+describe QuestionsController do
   describe "#show" do
     attr_reader :group, :member, :non_member, :group_question, :private_group_question, :private_question
     before do
