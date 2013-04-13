@@ -82,6 +82,14 @@ class User < Prequel::Record
     groups.map(&:broadcast_channels).flatten
   end
 
+  def private_broadcast_channels
+    [private_channel_name]
+  end
+
+  def private_channel_name
+    "private-user-#{id}"
+  end
+
   def groups
     @groups ||= memberships.join_through(Group)
   end

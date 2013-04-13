@@ -61,7 +61,7 @@ class Question < Prequel::Record
 
   def broadcast_channels
     if private?
-      []
+      permitted_users.map(&:private_broadcast_channels).flatten
     else
       group.broadcast_channels
     end
@@ -73,6 +73,10 @@ class Question < Prequel::Record
 
   def client_data
     [User.table, self, question_permissions.where(:user_id => current_user.id), answers, preferences, rankings, comments]
+  end
+
+  def permitted_users
+    @permitted_users ||= question_permissions.join_through(User)
   end
 
   def archived?
