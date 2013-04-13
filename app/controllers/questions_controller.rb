@@ -3,10 +3,7 @@ class QuestionsController < ApplicationController
     id = params[:id]
 
     if id =~ /^[a-z]/
-
-      puts "secret is #{id}"
       if QuestionPermission.find_or_create(:secret => id, :user_id => current_user_id)
-        puts "question permission is found"
         question = current_user.private_questions.find(:secret => id)
       end
     else
