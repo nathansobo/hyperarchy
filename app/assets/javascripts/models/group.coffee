@@ -12,6 +12,7 @@ class Models.Group extends Monarch.Record
     @subscribe()
 
   subscribe: ->
-    Monarch.subscribe(@channelId())
+    Monarch.subscribe(@getChannelName())
 
-  channelId: -> "private-group-#{@id()}"
+  getChannelName: ->
+    "private-group-#{@id()}"
