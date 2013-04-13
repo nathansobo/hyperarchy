@@ -15,7 +15,6 @@ module EventObserver
         post_event(record.broadcast_channels, event)
       end
       record_class.on_destroy do |record|
-        channels = record.channels_to_update
         event = ['destroy', record.table.name.to_s, record.id]
         post_event(record.broadcast_channels, event)
       end
