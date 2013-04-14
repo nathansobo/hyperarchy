@@ -37,6 +37,6 @@ Monarch.resourceUrlSeparator = '_'
 
 Monarch.subscribe = (channel) ->
   channel = pusher.subscribe(channel)
-  channel.bind 'operation', (operation) ->
-    console.log "got operation", _.clone(operation)
+  channel.bind 'operations', (operation) ->
     Monarch.Repository.update(operation)
+    console.log "got operations", _.clone(operation)

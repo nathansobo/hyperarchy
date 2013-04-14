@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
 
   before_filter :ensure_authenticated
   around_filter :manage_prequel_session
+  after_filter :broadcast_events
 
   helper_method :current_user_id, :current_user, :build_client_dataset
 
@@ -42,5 +43,13 @@ class ApplicationController < ActionController::Base
     yield
   ensure
     Prequel.clear_session
+  end
+
+  def broadcast_events
+    return unless events_by_channel = Thread.current[:events_by_channel]
+    events_by_channel.each do |channel, events|
+      Pusher[channel].trigger_async 'operations', events
+    end
+    Thread.current[:events_by_channel] = nil
   end
 end

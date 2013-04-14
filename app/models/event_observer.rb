@@ -23,8 +23,13 @@ module EventObserver
 
   def post_event(channels, event)
     return unless channels
+
     channels.each do |channel|
-      Pusher[channel].trigger_async 'operation', event
+      events_by_channel[channel].push(event)
     end
+  end
+
+  def events_by_channel
+    Thread.current[:events_by_channel] ||= Hash.new {|h,k| h[k] = []}
   end
 end
