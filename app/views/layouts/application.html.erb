@@ -11,7 +11,6 @@
     window.APP_MODE = "<%= ENV['APP_MODE'] %>";
     window.APP_NAME = "<%= APP_NAME %>";
     window.PUSHER_API_KEY = "<%= Pusher.key %>";
-    window.PUSHER_CHANNEL_PREFIX = "<%= PUSHER_CHANNEL_PREFIX %>";
     window.pusher = new Pusher(PUSHER_API_KEY);
     Models.User.currentUserId = <%= current_user_id %>;
     Monarch.Repository.update(<%= build_client_dataset(current_user.initial_dataset).to_json.html_safe %>)

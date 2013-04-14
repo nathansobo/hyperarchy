@@ -5,10 +5,10 @@ class PusherController < ApplicationController
     channel_name = params[:channel_name]
     socket_id = params[:socket_id]
 
-    if match = channel_name.match(/private-\w+-group-(\d+)/)
+    if match = channel_name.match(/private-group-(\d+)/)
       group_id = match[1].to_i
       auth_group_channel(channel_name, group_id, socket_id)
-    elsif match = channel_name.match(/private-\w+-user-(\d+)/)
+    elsif match = channel_name.match(/private-user-(\d+)/)
       user_id = match[1].to_i
       auth_user_channel(channel_name, user_id, socket_id)
     else

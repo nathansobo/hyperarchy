@@ -87,7 +87,7 @@ class User < Prequel::Record
   end
 
   def private_channel_name
-    "private-#{PUSHER_CHANNEL_PREFIX}-user-#{id}"
+    "private-user-#{id}"
   end
 
   def groups

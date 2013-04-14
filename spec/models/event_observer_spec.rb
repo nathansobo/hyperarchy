@@ -9,7 +9,7 @@ describe EventObserver do
     let(:current_user) { User.create! }
 
     before do
-      stub(Pusher["private-#{PUSHER_CHANNEL_PREFIX}-group-#{group.id}"]).trigger_async do |channel, event|
+      stub(Pusher["private-group-#{group.id}"]).trigger_async do |channel, event|
         events[channel].push(event)
       end
 

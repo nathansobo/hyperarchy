@@ -9,7 +9,7 @@ class Group < Prequel::Record
   has_many :questions
 
   def channel_name
-    "private-#{PUSHER_CHANNEL_PREFIX}-group-#{id}"
+    "private-group-#{id}"
   end
 
   def broadcast_channels
