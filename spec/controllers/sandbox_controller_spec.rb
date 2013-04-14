@@ -1,11 +1,13 @@
 require 'spec_helper'
 
 describe SandboxController do
-  attr_reader :organization, :other_organization, :question, :user
+  attr_reader :group, :question, :user
 
   before do
     @user = login_as User.make!
-    @question = Question.make!(:creator => user)
+    @group = Group.make!
+    group.add_member(user)
+    @question = group.questions.make!(:creator => user)
   end
 
   describe "#fetch" do
@@ -19,7 +21,7 @@ describe SandboxController do
     context "when creating a legal record" do
       it "creates the record and returns its wire representation" do
         Question.count.should == 1
-        post :create, :relation => "questions", :field_values => Question.make.field_values
+        post :create, :relation => "questions", :field_values => group.questions.make.field_values
         response.should be_success
         Question.count.should == 2
         json = JSON.parse(response.body)
@@ -116,4 +118,3 @@ describe SandboxController do
     end
   end
 end
-
