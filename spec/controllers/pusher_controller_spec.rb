@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe PusherController, :f do
+describe PusherController do
   describe "#auth" do
     describe "when authenticating to a group channel" do
       it "only allows members of a group to authenticate to its private channel" do
