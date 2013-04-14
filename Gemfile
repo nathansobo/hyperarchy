@@ -19,6 +19,8 @@ gem "omniauth-google-oauth2"
 gem 'omniauth-identity'
 gem 'github_api', :require => 'github_api'
 gem 'rgl', :require => ['rgl/base', 'rgl/adjacency', 'rgl/topsort']
+gem 'newrelic_rpm'
+gem 'newrelic-sequel'
 
 # Gems used only for assets and not required
 # in production environments by default.
