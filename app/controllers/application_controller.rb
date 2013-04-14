@@ -11,10 +11,13 @@ class ApplicationController < ActionController::Base
   helper_method :current_user_id, :current_user, :build_client_dataset
 
   def ensure_authenticated
-    redirect_to authenticate_url unless current_user
+    unless current_user
+      session[:after_login_url] = request.url
+      redirect_to authenticate_uri
+    end
   end
 
-  def authenticate_url
+  def authenticate_uri
     "/auth/#{AUTH_SCHEME}"
   end
 

@@ -4,8 +4,7 @@ class SessionsController < ApplicationController
   def create
     auth = request.env["omniauth.auth"]
     self.current_user = User.from_omniauth(auth)
-
-    redirect_to root_url
+    redirect_to session[:after_login_url] || root_url
   end
 
   def destroy
