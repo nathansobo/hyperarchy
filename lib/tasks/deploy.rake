@@ -1,5 +1,5 @@
 namespace :deploy do
-  namespace :github do
+  namespace :hyperarchy do
     desc 'Deploy to GitHub production'
     task :production do
       deploy('hyperarchy')
