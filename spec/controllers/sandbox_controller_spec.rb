@@ -1,12 +1,13 @@
 require 'spec_helper'
 
 describe SandboxController do
-  attr_reader :group, :question, :user
+  attr_reader :group, :other_group, :question, :user
 
   before do
     @user = login_as User.make!
     @group = Group.make!
     group.add_member(user)
+    @other_group = Group.make!
     @question = group.questions.make!(:creator => user)
   end
 
@@ -29,16 +30,14 @@ describe SandboxController do
       end
     end
 
-    # Nothing in the sandbox is off limits right now
-    #
-    # context "when creating an illegal record" do
-    #   it "returns '403 forbidden'" do
-    #     Question.count.should == 1
-    #     post :create, :relation => "questions", :field_values => Question.plan(:organization => other_organization)
-    #     Question.count.should == 1
-    #     response.should be_forbidden
-    #   end
-    # end
+    context "when creating a record that's out of the bounds of the exposed relation" do
+      it "returns '403 forbidden'" do
+        expect {
+          post :create, :relation => "questions", :field_values => other_group.questions.make.field_values
+        }.to_not change Question, :count
+        response.should be_forbidden
+      end
+    end
 
     context "when creating an invalid record" do
       it "returns validation errors" do
@@ -91,6 +90,14 @@ describe SandboxController do
         response.status.should == 404
       end
     end
+
+    describe "when performing an update to make a record outside of the bounds of the exposed relation" do
+      it "returns '403 forbidden'" do
+        put :update, :relation => "questions", :id => question.id.to_s, :field_values => { :group_id => other_group.id }
+        response.status.should == 403
+        question.reload.group_id.should == group.id
+      end
+    end
   end
 
   describe "#destroy" do
@@ -107,6 +114,15 @@ describe SandboxController do
         bogus_id = Question.all.last.id + 1
         delete :destroy, :relation => "questions", :id => bogus_id.to_s
         response.status.should == 404
+      end
+    end
+
+    describe "when destroying a record that's not part of the exposed relation" do
+      it "returns '404 not found' and does not destroy the record" do
+        other_question = other_group.questions.make!
+        delete :destroy, :relation => "questions", :id => other_question.id.to_s
+        response.status.should == 404
+        Question.find(other_question.id).should be
       end
     end
 
