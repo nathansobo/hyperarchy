@@ -1,12 +1,26 @@
 namespace :deploy do
-  desc 'Deploy the app to production'
-  task :production do
-    deploy('hyperarchy')
+  namespace :github do
+    desc 'Deploy to GitHub production'
+    task :production do
+      deploy('hyperarchy')
+    end
+
+    desc 'Deploy to GitHub staging'
+    task :staging do
+      deploy('hyperarchy-staging')
+    end
   end
 
-  desc 'Deploy the app to staging'
-  task :staging do
-    deploy('hyperarchy-staging')
+  namespace :decider do
+    desc 'Deploy to Decider production'
+    task :production do
+      deploy('decider-production')
+    end
+
+    desc 'Deploy to Decider staging'
+    task :staging do
+      deploy('decider-staging')
+    end
   end
 
   def deploy(app)
