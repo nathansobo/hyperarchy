@@ -63,7 +63,7 @@ class Question < Prequel::Record
     if private?
       permitted_users.map(&:private_broadcast_channels).flatten
     else
-      group.broadcast_channels
+      group ? group.broadcast_channels : []
     end
   end
 
