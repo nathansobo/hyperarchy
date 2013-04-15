@@ -14,3 +14,6 @@ class Models.Ranking extends Monarch.Record
   @belongsTo 'question'
   @hasMany 'preferences'
   @hasMany 'answers', through: 'preferences'
+
+  getUrl: ->
+    "#{@question().getUrl()}/rankings/#{@userId()}"

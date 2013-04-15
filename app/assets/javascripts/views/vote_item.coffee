@@ -1,7 +1,7 @@
 class Views.RankingItem extends View
   @content: (ranking) ->
     @li =>
-      @a class: 'ranking', 'data-ranking-id': ranking.id(), href: "/questions/#{ranking.questionId()}/rankings/#{ranking.userId()}", =>
+      @a class: 'ranking', 'data-ranking-id': ranking.id(), href: ranking.getUrl(), =>
         @i class: 'icon-chevron-right'
         @img class: 'avatar', outlet: 'avatar'
         @div class: 'name', outlet: 'name'
