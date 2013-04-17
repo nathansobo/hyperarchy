@@ -75,6 +75,12 @@ describe QuestionsController do
         response.status.should == 200
       end
 
+      it "does not create question permissions for private questions" do
+        expect {
+          get :show, :id => private_group_question.secret
+          response.status.should == 200
+        }.to_not change QuestionPermission, :count
+      end
     end
   end
 end
