@@ -96,7 +96,16 @@ class User < Prequel::Record
     if superuser_enabled?
       Membership.table
     else
-      memberships
+      visible_groups.join_through(Membership)
+    end
+  end
+
+  def visible_users
+    if superuser_enabled?
+      User.table
+    else
+      visible_memberships.join_through(User) |
+        private_questions.join_through(QuestionPermission).join_through(User)
     end
   end
 

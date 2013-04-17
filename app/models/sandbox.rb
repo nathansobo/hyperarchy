@@ -13,7 +13,7 @@ class Sandbox < Prequel::Sandbox
   end
 
   expose :users do
-    User.table
+    user.visible_users
   end
 
   expose :questions do
