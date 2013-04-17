@@ -132,6 +132,22 @@ class User < Prequel::Record
     @private_questions ||= question_permissions.join_through(Question)
   end
 
+  def visible_answers
+    @visible_answers ||= visible_questions.join_through(Answer)
+  end
+
+  def visible_rankings
+    @visible_rankings ||= visible_questions.join_through(Ranking)
+  end
+
+  def visible_preferences
+    @visible_preferences ||= visible_questions.join_through(Preference)
+  end
+
+  def visible_question_comments
+    @visible_question_comments ||= visible_questions.join_through(QuestionComment)
+  end
+
   def can_update_or_destroy?
     current_user == self
   end

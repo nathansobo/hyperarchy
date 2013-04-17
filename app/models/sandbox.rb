@@ -21,18 +21,18 @@ class Sandbox < Prequel::Sandbox
   end
 
   expose :answers do
-    Answer.table
+    user.visible_answers
   end
 
   expose :rankings do
-    Ranking.table
+    user.visible_rankings
   end
 
   expose :preferences do
-    Preference.table
+    user.visible_preferences
   end
 
   expose :question_comments do
-    QuestionComment.table
+    user.visible_question_comments
   end
 end
