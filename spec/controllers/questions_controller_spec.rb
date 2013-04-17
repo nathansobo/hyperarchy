@@ -14,17 +14,28 @@ describe QuestionsController do
       @non_member = User.make!
     end
 
-    it "only allows private questions to be fetched by secret" do
+    it "allows private questions to be fetched if the user has permission" do
       login_as(member)
 
-      get :show, :id => private_group_question.secret
-      response.status.should == 200
-
+      # can't fetch until we have permission, which is only granted to non superusers when we fetch via the secret
       get :show, :id => private_group_question.id.to_s
       response.status.should == 404
 
       get :show, :id => private_question.id.to_s
       response.status.should == 404
+
+      # fetching via the secret works, and once we do so we can also fetch via id
+      get :show, :id => private_group_question.secret
+      response.status.should == 200
+
+      get :show, :id => private_group_question.id.to_s
+      response.status.should == 200
+
+      get :show, :id => private_question.secret
+      response.status.should == 200
+
+      get :show, :id => private_question.id.to_s
+      response.status.should == 200
     end
 
     it "only allows group questions to be fetched by group members" do
