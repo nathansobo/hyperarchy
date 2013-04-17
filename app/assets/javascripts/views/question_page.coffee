@@ -152,7 +152,7 @@ class Views.QuestionPage extends View
     @updateToggleQuestionArchivedButton()
 
   fetchData: ({questionId, secret}) ->
-    @fetchPromisesByQuestionId[questionId] ?= do ->
+    @fetchPromisesByQuestionId[questionId ? secret] ?= do ->
       $.ajax
         type: 'get'
         url: "/questions/#{questionId ? secret}"
