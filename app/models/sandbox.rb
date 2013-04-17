@@ -5,11 +5,11 @@ class Sandbox < Prequel::Sandbox
   end
 
   expose :groups do
-    user.groups
+    user.superuser_enabled?? Group.table : user.groups
   end
 
   expose :memberships do
-    user.memberships
+    user.superuser_enabled?? Membership.table : user.memberships
   end
 
   expose :users do
@@ -21,7 +21,7 @@ class Sandbox < Prequel::Sandbox
   end
 
   expose :question_permissions do
-    user.question_permissions
+    user.superuser_enabled?? QuestionPermission.table : user.question_permissions
   end
 
   expose :answers do

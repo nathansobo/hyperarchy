@@ -101,7 +101,11 @@ class User < Prequel::Record
   end
 
   def visible_questions
-    private_questions | group_questions
+    if superuser_enabled?
+      Question.table
+    else
+      private_questions | group_questions
+    end
   end
 
   def group_questions

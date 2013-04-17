@@ -7,7 +7,7 @@ class QuestionsController < ApplicationController
         question = current_user.private_questions.find(:secret => id)
       end
     else
-      question = current_user.group_questions.find(id)
+      question = current_user.visible_questions.find(id)
     end
 
     if question
