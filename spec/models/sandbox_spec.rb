@@ -1,13 +1,19 @@
 require 'spec_helper'
 
 describe Sandbox, :type => :model do
-  attr_reader :question, :repository, :user_1, :user_2, :answer_1, :answer_2
+  attr_reader :group, :question, :repository, :user_1, :user_2, :answer_1, :answer_2
 
   before do
     set_current_user(User.make!)
+    @group = Group.make!
     @user_1 = User.make!
     @user_2 = User.make!
-    @question = Question.make!
+
+    group.add_member(current_user)
+    group.add_member(user_1)
+    group.add_member(user_2)
+
+    @question = group.questions.make!
     @answer_1 = question.answers.make!(:creator => user_1)
     @answer_2 = question.answers.make!(:creator => user_2)
     @repository = Sandbox.new(current_user)
