@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130413050710) do
+ActiveRecord::Schema.define(:version => 20130416235030) do
 
   create_table "answers", :force => true do |t|
     t.string   "body"
@@ -98,12 +98,14 @@ ActiveRecord::Schema.define(:version => 20130413050710) do
   end
 
   create_table "users", :force => true do |t|
-    t.string "uid"
-    t.string "oauth_access_token"
-    t.string "email_address"
-    t.string "full_name"
-    t.string "avatar_url"
-    t.string "provider"
+    t.string  "uid"
+    t.string  "oauth_access_token"
+    t.string  "email_address"
+    t.string  "full_name"
+    t.string  "avatar_url"
+    t.string  "provider"
+    t.boolean "superuser",          :default => false
+    t.boolean "superuser_enabled",  :default => false
   end
 
 end

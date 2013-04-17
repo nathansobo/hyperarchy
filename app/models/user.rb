@@ -6,6 +6,8 @@ class User < Prequel::Record
   column :email_address, :string
   column :full_name, :string
   column :avatar_url, :string
+  column :superuser, :boolean
+  column :superuser_enabled, :boolean
 
   synthetic_column :email_hash, :string
 
@@ -121,7 +123,9 @@ class User < Prequel::Record
   end
 
   def update_whitelist
-    [:full_name, :email_address, :password]
+    list = [:full_name, :email_address, :password]
+    list.push(:superuser, :superuser_enabled) if current_user.superuser?
+    list
   end
 
   def read_blacklist

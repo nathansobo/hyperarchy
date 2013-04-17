@@ -5,6 +5,8 @@ class Models.User extends Monarch.Record
   @columns
     fullName: 'string'
     avatarUrl: 'string'
+    superuser: 'boolean'
+    superuserEnabled: 'boolean'
 
   @hasMany 'memberships'
   @hasMany 'groups', through: 'memberships'
