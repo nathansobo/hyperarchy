@@ -92,8 +92,24 @@ class User < Prequel::Record
     "private-user-#{id}"
   end
 
+  def visible_memberships
+    if superuser_enabled?
+      Membership.table
+    else
+      memberships
+    end
+  end
+
   def groups
     @groups ||= memberships.join_through(Group)
+  end
+
+  def visible_groups
+    if superuser_enabled?
+      Group.table
+    else
+      groups
+    end
   end
 
   def initial_dataset
