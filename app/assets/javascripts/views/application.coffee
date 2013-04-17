@@ -54,16 +54,20 @@ class Views.Application extends View
     @pages.children().hide()
 
   navigate: (outletName, params) ->
-    page = this[outletName]
-    throw new Error("No page named '#{outletName}'") unless page
-    if typeof page.fetchData is 'function'
-      page.fetchData(params).success =>
+    try
+      page = this[outletName]
+      throw new Error("No page named '#{outletName}'") unless page
+      if typeof page.fetchData is 'function'
+        page.fetchData(params).success =>
+          @hidePages()
+          page.navigate(params)
+      else
         @hidePages()
         page.navigate(params)
-    else
-      @hidePages()
-      page.navigate(params)
-    page
+      page
+    catch e
+      console.error "Error navigating:", e.stack
+
 
   navigateToQuestion: (questionId, params) ->
     if questionId.match(/^[a-z]/)
