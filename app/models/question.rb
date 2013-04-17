@@ -72,7 +72,7 @@ class Question < Prequel::Record
   end
 
   def client_data
-    [User.table, self, question_permissions.where(:user_id => current_user.id), answers, preferences, rankings, comments]
+    [User.table, self, answers, preferences, rankings, comments]
   end
 
   def permitted_users

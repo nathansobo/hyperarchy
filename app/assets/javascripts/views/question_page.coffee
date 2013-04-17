@@ -1,4 +1,4 @@
-{ Question, QuestionPermission, Answer, User, Preference } = Models
+{ Question, Answer, User, Preference } = Models
 
 class Views.QuestionPage extends View
   @content: ->
@@ -163,8 +163,10 @@ class Views.QuestionPage extends View
     @show()
 
     {questionId, secret, state} = params
-    questionId ?= QuestionPermission.find({secret}).questionId()
-    @setQuestion(Question.find(questionId))
+    if questionId
+      @setQuestion(Question.find(questionId))
+    else
+      @setQuestion(Question.find({secret}))
 
     switch state
       when 'combinedRanking' then @showCombinedRanking()
