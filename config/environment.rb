@@ -12,4 +12,7 @@ APP_NAME = ENV['APP_NAME'] || 'Hyperarchy'
 require 'prequel_extensions'
 require 'event_observer'
 
+require 'thread/pool'
+$thread_pool = Thread.pool(4)
+
 EventObserver.observe(User, Question, Answer, Preference, Ranking, QuestionComment)

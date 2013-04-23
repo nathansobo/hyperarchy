@@ -48,7 +48,9 @@ class ApplicationController < ActionController::Base
   def broadcast_events
     return unless events_by_channel = Thread.current[:events_by_channel]
     events_by_channel.each do |channel, events|
-      Pusher[channel].trigger_async 'operations', events
+      $thread_pool.process do
+        Pusher[channel].trigger 'operations', events
+      end
     end
     Thread.current[:events_by_channel] = nil
   end
