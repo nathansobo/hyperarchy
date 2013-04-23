@@ -68,6 +68,9 @@ module Hyperarchy
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
+    # Enable thread-safe mode
+    config.allow_concurrency = true
+
     config.middleware.use Rack::SSL if Rails.env.production?
   end
 end

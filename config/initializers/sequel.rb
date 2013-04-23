@@ -7,5 +7,6 @@ else
   # We're keeping ActiveRecord around in development for the migrations and rake tasks
   config['adapter'].gsub! 'postgresql', 'postgres'
   config['logger'] = Rails.logger
+  config['max_connections'] = ENV['DB_POOL'] || 12
   Sequel.connect(config)
 end

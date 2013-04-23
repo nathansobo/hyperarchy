@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails'
-gem 'thin'
+gem 'puma'
 gem 'rack-ssl'
 
 # Bundle edge Rails instead:
@@ -47,6 +47,7 @@ group :test, :development do
   gem 'machinist'
   gem 'faker'
   gem 'jasminerice'
+  gem 'foreman'
 end
 
 # To use ActiveModel has_secure_password
