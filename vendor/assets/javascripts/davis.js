@@ -1403,6 +1403,9 @@ Davis.Request = (function () {
       delete opts.fullPath
     }
 
+    // NS - Hack to allow paths ending in an extra / character
+    if (fullPath !== '/') fullPath = fullPath.replace(/\/$/, '');
+
     var raw = Davis.$.extend({}, {
       title: "",
       fullPath: fullPath,
