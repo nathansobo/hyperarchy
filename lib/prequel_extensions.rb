@@ -68,5 +68,12 @@ module Prequel
     def can_update_columns?(columns)
       (columns - (update_whitelist - update_blacklist)).empty?
     end
+
+    def render_template(path, locals={})
+      av = ActionView::Base.new()
+      av.view_paths = ActionController::Base.view_paths
+      av.extend ApplicationHelper
+      av.render(:template => path, :locals => locals).to_str
+    end
   end
 end

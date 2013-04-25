@@ -57,6 +57,7 @@ class Question < Prequel::Record
 
   def after_create
     QuestionPermission.create!(secret: secret) if private?
+    send_notification_emails unless private?
   end
 
   def broadcast_channels
@@ -150,5 +151,30 @@ class Question < Prequel::Record
 
   def extra_records_for_create_events
     [creator]
+  end
+
+  def url
+    "#{APP_URL}/questions/#{to_param}"
+  end
+
+  def send_notification_emails
+    recipients = group.members.all
+    from = "#{APP_NAME} <notifications@#{APP_DOMAIN}>"
+    subject = "#{creator.full_name} asks: #{body}"
+    text = render_template('emails/new_question.text.erb', :question_body => body, :question_url => url)
+    html = render_template('emails/new_question.html.erb', :question_body => body, :question_url => url)
+    $thread_pool.process do
+      recipients.each do |recipient|
+        next if recipient.email_address.blank?
+
+        RestClient.post("#{MAILGUN_URL}/messages",
+          :from => from,
+          :to => "#{recipient.full_name} <#{recipient.email_address}>",
+          :subject => subject,
+          :text => text,
+          :html => html
+        )
+      end
+    end
   end
 end
