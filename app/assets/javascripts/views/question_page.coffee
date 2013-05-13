@@ -35,9 +35,6 @@ class Views.QuestionPage extends View
               @li =>
                 @a outlet: 'newAnswersLink', =>
                   @i class: 'icon-asterisk'
-#               @li =>
-#                 @a outlet: 'randomizeAnswersLink', =>
-#                   @i class: 'icon-random'
 
           @div id: 'columns', =>
             @div class: 'column', id: 'column1', =>
