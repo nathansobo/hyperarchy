@@ -61,6 +61,12 @@ module Hyperarchy
 
     # Enable the asset pipeline
     config.assets.enabled = true
+    config.assets.paths << "#{Rails.root}/vendor/bootstrap/fonts"
+    config.assets.paths << "#{Rails.root}/vendor/bootstrap/js"
+
+    config.less.paths << "#{Rails.root}/vendor/bootstrap/less"
+
+    config.assets.precompile += %w( .svg .eot .woff .ttf )
 
     # Don't initialize rails when precompiling assets
     config.assets.initialize_on_precompile = false

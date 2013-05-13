@@ -11,13 +11,15 @@
 # GO AFTER THE REQUIRES BELOW.
 #
 #= require jquery
+#= require bootstrap-modal
+#= require bootstrap-tooltip
+#= require bootstrap-popover
 #= require jquery_ujs
 #= require jquery.ui.draggable
 #= require jquery.ui.sortable
 #= require jquery.effects.core
 #= require jquery.effects.highlight
 #= require jquery.ui.touch-punch
-#= require twitter/bootstrap
 #= require underscore
 #= require monarch/lib/monarch
 #= require space-pen

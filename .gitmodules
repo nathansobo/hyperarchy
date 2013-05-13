@@ -4,3 +4,6 @@
 [submodule "vendor/assets/javascripts/monarch"]
 	path = vendor/assets/javascripts/monarch
 	url = https://github.com/nathansobo/monarch.git
+[submodule "vendor/bootstrap"]
+	path = vendor/bootstrap
+	url = https://github.com/twitter/bootstrap.git

@@ -2,18 +2,11 @@ class Views.Application extends View
   @content: ->
     @div id: 'application', =>
       @div class: 'navbar navbar-fixed-top navbar-inverse', =>
-        @div class: 'navbar-inner', =>
-          @div class: 'container', =>
-            @ul class: 'nav', =>
-              @li =>
-                @a href: "/", id: 'all-questions-link', =>
-                  @i class: 'icon-chevron-left'
-                  @text " All Questions"
-
-            @div class: 'pull-right', =>
-              @a class: 'brand', href: '/', =>
-                @i class: 'icon-list'
-                @span APP_NAME
+        @div class: 'container', =>
+          @a class: 'navbar-brand', href: '/', =>
+            @i class: 'icon-list-ol'
+            @text ' '
+            @span APP_NAME
 
       @div id: 'pages', outlet: 'pages', =>
         @subview 'homePage', new Views.HomePage

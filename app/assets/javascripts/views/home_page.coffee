@@ -6,17 +6,17 @@ class Views.HomePage extends View
 
       @header =>
         @button "+ New Question", class: 'btn btn-large btn-primary pull-right', click: 'addQuestion'
-        @a "Show archived", class: 'pull-right btn btn-large', href: '', outlet: 'toggleArchivedButton'
+        @a "Show archived", class: 'btn btn-large btn-default pull-right ', href: '', outlet: 'toggleArchivedButton'
         @h1 "", outlet: 'questionsHeader'
 
       @subview 'questionsList', new Views.RelationView(
-        attributes: { id: 'questions' }
+        attributes: { id: 'questions', class: 'list-unstyled' }
         buildItem: (question) ->
           $$ ->
             @li =>
-              @a class: 'question', href: question.getUrl(), =>
+              @a class: 'tile question', href: question.getUrl(), =>
                 @i class: 'icon-chevron-right icon-large'
-                @img src: question.creator().avatarUrl()
+                @img class: 'pull-left', src: question.creator().avatarUrl()
                 @div question.body(), class: "body"
       )
 

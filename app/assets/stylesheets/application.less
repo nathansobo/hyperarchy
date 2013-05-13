@@ -1,0 +1,52 @@
+
+@import "custom-bootstrap.less";
+@import "font-awesome";
+@import "home.less";
+
+
+body {
+  padding-top: 64px;
+  #gradient .vertical(#fff, #bbb);
+}
+
+.drop-shadow {
+}
+
+#home-page {
+  header {
+    margin-bottom: @line-height-computed;
+
+    button { margin-left: @line-height-computed / 2; }
+  }
+
+  .question {
+    display: block;
+    position: relative;
+    padding: @line-height-computed;
+    margin-bottom: @line-height-computed;
+    background: white;
+    text-decoration: none;
+    color: black;
+
+    .clearfix();
+
+    .box-shadow(0px 1px 6px 0px rgba(0, 0, 0, .2));
+    &:hover { .box-shadow(0px 1px 8px 0px rgba(0, 0, 0, .4)); }
+
+    img {
+      margin-right: @line-height-computed;
+    }
+
+    .icon-chevron-right {
+      position: absolute;
+      right: @line-height-computed;
+      margin: -11px;
+      top: 50%;
+    }
+
+    .body {
+      font-size: @font-size-base * 2;
+      margin-right: @line-height-computed * 2;
+    }
+  }
+}
