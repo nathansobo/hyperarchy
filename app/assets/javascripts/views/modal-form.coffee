@@ -1,17 +1,21 @@
 class Views.ModalForm extends View
   @content: ({headingText, buttonText}) ->
-    @div class: 'modal-form modal hide fade', role: 'dialog', =>
-      @div class: 'modal-header', =>
-        @button class: 'close', 'data-dismiss': 'modal', 'aria-hidden': 'true', =>
-          @raw '&times;'
-        @span headingText ? @headingText, class: 'lead'
-      @div class: 'modal-body', =>
-        @textarea class: 'lead', rows: 3, outlet: 'textarea'
-        @div class: 'chars-remaining pull-right', outlet: 'charsRemainingIndicator'
-        @belowTextArea?()
 
-      @div class: 'modal-footer', =>
-        @button buttonText ? @buttonText, class: 'btn btn-primary', click: 'submit'
+
+    @div class: 'modal fade', =>
+      @div class: 'modal-dialog', =>
+        @div class: 'modal-content', =>
+          @div class: 'modal-header', =>
+            @button class: 'close', 'data-dismiss': 'modal', 'aria-hidden': 'true', =>
+              @raw '&times;'
+            @span headingText ? @headingText, class: 'lead'
+          @div class: 'modal-body', =>
+            @textarea class: 'lead', rows: 3, outlet: 'textarea'
+            @div class: 'chars-remaining pull-right', outlet: 'charsRemainingIndicator'
+            @belowTextArea?()
+
+          @div class: 'modal-footer', =>
+            @button buttonText ? @buttonText, class: 'btn btn-primary', click: 'submit'
 
   initialize: ({text, @onSubmit}) ->
     @on 'shown', => @textarea.focus()

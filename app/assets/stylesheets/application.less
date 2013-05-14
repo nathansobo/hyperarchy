@@ -9,7 +9,14 @@ body {
   #gradient .vertical(#fff, #bbb);
 }
 
-.drop-shadow {
+.chars-remaining {
+  margin-top: -@line-height-computed + 2;
+  &.warning { color: darken(@brand-danger, 20%); }
+  &.invalid { color: @brand-danger; }
+}
+
+textarea {
+  resize: none;
 }
 
 #home-page {
