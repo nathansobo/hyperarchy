@@ -96,7 +96,7 @@ GEM
     jquery-ui-rails (2.0.0)
       jquery-rails
       railties (>= 3.1.0)
-    json (1.7.6)
+    json (1.8.6)
     jwt (0.1.5)
       multi_json (>= 1.0)
     less (2.2.2)
@@ -166,7 +166,7 @@ GEM
       rdoc (~> 3.4)
       thor (>= 0.14.6, < 2.0)
     rake (10.0.3)
-    rdoc (3.12)
+    rdoc (3.12.2)
       json (~> 1.4)
     redis (2.2.0)
     redis-lock (0.1.0)
